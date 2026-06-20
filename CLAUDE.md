@@ -4,6 +4,89 @@
 
 Before invoking any superpowers skill, ask the user for approval first. Do not auto-trigger skills.
 
+# CLAUDE.md
+
+This file provides **critical workflow and coding guidelines** for Claude Code when working in this repository.
+
+For technical details (commands, architecture, dependencies), see [DEVELOPMENT.md](./DEVELOPMENT.md).
+
+---
+
+# ⚠️ CRITICAL WORKFLOW - MUST FOLLOW EVERY TIME
+
+**BLOCKING REQUIREMENT**: You MUST wait for **explicit user approval** at each checkpoint below.
+
+## Stop Signals - When to WAIT
+
+**STOP immediately if you see:**
+- ❌ No explicit approval words from user
+- ❌ User asks questions (they're reviewing, not approving)
+- ❌ User opens files in IDE (they're reviewing)
+- ❌ Silence after you show work (wait for feedback)
+- ❌ User says "wait", "hold on", "not yet"
+
+**ONLY proceed when you see explicit approval:**
+- ✅ "approved" / "looks good" / "proceed" / "commit" / "yes" / "continue" / "go ahead" / "next"
+- ✅ "let's commit" / "ready to commit" / "commit it"
+- ✅ "move on" / "next step" / "next test"
+
+## Workflow Checkpoints (MANDATORY)
+
+### Phase 0: Branch Setup (MANDATORY before any new feature)
+0a. Run `git status` and `git branch --show-current` in the target repo BEFORE planning
+0b. **Default**: new features start from a fresh branch off updated master:
+- `git fetch origin`
+- `git checkout -b <feature-branch> origin/master` (use `origin/main` if the repo's default is `main`)
+  0c. If uncommitted changes exist from prior work:
+- **STOP** and ask user how to handle (stash, move to new branch, discard)
+- Do NOT auto-stash, auto-commit, or auto-discard
+  0d. Skip Phase 0 ONLY if user explicitly says "stay on this branch", "continue current branch", or names a specific existing branch
+
+### Phase 1: Planning
+1. Create a plan for every new non-trivial feature
+2. **STOP** - Wait for user to review plan phase by phase
+3. **STOP** - Wait for explicit approval of the plan
+4. Exit plan mode, copy plan to `.plans/` directory
+
+### Phase 2: Implementation (Per Phase/Step)
+5. Outline the specific phase/step plan
+6. **STOP** - Wait for user approval to start implementation
+7. Implement production code only (no tests yet)
+8. **STOP** - Wait for user review and refactoring feedback
+9. **STOP** - Wait for explicit approval: "commit" or "approved to commit"
+10. Commit the production code
+
+### Phase 3: Testing (Per Phase/Step)
+11. Write the FIRST test case only
+12. Run the test, make it pass
+13. **STOP** - Wait for user approval of first test
+14. Refactor if needed after approval
+15. **STOP** - Wait for approval to move to next test
+16. Write next test case (one at a time)
+17. Run test, make it pass
+18. **STOP** - Wait for approval
+19. Repeat steps 16-18 for each remaining test case
+20. **STOP** - Wait for approval: "commit tests"
+21. Commit all tests
+22. **STOP** - Wait for approval: "push" or "next phase"
+
+### Phase 4: Continue
+23. Push to remote only if user explicitly requests
+24. **STOP** - Wait for approval before moving to next phase/step
+25. Go back to step 5 for next phase/step
+
+## Key Workflow Rules
+
+- **NEVER** commit without explicit "commit" approval
+- **NEVER** write tests before production code is approved and committed
+- **NEVER** write multiple tests at once - one test at a time
+- **NEVER** move to next phase without explicit approval
+- **NEVER** push to remote unless explicitly requested
+- **NEVER** start a new feature on top of an unrelated branch — Phase 0 is mandatory
+- **ALWAYS** start new features from a fresh branch off updated master, unless user explicitly says otherwise
+- **ALWAYS** stop and wait after showing work
+---
+
 ## Code Style Guidelines
 
 ### Mandatory Code Standards
@@ -15,6 +98,8 @@ Before invoking any superpowers skill, ask the user for approval first. Do not a
 5. **ESLint Rules**: Never modify ESLint configuration to suppress warnings or errors — always fix the code itself
 6. Files should not pass 200 lines, if it does trigger a question what to do to refactor it.
 7. Hard coded values should be a dedicated constant file.
+8. **No comments**: Never add comments. Code must explain itself through clear naming and structure. If a comment seems necessary, refactor the code to make it unnecessary instead.
+9. **File naming**: Server/logic files (`src/lib`, `src/db`, `src/hooks`, `src/i18n`, API routes) use kebab-case (`memory-store.ts`, `daily-rate.ts`). React components use PascalCase (`WalletHero.tsx`).
 
 ### TypeScript
 

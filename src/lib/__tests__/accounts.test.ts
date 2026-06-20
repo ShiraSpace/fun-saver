@@ -1,4 +1,4 @@
-import { InMemoryStore } from '../../db/memory-store';
+import { InMemoryStore } from '@/db/memory-store';
 import { createAccount } from '../accounts';
 
 describe('createAccount', () => {
