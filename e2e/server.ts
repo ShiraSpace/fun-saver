@@ -1,9 +1,8 @@
 import { spawn } from 'node:child_process';
-import { rm, mkdir } from 'node:fs/promises';
-
-const PORT = 3987;
-const DATA_DIR = '.e2e-data';
-const DATA_PATH = `${DATA_DIR}/data.json`;
+import { mkdtemp, rm } from 'node:fs/promises';
+import { createServer } from 'node:net';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 export interface RunningServer {
   baseUrl: string;
@@ -12,17 +11,18 @@ export interface RunningServer {
 }
 
 export async function startServer(): Promise<RunningServer> {
-  await rm(DATA_DIR, { recursive: true, force: true });
-  await mkdir(DATA_DIR, { recursive: true });
+  const port = await getFreePort();
+  const dataDir = await mkdtemp(join(tmpdir(), 'funsaver-e2e-'));
+  const dataPath = join(dataDir, 'data.json');
 
   const env: NodeJS.ProcessEnv = {
     ...process.env,
-    PORT: String(PORT),
-    FUNSAVER_DATA_PATH: DATA_PATH,
+    PORT: String(port),
+    FUNSAVER_DATA_PATH: dataPath,
     FUNSAVER_NOW: '2026-01-01',
   };
-  const baseUrl = `http://localhost:${PORT}`;
-  const server = spawn('npx', ['next', 'start', '-p', String(PORT)], {
+  const baseUrl = `http://localhost:${port}`;
+  const server = spawn('npx', ['next', 'start', '-p', String(port)], {
     env,
     stdio: 'inherit',
   });
@@ -31,11 +31,23 @@ export async function startServer(): Promise<RunningServer> {
 
   return {
     baseUrl,
-    dataPath: DATA_PATH,
+    dataPath,
     stop: async (): Promise<void> => {
       server.kill('SIGTERM');
+      await rm(dataDir, { recursive: true, force: true });
     },
   };
+}
+
+function getFreePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const probe = createServer();
+    probe.once('error', reject);
+    probe.listen(0, () => {
+      const { port } = probe.address() as { port: number };
+      probe.close(() => resolve(port));
+    });
+  });
 }
 
 async function waitForServer(url: string): Promise<void> {

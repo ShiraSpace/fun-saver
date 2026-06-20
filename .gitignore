@@ -47,4 +47,3 @@ next-env.d.ts
 
 # fun-saver runtime data store (mutable state)
 /src/db/data.json
-/.e2e-data
