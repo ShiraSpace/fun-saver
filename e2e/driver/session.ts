@@ -56,6 +56,12 @@ export class Session {
     return box;
   }
 
+  async hasVerticalScroll(): Promise<boolean> {
+    return this.page.evaluate(
+      () => document.scrollingElement!.scrollHeight > window.innerHeight
+    );
+  }
+
   async computedStyle(testId: string, property: string): Promise<string> {
     return this.styleOf(`[data-testid="${testId}"]`, property);
   }

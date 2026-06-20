@@ -6,6 +6,7 @@ import { Session } from './session';
 import { MenuDriver } from './menu-driver';
 import { HeaderDriver } from './header-driver';
 import { EmptyStateDriver } from './empty-state-driver';
+import { CreateAccountDriver } from './create-account-driver';
 import { startServer, type RunningServer } from '../server';
 
 export interface AppDriver {
@@ -13,6 +14,7 @@ export interface AppDriver {
   menu: MenuDriver;
   header: HeaderDriver;
   emptyState: EmptyStateDriver;
+  createAccount: CreateAccountDriver;
 }
 
 export function useDriver(state: Partial<StoreData> = {}): AppDriver {
@@ -22,6 +24,7 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
     menu: new MenuDriver(session),
     header: new HeaderDriver(session),
     emptyState: new EmptyStateDriver(session),
+    createAccount: new CreateAccountDriver(session),
   };
   let server: RunningServer;
 

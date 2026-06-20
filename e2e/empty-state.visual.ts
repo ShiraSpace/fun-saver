@@ -9,9 +9,13 @@ function hexToRgb(hex: string): string {
 }
 
 describe('empty state', () => {
-  const { emptyState } = useDriver();
+  const { emptyState, session } = useDriver();
 
   it('renders the create-account CTA in the purple action colour', async () => {
     assert.equal(await emptyState.ctaColor(), hexToRgb(COLORS.primary));
+  });
+
+  it('fits the viewport without vertical scroll', async () => {
+    assert.equal(await session.hasVerticalScroll(), false);
   });
 });

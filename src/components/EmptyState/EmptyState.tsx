@@ -1,6 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
+import Link from 'next/link';
 import styled from '@emotion/styled';
 import { ActionButton } from '@/components/ActionButton';
 import {
@@ -24,18 +25,26 @@ const Emoji = styled.span`
   line-height: 1;
 `;
 
-export function EmptyState(): JSX.Element {
+const CreateAccountLink = ActionButton.withComponent(Link);
+
+interface EmptyStateProps {
+  createAccountHref: string;
+}
+
+export function EmptyState({
+  createAccountHref,
+}: EmptyStateProps): JSX.Element {
   return (
     <Screen data-testid={EMPTY_STATE_TEST_IDS.container}>
       <Emoji data-testid={EMPTY_STATE_TEST_IDS.brand}>
         {EMPTY_STATE_COPY.brandEmoji}
       </Emoji>
-      <ActionButton
-        type="button"
+      <CreateAccountLink
+        href={createAccountHref}
         data-testid={EMPTY_STATE_TEST_IDS.createAccount}
       >
         {EMPTY_STATE_COPY.createAccount}
-      </ActionButton>
+      </CreateAccountLink>
     </Screen>
   );
 }

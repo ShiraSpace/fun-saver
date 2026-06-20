@@ -1,13 +1,12 @@
 import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
 import { useDriver } from './driver/use-driver';
 
-const ACCOUNT_NAME_INPUT = 'account-name-input';
-
 describe('create account', () => {
-  const { emptyState, session } = useDriver();
+  const { emptyState, createAccount } = useDriver();
 
   it('opens the account form from the empty state', async () => {
     await emptyState.clickCreateAccount();
-    await session.box(ACCOUNT_NAME_INPUT);
+    assert.equal(await createAccount.isOpen(), true);
   });
 });

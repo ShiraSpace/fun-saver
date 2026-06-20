@@ -1,18 +1,40 @@
 import { JSX } from 'react';
+import type { Account as AccountModel } from '@/lib/types';
+import { Account } from '@/components/Account';
+import { CreateAccount } from '@/components/CreateAccount';
 import { EmptyState } from '@/components/EmptyState';
-import { Header } from '@/components/Header';
+import {
+  CREATE_ACCOUNT_HREF,
+  CREATE_ACCOUNT_PARAM,
+} from '@/components/CreateAccount/constants';
 import { getStore } from '@/db';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Home(): Promise<JSX.Element> {
-  const [account] = await getStore().listAccounts();
+interface HomeProps {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
 
-  const mainComponent = account ? (
-    <Header name={account.name} avatarId={account.avatarId} />
-  ) : (
-    <EmptyState />
-  );
+function route(
+  account: AccountModel | undefined,
+  isCreating: boolean
+): JSX.Element {
+  if (account) {
+    return <Account name={account.name} avatarId={account.avatarId} />;
+  }
+  if (isCreating) {
+    return <CreateAccount />;
+  }
+  return <EmptyState createAccountHref={CREATE_ACCOUNT_HREF} />;
+}
 
-  return <main>{mainComponent}</main>;
+export default async function Home({
+  searchParams,
+}: HomeProps): Promise<JSX.Element> {
+  const [[account], params] = await Promise.all([
+    getStore().listAccounts(),
+    searchParams,
+  ]);
+
+  return <main>{route(account, Boolean(params[CREATE_ACCOUNT_PARAM]))}</main>;
 }
