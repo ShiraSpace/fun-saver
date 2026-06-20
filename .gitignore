@@ -44,3 +44,7 @@ next-env.d.ts
 # local env
 .env.local
 .superpowers/
+
+# fun-saver runtime data store (mutable state)
+/src/db/data.json
+/.e2e-data
