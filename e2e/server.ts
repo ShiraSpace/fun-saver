@@ -4,14 +4,12 @@ import { rm, mkdir } from 'node:fs/promises';
 const PORT = 3987;
 const DATA_DIR = '.e2e-data';
 
-export interface ServerContext {
+export interface RunningServer {
   baseUrl: string;
-  env: NodeJS.ProcessEnv;
+  stop: () => Promise<void>;
 }
 
-export async function withServer<T>(
-  callback: (context: ServerContext) => Promise<T>
-): Promise<T> {
+export async function startServer(): Promise<RunningServer> {
   await rm(DATA_DIR, { recursive: true, force: true });
   await mkdir(DATA_DIR, { recursive: true });
 
@@ -22,13 +20,19 @@ export async function withServer<T>(
     FUNSAVER_NOW: '2026-01-01',
   };
   const baseUrl = `http://localhost:${PORT}`;
-  const server = spawn('npx', ['next', 'start', '-p', String(PORT)], { env, stdio: 'inherit' });
-  try {
-    await waitForServer(baseUrl);
-    return await callback({ baseUrl, env });
-  } finally {
-    server.kill('SIGTERM');
-  }
+  const server = spawn('npx', ['next', 'start', '-p', String(PORT)], {
+    env,
+    stdio: 'inherit',
+  });
+
+  await waitForServer(baseUrl);
+
+  return {
+    baseUrl,
+    stop: async (): Promise<void> => {
+      server.kill('SIGTERM');
+    },
+  };
 }
 
 async function waitForServer(url: string): Promise<void> {

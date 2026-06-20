@@ -1,34 +1,26 @@
+import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { Driver } from './driver/driver';
-import { withServer } from './server';
+import { useDriver } from './driver/use-driver';
 
 const NO_TRANSFORM = 'none';
 const VISIBLE = '1';
 const HIDDEN = '0';
 
-async function main(): Promise<void> {
-  await withServer(async ({ baseUrl }) => {
-    const driver = await Driver.launch(baseUrl);
-    try {
-      const closedTransform = await driver.menuIconTransform();
-      assert.equal(closedTransform, NO_TRANSFORM, 'icon is not rotated when closed');
-      assert.equal(await driver.menuMiddleBarOpacity(), VISIBLE, 'middle bar is visible when closed');
+describe('menu morph', () => {
+  const driver = useDriver();
 
-      await driver.openMenu();
-
-      const openTransform = await driver.menuIconTransform();
-      assert.notEqual(openTransform, closedTransform, 'icon transform changes on open');
-      assert.notEqual(openTransform, NO_TRANSFORM, 'icon spins when open');
-      assert.equal(await driver.menuMiddleBarOpacity(), HIDDEN, 'middle bar fades to form the cross');
-
-      console.log('VISUAL PASS: hamburger spins and morphs to a cross on open');
-    } finally {
-      await driver.leave();
-    }
+  it('shows a hamburger when closed', async () => {
+    assert.equal(await driver.menuIconTransform(), NO_TRANSFORM);
+    assert.equal(await driver.menuMiddleBarOpacity(), VISIBLE);
   });
-}
 
-main().catch((error) => {
-  console.error('VISUAL FAIL:', error instanceof Error ? error.message : String(error));
-  process.exit(1);
+  it('spins and morphs to a cross when opened', async () => {
+    const closedTransform = await driver.menuIconTransform();
+    await driver.openMenu();
+    const openTransform = await driver.menuIconTransform();
+
+    assert.notEqual(openTransform, closedTransform);
+    assert.notEqual(openTransform, NO_TRANSFORM);
+    assert.equal(await driver.menuMiddleBarOpacity(), HIDDEN);
+  });
 });
