@@ -13,9 +13,9 @@ describe('EmptyState', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows the brand emoji', () => {
-    expect(screen.getByTestId(EMPTY_STATE_TEST_IDS.brand)).toHaveTextContent(
-      EMPTY_STATE_COPY.brandEmoji
+  it('shows the pig', () => {
+    expect(screen.getByTestId(EMPTY_STATE_TEST_IDS.pig)).toHaveTextContent(
+      EMPTY_STATE_COPY.pig
     );
   });
 

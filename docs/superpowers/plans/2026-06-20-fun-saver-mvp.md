@@ -27,27 +27,28 @@
 
 ---
 
-## Decisions (updated 2026-06-20)
+## Decisions (updated 2026-06-21)
 
 Where these differ from the task list below, these win.
 
-- **TDD outside-in:** acceptance E2E `e2e/create-account.e2e.ts` stays red on purpose; don't skip/green it. Commit only on explicit approval.
-- **Code conventions:** no comments; server/logic/test files kebab-case, components + their tests PascalCase; `@/` alias.
-- **E2E:** TypeScript via `tsx` + `node:test`. Per-component drivers (composition): `session.ts` (lifecycle + `click`/`box`/`computedStyle`/`styleOf`/`waitForStyle`/`exists`) + `menu`/`header`/`empty-state` drivers; `use-driver.ts` returns `{ session, menu, header, emptyState }` (one server+browser per file). Keep drivers lean — add methods only when a test needs them. `session` = browser mechanism; drivers = app DSL on top (test-ids stay in each component's `constants.ts`). Drivers expose `exists()` (presence/absence) delegating to `session.exists(testId)`.
+- **TDD outside-in:** acceptance E2E `e2e/create-account.e2e.ts` now asserts the first step — clicking the empty-state CTA opens the create-account view (`account-name-input`) — and is GREEN. The remaining journey (fill the form → dashboard) is the next acceptance step. Commit only on explicit approval.
+- **Code conventions:** no comments; server/logic/test files kebab-case, components + their tests PascalCase; `@/` alias. **Domain language everywhere** — names say what/why, not how (e.g. driver `waitForPigToOink()` / `waitForCtaToLift()` hide the CSS; the pig is `pig`, not `brand`).
+- **E2E:** TypeScript via `tsx` + `node:test`. Per-component drivers (composition): `session.ts` (lifecycle + `click`/`hover`/`box`/`computedStyle`/`styleOf`/`waitForStyle`/`exists`/`hasVerticalScroll`) + `menu`/`header`/`empty-state`/`create-account` drivers; `use-driver.ts` returns `{ session, menu, header, emptyState, createAccount }` (one server+browser per file). Keep drivers lean — add methods only when a test needs them. `session` = browser mechanism; drivers = app DSL on top, hiding CSS specifics (test-ids stay in each component's `constants.ts`). Shared CSS test helpers in `e2e/support/css-color.ts` (`hexToRgb`, `gradientToRgb`). Drivers expose `exists()` delegating to `session.exists(testId)`.
 - **Seeding:** `useDriver(state: Partial<StoreData>)` seeds via the real store API — `rm` the data file, then `new JsonFileStore(server.dataPath).insertAccount(...)` per account (cross-process: the test process and the `next start` app share only the data file, so an in-memory store can't be used to seed). `server.dataPath` exposes the path. `StoreData` lives on the **port** (`src/db/data-store.ts`), not the adapter.
 - **Tests:** visual = computed-style/bbox in a real browser; jsdom for behaviour only. Test-ids from each component's `constants.ts`. Shared mock data in `src/test-support/fixtures.ts` (`ACCOUNT`, `CREATE_ACCOUNT_INPUT`) — reuse across unit + E2E. `test:visual` runs all `e2e/*.visual.ts`; both `test:*` build first.
-- **App:** RTL/Hebrew; Emotion RTL cache registry in `src/app/providers.tsx`. Theme seeds: `src/theme/typography.ts` (`TYPE_SCALE`, header name = `h2`) + `src/theme/palette.ts` (`COLORS.primary #6B2C8E`). Shared `ActionButton` is the only main-action style — reuse for all primary actions.
+- **App:** RTL/Hebrew; Emotion RTL cache registry in `src/app/providers.tsx`. Theme seeds: `src/theme/typography.ts` (`TYPE_SCALE`, header name = `h2`) + `src/theme/palette.ts` (`COLORS.primary #6B2C8E`). Shared `ActionButton` is the only main-action style — reuse for all primary actions; it carries the hover-lift + active-press (mobile-tap) animation (offsets/timing in `ActionButton/constants.ts`).
+- **Screen surface:** shared `Screen` (`src/components/Screen`) gives full-height centering + the sunset background gradient (`GRADIENTS.screen` in `src/theme/gradients.ts`, stops in palette); used by `EmptyState` and `CreateAccount`. **RTL caveat:** `stylis-plugin-rtl` mirrors `0%`/`100%` color-stop positions and flattens gradients — author gradients **without** explicit stop percentages.
 - **Avatars:** `public/avatars/kid-01..20.svg` via `next/image` `unoptimized`.
 - **Domain:** `AccountsStore` holds a `DataStore`. DAL: `DataStore` port (`insertAccount`, `listAccounts`) + `StoreData`; adapters `InMemoryStore` (unit tests) and `JsonFileStore` (file-backed, bootstrap-on-read, `FUNSAVER_DATA_PATH`); `getStore()` factory memoized per path. Page reads `getStore().listAccounts()` directly for now — **note:** service-layer `listActiveAccounts` (active-only filter, per spec) still owed.
-- **Flow:** first-account entry is the empty-state CTA (`צור חשבון`), not the menu.
+- **Flow:** `page.tsx` is the Router — account → `Account` (wraps `Header`); `?create` search param → `CreateAccount`; else `EmptyState`. First-account entry is the empty-state CTA (`צור חשבון`), a styled `Link` to `/?create=1` (the server page decides the view). Clicking the CTA plays the pig oink animation and defers navigation until the pig's `animationend` (`useOinkThenNavigate` — no timer). Component tests that render `useRouter` consumers rely on the centralized `__mocks__/next/navigation.ts`.
 - **Mobile dev:** `npm run dev:mobile` + `allowedDevOrigins`.
 
-## Progress (updated 2026-06-20)
+## Progress (updated 2026-06-21)
 
-- **Done:** UI shell (Menu, Header, EmptyState, ActionButton) + theme; DAL (`DataStore`/`InMemoryStore`/`JsonFileStore`/`getStore`); conditional page (EmptyState ↔ Header) account-driven via `useDriver` seeding. Jest 17/17 green · visual E2E 10/10 green (incl. `page-routing`).
-- **Test status:** acceptance E2E `e2e/create-account.e2e.ts` RED (account form not built — intentional).
-- **Next:**
-  1. Build the account form (name + `AvatarPicker`) on the empty-state CTA → continue the acceptance journey (→ dashboard with 3 zero wallets).
+- **Done:** UI shell (Menu, Header, EmptyState, ActionButton) + theme; DAL (`DataStore`/`InMemoryStore`/`JsonFileStore`/`getStore`); `page.tsx` Router (Account ↔ CreateAccount ↔ EmptyState) account- and `?create`-driven via `useDriver` seeding. This session: `Account` (wraps Header) + `CreateAccount` (placeholder `account-name-input`) + shared `Screen` surface with the sunset gradient; `ActionButton` hover-lift/active-press animation; pig oink on CTA click with navigation deferred to `animationend` (`useOinkThenNavigate`). Jest 23/23 green · visual E2E 15/15 green · acceptance E2E 1/1 green.
+- **Test status:** acceptance E2E `e2e/create-account.e2e.ts` GREEN for step 1 (CTA opens the create-account view). The create-account form itself is still a bare name input — not yet wired to the service.
+- **Next (new session):**
+  1. **Build the actual account creation form** inside `CreateAccount`: name input wiring + `AvatarPicker` + submit → `createAccount` service → dashboard with 3 zero wallets. Extend the acceptance E2E to the full journey.
   2. Service layer in `src/lib`: `listActiveAccounts` (active-only filter) so the page stops reading the raw store; generalize `useDriver` seeding as `StoreData` grows (wallets, transactions).
 
 ---

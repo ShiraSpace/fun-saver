@@ -1,4 +1,8 @@
-import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
+import { ACTION_BUTTON } from '@/components/ActionButton/constants';
+import {
+  EMPTY_STATE_ANIMATION,
+  EMPTY_STATE_TEST_IDS,
+} from '@/components/EmptyState/constants';
 import { Session } from './session';
 
 export class EmptyStateDriver {
@@ -30,11 +34,19 @@ export class EmptyStateDriver {
     return this.session.hover(EMPTY_STATE_TEST_IDS.createAccount);
   }
 
-  waitForCtaTransform(value: string): Promise<void> {
+  waitForCtaToLift(): Promise<void> {
     return this.session.waitForStyle(
       `[data-testid="${EMPTY_STATE_TEST_IDS.createAccount}"]`,
       'transform',
-      value
+      `matrix(1, 0, 0, 1, 0, -${ACTION_BUTTON.hoverLift})`
+    );
+  }
+
+  waitForPigToOink(): Promise<void> {
+    return this.session.waitForStyle(
+      `[data-testid="${EMPTY_STATE_TEST_IDS.pig}"]`,
+      'animation-duration',
+      `${EMPTY_STATE_ANIMATION.oinkMs / 1000}s`
     );
   }
 }

@@ -1,14 +1,18 @@
 export const EMPTY_STATE_TEST_IDS = {
   container: 'empty-state',
-  brand: 'empty-state-brand',
+  pig: 'empty-state-pig',
   createAccount: 'create-account-cta',
 } as const;
 
 export const EMPTY_STATE_COPY = {
-  brandEmoji: '🐷',
+  pig: '🐷',
   createAccount: 'צור חשבון',
 } as const;
 
 export const EMPTY_STATE_LAYOUT = {
   emojiSize: 72,
+} as const;
+
+export const EMPTY_STATE_ANIMATION = {
+  oinkMs: 600,
 } as const;
