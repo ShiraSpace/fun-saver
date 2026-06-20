@@ -8,9 +8,34 @@
 - **Stack:** Next.js 16 (App Router) · React 19 · MUI + Emotion (dynamic multi-theme) · React Query · JSON store behind a swappable DAL
 - **Companion docs:** [`visual-palettes.md`](./visual-palettes.md) (palette C "Sunshine Quest"), [`mockup-home-screen.html`](./mockup-home-screen.html)
 
-## Terminology
+## Domain Language & Conventions
 
-The user-facing and code term for a person is **Account** . A wallet is a **Wallet**. A money movement is a **Transaction**.
+All code — variables, interfaces, methods, functions, files — uses the **domain language** below
+(the ubiquitous language). The same word means the same thing in the UI, the API, the services,
+and the store. Avoid generic technical placeholders (`data`, `item`, `manager`, `handler`,
+`process`, `util`) when a domain term exists.
+
+| Term            | Meaning                                                                 |
+| --------------- | ---------------------------------------------------------------------- |
+| **Account**     | A person who holds wallets (the user-facing & code term — never "kid"/"child") |
+| **Wallet**      | A named purse under an account (never "pot")                            |
+| **Transaction** | A single money movement: `deposit`, `withdrawal`, or `interest`         |
+| **deposit**     | Money added by a person                                                 |
+| **withdrawal**  | Money taken out by a person                                             |
+| **interest**    | Money the app adds daily to a savings wallet                            |
+| **balance**     | Current total in a wallet (deposits − withdrawals + interest)          |
+| **principal**   | Deposits − withdrawals (the part that isn't interest)                  |
+| **interestGain**| Total interest earned                                                   |
+| **todayInterest** | Interest credited today (drives the coin row)                        |
+| **agora / agorot** | Integer money unit; 1 ₪ = 100 agorot (the only unit code stores)    |
+| **monthlyInterestRate** | A wallet's monthly interest rate (0.15 = 15%/month)            |
+| **settle / addDailyInterest** | Bring a wallet's interest up to date through a given day      |
+
+**Names and comments express the _what_ and _why_, not the _how_.** The how is visible in the
+code itself. So: name things for intent (`addDailyInterest`, not `processLoop`); write comments
+only to capture business rules, the reason behind a non-obvious choice, or a constraint that the
+code can't show (e.g. *why* interest rounds to the nearest agora, *why* withdrawals can't
+overdraw) — never to restate what the next line plainly does.
 
 ---
 
