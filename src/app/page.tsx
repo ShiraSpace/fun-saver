@@ -1,15 +1,10 @@
 import { JSX } from 'react';
-import { Header } from '@/components/Header';
-
-const PLACEHOLDER_ACCOUNT = { name: 'יעל', avatarId: 'kid-01' };
+import { EmptyState } from '@/components/EmptyState';
 
 export default function Home(): JSX.Element {
   return (
-    <main className="min-h-screen">
-      <Header
-        name={PLACEHOLDER_ACCOUNT.name}
-        avatarId={PLACEHOLDER_ACCOUNT.avatarId}
-      />
+    <main>
+      <EmptyState />
     </main>
   );
 }

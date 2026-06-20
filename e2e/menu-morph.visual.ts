@@ -7,20 +7,19 @@ const VISIBLE = '1';
 const HIDDEN = '0';
 
 describe('menu morph', () => {
-  const driver = useDriver();
+  const { menu } = useDriver();
 
   it('shows a hamburger when closed', async () => {
-    assert.equal(await driver.menuIconTransform(), NO_TRANSFORM);
-    assert.equal(await driver.menuMiddleBarOpacity(), VISIBLE);
+    assert.equal(await menu.iconTransform(), NO_TRANSFORM);
+    assert.equal(await menu.middleBarOpacity(), VISIBLE);
   });
 
   it('spins and morphs to a cross when opened', async () => {
-    const closedTransform = await driver.menuIconTransform();
-    await driver.openMenu();
-    const openTransform = await driver.menuIconTransform();
-
+    const closedTransform = await menu.iconTransform();
+    await menu.open();
+    const openTransform = await menu.iconTransform();
     assert.notEqual(openTransform, closedTransform);
     assert.notEqual(openTransform, NO_TRANSFORM);
-    assert.equal(await driver.menuMiddleBarOpacity(), HIDDEN);
+    assert.equal(await menu.middleBarOpacity(), HIDDEN);
   });
 });

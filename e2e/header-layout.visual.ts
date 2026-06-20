@@ -1,51 +1,57 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { type BoundingBox } from 'puppeteer';
+import { TYPE_SCALE } from '@/theme/typography';
 import { useDriver } from './driver/use-driver';
-import { BoundingBox } from 'puppeteer';
 
 const EDGE_TOLERANCE = 24;
 const CENTER_TOLERANCE = 24;
-const HEADING_FONT_SIZE = '22px';
+const HEADING_FONT_SIZE = `${TYPE_SCALE.h2}px`;
 
-describe('header layout', () => {
-  const driver = useDriver();
+describe('header', () => {
+  const { header, menu } = useDriver();
 
-  let header: BoundingBox, menu: BoundingBox, name: BoundingBox;
+  describe('layout', () => {
+    let bar: BoundingBox;
+    let menuButton: BoundingBox;
+    let name: BoundingBox;
+    let avatar: BoundingBox;
 
-  beforeEach(async () => {
-    header = await driver.headerBox();
-    menu = await driver.menuBox();
-    name = await driver.headerNameBox();
+    beforeEach(async () => {
+      bar = await header.box();
+      menuButton = await menu.buttonBox();
+      name = await header.nameBox();
+      avatar = await header.avatarBox();
+    });
+
+    it('places the menu at the start edge (right in RTL)', () => {
+      assert.ok(
+        Math.abs(bar.x + bar.width - (menuButton.x + menuButton.width)) <=
+          EDGE_TOLERANCE
+      );
+    });
+
+    it('places the avatar at the end edge (left in RTL)', () => {
+      assert.ok(Math.abs(avatar.x - bar.x) <= EDGE_TOLERANCE);
+    });
+
+    it('centers the account name', () => {
+      const barCenter = bar.x + bar.width / 2;
+      const nameCenter = name.x + name.width / 2;
+      assert.ok(Math.abs(nameCenter - barCenter) <= CENTER_TOLERANCE);
+    });
+
+    it('keeps the menu, name and avatar on the top row', () => {
+      assert.ok(
+        menuButton.y < name.y + name.height &&
+          menuButton.y + menuButton.height > name.y
+      );
+    });
   });
 
-  it('places the menu at the start edge (right in RTL)', async () => {
-    const headerRight = header.x + header.width;
-    const menuRight = menu.x + menu.width;
-
-    assert.ok(Math.abs(headerRight - menuRight) <= EDGE_TOLERANCE);
-  });
-
-  it('places the avatar at the end edge (left in RTL)', async () => {
-    const avatar = await driver.headerAvatarBox();
-    assert.ok(Math.abs(avatar.x - header.x) <= EDGE_TOLERANCE);
-  });
-
-  it('centers the account name', async () => {
-    const headerCenter = header.x + header.width / 2;
-    const nameCenter = name.x + name.width / 2;
-
-    assert.ok(Math.abs(nameCenter - headerCenter) <= CENTER_TOLERANCE);
-  });
-
-  it('keeps the menu, name and avatar on the top row', async () => {
-    assert.ok(menu.y < name.y + name.height && menu.y + menu.height > name.y);
-  });
-});
-
-describe('header typography', () => {
-  const driver = useDriver();
-
-  it('renders the account name at the heading size from the type scale', async () => {
-    assert.equal(await driver.headerNameFontSize(), HEADING_FONT_SIZE);
+  describe('typography', () => {
+    it('renders the account name at the heading size from the type scale', async () => {
+      assert.equal(await header.nameFontSize(), HEADING_FONT_SIZE);
+    });
   });
 });

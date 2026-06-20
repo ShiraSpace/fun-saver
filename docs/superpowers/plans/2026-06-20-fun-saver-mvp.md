@@ -27,6 +27,47 @@
 
 ---
 
+## Progress & Decisions (living log — updated 2026-06-20)
+
+This section records how the build has actually evolved versus the original task list below. When they conflict, this section wins.
+
+### Workflow & conventions (added during build)
+- **Outside-in TDD.** One failing acceptance E2E (`e2e/create-account.e2e.ts`) stays **red on purpose** and drives the design; units are red→green→refactor. Do **not** skip or green the anchor artificially.
+- **Approval gates.** Wait for explicit approval before committing; never commit without it. Per-feature branch is the default (we have been on `main` by explicit choice).
+- **No comments in code** — names/structure must explain it.
+- **File naming:** server/logic/test files kebab-case (`memory-store.ts`, `create-account.e2e.ts`); React components + their co-located tests PascalCase (`Header.tsx`/`Header.test.tsx`).
+- **`@/` path alias** used in app and e2e imports.
+
+### E2E architecture (changed from the original plan)
+- Migrated the harness from raw Puppeteer `.mjs` scripts to **TypeScript run via `tsx` + the Node built-in `node:test` runner**.
+- **Per-component drivers via composition**, NOT one monolithic driver: lean `e2e/driver/session.ts` (`Session` = browser/page lifecycle + generic primitives `click`/`box`/`computedStyle`/`styleOf`/`waitForStyle`) + `menu-driver.ts`, `header-driver.ts`, `empty-state-driver.ts`. `e2e/driver/use-driver.ts` exposes a bundle `{ session, menu, header, emptyState }` sharing one session (server+browser booted once in `before`, fresh page per test in `beforeEach`).
+- Keep the session/drivers **lean** — only add methods a live test needs.
+- **Visual tests = computed-style / bounding-box assertions in a real browser** (Puppeteer), e.g. `e2e/menu-morph.visual.ts`, `e2e/header-layout.visual.ts`, `e2e/empty-state.visual.ts`. jsdom unit tests cover behaviour/state only.
+- **Test-ids come from each component's `constants.ts`** (single source of truth); drivers import them.
+- Scripts: `test:visual` builds once then runs all `e2e/*.visual.ts` serially (`--test-concurrency=1`, shared port); `test:e2e` builds then runs the acceptance spec.
+
+### Infrastructure decisions
+- **Mobile dev:** `npm run dev:mobile` (`next dev -H 0.0.0.0`) + `allowedDevOrigins` in `next.config.ts` so the phone can load over the LAN.
+- **Emotion App-Router cache registry** (`src/app/providers.tsx`) with `stylis-plugin-rtl` — required to fix a production hydration mismatch (React #418) once styling crossed a server→client boundary. App is **RTL/Hebrew** (`<html lang="he" dir="rtl">`).
+- **Theme seeds:** `src/theme/typography.ts` (`TYPE_SCALE`, header name = `h2`/22px) and `src/theme/palette.ts` (`COLORS.primary = #6B2C8E` purple). A shared **`ActionButton`** (`src/components/ActionButton/`) is the one main-action style (purple pill) — the empty-state CTA uses it and future action buttons must too.
+- **Avatars:** 20 bundled SVGs in `public/avatars/kid-01..20.svg`, rendered via `next/image` with `unoptimized` (no jest mock needed).
+- **Domain:** account creation lives in an `AccountsStore` class that **holds** a `DataStore` (`new AccountsStore(store).createAccount(...)`), not free functions taking a store each call.
+
+### Flow decision
+- **First-account entry = the empty-state CTA** (`צור חשבון`), not the menu. The menu's create-account is for *additional* accounts later. The acceptance E2E starts at the empty state → clicks the CTA → expects the account form.
+
+### Built so far (all Jest green: 13 tests)
+- `Menu` (spin-cross hamburger morph, `data-open`), `Header` (menu + name + avatar, RTL three-zone, name at type scale), `EmptyState` (🐷 + purple `ActionButton` CTA), `ActionButton`, `AccountsStore` + `InMemoryStore` + `DataStore` port.
+- **Current test status:** Jest 13/13 green · `empty-state.visual` green · **`menu`/`header` visual RED** (the home page currently renders `EmptyState` unconditionally, so those components aren't on the page) · **acceptance E2E RED** (account form not built — intentional anchor).
+
+### NEXT (queued for the new session)
+1. **Data layer:** `DataStore.listAccounts()` (+ `InMemoryStore`), file-backed **`JsonFileStore`** at `FUNSAVER_DATA_PATH` (read on each call so a seed is picked up), `getStore()` factory.
+2. **Make the page account-driven:** async server component → `EmptyState` when no accounts, else the dashboard (`Header` with the active account).
+3. **Driver state-mocking (file-seed):** a `given.accountExists({...})` helper that writes to the same store file the server reads. Then seed an account in the `menu`/`header` visual `beforeEach` to **re-green** them; `empty-state.visual` seeds nothing.
+4. Then continue the acceptance journey: build the account form (menu→/empty-state→form→dashboard with 3 zero wallets), growing the driver per-component as each step lands.
+
+---
+
 ## File Structure
 
 ```
