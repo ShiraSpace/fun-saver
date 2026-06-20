@@ -241,16 +241,17 @@ Themes are a **registry**, not a single hardcoded palette, so adding or switchin
 
 ### Avatars (`src/avatars/` + `public/avatars/`)
 
-- Account avatars come from a **free / open-license kids-avatar SVG pack** — a **mix of kid faces
-  and profession characters** (police, astronaut, chef, firefighter…) — **bundled offline** under
-  `public/avatars/`. No runtime network, no generative library. Stored per account as `avatarId`
-  (the asset's filename/id).
+- **Finalized:** **20 painted kid-avatar SVGs** (boys + girls, SVGRepo free-for-commercial pack)
+  are **bundled offline** at `public/avatars/kid-01.svg … kid-20.svg`. No runtime network, no
+  generative library. Stored per account as `avatarId` = the filename stem (e.g. `kid-07`).
 - `AvatarPicker` (used by `AccountForm`) renders the bundled set as a **single grid** (no category
-  labels) the child picks from. Layout: [`mockup-avatar-picker.html`](./mockup-avatar-picker.html)
-  (app-gradient page, purple "create" CTA — consistent with the home screen).
-- **License:** prefer CC0/MIT (no attribution); a free-with-attribution pack (e.g. Flaticon /
-  IconScout "Kids Avatars" + professions) is acceptable with credit on an "About" line. The exact
-  pack is finalized when the picker is built.
+  labels) on colored circles; the child taps one. Layout:
+  [`mockup-avatar-picker.html`](./mockup-avatar-picker.html) (app-gradient page, purple "create"
+  CTA — consistent with the home screen).
+- **Extensible:** more avatars (e.g. profession characters) are added later by dropping SVGs into
+  `public/avatars/` — no code change beyond the asset list.
+- **License:** SVGRepo assets are free for commercial use; credit on an "About" line if a chosen
+  asset requires attribution.
 
 ### Routing & component tree
 
