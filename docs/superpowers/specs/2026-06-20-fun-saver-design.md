@@ -50,7 +50,7 @@ ledger**, never stored.
 | --------------- | --------- | ---------------------------------------------- |
 | `id`            | string    |                                                |
 | `name`          | string    |                                                |
-| `avatarInitial` | string    | Defaults to first letter of `name`             |
+| `avatarId`      | string    | Id of a bundled kids-avatar SVG asset (see §3 Avatars) |
 | `isActive`      | boolean   | `false` = soft-deleted (no hard delete)        |
 
 ### Wallet
@@ -165,9 +165,9 @@ runs interest settlement first, so balances are always current.
 
 | Method & route                     | Purpose                                                                 |
 | ---------------------------------- | ----------------------------------------------------------------------- |
-| `GET /api/accounts`                | List accounts (dock avatars)                                            |
-| `POST /api/accounts`               | Create account `{ name, avatarInitial? }`; auto-seeds 3 wallets         |
-| `PATCH /api/accounts/:id`          | Edit `{ name?, avatarInitial?, isActive? }`; `isActive:false` = delete  |
+| `GET /api/accounts`                | List accounts (menu avatars)                                            |
+| `POST /api/accounts`               | Create account `{ name, avatarId }`; auto-seeds 3 wallets               |
+| `PATCH /api/accounts/:id`          | Edit `{ name?, avatarId?, isActive? }`; `isActive:false` = delete       |
 | `GET /api/accounts/:id/wallets`    | Wallets + derived `balance` / `principal` / `interestGain` / `todayInterest` |
 | `GET /api/wallets/:id`             | One wallet + its transaction ledger                                     |
 | `POST /api/wallets/:id/transactions` | Add `deposit` / `withdrawal`                                           |
@@ -239,6 +239,17 @@ Themes are a **registry**, not a single hardcoded palette, so adding or switchin
   account defaults to the first, or **none → empty state**.
 - Every hook exposes `isLoading` / `isError` → skeletons + error banners.
 
+### Avatars (`src/avatars/` + `public/avatars/`)
+
+- Account avatars come from a **free / open-license kids-avatar SVG pack** — a **mix of kid faces
+  and profession characters** (police, astronaut, chef, firefighter…) — **bundled offline** under
+  `public/avatars/`. No runtime network, no generative library. Stored per account as `avatarId`
+  (the asset's filename/id).
+- `AvatarPicker` (used by `AccountForm`) renders the bundled set as a grid the child picks from.
+- **License:** prefer CC0/MIT (no attribution); a free-with-attribution pack (e.g. Flaticon /
+  IconScout "Kids Avatars" + professions) is acceptable with credit on an "About" line. The exact
+  pack is finalized when the picker is built.
+
 ### Routing & component tree
 
 Each component lives in its own folder (`Impl.tsx` + `Impl.test.tsx` + `constants.ts` +
@@ -247,7 +258,9 @@ Each component lives in its own folder (`Impl.tsx` + `Impl.test.tsx` + `constant
 **MVP scope** — one route:
 
 - `/` → `page.tsx` (dashboard). When zero accounts → **empty state: "Create your first
-  account"** with `AccountForm` (create). Otherwise composes:
+  account"** with `AccountForm` (name + `AvatarPicker`). Otherwise composes:
+  - `Ribbon` — top bar: ☰ menu button (top-start) · account **name** (centered, name only) ·
+    account **avatar** (top-end)
   - `WalletHero` — savings hero (balance, `CoinRow` today-interest, deposits/gain breakdown)
   - `WalletList` → `WalletCard`
   - `NewActionButton` → `TransactionDrawer` (deposit/withdrawal form)
@@ -316,9 +329,9 @@ needed to make it pass.
 
 ### First acceptance test (E2E, written first, fails first)
 
-Load the app → create an account → assert the rendered **name**, **avatar initial**, and the
-**numbers all read 0** initially (new account's wallets are empty). This drives the empty state,
-the account-creation flow, and the first dashboard render.
+Load the app → create an account (name + pick an avatar) → assert the rendered **name**, the
+**chosen avatar**, and the **numbers all read 0** initially (new account's wallets are empty).
+This drives the empty state, the account-creation flow, and the first dashboard render.
 
 ### First unit test
 
@@ -372,11 +385,17 @@ equivalents (schema, transactions, migrations) without affecting services or API
 Mentioned here so the MVP design leaves room for them; each gets its own brainstorm → spec → plan
 when we reach it.
 
-- **Always-visible Menu.** A persistent menu (likely the gear/dock area from the mockup) available
-  on every screen, holding: **switch account**, **create/edit account**, **change theme**,
-  **change language**. The underlying capabilities already exist in MVP infra (i18n, dynamic
-  theme registry, account API incl. `PATCH`); this phase adds the UI controls. **Needs a UI
-  mockup for the menu** before building.
+- **Full-screen Menu** *(design done — see [`mockup-menu.html`](./mockup-menu.html))*. Opened from
+  a **hamburger button in the top-start corner** (placement A) that **spins 180° as it morphs into
+  ✕** (animation B); the menu **fades + scales up** from that corner. Layout is **inline sections**
+  (C), all visible at once:
+  - **Accounts** — avatar chips to **switch** + a ＋ to **create** a new account.
+  - **Edit account** — affordance still open (options: edit-badge on avatar · tap-avatar→sheet ·
+    "manage accounts" row); decide when building.
+  - **Theme** — theme swatches (inline `ThemePicker`), instant switch.
+  - **Language** — עברית / EN segmented toggle (inline `LanguageToggle`).
+  The underlying capabilities already exist in MVP infra (i18n, dynamic theme registry, account API
+  incl. `PATCH`); this phase wires up the UI controls.
 - **Per-wallet ledger.** A screen showing one wallet's full transaction history (deposits,
   withdrawals, daily interest). The data is already available via `GET /api/wallets/:id`; this
   phase needs the **UX for navigating there** (e.g. tapping a wallet card) and the ledger layout.
