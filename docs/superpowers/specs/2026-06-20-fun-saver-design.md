@@ -189,31 +189,36 @@ Each component lives in its own folder (`Impl.tsx` + `Impl.test.tsx` + `constant
 
 ---
 
-## 5. Testing Strategy
+## 5. Testing Approach (TDD-driven)
 
-TDD throughout (failing test → implement → green). **Keystone:** all interest logic is pure and
-takes an explicit `asOf` — the store passes the real clock, tests pass fixed dates.
+There is **no upfront test catalog** — TDD produces the tests as we build. Each unit follows
+**red → green → refactor**: write a failing test, write the minimum code to pass, refactor, repeat.
+We work **outside-in**: start from one failing end-to-end acceptance test, then drive the units
+needed to make it pass.
 
-1. **Lib unit tests** (`src/lib/__tests__/`) — highest density:
-   - `addDailyInterest`: single deposit over N days; mid-month deposit earns fewer days;
-     withdrawal lowers later interest; zero/negative balance earns nothing; idempotency;
-     multi-day catch-up after a gap; agorot rounding.
-   - Derivations: `balance`, `principal`, `interestGain`, `todayInterest`.
-   - Money helpers: shekel↔agorot conversion; half-shekel rounding; coin breakdown.
-2. **Store tests** — `addTransaction` settles interest first; overdraft rejected;
-   `createAccount` auto-seeds 3 wallets.
-3. **API route tests** — input validation, status codes (`400`/`404`/`201`), `{ error }` shape.
-4. **Component tests** — own file per component; `data-testid` + content from `constants.ts`;
-   `render()` in `beforeEach`; `getByTestId`. Cover `Money`, `CoinRow`, `WalletCard`,
-   `TransactionDrawer` (submit + overdraft error surfaced), loading/error states, empty state.
-   React Query hooks mocked; shared mocks centralized in `__mocks__/`.
-5. **i18n test** — every key present in both `he.json` and `en.json`.
-6. **E2E (Puppeteer)** — `test:e2e` script boots `next start` on a test port, runs, tears down.
-   - **Isolated store:** path via `FUNSAVER_DATA_PATH`, seeded fresh per suite.
-   - **Deterministic clock:** store reads an optional `FUNSAVER_NOW` override.
-   - **Flows:** (1) deposit updates balance; (2) withdrawal succeeds / overdraft blocked;
-     (3) switch account; (4) create account → 3 seeded wallets; (5) language toggle flips copy
-     and `dir`.
+### First acceptance test (E2E, written first, fails first)
+
+Load the app → create an account → assert the rendered **name**, **avatar initial**, and the
+**numbers all read 0** initially (new account's wallets are empty). This drives the empty state,
+the account-creation flow, and the first dashboard render.
+
+### First unit test
+
+The smallest possible step: the app renders a root `div`. Then continue TDD outward —
+each new behavior (interest math, derivations, money formatting, overdraft, transactions, account
+edit, language toggle) is introduced by its own failing test first.
+
+### Infrastructure decisions (the parts that are design, not test content)
+
+- **Unit / component:** Jest + Testing Library. Each component has its own test file;
+  `data-testid` + content from `constants.ts`; `render()` in `beforeEach`; `getByTestId`. React
+  Query hooks mocked; shared mocks centralized in `__mocks__/`.
+- **E2E:** Puppeteer via a `test:e2e` script that boots `next start` on a test port, runs, tears
+  down. **Isolated store** via `FUNSAVER_DATA_PATH`; **deterministic clock** via an optional
+  `FUNSAVER_NOW` override the store reads.
+- **Deterministic time keystone:** all interest logic is pure and takes an explicit `asOf` — the
+  store passes the real clock, tests pass fixed dates. This is what makes interest behavior
+  testable without flakiness.
 
 ---
 
