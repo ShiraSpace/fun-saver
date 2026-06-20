@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:mobile": "next dev -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --fix",
     "format": "prettier --write .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:e2e": "node e2e/run-e2e.mjs"
+    "test:e2e": "tsx e2e/run-e2e.ts",
+    "test:visual": "tsx e2e/menu-morph.visual.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -46,6 +48,7 @@
     "prettier-plugin-tailwindcss": "^0.8.0",
     "puppeteer": "^25.1.0",
     "tailwindcss": "^4",
+    "tsx": "^4.22.4",
     "typescript": "^5"
   }
 }
