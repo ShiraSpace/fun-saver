@@ -99,7 +99,7 @@ For technical details (commands, architecture, dependencies), see [DEVELOPMENT.m
 6. Files should not pass 200 lines, if it does trigger a question what to do to refactor it.
 7. Hard coded values should be a dedicated constant file.
 8. **No comments**: Never add comments. Code must explain itself through clear naming and structure. If a comment seems necessary, refactor the code to make it unnecessary instead.
-9. **File naming**: Server/logic files (`src/lib`, `src/db`, `src/hooks`, `src/i18n`, API routes) use kebab-case (`memory-store.ts`, `daily-rate.ts`). React components use PascalCase (`WalletHero.tsx`).
+9. **File naming**: Server, logic, and test files (`src/lib`, `src/db`, `src/hooks`, `src/i18n`, API routes, everything under `e2e/`, and `*.test.ts`) use kebab-case (`memory-store.ts`, `daily-rate.ts`, `create-account.e2e.ts`). React components and their co-located test files use PascalCase (`WalletHero.tsx`, `WalletHero.test.tsx`).
 
 ### TypeScript
 

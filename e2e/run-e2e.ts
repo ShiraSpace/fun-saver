@@ -1,5 +1,5 @@
 import { withServer } from './server';
-import { run } from './createAccount.e2e';
+import { run } from './create-account.e2e';
 
 async function main(): Promise<void> {
   await withServer(async ({ baseUrl }) => {
