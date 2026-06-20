@@ -207,7 +207,8 @@ QueryClientProvider → LocaleProvider → ThemeProvider (themeId + direction)
 - `LocaleProvider` + `useTranslation()` → `t('key')`.
 - Locale + direction persisted in `localStorage`; **default `he` / `rtl`** (matches the mockup).
 - Sets `<html dir>` and MUI `theme.direction`. RTL uses `stylis-plugin-rtl` via the Emotion cache.
-- A `LanguageToggle` (he↔en) lives in settings.
+- MVP ships the `he`/`rtl` default; the user-facing `LanguageToggle` (he↔en) is exposed via the
+  Menu in a later phase (see Future Phases).
 
 ### Theme (`src/theme/`) — dynamic, multi-theme
 
@@ -224,13 +225,15 @@ Themes are a **registry**, not a single hardcoded palette, so adding or switchin
   `sunshine-quest`) + direction, exposes `useThemeSwitch()`, and selects the matching Emotion
   cache (rtl/ltr).
 - Components consume **MUI theme tokens only** (no inline hex), so switching theme instantly
-  restyles the whole app.
+  restyles the whole app. MVP ships the default theme; the user-facing `ThemePicker` is exposed
+  via the Menu in a later phase (see Future Phases).
 
 ### Data layer (`src/hooks/`)
 
-- Queries: `useAccounts`, `useWallets(accountId)`, `useWallet(id)`.
-- Mutations: `useAddTransaction`, `useCreateAccount`, `useUpdateAccount` — invalidate relevant
-  queries on success.
+- MVP queries: `useAccounts`, `useWallets(accountId)`. (`useWallet(id)` arrives with the ledger
+  phase.)
+- MVP mutations: `useCreateAccount`, `useAddTransaction` — invalidate relevant queries on success.
+  (`useUpdateAccount` arrives with the Menu phase; the `PATCH` API already exists.)
 - All fetches use `{ cache: 'no-store' }` (Next 16 caching pitfall).
 - Active account id, selected `themeId`, and locale all persisted in `localStorage`; active
   account defaults to the first, or **none → empty state**.
@@ -241,15 +244,17 @@ Themes are a **registry**, not a single hardcoded palette, so adding or switchin
 Each component lives in its own folder (`Impl.tsx` + `Impl.test.tsx` + `constants.ts` +
 `index.ts`), under 200 lines, named exports only, explicit return types.
 
+**MVP scope** — one route:
+
 - `/` → `page.tsx` (dashboard). When zero accounts → **empty state: "Create your first
-  account."** Otherwise composes:
-  - `AccountDock` — avatars + settings gear; switches active account
+  account"** with `AccountForm` (create). Otherwise composes:
   - `WalletHero` — savings hero (balance, `CoinRow` today-interest, deposits/gain breakdown)
   - `WalletList` → `WalletCard`
   - `NewActionButton` → `TransactionDrawer` (deposit/withdrawal form)
-- `/wallet/[id]` → `WalletLedger` (full transaction history)
-- `/settings` → `AccountForm` (create/edit account) + `LanguageToggle` + `ThemePicker`
 - Shared presentational: `Money` (₪ lower-left rendering), `CoinRow` (full/half coin SVGs)
+
+The always-visible **Menu** (account switch/create/edit, theme, language) and the **per-wallet
+ledger** are deferred — see Future Phases.
 
 ---
 
@@ -317,9 +322,9 @@ the account-creation flow, and the first dashboard render.
 
 ### First unit test
 
-The smallest possible step: the app renders a root `div`. Then continue TDD outward —
-each new behavior (interest math, derivations, money formatting, overdraft, transactions, account
-edit, language toggle) is introduced by its own failing test first.
+The smallest possible step: the app renders a root `div`. Then continue TDD outward — each new
+MVP behavior (interest math, derivations, money formatting, account creation, transactions,
+overdraft) is introduced by its own failing test first.
 
 ### Infrastructure decisions (the parts that are design, not test content)
 
@@ -361,6 +366,20 @@ equivalents (schema, transactions, migrations) without affecting services or API
   live in code. Test/E2E resets write fixture data to a `FUNSAVER_DATA_PATH` location.
 
 ---
+
+## Future Phases (noted, not yet planned)
+
+Mentioned here so the MVP design leaves room for them; each gets its own brainstorm → spec → plan
+when we reach it.
+
+- **Always-visible Menu.** A persistent menu (likely the gear/dock area from the mockup) available
+  on every screen, holding: **switch account**, **create/edit account**, **change theme**,
+  **change language**. The underlying capabilities already exist in MVP infra (i18n, dynamic
+  theme registry, account API incl. `PATCH`); this phase adds the UI controls. **Needs a UI
+  mockup for the menu** before building.
+- **Per-wallet ledger.** A screen showing one wallet's full transaction history (deposits,
+  withdrawals, daily interest). The data is already available via `GET /api/wallets/:id`; this
+  phase needs the **UX for navigating there** (e.g. tapping a wallet card) and the ledger layout.
 
 ## Assumptions
 
