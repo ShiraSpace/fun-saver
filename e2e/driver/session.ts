@@ -47,6 +47,11 @@ export class Session {
     await element.click();
   }
 
+  async hover(testId: string): Promise<void> {
+    const element = await this.find(testId);
+    await element.hover();
+  }
+
   async box(testId: string): Promise<BoundingBox> {
     const element = await this.find(testId);
     const box = await element.boundingBox();

@@ -13,6 +13,21 @@ export const ActionButton = styled.button`
   border-radius: ${ACTION_BUTTON.radius}px;
   background: ${COLORS.primary};
   color: ${COLORS.textOnPrimary};
+  text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 4px 0 ${COLORS.primaryShadow};
+  box-shadow: 0 ${ACTION_BUTTON.shadowDepth}px 0 ${COLORS.primaryShadow};
+  transition:
+    transform ${ACTION_BUTTON.transitionMs}ms ease,
+    box-shadow ${ACTION_BUTTON.transitionMs}ms ease;
+
+  &:hover {
+    transform: translateY(-${ACTION_BUTTON.hoverLift}px);
+    box-shadow: 0 ${ACTION_BUTTON.shadowDepth + ACTION_BUTTON.hoverLift}px 0
+      ${COLORS.primaryShadow};
+  }
+
+  &:active {
+    transform: translateY(${ACTION_BUTTON.pressDrop}px);
+    box-shadow: 0 0 0 ${COLORS.primaryShadow};
+  }
 `;

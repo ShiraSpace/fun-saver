@@ -18,4 +18,16 @@ export class EmptyStateDriver {
   clickCreateAccount(): Promise<void> {
     return this.session.click(EMPTY_STATE_TEST_IDS.createAccount);
   }
+
+  hoverCreateAccount(): Promise<void> {
+    return this.session.hover(EMPTY_STATE_TEST_IDS.createAccount);
+  }
+
+  waitForCtaTransform(value: string): Promise<void> {
+    return this.session.waitForStyle(
+      `[data-testid="${EMPTY_STATE_TEST_IDS.createAccount}"]`,
+      'transform',
+      value
+    );
+  }
 }

@@ -22,9 +22,11 @@ function route(
   if (account) {
     return <Account name={account.name} avatarId={account.avatarId} />;
   }
+
   if (isCreating) {
     return <CreateAccount />;
   }
+
   return <EmptyState createAccountHref={CREATE_ACCOUNT_HREF} />;
 }
 
