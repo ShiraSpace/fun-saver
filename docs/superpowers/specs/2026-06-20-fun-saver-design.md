@@ -5,13 +5,12 @@
 
 - **Status:** approved design, ready for implementation planning
 - **Date:** 2026-06-20
-- **Stack:** Next.js 16 (App Router) · React 19 · MUI + Emotion · React Query · file-backed JSON store
+- **Stack:** Next.js 16 (App Router) · React 19 · MUI + Emotion (dynamic multi-theme) · React Query · JSON store behind a swappable DAL
 - **Companion docs:** [`visual-palettes.md`](./visual-palettes.md) (palette C "Sunshine Quest"), [`mockup-home-screen.html`](./mockup-home-screen.html)
 
 ## Terminology
 
-The user-facing and code term for a person is **Account** — never "kid" or "child". A wallet
-is a **Wallet** (never "pot"). A money movement is a **Transaction**.
+The user-facing and code term for a person is **Account** . A wallet is a **Wallet**. A money movement is a **Transaction**.
 
 ---
 
@@ -61,25 +60,69 @@ creates them via the auto-seed. This keeps future wallet creation/editing a no-m
 - `interestGain` = Σ interest
 - `todayInterest` = the `interest` transaction(s) dated today
 
-### Store interface (`src/db`)
+### Persistence: DAL (ports & adapters)
 
-Framework-agnostic. Reads settle interest before returning (see §4).
+Persistence is hidden behind a **Data Access Layer**. Production code (services, API routes)
+depends **only on the `DataStore` interface** — never on the file. Swapping to a real database
+later means writing a new adapter and changing **one wiring point** (`getStore()`), with zero
+changes to services, API, or UI.
+
+**The port** (`src/db/DataStore.ts`) — pure, low-level CRUD only. No business logic, no interest,
+no seeding. Async signatures (return `Promise`) so a real-DB adapter needs no signature changes.
+All amounts are integer agorot.
 
 ```ts
-listAccounts(): Account[]
-createAccount(input: { name: string; avatarInitial?: string }): Account // auto-seeds 3 wallets
-updateAccount(id: string, patch: Partial<Pick<Account, 'name' | 'avatarInitial' | 'isActive'>>): Account
-getWalletsForAccount(accountId: string): WalletWithDerived[]
-getWallet(id: string): WalletWithDerived & { transactions: Transaction[] }
-addTransaction(walletId: string, input: { type: 'deposit' | 'withdrawal'; amount: number }): Transaction
+interface DataStore {
+  // accounts
+  getAccounts(): Promise<Account[]>;
+  getAccount(id: string): Promise<Account | null>;
+  insertAccount(account: Account): Promise<void>;
+  updateAccount(id: string, patch: Partial<Account>): Promise<Account>;
+  // wallets
+  getWalletsByAccount(accountId: string): Promise<Wallet[]>;
+  getWallet(id: string): Promise<Wallet | null>;
+  insertWallet(wallet: Wallet): Promise<void>;
+  updateWallet(id: string, patch: Partial<Wallet>): Promise<Wallet>; // e.g. lastInterestDate
+  // transactions
+  getTransactionsByWallet(walletId: string): Promise<Transaction[]>;
+  insertTransactions(transactions: Transaction[]): Promise<void>; // batch: interest days + deposits
+}
 ```
+
+**Adapters**
+
+- `src/db/jsonStore.ts` — `JsonFileStore implements DataStore`. Owns file read/write, the
+  serialized write queue, empty-file bootstrap, and `migrate()` (see §6).
+- `src/db/memoryStore.ts` — `InMemoryStore implements DataStore`. For fast service/unit tests, no
+  filesystem.
+- `src/db/index.ts` — `getStore(): DataStore` factory. Returns the configured adapter (default
+  JSON; env-selectable). **The only place an adapter is named.**
+
+### Service layer (`src/lib`)
+
+All business logic lives here and depends only on the injected `DataStore` — making it both
+DB-agnostic and trivially testable against `InMemoryStore`. Reads settle interest before
+returning (see §4).
+
+```text
+listAccounts(store)                          -> Promise<Account[]>
+createAccount(store, input)                  -> Promise<Account>   // ids + account + 3 seeded wallets
+updateAccount(store, id, patch)              -> Promise<Account>
+getWalletsForAccount(store, accountId, asOf) -> Promise<WalletWithDerived[]>
+getWallet(store, id, asOf)                   -> Promise<WalletWithDerived & { transactions }>
+addTransaction(store, walletId, input, asOf) -> Promise<Transaction>  // settle, overdraft check, insert
+```
+
+Pure helpers (`addDailyInterest`, derivations, money conversion) take plain data and never touch
+the store.
 
 ---
 
 ## 2. API Surface
 
-Thin routes only: **validate → call a `src/lib` function → return JSON**. Every wallet read or
-mutation runs interest settlement first, so balances are always current.
+Thin routes only: **validate → call a `src/lib` service → return JSON**. Services receive the
+`DataStore` from `getStore()` and never touch persistence directly. Every wallet read or mutation
+runs interest settlement first, so balances are always current.
 
 | Method & route                     | Purpose                                                                 |
 | ---------------------------------- | ----------------------------------------------------------------------- |
@@ -115,7 +158,8 @@ mutation runs interest settlement first, so balances are always current.
 A client `Providers` wrapper mounted in `src/app/layout.tsx`:
 
 ```
-QueryClientProvider → LocaleProvider → Emotion CacheProvider (rtl/ltr) → MUI ThemeProvider
+QueryClientProvider → LocaleProvider → ThemeProvider (themeId + direction)
+  → Emotion CacheProvider (rtl/ltr) → MUI ThemeProvider
 ```
 
 ### i18n (`src/i18n/`)
@@ -126,10 +170,22 @@ QueryClientProvider → LocaleProvider → Emotion CacheProvider (rtl/ltr) → M
 - Sets `<html dir>` and MUI `theme.direction`. RTL uses `stylis-plugin-rtl` via the Emotion cache.
 - A `LanguageToggle` (he↔en) lives in settings.
 
-### Theme (`src/theme/`)
+### Theme (`src/theme/`) — dynamic, multi-theme
 
-Palette C tokens from `visual-palettes.md` (colors, Fredoka/Rubik typography, radii, shadows).
-Single source of truth — no inline hex in components.
+Themes are a **registry**, not a single hardcoded palette, so adding or switching a theme is easy.
+
+- Each theme is one `ThemeTokens` object (colors, pot accents, Fredoka/Rubik typography, radii,
+  shadows) in `src/theme/themes/` — `sunshineQuest.ts`, `mintLedger.ts`, `sunnyModern.ts`
+  (palettes C / A / B from `visual-palettes.md`).
+- `ThemeTokens` is a shared interface, so **adding a theme = drop in one token file and register
+  it** — no component changes.
+- `src/theme/registry.ts` maps `themeId → ThemeTokens`; `buildMuiTheme(tokens, direction)`
+  produces the MUI theme.
+- `ThemeProvider` holds the selected `themeId` (persisted in `localStorage`, default
+  `sunshine-quest`) + direction, exposes `useThemeSwitch()`, and selects the matching Emotion
+  cache (rtl/ltr).
+- Components consume **MUI theme tokens only** (no inline hex), so switching theme instantly
+  restyles the whole app.
 
 ### Data layer (`src/hooks/`)
 
@@ -137,8 +193,8 @@ Single source of truth — no inline hex in components.
 - Mutations: `useAddTransaction`, `useCreateAccount`, `useUpdateAccount` — invalidate relevant
   queries on success.
 - All fetches use `{ cache: 'no-store' }` (Next 16 caching pitfall).
-- Active account id persisted in `localStorage`; defaults to the first account, or **none →
-  empty state**.
+- Active account id, selected `themeId`, and locale all persisted in `localStorage`; active
+  account defaults to the first, or **none → empty state**.
 - Every hook exposes `isLoading` / `isError` → skeletons + error banners.
 
 ### Routing & component tree
@@ -153,7 +209,7 @@ Each component lives in its own folder (`Impl.tsx` + `Impl.test.tsx` + `constant
   - `WalletList` → `WalletCard`
   - `NewActionButton` → `TransactionDrawer` (deposit/withdrawal form)
 - `/wallet/[id]` → `WalletLedger` (full transaction history)
-- `/settings` → `AccountForm` (create/edit account) + `LanguageToggle`
+- `/settings` → `AccountForm` (create/edit account) + `LanguageToggle` + `ThemePicker`
 - Shared presentational: `Money` (₪ lower-left rendering), `CoinRow` (full/half coin SVGs)
 
 ---
@@ -230,6 +286,10 @@ edit, language toggle) is introduced by its own failing test first.
 ```json
 { "version": 1, "accounts": [], "wallets": [], "transactions": [] }
 ```
+
+All of the following are **internal to the `JsonFileStore` adapter** (§1) — bootstrap, write
+safety, and migration live behind the `DataStore` interface, so a future DB adapter brings its own
+equivalents (schema, transactions, migrations) without affecting services or API.
 
 - **Bootstrapping:** on first read, if the file is missing, write the **empty** structure above.
   No demo accounts. First run shows the empty state ("Create your first account").
