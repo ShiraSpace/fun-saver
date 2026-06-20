@@ -10,6 +10,5 @@ export const EMPTY_STATE_COPY = {
 } as const;
 
 export const EMPTY_STATE_LAYOUT = {
-  gap: 24,
   emojiSize: 72,
 } as const;

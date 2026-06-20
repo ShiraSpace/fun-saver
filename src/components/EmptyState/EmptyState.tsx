@@ -4,21 +4,12 @@ import { JSX } from 'react';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import { ActionButton } from '@/components/ActionButton';
+import { Screen } from '@/components/Screen';
 import {
   EMPTY_STATE_COPY,
   EMPTY_STATE_LAYOUT,
   EMPTY_STATE_TEST_IDS,
 } from './constants';
-
-const Screen = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: ${EMPTY_STATE_LAYOUT.gap}px;
-  min-height: 100vh;
-  text-align: center;
-`;
 
 const Emoji = styled.span`
   font-size: ${EMPTY_STATE_LAYOUT.emojiSize}px;

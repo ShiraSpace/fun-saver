@@ -1,13 +1,10 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { COLORS } from '@/theme/palette';
+import { GRADIENTS } from '@/theme/gradients';
 import { ACTION_BUTTON } from '@/components/ActionButton/constants';
+import { hexToRgb } from './support/css-color';
 import { useDriver } from './driver/use-driver';
-
-function hexToRgb(hex: string): string {
-  const value = parseInt(hex.slice(1), 16);
-  return `rgb(${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255})`;
-}
 
 describe('empty state', () => {
   const { emptyState, session } = useDriver();
@@ -18,6 +15,11 @@ describe('empty state', () => {
 
   it('fits the viewport without vertical scroll', async () => {
     assert.equal(await session.hasVerticalScroll(), false);
+  });
+
+  it('paints the screen with the sunset gradient', async () => {
+    const expected = GRADIENTS.screen.replace(/#[0-9a-fA-F]{6}/g, hexToRgb);
+    assert.equal(await emptyState.background(), expected);
   });
 
   it('lifts the action button on hover', async () => {

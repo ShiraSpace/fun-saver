@@ -15,6 +15,13 @@ export class EmptyStateDriver {
     );
   }
 
+  background(): Promise<string> {
+    return this.session.computedStyle(
+      EMPTY_STATE_TEST_IDS.container,
+      'background-image'
+    );
+  }
+
   clickCreateAccount(): Promise<void> {
     return this.session.click(EMPTY_STATE_TEST_IDS.createAccount);
   }

@@ -8,4 +8,11 @@ export class CreateAccountDriver {
     await this.session.box(CREATE_ACCOUNT_TEST_IDS.nameInput);
     return true;
   }
+
+  background(): Promise<string> {
+    return this.session.computedStyle(
+      CREATE_ACCOUNT_TEST_IDS.container,
+      'background-image'
+    );
+  }
 }

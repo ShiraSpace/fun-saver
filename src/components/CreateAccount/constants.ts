@@ -1,4 +1,5 @@
 export const CREATE_ACCOUNT_TEST_IDS = {
+  container: 'create-account',
   nameInput: 'account-name-input',
 } as const;
 
