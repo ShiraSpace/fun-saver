@@ -228,6 +228,24 @@ Themes are a **registry**, not a single hardcoded palette, so adding or switchin
   restyles the whole app. MVP ships the default theme; the user-facing `ThemePicker` is exposed
   via the Menu in a later phase (see Future Phases).
 
+#### Typography scale (fixed, used app-wide)
+
+One scale defined on the MUI theme (MUI `typography` variants). **Components reference these
+variants only — never ad-hoc `fontSize`** — so every page/interface stays consistent. Sizes are
+the same across all themes; only the family/colors come from tokens.
+
+| Role       | MUI variant | Size  | Weight | Family  | Used for                                    |
+| ---------- | ----------- | ----- | ------ | ------- | ------------------------------------------- |
+| Display    | `h1`        | 54px  | 700    | Fredoka | Hero balance number only                    |
+| Title      | `h2`        | 22px  | 700    | Fredoka | Screen/page titles (e.g. "צור חשבון")       |
+| Heading    | `h3`        | 18px  | 700    | Fredoka | Card / section headings (wallet name)       |
+| Subtitle   | `subtitle1` | 13px  | 500    | Rubik   | Secondary text under a title                 |
+| Body       | `body1`     | 16px  | 400–600| Rubik   | Default text, form fields (e.g. `שם: נועה`) |
+| Caption    | `caption`   | 12px  | 500    | Rubik   | Meta/help text                              |
+| Label      | `overline`  | 11px  | 600    | Rubik   | Uppercase eyebrows / cell labels            |
+
+Currency display keeps its own relative rule (₪ at 40% of the number — see palette spec).
+
 ### Data layer (`src/hooks/`)
 
 - MVP queries: `useAccounts`, `useWallets(accountId)`. (`useWallet(id)` arrives with the ledger
