@@ -1,8 +1,11 @@
 import { JSX } from 'react';
+import { Money } from '../Money/Money';
 import { WALLET_HERO_COPY, WALLET_HERO_TEST_IDS } from './constants';
 
 interface HeroWallet {
   balance: number;
+  principal: number;
+  interestGain: number;
   monthlyInterestRate: number;
   openedAt: string;
 }
@@ -10,6 +13,25 @@ interface HeroWallet {
 interface WalletHeroProps {
   name: string;
   wallet: HeroWallet;
+}
+
+interface BreakdownCellProps {
+  label: string;
+  amountAgorot: number;
+  testId: string;
+}
+
+function BreakdownCell({
+  label,
+  amountAgorot,
+  testId,
+}: BreakdownCellProps): JSX.Element {
+  return (
+    <div>
+      <span>{label}</span>
+      <Money amountAgorot={amountAgorot} testId={testId} />
+    </div>
+  );
 }
 
 export function WalletHero({ name, wallet }: WalletHeroProps): JSX.Element {
@@ -29,7 +51,20 @@ export function WalletHero({ name, wallet }: WalletHeroProps): JSX.Element {
           {WALLET_HERO_COPY.activeSince(wallet.openedAt)}
         </span>
       </div>
-      <span data-testid={WALLET_HERO_TEST_IDS.balance}>{wallet.balance}</span>
+      <Money
+        amountAgorot={wallet.balance}
+        testId={WALLET_HERO_TEST_IDS.balance}
+      />
+      <BreakdownCell
+        label={WALLET_HERO_COPY.depositsLabel}
+        amountAgorot={wallet.principal}
+        testId={WALLET_HERO_TEST_IDS.deposits}
+      />
+      <BreakdownCell
+        label={WALLET_HERO_COPY.interestGainLabel}
+        amountAgorot={wallet.interestGain}
+        testId={WALLET_HERO_TEST_IDS.interestGain}
+      />
     </div>
   );
 }

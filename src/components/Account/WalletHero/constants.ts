@@ -4,6 +4,8 @@ export const WALLET_HERO_TEST_IDS = {
   icon: 'hero-icon',
   interestRate: 'hero-interest-rate',
   activeSince: 'hero-active-since',
+  deposits: 'hero-deposits',
+  interestGain: 'hero-interest',
 } as const;
 
 const PERCENT_PER_UNIT = 100;
@@ -22,4 +24,6 @@ export const WALLET_HERO_COPY = {
   interestRate: (monthlyRate: number): string =>
     `צובר ריבית — ${Math.round(monthlyRate * PERCENT_PER_UNIT)}%/חודש`,
   activeSince: (openedAt: string): string => `פעיל מאז ${dayMonth(openedAt)}`,
+  depositsLabel: 'הפקדות',
+  interestGainLabel: 'רווח מריבית',
 } as const;

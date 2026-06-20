@@ -1,4 +1,11 @@
-import { coinBreakdown } from '../money';
+import { agorotToShekels, coinBreakdown } from '../money';
+
+describe('agorotToShekels', () => {
+  it('converts agorot to shekels', () => {
+    expect(agorotToShekels(8500)).toBe(85);
+    expect(agorotToShekels(540)).toBe(5.4);
+  });
+});
 
 describe('coinBreakdown', () => {
   it('splits an exact half-shekel into full coins and a half', () => {
