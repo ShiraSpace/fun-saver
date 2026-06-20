@@ -1,4 +1,5 @@
 export const WALLET_HERO_TEST_IDS = {
+  hero: 'wallet-hero',
   balance: 'wallet-balance',
   eyebrow: 'hero-eyebrow',
   icon: 'hero-icon',

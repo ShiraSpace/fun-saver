@@ -34,7 +34,7 @@ function BreakdownCell({
 
 export function WalletHero({ name, wallet }: WalletHeroProps): JSX.Element {
   return (
-    <div>
+    <div data-testid={WALLET_HERO_TEST_IDS.hero}>
       <div>
         <span data-testid={WALLET_HERO_TEST_IDS.icon}>
           {WALLET_HERO_COPY.icon}
