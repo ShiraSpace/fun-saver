@@ -28,7 +28,7 @@ and the store. Avoid generic technical placeholders (`data`, `item`, `manager`, 
 | **interestGain**| Total interest earned                                                   |
 | **todayInterest** | Interest credited today (drives the coin row)                        |
 | **agora / agorot** | Integer money unit; 1 ₪ = 100 agorot (the only unit code stores)    |
-| **monthlyInterestRate** | A wallet's monthly interest rate (0.15 = 15%/month)            |
+| **monthlyInterestRate** | A wallet's monthly interest rate (0.20 = 20%/month for Savings) |
 | **settle / addDailyInterest** | Bring a wallet's interest up to date through a given day      |
 
 **Names and comments express the _what_ and _why_, not the _how_.** The how is visible in the
@@ -61,12 +61,26 @@ ledger**, never stored.
 | `accountId`           | string |                                                          |
 | `name`                | string | e.g. Savings / Spending / Good deeds                     |
 | `icon`                | string | emoji or token (🐷 / 🛍️ / 💛)                            |
-| `monthlyInterestRate` | number | Per-wallet, configurable. Default `0`. Savings `0.15`    |
+| `monthlyInterestRate` | number | Per-wallet, configurable. Default `0`. Savings `0.20`    |
 | `openedAt`            | string | ISO date — when the wallet started                       |
 | `lastInterestDate`    | string | ISO date — last day interest was settled through         |
 
 Wallets are **user-definable in the data model** (per-wallet rate) even though the MVP only
 creates them via the auto-seed. This keeps future wallet creation/editing a no-migration add.
+
+#### Default wallets (seeded for every account)
+
+Every account is created with exactly these three wallets — the set agreed in the UI design phase
+and shown on the home screen:
+
+| Wallet         | `icon` | `monthlyInterestRate` | Role                                  |
+| -------------- | ------ | --------------------- | ------------------------------------- |
+| **Savings**    | 🐷     | `0.20` (20%/month)    | Hero card; the only wallet that earns interest |
+| **Spending**   | 🛍️     | `0`                   | Everyday money                        |
+| **Good deeds** | 💛     | `0`                   | Giving / donations                    |
+
+These names are display labels resolved through i18n; the seeded wallet identity is stable
+regardless of locale.
 
 ### Transaction
 
@@ -243,8 +257,8 @@ Each component lives in its own folder (`Impl.tsx` + `Impl.test.tsx` + `constant
 
 ### Accrual rule
 
-- `dailyRate = wallet.monthlyInterestRate / 30` (flat — e.g. 0.5%/day for 15%/month).
-  Explainable to a child; accepts a minor (~1%/month) compounding overshoot.
+- `dailyRate = wallet.monthlyInterestRate / 30` (flat — e.g. ≈0.667%/day for 20%/month).
+  Explainable to a child; accepts a minor compounding overshoot over the month.
 - For each day `D` from `lastInterestDate + 1` through today:
   `interest = closingBalance(D-1) × dailyRate`, written as **one `interest` transaction dated `D`**.
 - Interest accrues **only on a positive balance** (balance ≤ 0 → 0).
@@ -336,8 +350,8 @@ equivalents (schema, transactions, migrations) without affecting services or API
 
 - **Bootstrapping:** on first read, if the file is missing, write the **empty** structure above.
   No demo accounts. First run shows the empty state ("Create your first account").
-- **Account creation** is the entry point and auto-seeds the 3 default wallets
-  (Savings 15%/mo · Spending 0 · Good deeds 0).
+- **Account creation** is the entry point and auto-seeds the 3 default wallets (§1)
+  (Savings 20%/mo · Spending 0 · Good deeds 0).
 - **Write safety:** reads are read-modify-write; writes are serialized through a small in-process
   queue/mutex so concurrent API requests cannot corrupt the file.
 - **Versioning / migration:** the top-level `version` drives a `migrate(data)` step run on every
