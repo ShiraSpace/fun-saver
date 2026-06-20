@@ -1,14 +1,12 @@
 import { JSX } from 'react';
+import type { WalletWithDerived } from '@/lib/types';
 import { Money } from '../Money/Money';
 import { WALLET_HERO_COPY, WALLET_HERO_TEST_IDS } from './constants';
 
-interface HeroWallet {
-  balance: number;
-  principal: number;
-  interestGain: number;
-  monthlyInterestRate: number;
-  openedAt: string;
-}
+type HeroWallet = Pick<
+  WalletWithDerived,
+  'balance' | 'principal' | 'interestGain' | 'monthlyInterestRate' | 'openedAt'
+>;
 
 interface WalletHeroProps {
   name: string;

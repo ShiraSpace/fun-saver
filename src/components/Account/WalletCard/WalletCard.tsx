@@ -1,12 +1,9 @@
 import { JSX } from 'react';
+import type { WalletWithDerived } from '@/lib/types';
 import { Money } from '../Money/Money';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 
-interface CardWallet {
-  name: keyof typeof WALLET_CARD_COPY.name;
-  icon: string;
-  balance: number;
-}
+type CardWallet = Pick<WalletWithDerived, 'name' | 'icon' | 'balance'>;
 
 interface WalletCardProps {
   wallet: CardWallet;

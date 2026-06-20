@@ -1,13 +1,9 @@
 import { JSX } from 'react';
+import type { WalletWithDerived } from '@/lib/types';
 import { WalletCard } from '../WalletCard/WalletCard';
 import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
 
-interface ListWallet {
-  id: string;
-  name: 'savings' | 'spending' | 'goodDeeds';
-  icon: string;
-  balance: number;
-}
+type ListWallet = Pick<WalletWithDerived, 'id' | 'name' | 'icon' | 'balance'>;
 
 interface WalletListProps {
   wallets: ListWallet[];
