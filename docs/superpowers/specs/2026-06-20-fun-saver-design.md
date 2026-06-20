@@ -234,14 +234,32 @@ Each component lives in its own folder (`Impl.tsx` + `Impl.test.tsx` + `constant
   full coins + one half-coin when the half-shekel remainder is 0.5, and hides entirely when the
   rounded value is 0.
 
-### Settlement (lazy, no cron)
+### The interest module (self-contained & pure)
 
-- Pure function `addDailyInterest(wallet, transactions, asOf)` in `src/lib/interest.ts`:
-  input ledger → output new `interest` transactions. **Takes an explicit `asOf` date — never
-  reads the clock internally** (testability).
-- The store calls it on wallet read and before any new transaction, persists the results, and
-  advances `lastInterestDate`.
-- **Idempotent:** re-running for an already-settled day produces nothing.
+All interest math lives in **its own dedicated module, `src/lib/interest/`**, with **zero
+dependencies** on the store/DAL, API, React, MUI, or the clock. It takes plain data in and returns
+plain data out — which is exactly what makes every calculation independently and exhaustively unit
+testable for accuracy. Nothing else in the app does interest arithmetic.
+
+The math is broken into small, individually-testable primitives:
+
+```text
+dailyRate(monthlyRate)                            -> number  // monthlyRate / 30
+interestForDay(closingBalanceAgorot, monthlyRate) -> number  // one day, rounded to nearest agora
+addDailyInterest(wallet, transactions, asOf)      -> Transaction[]  // replays days -> new interest txns
+```
+
+- `addDailyInterest` (the public entry point) replays each day from `lastInterestDate + 1` through
+  `asOf`, applying `interestForDay` to the previous day's closing balance, and returns the new
+  `interest` transactions. **Takes an explicit `asOf` — never reads the clock internally.**
+- **Idempotent:** re-running for an already-settled day returns `[]`.
+- **Settlement is lazy (no cron):** the service layer calls `addDailyInterest` on wallet read and
+  before any new transaction, persists the results via the DAL, and advances `lastInterestDate`.
+  The module itself performs no I/O.
+
+`src/lib/interest/__tests__/` exhaustively covers the primitives and `addDailyInterest`: rate
+derivation, single-day rounding, multi-day catch-up, mid-month deposits, withdrawals lowering
+later interest, zero/negative balances, and idempotency.
 
 ---
 
