@@ -3,9 +3,11 @@ import { rm, mkdir } from 'node:fs/promises';
 
 const PORT = 3987;
 const DATA_DIR = '.e2e-data';
+const DATA_PATH = `${DATA_DIR}/data.json`;
 
 export interface RunningServer {
   baseUrl: string;
+  dataPath: string;
   stop: () => Promise<void>;
 }
 
@@ -16,7 +18,7 @@ export async function startServer(): Promise<RunningServer> {
   const env: NodeJS.ProcessEnv = {
     ...process.env,
     PORT: String(PORT),
-    FUNSAVER_DATA_PATH: `${DATA_DIR}/data.json`,
+    FUNSAVER_DATA_PATH: DATA_PATH,
     FUNSAVER_NOW: '2026-01-01',
   };
   const baseUrl = `http://localhost:${PORT}`;
@@ -29,6 +31,7 @@ export async function startServer(): Promise<RunningServer> {
 
   return {
     baseUrl,
+    dataPath: DATA_PATH,
     stop: async (): Promise<void> => {
       server.kill('SIGTERM');
     },

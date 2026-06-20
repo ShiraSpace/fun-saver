@@ -33,23 +33,22 @@ Where these differ from the task list below, these win.
 
 - **TDD outside-in:** acceptance E2E `e2e/create-account.e2e.ts` stays red on purpose; don't skip/green it. Commit only on explicit approval.
 - **Code conventions:** no comments; server/logic/test files kebab-case, components + their tests PascalCase; `@/` alias.
-- **E2E:** TypeScript via `tsx` + `node:test`. Per-component drivers (composition): `session.ts` (lifecycle + `click`/`box`/`computedStyle`/`styleOf`/`waitForStyle`) + `menu`/`header`/`empty-state` drivers; `use-driver.ts` returns `{ session, menu, header, emptyState }` (one server+browser per file). Keep drivers lean — add methods only when a test needs them.
-- **Tests:** visual = computed-style/bbox in a real browser; jsdom for behaviour only. Test-ids from each component's `constants.ts`. `test:visual` runs all `e2e/*.visual.ts`; both `test:*` build first.
+- **E2E:** TypeScript via `tsx` + `node:test`. Per-component drivers (composition): `session.ts` (lifecycle + `click`/`box`/`computedStyle`/`styleOf`/`waitForStyle`/`exists`) + `menu`/`header`/`empty-state` drivers; `use-driver.ts` returns `{ session, menu, header, emptyState }` (one server+browser per file). Keep drivers lean — add methods only when a test needs them. `session` = browser mechanism; drivers = app DSL on top (test-ids stay in each component's `constants.ts`). Drivers expose `exists()` (presence/absence) delegating to `session.exists(testId)`.
+- **Seeding:** `useDriver(state: Partial<StoreData>)` seeds via the real store API — `rm` the data file, then `new JsonFileStore(server.dataPath).insertAccount(...)` per account (cross-process: the test process and the `next start` app share only the data file, so an in-memory store can't be used to seed). `server.dataPath` exposes the path. `StoreData` lives on the **port** (`src/db/data-store.ts`), not the adapter.
+- **Tests:** visual = computed-style/bbox in a real browser; jsdom for behaviour only. Test-ids from each component's `constants.ts`. Shared mock data in `src/test-support/fixtures.ts` (`ACCOUNT`, `CREATE_ACCOUNT_INPUT`) — reuse across unit + E2E. `test:visual` runs all `e2e/*.visual.ts`; both `test:*` build first.
 - **App:** RTL/Hebrew; Emotion RTL cache registry in `src/app/providers.tsx`. Theme seeds: `src/theme/typography.ts` (`TYPE_SCALE`, header name = `h2`) + `src/theme/palette.ts` (`COLORS.primary #6B2C8E`). Shared `ActionButton` is the only main-action style — reuse for all primary actions.
 - **Avatars:** `public/avatars/kid-01..20.svg` via `next/image` `unoptimized`.
-- **Domain:** `AccountsStore` holds a `DataStore`.
+- **Domain:** `AccountsStore` holds a `DataStore`. DAL: `DataStore` port (`insertAccount`, `listAccounts`) + `StoreData`; adapters `InMemoryStore` (unit tests) and `JsonFileStore` (file-backed, bootstrap-on-read, `FUNSAVER_DATA_PATH`); `getStore()` factory memoized per path. Page reads `getStore().listAccounts()` directly for now — **note:** service-layer `listActiveAccounts` (active-only filter, per spec) still owed.
 - **Flow:** first-account entry is the empty-state CTA (`צור חשבון`), not the menu.
 - **Mobile dev:** `npm run dev:mobile` + `allowedDevOrigins`.
 
 ## Progress (updated 2026-06-20)
 
-- **Built (Jest 13 green):** Menu, Header, EmptyState, ActionButton, AccountsStore (+ InMemoryStore/DataStore).
-- **Test status:** Jest 13/13 · `empty-state.visual` green · `menu`/`header` visual RED (page renders EmptyState unconditionally) · acceptance E2E RED (account form not built — intentional).
+- **Done:** UI shell (Menu, Header, EmptyState, ActionButton) + theme; DAL (`DataStore`/`InMemoryStore`/`JsonFileStore`/`getStore`); conditional page (EmptyState ↔ Header) account-driven via `useDriver` seeding. Jest 17/17 green · visual E2E 10/10 green (incl. `page-routing`).
+- **Test status:** acceptance E2E `e2e/create-account.e2e.ts` RED (account form not built — intentional).
 - **Next:**
-  1. Data layer: `DataStore.listAccounts`, file-backed `JsonFileStore` (`FUNSAVER_DATA_PATH`), `getStore()`.
-  2. Page account-driven: EmptyState if no accounts, else dashboard (Header).
-  3. Driver file-seed helper (`given.accountExists`) → seed in `menu`/`header` visual `beforeEach` to re-green them.
-  4. Build account form → continue the acceptance journey (→ dashboard with 3 zero wallets).
+  1. Build the account form (name + `AvatarPicker`) on the empty-state CTA → continue the acceptance journey (→ dashboard with 3 zero wallets).
+  2. Service layer in `src/lib`: `listActiveAccounts` (active-only filter) so the page stops reading the raw store; generalize `useDriver` seeding as `StoreData` grows (wallets, transactions).
 
 ---
 

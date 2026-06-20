@@ -1,5 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { ACCOUNT } from '@/test-support/fixtures';
 import { useDriver } from './driver/use-driver';
 
 const NO_TRANSFORM = 'none';
@@ -7,7 +8,7 @@ const VISIBLE = '1';
 const HIDDEN = '0';
 
 describe('menu morph', () => {
-  const { menu } = useDriver();
+  const { menu } = useDriver({ accounts: [ACCOUNT] });
 
   it('shows a hamburger when closed', async () => {
     assert.equal(await menu.iconTransform(), NO_TRANSFORM);

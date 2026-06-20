@@ -4,6 +4,10 @@ import { Session } from './session';
 export class EmptyStateDriver {
   constructor(private readonly session: Session) {}
 
+  exists(): Promise<boolean> {
+    return this.session.exists(EMPTY_STATE_TEST_IDS.container);
+  }
+
   ctaColor(): Promise<string> {
     return this.session.computedStyle(
       EMPTY_STATE_TEST_IDS.createAccount,

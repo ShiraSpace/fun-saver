@@ -7,4 +7,8 @@ export class InMemoryStore implements DataStore {
   async insertAccount(account: Account): Promise<void> {
     this.accounts.push(account);
   }
+
+  async listAccounts(): Promise<Account[]> {
+    return [...this.accounts];
+  }
 }

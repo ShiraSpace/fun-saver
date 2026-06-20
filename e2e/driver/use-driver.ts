@@ -1,4 +1,7 @@
+import { rm } from 'node:fs/promises';
 import { after, afterEach, before, beforeEach } from 'node:test';
+import type { StoreData } from '@/db/data-store';
+import { JsonFileStore } from '@/db/json-file-store';
 import { Session } from './session';
 import { MenuDriver } from './menu-driver';
 import { HeaderDriver } from './header-driver';
@@ -12,7 +15,7 @@ export interface AppDriver {
   emptyState: EmptyStateDriver;
 }
 
-export function useDriver(): AppDriver {
+export function useDriver(state: Partial<StoreData> = {}): AppDriver {
   const session = Session.create();
   const drivers: AppDriver = {
     session,
@@ -33,6 +36,11 @@ export function useDriver(): AppDriver {
   });
 
   beforeEach(async () => {
+    await rm(server.dataPath, { force: true });
+    const store = new JsonFileStore(server.dataPath);
+    for (const account of state.accounts ?? []) {
+      await store.insertAccount(account);
+    }
     await session.open(server.baseUrl);
   });
 

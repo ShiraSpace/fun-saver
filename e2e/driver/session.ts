@@ -6,7 +6,7 @@ import puppeteer, {
 } from 'puppeteer';
 import { getDocument, queries } from 'pptr-testing-library';
 
-const { findByTestId } = queries;
+const { findByTestId, queryByTestId } = queries;
 
 export class Session {
   private browser?: Browser;
@@ -35,6 +35,11 @@ export class Session {
   async stop(): Promise<void> {
     await this.browser?.close();
     this.browser = undefined;
+  }
+
+  async exists(testId: string): Promise<boolean> {
+    const element = await queryByTestId(await getDocument(this.page), testId);
+    return element !== null;
   }
 
   async click(testId: string): Promise<void> {
