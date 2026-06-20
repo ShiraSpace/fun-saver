@@ -245,7 +245,9 @@ Themes are a **registry**, not a single hardcoded palette, so adding or switchin
   and profession characters** (police, astronaut, chef, firefighter…) — **bundled offline** under
   `public/avatars/`. No runtime network, no generative library. Stored per account as `avatarId`
   (the asset's filename/id).
-- `AvatarPicker` (used by `AccountForm`) renders the bundled set as a grid the child picks from.
+- `AvatarPicker` (used by `AccountForm`) renders the bundled set as a **single grid** (no category
+  labels) the child picks from. Layout: [`mockup-avatar-picker.html`](./mockup-avatar-picker.html)
+  (app-gradient page, purple "create" CTA — consistent with the home screen).
 - **License:** prefer CC0/MIT (no attribution); a free-with-attribution pack (e.g. Flaticon /
   IconScout "Kids Avatars" + professions) is acceptable with credit on an "About" line. The exact
   pack is finalized when the picker is built.

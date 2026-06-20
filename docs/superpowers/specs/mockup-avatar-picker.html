@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fun-saver — avatar picker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; min-height:100vh; box-sizing:border-box; padding:34px 16px 60px;
+         background:linear-gradient(160deg,#FFC34D 0%,#FF8A4C 40%,#E94E89 100%);
+         font-family:'Fredoka','Rubik',sans-serif; color:#fff; direction:rtl; }
+  .pk { width:340px; margin:0 auto; }
+  .pk h1 { text-align:center; font-size:22px; font-weight:700; margin:0 0 6px; }
+  .note { text-align:center; font-size:12px; opacity:.9; margin:0 0 16px; }
+  .field { background:#fff; border-radius:14px; padding:12px 14px; color:#8A7AA7; font-size:14px; margin-bottom:14px; box-shadow:0 4px 0 rgba(0,0,0,.06); }
+  .field .big { color:#3a1f5a; font-weight:700; }
+  .rowlbl { font-size:12px; font-weight:700; color:#fff; opacity:.95; margin:14px 4px 8px; }
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .ava { aspect-ratio:1; border-radius:50%; cursor:pointer; border:3px solid transparent; overflow:hidden;
+         box-shadow:0 3px 0 rgba(0,0,0,.12); display:flex; align-items:center; justify-content:center; transition:transform .1s; }
+  .ava:hover { transform:translateY(-2px); }
+  .ava svg { width:64%; height:64%; }
+  .ava.selected { border-color:#fff; box-shadow:0 0 0 4px #6B2C8E, 0 3px 0 rgba(0,0,0,.12); }
+  .cta { margin-top:24px; text-align:center; }
+  .cta .b { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(180deg,#8A3AAE 0%,#6B2C8E 100%); color:#fff;
+            padding:14px 40px; border-radius:999px; font-weight:700; font-size:15px; cursor:pointer;
+            box-shadow:0 5px 0 #4A1A6E, 0 10px 18px rgba(107,44,142,.45); }
+</style>
+</head>
+<body>
+  <div class="pk">
+    <h1>בחרו דמות</h1>
+    <p class="note">דמויות ילדים — פנים ומקצועות (SVGRepo, bundled offline)</p>
+    <div class="field">שם: <span class="big">נועה</span></div>
+
+    <div class="grid4" id="all"></div>
+
+    <div class="cta"><span class="b">✓ יצירת חשבון</span></div>
+  </div>
+
+  <script>
+    // Placeholder kid silhouette — stands in for each bundled SVGRepo avatar.
+    var kid = '<svg viewBox="0 0 24 24" fill="rgba(255,255,255,.92)"><circle cx="12" cy="8" r="4.2"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></svg>';
+    var colors = ['#7AB7E0','#E08A6A','#F2C84B','#7FBF7F','#C79BE0','#E090B0','#69C2C2','#9AA7E0',
+                  '#E0B36A','#84C98A','#E07A8A','#6FB2E0','#C9A26A','#8FD0C0','#E0A0C8','#A0C4FF'];
+    var html='';
+    for(var i=0;i<16;i++){
+      var c=colors[i%colors.length];
+      html+='<div class="ava'+(i===0?' selected':'')+'" style="background:'+c+'" onclick="toggleSelect(this)">'+kid+'</div>';
+    }
+    document.getElementById('all').innerHTML=html;
+  </script>
+</body>
+</html>
