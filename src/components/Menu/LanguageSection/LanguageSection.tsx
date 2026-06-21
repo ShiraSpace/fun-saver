@@ -16,6 +16,7 @@ const selectedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
 const mutedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textMuted;
+const optionSize = ({ theme }: { theme: Theme }): number => theme.typography.h3;
 
 const Segment = styled.div`
   display: flex;
@@ -28,6 +29,7 @@ const Option = styled.span`
   flex: 1;
   text-align: center;
   padding: ${LANGUAGE_SECTION_STYLE.paddingY}px 0;
+  font-size: ${optionSize}px;
   font-weight: 700;
   color: ${mutedText};
 

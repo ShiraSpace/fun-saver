@@ -7,7 +7,6 @@ import type { Theme } from '@emotion/react';
 import { Screen } from '@/components/Screen';
 import { AvatarPicker } from '@/components/AvatarPicker';
 import { ActionButton } from '@/components/ActionButton';
-import { TYPE_SCALE } from '@/theme/typography';
 import { NameField } from './NameField';
 import { useCreateAccount } from './use-create-account';
 import {
@@ -18,6 +17,7 @@ import {
 
 const titleColor = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
+const titleSize = ({ theme }: { theme: Theme }): number => theme.typography.h2;
 
 const Form = styled.form`
   display: flex;
@@ -30,7 +30,7 @@ const Form = styled.form`
 
 const Title = styled.h1`
   margin: 0;
-  font-size: ${TYPE_SCALE.h2}px;
+  font-size: ${titleSize}px;
   font-weight: 700;
   color: ${titleColor};
 `;

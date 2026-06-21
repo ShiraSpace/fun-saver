@@ -2,6 +2,7 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
+import type { Theme } from '@emotion/react';
 import { Avatar } from '../../Avatar';
 import { MenuLabel } from '../MenuLabel';
 import {
@@ -10,6 +11,9 @@ import {
   ACCOUNTS_SECTION_TEST_IDS,
   type MenuAccount,
 } from './constants';
+
+const badgeSize = ({ theme }: { theme: Theme }): number =>
+  theme.typography.caption;
 
 const Row = styled.div`
   display: flex;
@@ -54,7 +58,7 @@ const Badge = styled.span`
   border-radius: 999px;
   background: ${ACCOUNTS_SECTION_STYLE.badgeBg};
   color: ${ACCOUNTS_SECTION_STYLE.badgeColor};
-  font-size: ${ACCOUNTS_SECTION_STYLE.badgeFontSize}px;
+  font-size: ${badgeSize}px;
   font-weight: 700;
   line-height: 1;
   display: flex;

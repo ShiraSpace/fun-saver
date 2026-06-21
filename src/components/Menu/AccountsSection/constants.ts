@@ -32,6 +32,5 @@ export const ACCOUNTS_SECTION_STYLE = {
   badgeBg: '#6B2C8E',
   badgeColor: '#FFFFFF',
   badgeSize: 20,
-  badgeFontSize: 11,
   actionFontSize: 20,
 } as const;

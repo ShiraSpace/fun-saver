@@ -1,3 +1,5 @@
+import type { ThemeTypography } from './typography';
+
 export interface ThemeColors {
   readonly primary: string;
   readonly primaryGradientTop: string;
@@ -20,11 +22,13 @@ export interface ThemeGradients {
 export interface ThemeTokens {
   readonly colors: ThemeColors;
   readonly gradients: ThemeGradients;
+  readonly typography: ThemeTypography;
 }
 
 declare module '@emotion/react' {
   export interface Theme {
     readonly colors: ThemeColors;
     readonly gradients: ThemeGradients;
+    readonly typography: ThemeTypography;
   }
 }

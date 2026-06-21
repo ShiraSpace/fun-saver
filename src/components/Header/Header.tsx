@@ -2,9 +2,9 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
+import type { Theme } from '@emotion/react';
 import { Menu } from '../Menu';
 import { Avatar } from '../Avatar';
-import { TYPE_SCALE } from '@/theme/typography';
 import { COLORS } from '@/theme/palette';
 import {
   HEADER_AVATAR_PROPS,
@@ -24,10 +24,12 @@ const Bar = styled.header`
   color: ${COLORS.ink};
 `;
 
+const nameSize = ({ theme }: { theme: Theme }): number => theme.typography.h2;
+
 const Name = styled.span`
   flex: 1;
   text-align: center;
-  font-size: ${TYPE_SCALE.h2}px;
+  font-size: ${nameSize}px;
   font-weight: ${HEADER_LAYOUT.nameWeight};
   color: ${COLORS.ink};
 `;

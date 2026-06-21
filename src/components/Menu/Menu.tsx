@@ -2,9 +2,13 @@
 
 import { Fragment, JSX, useState } from 'react';
 import styled from '@emotion/styled';
+import type { Theme } from '@emotion/react';
 import { BurgerIcon } from './BurgerIcon';
 import { MenuOverlay } from './MenuOverlay';
 import { MENU_ICON, MENU_TEST_IDS, MENU_TOGGLE } from './constants';
+
+const openColor = ({ theme }: { theme: Theme }): string =>
+  theme.colors.textOnPrimary;
 
 const ToggleButton = styled.button`
   position: relative;
@@ -19,6 +23,10 @@ const ToggleButton = styled.button`
   background: transparent;
   color: currentColor;
   cursor: pointer;
+
+  &[data-open='true'] {
+    color: ${openColor};
+  }
 `;
 
 export function Menu(): JSX.Element {
@@ -29,6 +37,7 @@ export function Menu(): JSX.Element {
       <ToggleButton
         type="button"
         aria-expanded={isOpen}
+        data-open={isOpen}
         data-testid={MENU_TEST_IDS.menuButton}
         onClick={(): void => setIsOpen((open) => !open)}
       >

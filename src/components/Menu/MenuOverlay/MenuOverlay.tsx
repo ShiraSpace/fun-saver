@@ -3,6 +3,7 @@
 import { JSX, useEffect } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
+import { SCREEN_LAYOUT } from '../../Screen/constants';
 import { MENU_ICON } from '../constants';
 import { AccountsSection } from '../AccountsSection';
 import { AppearanceSection } from '../AppearanceSection';
@@ -18,6 +19,7 @@ import {
 const surface = ({ theme }: { theme: Theme }): string => theme.gradients.screen;
 const onSurface = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
+const titleSize = ({ theme }: { theme: Theme }): number => theme.typography.h2;
 
 const Panel = styled.div`
   position: fixed;
@@ -44,18 +46,14 @@ const Panel = styled.div`
   }
 `;
 
-const StatusbarSpacer = styled.div`
-  height: ${MENU_OVERLAY_LAYOUT.statusbarSpacer}px;
-`;
+const TITLE_TOP = SCREEN_LAYOUT.gap - 2;
 
 const TopBar = styled.div`
   display: flex;
   align-items: center;
   gap: ${MENU_OVERLAY_LAYOUT.barGap}px;
-  margin: ${MENU_OVERLAY_LAYOUT.barMarginTop}px
-    ${MENU_OVERLAY_LAYOUT.barMarginX}px 0;
-  padding: ${MENU_OVERLAY_LAYOUT.barPaddingY}px
-    ${MENU_OVERLAY_LAYOUT.barPaddingX}px;
+  padding: ${TITLE_TOP}px ${MENU_OVERLAY_LAYOUT.barPaddingX}px
+    ${MENU_OVERLAY_LAYOUT.barPaddingBottom}px;
 `;
 
 const ToggleSpacer = styled.div`
@@ -66,6 +64,7 @@ const ToggleSpacer = styled.div`
 const Title = styled.span`
   flex: 1;
   text-align: center;
+  font-size: ${titleSize}px;
   font-weight: ${MENU_OVERLAY_LAYOUT.titleWeight};
 `;
 
@@ -105,10 +104,11 @@ export function MenuOverlay({
       data-testid={MENU_OVERLAY_TEST_IDS.overlay}
       data-open={isOpen}
     >
-      <StatusbarSpacer />
       <TopBar>
         <ToggleSpacer />
-        <Title>{MENU_OVERLAY_CONTENT.title}</Title>
+        <Title data-testid={MENU_OVERLAY_TEST_IDS.title}>
+          {MENU_OVERLAY_CONTENT.title}
+        </Title>
         <ToggleSpacer />
       </TopBar>
       <Content>

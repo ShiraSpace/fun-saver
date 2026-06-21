@@ -1,5 +1,6 @@
 export const MENU_OVERLAY_TEST_IDS = {
   overlay: 'menu-overlay',
+  title: 'menu-title',
 } as const;
 
 export const MENU_OVERLAY_CONTENT = {
@@ -16,11 +17,8 @@ export const MENU_OVERLAY_STYLE = {
 } as const;
 
 export const MENU_OVERLAY_LAYOUT = {
-  statusbarSpacer: 24,
-  barMarginX: 14,
-  barMarginTop: 6,
   barPaddingX: 14,
-  barPaddingY: 10,
+  barPaddingBottom: 10,
   barGap: 10,
   titleWeight: 700,
   contentPaddingX: 22,
