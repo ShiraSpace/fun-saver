@@ -15,4 +15,15 @@ export class CreateAccountDriver {
       'background-image'
     );
   }
+
+  titleColor(): Promise<string> {
+    return this.session.computedStyle(CREATE_ACCOUNT_TEST_IDS.title, 'color');
+  }
+
+  titleFontSize(): Promise<string> {
+    return this.session.computedStyle(
+      CREATE_ACCOUNT_TEST_IDS.title,
+      'font-size'
+    );
+  }
 }
