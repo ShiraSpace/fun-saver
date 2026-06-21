@@ -52,6 +52,26 @@ export class Session {
     await element.hover();
   }
 
+  async clickSelector(selector: string): Promise<void> {
+    const element = await this.page.$(selector);
+
+    if (!element) {
+      throw new Error(`no element matches "${selector}"`);
+    }
+
+    await element.click();
+  }
+
+  async hoverSelector(selector: string): Promise<void> {
+    const element = await this.page.$(selector);
+
+    if (!element) {
+      throw new Error(`no element matches "${selector}"`);
+    }
+
+    await element.hover();
+  }
+
   async box(testId: string): Promise<BoundingBox> {
     const element = await this.find(testId);
     const box = await element.boundingBox();

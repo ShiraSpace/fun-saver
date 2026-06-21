@@ -2,6 +2,7 @@ import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { AVATARS } from '@/lib/avatars';
 import { AVATAR_PICKER_LAYOUT } from '@/components/AvatarPicker/constants';
+import { COLORS } from '@/theme/palette';
 import { hexToRgb } from './support/css-color';
 import { useDriver } from './driver/use-driver';
 
@@ -36,5 +37,21 @@ describe('avatar picker', () => {
       await avatarPicker.containerWidth(),
       AVATAR_PICKER_LAYOUT.maxWidth
     );
+  });
+
+  it('rings the selected option in the primary colour', async () => {
+    await avatarPicker.selectFirst();
+    const option = await avatarPicker.selectedOption();
+
+    assert.equal(option.borderColor, hexToRgb(COLORS.textOnPrimary));
+    assert.ok(
+      option.boxShadow.includes(hexToRgb(COLORS.primary)),
+      `expected ring colour ${hexToRgb(COLORS.primary)} in "${option.boxShadow}"`
+    );
+  });
+
+  it('lifts an option on hover', async () => {
+    await avatarPicker.hoverFirst();
+    await avatarPicker.waitForOptionToLift();
   });
 });

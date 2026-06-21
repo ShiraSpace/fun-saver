@@ -3,8 +3,13 @@
 import { JSX } from 'react';
 import Image from 'next/image';
 import styled from '@emotion/styled';
+import type { Theme } from '@emotion/react';
 import { AVATARS, avatarSource, type AvatarOption } from '@/lib/avatars';
-import { AVATAR_PICKER_LAYOUT, AVATAR_PICKER_TEST_IDS } from './constants';
+import {
+  AVATAR_PICKER_LAYOUT,
+  AVATAR_PICKER_STYLE,
+  AVATAR_PICKER_TEST_IDS,
+} from './constants';
 
 export interface AvatarPickerProps {
   selectedId: string | null;
@@ -30,17 +35,33 @@ const Grid = styled.div`
 `;
 
 const optionFill = ({ background }: OptionButtonProps): string => background;
+const ringColor = ({ theme }: { theme: Theme }): string => theme.colors.primary;
+const selectedBorder = ({ theme }: { theme: Theme }): string =>
+  theme.colors.textOnPrimary;
 
 const OptionButton = styled.button<OptionButtonProps>`
   position: relative;
   width: 100%;
   aspect-ratio: 1;
   padding: 0;
-  border: none;
+  border: ${AVATAR_PICKER_STYLE.borderWidth}px solid transparent;
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
   background: ${optionFill};
+  box-shadow: ${AVATAR_PICKER_STYLE.baseShadow};
+  transition: transform ${AVATAR_PICKER_STYLE.transitionMs}ms ease;
+
+  &:hover {
+    transform: translateY(-${AVATAR_PICKER_STYLE.hoverLift}px);
+  }
+
+  &[data-selected='true'] {
+    border-color: ${selectedBorder};
+    box-shadow:
+      0 0 0 ${AVATAR_PICKER_STYLE.ringWidth}px ${ringColor},
+      ${AVATAR_PICKER_STYLE.baseShadow};
+  }
 `;
 
 function AvatarOption({
