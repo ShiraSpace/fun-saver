@@ -1,5 +1,6 @@
 export const WALLET_HERO_TEST_IDS = {
   hero: 'wallet-hero',
+  cornerStar: 'hero-corner-star',
   balance: 'wallet-balance',
   eyebrow: 'hero-eyebrow',
   icon: 'hero-icon',
@@ -34,6 +35,10 @@ export const HERO_STYLE = {
   radius: 24,
   padding: 18,
   shadow: '0 6px 0 rgba(0, 0, 0, 0.06)',
+  cornerStarSize: 42,
+  cornerStarTop: -12,
+  cornerStarRight: -10,
+  cornerStarRotation: -18,
   headGap: 12,
   iconTileSize: 64,
   iconTileRadius: 20,

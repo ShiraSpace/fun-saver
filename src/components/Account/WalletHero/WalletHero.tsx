@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
 import { COLORS } from '@/theme/palette';
 import { CoinRow } from '../CoinRow/CoinRow';
+import { Star } from './Star/Star';
 import { HeroHead } from './HeroHead/HeroHead';
 import { HeroAmount } from './HeroAmount/HeroAmount';
 import { HeroBreakdown } from './HeroBreakdown/HeroBreakdown';
@@ -21,11 +22,22 @@ type HeroWallet = Pick<
 >;
 
 const Card = styled.div`
+  position: relative;
   background: ${COLORS.surface};
   border-radius: ${HERO_STYLE.radius}px;
   padding: ${HERO_STYLE.padding}px;
   box-shadow: ${HERO_STYLE.shadow};
   color: ${COLORS.ink};
+`;
+
+const CornerStar = styled(Star)`
+  position: absolute;
+  top: ${HERO_STYLE.cornerStarTop}px;
+  right: ${HERO_STYLE.cornerStarRight}px;
+  width: ${HERO_STYLE.cornerStarSize}px;
+  height: ${HERO_STYLE.cornerStarSize}px;
+  transform: rotate(${HERO_STYLE.cornerStarRotation}deg);
+  pointer-events: none;
 `;
 
 interface WalletHeroProps {
@@ -36,6 +48,7 @@ interface WalletHeroProps {
 export function WalletHero({ name, wallet }: WalletHeroProps): JSX.Element {
   return (
     <Card data-testid={WALLET_HERO_TEST_IDS.hero}>
+      <CornerStar data-testid={WALLET_HERO_TEST_IDS.cornerStar} />
       <HeroHead
         name={name}
         monthlyInterestRate={wallet.monthlyInterestRate}

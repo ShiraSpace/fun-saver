@@ -24,6 +24,12 @@ describe('WalletHero', () => {
     expect(screen.getByTestId(WALLET_HERO_TEST_IDS.hero)).toBeInTheDocument();
   });
 
+  it('shows the decorative corner star', () => {
+    expect(
+      screen.getByTestId(WALLET_HERO_TEST_IDS.cornerStar)
+    ).toBeInTheDocument();
+  });
+
   it('composes the head, amount, coin row and breakdown', () => {
     expect(
       screen.getByTestId(WALLET_HERO_TEST_IDS.eyebrow)
