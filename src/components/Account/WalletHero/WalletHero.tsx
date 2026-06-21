@@ -1,8 +1,14 @@
+'use client';
+
 import { JSX } from 'react';
+import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
-import { Money } from '../Money/Money';
+import { COLORS } from '@/theme/palette';
 import { CoinRow } from '../CoinRow/CoinRow';
-import { WALLET_HERO_COPY, WALLET_HERO_TEST_IDS } from './constants';
+import { HeroHead } from './HeroHead/HeroHead';
+import { HeroAmount } from './HeroAmount/HeroAmount';
+import { HeroBreakdown } from './HeroBreakdown/HeroBreakdown';
+import { HERO_STYLE, WALLET_HERO_TEST_IDS } from './constants';
 
 type HeroWallet = Pick<
   WalletWithDerived,
@@ -14,62 +20,33 @@ type HeroWallet = Pick<
   | 'openedAt'
 >;
 
+const Card = styled.div`
+  background: ${COLORS.surface};
+  border-radius: ${HERO_STYLE.radius}px;
+  padding: ${HERO_STYLE.padding}px;
+  box-shadow: ${HERO_STYLE.shadow};
+  color: ${COLORS.ink};
+`;
+
 interface WalletHeroProps {
   name: string;
   wallet: HeroWallet;
 }
 
-interface BreakdownCellProps {
-  label: string;
-  amountAgorot: number;
-  testId: string;
-}
-
-function BreakdownCell({
-  label,
-  amountAgorot,
-  testId,
-}: BreakdownCellProps): JSX.Element {
-  return (
-    <div>
-      <span>{label}</span>
-      <Money amountAgorot={amountAgorot} testId={testId} />
-    </div>
-  );
-}
-
 export function WalletHero({ name, wallet }: WalletHeroProps): JSX.Element {
   return (
-    <div data-testid={WALLET_HERO_TEST_IDS.hero}>
-      <div>
-        <span data-testid={WALLET_HERO_TEST_IDS.icon}>
-          {WALLET_HERO_COPY.icon}
-        </span>
-        <span data-testid={WALLET_HERO_TEST_IDS.eyebrow}>
-          {WALLET_HERO_COPY.eyebrow(name)}
-        </span>
-        <span data-testid={WALLET_HERO_TEST_IDS.interestRate}>
-          {WALLET_HERO_COPY.interestRate(wallet.monthlyInterestRate)}
-        </span>
-        <span data-testid={WALLET_HERO_TEST_IDS.activeSince}>
-          {WALLET_HERO_COPY.activeSince(wallet.openedAt)}
-        </span>
-      </div>
-      <Money
-        amountAgorot={wallet.balance}
-        testId={WALLET_HERO_TEST_IDS.balance}
+    <Card data-testid={WALLET_HERO_TEST_IDS.hero}>
+      <HeroHead
+        name={name}
+        monthlyInterestRate={wallet.monthlyInterestRate}
+        openedAt={wallet.openedAt}
       />
+      <HeroAmount balance={wallet.balance} />
       <CoinRow todayInterest={wallet.todayInterest} />
-      <BreakdownCell
-        label={WALLET_HERO_COPY.depositsLabel}
-        amountAgorot={wallet.principal}
-        testId={WALLET_HERO_TEST_IDS.deposits}
+      <HeroBreakdown
+        principal={wallet.principal}
+        interestGain={wallet.interestGain}
       />
-      <BreakdownCell
-        label={WALLET_HERO_COPY.interestGainLabel}
-        amountAgorot={wallet.interestGain}
-        testId={WALLET_HERO_TEST_IDS.interestGain}
-      />
-    </div>
+    </Card>
   );
 }
