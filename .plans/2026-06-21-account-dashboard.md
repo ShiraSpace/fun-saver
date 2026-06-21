@@ -133,7 +133,52 @@ star is decorative + presence-tested), tsc + eslint clean.
 
 ---
 
-## NEXT FEATURE — "+ פעולה חדשה" CTA + transaction flow (NOT STARTED)
+## DASHBOARD MERGED TO MAIN (2026-06-21)
+
+The whole dashboard was merged into **`main`** (merge commit `5420b12`, pushed to origin) alongside the
+create-account flow — union-resolving `Screen`/`Header`/`use-driver`/`palette` conflicts; post-merge fixes
+for main's stricter eslint (explicit return types on styled interpolations) + `Account.test` now renders via
+`@/test-support/render`. **No account is seeded** (`src/db/data.json` untracked+gitignored) so fresh `main`
+shows the create-account screen.
+
+**Left for the create-account owner to reconcile on main:** semantic-dup theme tokens — create-account uses
+`COLORS.textMuted`/`textStrong`; dashboard uses `COLORS.muted`/`ink` (identical hex). Both kept so each side
+compiles.
+
+---
+
+## NEXT FEATURE — transaction flow (IN PROGRESS on `feat/transaction-flow`)
+
+**Branch:** `feat/transaction-flow`, cut off `origin/main` in the SAME worktree
+(`/Users/technotronic/Projects/technotronic/fun-saver-account-dashboard`). Pushed to origin (`0c5f8b1`).
+
+**Method (locked by user this session):** UI-driven, outside-in TDD. The **UI test leads** every cycle:
+failing UI test → extend driver/scaffold only when the test demands it → minimal code to green →
+**refactor (mandatory: extract/rename/simplify)** → next. The bottom-up list below is a **dependency map,
+NOT the order** — `errors.ts`/`transactions.ts`/the API route/the hook get built only when a UI test can't
+go green without them. One test at a time; stop for review before each commit.
+
+### Done this session
+- **Cycle 1 — CTA renders** (commit `486816a`): failing `Account` test → `ActionButton` "＋ פעולה חדשה"
+  below the wallet list; test-id `account-action-cta` + copy in `Account/constants.ts`.
+- **Styling/fit pass** (commit `0c5f8b1`): shrank `WalletHero` so the CTA fits S24-class phones
+  (hero 392→329px, CTA bottom 743→680); `Money` ₪ now LEFT of the number + bottom-aligned; `Column` gap 14→18.
+
+### NEXT — Cycle 2: clicking the CTA opens the transaction drawer
+Failing test: click `account-action-cta` → a `TransactionDrawer` becomes visible. This forces
+`Account/TransactionDrawer/` into existence (bottom sheet). Build it out piece-by-piece from there
+(pot select → deposit/withdraw toggle → amount → submit → loading/error), pulling in the hook + API +
+`transactions.ts` + `errors.ts` as later cycles' tests require them.
+
+### Gotchas learned this session (read before resuming)
+- **`stylis-plugin-rtl` flips `direction:` too** (not just physical left/right). For an LTR subtree (e.g. the
+  ₪+number money widget) use the **`dir="ltr"` HTML attribute** (plugin only rewrites CSS, never attributes) —
+  do NOT rely on `direction: ltr` in CSS, it gets flipped to rtl.
+- **Visual measuring:** the user runs their own `next dev` on **port 3001 FROM THIS WORKTREE** — a 2nd
+  `next dev`/`next build` here fights the `.next` lock, so don't. To measure/screenshot, point puppeteer at
+  **localhost:3001** (Fast Refresh already has your latest edits) with a throwaway script in `e2e/` (delete
+  before commit; `import puppeteer from 'puppeteer'` only resolves from inside the project dir).
+- `.e2e-data/` is untracked harness output; leave it out of commits.
 
 **Decisions (2026-06-21):**
 1. **Actions:** deposit + withdraw on a chosen pot (withdrawal from good-deeds = a donation). Interest stays
@@ -167,6 +212,6 @@ star is decorative + presence-tested), tsc + eslint clean.
 6. Wire into `Account`; add an E2E (`e2e/*.visual.ts`) that deposits and asserts the balance changes
    (extend `useDriver`/`DashboardDriver`). Update README + this plan.
 
-**Branch:** `feat/account-dashboard` (worktree `/Users/technotronic/Projects/technotronic/fun-saver-account-dashboard`).
-`main` has advanced via the parallel create-account session — **rebase/merge onto updated `main`** when done.
+**Branch:** `feat/transaction-flow` (worktree `/Users/technotronic/Projects/technotronic/fun-saver-account-dashboard`),
+cut off updated `origin/main` — **merge/PR back into `main`** when done.
 Dropped from mock: the bottom **dock child-switcher** (will be done from the menu instead).
