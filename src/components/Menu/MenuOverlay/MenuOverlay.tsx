@@ -4,6 +4,9 @@ import { JSX, useEffect } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { MENU_ICON } from '../constants';
+import { AccountsSection } from '../AccountsSection';
+import { AppearanceSection } from '../AppearanceSection';
+import { LanguageSection } from '../LanguageSection';
 import {
   ESCAPE_KEY,
   MENU_OVERLAY_CONTENT,
@@ -66,6 +69,11 @@ const Title = styled.span`
   font-weight: ${MENU_OVERLAY_LAYOUT.titleWeight};
 `;
 
+const Content = styled.div`
+  padding: ${MENU_OVERLAY_LAYOUT.contentPaddingTop}px
+    ${MENU_OVERLAY_LAYOUT.contentPaddingX}px 0;
+`;
+
 export interface MenuOverlayProps {
   isOpen: boolean;
   onClose: () => void;
@@ -103,6 +111,11 @@ export function MenuOverlay({
         <Title>{MENU_OVERLAY_CONTENT.title}</Title>
         <ToggleSpacer />
       </TopBar>
+      <Content>
+        <AccountsSection />
+        <AppearanceSection />
+        <LanguageSection />
+      </Content>
     </Panel>
   );
 }

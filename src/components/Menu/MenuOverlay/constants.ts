@@ -23,4 +23,6 @@ export const MENU_OVERLAY_LAYOUT = {
   barPaddingY: 10,
   barGap: 10,
   titleWeight: 700,
+  contentPaddingX: 22,
+  contentPaddingTop: 6,
 } as const;
