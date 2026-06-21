@@ -1,11 +1,44 @@
+'use client';
+
 import { JSX } from 'react';
+import styled from '@emotion/styled';
+import type { WalletWithDerived } from '@/lib/types';
+import { Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
+import { WalletHero } from './WalletHero/WalletHero';
+import { WalletList } from './WalletList/WalletList';
+import { ACCOUNT_LAYOUT } from './constants';
+
+const Column = styled.div`
+  width: 100%;
+  max-width: ${ACCOUNT_LAYOUT.maxWidth}px;
+  display: flex;
+  flex-direction: column;
+  gap: ${ACCOUNT_LAYOUT.gap}px;
+  padding: ${ACCOUNT_LAYOUT.paddingY}px ${ACCOUNT_LAYOUT.paddingX}px;
+`;
 
 interface AccountProps {
   name: string;
   avatarId: string;
+  wallets: WalletWithDerived[];
 }
 
-export function Account({ name, avatarId }: AccountProps): JSX.Element {
-  return <Header name={name} avatarId={avatarId} />;
+export function Account({
+  name,
+  avatarId,
+  wallets,
+}: AccountProps): JSX.Element {
+  const savings = wallets.find((wallet) => wallet.name === 'savings');
+  const others = wallets.filter((wallet) => wallet.name !== 'savings');
+
+  return (
+    <Screen align="top">
+      <Column>
+        <Header name={name} avatarId={avatarId} />
+        {savings && <WalletHero name={name} wallet={savings} />}
+        <WalletList wallets={others} />
+      </Column>
+    </Screen>
+  );
 }

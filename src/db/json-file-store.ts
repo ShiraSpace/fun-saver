@@ -1,7 +1,11 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import type { Account } from '../lib/types';
+import type { Account, Transaction, Wallet } from '../lib/types';
 import type { DataStore, StoreData } from './data-store';
+
+function emptyData(): StoreData {
+  return { accounts: [], wallets: [], transactions: [] };
+}
 
 export class JsonFileStore implements DataStore {
   constructor(private readonly filePath: string) {}
@@ -16,12 +20,36 @@ export class JsonFileStore implements DataStore {
     return (await this.read()).accounts;
   }
 
+  async insertWallet(wallet: Wallet): Promise<void> {
+    const data = await this.read();
+    data.wallets.push(wallet);
+    await this.persist(data);
+  }
+
+  async listWalletsByAccount(accountId: string): Promise<Wallet[]> {
+    return (await this.read()).wallets.filter(
+      (wallet) => wallet.accountId === accountId
+    );
+  }
+
+  async insertTransactions(transactions: Transaction[]): Promise<void> {
+    const data = await this.read();
+    data.transactions.push(...transactions);
+    await this.persist(data);
+  }
+
+  async listTransactionsByWallet(walletId: string): Promise<Transaction[]> {
+    return (await this.read()).transactions.filter(
+      (txn) => txn.walletId === walletId
+    );
+  }
+
   private async read(): Promise<StoreData> {
     try {
       const raw = await readFile(this.filePath, 'utf8');
-      return JSON.parse(raw) as StoreData;
+      return { ...emptyData(), ...(JSON.parse(raw) as Partial<StoreData>) };
     } catch {
-      const empty: StoreData = { accounts: [] };
+      const empty = emptyData();
       await this.persist(empty);
       return empty;
     }

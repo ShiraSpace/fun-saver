@@ -10,4 +10,7 @@ export const COLORS = {
   screenGradientStart: '#FFC34D',
   screenGradientMid: '#FF8A4C',
   screenGradientEnd: '#E94E89',
+  ink: '#3A1F5A',
+  accent: '#E94E89',
+  muted: '#8A7AA7',
 } as const;

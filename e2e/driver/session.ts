@@ -6,7 +6,7 @@ import puppeteer, {
 } from 'puppeteer';
 import { getDocument, queries } from 'pptr-testing-library';
 
-const { findByTestId, queryByTestId } = queries;
+const { findByTestId, queryByTestId, queryAllByTestId } = queries;
 
 export class Session {
   private browser?: Browser;
@@ -40,6 +40,19 @@ export class Session {
   async exists(testId: string): Promise<boolean> {
     const element = await queryByTestId(await getDocument(this.page), testId);
     return element !== null;
+  }
+
+  async count(testId: string): Promise<number> {
+    const elements = await queryAllByTestId(
+      await getDocument(this.page),
+      testId
+    );
+    return elements.length;
+  }
+
+  async text(testId: string): Promise<string> {
+    const element = await this.find(testId);
+    return element.evaluate((node) => node.textContent ?? '');
   }
 
   async click(testId: string): Promise<void> {
