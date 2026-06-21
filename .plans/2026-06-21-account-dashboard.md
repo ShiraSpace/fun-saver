@@ -94,5 +94,79 @@ All 10 cycles complete, each committed red→green→refactor.
 
 **Status:** jest 55 passing; visual E2E green (see final run). tsc + eslint clean.
 
-**Still owed (out of this slice):** styling to full mock fidelity; wallet-seeding on account
-creation (create-account flow, parallel session); the daily-interest accrual engine.
+**Still owed (out of this slice):** wallet-seeding on account creation (create-account flow,
+parallel session); the daily-interest accrual engine.
+
+---
+
+## Styling pass (done — 2026-06-21)
+
+Dashboard styled to mock fidelity (`docs/superpowers/specs/mockup-home-screen.html`), screenshot-driven.
+All theme values are tokens (`@/theme/palette` `COLORS` + per-component `*_STYLE` constants) — no inline hex.
+
+- **Header ribbon** (`b10af65`): white rounded bar, soft shadow, bold ink name; page top-aligned in a
+  420px column. Added `COLORS.surface/ink/accent/muted` + `Screen align="top"` variant.
+- **Hero card** (`485b710`): gradient pig tile, pink eyebrow, "סך הכל בקופה" + 54px amount, cream dashed
+  daily-row with silver ₪ coins, tinted breakdown cells. Styled shared `Money` (raised ₪ mark) + `CoinRow`.
+  **Decomposed `WalletHero` → `HeroHead` / `HeroAmount` / `HeroBreakdown`**, each its own tested folder;
+  `WalletHero` is a thin composition + smoke test.
+- **Wallet cards** (`07e2b5a`): per-type gradient illust tile, ink name, cream/gold balance pill; white
+  "הקופות הנוספות" label.
+- **Corner star** (`a885101`): rotated gold star sticker on the hero; SVG extracted into a tested `Star`
+  component, `CornerStar = styled(Star)`.
+
+**Status after styling:** jest **59 green**, visual E2E **17/17 green** (run before the corner-star;
+star is decorative + presence-tested), tsc + eslint clean.
+
+### Gotchas learned (read before resuming)
+
+- **RTL flip:** `stylis-plugin-rtl` (in `src/app/providers.tsx`) **flips physical `left`/`right`**. To place
+  something on the physical left in this app, write `right` (and vice-versa). This bit the corner-star.
+- **Dev server etiquette:** the USER runs their own `next dev` on **port 3001** — do NOT kill it or run a
+  competing `next dev` (Next allows one dev instance per dir; a second just fails on the lock). For
+  screenshots, build once and run your OWN `next start` on a **dedicated port (3030)**, shoot, then stop
+  only that server. The visual E2E harness already uses its own port **3987**.
+- **Screenshot loop:** `e2e/shot.mjs` (puppeteer, 402×874) — `SHOT_URL=... SHOT_OUT=... node e2e/shot.mjs`.
+- **Local seed:** `src/db/data.json` (gitignored) seeds one account (נועה) + 3 wallets + txns; its interest
+  is dated **today** so the coin row shows on a plain `npm run dev`. For mock-accurate dates run
+  `FUNSAVER_NOW=2026-01-01 npm run dev` (then date the interest 2026-01-01 to keep coins).
+
+---
+
+## NEXT FEATURE — "+ פעולה חדשה" CTA + transaction flow (NOT STARTED)
+
+**Decisions (2026-06-21):**
+1. **Actions:** deposit + withdraw on a chosen pot (withdrawal from good-deeds = a donation). Interest stays
+   automatic. **Overdraft-protected** (can't withdraw more than the pot balance).
+2. **Mechanism:** **API route + React Query** (POST `/api/wallets/[id]/transactions`).
+3. **Entry UX:** **bottom drawer** — pick pot → deposit/withdraw → amount → confirm.
+
+**Scaffolding reality (confirmed — all MISSING, must be built):**
+- `src/app/providers.tsx` sets up **Emotion only** — **no `QueryClientProvider`**. Must add one (client) for
+  React Query `useMutation`.
+- **No `src/app/api/` routes** exist. **No `src/lib/errors.ts`**. **No `src/hooks/`**. React Query installed
+  but **unused** anywhere.
+- Page/dashboard data is **server-rendered** (`page.tsx` reads the store, `force-dynamic`). React Query here is
+  only for the mutation lifecycle; after a successful mutation call **`router.refresh()`** to re-fetch the
+  server component (wallet data isn't a React Query cache entry).
+- **Money boundary:** store/logic are integer **agorot**; the drawer takes **shekels** → convert with
+  `shekelsToAgorot` at the API route only.
+- **Next 16 route handlers:** dynamic params are async — `const { id } = await ctx.params`; return
+  `Response.json(body, { status })`; errors as `{ error: string }` (400 validation/overdraft, 404 not found).
+
+**Proposed TDD slice (outside-in-ish, piece by piece):**
+1. `src/lib/errors.ts` — `ValidationError`, `OverdraftError`.
+2. `src/lib/transactions.ts` — `addTransaction(store, walletId, { type, amountAgorot }, asOf): Promise<Transaction>`
+   (amount > 0; withdrawal ≤ current `balance(txns)`; `newId`; `store.insertTransactions`). Unit-test all cases.
+3. API route `src/app/api/wallets/[id]/transactions/route.ts` — thin: parse shekels → agorot, call service,
+   map errors to status. (Validated by E2E; keep logic in the service.)
+4. `QueryClientProvider` in providers; `src/hooks/use-add-transaction.ts` (`useMutation` → POST → `router.refresh()`).
+5. UI: CTA pill (reuse `ActionButton` purple pill, "+ פעולה חדשה") on the dashboard → opens
+   `Account/TransactionDrawer/` (bottom sheet: pot select, deposit/withdraw toggle, amount, submit; loading +
+   error states). Component tests with the mutation/fetch mocked.
+6. Wire into `Account`; add an E2E (`e2e/*.visual.ts`) that deposits and asserts the balance changes
+   (extend `useDriver`/`DashboardDriver`). Update README + this plan.
+
+**Branch:** `feat/account-dashboard` (worktree `/Users/technotronic/Projects/technotronic/fun-saver-account-dashboard`).
+`main` has advanced via the parallel create-account session — **rebase/merge onto updated `main`** when done.
+Dropped from mock: the bottom **dock child-switcher** (will be done from the menu instead).
