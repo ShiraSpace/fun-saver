@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/test-support/render';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
 import { MENU_TEST_IDS } from '../Menu/constants';
