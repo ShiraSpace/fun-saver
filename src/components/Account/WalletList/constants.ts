@@ -5,3 +5,10 @@ export const WALLET_LIST_TEST_IDS = {
 export const WALLET_LIST_COPY = {
   label: 'הקופות הנוספות',
 } as const;
+
+export const WALLET_LIST_STYLE = {
+  gap: 8,
+  labelSize: 12,
+  labelOpacity: 0.92,
+  labelPaddingX: 4,
+} as const;
