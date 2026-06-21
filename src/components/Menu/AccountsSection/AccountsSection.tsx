@@ -3,22 +3,13 @@
 import { JSX } from 'react';
 import styled from '@emotion/styled';
 import { Avatar } from '../../Avatar';
+import { MenuLabel } from '../MenuLabel';
 import {
   ACCOUNTS_SECTION_CONTENT,
   ACCOUNTS_SECTION_STYLE,
   ACCOUNTS_SECTION_TEST_IDS,
   type MenuAccount,
 } from './constants';
-
-const Label = styled.div`
-  margin: ${ACCOUNTS_SECTION_STYLE.labelMarginTop}px 2px
-    ${ACCOUNTS_SECTION_STYLE.labelMarginBottom}px;
-  font-size: ${ACCOUNTS_SECTION_STYLE.labelFontSize}px;
-  font-weight: 700;
-  letter-spacing: ${ACCOUNTS_SECTION_STYLE.labelLetterSpacing}px;
-  text-transform: uppercase;
-  opacity: ${ACCOUNTS_SECTION_STYLE.labelOpacity};
-`;
 
 const Row = styled.div`
   display: flex;
@@ -91,7 +82,7 @@ function AccountChip({ account }: { account: MenuAccount }): JSX.Element {
 export function AccountsSection(): JSX.Element {
   return (
     <section data-testid={ACCOUNTS_SECTION_TEST_IDS.section}>
-      <Label>{ACCOUNTS_SECTION_CONTENT.label}</Label>
+      <MenuLabel>{ACCOUNTS_SECTION_CONTENT.label}</MenuLabel>
       <Row>
         {ACCOUNTS_SECTION_CONTENT.accounts.map((account) => (
           <AccountChip key={account.id} account={account} />

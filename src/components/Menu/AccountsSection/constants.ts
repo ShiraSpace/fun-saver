@@ -34,9 +34,4 @@ export const ACCOUNTS_SECTION_STYLE = {
   badgeSize: 20,
   badgeFontSize: 11,
   actionFontSize: 20,
-  labelFontSize: 10,
-  labelLetterSpacing: 0.6,
-  labelOpacity: 0.92,
-  labelMarginTop: 18,
-  labelMarginBottom: 8,
 } as const;
