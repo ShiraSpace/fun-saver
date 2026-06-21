@@ -1,11 +1,12 @@
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
+import { NAME_FIELD_TEST_IDS } from '@/components/CreateAccount/NameField/constants';
 import { Session } from './session';
 
 export class CreateAccountDriver {
   constructor(private readonly session: Session) {}
 
   async isOpen(): Promise<boolean> {
-    await this.session.box(CREATE_ACCOUNT_TEST_IDS.nameInput);
+    await this.session.box(NAME_FIELD_TEST_IDS.input);
     return true;
   }
 
@@ -13,6 +14,13 @@ export class CreateAccountDriver {
     return this.session.computedStyle(
       CREATE_ACCOUNT_TEST_IDS.container,
       'background-image'
+    );
+  }
+
+  contentAlignment(): Promise<string> {
+    return this.session.computedStyle(
+      CREATE_ACCOUNT_TEST_IDS.container,
+      'justify-content'
     );
   }
 
@@ -29,22 +37,16 @@ export class CreateAccountDriver {
 
   nameFieldBackground(): Promise<string> {
     return this.session.computedStyle(
-      CREATE_ACCOUNT_TEST_IDS.nameField,
+      NAME_FIELD_TEST_IDS.field,
       'background-color'
     );
   }
 
   nameLabelColor(): Promise<string> {
-    return this.session.computedStyle(
-      CREATE_ACCOUNT_TEST_IDS.nameLabel,
-      'color'
-    );
+    return this.session.computedStyle(NAME_FIELD_TEST_IDS.label, 'color');
   }
 
   nameInputColor(): Promise<string> {
-    return this.session.computedStyle(
-      CREATE_ACCOUNT_TEST_IDS.nameInput,
-      'color'
-    );
+    return this.session.computedStyle(NAME_FIELD_TEST_IDS.input, 'color');
   }
 }

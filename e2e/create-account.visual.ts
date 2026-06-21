@@ -19,6 +19,10 @@ describe('create account', () => {
     assert.equal(await createAccount.background(), expectedGradient);
   });
 
+  it('anchors the form to the top of the screen', async () => {
+    assert.equal(await createAccount.contentAlignment(), 'flex-start');
+  });
+
   it('shows the title in white at the heading size', async () => {
     assert.equal(
       await createAccount.titleColor(),
