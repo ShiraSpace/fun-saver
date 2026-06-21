@@ -4,9 +4,8 @@ import { JSX, useEffect } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { MENU_ICON } from '../constants';
-import { BurgerIcon } from '../BurgerIcon';
-import { ESCAPE_KEY } from './constants';
 import {
+  ESCAPE_KEY,
   MENU_OVERLAY_CONTENT,
   MENU_OVERLAY_LAYOUT,
   MENU_OVERLAY_STYLE,
@@ -56,23 +55,15 @@ const TopBar = styled.div`
     ${MENU_OVERLAY_LAYOUT.barPaddingX}px;
 `;
 
+const ToggleSpacer = styled.div`
+  width: ${MENU_ICON.buttonSize}px;
+  flex-shrink: 0;
+`;
+
 const Title = styled.span`
   flex: 1;
   text-align: center;
   font-weight: ${MENU_OVERLAY_LAYOUT.titleWeight};
-`;
-
-const CloseButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: ${MENU_ICON.buttonSize}px;
-  height: ${MENU_ICON.buttonSize}px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: currentColor;
-  cursor: pointer;
 `;
 
 export interface MenuOverlayProps {
@@ -108,15 +99,9 @@ export function MenuOverlay({
     >
       <StatusbarSpacer />
       <TopBar>
-        <CloseButton
-          type="button"
-          aria-label={MENU_OVERLAY_CONTENT.closeLabel}
-          data-testid={MENU_OVERLAY_TEST_IDS.closeButton}
-          onClick={onClose}
-        >
-          <BurgerIcon isOpen />
-        </CloseButton>
+        <ToggleSpacer />
         <Title>{MENU_OVERLAY_CONTENT.title}</Title>
+        <ToggleSpacer />
       </TopBar>
     </Panel>
   );

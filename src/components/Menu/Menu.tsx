@@ -4,9 +4,11 @@ import { Fragment, JSX, useState } from 'react';
 import styled from '@emotion/styled';
 import { BurgerIcon } from './BurgerIcon';
 import { MenuOverlay } from './MenuOverlay';
-import { MENU_ICON, MENU_TEST_IDS } from './constants';
+import { MENU_ICON, MENU_TEST_IDS, MENU_TOGGLE } from './constants';
 
 const ToggleButton = styled.button`
+  position: relative;
+  z-index: ${MENU_TOGGLE.zIndex};
   display: inline-flex;
   align-items: center;
   justify-content: center;

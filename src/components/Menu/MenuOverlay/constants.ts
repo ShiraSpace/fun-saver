@@ -1,11 +1,9 @@
 export const MENU_OVERLAY_TEST_IDS = {
   overlay: 'menu-overlay',
-  closeButton: 'menu-overlay-close',
 } as const;
 
 export const MENU_OVERLAY_CONTENT = {
   title: 'תפריט',
-  closeLabel: 'סגירה',
 } as const;
 
 export const ESCAPE_KEY = 'Escape';

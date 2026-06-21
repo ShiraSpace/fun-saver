@@ -39,6 +39,17 @@ describe('Menu', () => {
     expect(overlay).toHaveAttribute('data-open', 'true');
   });
 
+  it('closes the menu overlay when the menu button is clicked again', () => {
+    const button = screen.getByTestId(MENU_TEST_IDS.menuButton);
+    const overlay = screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay);
+
+    fireEvent.click(button);
+    expect(overlay).toHaveAttribute('data-open', 'true');
+
+    fireEvent.click(button);
+    expect(overlay).toHaveAttribute('data-open', 'false');
+  });
+
   it('marks the icon as open on click to drive the morph animation', () => {
     const button = screen.getByTestId(MENU_TEST_IDS.menuButton);
     const icon = screen.getByTestId(MENU_TEST_IDS.menuIcon);

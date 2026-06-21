@@ -3,6 +3,10 @@ export const MENU_TEST_IDS = {
   menuIcon: 'menu-icon',
 } as const;
 
+export const MENU_TOGGLE = {
+  zIndex: 60,
+} as const;
+
 export const MENU_ICON = {
   buttonSize: 44,
   iconSize: 26,
