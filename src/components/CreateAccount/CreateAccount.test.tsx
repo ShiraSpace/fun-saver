@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/test-support/render';
 import { CreateAccount } from './CreateAccount';
 import { CREATE_ACCOUNT_TEST_IDS } from './constants';
 

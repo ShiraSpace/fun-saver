@@ -1,8 +1,10 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { GRADIENTS } from '@/theme/gradients';
+import type { Theme } from '@emotion/react';
 import { SCREEN_LAYOUT } from './constants';
+
+const surface = ({ theme }: { theme: Theme }): string => theme.gradients.screen;
 
 export const Screen = styled.div`
   display: flex;
@@ -12,5 +14,5 @@ export const Screen = styled.div`
   gap: ${SCREEN_LAYOUT.gap}px;
   min-height: 100vh;
   text-align: center;
-  background: ${GRADIENTS.screen};
+  background: ${surface};
 `;

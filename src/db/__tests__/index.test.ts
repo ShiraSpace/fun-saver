@@ -22,7 +22,9 @@ describe('getStore', () => {
     await getStore().insertAccount(ACCOUNT);
 
     expect(existsSync(process.env.FUNSAVER_DATA_PATH as string)).toBe(true);
-    expect((await getStore().listAccounts()).map((account) => account.id)).toEqual([ACCOUNT.id]);
+    expect(
+      (await getStore().listAccounts()).map((account) => account.id)
+    ).toEqual([ACCOUNT.id]);
   });
 
   it('memoizes one store per path', () => {

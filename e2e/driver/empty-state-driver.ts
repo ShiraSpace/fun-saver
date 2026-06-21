@@ -12,10 +12,10 @@ export class EmptyStateDriver {
     return this.session.exists(EMPTY_STATE_TEST_IDS.container);
   }
 
-  ctaColor(): Promise<string> {
+  ctaBackground(): Promise<string> {
     return this.session.computedStyle(
       EMPTY_STATE_TEST_IDS.createAccount,
-      'background-color'
+      'background-image'
     );
   }
 

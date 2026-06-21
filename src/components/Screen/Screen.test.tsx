@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/test-support/render';
 import { Screen } from './Screen';
 
 describe('Screen', () => {

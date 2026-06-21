@@ -3,9 +3,10 @@
 import { JSX, ReactNode, useState } from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
 import createCache, { type EmotionCache } from '@emotion/cache';
-import { CacheProvider } from '@emotion/react';
+import { CacheProvider, ThemeProvider } from '@emotion/react';
 import { prefixer } from 'stylis';
 import rtlPlugin from 'stylis-plugin-rtl';
+import { getThemeTokens } from '@/theme/registry';
 
 const EMOTION_KEY = 'fs';
 
@@ -42,7 +43,11 @@ export function Providers({ children }: ProvidersProps): JSX.Element {
     );
   });
 
-  return <CacheProvider value={registry.cache}>{children}</CacheProvider>;
+  return (
+    <CacheProvider value={registry.cache}>
+      <ThemeProvider theme={getThemeTokens()}>{children}</ThemeProvider>
+    </CacheProvider>
+  );
 }
 
 function createRegistry(): Registry {
