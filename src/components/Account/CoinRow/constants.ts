@@ -11,7 +11,7 @@ export const COIN_ROW_COPY = {
 } as const;
 
 export const COIN_ROW_STYLE = {
-  marginTop: 14,
+  marginTop: 8,
   paddingY: 10,
   paddingX: 12,
   radius: 14,
