@@ -5,8 +5,8 @@ import Image from 'next/image';
 import styled from '@emotion/styled';
 import { Menu } from '../Menu';
 import { TYPE_SCALE } from '@/theme/typography';
+import { avatarSource } from '@/lib/avatars';
 import {
-  avatarSource,
   HEADER_AVATAR_PROPS,
   HEADER_LAYOUT,
   HEADER_TEST_IDS,

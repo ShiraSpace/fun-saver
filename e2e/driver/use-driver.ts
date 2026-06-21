@@ -7,6 +7,7 @@ import { MenuDriver } from './menu-driver';
 import { HeaderDriver } from './header-driver';
 import { EmptyStateDriver } from './empty-state-driver';
 import { CreateAccountDriver } from './create-account-driver';
+import { AvatarPickerDriver } from './avatar-picker-driver';
 import { startServer, type RunningServer } from '../server';
 
 export interface AppDriver {
@@ -15,6 +16,7 @@ export interface AppDriver {
   header: HeaderDriver;
   emptyState: EmptyStateDriver;
   createAccount: CreateAccountDriver;
+  avatarPicker: AvatarPickerDriver;
 }
 
 export function useDriver(state: Partial<StoreData> = {}): AppDriver {
@@ -25,6 +27,7 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
     header: new HeaderDriver(session),
     emptyState: new EmptyStateDriver(session),
     createAccount: new CreateAccountDriver(session),
+    avatarPicker: new AvatarPickerDriver(session),
   };
   let server: RunningServer;
 
