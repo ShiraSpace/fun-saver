@@ -7,6 +7,7 @@ import { MenuDriver } from './menu-driver';
 import { HeaderDriver } from './header-driver';
 import { EmptyStateDriver } from './empty-state-driver';
 import { CreateAccountDriver } from './create-account-driver';
+import { DashboardDriver } from './dashboard-driver';
 import { startServer, type RunningServer } from '../server';
 
 export interface AppDriver {
@@ -15,6 +16,7 @@ export interface AppDriver {
   header: HeaderDriver;
   emptyState: EmptyStateDriver;
   createAccount: CreateAccountDriver;
+  dashboard: DashboardDriver;
 }
 
 export function useDriver(state: Partial<StoreData> = {}): AppDriver {
@@ -25,6 +27,7 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
     header: new HeaderDriver(session),
     emptyState: new EmptyStateDriver(session),
     createAccount: new CreateAccountDriver(session),
+    dashboard: new DashboardDriver(session),
   };
   let server: RunningServer;
 
@@ -43,6 +46,12 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
     const store = new JsonFileStore(server.dataPath);
     for (const account of state.accounts ?? []) {
       await store.insertAccount(account);
+    }
+    for (const wallet of state.wallets ?? []) {
+      await store.insertWallet(wallet);
+    }
+    if (state.transactions?.length) {
+      await store.insertTransactions(state.transactions);
     }
     await session.open(server.baseUrl);
   });

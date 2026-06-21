@@ -1,11 +1,17 @@
 import { JSX } from 'react';
 import type { WalletWithDerived } from '@/lib/types';
 import { Money } from '../Money/Money';
+import { CoinRow } from '../CoinRow/CoinRow';
 import { WALLET_HERO_COPY, WALLET_HERO_TEST_IDS } from './constants';
 
 type HeroWallet = Pick<
   WalletWithDerived,
-  'balance' | 'principal' | 'interestGain' | 'monthlyInterestRate' | 'openedAt'
+  | 'balance'
+  | 'principal'
+  | 'interestGain'
+  | 'todayInterest'
+  | 'monthlyInterestRate'
+  | 'openedAt'
 >;
 
 interface WalletHeroProps {
@@ -53,6 +59,7 @@ export function WalletHero({ name, wallet }: WalletHeroProps): JSX.Element {
         amountAgorot={wallet.balance}
         testId={WALLET_HERO_TEST_IDS.balance}
       />
+      <CoinRow todayInterest={wallet.todayInterest} />
       <BreakdownCell
         label={WALLET_HERO_COPY.depositsLabel}
         amountAgorot={wallet.principal}

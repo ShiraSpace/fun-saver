@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { WalletHero } from './WalletHero';
 import { WALLET_HERO_COPY, WALLET_HERO_TEST_IDS } from './constants';
+import { COIN_ROW_TEST_IDS } from '../CoinRow/constants';
 
 describe('WalletHero', () => {
   beforeEach(() => {
@@ -11,6 +12,7 @@ describe('WalletHero', () => {
           balance: 8500,
           principal: 8000,
           interestGain: 500,
+          todayInterest: 150,
           monthlyInterestRate: 0.15,
           openedAt: '2026-01-01',
         }}
@@ -64,5 +66,9 @@ describe('WalletHero', () => {
     expect(
       screen.getByText(WALLET_HERO_COPY.interestGainLabel)
     ).toBeInTheDocument();
+  });
+
+  it('shows the daily-interest coin row', () => {
+    expect(screen.getByTestId(COIN_ROW_TEST_IDS.row)).toBeInTheDocument();
   });
 });

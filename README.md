@@ -10,8 +10,17 @@
 
 ## Assumptions
 
-- [List any assumptions you made about the brief here]
+- The account dashboard renders three wallets (savings hero + spending/good-deeds cards).
+  Wallet figures are **derived from seeded transactions**; no interest-accrual engine yet
+  (`todayInterest` comes from interest transactions dated `asOf`).
+- A local `src/db/data.json` is seeded with one account + three wallets so `npm run dev`
+  shows the dashboard. It is gitignored. To see the daily-interest coin row and "active since"
+  exactly like the mock, run with the same clock as the seed:
+  `FUNSAVER_NOW=2026-01-01 npm run dev`.
 
 ## What I'd improve with more time
 
-- [List the first things you'd change and why]
+- Seed the three default wallets when an account is created (currently owned by the
+  create-account flow; the dashboard slice seeds wallets directly for now).
+- Add the real daily-interest accrual engine so savings grows over time.
+- Style the dashboard to full mock fidelity (driven by the visual E2E).

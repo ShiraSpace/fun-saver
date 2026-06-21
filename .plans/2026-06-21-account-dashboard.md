@@ -74,3 +74,25 @@ Keep `wallet-hero` / `wallet-balance` test-ids aligned with the acceptance E2E t
 ## Baseline
 
 20 jest tests passing in the worktree at start.
+
+## Progress (updated 2026-06-21)
+
+All 10 cycles complete, each committed red→green→refactor.
+
+- **Cycles 1–5 (UI, top→bottom):** `WalletHero` (balance, head, coins, breakdown), `CoinRow`,
+  `Money`, `WalletCard`, `WalletList` — nested under `Account/`, emotion-free structure +
+  copy/test-ids in `constants.ts`.
+- **Cycle 6:** domain types (`Wallet`/`Transaction`/`WalletWithDerived`/`WalletName`), pure
+  `derivations`, `deriveWallet`; components tied to the domain type via `Pick<WalletWithDerived>`.
+- **Cycle 7:** DAL stores wallets + transactions (port + memory + json adapters, legacy-file merge).
+- **Cycle 8:** `getWalletsForAccount` service (derive + savings-first).
+- **Cycle 9:** `Account` composes `Header` + `WalletHero` + `WalletList` inside `Screen`;
+  `page.tsx` fetches via the service; `clock.today()` (FUNSAVER_NOW-aware).
+- **Cycle 10:** driver seeding (wallets/txns) + `DashboardDriver` + `e2e/dashboard.visual.ts`;
+  local `data.json` dev seed. **The E2E caught a real gap — `CoinRow` was built but never composed
+  into `WalletHero`; fixed test-first.**
+
+**Status:** jest 55 passing; visual E2E green (see final run). tsc + eslint clean.
+
+**Still owed (out of this slice):** styling to full mock fidelity; wallet-seeding on account
+creation (create-account flow, parallel session); the daily-interest accrual engine.
