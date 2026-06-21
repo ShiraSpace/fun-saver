@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fun-saver — account chip: avatar + letter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; font-family:'Rubik','Roboto',sans-serif; background:#0a0a0a; min-height:100vh; color:#fff; direction:rtl; }
+  .page { max-width:1040px; margin:0 auto; padding:32px 20px 80px; }
+  h1 { font-size:22px; font-weight:600; margin:0 0 4px; text-align:center; }
+  .subtitle { color:#bdbdbd; text-align:center; margin:0 0 28px; font-size:14px; }
+  .row { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; }
+
+  .card { width:300px; }
+  .panel { background:linear-gradient(160deg,#FFC34D 0%,#FF8A4C 40%,#E94E89 100%); border-radius:24px; padding:18px 20px 22px; font-family:'Fredoka','Rubik',sans-serif; }
+  .menu-label { color:#fff; font-size:10px; font-weight:700; opacity:.92; letter-spacing:.6px; text-transform:uppercase; margin:0 2px 12px; }
+  .menu-avatars { display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap; }
+
+  .chip { position:relative; width:52px; }
+  .av-img { width:52px; height:52px; border-radius:50%; overflow:hidden; box-shadow:0 3px 0 rgba(0,0,0,.12); background:#fff; }
+  .av-img img { width:100%; height:100%; object-fit:cover; display:block; }
+  .chip.on .av-img { outline:3px solid #FFD23F; outline-offset:1px; }
+
+  /* action chips reused */
+  .m-av { width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.4); display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff; box-shadow:0 3px 0 rgba(0,0,0,.1); }
+
+  /* A — letter badge, bottom-start corner */
+  .badge { position:absolute; bottom:-2px; inset-inline-start:-2px; min-width:20px; height:20px; padding:0 4px; box-sizing:border-box;
+    border-radius:999px; background:#6B2C8E; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; border:2px solid #fff; }
+
+  /* B — letter label centered beneath */
+  .below { text-align:center; margin-top:6px; color:#fff; font-size:12px; font-weight:700; }
+
+  /* C — letter as translucent scrim ring label on top */
+  .scrim { position:absolute; inset:0; border-radius:50%; background:rgba(58,31,90,.42); display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; font-weight:700; }
+
+  .caption { text-align:center; color:#bdbdbd; font-size:13px; margin-top:12px; }
+  .caption b { color:#fff; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <h1>fun-saver · עיגול חשבון = אווטאר + אות</h1>
+  <p class="subtitle">שלוש דרכים לשלב את תמונת האווטאר עם האות הראשונה של השם. בחרו אחת.</p>
+
+  <div class="row">
+
+    <!-- A: corner badge -->
+    <div class="card">
+      <div class="panel">
+        <div class="menu-label">החשבונות</div>
+        <div class="menu-avatars">
+          <div class="chip on">
+            <div class="av-img"><img src="../../../public/avatars/kid-03.svg" alt=""></div>
+            <span class="badge">נ</span>
+          </div>
+          <div class="chip">
+            <div class="av-img"><img src="../../../public/avatars/kid-08.svg" alt=""></div>
+            <span class="badge">מ</span>
+          </div>
+          <div class="m-av">✏️</div>
+          <div class="m-av">＋</div>
+        </div>
+      </div>
+      <p class="caption"><b>A</b> · תג־אות בפינה על האווטאר</p>
+    </div>
+
+    <!-- B: label beneath -->
+    <div class="card">
+      <div class="panel">
+        <div class="menu-label">החשבונות</div>
+        <div class="menu-avatars">
+          <div class="chip on">
+            <div class="av-img"><img src="../../../public/avatars/kid-03.svg" alt=""></div>
+            <div class="below">נ</div>
+          </div>
+          <div class="chip">
+            <div class="av-img"><img src="../../../public/avatars/kid-08.svg" alt=""></div>
+            <div class="below">מ</div>
+          </div>
+          <div class="m-av">✏️</div>
+          <div class="m-av">＋</div>
+        </div>
+      </div>
+      <p class="caption"><b>B</b> · אות כתווית מתחת לאווטאר</p>
+    </div>
+
+    <!-- C: scrim overlay -->
+    <div class="card">
+      <div class="panel">
+        <div class="menu-label">החשבונות</div>
+        <div class="menu-avatars">
+          <div class="chip on">
+            <div class="av-img"><img src="../../../public/avatars/kid-03.svg" alt=""><span class="scrim">נ</span></div>
+          </div>
+          <div class="chip">
+            <div class="av-img"><img src="../../../public/avatars/kid-08.svg" alt=""><span class="scrim">מ</span></div>
+          </div>
+          <div class="m-av">✏️</div>
+          <div class="m-av">＋</div>
+        </div>
+      </div>
+      <p class="caption"><b>C</b> · אות על שכבת חצי־שקופה מעל האווטאר</p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
