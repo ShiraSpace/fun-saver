@@ -1,11 +1,27 @@
-import { fireEvent, render, screen } from '@/test-support/render';
+import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
+import { ACCOUNT, CREATE_ACCOUNT_INPUT } from '@/test-support/fixtures';
 import { CreateAccount } from './CreateAccount';
 import { NAME_FIELD_TEST_IDS } from './NameField/constants';
 import { CREATE_ACCOUNT_COPY, CREATE_ACCOUNT_TEST_IDS } from './constants';
 
+const mockPush = jest.fn();
+const mockCreateAccount = jest.fn();
+
+jest.mock('next/navigation', () => ({
+  useRouter: (): { push: jest.Mock } => ({ push: mockPush }),
+}));
+
+jest.mock('./use-create-account', () => ({
+  useCreateAccount: (): { createAccount: jest.Mock } => ({
+    createAccount: mockCreateAccount,
+  }),
+}));
+
 describe('CreateAccount', () => {
   beforeEach(() => {
+    mockPush.mockClear();
+    mockCreateAccount.mockReset().mockResolvedValue(ACCOUNT);
     render(<CreateAccount />);
   });
 
@@ -42,5 +58,16 @@ describe('CreateAccount', () => {
 
     fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
     expect(submit).toBeEnabled();
+  });
+
+  it('creates the account and navigates home on submit', async () => {
+    fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
+      target: { value: CREATE_ACCOUNT_INPUT.name },
+    });
+    fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
+    fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit));
+
+    expect(mockCreateAccount).toHaveBeenCalledWith(CREATE_ACCOUNT_INPUT);
+    await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/'));
   });
 });
