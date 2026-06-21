@@ -4,6 +4,9 @@ export interface ThemeColors {
   readonly primaryShadow: string;
   readonly primaryGlow: string;
   readonly textOnPrimary: string;
+  readonly surface: string;
+  readonly textMuted: string;
+  readonly textStrong: string;
   readonly screenGradientStart: string;
   readonly screenGradientMid: string;
   readonly screenGradientEnd: string;

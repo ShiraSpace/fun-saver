@@ -26,4 +26,19 @@ describe('create account', () => {
     );
     assert.equal(await createAccount.titleFontSize(), `${TYPE_SCALE.h2}px`);
   });
+
+  it('shows the name as a white card with a muted label and strong value', async () => {
+    assert.equal(
+      await createAccount.nameFieldBackground(),
+      hexToRgb(COLORS.surface)
+    );
+    assert.equal(
+      await createAccount.nameLabelColor(),
+      hexToRgb(COLORS.textMuted)
+    );
+    assert.equal(
+      await createAccount.nameInputColor(),
+      hexToRgb(COLORS.textStrong)
+    );
+  });
 });

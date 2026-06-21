@@ -26,4 +26,25 @@ export class CreateAccountDriver {
       'font-size'
     );
   }
+
+  nameFieldBackground(): Promise<string> {
+    return this.session.computedStyle(
+      CREATE_ACCOUNT_TEST_IDS.nameField,
+      'background-color'
+    );
+  }
+
+  nameLabelColor(): Promise<string> {
+    return this.session.computedStyle(
+      CREATE_ACCOUNT_TEST_IDS.nameLabel,
+      'color'
+    );
+  }
+
+  nameInputColor(): Promise<string> {
+    return this.session.computedStyle(
+      CREATE_ACCOUNT_TEST_IDS.nameInput,
+      'color'
+    );
+  }
 }
