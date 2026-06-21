@@ -47,6 +47,7 @@ export default async function Home({
     store.listAccounts(),
     searchParams,
   ]);
+
   const wallets = account
     ? await getWalletsForAccount(store, account.id, today())
     : [];

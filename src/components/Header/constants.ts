@@ -13,6 +13,10 @@ export const HEADER_AVATAR_PROPS = {
 export const HEADER_LAYOUT = {
   paddingX: 16,
   paddingY: 12,
+  gap: 10,
+  radius: 18,
+  shadow: '0 4px 0 rgba(0, 0, 0, 0.06)',
+  nameWeight: 700,
 } as const;
 
 export function avatarSource(avatarId: string): string {
