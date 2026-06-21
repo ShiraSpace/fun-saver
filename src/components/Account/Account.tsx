@@ -5,9 +5,10 @@ import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
 import { Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
+import { ActionButton } from '@/components/ActionButton';
 import { WalletHero } from './WalletHero/WalletHero';
 import { WalletList } from './WalletList/WalletList';
-import { ACCOUNT_LAYOUT } from './constants';
+import { ACCOUNT_COPY, ACCOUNT_LAYOUT, ACCOUNT_TEST_IDS } from './constants';
 
 const Column = styled.div`
   width: 100%;
@@ -38,6 +39,9 @@ export function Account({
         <Header name={name} avatarId={avatarId} />
         {savings && <WalletHero name={name} wallet={savings} />}
         <WalletList wallets={others} />
+        <ActionButton type="button" data-testid={ACCOUNT_TEST_IDS.actionCta}>
+          {ACCOUNT_COPY.actionCta}
+        </ActionButton>
       </Column>
     </Screen>
   );
