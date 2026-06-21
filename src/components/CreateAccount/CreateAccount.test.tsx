@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-support/render';
+import { fireEvent, render, screen } from '@/test-support/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { CreateAccount } from './CreateAccount';
 import { NAME_FIELD_TEST_IDS } from './NameField/constants';
@@ -23,5 +23,24 @@ describe('CreateAccount', () => {
     expect(
       screen.getByTestId(AVATAR_PICKER_TEST_IDS.container)
     ).toBeInTheDocument();
+  });
+
+  it('shows the submit button', () => {
+    expect(
+      screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit)
+    ).toHaveTextContent(CREATE_ACCOUNT_COPY.submit);
+  });
+
+  it('disables submit until a name and an avatar are chosen', () => {
+    const submit = screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit);
+    expect(submit).toBeDisabled();
+
+    fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
+      target: { value: 'נועה' },
+    });
+    expect(submit).toBeDisabled();
+
+    fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
+    expect(submit).toBeEnabled();
   });
 });

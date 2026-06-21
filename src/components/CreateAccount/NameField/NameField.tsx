@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX } from 'react';
+import { ChangeEvent, JSX } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import {
@@ -39,13 +39,25 @@ const Input = styled.input`
   color: ${valueColor};
 `;
 
-export function NameField(): JSX.Element {
+export interface NameFieldProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export function NameField({ value, onChange }: NameFieldProps): JSX.Element {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void =>
+    onChange(event.target.value);
+
   return (
     <Card data-testid={NAME_FIELD_TEST_IDS.field}>
       <span data-testid={NAME_FIELD_TEST_IDS.label}>
         {NAME_FIELD_COPY.label}
       </span>
-      <Input data-testid={NAME_FIELD_TEST_IDS.input} />
+      <Input
+        data-testid={NAME_FIELD_TEST_IDS.input}
+        value={value}
+        onChange={handleChange}
+      />
     </Card>
   );
 }
