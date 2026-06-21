@@ -11,6 +11,14 @@ export class CreateAccountDriver {
     return true;
   }
 
+  fillName(value: string): Promise<void> {
+    return this.session.type(NAME_FIELD_TEST_IDS.input, value);
+  }
+
+  submit(): Promise<void> {
+    return this.session.click(CREATE_ACCOUNT_TEST_IDS.submit);
+  }
+
   background(): Promise<string> {
     return this.session.computedStyle(
       CREATE_ACCOUNT_TEST_IDS.container,

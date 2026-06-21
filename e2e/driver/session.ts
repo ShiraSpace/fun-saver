@@ -55,6 +55,23 @@ export class Session {
     return element.evaluate((node) => node.textContent ?? '');
   }
 
+  async texts(testId: string): Promise<string[]> {
+    const elements = await queryAllByTestId(
+      await getDocument(this.page),
+      testId
+    );
+    return Promise.all(
+      elements.map((element) =>
+        element.evaluate((node) => node.textContent ?? '')
+      )
+    );
+  }
+
+  async type(testId: string, value: string): Promise<void> {
+    const element = await this.find(testId);
+    await element.type(value);
+  }
+
   async click(testId: string): Promise<void> {
     const element = await this.find(testId);
     await element.click();

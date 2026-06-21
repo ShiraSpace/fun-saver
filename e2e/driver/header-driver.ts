@@ -13,6 +13,10 @@ export class HeaderDriver {
     return this.session.box(HEADER_TEST_IDS.bar);
   }
 
+  name(): Promise<string> {
+    return this.session.text(HEADER_TEST_IDS.name);
+  }
+
   nameBox(): Promise<BoundingBox> {
     return this.session.box(HEADER_TEST_IDS.name);
   }

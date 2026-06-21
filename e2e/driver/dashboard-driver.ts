@@ -22,4 +22,8 @@ export class DashboardDriver {
   walletCardCount(): Promise<number> {
     return this.session.count(WALLET_CARD_TEST_IDS.card);
   }
+
+  walletBalances(): Promise<string[]> {
+    return this.session.texts(WALLET_CARD_TEST_IDS.balance);
+  }
 }
