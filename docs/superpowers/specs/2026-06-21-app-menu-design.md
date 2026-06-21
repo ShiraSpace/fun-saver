@@ -35,13 +35,18 @@ src/components/
     constants.ts           ← existing MENU_ICON/MENU_TEST_IDS + overlay/content ids
     index.ts               ← unchanged (exports Menu)
     Menu.test.tsx          ← extended: open/close, Escape
-    BurgerIcon/            ← NEW: extracted spin-cross icon (shared by header button + close button)
+    BurgerIcon/            ← NEW: extracted spin-cross icon (used by the single header toggle)
       BurgerIcon.tsx
       BurgerIcon.test.tsx
       constants.ts
       index.ts
+    MenuLabel/             ← NEW: shared uppercase section heading (used by all three sections)
+      MenuLabel.tsx
+      MenuLabel.test.tsx
+      constants.ts
+      index.ts
     MenuOverlay/
-      MenuOverlay.tsx      ← fixed inset:0 panel, gradient bg, transition, top bar w/ close burger
+      MenuOverlay.tsx      ← fixed inset:0 panel, gradient bg, transition, top bar (title only) + section content
       MenuOverlay.test.tsx
       constants.ts
       index.ts
@@ -81,9 +86,10 @@ Renders via `next/image` with `src={avatarSource(avatarId)}`, `object-fit: cover
 - **Mounting/visibility:** always mounted; a `data-open` attribute (matching the existing `IconBox` pattern) drives the transition.
 - **Positioning:** `position: fixed; inset: 0`, `z-index` above app content, `overflow-y: auto`. Background = `theme.gradients.screen` to match the mockup.
 - **Transition:** closed = `opacity: 0; transform: scale(.92)`, `transform-origin: top right` (RTL top-start), `pointer-events: none`; open = `opacity: 1; transform: scale(1); pointer-events: auto`; ~300ms ease. Values live in the overlay's `constants.ts`.
-- **Top bar:** status-bar spacer + start-side close button (shared `BurgerIcon` in its open/cross state) + centered title "תפריט".
-- **Close affordances:** (1) header burger toggles; (2) overlay close-burger calls `onClose`; (3) **Escape** keydown calls `onClose`.
-- **Accessibility:** overlay `role="dialog"` + `aria-label="תפריט"`; header button keeps `aria-expanded`.
+- **Top bar:** status-bar spacer + centered title "תפריט" (balanced by start/end spacers); no separate close control.
+- **Single toggle (revised after feedback):** there is **one** morphing hamburger/X — the header toggle. It floats above the overlay (`z-index` above the panel via `MENU_TOGGLE.zIndex`) so the same icon both opens and closes the menu. The overlay does **not** render its own close button.
+- **Close affordances:** (1) the floating header toggle (hamburger ↔ X); (2) **Escape** keydown calls `onClose`.
+- **Accessibility:** overlay `role="dialog"` + `aria-label="תפריט"`; header toggle keeps `aria-expanded`.
 - **Out of scope (noted follow-ups):** body scroll lock; focus trap.
 
 ## Sections (static content)

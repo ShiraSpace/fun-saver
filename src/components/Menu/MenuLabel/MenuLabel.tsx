@@ -6,6 +6,7 @@ import { MENU_LABEL_STYLE } from './constants';
 
 const Label = styled.div`
   margin: ${MENU_LABEL_STYLE.marginTop}px 2px ${MENU_LABEL_STYLE.marginBottom}px;
+  text-align: start;
   font-size: ${MENU_LABEL_STYLE.fontSize}px;
   font-weight: 700;
   letter-spacing: ${MENU_LABEL_STYLE.letterSpacing}px;
