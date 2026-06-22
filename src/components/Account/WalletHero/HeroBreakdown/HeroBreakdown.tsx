@@ -13,7 +13,7 @@ import {
 const Row = styled.div`
   display: flex;
   gap: ${HERO_STYLE.breakdownGap}px;
-  margin-top: 14px;
+  margin-top: 8px;
   padding-top: 12px;
   border-top: ${HERO_STYLE.divider};
 `;

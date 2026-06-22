@@ -1,13 +1,15 @@
 'use client';
 
-import { JSX } from 'react';
+import { JSX, useState } from 'react';
 import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
 import { Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
+import { ActionButton } from '@/components/ActionButton';
 import { WalletHero } from './WalletHero/WalletHero';
 import { WalletList } from './WalletList/WalletList';
-import { ACCOUNT_LAYOUT } from './constants';
+import { TransactionDrawer } from './TransactionDrawer';
+import { ACCOUNT_COPY, ACCOUNT_LAYOUT, ACCOUNT_TEST_IDS } from './constants';
 
 const Column = styled.div`
   width: 100%;
@@ -19,18 +21,21 @@ const Column = styled.div`
 `;
 
 interface AccountProps {
+  accountId: string;
   name: string;
   avatarId: string;
   wallets: WalletWithDerived[];
 }
 
 export function Account({
+  accountId,
   name,
   avatarId,
   wallets,
 }: AccountProps): JSX.Element {
-  const savings = wallets.find((wallet) => wallet.name === 'savings');
-  const others = wallets.filter((wallet) => wallet.name !== 'savings');
+  const savings = wallets.find((wallet) => wallet.name === 'savings')!;
+  const others = wallets.filter((wallet) => wallet.name !== 'savings')!;
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
     <Screen align="top">
@@ -38,7 +43,20 @@ export function Account({
         <Header name={name} avatarId={avatarId} />
         {savings && <WalletHero name={name} wallet={savings} />}
         <WalletList wallets={others} />
+        <ActionButton
+          type="button"
+          data-testid={ACCOUNT_TEST_IDS.actionCta}
+          onClick={() => setIsDrawerOpen(true)}
+        >
+          {ACCOUNT_COPY.actionCta}
+        </ActionButton>
       </Column>
+      {isDrawerOpen && (
+        <TransactionDrawer
+          accountId={accountId}
+          onClose={() => setIsDrawerOpen(false)}
+        />
+      )}
     </Screen>
   );
 }

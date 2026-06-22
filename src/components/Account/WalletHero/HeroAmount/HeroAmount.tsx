@@ -12,7 +12,7 @@ import {
 
 const Block = styled.div`
   text-align: center;
-  margin-top: 18px;
+  margin-top: 8px;
 `;
 
 const Label = styled.div`
@@ -20,7 +20,7 @@ const Label = styled.div`
   font-weight: 600;
   letter-spacing: 0.5px;
   color: ${COLORS.muted};
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 `;
 
 const Big = styled.div`

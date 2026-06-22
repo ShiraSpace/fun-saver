@@ -146,6 +146,18 @@ export class Session {
     );
   }
 
+  async waitForText(testId: string, expected: string): Promise<void> {
+    await this.page.waitForFunction(
+      (id, exp) => {
+        const element = document.querySelector(`[data-testid="${id}"]`);
+        return element !== null && (element.textContent ?? '').includes(exp);
+      },
+      {},
+      testId,
+      expected
+    );
+  }
+
   private get page(): Page {
     if (!this.activePage) {
       throw new Error('no page is open; call open(baseUrl) first');

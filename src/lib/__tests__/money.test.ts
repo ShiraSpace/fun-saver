@@ -1,9 +1,16 @@
-import { agorotToShekels, coinBreakdown } from '../money';
+import { agorotToShekels, coinBreakdown, shekelsToAgorot } from '../money';
 
 describe('agorotToShekels', () => {
   it('converts agorot to shekels', () => {
     expect(agorotToShekels(8500)).toBe(85);
     expect(agorotToShekels(540)).toBe(5.4);
+  });
+});
+
+describe('shekelsToAgorot', () => {
+  it('converts shekels to agorot', () => {
+    expect(shekelsToAgorot(85)).toBe(8500);
+    expect(shekelsToAgorot(20)).toBe(2000);
   });
 });
 

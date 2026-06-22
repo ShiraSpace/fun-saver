@@ -17,14 +17,17 @@ interface HomeProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-function route(
-  account: AccountModel | undefined,
-  wallets: WalletWithDerived[],
-  isCreating: boolean
-): JSX.Element {
+interface RouteParams {
+  account: AccountModel | undefined;
+  wallets: WalletWithDerived[];
+  isCreating: boolean;
+}
+
+function route({ account, wallets, isCreating }: RouteParams): JSX.Element {
   if (account) {
     return (
       <Account
+        accountId={account.id}
         name={account.name}
         avatarId={account.avatarId}
         wallets={wallets}
@@ -52,9 +55,11 @@ export default async function Home({
     ? await getWalletsForAccount(store, account.id, today())
     : [];
 
-  return (
-    <main>
-      {route(account, wallets, Boolean(params[CREATE_ACCOUNT_PARAM]))}
-    </main>
-  );
+  const mainComponent = route({
+    account,
+    wallets,
+    isCreating: Boolean(params[CREATE_ACCOUNT_PARAM]),
+  });
+
+  return <main>{mainComponent}</main>;
 }

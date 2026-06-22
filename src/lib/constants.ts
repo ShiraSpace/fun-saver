@@ -4,6 +4,12 @@ export const AGOROT_PER_SHEKEL = 100;
 
 export const SAVINGS_MONTHLY_RATE = 0.15;
 
+export const DEPOSIT_SPLIT: Record<WalletName, number> = {
+  savings: 0.4,
+  spending: 0.5,
+  goodDeeds: 0.1,
+};
+
 export interface WalletSeed {
   name: WalletName;
   icon: string;

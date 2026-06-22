@@ -12,6 +12,10 @@ export function agorotToShekels(agorot: number): number {
   return agorot / AGOROT_PER_SHEKEL;
 }
 
+export function shekelsToAgorot(shekels: number): number {
+  return shekels * AGOROT_PER_SHEKEL;
+}
+
 export function coinBreakdown(agorot: number): CoinBreakdown {
   const halfShekels = Math.ceil(agorot / HALF_SHEKEL_AGOROT - 0.5);
   const rounded = halfShekels * HALF_SHEKEL_AGOROT;

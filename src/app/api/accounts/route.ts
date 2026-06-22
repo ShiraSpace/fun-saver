@@ -8,5 +8,6 @@ export async function POST(request: Request): Promise<Response> {
     input,
     today()
   );
+
   return Response.json(account, { status: 201 });
 }
