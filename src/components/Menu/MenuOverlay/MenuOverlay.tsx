@@ -94,6 +94,7 @@ export function MenuOverlay({
     };
 
     document.addEventListener('keydown', onKeyDown);
+
     return (): void => document.removeEventListener('keydown', onKeyDown);
   }, [isOpen, onClose]);
 

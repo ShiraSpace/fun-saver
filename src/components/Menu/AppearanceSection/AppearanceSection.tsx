@@ -30,22 +30,24 @@ const Swatch = styled.button<{ background: string }>`
 `;
 
 export function AppearanceSection(): JSX.Element {
+  const themeSelectorComponents = APPEARANCE_SECTION_CONTENT.themes.map(
+    ({ id, label, background }) => (
+      <Swatch
+        key={id}
+        type="button"
+        aria-label={label}
+        title={label}
+        background={background}
+        data-testid={APPEARANCE_SECTION_TEST_IDS.swatch}
+        data-selected={id === APPEARANCE_SECTION_CONTENT.selectedId}
+      />
+    )
+  );
+
   return (
     <section data-testid={APPEARANCE_SECTION_TEST_IDS.section}>
       <MenuLabel>{APPEARANCE_SECTION_CONTENT.label}</MenuLabel>
-      <Row>
-        {APPEARANCE_SECTION_CONTENT.themes.map((theme) => (
-          <Swatch
-            key={theme.id}
-            type="button"
-            aria-label={theme.label}
-            title={theme.label}
-            background={theme.background}
-            data-testid={APPEARANCE_SECTION_TEST_IDS.swatch}
-            data-selected={theme.id === APPEARANCE_SECTION_CONTENT.selectedId}
-          />
-        ))}
-      </Row>
+      <Row>{themeSelectorComponents}</Row>
     </section>
   );
 }

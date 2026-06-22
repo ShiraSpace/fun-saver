@@ -12,8 +12,8 @@ describe('LanguageSection', () => {
 
   it('renders a segment per language marking the selected one', () => {
     const options = screen.getAllByTestId(LANGUAGE_SECTION_TEST_IDS.option);
-    expect(options).toHaveLength(LANGUAGE_SECTION_CONTENT.options.length);
 
+    expect(options).toHaveLength(LANGUAGE_SECTION_CONTENT.options.length);
     expect(options[0]).toHaveAttribute('data-selected', 'true');
     expect(options[0]).toHaveTextContent('עברית');
     expect(options[1]).toHaveAttribute('data-selected', 'false');

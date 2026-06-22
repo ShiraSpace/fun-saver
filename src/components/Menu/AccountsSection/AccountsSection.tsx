@@ -2,18 +2,15 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
-import { Avatar } from '../../Avatar';
 import { MenuLabel } from '../MenuLabel';
 import {
   ACCOUNTS_SECTION_CONTENT,
   ACCOUNTS_SECTION_STYLE,
   ACCOUNTS_SECTION_TEST_IDS,
-  type MenuAccount,
 } from './constants';
-
-const badgeSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.caption;
+import { EditAccountChip } from '@/components/Menu/AccountsSection/EditAccountChip';
+import { AddAccountChip } from '@/components/Menu/AccountsSection/AddAccountChip';
+import { AccountChip } from '@/components/Menu/AccountsSection/AccountChip';
 
 const Row = styled.div`
   display: flex;
@@ -22,17 +19,7 @@ const Row = styled.div`
   flex-wrap: wrap;
 `;
 
-const Chip = styled.div`
-  position: relative;
-  line-height: 0;
-
-  &[data-selected='true'] img {
-    box-shadow: 0 0 0 ${ACCOUNTS_SECTION_STYLE.ringWidth}px
-      ${ACCOUNTS_SECTION_STYLE.ringColor};
-  }
-`;
-
-const ActionChip = styled.button`
+export const ActionChip = styled.button`
   width: ${ACCOUNTS_SECTION_STYLE.avatarSize}px;
   height: ${ACCOUNTS_SECTION_STYLE.avatarSize}px;
   border: none;
@@ -47,64 +34,18 @@ const ActionChip = styled.button`
   flex-shrink: 0;
 `;
 
-const Badge = styled.span`
-  position: absolute;
-  bottom: -2px;
-  inset-inline-start: -2px;
-  min-width: ${ACCOUNTS_SECTION_STYLE.badgeSize}px;
-  height: ${ACCOUNTS_SECTION_STYLE.badgeSize}px;
-  padding: 0 4px;
-  box-sizing: border-box;
-  border-radius: 999px;
-  background: ${ACCOUNTS_SECTION_STYLE.badgeBg};
-  color: ${ACCOUNTS_SECTION_STYLE.badgeColor};
-  font-size: ${badgeSize}px;
-  font-weight: 700;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-function AccountChip({ account }: { account: MenuAccount }): JSX.Element {
-  const isSelected = account.id === ACCOUNTS_SECTION_CONTENT.selectedId;
-  return (
-    <Chip
-      data-testid={ACCOUNTS_SECTION_TEST_IDS.chip}
-      data-selected={isSelected}
-    >
-      <Avatar
-        avatarId={account.avatarId}
-        alt={account.name}
-        size={ACCOUNTS_SECTION_STYLE.avatarSize}
-      />
-      <Badge>{account.name.charAt(0)}</Badge>
-    </Chip>
-  );
-}
-
 export function AccountsSection(): JSX.Element {
+  const accountChips = ACCOUNTS_SECTION_CONTENT.accounts.map((account) => (
+    <AccountChip key={account.id} account={account} />
+  ));
+
   return (
     <section data-testid={ACCOUNTS_SECTION_TEST_IDS.section}>
       <MenuLabel>{ACCOUNTS_SECTION_CONTENT.label}</MenuLabel>
       <Row>
-        {ACCOUNTS_SECTION_CONTENT.accounts.map((account) => (
-          <AccountChip key={account.id} account={account} />
-        ))}
-        <ActionChip
-          type="button"
-          aria-label={ACCOUNTS_SECTION_CONTENT.editLabel}
-          data-testid={ACCOUNTS_SECTION_TEST_IDS.editChip}
-        >
-          {ACCOUNTS_SECTION_CONTENT.editIcon}
-        </ActionChip>
-        <ActionChip
-          type="button"
-          aria-label={ACCOUNTS_SECTION_CONTENT.addLabel}
-          data-testid={ACCOUNTS_SECTION_TEST_IDS.addChip}
-        >
-          {ACCOUNTS_SECTION_CONTENT.addIcon}
-        </ActionChip>
+        {accountChips}
+        <EditAccountChip />
+        <AddAccountChip />
       </Row>
     </section>
   );

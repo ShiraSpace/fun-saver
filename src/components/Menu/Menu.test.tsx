@@ -4,23 +4,18 @@ import { MENU_TEST_IDS } from './constants';
 import { MENU_OVERLAY_TEST_IDS } from './MenuOverlay/constants';
 
 describe('Menu', () => {
+  let button: HTMLElement;
+
   beforeEach(() => {
     render(<Menu />);
+    button = screen.getByTestId(MENU_TEST_IDS.menuButton);
   });
 
   it('renders the menu button', () => {
-    expect(screen.getByTestId(MENU_TEST_IDS.menuButton)).toBeInTheDocument();
-  });
-
-  it('shows the hamburger icon inside the button', () => {
-    const button = screen.getByTestId(MENU_TEST_IDS.menuButton);
-    const icon = screen.getByTestId(MENU_TEST_IDS.menuIcon);
-
-    expect(button).toContainElement(icon);
+    expect(button).toBeInTheDocument();
   });
 
   it('toggles its open state when clicked', () => {
-    const button = screen.getByTestId(MENU_TEST_IDS.menuButton);
     expect(button).toHaveAttribute('aria-expanded', 'false');
 
     fireEvent.click(button);
@@ -30,33 +25,46 @@ describe('Menu', () => {
     expect(button).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('opens the menu overlay when the menu button is clicked', () => {
-    const overlay = screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay);
-    expect(overlay).toHaveAttribute('data-open', 'false');
+  describe('the hamburger icon', () => {
+    let icon: HTMLElement;
 
-    fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+    beforeEach(() => {
+      icon = screen.getByTestId(MENU_TEST_IDS.menuIcon);
+    });
 
-    expect(overlay).toHaveAttribute('data-open', 'true');
+    it('sits inside the menu button', () => {
+      expect(button).toContainElement(icon);
+    });
+
+    it('marks itself open on click to drive the morph animation', () => {
+      expect(icon).toHaveAttribute('data-open', 'false');
+
+      fireEvent.click(button);
+      expect(icon).toHaveAttribute('data-open', 'true');
+    });
   });
 
-  it('closes the menu overlay when the menu button is clicked again', () => {
-    const button = screen.getByTestId(MENU_TEST_IDS.menuButton);
-    const overlay = screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay);
+  describe('the menu overlay', () => {
+    let overlay: HTMLElement;
 
-    fireEvent.click(button);
-    expect(overlay).toHaveAttribute('data-open', 'true');
+    beforeEach(() => {
+      overlay = screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay);
+    });
 
-    fireEvent.click(button);
-    expect(overlay).toHaveAttribute('data-open', 'false');
-  });
+    it('opens when the menu button is clicked', () => {
+      expect(overlay).toHaveAttribute('data-open', 'false');
 
-  it('marks the icon as open on click to drive the morph animation', () => {
-    const button = screen.getByTestId(MENU_TEST_IDS.menuButton);
-    const icon = screen.getByTestId(MENU_TEST_IDS.menuIcon);
+      fireEvent.click(button);
 
-    expect(icon).toHaveAttribute('data-open', 'false');
+      expect(overlay).toHaveAttribute('data-open', 'true');
+    });
 
-    fireEvent.click(button);
-    expect(icon).toHaveAttribute('data-open', 'true');
+    it('closes when the menu button is clicked again', () => {
+      fireEvent.click(button);
+      expect(overlay).toHaveAttribute('data-open', 'true');
+
+      fireEvent.click(button);
+      expect(overlay).toHaveAttribute('data-open', 'false');
+    });
   });
 });

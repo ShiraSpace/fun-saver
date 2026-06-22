@@ -6,33 +6,26 @@ import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
 
 describe('MenuOverlay', () => {
-  it('exposes the overlay as a labelled dialog', () => {
-    render(<MenuOverlay isOpen onClose={(): void => {}} />);
+  const onClose = jest.fn();
 
+  beforeEach(() => {
+    onClose.mockClear();
+    render(<MenuOverlay isOpen onClose={onClose} />);
+  });
+
+  it('exposes the overlay as a labelled dialog', () => {
     expect(
       screen.getByRole('dialog', { name: MENU_OVERLAY_CONTENT.title })
     ).toBeInTheDocument();
   });
 
   it('calls onClose when Escape is pressed while open', () => {
-    let closed = false;
-    render(
-      <MenuOverlay
-        isOpen
-        onClose={(): void => {
-          closed = true;
-        }}
-      />
-    );
-
     fireEvent.keyDown(document, { key: 'Escape' });
 
-    expect(closed).toBe(true);
+    expect(onClose).toHaveBeenCalled();
   });
 
   it('renders the accounts, appearance and language sections', () => {
-    render(<MenuOverlay isOpen onClose={(): void => {}} />);
-
     expect(
       screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.section)
     ).toBeInTheDocument();
