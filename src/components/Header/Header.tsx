@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX } from 'react';
+import { JSX, useState } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { Menu } from '../Menu';
@@ -40,9 +40,11 @@ export interface HeaderProps {
 }
 
 export function Header({ name, avatarId }: HeaderProps): JSX.Element {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <Bar data-testid={HEADER_TEST_IDS.bar}>
-      <Menu />
+    <Bar data-testid={HEADER_TEST_IDS.bar} data-open={isMenuOpen}>
+      <Menu isOpen={isMenuOpen} onToggle={setIsMenuOpen} />
       <Name data-testid={HEADER_TEST_IDS.name}>{name}</Name>
       <Avatar
         avatarId={avatarId}

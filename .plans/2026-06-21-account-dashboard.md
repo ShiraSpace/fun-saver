@@ -258,3 +258,11 @@ Variant B.
 
 **Owed:** withdraw phase (per-pot, overdraft-protected; the generic names/boundaries are already in
 place).
+
+---
+
+## NEXT FEATURE — menu → header unification (PLANNED on `feat/menu-header`)
+
+Full plan: [2026-06-23-menu-header.md](./2026-06-23-menu-header.md). Collapse the two stacked bars
+(`Header` + `MenuOverlay`'s `TopBar`) into one morphing `Header`. (Link added 2026-06-23; can be removed
+once this section is folded in or the feature ships.)

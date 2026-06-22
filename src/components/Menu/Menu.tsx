@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, JSX, useCallback, useState } from 'react';
+import { Fragment, JSX, useCallback } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { BurgerIcon } from './BurgerIcon';
@@ -29,9 +29,14 @@ const ToggleButton = styled.button`
   }
 `;
 
-export function Menu(): JSX.Element {
-  const [isOpen, setIsOpen] = useState(false);
-  const close = useCallback((): void => setIsOpen(false), []);
+export interface MenuProps {
+  isOpen: boolean;
+  onToggle: (isOpen: boolean) => void;
+}
+
+export function Menu({ isOpen, onToggle }: MenuProps): JSX.Element {
+  const toggle = useCallback((): void => onToggle(!isOpen), [isOpen, onToggle]);
+  const close = useCallback((): void => onToggle(false), [onToggle]);
 
   return (
     <Fragment>
@@ -40,7 +45,7 @@ export function Menu(): JSX.Element {
         aria-expanded={isOpen}
         data-open={isOpen}
         data-testid={MENU_TEST_IDS.menuButton}
-        onClick={(): void => setIsOpen((open) => !open)}
+        onClick={toggle}
       >
         <BurgerIcon isOpen={isOpen} testId={MENU_TEST_IDS.menuIcon} />
       </ToggleButton>
