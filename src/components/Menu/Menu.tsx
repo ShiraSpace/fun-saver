@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, JSX, useState } from 'react';
+import { Fragment, JSX, useCallback, useState } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { BurgerIcon } from './BurgerIcon';
@@ -31,6 +31,7 @@ const ToggleButton = styled.button`
 
 export function Menu(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
+  const close = useCallback((): void => setIsOpen(false), []);
 
   return (
     <Fragment>
@@ -43,7 +44,7 @@ export function Menu(): JSX.Element {
       >
         <BurgerIcon isOpen={isOpen} testId={MENU_TEST_IDS.menuIcon} />
       </ToggleButton>
-      <MenuOverlay isOpen={isOpen} onClose={(): void => setIsOpen(false)} />
+      <MenuOverlay isOpen={isOpen} onClose={close} />
     </Fragment>
   );
 }
