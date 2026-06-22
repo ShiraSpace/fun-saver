@@ -1,6 +1,8 @@
 import { JSX } from 'react';
-import type { Account as AccountModel, WalletWithDerived } from '@/lib/types';
-import { Account } from '@/components/Account';
+import {
+  AccountSwitcher,
+  type AccountView,
+} from '@/components/AccountSwitcher';
 import { CreateAccount } from '@/components/CreateAccount';
 import { EmptyState } from '@/components/EmptyState';
 import {
@@ -18,21 +20,13 @@ interface HomeProps {
 }
 
 interface RouteParams {
-  account: AccountModel | undefined;
-  wallets: WalletWithDerived[];
+  views: AccountView[];
   isCreating: boolean;
 }
 
-function route({ account, wallets, isCreating }: RouteParams): JSX.Element {
-  if (account) {
-    return (
-      <Account
-        accountId={account.id}
-        name={account.name}
-        avatarId={account.avatarId}
-        wallets={wallets}
-      />
-    );
+function route({ views, isCreating }: RouteParams): JSX.Element {
+  if (views.length > 0) {
+    return <AccountSwitcher views={views} />;
   }
 
   if (isCreating) {
@@ -46,18 +40,20 @@ export default async function Home({
   searchParams,
 }: HomeProps): Promise<JSX.Element> {
   const store = getStore();
-  const [[account], params] = await Promise.all([
+  const [accounts, params] = await Promise.all([
     store.listAccounts(),
     searchParams,
   ]);
 
-  const wallets = account
-    ? await getWalletsForAccount(store, account.id, today())
-    : [];
+  const views = await Promise.all(
+    accounts.map(async (account) => ({
+      account,
+      wallets: await getWalletsForAccount(store, account.id, today()),
+    }))
+  );
 
   const mainComponent = route({
-    account,
-    wallets,
+    views,
     isCreating: Boolean(params[CREATE_ACCOUNT_PARAM]),
   });
 
