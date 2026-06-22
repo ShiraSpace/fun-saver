@@ -7,3 +7,5 @@ export const TYPE_SCALE = {
   caption: 12,
   overline: 11,
 } as const;
+
+export type ThemeTypography = typeof TYPE_SCALE;

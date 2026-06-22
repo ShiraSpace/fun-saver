@@ -1,11 +1,10 @@
 'use client';
 
 import { JSX } from 'react';
-import Image from 'next/image';
 import styled from '@emotion/styled';
+import type { Theme } from '@emotion/react';
 import { Menu } from '../Menu';
-import { TYPE_SCALE } from '@/theme/typography';
-import { avatarSource } from '@/lib/avatars';
+import { Avatar } from '../Avatar';
 import { COLORS } from '@/theme/palette';
 import {
   HEADER_AVATAR_PROPS,
@@ -25,10 +24,12 @@ const Bar = styled.header`
   color: ${COLORS.ink};
 `;
 
+const nameSize = ({ theme }: { theme: Theme }): number => theme.typography.h2;
+
 const Name = styled.span`
   flex: 1;
   text-align: center;
-  font-size: ${TYPE_SCALE.h2}px;
+  font-size: ${nameSize}px;
   font-weight: ${HEADER_LAYOUT.nameWeight};
   color: ${COLORS.ink};
 `;
@@ -38,30 +39,17 @@ export interface HeaderProps {
   avatarId: string;
 }
 
-interface AvatarProps {
-  avatarId: string;
-  alt: string;
-}
-
-function Avatar({ avatarId, alt }: AvatarProps): JSX.Element {
-  return (
-    <Image
-      data-testid={HEADER_TEST_IDS.avatar}
-      src={avatarSource(avatarId)}
-      alt={alt}
-      width={HEADER_AVATAR_PROPS.size}
-      height={HEADER_AVATAR_PROPS.size}
-      unoptimized
-    />
-  );
-}
-
 export function Header({ name, avatarId }: HeaderProps): JSX.Element {
   return (
     <Bar data-testid={HEADER_TEST_IDS.bar}>
       <Menu />
       <Name data-testid={HEADER_TEST_IDS.name}>{name}</Name>
-      <Avatar avatarId={avatarId} alt={name} />
+      <Avatar
+        avatarId={avatarId}
+        alt={name}
+        size={HEADER_AVATAR_PROPS.size}
+        testId={HEADER_TEST_IDS.avatar}
+      />
     </Bar>
   );
 }

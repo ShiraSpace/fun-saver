@@ -1,10 +1,10 @@
 'use client';
 
 import { JSX } from 'react';
-import Image from 'next/image';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
-import { AVATARS, avatarSource, type AvatarOption } from '@/lib/avatars';
+import { Avatar } from '../Avatar';
+import { AVATARS, type AvatarOption } from '@/lib/avatars';
 import {
   AVATAR_PICKER_LAYOUT,
   AVATAR_PICKER_STYLE,
@@ -69,10 +69,6 @@ function AvatarOption({
   isSelected,
   onSelect,
 }: OptionProps): JSX.Element {
-  const AVATAR_IMAGE_STYLE = {
-    objectFit: 'cover',
-  } as const;
-
   const select = (): void => onSelect(avatar.id);
   const imagesSizes = Math.ceil(
     AVATAR_PICKER_LAYOUT.maxWidth / AVATAR_PICKER_LAYOUT.columns
@@ -85,13 +81,11 @@ function AvatarOption({
       background={avatar.background}
       onClick={select}
     >
-      <Image
-        src={avatarSource(avatar.id)}
+      <Avatar
+        avatarId={avatar.id}
         alt={avatar.id}
         fill
         sizes={`${imagesSizes}px`}
-        style={AVATAR_IMAGE_STYLE}
-        unoptimized
       />
     </OptionButton>
   );

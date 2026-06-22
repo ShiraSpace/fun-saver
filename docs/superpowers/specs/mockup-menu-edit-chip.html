@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fun-saver — menu variant: edit as a chip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; font-family:'Rubik','Roboto',sans-serif; background:#0a0a0a; min-height:100vh; color:#fff; direction:rtl; }
+  .page { max-width:780px; margin:0 auto; padding:32px 20px 80px; }
+  h1 { font-size:22px; font-weight:600; margin:0 0 4px; text-align:center; color:#fff; }
+  .subtitle { color:#bdbdbd; text-align:center; margin:0 0 28px; font-size:14px; }
+  .phone-row { display:flex; justify-content:center; gap:28px; flex-wrap:wrap; }
+
+  .phone { width:340px; background:#1a1a1a; border-radius:36px; padding:8px; box-shadow:0 18px 40px rgba(0,0,0,0.7); border:1px solid #2a2a2a; }
+  .screen {
+    border-radius:30px; overflow:hidden; height:740px; display:flex; flex-direction:column;
+    position:relative;
+    background:linear-gradient(160deg,#FFC34D 0%,#FF8A4C 40%,#E94E89 100%);
+    font-family:'Fredoka','Rubik',sans-serif; color:#2A1B4A;
+  }
+  .caption { text-align:center; color:#bdbdbd; font-size:13px; margin-top:10px; }
+
+  /* ── Burger (shared) ── */
+  .burger-btn { width:34px; height:34px; border:none; border-radius:11px; flex-shrink:0;
+    background:#FFF1D9; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; box-shadow:0 3px 0 rgba(0,0,0,0.08); }
+  .burger { position:relative; width:18px; height:14px; display:inline-block; }
+  .burger span { position:absolute; left:0; right:0; height:2.6px; border-radius:2px; background:#6B2C8E; transform-origin:center; }
+  .burger span:nth-child(1){ top:6px; transform:rotate(45deg); }
+  .burger span:nth-child(2){ opacity:0; }
+  .burger span:nth-child(3){ top:6px; transform:rotate(-45deg); }
+
+  /* ── Full-screen menu overlay ── */
+  .menu-overlay { position:absolute; inset:0; z-index:50; box-sizing:border-box; padding:0 0 22px;
+    background:linear-gradient(160deg,#FFC34D 0%,#FF8A4C 40%,#E94E89 100%); overflow-y:auto; }
+  .menu-statusbar-spacer { height:24px; }
+  .menu-bar { margin:6px 14px 0; padding:10px 14px; display:flex; align-items:center; gap:10px; }
+  .menu-bar .m-title { flex:1; text-align:center; color:#fff; font-weight:700; font-size:15px; }
+  .menu-content { padding:6px 22px 0; }
+  .menu-label { color:#fff; font-size:10px; font-weight:700; opacity:.92; letter-spacing:.6px; text-transform:uppercase; margin:18px 2px 8px; }
+  .menu-avatars { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .m-av { width:46px; height:46px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:700; color:#3a1f5a; box-shadow:0 3px 0 rgba(0,0,0,.1); }
+  .m-av.on { outline:3px solid #FFD23F; outline-offset:1px; }
+  .m-av.add { background:rgba(255,255,255,.4); color:#fff; }
+  .m-av.edit { background:rgba(255,255,255,.4); color:#fff; font-size:20px; }
+  .menu-swatches { display:flex; gap:12px; }
+  .swatch { width:48px; height:48px; border-radius:14px; border:none; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.12); }
+  .swatch.on { outline:3px solid #fff; outline-offset:2px; }
+  .menu-seg { display:flex; background:#fff; border-radius:14px; overflow:hidden; font-weight:700; font-size:14px; box-shadow:0 3px 0 rgba(0,0,0,.06); }
+  .menu-seg span { flex:1; text-align:center; padding:12px 0; cursor:pointer; color:#8A7AA7; }
+  .menu-seg span.on { background:linear-gradient(180deg,#8A3AAE,#6B2C8E); color:#fff; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <h1>fun-saver · עריכת חשבון כעיגול</h1>
+  <p class="subtitle">"עריכת חשבון" הפך לעיגול עם עיפרון, ליד עיגול ה־＋. מקטע "חשבון" הוסר.</p>
+
+  <div class="phone-row">
+
+    <div>
+      <div class="phone">
+        <div class="screen">
+          <div class="menu-overlay">
+            <div class="menu-statusbar-spacer"></div>
+            <div class="menu-bar">
+              <button class="burger-btn" aria-label="סגירה"><span class="burger"><span></span><span></span><span></span></span></button>
+              <div class="m-title">תפריט</div>
+              <div style="width:34px"></div>
+            </div>
+            <div class="menu-content">
+              <div class="menu-label">החשבונות</div>
+              <div class="menu-avatars">
+                <div class="m-av on">נ</div>
+                <div class="m-av">מ</div>
+                <div class="m-av edit">✏️</div>
+                <div class="m-av add">＋</div>
+              </div>
+
+              <div class="menu-label">מראה</div>
+              <div class="menu-swatches">
+                <button class="swatch on" style="background:linear-gradient(135deg,#FFC34D,#E94E89)" title="Sunshine Quest"></button>
+                <button class="swatch" style="background:#2E7D67" title="Mint Ledger"></button>
+                <button class="swatch" style="background:#3D5AFE" title="Sunny Modern"></button>
+              </div>
+
+              <div class="menu-label">שפה</div>
+              <div class="menu-seg"><span class="on">עברית</span><span>EN</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="caption">וריאנט: עריכה = עיגול עם עיפרון, ליד ＋</p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
