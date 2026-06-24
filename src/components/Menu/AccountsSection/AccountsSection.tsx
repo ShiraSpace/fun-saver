@@ -11,7 +11,11 @@ import {
 import { EditAccountChip } from '@/components/Menu/AccountsSection/EditAccountChip';
 import { AddAccountChip } from '@/components/Menu/AccountsSection/AddAccountChip';
 import { AccountChip } from '@/components/Menu/AccountsSection/AccountChip';
-import { useAccountSelection } from '@/components/AccountSwitcher/account-selection-context';
+import { useAccounts } from '@/components/AccountSwitcher/accounts-context';
+
+interface AccountsSectionProps {
+  onAccountSelect: () => void;
+}
 
 const Row = styled.div`
   display: flex;
@@ -35,15 +39,22 @@ export const ActionChip = styled.button`
   flex-shrink: 0;
 `;
 
-export function AccountsSection(): JSX.Element {
-  const { accounts, selectedId, selectAccount } = useAccountSelection();
+export function AccountsSection({
+  onAccountSelect,
+}: AccountsSectionProps): JSX.Element {
+  const { accounts, selectedAccountId, selectAccount } = useAccounts();
+
+  const handleSelect = (id: string): void => {
+    selectAccount(id);
+    onAccountSelect();
+  };
 
   const accountChips = accounts.map((account) => (
     <AccountChip
       key={account.id}
       account={account}
-      isSelected={account.id === selectedId}
-      onSelect={selectAccount}
+      isSelected={account.id === selectedAccountId}
+      onSelect={handleSelect}
     />
   ));
 

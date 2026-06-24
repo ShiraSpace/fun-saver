@@ -3,7 +3,9 @@ import { AccountSwitcher } from './AccountSwitcher';
 import type { Account } from '@/lib/types';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
+import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
+import { REVEAL_TEST_IDS } from '@/components/Reveal/constants';
 import { ACCOUNT, DERIVED_WALLETS } from '@/test-support/fixtures';
 
 const SECOND_ACCOUNT: Account = {
@@ -26,6 +28,18 @@ describe('AccountSwitcher', () => {
     );
   });
 
+  it('wraps the active account in a reveal transition', () => {
+    render(
+      <AccountSwitcher
+        views={[{ account: ACCOUNT, wallets: DERIVED_WALLETS }]}
+      />
+    );
+
+    expect(screen.getByTestId(REVEAL_TEST_IDS.reveal)).toContainElement(
+      screen.getByTestId(HEADER_TEST_IDS.name)
+    );
+  });
+
   it('switches to the account whose chip is tapped', () => {
     render(
       <AccountSwitcher
@@ -42,6 +56,30 @@ describe('AccountSwitcher', () => {
 
     expect(screen.getByTestId(HEADER_TEST_IDS.name)).toHaveTextContent(
       SECOND_ACCOUNT.name
+    );
+  });
+
+  it('closes the menu after an account is selected', () => {
+    render(
+      <AccountSwitcher
+        views={[
+          { account: ACCOUNT, wallets: DERIVED_WALLETS },
+          { account: SECOND_ACCOUNT, wallets: DERIVED_WALLETS },
+        ]}
+      />
+    );
+
+    fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+    expect(screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)).toHaveAttribute(
+      'data-open',
+      'true'
+    );
+
+    fireEvent.click(screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip)[1]);
+
+    expect(screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)).toHaveAttribute(
+      'data-open',
+      'false'
     );
   });
 });

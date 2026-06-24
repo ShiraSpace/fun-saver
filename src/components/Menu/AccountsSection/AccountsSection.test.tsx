@@ -3,9 +3,9 @@ import { render, screen } from '@/test-support/render';
 import { AccountsSection } from './AccountsSection';
 import { ACCOUNTS_SECTION_TEST_IDS } from './constants';
 import {
-  AccountSelectionProvider,
-  type AccountSelection,
-} from '@/components/AccountSwitcher/account-selection-context';
+  AccountsProvider,
+  type AccountsContextValue,
+} from '@/components/AccountSwitcher/accounts-context';
 import type { Account } from '@/lib/types';
 
 const ACCOUNTS: Account[] = [
@@ -13,18 +13,18 @@ const ACCOUNTS: Account[] = [
   { id: 'matan', name: 'מתן', avatarId: 'kid-08', isActive: true },
 ];
 
-function withSelection(overrides: Partial<AccountSelection>): JSX.Element {
-  const value: AccountSelection = {
+function withSelection(overrides: Partial<AccountsContextValue>): JSX.Element {
+  const value: AccountsContextValue = {
     accounts: ACCOUNTS,
-    selectedId: 'noa',
+    selectedAccountId: 'noa',
     selectAccount: () => undefined,
     ...overrides,
   };
 
   return (
-    <AccountSelectionProvider value={value}>
-      <AccountsSection />
-    </AccountSelectionProvider>
+    <AccountsProvider value={value}>
+      <AccountsSection onAccountSelect={() => undefined} />
+    </AccountsProvider>
   );
 }
 

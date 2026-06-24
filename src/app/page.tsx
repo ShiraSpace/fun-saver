@@ -45,10 +45,11 @@ export default async function Home({
     searchParams,
   ]);
 
+  const asOf = today();
   const views = await Promise.all(
     accounts.map(async (account) => ({
       account,
-      wallets: await getWalletsForAccount(store, account.id, today()),
+      wallets: await getWalletsForAccount(store, account.id, asOf),
     }))
   );
 

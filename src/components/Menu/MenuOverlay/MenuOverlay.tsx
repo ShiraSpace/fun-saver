@@ -113,7 +113,7 @@ export function MenuOverlay({
         <ToggleSpacer />
       </TopBar>
       <Content>
-        <AccountsSection />
+        <AccountsSection onAccountSelect={onClose} />
         <AppearanceSection />
         <LanguageSection />
       </Content>
