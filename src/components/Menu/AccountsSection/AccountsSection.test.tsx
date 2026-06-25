@@ -7,12 +7,12 @@ import {
 } from '@/components/AccountSwitcher/accounts-context';
 import { ACCOUNT, SECOND_ACCOUNT } from '@/test-support/fixtures';
 
-const accounts = [ACCOUNT, SECOND_ACCOUNT];
-
 interface RenderSectionParams {
   contextOverrides?: Partial<AccountsContextValue>;
   onAccountSelect?: () => void;
 }
+
+const accounts = [ACCOUNT, SECOND_ACCOUNT];
 
 function renderSection({
   contextOverrides,
