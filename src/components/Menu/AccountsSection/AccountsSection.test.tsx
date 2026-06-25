@@ -1,54 +1,74 @@
-import { JSX } from 'react';
-import { render, screen } from '@/test-support/render';
+import { fireEvent, render, screen } from '@/test-support/render';
 import { AccountsSection } from './AccountsSection';
 import { ACCOUNTS_SECTION_TEST_IDS } from './constants';
 import {
   AccountsProvider,
   type AccountsContextValue,
 } from '@/components/AccountSwitcher/accounts-context';
-import type { Account } from '@/lib/types';
+import { ACCOUNT, SECOND_ACCOUNT } from '@/test-support/fixtures';
 
-const ACCOUNTS: Account[] = [
-  { id: 'noa', name: 'נועה', avatarId: 'kid-03', isActive: true },
-  { id: 'matan', name: 'מתן', avatarId: 'kid-08', isActive: true },
-];
+const accounts = [ACCOUNT, SECOND_ACCOUNT];
 
-function withSelection(overrides: Partial<AccountsContextValue>): JSX.Element {
+interface RenderSectionParams {
+  contextOverrides?: Partial<AccountsContextValue>;
+  onAccountSelect?: () => void;
+}
+
+function renderSection({
+  contextOverrides,
+  onAccountSelect,
+}: RenderSectionParams = {}): void {
   const value: AccountsContextValue = {
-    accounts: ACCOUNTS,
-    selectedAccountId: 'noa',
-    selectAccount: () => undefined,
-    ...overrides,
+    accounts,
+    selectedAccountId: ACCOUNT.id,
+    selectAccount: () => {},
+    ...contextOverrides,
   };
 
-  return (
+  render(
     <AccountsProvider value={value}>
-      <AccountsSection onAccountSelect={() => undefined} />
+      <AccountsSection onAccountSelect={onAccountSelect ?? ((): void => {})} />
     </AccountsProvider>
   );
 }
 
 describe('AccountsSection', () => {
-  beforeEach(() => {
-    render(withSelection({}));
+  describe('rendering', () => {
+    beforeEach(() => {
+      renderSection();
+    });
+
+    it('renders a chip per account marking the selected one', () => {
+      const chips = screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip);
+      expect(chips).toHaveLength(accounts.length);
+
+      expect(chips[0]).toHaveAttribute('data-selected', 'true');
+      expect(chips[0]).toHaveTextContent('נ');
+      expect(chips[1]).toHaveAttribute('data-selected', 'false');
+      expect(chips[1]).toHaveTextContent('מ');
+    });
+
+    it('renders edit and add action chips', () => {
+      expect(
+        screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.addChip)
+      ).toBeInTheDocument();
+    });
   });
 
-  it('renders a chip per account marking the selected one', () => {
-    const chips = screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip);
-    expect(chips).toHaveLength(ACCOUNTS.length);
+  it('selects the tapped account and notifies the parent', () => {
+    const mockSelectAccount = jest.fn();
+    const mockOnAccountSelect = jest.fn();
+    renderSection({
+      contextOverrides: { selectAccount: mockSelectAccount },
+      onAccountSelect: mockOnAccountSelect,
+    });
 
-    expect(chips[0]).toHaveAttribute('data-selected', 'true');
-    expect(chips[0]).toHaveTextContent('נ');
-    expect(chips[1]).toHaveAttribute('data-selected', 'false');
-    expect(chips[1]).toHaveTextContent('מ');
-  });
+    fireEvent.click(screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip)[1]);
 
-  it('renders edit and add action chips', () => {
-    expect(
-      screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.addChip)
-    ).toBeInTheDocument();
+    expect(mockSelectAccount).toHaveBeenCalledWith(SECOND_ACCOUNT.id);
+    expect(mockOnAccountSelect).toHaveBeenCalled();
   });
 });

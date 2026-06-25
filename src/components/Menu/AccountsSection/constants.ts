@@ -18,7 +18,7 @@ export const ACCOUNTS_SECTION_CONTENT = {
 export const ACCOUNTS_SECTION_STYLE = {
   avatarSize: 46,
   rowGap: 12,
-  ringColor: '#FFD23F',
+  ringColor: COLORS.gold,
   ringWidth: 3,
   ringMs: 200,
   pressScale: 0.92,
