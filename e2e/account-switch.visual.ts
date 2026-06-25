@@ -1,15 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import type { Account } from '@/lib/types';
-import { ACCOUNT, WALLETS } from '@/test-support/fixtures';
+import { ACCOUNT, SECOND_ACCOUNT, WALLETS } from '@/test-support/fixtures';
 import { useDriver } from './driver/use-driver';
-
-const SECOND_ACCOUNT: Account = {
-  id: 'a2',
-  name: 'מתן',
-  avatarId: 'kid-08',
-  isActive: true,
-};
 
 describe('account switching', () => {
   const { menu, header } = useDriver({

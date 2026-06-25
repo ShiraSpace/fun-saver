@@ -23,14 +23,14 @@ export function AccountSwitcher({ views }: AccountSwitcherProps): JSX.Element {
     views.find((view) => view.account.id === selectedAccountId) ?? views[0];
   const accounts = views.map((view) => view.account);
 
+  const accountsContextValue = {
+    accounts,
+    selectedAccountId,
+    selectAccount: setSelectedAccountId,
+  };
+
   return (
-    <AccountsProvider
-      value={{
-        accounts,
-        selectedAccountId,
-        selectAccount: setSelectedAccountId,
-      }}
-    >
+    <AccountsProvider value={accountsContextValue}>
       <Reveal key={selectedAccountId}>
         <Account
           accountId={current.account.id}

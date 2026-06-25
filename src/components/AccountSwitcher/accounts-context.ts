@@ -12,7 +12,7 @@ export interface AccountsContextValue {
 const AccountsContext = createContext<AccountsContextValue>({
   accounts: [],
   selectedAccountId: '',
-  selectAccount: () => undefined,
+  selectAccount: () => {},
 });
 
 export const AccountsProvider = AccountsContext.Provider;
