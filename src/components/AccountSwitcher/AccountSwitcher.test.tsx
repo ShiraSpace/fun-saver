@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@/test-support/render';
 import { AccountSwitcher } from './AccountSwitcher';
-import { HEADER_TEST_IDS } from '@/components/Header/constants';
+import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
@@ -22,14 +22,14 @@ describe('AccountSwitcher', () => {
     });
 
     it('renders the first view account by default', () => {
-      expect(screen.getByTestId(HEADER_TEST_IDS.name)).toHaveTextContent(
+      expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
         ACCOUNT.name
       );
     });
 
     it('wraps the active account in a reveal transition', () => {
       expect(screen.getByTestId(REVEAL_TEST_IDS.reveal)).toContainElement(
-        screen.getByTestId(HEADER_TEST_IDS.name)
+        screen.getByTestId(TITLE_TEST_IDS.title)
       );
     });
   });
@@ -52,7 +52,7 @@ describe('AccountSwitcher', () => {
       const chips = screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip);
       fireEvent.click(chips[1]);
 
-      expect(screen.getByTestId(HEADER_TEST_IDS.name)).toHaveTextContent(
+      expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
         SECOND_ACCOUNT.name
       );
     });
