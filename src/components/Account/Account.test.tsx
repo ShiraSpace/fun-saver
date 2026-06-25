@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@/test-support/render';
 import { Account } from './Account';
-import { HEADER_TEST_IDS } from '@/components/Header/constants';
+import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { WALLET_HERO_TEST_IDS } from './WalletHero/constants';
 import { WALLET_LIST_TEST_IDS } from './WalletList/constants';
 import { WALLET_CARD_TEST_IDS } from './WalletCard/constants';
@@ -25,7 +25,7 @@ describe('Account', () => {
   });
 
   it('shows the account header with the account name', () => {
-    expect(screen.getByTestId(HEADER_TEST_IDS.name)).toHaveTextContent(
+    expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
       ACCOUNT_NAME
     );
   });

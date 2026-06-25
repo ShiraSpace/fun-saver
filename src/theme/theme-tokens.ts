@@ -17,6 +17,7 @@ export interface ThemeColors {
 export interface ThemeGradients {
   readonly screen: string;
   readonly actionButton: string;
+  readonly sunnyTile: string;
 }
 
 export interface ThemeTokens {

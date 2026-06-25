@@ -10,6 +10,7 @@ export const COLORS = {
   screenGradientStart: '#FFC34D',
   screenGradientMid: '#FF8A4C',
   screenGradientEnd: '#E94E89',
+  sunnyTileSoft: '#FFE6B0',
   ink: '#3A1F5A',
   accent: '#E94E89',
   gold: '#FFD23F',
