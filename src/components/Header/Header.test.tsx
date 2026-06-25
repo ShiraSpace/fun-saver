@@ -1,8 +1,12 @@
 import { fireEvent, render, screen } from '@/test-support/render';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
+import { TITLE_TEST_IDS } from './CrossfadeTitle/constants';
 import { MENU_TEST_IDS } from '../Menu/constants';
-import { MENU_OVERLAY_TEST_IDS } from '../Menu/MenuOverlay/constants';
+import {
+  MENU_OVERLAY_CONTENT,
+  MENU_OVERLAY_TEST_IDS,
+} from '../Menu/MenuOverlay/constants';
 
 describe('Header', () => {
   const ACCOUNT_NAME = 'יעל';
@@ -13,7 +17,7 @@ describe('Header', () => {
   });
 
   it('shows the account name', () => {
-    expect(screen.getByTestId(HEADER_TEST_IDS.name)).toHaveTextContent(
+    expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
       ACCOUNT_NAME
     );
   });
@@ -54,6 +58,32 @@ describe('Header', () => {
 
       expect(button).toHaveAttribute('aria-expanded', 'false');
       expect(overlay).toHaveAttribute('data-open', 'false');
+    });
+  });
+
+  describe('the morphing bar', () => {
+    let button: HTMLElement;
+    let bar: HTMLElement;
+
+    beforeEach(() => {
+      button = screen.getByTestId(MENU_TEST_IDS.menuButton);
+      bar = screen.getByTestId(HEADER_TEST_IDS.bar);
+    });
+
+    it('swaps the title to the menu title when opened', () => {
+      fireEvent.click(button);
+
+      expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
+        MENU_OVERLAY_CONTENT.title
+      );
+    });
+
+    it('flags the bar with the menu open state', () => {
+      expect(bar).toHaveAttribute('data-open', 'false');
+
+      fireEvent.click(button);
+
+      expect(bar).toHaveAttribute('data-open', 'true');
     });
   });
 });

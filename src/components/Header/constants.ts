@@ -1,6 +1,7 @@
+import { LAYERS } from '@/theme/layers';
+
 export const HEADER_TEST_IDS = {
   bar: 'header',
-  name: 'header-name',
   avatar: 'header-avatar',
 } as const;
 
@@ -15,4 +16,6 @@ export const HEADER_LAYOUT = {
   radius: 18,
   shadow: '0 4px 0 rgba(0, 0, 0, 0.06)',
   nameWeight: 700,
+  foregroundZIndex: LAYERS.overlayForeground,
+  transitionMs: 300,
 } as const;

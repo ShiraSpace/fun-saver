@@ -1,10 +1,12 @@
+import { LAYERS } from '@/theme/layers';
+
 export const MENU_TEST_IDS = {
   menuButton: 'menu-button',
   menuIcon: 'menu-icon',
 } as const;
 
 export const MENU_TOGGLE = {
-  zIndex: 60,
+  zIndex: LAYERS.overlayForeground,
 } as const;
 
 export const MENU_ICON = {

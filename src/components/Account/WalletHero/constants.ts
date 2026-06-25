@@ -43,7 +43,6 @@ export const HERO_STYLE = {
   iconTileSize: 52,
   iconTileRadius: 20,
   iconFontSize: 28,
-  iconGradient: 'linear-gradient(135deg, #FFE6B0, #FFC34D)',
   eyebrowSize: 11,
   nameLineSize: 18,
   metaSize: 11,

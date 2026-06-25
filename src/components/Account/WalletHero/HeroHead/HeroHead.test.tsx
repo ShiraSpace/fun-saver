@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/test-support/render';
 import { HeroHead } from './HeroHead';
 import { WALLET_HERO_TEST_IDS } from '../constants';
 

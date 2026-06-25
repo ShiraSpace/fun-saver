@@ -2,9 +2,10 @@
 
 import { JSX, useState } from 'react';
 import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
 import { Menu } from '../Menu';
-import { Avatar } from '../Avatar';
+import { MENU_OVERLAY_CONTENT } from '../Menu/MenuOverlay/constants';
+import { AvatarBadge } from '../AvatarBadge';
+import { Title } from './CrossfadeTitle';
 import { COLORS } from '@/theme/palette';
 import {
   HEADER_AVATAR_PROPS,
@@ -22,16 +23,19 @@ const Bar = styled.header`
   border-radius: ${HEADER_LAYOUT.radius}px;
   box-shadow: ${HEADER_LAYOUT.shadow};
   color: ${COLORS.ink};
+  transition:
+    background ${HEADER_LAYOUT.transitionMs}ms ease,
+    box-shadow ${HEADER_LAYOUT.transitionMs}ms ease;
+
+  &[data-open='true'] {
+    background: transparent;
+    box-shadow: none;
+    color: ${COLORS.textOnPrimary};
+  }
 `;
 
-const nameSize = ({ theme }: { theme: Theme }): number => theme.typography.h2;
-
-const Name = styled.span`
-  flex: 1;
-  text-align: center;
-  font-size: ${nameSize}px;
-  font-weight: ${HEADER_LAYOUT.nameWeight};
-  color: ${COLORS.ink};
+const HeaderAvatar = styled(AvatarBadge)`
+  z-index: ${HEADER_LAYOUT.foregroundZIndex};
 `;
 
 export interface HeaderProps {
@@ -41,12 +45,13 @@ export interface HeaderProps {
 
 export function Header({ name, avatarId }: HeaderProps): JSX.Element {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const title = isMenuOpen ? MENU_OVERLAY_CONTENT.title : name;
 
   return (
     <Bar data-testid={HEADER_TEST_IDS.bar} data-open={isMenuOpen}>
       <Menu isOpen={isMenuOpen} onToggle={setIsMenuOpen} />
-      <Name data-testid={HEADER_TEST_IDS.name}>{name}</Name>
-      <Avatar
+      <Title text={title} />
+      <HeaderAvatar
         avatarId={avatarId}
         alt={name}
         size={HEADER_AVATAR_PROPS.size}

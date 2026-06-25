@@ -2,12 +2,22 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
+import type { Theme } from '@emotion/react';
 import { COLORS } from '@/theme/palette';
 import {
   HERO_STYLE,
   WALLET_HERO_COPY,
   WALLET_HERO_TEST_IDS,
 } from '../constants';
+
+interface HeroHeadProps {
+  name: string;
+  monthlyInterestRate: number;
+  openedAt: string;
+}
+
+const tileGradient = ({ theme }: { theme: Theme }): string =>
+  theme.gradients.sunnyTile;
 
 const Head = styled.div`
   display: flex;
@@ -21,7 +31,7 @@ const IconTile = styled.div`
   width: ${HERO_STYLE.iconTileSize}px;
   height: ${HERO_STYLE.iconTileSize}px;
   border-radius: ${HERO_STYLE.iconTileRadius}px;
-  background: ${HERO_STYLE.iconGradient};
+  background: ${tileGradient};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,12 +60,6 @@ const Meta = styled.div`
   color: ${COLORS.muted};
   margin-top: 2px;
 `;
-
-interface HeroHeadProps {
-  name: string;
-  monthlyInterestRate: number;
-  openedAt: string;
-}
 
 export function HeroHead({
   name,

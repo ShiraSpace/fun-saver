@@ -10,21 +10,19 @@ describe('Menu', () => {
     onOpenChange.mockClear();
   });
 
-  it('renders the menu button', () => {
-    render(<Menu isOpen={false} onToggle={onOpenChange} />);
-    expect(screen.getByTestId(MENU_TEST_IDS.menuButton)).toBeInTheDocument();
-  });
-
-  it('renders the overlay', () => {
-    render(<Menu isOpen={false} onToggle={onOpenChange} />);
-    expect(
-      screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)
-    ).toBeInTheDocument();
-  });
-
   describe('when closed', () => {
     beforeEach(() => {
       render(<Menu isOpen={false} onToggle={onOpenChange} />);
+    });
+
+    it('renders the menu button', () => {
+      expect(screen.getByTestId(MENU_TEST_IDS.menuButton)).toBeInTheDocument();
+    });
+
+    it('renders the overlay', () => {
+      expect(
+        screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)
+      ).toBeInTheDocument();
     });
 
     it('marks the button as collapsed', () => {

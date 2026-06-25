@@ -3,8 +3,6 @@
 import { JSX, useEffect } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
-import { SCREEN_LAYOUT } from '../../Screen/constants';
-import { MENU_ICON } from '../constants';
 import { AccountsSection } from '../AccountsSection';
 import { AppearanceSection } from '../AppearanceSection';
 import { LanguageSection } from '../LanguageSection';
@@ -19,7 +17,6 @@ import {
 const surface = ({ theme }: { theme: Theme }): string => theme.gradients.screen;
 const onSurface = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
-const titleSize = ({ theme }: { theme: Theme }): number => theme.typography.h2;
 
 const Panel = styled.div`
   position: fixed;
@@ -44,28 +41,6 @@ const Panel = styled.div`
     transform: scale(1);
     pointer-events: auto;
   }
-`;
-
-const TITLE_TOP = SCREEN_LAYOUT.gap - 2;
-
-const TopBar = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${MENU_OVERLAY_LAYOUT.barGap}px;
-  padding: ${TITLE_TOP}px ${MENU_OVERLAY_LAYOUT.barPaddingX}px
-    ${MENU_OVERLAY_LAYOUT.barPaddingBottom}px;
-`;
-
-const ToggleSpacer = styled.div`
-  width: ${MENU_ICON.buttonSize}px;
-  flex-shrink: 0;
-`;
-
-const Title = styled.span`
-  flex: 1;
-  text-align: center;
-  font-size: ${titleSize}px;
-  font-weight: ${MENU_OVERLAY_LAYOUT.titleWeight};
 `;
 
 const Content = styled.div`
@@ -105,13 +80,6 @@ export function MenuOverlay({
       data-testid={MENU_OVERLAY_TEST_IDS.overlay}
       data-open={isOpen}
     >
-      <TopBar>
-        <ToggleSpacer />
-        <Title data-testid={MENU_OVERLAY_TEST_IDS.title}>
-          {MENU_OVERLAY_CONTENT.title}
-        </Title>
-        <ToggleSpacer />
-      </TopBar>
       <Content>
         <AccountsSection />
         <AppearanceSection />
