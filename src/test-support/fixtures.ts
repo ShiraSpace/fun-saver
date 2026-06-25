@@ -12,6 +12,13 @@ export const ACCOUNT: Account = {
   isActive: true,
 };
 
+export const SECOND_ACCOUNT: Account = {
+  id: 'a2',
+  name: 'מתן',
+  avatarId: 'kid-08',
+  isActive: true,
+};
+
 export const CREATE_ACCOUNT_INPUT = {
   name: ACCOUNT.name,
   avatarId: ACCOUNT.avatarId,

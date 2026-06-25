@@ -1,21 +1,35 @@
 import { JSX } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
+import type { Account } from '@/lib/types';
 import {
-  ACCOUNTS_SECTION_CONTENT,
   ACCOUNTS_SECTION_STYLE,
   ACCOUNTS_SECTION_TEST_IDS,
-  MenuAccount,
 } from '@/components/Menu/AccountsSection/constants';
 import { Avatar } from '@/components/Avatar/Avatar';
 
 interface AccountChipProps {
-  account: MenuAccount;
+  account: Account;
+  isSelected: boolean;
+  onSelect: (id: string) => void;
 }
 
-const Chip = styled.div`
+const Chip = styled.button`
   position: relative;
   line-height: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: transform ${ACCOUNTS_SECTION_STYLE.pressMs}ms ease;
+
+  img {
+    transition: box-shadow ${ACCOUNTS_SECTION_STYLE.ringMs}ms ease;
+  }
+
+  &:active {
+    transform: scale(${ACCOUNTS_SECTION_STYLE.pressScale});
+  }
 
   &[data-selected='true'] img {
     box-shadow: 0 0 0 ${ACCOUNTS_SECTION_STYLE.ringWidth}px
@@ -45,12 +59,17 @@ const Badge = styled.span`
   justify-content: center;
 `;
 
-export function AccountChip({ account }: AccountChipProps): JSX.Element {
-  const isSelected = account.id === ACCOUNTS_SECTION_CONTENT.selectedId;
+export function AccountChip({
+  account,
+  isSelected,
+  onSelect,
+}: AccountChipProps): JSX.Element {
   return (
     <Chip
+      type="button"
       data-testid={ACCOUNTS_SECTION_TEST_IDS.chip}
       data-selected={isSelected}
+      onClick={(): void => onSelect(account.id)}
     >
       <Avatar
         avatarId={account.avatarId}

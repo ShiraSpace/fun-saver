@@ -102,6 +102,17 @@ export class Session {
     await element.hover();
   }
 
+  async clickNth(selector: string, index: number): Promise<void> {
+    const elements = await this.page.$$(selector);
+    const element = elements[index];
+
+    if (!element) {
+      throw new Error(`no element at index ${index} for "${selector}"`);
+    }
+
+    await element.click();
+  }
+
   async box(testId: string): Promise<BoundingBox> {
     const element = await this.find(testId);
     const box = await element.boundingBox();

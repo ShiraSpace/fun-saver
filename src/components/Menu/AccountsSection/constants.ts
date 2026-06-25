@@ -1,3 +1,5 @@
+import { COLORS } from '@/theme/palette';
+
 export const ACCOUNTS_SECTION_TEST_IDS = {
   section: 'menu-accounts-section',
   chip: 'menu-account-chip',
@@ -5,19 +7,8 @@ export const ACCOUNTS_SECTION_TEST_IDS = {
   addChip: 'menu-account-add',
 } as const;
 
-export interface MenuAccount {
-  id: string;
-  name: string;
-  avatarId: string;
-}
-
 export const ACCOUNTS_SECTION_CONTENT = {
   label: 'החשבונות',
-  accounts: [
-    { id: 'noa', name: 'נועה', avatarId: 'kid-03' },
-    { id: 'matan', name: 'מתן', avatarId: 'kid-08' },
-  ] as MenuAccount[],
-  selectedId: 'noa',
   editIcon: '✏️',
   editLabel: 'עריכת חשבון',
   addIcon: '＋',
@@ -27,10 +18,13 @@ export const ACCOUNTS_SECTION_CONTENT = {
 export const ACCOUNTS_SECTION_STYLE = {
   avatarSize: 46,
   rowGap: 12,
-  ringColor: '#FFD23F',
+  ringColor: COLORS.gold,
   ringWidth: 3,
-  badgeBg: '#6B2C8E',
-  badgeColor: '#FFFFFF',
+  ringMs: 200,
+  pressScale: 0.92,
+  pressMs: 120,
+  badgeBg: COLORS.primary,
+  badgeColor: COLORS.textOnPrimary,
   badgeSize: 20,
   actionFontSize: 20,
 } as const;

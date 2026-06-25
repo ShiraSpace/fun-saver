@@ -12,5 +12,6 @@ export const COLORS = {
   screenGradientEnd: '#E94E89',
   ink: '#3A1F5A',
   accent: '#E94E89',
+  gold: '#FFD23F',
   muted: '#8A7AA7',
 } as const;
