@@ -5,11 +5,16 @@ import {
 } from '@/components/Menu/AccountsSection/constants';
 import { ActionChip } from '@/components/Menu/AccountsSection/AccountsSection';
 
-export const AddAccountChip = (): JSX.Element => (
+interface AddAccountChipProps {
+  onAdd: () => void;
+}
+
+export const AddAccountChip = ({ onAdd }: AddAccountChipProps): JSX.Element => (
   <ActionChip
     type="button"
     aria-label={ACCOUNTS_SECTION_CONTENT.addLabel}
     data-testid={ACCOUNTS_SECTION_TEST_IDS.addChip}
+    onClick={onAdd}
   >
     {ACCOUNTS_SECTION_CONTENT.addIcon}
   </ActionChip>

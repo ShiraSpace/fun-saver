@@ -1,10 +1,9 @@
 'use client';
 
-import { JSX, useState } from 'react';
+import { JSX } from 'react';
 import type { Account as AccountModel, WalletWithDerived } from '@/lib/types';
 import { Account } from '@/components/Account';
-import { AccountsProvider } from './accounts-context';
-import { Reveal } from '@/components/Reveal';
+import { useAccounts } from './accounts-context';
 
 export interface AccountView {
   account: AccountModel;
@@ -16,29 +15,16 @@ interface AccountSwitcherProps {
 }
 
 export function AccountSwitcher({ views }: AccountSwitcherProps): JSX.Element {
-  const [selectedAccountId, setSelectedAccountId] = useState(
-    views[0].account.id
-  );
+  const { selectedAccountId } = useAccounts();
   const current =
     views.find((view) => view.account.id === selectedAccountId) ?? views[0];
-  const accounts = views.map((view) => view.account);
-
-  const accountsContextValue = {
-    accounts,
-    selectedAccountId,
-    selectAccount: setSelectedAccountId,
-  };
 
   return (
-    <AccountsProvider value={accountsContextValue}>
-      <Reveal key={selectedAccountId}>
-        <Account
-          accountId={current.account.id}
-          name={current.account.name}
-          avatarId={current.account.avatarId}
-          wallets={current.wallets}
-        />
-      </Reveal>
-    </AccountsProvider>
+    <Account
+      accountId={current.account.id}
+      name={current.account.name}
+      avatarId={current.account.avatarId}
+      wallets={current.wallets}
+    />
   );
 }

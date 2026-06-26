@@ -4,6 +4,7 @@ import { FormEvent, JSX, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
+import type { Account } from '@/lib/types';
 import { Screen } from '@/components/Screen';
 import { AvatarPicker } from '@/components/AvatarPicker';
 import { ActionButton } from '@/components/ActionButton';
@@ -18,6 +19,7 @@ import {
 const titleColor = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
 const titleSize = ({ theme }: { theme: Theme }): number => theme.typography.h2;
+const backSize = ({ theme }: { theme: Theme }): number => theme.typography.h3;
 
 const Form = styled.form`
   display: flex;
@@ -35,7 +37,33 @@ const Title = styled.h1`
   color: ${titleColor};
 `;
 
-export function CreateAccount(): JSX.Element {
+const CloseButton = styled.button`
+  align-self: flex-start;
+  margin-inline-start: ${CREATE_ACCOUNT_LAYOUT.closeInset}px;
+  width: ${CREATE_ACCOUNT_LAYOUT.closeButtonSize}px;
+  height: ${CREATE_ACCOUNT_LAYOUT.closeButtonSize}px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  font-size: ${backSize}px;
+  font-weight: 700;
+  color: ${titleColor};
+  cursor: pointer;
+`;
+
+interface CreateAccountProps {
+  onCreated?: (account: Account) => void;
+  onCancel?: () => void;
+}
+
+export function CreateAccount({
+  onCreated,
+  onCancel,
+}: CreateAccountProps): JSX.Element {
   const router = useRouter();
   const { createAccount } = useCreateAccount();
   const [name, setName] = useState('');
@@ -48,14 +76,28 @@ export function CreateAccount(): JSX.Element {
     if (selectedAvatarId === null) {
       return;
     }
-    void createAccount({ name, avatarId: selectedAvatarId }).then(() =>
-      router.push('/')
-    );
+    void createAccount({ name, avatarId: selectedAvatarId }).then((account) => {
+      if (onCreated) {
+        onCreated(account);
+        return;
+      }
+      router.push('/');
+    });
   };
 
   return (
     <Screen align="top" data-testid={CREATE_ACCOUNT_TEST_IDS.container}>
       <Form onSubmit={handleSubmit}>
+        {onCancel && (
+          <CloseButton
+            type="button"
+            aria-label={CREATE_ACCOUNT_COPY.cancelLabel}
+            onClick={onCancel}
+            data-testid={CREATE_ACCOUNT_TEST_IDS.cancel}
+          >
+            {CREATE_ACCOUNT_COPY.cancel}
+          </CloseButton>
+        )}
         <Title data-testid={CREATE_ACCOUNT_TEST_IDS.title}>
           {CREATE_ACCOUNT_COPY.title}
         </Title>

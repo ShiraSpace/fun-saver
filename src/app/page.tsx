@@ -1,62 +1,39 @@
 import { JSX } from 'react';
-import {
-  AccountSwitcher,
-  type AccountView,
-} from '@/components/AccountSwitcher';
-import { CreateAccount } from '@/components/CreateAccount';
-import { EmptyState } from '@/components/EmptyState';
-import {
-  CREATE_ACCOUNT_HREF,
-  CREATE_ACCOUNT_PARAM,
-} from '@/components/CreateAccount/constants';
+import { cookies } from 'next/headers';
+import { Home } from '@/components/Home';
+import type { AccountView } from '@/components/AccountSwitcher';
+import { SELECTED_ACCOUNT_COOKIE } from '@/components/Home/selected-account-cookie';
 import { getStore } from '@/db';
 import { getWalletsForAccount } from '@/lib/account-dashboard';
 import { today } from '@/lib/clock';
 
 export const dynamic = 'force-dynamic';
 
-interface HomeProps {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-interface RouteParams {
-  views: AccountView[];
-  isCreating: boolean;
-}
-
-function route({ views, isCreating }: RouteParams): JSX.Element {
-  if (views.length > 0) {
-    return <AccountSwitcher views={views} />;
-  }
-
-  if (isCreating) {
-    return <CreateAccount />;
-  }
-
-  return <EmptyState createAccountHref={CREATE_ACCOUNT_HREF} />;
-}
-
-export default async function Home({
-  searchParams,
-}: HomeProps): Promise<JSX.Element> {
+export default async function HomePage(): Promise<JSX.Element> {
   const store = getStore();
-  const [accounts, params] = await Promise.all([
+  const [accounts, cookieStore] = await Promise.all([
     store.listAccounts(),
-    searchParams,
+    cookies(),
   ]);
 
   const asOf = today();
-  const views = await Promise.all(
+  const views: AccountView[] = await Promise.all(
     accounts.map(async (account) => ({
       account,
       wallets: await getWalletsForAccount(store, account, asOf),
     }))
   );
 
-  const mainComponent = route({
-    views,
-    isCreating: Boolean(params[CREATE_ACCOUNT_PARAM]),
-  });
+  const storedAccountId = cookieStore.get(SELECTED_ACCOUNT_COOKIE)?.value;
+  const initialAccountId =
+    storedAccountId &&
+    accounts.some((account) => account.id === storedAccountId)
+      ? storedAccountId
+      : (accounts[0]?.id ?? '');
 
-  return <main>{mainComponent}</main>;
+  return (
+    <main>
+      <Home views={views} initialAccountId={initialAccountId} />
+    </main>
+  );
 }

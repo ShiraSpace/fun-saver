@@ -12,6 +12,7 @@ import { EditAccountChip } from '@/components/Menu/AccountsSection/EditAccountCh
 import { AddAccountChip } from '@/components/Menu/AccountsSection/AddAccountChip';
 import { AccountChip } from '@/components/Menu/AccountsSection/AccountChip';
 import { useAccounts } from '@/components/AccountSwitcher/accounts-context';
+import { APP_MODE, useAppMode } from '@/components/Home/app-mode-context';
 
 interface AccountsSectionProps {
   onAccountSelect: () => void;
@@ -43,10 +44,16 @@ export function AccountsSection({
   onAccountSelect,
 }: AccountsSectionProps): JSX.Element {
   const { accounts, selectedAccountId, selectAccount } = useAccounts();
+  const { setMode } = useAppMode();
 
   const handleSelect = (id: string): void => {
     selectAccount(id);
     onAccountSelect();
+  };
+
+  const handleAdd = (): void => {
+    onAccountSelect();
+    setMode(APP_MODE.creatingAccount);
   };
 
   const accountChips = accounts.map((account) => (
@@ -64,7 +71,7 @@ export function AccountsSection({
       <Row>
         {accountChips}
         <EditAccountChip />
-        <AddAccountChip />
+        <AddAccountChip onAdd={handleAdd} />
       </Row>
     </section>
   );
