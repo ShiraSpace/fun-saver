@@ -10,14 +10,16 @@ const WALLET_ORDER: Record<WalletName, number> = {
 
 export async function getWalletsForAccount(
   store: DataStore,
-  account: Account,
+  { wallets }: Account,
   asOf: string
 ): Promise<WalletWithDerived[]> {
   const derived = await Promise.all(
-    account.wallets.map(async (wallet) => {
+    wallets.map(async (wallet) => {
       const transactions = await store.listTransactionsByWallet(wallet.id);
+
       return deriveWallet(wallet, transactions, asOf);
     })
   );
+
   return derived.sort((a, b) => WALLET_ORDER[a.name] - WALLET_ORDER[b.name]);
 }
