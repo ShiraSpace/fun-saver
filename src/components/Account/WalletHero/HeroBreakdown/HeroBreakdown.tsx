@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import { COLORS } from '@/theme/palette';
+import type { Theme } from '@emotion/react';
 import { Money } from '../../Money/Money';
 import {
   HERO_STYLE,
@@ -15,7 +15,7 @@ const Row = styled.div`
   gap: ${HERO_STYLE.breakdownGap}px;
   margin-top: 8px;
   padding-top: 12px;
-  border-top: ${HERO_STYLE.divider};
+  border-top: 1.5px dashed ${({ theme }): string => theme.colors.divider};
 `;
 
 const Cell = styled.div<{ tone: 'deposits' | 'gain' }>`
@@ -25,21 +25,21 @@ const Cell = styled.div<{ tone: 'deposits' | 'gain' }>`
   align-items: center;
   padding: ${HERO_STYLE.cellPadding}px;
   border-radius: ${HERO_STYLE.cellRadius}px;
-  background: ${({ tone }): string =>
-    tone === 'gain' ? HERO_STYLE.gainBg : HERO_STYLE.depositsBg};
-  color: ${({ tone }): string =>
-    tone === 'gain' ? HERO_STYLE.gainText : COLORS.ink};
+  background: ${({ tone, theme }): string =>
+    tone === 'gain' ? theme.colors.gainSoftBg : theme.colors.depositBg};
+  color: ${({ tone, theme }: { tone: 'deposits' | 'gain'; theme: Theme }): string =>
+    tone === 'gain' ? theme.colors.gainText : theme.colors.textStrong};
 `;
 
 const Label = styled.div`
-  font-size: ${HERO_STYLE.cellLabelSize}px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
-  color: ${COLORS.muted};
+  color: ${({ theme }): string => theme.colors.textMuted};
   margin-bottom: 4px;
 `;
 
 const Amount = styled.div`
-  font-size: ${HERO_STYLE.cellAmountSize}px;
+  font-size: ${({ theme }): number => theme.typography.title}px;
 `;
 
 interface BreakdownCellProps {

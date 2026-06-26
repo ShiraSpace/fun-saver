@@ -3,7 +3,6 @@
 import { JSX } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
-import { COLORS } from '@/theme/palette';
 import {
   HERO_STYLE,
   WALLET_HERO_COPY,
@@ -43,21 +42,21 @@ const Titles = styled.div`
 `;
 
 const Eyebrow = styled.div`
-  font-size: ${HERO_STYLE.eyebrowSize}px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
   letter-spacing: 0.6px;
-  color: ${COLORS.accent};
+  color: ${({ theme }): string => theme.colors.accent};
 `;
 
 const NameLine = styled.div`
-  font-size: ${HERO_STYLE.nameLineSize}px;
+  font-size: ${({ theme }): number => theme.typography.heading}px;
   font-weight: 700;
   margin-top: 2px;
 `;
 
 const Meta = styled.div`
-  font-size: ${HERO_STYLE.metaSize}px;
-  color: ${COLORS.muted};
+  font-size: ${({ theme }): number => theme.typography.label}px;
+  color: ${({ theme }): string => theme.colors.textMuted};
   margin-top: 2px;
 `;
 
