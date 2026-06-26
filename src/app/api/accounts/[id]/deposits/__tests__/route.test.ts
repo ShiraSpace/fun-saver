@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { getStore } from '@/db';
 import { AccountsStore } from '@/lib/accounts-store';
 import { splitDeposit } from '@/lib/transactions';
-import { CREATE_ACCOUNT_INPUT } from '@/test-support/fixtures';
+import { mockCreateAccountInput } from '@/test-support/fixtures';
 import { POST } from '../route';
 
 const ASOF = '2026-01-01';
@@ -20,7 +20,7 @@ beforeEach(async () => {
   process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
   accountId = (
     await new AccountsStore(getStore()).createAccount(
-      CREATE_ACCOUNT_INPUT,
+      mockCreateAccountInput,
       ASOF
     )
   ).id;
@@ -49,8 +49,10 @@ describe('POST /api/accounts/[id]/deposits', () => {
     const transactions = await response.json();
     expect(transactions).toHaveLength(3);
 
-    const wallets = await getStore().listWalletsByAccount(accountId);
-    const savings = wallets.find((wallet) => wallet.name === 'savings')!;
+    const account = await getStore().getAccount(accountId);
+    const savings = account!.wallets.find(
+      (wallet) => wallet.name === 'savings'
+    )!;
     const saved = await getStore().listTransactionsByWallet(savings.id);
     expect(saved[0].amount).toBe(splitDeposit(2000).savings);
   });

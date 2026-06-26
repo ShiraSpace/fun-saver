@@ -3,7 +3,7 @@ import { AccountsStore } from '../accounts-store';
 import { addDeposit, splitDeposit } from '../transactions';
 import { DEPOSIT_SPLIT } from '../constants';
 import { ValidationError } from '../errors';
-import { CREATE_ACCOUNT_INPUT } from '@/test-support/fixtures';
+import { mockCreateAccountInput } from '@/test-support/fixtures';
 import type { Account, WalletName } from '../types';
 
 const ASOF = '2026-01-01';
@@ -14,7 +14,7 @@ async function seedAccount(): Promise<{
 }> {
   const store = new InMemoryStore();
   const account = await new AccountsStore(store).createAccount(
-    CREATE_ACCOUNT_INPUT,
+    mockCreateAccountInput,
     ASOF
   );
 
@@ -22,31 +22,39 @@ async function seedAccount(): Promise<{
 }
 
 describe('addDeposit', () => {
-  it('records one deposit transaction per pot with its split share', async () => {
+  it('records one deposit transaction per wallet with its split share', async () => {
     const { store, account } = await seedAccount();
-    const wallets = await store.listWalletsByAccount(account.id);
+    const { wallets } = account;
+
     const walletId = (name: WalletName): string =>
       wallets.find((wallet) => wallet.name === name)!.id;
 
-    const transactions = await addDeposit(store, account.id, 2000, ASOF);
+    const transactions = await addDeposit(store, account, 2000, ASOF);
     const amountFor = (name: WalletName): number =>
-      transactions.find((txn) => txn.walletId === walletId(name))!.amount;
+      transactions.find(
+        (transaction) => transaction.walletId === walletId(name)
+      )!.amount;
     const expected = splitDeposit(2000);
 
     expect(transactions).toHaveLength(3);
     expect(amountFor('savings')).toBe(expected.savings);
     expect(amountFor('spending')).toBe(expected.spending);
     expect(amountFor('goodDeeds')).toBe(expected.goodDeeds);
-    expect(transactions.every((txn) => txn.type === 'deposit')).toBe(true);
-    expect(transactions.every((txn) => txn.occurredAt === ASOF)).toBe(true);
+    expect(
+      transactions.every((transaction) => transaction.type === 'deposit')
+    ).toBe(true);
+    expect(
+      transactions.every((transaction) => transaction.occurredAt === ASOF)
+    ).toBe(true);
   });
 
   it('persists the deposit transactions to the store', async () => {
     const { store, account } = await seedAccount();
-    const wallets = await store.listWalletsByAccount(account.id);
-    const savings = wallets.find((wallet) => wallet.name === 'savings')!;
+    const savings = account.wallets.find(
+      (wallet) => wallet.name === 'savings'
+    )!;
 
-    await addDeposit(store, account.id, 2000, ASOF);
+    await addDeposit(store, account, 2000, ASOF);
     const saved = await store.listTransactionsByWallet(savings.id);
 
     expect(saved).toHaveLength(1);
@@ -56,7 +64,7 @@ describe('addDeposit', () => {
   it('rejects a non-positive amount', async () => {
     const { store, account } = await seedAccount();
 
-    await expect(addDeposit(store, account.id, 0, ASOF)).rejects.toBeInstanceOf(
+    await expect(addDeposit(store, account, 0, ASOF)).rejects.toBeInstanceOf(
       ValidationError
     );
   });
@@ -64,9 +72,9 @@ describe('addDeposit', () => {
   it('rejects a non-integer amount', async () => {
     const { store, account } = await seedAccount();
 
-    await expect(
-      addDeposit(store, account.id, 10.5, ASOF)
-    ).rejects.toBeInstanceOf(ValidationError);
+    await expect(addDeposit(store, account, 10.5, ASOF)).rejects.toBeInstanceOf(
+      ValidationError
+    );
   });
 });
 

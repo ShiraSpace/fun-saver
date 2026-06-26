@@ -4,7 +4,7 @@
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { CREATE_ACCOUNT_INPUT } from '@/test-support/fixtures';
+import { mockCreateAccountInput } from '@/test-support/fixtures';
 import { getStore } from '@/db';
 import { POST } from '../route';
 
@@ -30,14 +30,17 @@ function postRequest(body: unknown): Request {
 
 describe('POST /api/accounts', () => {
   it('creates an account and returns it with 201', async () => {
-    const response = await POST(postRequest(CREATE_ACCOUNT_INPUT));
+    const response = await POST(postRequest(mockCreateAccountInput));
 
     expect(response.status).toBe(201);
     const account = await response.json();
-    expect(account).toMatchObject({ ...CREATE_ACCOUNT_INPUT, isActive: true });
+    expect(account).toMatchObject({
+      ...mockCreateAccountInput,
+      isActive: true,
+    });
     expect(account.id).toBeTruthy();
 
     const stored = await getStore().listAccounts();
-    expect(stored.map((a) => a.name)).toEqual([CREATE_ACCOUNT_INPUT.name]);
+    expect(stored.map((a) => a.name)).toEqual([mockCreateAccountInput.name]);
   });
 });

@@ -6,9 +6,9 @@ import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
 import { REVEAL_TEST_IDS } from '@/components/Reveal/constants';
 import {
-  ACCOUNT,
-  DERIVED_WALLETS,
-  SECOND_ACCOUNT,
+  mockAccount,
+  mockDerivedWallets,
+  mockSecondAccount,
 } from '@/test-support/fixtures';
 
 describe('AccountSwitcher', () => {
@@ -16,14 +16,14 @@ describe('AccountSwitcher', () => {
     beforeEach(() => {
       render(
         <AccountSwitcher
-          views={[{ account: ACCOUNT, wallets: DERIVED_WALLETS }]}
+          views={[{ account: mockAccount, wallets: mockDerivedWallets }]}
         />
       );
     });
 
     it('renders the first view account by default', () => {
       expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
-        ACCOUNT.name
+        mockAccount.name
       );
     });
 
@@ -39,8 +39,8 @@ describe('AccountSwitcher', () => {
       render(
         <AccountSwitcher
           views={[
-            { account: ACCOUNT, wallets: DERIVED_WALLETS },
-            { account: SECOND_ACCOUNT, wallets: DERIVED_WALLETS },
+            { account: mockAccount, wallets: mockDerivedWallets },
+            { account: mockSecondAccount, wallets: mockDerivedWallets },
           ]}
         />
       );
@@ -53,7 +53,7 @@ describe('AccountSwitcher', () => {
       fireEvent.click(chips[1]);
 
       expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
-        SECOND_ACCOUNT.name
+        mockSecondAccount.name
       );
     });
 

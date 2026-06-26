@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { getStore } from '../index';
-import { ACCOUNT } from '@/test-support/fixtures';
+import { mockAccount } from '@/test-support/fixtures';
 
 describe('getStore', () => {
   let directory: string;
@@ -19,12 +19,12 @@ describe('getStore', () => {
   });
 
   it('returns a file-backed store at FUNSAVER_DATA_PATH', async () => {
-    await getStore().insertAccount(ACCOUNT);
+    await getStore().insertAccount(mockAccount);
 
     expect(existsSync(process.env.FUNSAVER_DATA_PATH as string)).toBe(true);
     expect(
       (await getStore().listAccounts()).map((account) => account.id)
-    ).toEqual([ACCOUNT.id]);
+    ).toEqual([mockAccount.id]);
   });
 
   it('memoizes one store per path', () => {

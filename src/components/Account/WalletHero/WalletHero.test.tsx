@@ -2,22 +2,11 @@ import { render, screen } from '@/test-support/render';
 import { WalletHero } from './WalletHero';
 import { WALLET_HERO_TEST_IDS } from './constants';
 import { COIN_ROW_TEST_IDS } from '../CoinRow/constants';
+import { mockDerivedWallets } from '@/test-support/fixtures';
 
 describe('WalletHero', () => {
   beforeEach(() => {
-    render(
-      <WalletHero
-        name="נועה"
-        wallet={{
-          balance: 8500,
-          principal: 8000,
-          interestGain: 500,
-          todayInterest: 150,
-          monthlyInterestRate: 0.15,
-          openedAt: '2026-01-01',
-        }}
-      />
-    );
+    render(<WalletHero name="נועה" wallet={mockDerivedWallets[0]} />);
   });
 
   it('renders the hero card', () => {

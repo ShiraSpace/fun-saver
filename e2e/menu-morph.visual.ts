@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { ACCOUNT } from '@/test-support/fixtures';
+import { mockAccount } from '@/test-support/fixtures';
 import { MENU_OVERLAY_CONTENT } from '@/components/Menu/MenuOverlay/constants';
 import { useDriver } from './driver/use-driver';
 
@@ -11,7 +11,7 @@ const TRANSPARENT = 'rgba(0, 0, 0, 0)';
 const WHITE = 'rgb(255, 255, 255)';
 
 describe('menu morph', () => {
-  const { menu, header } = useDriver({ accounts: [ACCOUNT] });
+  const { menu, header } = useDriver({ accounts: [mockAccount] });
 
   it('shows a hamburger when closed', async () => {
     assert.equal(await menu.iconTransform(), NO_TRANSFORM);
@@ -29,7 +29,7 @@ describe('menu morph', () => {
 
   it('shows the opaque header with the account name when closed', async () => {
     assert.notEqual(await header.background(), TRANSPARENT);
-    assert.equal(await header.name(), ACCOUNT.name);
+    assert.equal(await header.name(), mockAccount.name);
   });
 
   it('fades the header transparent and swaps in the menu title when opened', async () => {

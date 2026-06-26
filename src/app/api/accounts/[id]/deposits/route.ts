@@ -19,9 +19,9 @@ export async function POST(
   const { id } = await context.params;
   const store = getStore();
 
-  const accounts = await store.listAccounts();
+  const account = await store.getAccount(id);
 
-  if (!accounts.some((account) => account.id === id)) {
+  if (!account) {
     return Response.json({ error: 'account not found' }, { status: 404 });
   }
 
@@ -30,7 +30,7 @@ export async function POST(
   try {
     const transactions = await addDeposit(
       store,
-      id,
+      account,
       shekelsToAgorot(amount),
       today()
     );

@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { type BoundingBox } from 'puppeteer';
 import { TYPE_SCALE } from '@/theme/typography';
-import { ACCOUNT } from '@/test-support/fixtures';
+import { mockAccount } from '@/test-support/fixtures';
 import { useDriver } from './driver/use-driver';
 
 const EDGE_TOLERANCE = 24;
@@ -10,7 +10,7 @@ const CENTER_TOLERANCE = 24;
 const HEADING_FONT_SIZE = `${TYPE_SCALE.h2}px`;
 
 describe('header', () => {
-  const { header, menu } = useDriver({ accounts: [ACCOUNT] });
+  const { header, menu } = useDriver({ accounts: [mockAccount] });
 
   describe('layout', () => {
     let bar: BoundingBox;

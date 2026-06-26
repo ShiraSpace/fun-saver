@@ -49,7 +49,7 @@ export default async function Home({
   const views = await Promise.all(
     accounts.map(async (account) => ({
       account,
-      wallets: await getWalletsForAccount(store, account.id, asOf),
+      wallets: await getWalletsForAccount(store, account, asOf),
     }))
   );
 
