@@ -34,4 +34,10 @@ describe('theme registry', () => {
     expect(t.colors.surface).toBe('#FFFDF5');
     expect(t.gradients.potGood).toContain('linear-gradient');
   });
+
+  it('resolves midnight-blue with full tokens', () => {
+    const t = getThemeTokens('midnight-blue');
+    expect(t.colors.primary).toBe('#3B82F6');
+    expect(t.colors.surface).toBe('#141B24');
+  });
 });
