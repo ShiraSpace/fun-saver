@@ -47,23 +47,15 @@ export function Home({ views, initialAccountId }: HomeProps): JSX.Element {
     router.refresh();
   };
 
-  const baseLayer =
-    accounts.length > 0 ? (
-      <AccountSwitcher views={views} />
-    ) : isCreating ? null : (
-      <EmptyState onCreate={() => setMode(APP_MODE.creatingAccount)} />
-    );
+  const hasAccounts = accounts.length > 0;
 
   return (
     <AppModeProvider value={{ mode, setMode }}>
-      <AccountsProvider
-        value={{
-          accounts,
-          selectedAccountId,
-          selectAccount,
-        }}
-      >
-        {baseLayer}
+      <AccountsProvider value={{ accounts, selectedAccountId, selectAccount }}>
+        {hasAccounts && <AccountSwitcher views={views} />}
+        {!hasAccounts && !isCreating && (
+          <EmptyState onCreate={() => setMode(APP_MODE.creatingAccount)} />
+        )}
         {isCreating && (
           <CreateOverlay>
             <CreateAccount

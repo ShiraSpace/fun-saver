@@ -18,6 +18,14 @@ jest.mock('./use-create-account', () => ({
   }),
 }));
 
+function fillAndSubmit(name: string): void {
+  fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
+    target: { value: name },
+  });
+  fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
+  fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit));
+}
+
 describe('CreateAccount', () => {
   beforeEach(() => {
     mockPush.mockClear();
@@ -65,11 +73,7 @@ describe('CreateAccount', () => {
     });
 
     it('creates the account and navigates home on submit', async () => {
-      fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-        target: { value: mockCreateAccountInput.name },
-      });
-      fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
-      fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit));
+      fillAndSubmit(mockCreateAccountInput.name);
 
       expect(mockCreateAccount).toHaveBeenCalledWith(mockCreateAccountInput);
       await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/'));
@@ -95,11 +99,7 @@ describe('CreateAccount', () => {
     });
 
     it('calls onCreated with the new account instead of navigating', async () => {
-      fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-        target: { value: mockCreateAccountInput.name },
-      });
-      fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
-      fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit));
+      fillAndSubmit(mockCreateAccountInput.name);
 
       await waitFor(() =>
         expect(mockOnCreated).toHaveBeenCalledWith(mockAccount)
