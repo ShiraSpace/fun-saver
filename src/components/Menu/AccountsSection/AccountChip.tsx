@@ -38,7 +38,7 @@ const Chip = styled.button`
 `;
 
 const badgeSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.caption;
+  theme.typography.label;
 
 const Badge = styled.span`
   position: absolute;

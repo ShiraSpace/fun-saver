@@ -6,7 +6,7 @@ import type { Theme } from '@emotion/react';
 import { MENU_LABEL_STYLE } from './constants';
 
 const labelSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.subtitle1;
+  theme.typography.label;
 
 const Label = styled.div`
   margin: ${MENU_LABEL_STYLE.marginTop}px 2px ${MENU_LABEL_STYLE.marginBottom}px;

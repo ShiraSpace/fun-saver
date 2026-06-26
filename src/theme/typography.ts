@@ -1,11 +1,16 @@
 export const TYPE_SCALE = {
-  h1: 54,
-  h2: 22,
-  h3: 18,
-  subtitle1: 13,
-  body1: 16,
-  caption: 12,
-  overline: 11,
+  display: 48,
+  title: 22,
+  heading: 18,
+  body: 15,
+  label: 12,
+} as const;
+
+export const FONT_WEIGHTS = {
+  regular: 500,
+  medium: 600,
+  bold: 700,
+  heavy: 800,
 } as const;
 
 export type ThemeTypography = typeof TYPE_SCALE;
