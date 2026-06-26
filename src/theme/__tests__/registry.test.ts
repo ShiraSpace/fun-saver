@@ -16,4 +16,15 @@ describe('theme registry', () => {
   it('throws on an unknown theme id', () => {
     expect(() => getThemeTokens('does-not-exist')).toThrow();
   });
+
+  it('exposes the full cohesive token set for the default theme', () => {
+    const { colors, gradients } = getThemeTokens(DEFAULT_THEME_ID);
+    for (const key of ['accent', 'accentSoft', 'star', 'divider', 'softBg',
+      'softBorder', 'softText', 'depositBg', 'gainText', 'gainSoftBg'] as const) {
+      expect(colors[key]).toMatch(/^#|rgb/);
+    }
+    for (const key of ['potSavings', 'potSpending', 'potGood'] as const) {
+      expect(gradients[key]).toContain('linear-gradient');
+    }
+  });
 });
