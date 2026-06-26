@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/test-support/render';
 import { CoinRow } from './CoinRow';
 import { COIN_ROW_COPY, COIN_ROW_TEST_IDS } from './constants';
 
