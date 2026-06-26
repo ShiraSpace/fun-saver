@@ -4,7 +4,6 @@ import { JSX } from 'react';
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { Avatar } from '../Avatar';
-import { COLORS } from '@/theme/palette';
 import { AVATAR_BADGE_DEFAULTS } from './constants';
 
 interface BadgeStyle {
@@ -24,7 +23,8 @@ const Badge = styled.span<BadgeStyle>`
   display: inline-flex;
   width: ${badgeSize}px;
   height: ${badgeSize}px;
-  border: ${AVATAR_BADGE_DEFAULTS.borderWidth}px solid ${COLORS.surface};
+  border: ${AVATAR_BADGE_DEFAULTS.borderWidth}px solid
+    ${({ theme }): string => theme.colors.surface};
   border-radius: 50%;
   overflow: hidden;
   background: ${badgeBackground};

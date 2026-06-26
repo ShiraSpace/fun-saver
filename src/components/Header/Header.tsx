@@ -6,7 +6,6 @@ import { Menu } from '../Menu';
 import { MENU_OVERLAY_CONTENT } from '../Menu/MenuOverlay/constants';
 import { AvatarBadge } from '../AvatarBadge';
 import { Title } from './CrossfadeTitle';
-import { COLORS } from '@/theme/palette';
 import {
   HEADER_AVATAR_PROPS,
   HEADER_LAYOUT,
@@ -19,10 +18,10 @@ const Bar = styled.header`
   gap: ${HEADER_LAYOUT.gap}px;
   width: 100%;
   padding: ${HEADER_LAYOUT.paddingY}px ${HEADER_LAYOUT.paddingX}px;
-  background: ${COLORS.surface};
+  background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${HEADER_LAYOUT.radius}px;
   box-shadow: ${HEADER_LAYOUT.shadow};
-  color: ${COLORS.ink};
+  color: ${({ theme }): string => theme.colors.textStrong};
   transition:
     background ${HEADER_LAYOUT.transitionMs}ms ease,
     box-shadow ${HEADER_LAYOUT.transitionMs}ms ease;
@@ -30,7 +29,7 @@ const Bar = styled.header`
   &[data-open='true'] {
     background: transparent;
     box-shadow: none;
-    color: ${COLORS.textOnPrimary};
+    color: ${({ theme }): string => theme.colors.textOnPrimary};
   }
 `;
 

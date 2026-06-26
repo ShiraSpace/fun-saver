@@ -3,7 +3,6 @@
 import { JSX } from 'react';
 import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
-import { COLORS } from '@/theme/palette';
 import { WalletCard } from '../WalletCard/WalletCard';
 import {
   WALLET_LIST_COPY,
@@ -26,9 +25,9 @@ const List = styled.div`
 const Label = styled.span`
   text-align: start;
   padding-inline: ${WALLET_LIST_STYLE.labelPaddingX}px;
-  font-size: ${WALLET_LIST_STYLE.labelSize}px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 700;
-  color: ${COLORS.textOnPrimary};
+  color: ${({ theme }): string => theme.colors.textOnPrimary};
   opacity: ${WALLET_LIST_STYLE.labelOpacity};
 `;
 
