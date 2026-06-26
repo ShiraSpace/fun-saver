@@ -3,14 +3,16 @@
 import { JSX, ReactNode, useState } from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
 import createCache, { type EmotionCache } from '@emotion/cache';
-import { CacheProvider, ThemeProvider } from '@emotion/react';
+import { CacheProvider } from '@emotion/react';
 import { prefixer } from 'stylis';
 import rtlPlugin from 'stylis-plugin-rtl';
-import { getThemeTokens } from '@/theme/registry';
+import { type ThemeId } from '@/theme/registry';
+import { ThemeController } from '@/theme/ThemeController';
 
 const EMOTION_KEY = 'fs';
 
 interface ProvidersProps {
+  initialThemeId: ThemeId;
   children: ReactNode;
 }
 
@@ -19,7 +21,7 @@ interface Registry {
   flush: () => string[];
 }
 
-export function Providers({ children }: ProvidersProps): JSX.Element {
+export function Providers({ initialThemeId, children }: ProvidersProps): JSX.Element {
   const [registry] = useState(() => createRegistry());
 
   useServerInsertedHTML(() => {
@@ -45,7 +47,7 @@ export function Providers({ children }: ProvidersProps): JSX.Element {
 
   return (
     <CacheProvider value={registry.cache}>
-      <ThemeProvider theme={getThemeTokens()}>{children}</ThemeProvider>
+      <ThemeController initialThemeId={initialThemeId}>{children}</ThemeController>
     </CacheProvider>
   );
 }
