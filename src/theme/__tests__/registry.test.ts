@@ -27,4 +27,11 @@ describe('theme registry', () => {
       expect(gradients[key]).toContain('linear-gradient');
     }
   });
+
+  it('resolves jungle-quest with full tokens', () => {
+    const t = getThemeTokens('jungle-quest');
+    expect(t.colors.primary).toBe('#2A9D8F');
+    expect(t.colors.surface).toBe('#FFFDF5');
+    expect(t.gradients.potGood).toContain('linear-gradient');
+  });
 });

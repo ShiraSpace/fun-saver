@@ -1,8 +1,10 @@
 import type { ThemeTokens } from './theme-tokens';
 import { sunshineQuest } from './themes/sunshine-quest';
+import { jungleQuest } from './themes/jungle-quest';
 
 export const THEMES = {
   'sunshine-quest': sunshineQuest,
+  'jungle-quest': jungleQuest,
 } as const;
 
 export type ThemeId = keyof typeof THEMES;

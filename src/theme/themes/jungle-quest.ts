@@ -1,0 +1,37 @@
+import { TYPE_SCALE } from '../typography';
+import type { ThemeTokens } from '../theme-tokens';
+
+export const jungleQuest: ThemeTokens = {
+  colors: {
+    primary: '#2A9D8F',
+    primaryGradientTop: '#3AB3A3',
+    primaryShadow: '#1B6B61',
+    primaryGlow: 'rgba(42, 157, 143, 0.45)',
+    textOnPrimary: '#FFFFFF',
+    surface: '#FFFDF5',
+    textMuted: '#5C7A6E',
+    textStrong: '#1B4332',
+    screenGradientStart: '#2A9D8F',
+    screenGradientMid: '#43AA8B',
+    screenGradientEnd: '#90BE6D',
+    accent: '#E76F51',
+    accentSoft: '#FBE6DC',
+    star: '#F9C74F',
+    divider: '#DDE7CC',
+    softBg: '#F3F7E4',
+    softBorder: '#B5D94C',
+    softText: '#4A6A1E',
+    depositBg: '#F3F7E4',
+    gainText: '#3A7D2E',
+    gainSoftBg: '#E4F2D9',
+  },
+  gradients: {
+    screen: 'linear-gradient(160deg, #2A9D8F, #43AA8B, #90BE6D)',
+    actionButton: 'linear-gradient(#3AB3A3, #2A9D8F)',
+    sunnyTile: 'linear-gradient(135deg, #52B69A, #2A9D8F)',
+    potSavings: 'linear-gradient(135deg, #52B69A, #2A9D8F)',
+    potSpending: 'linear-gradient(135deg, #B5D94C, #90BE6D)',
+    potGood: 'linear-gradient(135deg, #F4A261, #E76F51)',
+  },
+  typography: TYPE_SCALE,
+};
