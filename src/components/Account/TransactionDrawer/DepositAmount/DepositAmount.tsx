@@ -4,19 +4,16 @@ import { JSX } from 'react';
 import styled from '@emotion/styled';
 import { Money } from '../../Money/Money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import {
-  TRANSACTION_DRAWER_STYLE,
-  TRANSACTION_DRAWER_TEST_IDS,
-} from '../constants';
+import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 
 const Block = styled.div`
   text-align: center;
 `;
 
 const Value = styled.div`
-  font-size: ${TRANSACTION_DRAWER_STYLE.amountSize}px;
+  font-size: ${({ theme }): number => theme.typography.display}px;
   font-weight: 700;
-  color: ${TRANSACTION_DRAWER_STYLE.depositGreen};
+  color: ${({ theme }): string => theme.colors.gainText};
 `;
 
 interface DepositAmountProps {

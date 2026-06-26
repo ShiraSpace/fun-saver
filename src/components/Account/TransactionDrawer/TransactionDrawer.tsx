@@ -2,7 +2,6 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import { COLORS } from '@/theme/palette';
 import { ActionButton } from '@/components/ActionButton';
 import { MONEY_COPY } from '../Money/constants';
 import { AmountPad } from './AmountPad';
@@ -34,7 +33,7 @@ const Sheet = styled.div`
   flex-direction: column;
   gap: ${TRANSACTION_DRAWER_STYLE.gap}px;
   padding: 10px 18px 18px;
-  background: ${TRANSACTION_DRAWER_STYLE.sheetBg};
+  background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${TRANSACTION_DRAWER_STYLE.sheetRadius}px
     ${TRANSACTION_DRAWER_STYLE.sheetRadius}px 0 0;
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25);
@@ -44,22 +43,22 @@ const Handle = styled.div`
   width: 44px;
   height: 5px;
   border-radius: 999px;
-  background: ${TRANSACTION_DRAWER_STYLE.handleColor};
+  background: ${({ theme }): string => theme.colors.divider};
   margin: 2px auto;
 `;
 
 const Title = styled.span`
   text-align: center;
-  font-size: ${TRANSACTION_DRAWER_STYLE.titleSize}px;
+  font-size: ${({ theme }): number => theme.typography.heading}px;
   font-weight: 700;
   color: ${({ theme }): string => theme.colors.textStrong};
 `;
 
 const ErrorText = styled.span`
   text-align: center;
-  font-size: 12px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
-  color: ${COLORS.accent};
+  color: ${({ theme }): string => theme.colors.accent};
 `;
 
 interface TransactionDrawerProps {
