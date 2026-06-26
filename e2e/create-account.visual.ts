@@ -49,7 +49,7 @@ describe('create account', () => {
       await createAccount.titleColor(),
       hexToRgb(COLORS.textOnPrimary)
     );
-    assert.equal(await createAccount.titleFontSize(), `${TYPE_SCALE.h2}px`);
+    assert.equal(await createAccount.titleFontSize(), `${TYPE_SCALE.title}px`);
   });
 
   it('shows the name as a white card with a muted label and strong value', async () => {
