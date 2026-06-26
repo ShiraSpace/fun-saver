@@ -1,25 +1,22 @@
+import type { ThemeId } from '@/theme/registry';
+
 export const APPEARANCE_SECTION_TEST_IDS = {
   section: 'menu-appearance-section',
   swatch: 'menu-appearance-swatch',
 } as const;
 
 export interface MenuTheme {
-  id: string;
+  id: ThemeId;
   label: string;
   background: string;
 }
 
 export const APPEARANCE_SECTION_CONTENT = {
   label: 'מראה',
-  selectedId: 'sunshine-quest',
   themes: [
-    {
-      id: 'sunshine-quest',
-      label: 'Sunshine Quest',
-      background: 'linear-gradient(135deg, #FFC34D, #E94E89)',
-    },
-    { id: 'mint-ledger', label: 'Mint Ledger', background: '#2E7D67' },
-    { id: 'sunny-modern', label: 'Sunny Modern', background: '#3D5AFE' },
+    { id: 'sunshine-quest' as ThemeId, label: 'Sunshine Quest', background: 'linear-gradient(135deg, #FFC34D, #E94E89)' },
+    { id: 'jungle-quest' as ThemeId, label: 'Jungle Quest', background: 'linear-gradient(135deg, #2A9D8F, #90BE6D)' },
+    { id: 'midnight-blue' as ThemeId, label: 'Midnight Blue', background: 'linear-gradient(135deg, #0F1620, #3B82F6)' },
   ] as MenuTheme[],
 } as const;
 

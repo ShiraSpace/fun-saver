@@ -2,6 +2,8 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
+import { type ThemeId } from '@/theme/registry';
+import { useThemeId, useSetThemeId } from '@/theme/ThemeController';
 import { MenuLabel } from '../MenuLabel';
 import {
   APPEARANCE_SECTION_CONTENT,
@@ -30,16 +32,20 @@ const Swatch = styled.button<{ background: string }>`
 `;
 
 export function AppearanceSection(): JSX.Element {
+  const selectedId = useThemeId();
+  const setThemeId = useSetThemeId();
+
   const themeSelectorComponents = APPEARANCE_SECTION_CONTENT.themes.map(
     ({ id, label, background }) => (
       <Swatch
         key={id}
-        type="button"
+        type='button'
         aria-label={label}
         title={label}
         background={background}
         data-testid={APPEARANCE_SECTION_TEST_IDS.swatch}
-        data-selected={id === APPEARANCE_SECTION_CONTENT.selectedId}
+        data-selected={id === selectedId}
+        onClick={(): void => setThemeId(id as ThemeId)}
       />
     )
   );
