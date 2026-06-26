@@ -22,9 +22,10 @@ async function seedAccount(): Promise<{
 }
 
 describe('addDeposit', () => {
-  it('records one deposit transaction per pot with its split share', async () => {
+  it('records one deposit transaction per wallet with its split share', async () => {
     const { store, account } = await seedAccount();
-    const wallets = account.wallets;
+    const { wallets } = account;
+
     const walletId = (name: WalletName): string =>
       wallets.find((wallet) => wallet.name === name)!.id;
 
