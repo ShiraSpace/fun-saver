@@ -3,7 +3,6 @@
 import { JSX } from 'react';
 import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
-import { COLORS } from '@/theme/palette';
 import { Money } from '../Money/Money';
 import {
   WALLET_CARD_COPY,
@@ -18,7 +17,7 @@ const Card = styled.div`
   align-items: center;
   gap: ${WALLET_CARD_STYLE.gap}px;
   padding: ${WALLET_CARD_STYLE.paddingY}px ${WALLET_CARD_STYLE.paddingX}px;
-  background: ${COLORS.surface};
+  background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${WALLET_CARD_STYLE.radius}px;
   box-shadow: ${WALLET_CARD_STYLE.shadow};
 `;
@@ -32,25 +31,26 @@ const Illust = styled.span<{ name: CardWallet['name'] }>`
   height: ${WALLET_CARD_STYLE.illustSize}px;
   border-radius: ${WALLET_CARD_STYLE.illustRadius}px;
   font-size: ${WALLET_CARD_STYLE.illustFontSize}px;
-  background: ${({ name }): string => WALLET_CARD_STYLE.illustGradient[name]};
+  background: ${({ name, theme }): string =>
+    ({ savings: theme.gradients.potSavings, spending: theme.gradients.potSpending, goodDeeds: theme.gradients.potGood }[name])};
 `;
 
 const Name = styled.span`
   flex: 1;
   text-align: start;
-  font-size: ${WALLET_CARD_STYLE.nameSize}px;
+  font-size: ${({ theme }): number => theme.typography.body}px;
   font-weight: 600;
-  color: ${COLORS.ink};
+  color: ${({ theme }): string => theme.colors.textStrong};
 `;
 
 const Pill = styled.span`
   padding: ${WALLET_CARD_STYLE.pillPaddingY}px
     ${WALLET_CARD_STYLE.pillPaddingX}px;
   border-radius: 999px;
-  background: ${WALLET_CARD_STYLE.pillBg};
-  border: ${WALLET_CARD_STYLE.pillBorder};
-  font-size: ${WALLET_CARD_STYLE.pillFontSize}px;
-  color: ${COLORS.ink};
+  background: ${({ theme }): string => theme.colors.depositBg};
+  border: 1.5px solid ${({ theme }): string => theme.colors.softBorder};
+  font-size: ${({ theme }): number => theme.typography.body}px;
+  color: ${({ theme }): string => theme.colors.textStrong};
 `;
 
 interface WalletCardProps {
