@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { ACCOUNT } from '@/test-support/fixtures';
+import { mockAccount } from '@/test-support/fixtures';
 import { useDriver } from './driver/use-driver';
 
 describe('page routing', () => {
@@ -14,7 +14,7 @@ describe('page routing', () => {
   });
 
   describe('with an account', () => {
-    const { header, emptyState } = useDriver({ accounts: [ACCOUNT] });
+    const { header, emptyState } = useDriver({ accounts: [mockAccount] });
 
     it('shows the header and not the empty state', async () => {
       assert.equal(await header.exists(), true);

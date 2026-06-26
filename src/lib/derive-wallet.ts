@@ -3,14 +3,14 @@ import { balance, interestGain, principal, todayInterest } from './derivations';
 
 export function deriveWallet(
   wallet: Wallet,
-  txns: Transaction[],
+  transactions: Transaction[],
   asOf: string
 ): WalletWithDerived {
   return {
     ...wallet,
-    balance: balance(txns),
-    principal: principal(txns),
-    interestGain: interestGain(txns),
-    todayInterest: todayInterest(txns, asOf),
+    balance: balance(transactions),
+    principal: principal(transactions),
+    interestGain: interestGain(transactions),
+    todayInterest: todayInterest(transactions, asOf),
   };
 }

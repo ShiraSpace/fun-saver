@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
-import { ACCOUNT, CREATE_ACCOUNT_INPUT } from '@/test-support/fixtures';
+import { mockAccount, mockCreateAccountInput } from '@/test-support/fixtures';
 import { CreateAccount } from './CreateAccount';
 import { NAME_FIELD_TEST_IDS } from './NameField/constants';
 import { CREATE_ACCOUNT_COPY, CREATE_ACCOUNT_TEST_IDS } from './constants';
@@ -21,7 +21,7 @@ jest.mock('./use-create-account', () => ({
 describe('CreateAccount', () => {
   beforeEach(() => {
     mockPush.mockClear();
-    mockCreateAccount.mockReset().mockResolvedValue(ACCOUNT);
+    mockCreateAccount.mockReset().mockResolvedValue(mockAccount);
     render(<CreateAccount />);
   });
 
@@ -62,12 +62,12 @@ describe('CreateAccount', () => {
 
   it('creates the account and navigates home on submit', async () => {
     fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-      target: { value: CREATE_ACCOUNT_INPUT.name },
+      target: { value: mockCreateAccountInput.name },
     });
     fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
     fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit));
 
-    expect(mockCreateAccount).toHaveBeenCalledWith(CREATE_ACCOUNT_INPUT);
+    expect(mockCreateAccount).toHaveBeenCalledWith(mockCreateAccountInput);
     await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/'));
   });
 });

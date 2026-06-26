@@ -1,50 +1,32 @@
 import { InMemoryStore } from '../memory-store';
-import { ACCOUNT } from '@/test-support/fixtures';
-import type { Transaction, Wallet } from '@/lib/types';
+import {
+  mockAccount,
+  mockSecondAccount,
+  createMockTransaction,
+} from '@/test-support/fixtures';
 
-const savings: Wallet = {
-  id: 'w1',
-  accountId: 'a1',
-  name: 'savings',
-  icon: '🐷',
-  monthlyInterestRate: 0.15,
-  openedAt: '2026-01-01',
-  lastInterestDate: '2026-01-01',
-};
-
-const otherAccountWallet: Wallet = {
-  ...savings,
-  id: 'w9',
-  accountId: 'a2',
-  name: 'spending',
-};
-
-const deposit: Transaction = {
-  id: 't1',
-  walletId: 'w1',
-  type: 'deposit',
-  amount: 5000,
-  occurredAt: '2026-01-01',
-};
+const deposit = createMockTransaction();
 
 describe('InMemoryStore', () => {
   it('lists inserted accounts', async () => {
     const store = new InMemoryStore();
 
-    await store.insertAccount(ACCOUNT);
+    await store.insertAccount(mockAccount);
 
-    expect(await store.listAccounts()).toEqual([ACCOUNT]);
+    expect(await store.listAccounts()).toEqual([mockAccount]);
   });
 
-  it('lists wallets filtered by account', async () => {
+  it('returns each account with its own embedded wallets', async () => {
     const store = new InMemoryStore();
 
-    await store.insertWallet(savings);
-    await store.insertWallet(otherAccountWallet);
+    await store.insertAccount(mockAccount);
+    await store.insertAccount(mockSecondAccount);
 
-    expect((await store.listWalletsByAccount('a1')).map((w) => w.id)).toEqual([
-      'w1',
-    ]);
+    expect(
+      (await store.getAccount('a1'))?.wallets.map((wallet) => wallet.id)
+    ).toEqual(['w1', 'w2', 'w3']);
+    expect((await store.getAccount('a2'))?.wallets).toEqual([]);
+    expect(await store.getAccount('missing')).toBeUndefined();
   });
 
   it('lists transactions filtered by wallet', async () => {
@@ -53,7 +35,9 @@ describe('InMemoryStore', () => {
     await store.insertTransactions([deposit]);
 
     expect(
-      (await store.listTransactionsByWallet('w1')).map((t) => t.id)
+      (await store.listTransactionsByWallet('w1')).map(
+        (transaction) => transaction.id
+      )
     ).toEqual(['t1']);
   });
 });

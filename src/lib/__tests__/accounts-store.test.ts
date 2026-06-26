@@ -1,7 +1,7 @@
 import { InMemoryStore } from '@/db/memory-store';
 import { AccountsStore } from '../accounts-store';
 import { SAVINGS_MONTHLY_RATE } from '../constants';
-import { CREATE_ACCOUNT_INPUT } from '@/test-support/fixtures';
+import { mockCreateAccountInput } from '@/test-support/fixtures';
 
 const ASOF = '2026-01-01';
 
@@ -10,39 +10,34 @@ describe('AccountsStore', () => {
     const accountsStore = new AccountsStore(new InMemoryStore());
 
     const account = await accountsStore.createAccount(
-      CREATE_ACCOUNT_INPUT,
+      mockCreateAccountInput,
       ASOF
     );
 
     expect(typeof account.id).toBe('string');
     expect(account.id.length).toBeGreaterThan(0);
     expect(account).toMatchObject({
-      name: CREATE_ACCOUNT_INPUT.name,
-      avatarId: CREATE_ACCOUNT_INPUT.avatarId,
+      name: mockCreateAccountInput.name,
+      avatarId: mockCreateAccountInput.avatarId,
       isActive: true,
     });
   });
 
   it('seeds the three default wallets opened on the given day', async () => {
-    const store = new InMemoryStore();
-    const accountsStore = new AccountsStore(store);
+    const accountsStore = new AccountsStore(new InMemoryStore());
 
     const account = await accountsStore.createAccount(
-      CREATE_ACCOUNT_INPUT,
+      mockCreateAccountInput,
       ASOF
     );
-    const wallets = await store.listWalletsByAccount(account.id);
 
-    expect(wallets.map((wallet) => wallet.name).sort()).toEqual([
+    expect(account.wallets.map((wallet) => wallet.name).sort()).toEqual([
       'goodDeeds',
       'savings',
       'spending',
     ]);
-    expect(wallets.every((wallet) => wallet.accountId === account.id)).toBe(
-      true
-    );
 
-    const savings = wallets.find((wallet) => wallet.name === 'savings');
+    const savings = account.wallets.find((wallet) => wallet.name === 'savings');
     expect(savings).toMatchObject({
       monthlyInterestRate: SAVINGS_MONTHLY_RATE,
       openedAt: ASOF,

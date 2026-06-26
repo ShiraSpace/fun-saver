@@ -1,25 +1,31 @@
 import type { Transaction, TransactionType } from './types';
 
-function sumOf(txns: Transaction[], type: TransactionType): number {
-  return txns
-    .filter((txn) => txn.type === type)
-    .reduce((total, txn) => total + txn.amount, 0);
+function sumOf(transactions: Transaction[], type: TransactionType): number {
+  return transactions
+    .filter((transaction) => transaction.type === type)
+    .reduce((total, transaction) => total + transaction.amount, 0);
 }
 
-export function principal(txns: Transaction[]): number {
-  return sumOf(txns, 'deposit') - sumOf(txns, 'withdrawal');
+export function principal(transactions: Transaction[]): number {
+  return sumOf(transactions, 'deposit') - sumOf(transactions, 'withdrawal');
 }
 
-export function interestGain(txns: Transaction[]): number {
-  return sumOf(txns, 'interest');
+export function interestGain(transactions: Transaction[]): number {
+  return sumOf(transactions, 'interest');
 }
 
-export function balance(txns: Transaction[]): number {
-  return principal(txns) + interestGain(txns);
+export function balance(transactions: Transaction[]): number {
+  return principal(transactions) + interestGain(transactions);
 }
 
-export function todayInterest(txns: Transaction[], asOf: string): number {
-  return txns
-    .filter((txn) => txn.type === 'interest' && txn.occurredAt === asOf)
-    .reduce((total, txn) => total + txn.amount, 0);
+export function todayInterest(
+  transactions: Transaction[],
+  asOf: string
+): number {
+  return transactions
+    .filter(
+      (transaction) =>
+        transaction.type === 'interest' && transaction.occurredAt === asOf
+    )
+    .reduce((total, transaction) => total + transaction.amount, 0);
 }

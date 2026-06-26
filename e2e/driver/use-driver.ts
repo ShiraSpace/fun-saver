@@ -50,9 +50,6 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
     for (const account of state.accounts ?? []) {
       await store.insertAccount(account);
     }
-    for (const wallet of state.wallets ?? []) {
-      await store.insertWallet(wallet);
-    }
     if (state.transactions?.length) {
       await store.insertTransactions(state.transactions);
     }

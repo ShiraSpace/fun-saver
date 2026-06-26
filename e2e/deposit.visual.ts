@@ -1,13 +1,13 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { ACCOUNT, WALLETS } from '@/test-support/fixtures';
+import { mockAccount } from '@/test-support/fixtures';
 import { splitDeposit } from '@/lib/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { useDriver } from './driver/use-driver';
 
 describe('deposit', () => {
-  const { dashboard } = useDriver({ accounts: [ACCOUNT], wallets: WALLETS });
+  const { dashboard } = useDriver({ accounts: [mockAccount] });
 
   it('splits a deposit across the pots and updates the savings deposits', async () => {
     const amount = 50;

@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { ACCOUNT, CREATE_ACCOUNT_INPUT } from '@/test-support/fixtures';
+import { mockAccount, mockCreateAccountInput } from '@/test-support/fixtures';
 import { useCreateAccount } from './use-create-account';
 
 describe('useCreateAccount', () => {
@@ -12,19 +12,19 @@ describe('useCreateAccount', () => {
   it('posts the new account to the accounts endpoint and returns it', async () => {
     const fetchMock = jest
       .fn()
-      .mockResolvedValue({ ok: true, json: async () => ACCOUNT });
+      .mockResolvedValue({ ok: true, json: async () => mockAccount });
     global.fetch = fetchMock as unknown as typeof fetch;
 
     const { result } = renderHook(() => useCreateAccount());
-    const account = await result.current.createAccount(CREATE_ACCOUNT_INPUT);
+    const account = await result.current.createAccount(mockCreateAccountInput);
 
-    expect(account).toEqual(ACCOUNT);
+    expect(account).toEqual(mockAccount);
 
     const [url, init] = fetchMock.mock.calls[0];
     expect(url).toBe('/api/accounts');
     expect(init.method).toBe('POST');
     expect(init.cache).toBe('no-store');
-    expect(JSON.parse(init.body)).toEqual(CREATE_ACCOUNT_INPUT);
+    expect(JSON.parse(init.body)).toEqual(mockCreateAccountInput);
   });
 
   it('throws when the request fails', async () => {
@@ -35,7 +35,7 @@ describe('useCreateAccount', () => {
     const { result } = renderHook(() => useCreateAccount());
 
     await expect(
-      result.current.createAccount(CREATE_ACCOUNT_INPUT)
+      result.current.createAccount(mockCreateAccountInput)
     ).rejects.toThrow();
   });
 });

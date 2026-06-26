@@ -5,14 +5,14 @@ import {
   AccountsProvider,
   type AccountsContextValue,
 } from '@/components/AccountSwitcher/accounts-context';
-import { ACCOUNT, SECOND_ACCOUNT } from '@/test-support/fixtures';
+import { mockAccount, mockSecondAccount } from '@/test-support/fixtures';
 
 interface RenderSectionParams {
   contextOverrides?: Partial<AccountsContextValue>;
   onAccountSelect?: () => void;
 }
 
-const accounts = [ACCOUNT, SECOND_ACCOUNT];
+const accounts = [mockAccount, mockSecondAccount];
 
 function renderSection({
   contextOverrides,
@@ -20,7 +20,7 @@ function renderSection({
 }: RenderSectionParams = {}): void {
   const value: AccountsContextValue = {
     accounts,
-    selectedAccountId: ACCOUNT.id,
+    selectedAccountId: mockAccount.id,
     selectAccount: () => {},
     ...contextOverrides,
   };
@@ -68,7 +68,7 @@ describe('AccountsSection', () => {
 
     fireEvent.click(screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip)[1]);
 
-    expect(mockSelectAccount).toHaveBeenCalledWith(SECOND_ACCOUNT.id);
+    expect(mockSelectAccount).toHaveBeenCalledWith(mockSecondAccount.id);
     expect(mockOnAccountSelect).toHaveBeenCalled();
   });
 });
