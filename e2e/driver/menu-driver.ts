@@ -25,6 +25,10 @@ export class MenuDriver {
     return this.session.clickNth(ACCOUNT_CHIP, index);
   }
 
+  clickAddChip(): Promise<void> {
+    return this.session.click(ACCOUNTS_SECTION_TEST_IDS.addChip);
+  }
+
   waitForClosed(): Promise<void> {
     return this.session.waitForStyle(OVERLAY, 'opacity', '0');
   }

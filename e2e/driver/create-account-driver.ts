@@ -19,6 +19,10 @@ export class CreateAccountDriver {
     return this.session.click(CREATE_ACCOUNT_TEST_IDS.submit);
   }
 
+  cancel(): Promise<void> {
+    return this.session.click(CREATE_ACCOUNT_TEST_IDS.cancel);
+  }
+
   background(): Promise<string> {
     return this.session.computedStyle(
       CREATE_ACCOUNT_TEST_IDS.container,
