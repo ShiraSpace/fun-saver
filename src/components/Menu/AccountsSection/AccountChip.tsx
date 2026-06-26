@@ -14,6 +14,8 @@ interface AccountChipProps {
   onSelect: (id: string) => void;
 }
 
+const ringColor = ({ theme }: { theme: Theme }): string => theme.colors.star;
+
 const Chip = styled.button`
   position: relative;
   line-height: 0;
@@ -32,13 +34,13 @@ const Chip = styled.button`
   }
 
   &[data-selected='true'] img {
-    box-shadow: 0 0 0 ${ACCOUNTS_SECTION_STYLE.ringWidth}px
-      ${ACCOUNTS_SECTION_STYLE.ringColor};
+    box-shadow: 0 0 0 ${ACCOUNTS_SECTION_STYLE.ringWidth}px ${ringColor};
   }
 `;
 
-const badgeSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.label;
+const badgeFontSize = ({ theme }: { theme: Theme }): number => theme.typography.label;
+const badgeBg = ({ theme }: { theme: Theme }): string => theme.colors.primary;
+const badgeColor = ({ theme }: { theme: Theme }): string => theme.colors.textOnPrimary;
 
 const Badge = styled.span`
   position: absolute;
@@ -49,9 +51,9 @@ const Badge = styled.span`
   padding: 0 4px;
   box-sizing: border-box;
   border-radius: 999px;
-  background: ${ACCOUNTS_SECTION_STYLE.badgeBg};
-  color: ${ACCOUNTS_SECTION_STYLE.badgeColor};
-  font-size: ${badgeSize}px;
+  background: ${badgeBg};
+  color: ${badgeColor};
+  font-size: ${badgeFontSize}px;
   font-weight: 700;
   line-height: 1;
   display: flex;
