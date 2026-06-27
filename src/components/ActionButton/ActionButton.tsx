@@ -15,7 +15,7 @@ const shadow = ({ theme }: Themed): string => theme.colors.primaryShadow;
 const glow = ({ theme }: Themed): string => theme.colors.primaryGlow;
 
 export const ActionButton = styled.button`
-  font-size: ${TYPE_SCALE.h3}px;
+  font-size: ${TYPE_SCALE.heading}px;
   font-weight: 700;
   padding: ${ACTION_BUTTON.paddingY}px ${ACTION_BUTTON.paddingX}px;
   border: none;

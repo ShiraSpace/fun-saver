@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render } from '@/test-support/render';
 import { Star } from './Star';
 
 describe('Star', () => {

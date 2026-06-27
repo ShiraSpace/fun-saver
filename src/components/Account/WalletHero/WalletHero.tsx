@@ -3,7 +3,6 @@
 import { JSX } from 'react';
 import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
-import { COLORS } from '@/theme/palette';
 import { CoinRow } from '../CoinRow/CoinRow';
 import { Star } from './Star/Star';
 import { HeroHead } from './HeroHead/HeroHead';
@@ -23,11 +22,11 @@ type HeroWallet = Pick<
 
 const Card = styled.div`
   position: relative;
-  background: ${COLORS.surface};
+  background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${HERO_STYLE.radius}px;
   padding: ${HERO_STYLE.padding}px;
   box-shadow: ${HERO_STYLE.shadow};
-  color: ${COLORS.ink};
+  color: ${({ theme }): string => theme.colors.textStrong};
 `;
 
 const CornerStar = styled(Star)`

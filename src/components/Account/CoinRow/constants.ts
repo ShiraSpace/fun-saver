@@ -16,10 +16,6 @@ export const COIN_ROW_STYLE = {
   paddingX: 12,
   radius: 14,
   gap: 10,
-  background: '#FFF8E0',
-  border: '1.5px dashed #FFD23F',
-  labelColor: '#7A5A0A',
-  labelSize: 11,
   coinGap: 5,
   coinSize: 30,
   coinGradient:

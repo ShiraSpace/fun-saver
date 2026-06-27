@@ -18,8 +18,10 @@ import {
 
 const titleColor = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
-const titleSize = ({ theme }: { theme: Theme }): number => theme.typography.h2;
-const backSize = ({ theme }: { theme: Theme }): number => theme.typography.h3;
+const titleSize = ({ theme }: { theme: Theme }): number =>
+  theme.typography.title;
+const backSize = ({ theme }: { theme: Theme }): number =>
+  theme.typography.heading;
 
 const Form = styled.form`
   display: flex;

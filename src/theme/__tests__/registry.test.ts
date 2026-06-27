@@ -16,4 +16,38 @@ describe('theme registry', () => {
   it('throws on an unknown theme id', () => {
     expect(() => getThemeTokens('does-not-exist')).toThrow();
   });
+
+  it('exposes the full cohesive token set for the default theme', () => {
+    const { colors, gradients } = getThemeTokens(DEFAULT_THEME_ID);
+    for (const key of [
+      'accent',
+      'accentSoft',
+      'star',
+      'divider',
+      'softBg',
+      'softBorder',
+      'softText',
+      'depositBg',
+      'gainText',
+      'gainSoftBg',
+    ] as const) {
+      expect(colors[key]).toMatch(/^#|rgb/);
+    }
+    for (const key of ['potSavings', 'potSpending', 'potGood'] as const) {
+      expect(gradients[key]).toContain('linear-gradient');
+    }
+  });
+
+  it('resolves jungle-quest with full tokens', () => {
+    const t = getThemeTokens('jungle-quest');
+    expect(t.colors.primary).toBe('#2A9D8F');
+    expect(t.colors.surface).toBe('#FFFDF5');
+    expect(t.gradients.potGood).toContain('linear-gradient');
+  });
+
+  it('resolves midnight-blue with full tokens', () => {
+    const t = getThemeTokens('midnight-blue');
+    expect(t.colors.primary).toBe('#3B82F6');
+    expect(t.colors.surface).toBe('#141B24');
+  });
 });

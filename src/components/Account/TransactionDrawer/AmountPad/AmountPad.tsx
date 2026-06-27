@@ -20,7 +20,7 @@ const Key = styled.button`
   background: ${({ theme }): string => theme.colors.surface};
   color: ${({ theme }): string => theme.colors.textStrong};
   font-family: inherit;
-  font-size: 22px;
+  font-size: ${({ theme }): number => theme.typography.title}px;
   font-weight: 600;
   padding: 13px 0;
   cursor: pointer;
@@ -29,7 +29,7 @@ const Key = styled.button`
 
 const ControlKey = styled(Key)`
   color: ${({ theme }): string => theme.colors.textMuted};
-  font-size: 18px;
+  font-size: ${({ theme }): number => theme.typography.heading}px;
 `;
 
 interface AmountPadProps {

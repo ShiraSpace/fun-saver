@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/test-support/render';
 import { WalletList } from './WalletList';
 import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
 import { WALLET_CARD_TEST_IDS } from '../WalletCard/constants';

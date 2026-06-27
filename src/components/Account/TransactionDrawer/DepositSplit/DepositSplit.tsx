@@ -5,31 +5,34 @@ import styled from '@emotion/styled';
 import { Money } from '../../Money/Money';
 import { DEFAULT_WALLETS } from '@/lib/constants';
 import type { DepositSplit as DepositSplitValue } from '@/lib/transactions';
-import {
-  TRANSACTION_DRAWER_STYLE,
-  TRANSACTION_DRAWER_TEST_IDS,
-} from '../constants';
+import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
+import { DEPOSIT_SPLIT_STYLE } from './constants';
 
 const Line = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: ${DEPOSIT_SPLIT_STYLE.lineGap}px;
   padding: 8px 10px;
   border-radius: 12px;
-  background: ${TRANSACTION_DRAWER_STYLE.splitBg};
-  border: 1.5px dashed ${TRANSACTION_DRAWER_STYLE.splitBorder};
-  font-size: 11px;
+  background: ${({ theme }): string => theme.colors.softBg};
+  border: 1.5px dashed ${({ theme }): string => theme.colors.softBorder};
+  font-size: ${({ theme }): number => theme.typography.body}px;
   font-weight: 600;
-  color: ${TRANSACTION_DRAWER_STYLE.splitText};
+  color: ${({ theme }): string => theme.colors.softText};
 `;
 
 const Share = styled.span`
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: ${DEPOSIT_SPLIT_STYLE.shareGap}px;
   color: ${({ theme }): string => theme.colors.textStrong};
+`;
+
+const Icon = styled.span`
+  font-size: ${DEPOSIT_SPLIT_STYLE.iconSize}px;
+  line-height: 1;
 `;
 
 interface DepositSplitProps {
@@ -41,7 +44,7 @@ export function DepositSplit({ split }: DepositSplitProps): JSX.Element {
     <Line data-testid={TRANSACTION_DRAWER_TEST_IDS.split}>
       {DEFAULT_WALLETS.map((wallet) => (
         <Share key={wallet.name}>
-          <span>{wallet.icon}</span>
+          <Icon>{wallet.icon}</Icon>
           <Money
             amountAgorot={split[wallet.name]}
             testId={TRANSACTION_DRAWER_TEST_IDS.splitShare(wallet.name)}

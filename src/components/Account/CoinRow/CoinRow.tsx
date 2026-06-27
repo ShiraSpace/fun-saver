@@ -9,8 +9,8 @@ const Row = styled.div`
   margin-top: ${COIN_ROW_STYLE.marginTop}px;
   padding: ${COIN_ROW_STYLE.paddingY}px ${COIN_ROW_STYLE.paddingX}px;
   border-radius: ${COIN_ROW_STYLE.radius}px;
-  background: ${COIN_ROW_STYLE.background};
-  border: ${COIN_ROW_STYLE.border};
+  background: ${({ theme }): string => theme.colors.softBg};
+  border: 1.5px dashed ${({ theme }): string => theme.colors.softBorder};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,9 +18,9 @@ const Row = styled.div`
 `;
 
 const Label = styled.span`
-  font-size: ${COIN_ROW_STYLE.labelSize}px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
-  color: ${COIN_ROW_STYLE.labelColor};
+  color: ${({ theme }): string => theme.colors.softText};
 `;
 
 const Coins = styled.span`

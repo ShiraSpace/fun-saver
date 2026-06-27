@@ -2,13 +2,12 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import { COLORS } from '@/theme/palette';
 import { Money } from '../../Money/Money';
-import {
-  HERO_STYLE,
-  WALLET_HERO_COPY,
-  WALLET_HERO_TEST_IDS,
-} from '../constants';
+import { WALLET_HERO_COPY, WALLET_HERO_TEST_IDS } from '../constants';
+
+interface HeroAmountProps {
+  balance: number;
+}
 
 const Block = styled.div`
   text-align: center;
@@ -16,20 +15,16 @@ const Block = styled.div`
 `;
 
 const Label = styled.div`
-  font-size: ${HERO_STYLE.amountLabelSize}px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
   letter-spacing: 0.5px;
-  color: ${COLORS.muted};
+  color: ${({ theme }): string => theme.colors.textMuted};
   margin-bottom: 3px;
 `;
 
 const Big = styled.div`
-  font-size: ${HERO_STYLE.amountSize}px;
+  font-size: ${({ theme }): number => theme.typography.display}px;
 `;
-
-interface HeroAmountProps {
-  balance: number;
-}
 
 export function HeroAmount({ balance }: HeroAmountProps): JSX.Element {
   return (

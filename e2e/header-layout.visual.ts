@@ -7,7 +7,7 @@ import { useDriver } from './driver/use-driver';
 
 const EDGE_TOLERANCE = 24;
 const CENTER_TOLERANCE = 24;
-const HEADING_FONT_SIZE = `${TYPE_SCALE.h2}px`;
+const HEADING_FONT_SIZE = `${TYPE_SCALE.title}px`;
 
 describe('header', () => {
   const { header, menu } = useDriver({ accounts: [mockAccount] });
