@@ -1,6 +1,7 @@
 import type { DataStore } from '@/db/data-store';
 import type { Account, WalletName, WalletWithDerived } from './types';
 import { deriveWallet } from './derive-wallet';
+import { addDailyInterest } from './interest';
 
 const WALLET_ORDER: Record<WalletName, number> = {
   savings: 0,
@@ -10,14 +11,26 @@ const WALLET_ORDER: Record<WalletName, number> = {
 
 export async function getWalletsForAccount(
   store: DataStore,
-  { wallets }: Account,
+  account: Account,
   asOf: string
 ): Promise<WalletWithDerived[]> {
   const derived = await Promise.all(
-    wallets.map(async (wallet) => {
+    account.wallets.map(async (wallet) => {
       const transactions = await store.listTransactionsByWallet(wallet.id);
+      const accrued = addDailyInterest({
+        wallet,
+        transactions,
+        asOf,
+        accountId: account.id,
+      });
 
-      return deriveWallet(wallet, transactions, asOf);
+      if (accrued.length > 0) {
+        await store.insertTransactions(accrued);
+      }
+
+      const settledTransactions = [...transactions, ...accrued];
+
+      return deriveWallet({ wallet, transactions: settledTransactions, asOf });
     })
   );
 

@@ -18,7 +18,9 @@ const transactions = [
 
 describe('deriveWallet', () => {
   it('augments a wallet with balance, principal, gain and today interest', () => {
-    expect(deriveWallet(wallet, transactions, '2026-01-03')).toMatchObject({
+    expect(
+      deriveWallet({ wallet, transactions, asOf: '2026-01-03' })
+    ).toMatchObject({
       ...wallet,
       balance: 8500,
       principal: 8000,

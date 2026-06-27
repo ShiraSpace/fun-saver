@@ -28,12 +28,12 @@ export async function POST(
   const { amount } = (await request.json()) as DepositBody;
 
   try {
-    const transactions = await addDeposit(
+    const transactions = await addDeposit({
       store,
       account,
-      shekelsToAgorot(amount),
-      today()
-    );
+      amountAgorot: shekelsToAgorot(amount),
+      asOf: today(),
+    });
 
     return Response.json(transactions);
   } catch (error) {
