@@ -25,11 +25,12 @@ export default async function HomePage(): Promise<JSX.Element> {
   );
 
   const storedAccountId = cookieStore.get(SELECTED_ACCOUNT_COOKIE)?.value;
+  const defaultAccountId = accounts[0]?.id ?? '';
+
   const initialAccountId =
-    storedAccountId &&
-    accounts.some((account) => account.id === storedAccountId)
+    storedAccountId && accounts.some(({ id }) => id === storedAccountId)
       ? storedAccountId
-      : (accounts[0]?.id ?? '');
+      : defaultAccountId;
 
   return (
     <main>
