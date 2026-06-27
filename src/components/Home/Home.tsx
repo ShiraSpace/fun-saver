@@ -3,11 +3,8 @@
 import { JSX, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styled from '@emotion/styled';
-import type { Account } from '@/lib/types';
-import {
-  AccountSwitcher,
-  type AccountView,
-} from '@/components/AccountSwitcher';
+import type { Account, AccountWithDerivedWallets } from '@/lib/types';
+import { AccountSwitcher } from '@/components/AccountSwitcher';
 import { CreateAccount } from '@/components/CreateAccount';
 import { EmptyState } from '@/components/EmptyState';
 import { AccountsProvider } from '@/components/AccountSwitcher/accounts-context';
@@ -23,13 +20,12 @@ const CreateOverlay = styled.div`
 `;
 
 interface HomeProps {
-  views: AccountView[];
+  accounts: AccountWithDerivedWallets[];
   initialAccountId: string;
 }
 
-export function Home({ views, initialAccountId }: HomeProps): JSX.Element {
+export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
   const router = useRouter();
-  const accounts = views.map((view) => view.account);
 
   const [mode, setMode] = useState<AppMode>(APP_MODE.viewing);
   const [selectedAccountId, setSelectedAccountId] = useState(initialAccountId);
@@ -52,7 +48,7 @@ export function Home({ views, initialAccountId }: HomeProps): JSX.Element {
   return (
     <AppModeProvider value={{ mode, setMode }}>
       <AccountsProvider value={{ accounts, selectedAccountId, selectAccount }}>
-        {hasAccounts && <AccountSwitcher views={views} />}
+        {hasAccounts && <AccountSwitcher accounts={accounts} />}
         {!hasAccounts && !isCreating && (
           <EmptyState onCreate={() => setMode(APP_MODE.creatingAccount)} />
         )}

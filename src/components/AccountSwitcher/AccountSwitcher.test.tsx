@@ -8,21 +8,17 @@ import {
   mockSecondAccount,
 } from '@/test-support/fixtures';
 
-const views = [
-  { account: mockAccount, wallets: mockDerivedWallets },
-  { account: mockSecondAccount, wallets: mockDerivedWallets },
+const accounts = [
+  { ...mockAccount, wallets: mockDerivedWallets },
+  { ...mockSecondAccount, wallets: mockDerivedWallets },
 ];
 
 function renderWithSelection(selectedAccountId: string): void {
   render(
     <AccountsProvider
-      value={{
-        accounts: views.map((view) => view.account),
-        selectedAccountId,
-        selectAccount: () => {},
-      }}
+      value={{ accounts, selectedAccountId, selectAccount: () => {} }}
     >
-      <AccountSwitcher views={views} />
+      <AccountSwitcher accounts={accounts} />
     </AccountsProvider>
   );
 }

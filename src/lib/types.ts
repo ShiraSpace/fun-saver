@@ -33,3 +33,7 @@ export interface WalletWithDerived extends Wallet {
   interestGain: number;
   todayInterest: number;
 }
+
+export interface AccountWithDerivedWallets extends Account {
+  wallets: WalletWithDerived[];
+}

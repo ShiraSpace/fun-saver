@@ -1,29 +1,26 @@
 'use client';
 
 import { JSX } from 'react';
-import type { Account as AccountModel, WalletWithDerived } from '@/lib/types';
+import type { AccountWithDerivedWallets } from '@/lib/types';
 import { Account } from '@/components/Account';
 import { useAccounts } from './accounts-context';
 
-export interface AccountView {
-  account: AccountModel;
-  wallets: WalletWithDerived[];
-}
-
 interface AccountSwitcherProps {
-  views: AccountView[];
+  accounts: AccountWithDerivedWallets[];
 }
 
-export function AccountSwitcher({ views }: AccountSwitcherProps): JSX.Element {
+export function AccountSwitcher({
+  accounts,
+}: AccountSwitcherProps): JSX.Element {
   const { selectedAccountId } = useAccounts();
   const current =
-    views.find((view) => view.account.id === selectedAccountId) ?? views[0];
+    accounts.find((account) => account.id === selectedAccountId) ?? accounts[0];
 
   return (
     <Account
-      accountId={current.account.id}
-      name={current.account.name}
-      avatarId={current.account.avatarId}
+      accountId={current.id}
+      name={current.name}
+      avatarId={current.avatarId}
       wallets={current.wallets}
     />
   );

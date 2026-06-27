@@ -1,7 +1,7 @@
 import { JSX } from 'react';
 import { cookies } from 'next/headers';
 import { Home } from '@/components/Home';
-import type { AccountView } from '@/components/AccountSwitcher';
+import type { AccountWithDerivedWallets } from '@/lib/types';
 import { SELECTED_ACCOUNT_COOKIE } from '@/components/Home/selected-account-cookie';
 import { getStore } from '@/db';
 import { getWalletsForAccount } from '@/lib/account-dashboard';
@@ -11,15 +11,15 @@ export const dynamic = 'force-dynamic';
 
 export default async function HomePage(): Promise<JSX.Element> {
   const store = getStore();
-  const [accounts, cookieStore] = await Promise.all([
+  const [storedAccounts, cookieStore] = await Promise.all([
     store.listAccounts(),
     cookies(),
   ]);
 
   const asOf = today();
-  const views: AccountView[] = await Promise.all(
-    accounts.map(async (account) => ({
-      account,
+  const accounts: AccountWithDerivedWallets[] = await Promise.all(
+    storedAccounts.map(async (account) => ({
+      ...account,
       wallets: await getWalletsForAccount(store, account, asOf),
     }))
   );
@@ -33,7 +33,7 @@ export default async function HomePage(): Promise<JSX.Element> {
 
   return (
     <main>
-      <Home views={views} initialAccountId={initialAccountId} />
+      <Home accounts={accounts} initialAccountId={initialAccountId} />
     </main>
   );
 }

@@ -15,7 +15,7 @@ import {
   mockDerivedWallets,
   mockSecondAccount,
 } from '@/test-support/fixtures';
-import type { AccountView } from '@/components/AccountSwitcher';
+import type { AccountWithDerivedWallets } from '@/lib/types';
 
 const mockRefresh = jest.fn();
 const mockPush = jest.fn();
@@ -39,23 +39,23 @@ jest.mock('../CreateAccount/use-create-account', () => ({
   }),
 }));
 
-const views: AccountView[] = [
-  { account: mockAccount, wallets: mockDerivedWallets },
-  { account: mockSecondAccount, wallets: mockDerivedWallets },
+const accounts: AccountWithDerivedWallets[] = [
+  { ...mockAccount, wallets: mockDerivedWallets },
+  { ...mockSecondAccount, wallets: mockDerivedWallets },
 ];
 
 const createdAccount = createMockAccount({ id: 'created-id', name: 'דנה' });
 
 interface RenderHomeParams {
-  views?: AccountView[];
+  accounts?: AccountWithDerivedWallets[];
   initialAccountId?: string;
 }
 
 function renderHome({
-  views: viewsProp = views,
+  accounts: accountsProp = accounts,
   initialAccountId = mockAccount.id,
 }: RenderHomeParams = {}): void {
-  render(<Home views={viewsProp} initialAccountId={initialAccountId} />);
+  render(<Home accounts={accountsProp} initialAccountId={initialAccountId} />);
 }
 
 function openMenu(): void {
@@ -90,7 +90,7 @@ describe('Home', () => {
     });
 
     it('renders the empty state when there are no accounts', () => {
-      renderHome({ views: [], initialAccountId: '' });
+      renderHome({ accounts: [], initialAccountId: '' });
 
       expect(
         screen.getByTestId(EMPTY_STATE_TEST_IDS.container)
@@ -162,7 +162,7 @@ describe('Home', () => {
     });
 
     it('opens the create overlay from the empty-state call to action', () => {
-      renderHome({ views: [], initialAccountId: '' });
+      renderHome({ accounts: [], initialAccountId: '' });
 
       fireEvent.click(screen.getByTestId(EMPTY_STATE_TEST_IDS.createAccount));
       fireEvent.animationEnd(screen.getByTestId(EMPTY_STATE_TEST_IDS.pig));
