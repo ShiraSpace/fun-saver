@@ -46,12 +46,12 @@ export function AccountsSection({
   const { accounts, selectedAccountId, selectAccount } = useAccounts();
   const { setMode } = useAppMode();
 
-  const handleSelect = (id: string): void => {
+  const handleSelectAccount = (id: string): void => {
     selectAccount(id);
     onAccountSelect();
   };
 
-  const handleAdd = (): void => {
+  const handleAddAccount = (): void => {
     onAccountSelect();
     setMode(APP_MODE.creatingAccount);
   };
@@ -61,7 +61,7 @@ export function AccountsSection({
       key={account.id}
       account={account}
       isSelected={account.id === selectedAccountId}
-      onSelect={handleSelect}
+      onSelect={handleSelectAccount}
     />
   ));
 
@@ -71,7 +71,7 @@ export function AccountsSection({
       <Row>
         {accountChips}
         <EditAccountChip />
-        <AddAccountChip onAdd={handleAdd} />
+        <AddAccountChip onAddAccount={handleAddAccount} />
       </Row>
     </section>
   );

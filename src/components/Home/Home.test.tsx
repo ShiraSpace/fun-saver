@@ -118,12 +118,14 @@ describe('Home', () => {
     });
   });
 
-  describe('creating an account', () => {
-    it('opens the create overlay over the still-mounted account view', () => {
+  describe('creating an account from the menu', () => {
+    beforeEach(() => {
       renderHome();
       openMenu();
       tapAddChip();
+    });
 
+    it('opens the create overlay over the still-mounted account view', () => {
       expect(
         screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)
       ).toBeInTheDocument();
@@ -131,10 +133,6 @@ describe('Home', () => {
     });
 
     it('closes the overlay without creating when cancelled', () => {
-      renderHome();
-      openMenu();
-      tapAddChip();
-
       fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.cancel));
 
       expect(
@@ -144,10 +142,6 @@ describe('Home', () => {
     });
 
     it('selects the new account, persists it and refreshes on submit', async () => {
-      renderHome();
-      openMenu();
-      tapAddChip();
-
       submitCreateForm();
 
       await waitFor(() =>
@@ -160,16 +154,16 @@ describe('Home', () => {
         ).not.toBeInTheDocument()
       );
     });
+  });
 
-    it('opens the create overlay from the empty-state call to action', () => {
-      renderHome({ accounts: [], initialAccountId: '' });
+  it('opens the create overlay from the empty-state call to action', () => {
+    renderHome({ accounts: [], initialAccountId: '' });
 
-      fireEvent.click(screen.getByTestId(EMPTY_STATE_TEST_IDS.createAccount));
-      fireEvent.animationEnd(screen.getByTestId(EMPTY_STATE_TEST_IDS.pig));
+    fireEvent.click(screen.getByTestId(EMPTY_STATE_TEST_IDS.createAccount));
+    fireEvent.animationEnd(screen.getByTestId(EMPTY_STATE_TEST_IDS.pig));
 
-      expect(
-        screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-      ).toBeInTheDocument();
-    });
+    expect(
+      screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)
+    ).toBeInTheDocument();
   });
 });

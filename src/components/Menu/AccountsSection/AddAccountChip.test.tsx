@@ -5,7 +5,7 @@ import { ACCOUNTS_SECTION_TEST_IDS } from './constants';
 describe('AddAccountChip', () => {
   it('calls onAdd when clicked', () => {
     const mockOnAdd = jest.fn();
-    render(<AddAccountChip onAdd={mockOnAdd} />);
+    render(<AddAccountChip onAddAccount={mockOnAdd} />);
 
     fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.addChip));
 
