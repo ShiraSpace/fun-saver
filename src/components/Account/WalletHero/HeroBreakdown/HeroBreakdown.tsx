@@ -2,13 +2,18 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
 import { Money } from '../../Money/Money';
 import {
   HERO_STYLE,
   WALLET_HERO_COPY,
   WALLET_HERO_TEST_IDS,
 } from '../constants';
+
+type CellTone = 'deposits' | 'gain';
+
+interface CellProps {
+  tone: CellTone;
+}
 
 const Row = styled.div`
   display: flex;
@@ -18,7 +23,7 @@ const Row = styled.div`
   border-top: 1.5px dashed ${({ theme }): string => theme.colors.divider};
 `;
 
-const Cell = styled.div<{ tone: 'deposits' | 'gain' }>`
+const Cell = styled.div<CellProps>`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -27,13 +32,7 @@ const Cell = styled.div<{ tone: 'deposits' | 'gain' }>`
   border-radius: ${HERO_STYLE.cellRadius}px;
   background: ${({ tone, theme }): string =>
     tone === 'gain' ? theme.colors.gainSoftBg : theme.colors.depositBg};
-  color: ${({
-    tone,
-    theme,
-  }: {
-    tone: 'deposits' | 'gain';
-    theme: Theme;
-  }): string =>
+  color: ${({ tone, theme }): string =>
     tone === 'gain' ? theme.colors.gainText : theme.colors.textStrong};
 `;
 
@@ -49,7 +48,7 @@ const Amount = styled.div`
 `;
 
 interface BreakdownCellProps {
-  tone: 'deposits' | 'gain';
+  tone: CellTone;
   label: string;
   amountAgorot: number;
   testId: string;
