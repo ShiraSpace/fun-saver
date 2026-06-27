@@ -1,8 +1,11 @@
+import type { ThemeId } from '@/theme/registry';
+
 export interface Account {
   id: string;
   name: string;
   avatarId: string;
   isActive: boolean;
+  themeId: ThemeId;
   wallets: Wallet[];
 }
 

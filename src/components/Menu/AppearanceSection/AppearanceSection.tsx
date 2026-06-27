@@ -2,8 +2,8 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import { useThemeId, useSetThemeId } from '@/theme/ThemeController';
 import { MenuLabel } from '../MenuLabel';
+import { useAccountTheme } from './use-account-theme';
 import {
   APPEARANCE_SECTION_CONTENT,
   APPEARANCE_SECTION_STYLE,
@@ -30,9 +30,16 @@ const Swatch = styled.button<{ background: string }>`
   }
 `;
 
+const SaveError = styled.span`
+  display: block;
+  margin-top: ${APPEARANCE_SECTION_STYLE.rowGap}px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
+  font-weight: 600;
+  color: ${({ theme }): string => theme.colors.textOnPrimary};
+`;
+
 export function AppearanceSection(): JSX.Element {
-  const selectedId = useThemeId();
-  const setThemeId = useSetThemeId();
+  const { activeThemeId, chooseTheme, saveFailed } = useAccountTheme();
 
   const themeSelectorComponents = APPEARANCE_SECTION_CONTENT.themes.map(
     ({ id, label, background }) => (
@@ -43,8 +50,8 @@ export function AppearanceSection(): JSX.Element {
         title={label}
         background={background}
         data-testid={APPEARANCE_SECTION_TEST_IDS.swatch}
-        data-selected={id === selectedId}
-        onClick={(): void => setThemeId(id)}
+        data-selected={id === activeThemeId}
+        onClick={(): void => chooseTheme(id)}
       />
     )
   );
@@ -53,6 +60,11 @@ export function AppearanceSection(): JSX.Element {
     <section data-testid={APPEARANCE_SECTION_TEST_IDS.section}>
       <MenuLabel>{APPEARANCE_SECTION_CONTENT.label}</MenuLabel>
       <Row>{themeSelectorComponents}</Row>
+      {saveFailed && (
+        <SaveError data-testid={APPEARANCE_SECTION_TEST_IDS.saveError}>
+          {APPEARANCE_SECTION_CONTENT.saveError}
+        </SaveError>
+      )}
     </section>
   );
 }

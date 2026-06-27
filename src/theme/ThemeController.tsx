@@ -10,7 +10,6 @@ import {
   useState,
 } from 'react';
 import { ThemeProvider } from '@emotion/react';
-import { THEME_COOKIE } from '@/theme/theme-cookie';
 import { getThemeTokens, type ThemeId } from './registry';
 
 interface ThemeControllerProps {
@@ -29,7 +28,6 @@ export function ThemeController({
 
   const select = useCallback((id: ThemeId): void => {
     setThemeId(id);
-    document.cookie = `${THEME_COOKIE}=${id}; path=/; max-age=31536000; samesite=lax`;
   }, []);
 
   const theme = useMemo(() => getThemeTokens(themeId), [themeId]);

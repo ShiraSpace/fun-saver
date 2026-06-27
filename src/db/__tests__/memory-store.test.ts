@@ -29,6 +29,16 @@ describe('InMemoryStore', () => {
     expect(await store.getAccount('missing')).toBeUndefined();
   });
 
+  it('changes an account theme and ignores unknown ids', async () => {
+    const store = new InMemoryStore();
+    await store.insertAccount(mockAccount);
+
+    await store.setAccountTheme('a1', 'midnight-blue');
+    await store.setAccountTheme('missing', 'jungle-quest');
+
+    expect((await store.getAccount('a1'))?.themeId).toBe('midnight-blue');
+  });
+
   it('lists transactions filtered by wallet', async () => {
     const store = new InMemoryStore();
 

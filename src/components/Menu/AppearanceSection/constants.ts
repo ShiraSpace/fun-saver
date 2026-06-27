@@ -3,6 +3,7 @@ import type { ThemeId } from '@/theme/registry';
 export const APPEARANCE_SECTION_TEST_IDS = {
   section: 'menu-appearance-section',
   swatch: 'menu-appearance-swatch',
+  saveError: 'menu-appearance-save-error',
 } as const;
 
 export interface MenuTheme {
@@ -13,6 +14,7 @@ export interface MenuTheme {
 
 export const APPEARANCE_SECTION_CONTENT = {
   label: 'מראה',
+  saveError: 'לא הצלחנו לשמור את העיצוב, נסו שוב',
   themes: [
     {
       id: 'sunshine-quest',

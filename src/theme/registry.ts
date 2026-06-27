@@ -22,3 +22,7 @@ export function getThemeTokens(id: string = DEFAULT_THEME_ID): ThemeTokens {
 
   return tokens;
 }
+
+export function resolveThemeId(raw: string | undefined): ThemeId {
+  return raw && raw in THEMES ? (raw as ThemeId) : DEFAULT_THEME_ID;
+}
