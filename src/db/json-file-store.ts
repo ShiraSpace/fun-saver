@@ -1,10 +1,10 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import type { Account, Transaction, Wallet } from '../lib/types';
+import type { Account, Transaction } from '../lib/types';
 import type { DataStore, StoreData } from './data-store';
 
 function emptyData(): StoreData {
-  return { accounts: [], wallets: [], transactions: [] };
+  return { accounts: [], transactions: [] };
 }
 
 export class JsonFileStore implements DataStore {
@@ -20,16 +20,8 @@ export class JsonFileStore implements DataStore {
     return (await this.read()).accounts;
   }
 
-  async insertWallet(wallet: Wallet): Promise<void> {
-    const data = await this.read();
-    data.wallets.push(wallet);
-    await this.persist(data);
-  }
-
-  async listWalletsByAccount(accountId: string): Promise<Wallet[]> {
-    return (await this.read()).wallets.filter(
-      (wallet) => wallet.accountId === accountId
-    );
+  async getAccount(id: string): Promise<Account | undefined> {
+    return (await this.read()).accounts.find((account) => account.id === id);
   }
 
   async insertTransactions(transactions: Transaction[]): Promise<void> {
@@ -40,7 +32,7 @@ export class JsonFileStore implements DataStore {
 
   async listTransactionsByWallet(walletId: string): Promise<Transaction[]> {
     return (await this.read()).transactions.filter(
-      (txn) => txn.walletId === walletId
+      (transaction) => transaction.walletId === walletId
     );
   }
 

@@ -20,29 +20,22 @@ export class AccountsStore {
       name,
       avatarId,
       isActive: true,
+      wallets: this.buildDefaultWallets(asOf),
     };
 
     await this.store.insertAccount(account);
-    await this.seedDefaultWallets(account.id, asOf);
 
     return account;
   }
 
-  private async seedDefaultWallets(
-    accountId: string,
-    asOf: string
-  ): Promise<void> {
-    for (const seed of DEFAULT_WALLETS) {
-      const wallet: Wallet = {
-        id: newId(),
-        accountId,
-        name: seed.name,
-        icon: seed.icon,
-        monthlyInterestRate: seed.monthlyInterestRate,
-        openedAt: asOf,
-        lastInterestDate: asOf,
-      };
-      await this.store.insertWallet(wallet);
-    }
+  private buildDefaultWallets(asOf: string): Wallet[] {
+    return DEFAULT_WALLETS.map((seed) => ({
+      id: newId(),
+      name: seed.name,
+      icon: seed.icon,
+      monthlyInterestRate: seed.monthlyInterestRate,
+      openedAt: asOf,
+      lastInterestDate: asOf,
+    }));
   }
 }

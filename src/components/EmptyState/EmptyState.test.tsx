@@ -4,7 +4,7 @@ import { EMPTY_STATE_COPY, EMPTY_STATE_TEST_IDS } from './constants';
 
 describe('EmptyState', () => {
   beforeEach(() => {
-    render(<EmptyState createAccountHref="/?create=1" />);
+    render(<EmptyState onCreate={() => {}} />);
   });
 
   it('renders the empty-state screen', () => {

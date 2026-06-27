@@ -1,9 +1,8 @@
-import type { Account, Transaction, Wallet } from '../lib/types';
+import type { Account, Transaction } from '../lib/types';
 import type { DataStore } from './data-store';
 
 export class InMemoryStore implements DataStore {
   private readonly accounts: Account[] = [];
-  private readonly wallets: Wallet[] = [];
   private readonly transactions: Transaction[] = [];
 
   async insertAccount(account: Account): Promise<void> {
@@ -14,12 +13,8 @@ export class InMemoryStore implements DataStore {
     return [...this.accounts];
   }
 
-  async insertWallet(wallet: Wallet): Promise<void> {
-    this.wallets.push(wallet);
-  }
-
-  async listWalletsByAccount(accountId: string): Promise<Wallet[]> {
-    return this.wallets.filter((wallet) => wallet.accountId === accountId);
+  async getAccount(id: string): Promise<Account | undefined> {
+    return this.accounts.find((account) => account.id === id);
   }
 
   async insertTransactions(transactions: Transaction[]): Promise<void> {
@@ -27,6 +22,8 @@ export class InMemoryStore implements DataStore {
   }
 
   async listTransactionsByWallet(walletId: string): Promise<Transaction[]> {
-    return this.transactions.filter((txn) => txn.walletId === walletId);
+    return this.transactions.filter(
+      (transaction) => transaction.walletId === walletId
+    );
   }
 }

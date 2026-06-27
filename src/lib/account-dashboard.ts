@@ -1,5 +1,5 @@
 import type { DataStore } from '@/db/data-store';
-import type { WalletName, WalletWithDerived } from './types';
+import type { Account, WalletName, WalletWithDerived } from './types';
 import { deriveWallet } from './derive-wallet';
 
 const WALLET_ORDER: Record<WalletName, number> = {
@@ -10,15 +10,16 @@ const WALLET_ORDER: Record<WalletName, number> = {
 
 export async function getWalletsForAccount(
   store: DataStore,
-  accountId: string,
+  { wallets }: Account,
   asOf: string
 ): Promise<WalletWithDerived[]> {
-  const wallets = await store.listWalletsByAccount(accountId);
   const derived = await Promise.all(
     wallets.map(async (wallet) => {
-      const txns = await store.listTransactionsByWallet(wallet.id);
-      return deriveWallet(wallet, txns, asOf);
+      const transactions = await store.listTransactionsByWallet(wallet.id);
+
+      return deriveWallet(wallet, transactions, asOf);
     })
   );
+
   return derived.sort((a, b) => WALLET_ORDER[a.name] - WALLET_ORDER[b.name]);
 }

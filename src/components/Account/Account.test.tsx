@@ -6,7 +6,7 @@ import { WALLET_LIST_TEST_IDS } from './WalletList/constants';
 import { WALLET_CARD_TEST_IDS } from './WalletCard/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from './TransactionDrawer/constants';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
-import { DERIVED_WALLETS } from '@/test-support/fixtures';
+import { mockDerivedWallets } from '@/test-support/fixtures';
 
 describe('Account', () => {
   const ACCOUNT_ID = 'account-1';
@@ -19,7 +19,7 @@ describe('Account', () => {
         accountId={ACCOUNT_ID}
         name={ACCOUNT_NAME}
         avatarId={AVATAR_ID}
-        wallets={DERIVED_WALLETS}
+        wallets={mockDerivedWallets}
       />
     );
   });

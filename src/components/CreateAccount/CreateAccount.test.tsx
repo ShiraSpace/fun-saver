@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
-import { ACCOUNT, CREATE_ACCOUNT_INPUT } from '@/test-support/fixtures';
+import { mockAccount, mockCreateAccountInput } from '@/test-support/fixtures';
 import { CreateAccount } from './CreateAccount';
 import { NAME_FIELD_TEST_IDS } from './NameField/constants';
 import { CREATE_ACCOUNT_COPY, CREATE_ACCOUNT_TEST_IDS } from './constants';
@@ -18,56 +18,93 @@ jest.mock('./use-create-account', () => ({
   }),
 }));
 
+function fillAndSubmit(name: string): void {
+  fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
+    target: { value: name },
+  });
+  fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
+  fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit));
+}
+
 describe('CreateAccount', () => {
   beforeEach(() => {
     mockPush.mockClear();
-    mockCreateAccount.mockReset().mockResolvedValue(ACCOUNT);
-    render(<CreateAccount />);
+    mockCreateAccount.mockReset().mockResolvedValue(mockAccount);
   });
 
-  it('shows the create-account title', () => {
-    expect(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.title)).toHaveTextContent(
-      CREATE_ACCOUNT_COPY.title
-    );
-  });
-
-  it('renders the name field', () => {
-    expect(screen.getByTestId(NAME_FIELD_TEST_IDS.field)).toBeInTheDocument();
-  });
-
-  it('renders the avatar picker', () => {
-    expect(
-      screen.getByTestId(AVATAR_PICKER_TEST_IDS.container)
-    ).toBeInTheDocument();
-  });
-
-  it('shows the submit button', () => {
-    expect(
-      screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit)
-    ).toHaveTextContent(CREATE_ACCOUNT_COPY.submit);
-  });
-
-  it('disables submit until a name and an avatar are chosen', () => {
-    const submit = screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit);
-    expect(submit).toBeDisabled();
-
-    fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-      target: { value: 'נועה' },
+  describe('default', () => {
+    beforeEach(() => {
+      render(<CreateAccount />);
     });
-    expect(submit).toBeDisabled();
 
-    fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
-    expect(submit).toBeEnabled();
+    it('shows the create-account title', () => {
+      expect(
+        screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.title)
+      ).toHaveTextContent(CREATE_ACCOUNT_COPY.title);
+    });
+
+    it('renders the name field', () => {
+      expect(screen.getByTestId(NAME_FIELD_TEST_IDS.field)).toBeInTheDocument();
+    });
+
+    it('renders the avatar picker', () => {
+      expect(
+        screen.getByTestId(AVATAR_PICKER_TEST_IDS.container)
+      ).toBeInTheDocument();
+    });
+
+    it('shows the submit button', () => {
+      expect(
+        screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit)
+      ).toHaveTextContent(CREATE_ACCOUNT_COPY.submit);
+    });
+
+    it('disables submit until a name and an avatar are chosen', () => {
+      const submit = screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit);
+      expect(submit).toBeDisabled();
+
+      fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
+        target: { value: 'נועה' },
+      });
+      expect(submit).toBeDisabled();
+
+      fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
+      expect(submit).toBeEnabled();
+    });
+
+    it('creates the account and navigates home on submit', async () => {
+      fillAndSubmit(mockCreateAccountInput.name);
+
+      expect(mockCreateAccount).toHaveBeenCalledWith(mockCreateAccountInput);
+      await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/'));
+    });
   });
 
-  it('creates the account and navigates home on submit', async () => {
-    fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-      target: { value: CREATE_ACCOUNT_INPUT.name },
-    });
-    fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
-    fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit));
+  describe('with callbacks', () => {
+    const mockOnCreated = jest.fn();
+    const mockOnCancel = jest.fn();
 
-    expect(mockCreateAccount).toHaveBeenCalledWith(CREATE_ACCOUNT_INPUT);
-    await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/'));
+    beforeEach(() => {
+      mockOnCreated.mockClear();
+      mockOnCancel.mockClear();
+      render(
+        <CreateAccount onCreated={mockOnCreated} onCancel={mockOnCancel} />
+      );
+    });
+
+    it('calls onCancel when the close button is tapped', () => {
+      fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.cancel));
+
+      expect(mockOnCancel).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls onCreated with the new account instead of navigating', async () => {
+      fillAndSubmit(mockCreateAccountInput.name);
+
+      await waitFor(() =>
+        expect(mockOnCreated).toHaveBeenCalledWith(mockAccount)
+      );
+      expect(mockPush).not.toHaveBeenCalled();
+    });
   });
 });
