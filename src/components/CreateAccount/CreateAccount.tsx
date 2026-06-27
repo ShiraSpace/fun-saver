@@ -38,8 +38,9 @@ const Title = styled.h1`
 `;
 
 const CloseButton = styled.button`
-  align-self: flex-start;
-  margin-inline-start: ${CREATE_ACCOUNT_LAYOUT.closeInset}px;
+  position: absolute;
+  inset-block-start: ${CREATE_ACCOUNT_LAYOUT.closeInset}px;
+  inset-inline-start: ${CREATE_ACCOUNT_LAYOUT.closeInset}px;
   width: ${CREATE_ACCOUNT_LAYOUT.closeButtonSize}px;
   height: ${CREATE_ACCOUNT_LAYOUT.closeButtonSize}px;
   display: flex;
