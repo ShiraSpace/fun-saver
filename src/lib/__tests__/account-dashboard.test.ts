@@ -5,6 +5,7 @@ import {
   createMockTransaction,
   createMockWallet,
 } from '@/test-support/fixtures';
+import type { WalletWithDerived } from '../types';
 
 const account = createMockAccount({
   wallets: [
@@ -50,31 +51,52 @@ describe('getWalletsForAccount', () => {
     expect(wallets[1].balance).toBe(5000);
   });
 
-  it('accrues and persists daily interest up to asOf, idempotently', async () => {
-    const freshAccount = createMockAccount({
+  describe('when the savings wallet has interest unsettled up to asOf', () => {
+    const accountWithUnsettledInterest = createMockAccount({
       wallets: [createMockWallet({ lastInterestDate: '2026-01-01' })],
     });
-    await store.insertTransactions([
-      createMockTransaction({
-        id: 'd',
-        amount: 8000,
-        occurredAt: '2026-01-01',
-      }),
-    ]);
 
-    const first = await getWalletsForAccount(store, freshAccount, '2026-01-03');
+    let savingsWallet: WalletWithDerived;
 
-    expect(first[0].interestGain).toBe(80);
-    expect(first[0].balance).toBe(8080);
-    expect(first[0].todayInterest).toBe(40);
+    beforeEach(async () => {
+      await store.insertTransactions([
+        createMockTransaction({
+          id: 'd',
+          amount: 8000,
+          occurredAt: '2026-01-01',
+        }),
+      ]);
 
-    const second = await getWalletsForAccount(
-      store,
-      freshAccount,
-      '2026-01-03'
-    );
+      const wallets = await getWalletsForAccount(
+        store,
+        accountWithUnsettledInterest,
+        '2026-01-03'
+      );
 
-    expect(second[0].balance).toBe(8080);
-    expect(await store.listTransactionsByWallet('w1')).toHaveLength(3);
+      savingsWallet = wallets[0];
+    });
+
+    it('accrues the compounded interest gain', () => {
+      expect(savingsWallet.interestGain).toBe(80);
+    });
+
+    it('reflects the accrued interest in the balance', () => {
+      expect(savingsWallet.balance).toBe(8080);
+    });
+
+    it('credits the interest dated asOf to todayInterest', () => {
+      expect(savingsWallet.todayInterest).toBe(40);
+    });
+
+    it('does not re-accrue interest on a second read', async () => {
+      const reread = await getWalletsForAccount(
+        store,
+        accountWithUnsettledInterest,
+        '2026-01-03'
+      );
+
+      expect(reread[0].balance).toBe(8080);
+      expect(await store.listTransactionsByWallet('w1')).toHaveLength(3);
+    });
   });
 });
