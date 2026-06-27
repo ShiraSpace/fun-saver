@@ -1,9 +1,10 @@
-import type { Metadata } from 'next';
-import './globals.css';
 import React, { JSX } from 'react';
+import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Providers } from './providers';
-import { resolveThemeId, THEME_COOKIE } from '@/lib/theme-cookie';
+import { resolveThemeId, THEME_COOKIE } from '@/theme/theme-cookie';
+import { ThemeController } from '@/theme/ThemeController';
+import './globals.css';
+import { EmotionStyleRegistry } from './EmotionStyleRegistry';
 
 export const metadata: Metadata = {
   title: 'Fun Saver',
@@ -21,7 +22,11 @@ export default async function RootLayout({
   return (
     <html lang="he" dir="rtl">
       <body className="flex min-h-full flex-col">
-        <Providers initialThemeId={initialThemeId}>{children}</Providers>
+        <EmotionStyleRegistry>
+          <ThemeController initialThemeId={initialThemeId}>
+            {children}
+          </ThemeController>
+        </EmotionStyleRegistry>
       </body>
     </html>
   );
