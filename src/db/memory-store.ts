@@ -1,4 +1,5 @@
 import type { Account, Transaction } from '../lib/types';
+import type { ThemeId } from '@/theme/registry';
 import type { DataStore } from './data-store';
 
 export class InMemoryStore implements DataStore {
@@ -15,6 +16,14 @@ export class InMemoryStore implements DataStore {
 
   async getAccount(id: string): Promise<Account | undefined> {
     return this.accounts.find((account) => account.id === id);
+  }
+
+  async setAccountTheme(id: string, themeId: ThemeId): Promise<void> {
+    const account = this.accounts.find((candidate) => candidate.id === id);
+
+    if (account) {
+      account.themeId = themeId;
+    }
   }
 
   async insertTransactions(transactions: Transaction[]): Promise<void> {
