@@ -29,7 +29,12 @@ describe('addDeposit', () => {
     const walletId = (name: WalletName): string =>
       wallets.find((wallet) => wallet.name === name)!.id;
 
-    const transactions = await addDeposit(store, account, 2000, ASOF);
+    const transactions = await addDeposit({
+      store,
+      account,
+      amountAgorot: 2000,
+      asOf: ASOF,
+    });
     const amountFor = (name: WalletName): number =>
       transactions.find(
         (transaction) => transaction.walletId === walletId(name)
@@ -54,7 +59,7 @@ describe('addDeposit', () => {
       (wallet) => wallet.name === 'savings'
     )!;
 
-    await addDeposit(store, account, 2000, ASOF);
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
     const saved = await store.listTransactionsByWallet(savings.id);
 
     expect(saved).toHaveLength(1);
@@ -64,17 +69,17 @@ describe('addDeposit', () => {
   it('rejects a non-positive amount', async () => {
     const { store, account } = await seedAccount();
 
-    await expect(addDeposit(store, account, 0, ASOF)).rejects.toBeInstanceOf(
-      ValidationError
-    );
+    await expect(
+      addDeposit({ store, account, amountAgorot: 0, asOf: ASOF })
+    ).rejects.toBeInstanceOf(ValidationError);
   });
 
   it('rejects a non-integer amount', async () => {
     const { store, account } = await seedAccount();
 
-    await expect(addDeposit(store, account, 10.5, ASOF)).rejects.toBeInstanceOf(
-      ValidationError
-    );
+    await expect(
+      addDeposit({ store, account, amountAgorot: 10.5, asOf: ASOF })
+    ).rejects.toBeInstanceOf(ValidationError);
   });
 });
 

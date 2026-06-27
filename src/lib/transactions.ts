@@ -14,12 +14,19 @@ export function splitDeposit(totalAgorot: number): DepositSplit {
   return { savings, spending, goodDeeds };
 }
 
-export async function addDeposit(
-  store: DataStore,
-  account: Account,
-  amountAgorot: number,
-  asOf: string
-): Promise<Transaction[]> {
+export interface AddDepositParams {
+  store: DataStore;
+  account: Account;
+  amountAgorot: number;
+  asOf: string;
+}
+
+export async function addDeposit({
+  store,
+  account,
+  amountAgorot,
+  asOf,
+}: AddDepositParams): Promise<Transaction[]> {
   if (!Number.isInteger(amountAgorot) || amountAgorot <= 0) {
     throw new ValidationError('deposit amount must be a positive whole number');
   }
