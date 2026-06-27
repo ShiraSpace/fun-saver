@@ -18,6 +18,10 @@ export class HeaderDriver {
     return this.session.text(TITLE_TEST_IDS.title);
   }
 
+  waitForName(name: string): Promise<void> {
+    return this.session.waitForText(TITLE_TEST_IDS.title, name);
+  }
+
   nameBox(): Promise<BoundingBox> {
     return this.session.box(TITLE_TEST_IDS.title);
   }

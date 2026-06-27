@@ -1,12 +1,11 @@
 'use client';
 
 import { JSX } from 'react';
-import Link from 'next/link';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { ActionButton } from '@/components/ActionButton';
 import { Screen } from '@/components/Screen';
-import { useOinkThenNavigate } from './use-oink-then-navigate';
+import { useOinkThenRun } from './use-oink-then-run';
 import {
   EMPTY_STATE_ANIMATION,
   EMPTY_STATE_COPY,
@@ -31,17 +30,12 @@ const Pig = styled.span`
   }
 `;
 
-const CreateAccountLink = ActionButton.withComponent(Link);
-
 interface EmptyStateProps {
-  createAccountHref: string;
+  onCreate: () => void;
 }
 
-export function EmptyState({
-  createAccountHref,
-}: EmptyStateProps): JSX.Element {
-  const { isOinking, onCtaClick, onPigDoneOinking } =
-    useOinkThenNavigate(createAccountHref);
+export function EmptyState({ onCreate }: EmptyStateProps): JSX.Element {
+  const { isOinking, onCtaClick, onPigDoneOinking } = useOinkThenRun(onCreate);
 
   return (
     <Screen data-testid={EMPTY_STATE_TEST_IDS.container}>
@@ -52,13 +46,13 @@ export function EmptyState({
       >
         {EMPTY_STATE_COPY.pig}
       </Pig>
-      <CreateAccountLink
-        href={createAccountHref}
+      <ActionButton
+        type="button"
         data-testid={EMPTY_STATE_TEST_IDS.createAccount}
         onClick={onCtaClick}
       >
         {EMPTY_STATE_COPY.createAccount}
-      </CreateAccountLink>
+      </ActionButton>
     </Screen>
   );
 }
