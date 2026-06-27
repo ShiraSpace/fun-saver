@@ -25,7 +25,7 @@ export class MenuDriver {
     return this.session.clickNth(ACCOUNT_CHIP, index);
   }
 
-  clickAddChip(): Promise<void> {
+  clickAddAccountChip(): Promise<void> {
     return this.session.click(ACCOUNTS_SECTION_TEST_IDS.addChip);
   }
 
