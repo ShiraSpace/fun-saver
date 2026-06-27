@@ -6,6 +6,8 @@ import { SELECTED_ACCOUNT_COOKIE } from '@/components/Home/selected-account-cook
 import { getStore } from '@/db';
 import { getWalletsForAccount } from '@/lib/account-dashboard';
 import { today } from '@/lib/clock';
+import { resolveThemeId } from '@/theme/registry';
+import { ThemeController } from '@/theme/ThemeController';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,9 +34,14 @@ export default async function HomePage(): Promise<JSX.Element> {
       ? storedAccountId
       : defaultAccountId;
 
+  const selectedAccount = accounts.find(({ id }) => id === initialAccountId);
+  const initialThemeId = resolveThemeId(selectedAccount?.themeId);
+
   return (
     <main>
-      <Home accounts={accounts} initialAccountId={initialAccountId} />
+      <ThemeController initialThemeId={initialThemeId}>
+        <Home accounts={accounts} initialAccountId={initialAccountId} />
+      </ThemeController>
     </main>
   );
 }

@@ -1,4 +1,6 @@
+import { JSX } from 'react';
 import { fireEvent, render, screen, waitFor } from '@/test-support/render';
+import { useThemeId } from '@/theme/ThemeController';
 import { Home } from './Home';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
@@ -114,6 +116,47 @@ describe('Home', () => {
       expect(screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)).toHaveAttribute(
         'data-open',
         'false'
+      );
+    });
+  });
+
+  describe('account theme', () => {
+    const ACTIVE_THEME_TEST_ID = 'active-theme';
+
+    function ThemeProbe(): JSX.Element {
+      return <span data-testid={ACTIVE_THEME_TEST_ID}>{useThemeId()}</span>;
+    }
+
+    it('applies the tapped account theme', () => {
+      const themedAccounts: AccountWithDerivedWallets[] = [
+        {
+          ...mockAccount,
+          themeId: 'sunshine-quest',
+          wallets: mockDerivedWallets,
+        },
+        {
+          ...mockSecondAccount,
+          themeId: 'midnight-blue',
+          wallets: mockDerivedWallets,
+        },
+      ];
+
+      render(
+        <>
+          <Home accounts={themedAccounts} initialAccountId={mockAccount.id} />
+          <ThemeProbe />
+        </>
+      );
+      openMenu();
+
+      expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(
+        'sunshine-quest'
+      );
+
+      fireEvent.click(screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip)[1]);
+
+      expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(
+        'midnight-blue'
       );
     });
   });

@@ -23,7 +23,7 @@ describe('ThemeController', () => {
     expect(screen.getByTestId('theme-id')).toHaveTextContent('jungle-quest');
   });
 
-  it('updates the theme id and writes the cookie on set', () => {
+  it('updates the active theme id on set', () => {
     render(
       <ThemeController initialThemeId="jungle-quest">
         <ThemeDisplay />
@@ -32,6 +32,5 @@ describe('ThemeController', () => {
     );
     fireEvent.click(screen.getByRole('button', { name: 'switch' }));
     expect(screen.getByTestId('theme-id')).toHaveTextContent('midnight-blue');
-    expect(document.cookie).toContain('fs-theme=midnight-blue');
   });
 });

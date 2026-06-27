@@ -1,6 +1,7 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import type { Account, Transaction } from '../lib/types';
+import type { ThemeId } from '@/theme/registry';
 import type { DataStore, StoreData } from './data-store';
 
 function emptyData(): StoreData {
@@ -22,6 +23,23 @@ export class JsonFileStore implements DataStore {
 
   async getAccount(id: string): Promise<Account | undefined> {
     return (await this.read()).accounts.find((account) => account.id === id);
+  }
+
+  async setAccountTheme(
+    id: string,
+    themeId: ThemeId
+  ): Promise<Account | undefined> {
+    const data = await this.read();
+    const account = data.accounts.find((candidate) => candidate.id === id);
+
+    if (!account) {
+      return;
+    }
+
+    account.themeId = themeId;
+    await this.persist(data);
+
+    return account;
   }
 
   async insertTransactions(transactions: Transaction[]): Promise<void> {

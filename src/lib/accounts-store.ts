@@ -1,4 +1,5 @@
 import type { DataStore } from '@/db/data-store';
+import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { newId } from './ids';
 import { DEFAULT_WALLETS } from './constants';
 import type { Account, Wallet } from './types';
@@ -20,6 +21,7 @@ export class AccountsStore {
       name,
       avatarId,
       isActive: true,
+      themeId: DEFAULT_THEME_ID,
       wallets: this.buildDefaultWallets(asOf),
     };
 

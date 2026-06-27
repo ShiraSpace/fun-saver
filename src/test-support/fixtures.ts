@@ -5,6 +5,7 @@ import type {
   WalletWithDerived,
 } from '@/lib/types';
 import { DEFAULT_WALLETS } from '@/lib/constants';
+import { DEFAULT_THEME_ID } from '@/theme/registry';
 
 export function createMockWallet(overrides: Partial<Wallet> = {}): Wallet {
   return {
@@ -35,6 +36,7 @@ export function createMockAccount(overrides: Partial<Account> = {}): Account {
     name: 'נועה',
     avatarId: 'kid-01',
     isActive: true,
+    themeId: DEFAULT_THEME_ID,
     wallets: createMockWallets(),
     ...overrides,
   };
