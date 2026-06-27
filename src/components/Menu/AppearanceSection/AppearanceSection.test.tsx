@@ -53,22 +53,32 @@ describe('AppearanceSection', () => {
     expect(swatches()[1]).toHaveAttribute('data-selected', 'false');
   });
 
-  it('applies the chosen theme and saves it on the selected account', async () => {
-    renderSection();
+  describe('when a swatch is chosen', () => {
+    const chosenTheme = APPEARANCE_SECTION_CONTENT.themes[1];
 
-    fireEvent.click(swatches()[1]);
+    beforeEach(async () => {
+      renderSection();
+      fireEvent.click(swatches()[1]);
 
-    expect(swatches()[1]).toHaveAttribute('data-selected', 'true');
-    expect(swatches()[0]).toHaveAttribute('data-selected', 'false');
-
-    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
-    const [url, options] = (global.fetch as jest.Mock).mock.calls[0];
-    expect(url).toBe(`/api/accounts/${selectedAccountId}/theme`);
-    expect(options.method).toBe('PUT');
-    expect(JSON.parse(options.body)).toEqual({
-      themeId: APPEARANCE_SECTION_CONTENT.themes[1].id,
+      await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
     });
-    expect(mockRefresh).toHaveBeenCalled();
+
+    it('applies the chosen theme', () => {
+      expect(swatches()[1]).toHaveAttribute('data-selected', 'true');
+      expect(swatches()[0]).toHaveAttribute('data-selected', 'false');
+    });
+
+    it('saves it on the selected account', () => {
+      const [url, options] = (global.fetch as jest.Mock).mock.calls[0];
+
+      expect(url).toBe(`/api/accounts/${selectedAccountId}/theme`);
+      expect(options.method).toBe('PUT');
+      expect(JSON.parse(options.body)).toEqual({ themeId: chosenTheme.id });
+    });
+
+    it('refreshes so the saved theme survives a later switch', () => {
+      expect(mockRefresh).toHaveBeenCalled();
+    });
   });
 
   it('reverts and shows an error when the save fails', async () => {
