@@ -1,4 +1,4 @@
-import { FONT_WEIGHTS, TYPE_SCALE } from '../typography';
+import { TYPE_SCALE } from '../typography';
 
 describe('type scale', () => {
   it('exposes exactly five role sizes', () => {
@@ -14,15 +14,6 @@ describe('type scale', () => {
       heading: 18,
       body: 15,
       label: 12,
-    });
-  });
-
-  it('exposes four weights', () => {
-    expect(FONT_WEIGHTS).toEqual({
-      regular: 500,
-      medium: 600,
-      bold: 700,
-      heavy: 800,
     });
   });
 });

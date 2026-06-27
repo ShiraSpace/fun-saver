@@ -16,7 +16,8 @@ const selectedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
 const mutedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textMuted;
-const optionSize = ({ theme }: { theme: Theme }): number => theme.typography.heading;
+const optionSize = ({ theme }: { theme: Theme }): number =>
+  theme.typography.heading;
 
 const Segment = styled.div`
   display: flex;

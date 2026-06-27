@@ -14,9 +14,21 @@ export interface MenuTheme {
 export const APPEARANCE_SECTION_CONTENT = {
   label: 'מראה',
   themes: [
-    { id: 'sunshine-quest' as ThemeId, label: 'Sunshine Quest', background: 'linear-gradient(135deg, #FFC34D, #E94E89)' },
-    { id: 'jungle-quest' as ThemeId, label: 'Jungle Quest', background: 'linear-gradient(135deg, #2A9D8F, #90BE6D)' },
-    { id: 'midnight-blue' as ThemeId, label: 'Midnight Blue', background: 'linear-gradient(135deg, #0F1620, #3B82F6)' },
+    {
+      id: 'sunshine-quest',
+      label: 'Sunshine Quest',
+      background: 'linear-gradient(135deg, #FFC34D, #E94E89)',
+    },
+    {
+      id: 'jungle-quest',
+      label: 'Jungle Quest',
+      background: 'linear-gradient(135deg, #2A9D8F, #90BE6D)',
+    },
+    {
+      id: 'midnight-blue',
+      label: 'Midnight Blue',
+      background: 'linear-gradient(135deg, #0F1620, #3B82F6)',
+    },
   ] as MenuTheme[],
 } as const;
 

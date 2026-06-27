@@ -18,7 +18,7 @@ describe('ThemeController', () => {
     render(
       <ThemeController initialThemeId="jungle-quest">
         <ThemeDisplay />
-      </ThemeController>,
+      </ThemeController>
     );
     expect(screen.getByTestId('theme-id')).toHaveTextContent('jungle-quest');
   });
@@ -28,7 +28,7 @@ describe('ThemeController', () => {
       <ThemeController initialThemeId="jungle-quest">
         <ThemeDisplay />
         <ThemeSwitcher targetId="midnight-blue" />
-      </ThemeController>,
+      </ThemeController>
     );
     fireEvent.click(screen.getByRole('button', { name: 'switch' }));
     expect(screen.getByTestId('theme-id')).toHaveTextContent('midnight-blue');

@@ -10,7 +10,8 @@ interface TitleProps {
   text: string;
 }
 
-const titleSize = ({ theme }: { theme: Theme }): number => theme.typography.title;
+const titleSize = ({ theme }: { theme: Theme }): number =>
+  theme.typography.title;
 
 const fadeIn = keyframes`
   from {

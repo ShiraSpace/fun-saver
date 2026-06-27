@@ -38,9 +38,11 @@ const Chip = styled.button`
   }
 `;
 
-const badgeFontSize = ({ theme }: { theme: Theme }): number => theme.typography.label;
+const badgeFontSize = ({ theme }: { theme: Theme }): number =>
+  theme.typography.label;
 const badgeBg = ({ theme }: { theme: Theme }): string => theme.colors.primary;
-const badgeColor = ({ theme }: { theme: Theme }): string => theme.colors.textOnPrimary;
+const badgeColor = ({ theme }: { theme: Theme }): string =>
+  theme.colors.textOnPrimary;
 
 const Badge = styled.span`
   position: absolute;

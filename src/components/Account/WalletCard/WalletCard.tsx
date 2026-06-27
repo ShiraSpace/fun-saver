@@ -12,6 +12,12 @@ import {
 
 type CardWallet = Pick<WalletWithDerived, 'name' | 'icon' | 'balance'>;
 
+const POT_GRADIENT_KEY = {
+  savings: 'potSavings',
+  spending: 'potSpending',
+  goodDeeds: 'potGood',
+} as const;
+
 const Card = styled.div`
   display: flex;
   align-items: center;
@@ -32,7 +38,7 @@ const Illust = styled.span<{ name: CardWallet['name'] }>`
   border-radius: ${WALLET_CARD_STYLE.illustRadius}px;
   font-size: ${WALLET_CARD_STYLE.illustFontSize}px;
   background: ${({ name, theme }): string =>
-    ({ savings: theme.gradients.potSavings, spending: theme.gradients.potSpending, goodDeeds: theme.gradients.potGood }[name])};
+    theme.gradients[POT_GRADIENT_KEY[name]]};
 `;
 
 const Name = styled.span`

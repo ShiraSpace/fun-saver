@@ -27,7 +27,13 @@ const Cell = styled.div<{ tone: 'deposits' | 'gain' }>`
   border-radius: ${HERO_STYLE.cellRadius}px;
   background: ${({ tone, theme }): string =>
     tone === 'gain' ? theme.colors.gainSoftBg : theme.colors.depositBg};
-  color: ${({ tone, theme }: { tone: 'deposits' | 'gain'; theme: Theme }): string =>
+  color: ${({
+    tone,
+    theme,
+  }: {
+    tone: 'deposits' | 'gain';
+    theme: Theme;
+  }): string =>
     tone === 'gain' ? theme.colors.gainText : theme.colors.textStrong};
 `;
 

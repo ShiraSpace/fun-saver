@@ -2,7 +2,6 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import { type ThemeId } from '@/theme/registry';
 import { useThemeId, useSetThemeId } from '@/theme/ThemeController';
 import { MenuLabel } from '../MenuLabel';
 import {
@@ -39,13 +38,13 @@ export function AppearanceSection(): JSX.Element {
     ({ id, label, background }) => (
       <Swatch
         key={id}
-        type='button'
+        type="button"
         aria-label={label}
         title={label}
         background={background}
         data-testid={APPEARANCE_SECTION_TEST_IDS.swatch}
         data-selected={id === selectedId}
-        onClick={(): void => setThemeId(id as ThemeId)}
+        onClick={(): void => setThemeId(id)}
       />
     )
   );

@@ -3,11 +3,11 @@
 import { JSX } from 'react';
 import styled from '@emotion/styled';
 import { Money } from '../../Money/Money';
-import {
-  HERO_STYLE,
-  WALLET_HERO_COPY,
-  WALLET_HERO_TEST_IDS,
-} from '../constants';
+import { WALLET_HERO_COPY, WALLET_HERO_TEST_IDS } from '../constants';
+
+interface HeroAmountProps {
+  balance: number;
+}
 
 const Block = styled.div`
   text-align: center;
@@ -25,10 +25,6 @@ const Label = styled.div`
 const Big = styled.div`
   font-size: ${({ theme }): number => theme.typography.display}px;
 `;
-
-interface HeroAmountProps {
-  balance: number;
-}
 
 export function HeroAmount({ balance }: HeroAmountProps): JSX.Element {
   return (

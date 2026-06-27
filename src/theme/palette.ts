@@ -11,7 +11,6 @@ export const COLORS = {
   screenGradientMid: '#FF8A4C',
   screenGradientEnd: '#E94E89',
   sunnyTileSoft: '#FFE6B0',
-  ink: '#3A1F5A',
   accent: '#E94E89',
   accentSoft: '#FFF1D9',
   star: '#FFD23F',
@@ -22,6 +21,4 @@ export const COLORS = {
   depositBg: '#FFF6E0',
   gainText: '#2E7D32',
   gainSoftBg: '#E1F4E5',
-  gold: '#FFD23F',
-  muted: '#8A7AA7',
 } as const;

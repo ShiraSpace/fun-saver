@@ -17,7 +17,8 @@ import {
 
 const titleColor = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
-const titleSize = ({ theme }: { theme: Theme }): number => theme.typography.title;
+const titleSize = ({ theme }: { theme: Theme }): number =>
+  theme.typography.title;
 
 const Form = styled.form`
   display: flex;
