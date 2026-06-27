@@ -25,7 +25,10 @@ export class JsonFileStore implements DataStore {
     return (await this.read()).accounts.find((account) => account.id === id);
   }
 
-  async setAccountTheme(id: string, themeId: ThemeId): Promise<void> {
+  async setAccountTheme(
+    id: string,
+    themeId: ThemeId
+  ): Promise<Account | undefined> {
     const data = await this.read();
     const account = data.accounts.find((candidate) => candidate.id === id);
 
@@ -35,6 +38,8 @@ export class JsonFileStore implements DataStore {
 
     account.themeId = themeId;
     await this.persist(data);
+
+    return account;
   }
 
   async insertTransactions(transactions: Transaction[]): Promise<void> {

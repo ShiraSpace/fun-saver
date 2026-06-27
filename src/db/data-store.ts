@@ -10,7 +10,7 @@ export interface DataStore {
   insertAccount(account: Account): Promise<void>;
   listAccounts(): Promise<Account[]>;
   getAccount(id: string): Promise<Account | undefined>;
-  setAccountTheme(id: string, themeId: ThemeId): Promise<void>;
+  setAccountTheme(id: string, themeId: ThemeId): Promise<Account | undefined>;
   insertTransactions(transactions: Transaction[]): Promise<void>;
   listTransactionsByWallet(walletId: string): Promise<Transaction[]>;
 }

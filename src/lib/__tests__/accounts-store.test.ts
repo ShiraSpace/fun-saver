@@ -1,4 +1,5 @@
 import { InMemoryStore } from '@/db/memory-store';
+import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { AccountsStore } from '../accounts-store';
 import { SAVINGS_MONTHLY_RATE } from '../constants';
 import { mockCreateAccountInput } from '@/test-support/fixtures';
@@ -43,5 +44,16 @@ describe('AccountsStore', () => {
       openedAt: ASOF,
       lastInterestDate: ASOF,
     });
+  });
+
+  it('gives a new account the default theme', async () => {
+    const accountsStore = new AccountsStore(new InMemoryStore());
+
+    const account = await accountsStore.createAccount(
+      mockCreateAccountInput,
+      ASOF
+    );
+
+    expect(account.themeId).toBe(DEFAULT_THEME_ID);
   });
 });

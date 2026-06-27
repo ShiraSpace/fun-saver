@@ -56,3 +56,13 @@ off the card and, in RTL, past the left viewport edge.
 - `account.themeId` typed as `ThemeId`; every read passes through `resolveThemeId` so
   legacy/invalid data falls back safely.
 - Fixed overlays (drawer, menu, create) are `position: fixed` and unaffected.
+
+## Known limitations
+
+- Stale-theme race (accepted): picking a swatch saves and calls `router.refresh()`,
+  which updates the `accounts` prop asynchronously. Picking a theme on account A then
+  rapid-switching A→B→A within the sub-second refresh window makes `selectAccount` read
+  A's pre-save `themeId` and revert the view until the next full load. The data store is
+  always correct; this is a transient client-view glitch only. Fix path if it ever
+  matters: hold an in-session `themeByAccountId` overlay in `Home` that `selectAccount`
+  reads before falling back to `account.themeId`.

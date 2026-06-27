@@ -18,12 +18,19 @@ export class InMemoryStore implements DataStore {
     return this.accounts.find((account) => account.id === id);
   }
 
-  async setAccountTheme(id: string, themeId: ThemeId): Promise<void> {
+  async setAccountTheme(
+    id: string,
+    themeId: ThemeId
+  ): Promise<Account | undefined> {
     const account = this.accounts.find((candidate) => candidate.id === id);
 
-    if (account) {
-      account.themeId = themeId;
+    if (!account) {
+      return;
     }
+
+    account.themeId = themeId;
+
+    return account;
   }
 
   async insertTransactions(transactions: Transaction[]): Promise<void> {

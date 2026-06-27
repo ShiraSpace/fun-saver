@@ -1,5 +1,4 @@
 import { getStore } from '@/db';
-import { AccountsStore } from '@/lib/accounts-store';
 import { THEMES, type ThemeId } from '@/theme/registry';
 
 interface ThemeBody {
@@ -21,17 +20,11 @@ export async function PUT(
     return Response.json({ error: 'unknown theme' }, { status: 400 });
   }
 
-  const store = getStore();
-  const account = await store.getAccount(id);
+  const updated = await getStore().setAccountTheme(id, themeId as ThemeId);
 
-  if (!account) {
+  if (!updated) {
     return Response.json({ error: 'account not found' }, { status: 404 });
   }
-
-  const updated = await new AccountsStore(store).setTheme(
-    id,
-    themeId as ThemeId
-  );
 
   return Response.json(updated);
 }

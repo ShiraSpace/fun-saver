@@ -1,5 +1,5 @@
 import type { DataStore } from '@/db/data-store';
-import { DEFAULT_THEME_ID, type ThemeId } from '@/theme/registry';
+import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { newId } from './ids';
 import { DEFAULT_WALLETS } from './constants';
 import type { Account, Wallet } from './types';
@@ -28,18 +28,6 @@ export class AccountsStore {
     await this.store.insertAccount(account);
 
     return account;
-  }
-
-  async setTheme(id: string, themeId: ThemeId): Promise<Account> {
-    const account = await this.store.getAccount(id);
-
-    if (!account) {
-      throw new Error(`account "${id}" not found`);
-    }
-
-    await this.store.setAccountTheme(id, themeId);
-
-    return { ...account, themeId };
   }
 
   private buildDefaultWallets(asOf: string): Wallet[] {
