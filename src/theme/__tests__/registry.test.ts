@@ -1,4 +1,4 @@
-import { DEFAULT_THEME_ID, getThemeTokens } from '../registry';
+import { DEFAULT_THEME_ID, getThemeTokens, resolveThemeId } from '../registry';
 
 describe('theme registry', () => {
   it('resolves the default theme when no id is given', () => {
@@ -49,5 +49,19 @@ describe('theme registry', () => {
     const t = getThemeTokens('midnight-blue');
     expect(t.colors.primary).toBe('#3B82F6');
     expect(t.colors.surface).toBe('#141B24');
+  });
+
+  describe('resolveThemeId', () => {
+    it('keeps a known theme id', () => {
+      expect(resolveThemeId('jungle-quest')).toBe('jungle-quest');
+    });
+
+    it('falls back to the default for an unknown id', () => {
+      expect(resolveThemeId('does-not-exist')).toBe(DEFAULT_THEME_ID);
+    });
+
+    it('falls back to the default when the id is missing', () => {
+      expect(resolveThemeId(undefined)).toBe(DEFAULT_THEME_ID);
+    });
   });
 });

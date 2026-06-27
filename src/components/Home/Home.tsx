@@ -9,8 +9,15 @@ import { CreateAccount } from '@/components/CreateAccount';
 import { EmptyState } from '@/components/EmptyState';
 import { AccountsProvider } from '@/components/AccountSwitcher/accounts-context';
 import { LAYERS } from '@/theme/layers';
+import { resolveThemeId } from '@/theme/registry';
+import { useSetThemeId } from '@/theme/ThemeController';
 import { APP_MODE, AppMode, AppModeProvider } from './app-mode-context';
 import { persistSelectedAccount } from './selected-account-cookie';
+
+interface HomeProps {
+  accounts: AccountWithDerivedWallets[];
+  initialAccountId: string;
+}
 
 const CreateOverlay = styled.div`
   position: fixed;
@@ -19,13 +26,9 @@ const CreateOverlay = styled.div`
   overflow-y: auto;
 `;
 
-interface HomeProps {
-  accounts: AccountWithDerivedWallets[];
-  initialAccountId: string;
-}
-
 export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
   const router = useRouter();
+  const setThemeId = useSetThemeId();
 
   const [mode, setMode] = useState<AppMode>(APP_MODE.viewing);
   const [selectedAccountId, setSelectedAccountId] = useState(initialAccountId);
@@ -35,6 +38,9 @@ export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
   const selectAccount = (id: string): void => {
     setSelectedAccountId(id);
     persistSelectedAccount(id);
+
+    const target = accounts.find((account) => account.id === id);
+    setThemeId(resolveThemeId(target?.themeId));
   };
 
   const handleCreated = (account: Account): void => {

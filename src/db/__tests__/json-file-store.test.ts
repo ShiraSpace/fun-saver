@@ -47,6 +47,16 @@ describe('JsonFileStore', () => {
     ).toEqual(['t1']);
   });
 
+  it('persists an account theme change across instances', async () => {
+    await new JsonFileStore(filePath).insertAccount(mockAccount);
+
+    await new JsonFileStore(filePath).setAccountTheme('a1', 'midnight-blue');
+
+    expect((await new JsonFileStore(filePath).getAccount('a1'))?.themeId).toBe(
+      'midnight-blue'
+    );
+  });
+
   it('reads a file missing the transactions array', async () => {
     writeFileSync(
       filePath,
