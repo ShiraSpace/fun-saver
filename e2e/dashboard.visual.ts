@@ -19,7 +19,7 @@ describe('dashboard', () => {
     assert.equal(await dashboard.dailyRowExists(), true);
   });
 
-  it('shows the additional pots with one card per non-savings wallet', async () => {
+  it('shows the additional wallets with one card per non-savings wallet', async () => {
     assert.equal(await dashboard.supportingLabel(), WALLET_LIST_COPY.label);
     assert.equal(await dashboard.walletCardCount(), 2);
   });

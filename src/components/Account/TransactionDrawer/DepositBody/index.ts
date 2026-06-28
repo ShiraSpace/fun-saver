@@ -1,0 +1,1 @@
+export { DepositBody } from './DepositBody';

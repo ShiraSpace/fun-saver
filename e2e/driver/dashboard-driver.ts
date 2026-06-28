@@ -4,6 +4,8 @@ import { WALLET_LIST_TEST_IDS } from '@/components/Account/WalletList/constants'
 import { WALLET_CARD_TEST_IDS } from '@/components/Account/WalletCard/constants';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '@/components/Account/TransactionDrawer/constants';
+import { MODE_TOGGLE_TEST_IDS } from '@/components/Account/TransactionDrawer/ModeToggle/constants';
+import { WALLET_PICKER_TEST_IDS } from '@/components/Account/TransactionDrawer/WalletPicker/constants';
 import { AMOUNT_PAD_TEST_IDS } from '@/components/Account/TransactionDrawer/AmountPad/constants';
 import { Session } from './session';
 
@@ -39,6 +41,18 @@ export class DashboardDriver {
     for (const digit of String(amountShekels)) {
       await this.session.click(AMOUNT_PAD_TEST_IDS.key(digit));
     }
+    await this.session.click(TRANSACTION_DRAWER_TEST_IDS.confirm);
+  }
+
+  async withdraw(walletName: string, amountShekels: number): Promise<void> {
+    await this.session.click(ACCOUNT_TEST_IDS.actionCta);
+    await this.session.click(MODE_TOGGLE_TEST_IDS.withdraw);
+    await this.session.click(WALLET_PICKER_TEST_IDS.wallet(walletName));
+
+    for (const digit of String(amountShekels)) {
+      await this.session.click(AMOUNT_PAD_TEST_IDS.key(digit));
+    }
+
     await this.session.click(TRANSACTION_DRAWER_TEST_IDS.confirm);
   }
 

@@ -9,7 +9,7 @@ import { useDriver } from './driver/use-driver';
 describe('deposit', () => {
   const { dashboard } = useDriver({ accounts: [mockAccount] });
 
-  it('splits a deposit across the pots and updates the savings deposits', async () => {
+  it('splits a deposit across the wallets and updates the savings deposits', async () => {
     const amount = 50;
     const expectedSavings = agorotToShekels(
       splitDeposit(amount * AGOROT_PER_SHEKEL).savings

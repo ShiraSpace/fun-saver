@@ -6,22 +6,25 @@ import { WALLET_LIST_TEST_IDS } from './WalletList/constants';
 import { WALLET_CARD_TEST_IDS } from './WalletCard/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from './TransactionDrawer/constants';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
-import { mockDerivedWallets } from '@/test-support/fixtures';
+import { createMockAccount, mockDerivedWallets } from '@/test-support/fixtures';
+import type { AccountWithDerivedWallets } from '@/lib/types';
 
 describe('Account', () => {
   const ACCOUNT_ID = 'account-1';
   const ACCOUNT_NAME = 'יעל';
   const AVATAR_ID = 'kid-01';
 
+  const account: AccountWithDerivedWallets = {
+    ...createMockAccount({
+      id: ACCOUNT_ID,
+      name: ACCOUNT_NAME,
+      avatarId: AVATAR_ID,
+    }),
+    wallets: mockDerivedWallets,
+  };
+
   beforeEach(() => {
-    render(
-      <Account
-        accountId={ACCOUNT_ID}
-        name={ACCOUNT_NAME}
-        avatarId={AVATAR_ID}
-        wallets={mockDerivedWallets}
-      />
-    );
+    render(<Account account={account} />);
   });
 
   it('shows the account header with the account name', () => {
@@ -37,7 +40,7 @@ describe('Account', () => {
     );
   });
 
-  it('shows the additional pots as wallet cards', () => {
+  it('shows the additional wallets as wallet cards', () => {
     expect(screen.getByTestId(WALLET_LIST_TEST_IDS.label)).toBeInTheDocument();
     expect(screen.getAllByTestId(WALLET_CARD_TEST_IDS.card)).toHaveLength(2);
   });

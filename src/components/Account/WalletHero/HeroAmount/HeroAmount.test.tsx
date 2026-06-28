@@ -7,7 +7,7 @@ describe('HeroAmount', () => {
     render(<HeroAmount balance={8500} />);
   });
 
-  it('shows the total-in-pot label', () => {
+  it('shows the total-in-wallet label', () => {
     expect(screen.getByText(WALLET_HERO_COPY.totalLabel)).toBeInTheDocument();
   });
 

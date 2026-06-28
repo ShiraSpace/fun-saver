@@ -8,15 +8,10 @@ import {
   WALLET_CARD_COPY,
   WALLET_CARD_STYLE,
   WALLET_CARD_TEST_IDS,
+  WALLET_GRADIENT,
 } from './constants';
 
 type CardWallet = Pick<WalletWithDerived, 'name' | 'icon' | 'balance'>;
-
-const POT_GRADIENT_KEY = {
-  savings: 'potSavings',
-  spending: 'potSpending',
-  goodDeeds: 'potGood',
-} as const;
 
 const Card = styled.div`
   display: flex;
@@ -38,7 +33,7 @@ const Illust = styled.span<{ name: CardWallet['name'] }>`
   border-radius: ${WALLET_CARD_STYLE.illustRadius}px;
   font-size: ${WALLET_CARD_STYLE.illustFontSize}px;
   background: ${({ name, theme }): string =>
-    theme.gradients[POT_GRADIENT_KEY[name]]};
+    theme.gradients[WALLET_GRADIENT[name]]};
 `;
 
 const Name = styled.span`
