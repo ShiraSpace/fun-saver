@@ -5,6 +5,21 @@ import { newId } from './ids';
 import { OverdraftError, ValidationError } from './errors';
 import type { Account, Transaction, WalletName } from './types';
 
+interface AddWithdrawalParams {
+  store: DataStore;
+  account: Account;
+  walletId: string;
+  amountAgorot: number;
+  asOf: string;
+}
+
+interface AddDepositParams {
+  store: DataStore;
+  account: Account;
+  amountAgorot: number;
+  asOf: string;
+}
+
 export type DepositSplit = Record<WalletName, number>;
 
 function assertPositiveAmount(amountAgorot: number): void {
@@ -19,13 +34,6 @@ export function splitDeposit(totalAgorot: number): DepositSplit {
   const savings = totalAgorot - spending - goodDeeds;
 
   return { savings, spending, goodDeeds };
-}
-
-export interface AddDepositParams {
-  store: DataStore;
-  account: Account;
-  amountAgorot: number;
-  asOf: string;
 }
 
 export async function addDeposit({
@@ -50,14 +58,6 @@ export async function addDeposit({
   await store.insertTransactions(transactions);
 
   return transactions;
-}
-
-export interface AddWithdrawalParams {
-  store: DataStore;
-  account: Account;
-  walletId: string;
-  amountAgorot: number;
-  asOf: string;
 }
 
 export async function addWithdrawal({
