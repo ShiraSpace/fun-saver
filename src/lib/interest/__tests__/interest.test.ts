@@ -63,14 +63,14 @@ describe('interest primitives', () => {
 });
 
 describe('addDailyInterest', () => {
-  const savings = (
+  const savingsWallet = (
     lastInterestDate: string
   ): ReturnType<typeof createMockWallet> =>
     createMockWallet({ monthlyInterestRate: MONTHLY_RATE, lastInterestDate });
 
   it('compounds one interest txn per day from settled-through+1 through asOf', () => {
     const actualTransactions = addDailyInterest({
-      wallet: savings(OPENED_ON),
+      wallet: savingsWallet(OPENED_ON),
       transactions: [deposit(DEPOSIT_AGOROT, OPENED_ON)],
       asOf: '2026-01-03',
       accountId: ACCOUNT_ID,
@@ -99,7 +99,7 @@ describe('addDailyInterest', () => {
 
   it('stamps walletId and accountId on every created transaction', () => {
     const actualTransactions = addDailyInterest({
-      wallet: savings(OPENED_ON),
+      wallet: savingsWallet(OPENED_ON),
       transactions: [deposit(DEPOSIT_AGOROT, OPENED_ON)],
       asOf: '2026-01-02',
       accountId: ACCOUNT_ID,
@@ -119,7 +119,7 @@ describe('addDailyInterest', () => {
     ];
 
     const actualTransactions = addDailyInterest({
-      wallet: savings(OPENED_ON),
+      wallet: savingsWallet(OPENED_ON),
       transactions: settledTransactions,
       asOf: '2026-01-03',
       accountId: ACCOUNT_ID,
@@ -130,7 +130,7 @@ describe('addDailyInterest', () => {
 
   it('treats lastInterestDate as the floor when no interest exists yet', () => {
     const actualTransactions = addDailyInterest({
-      wallet: savings('2026-01-05'),
+      wallet: savingsWallet('2026-01-05'),
       transactions: [deposit(DEPOSIT_AGOROT, OPENED_ON)],
       asOf: '2026-01-06',
       accountId: ACCOUNT_ID,
@@ -148,7 +148,7 @@ describe('addDailyInterest', () => {
 
   it('weights by day of deposit — a mid-period deposit earns no interest that day', () => {
     const actualTransactions = addDailyInterest({
-      wallet: savings(OPENED_ON),
+      wallet: savingsWallet(OPENED_ON),
       transactions: [
         deposit(DEPOSIT_AGOROT, OPENED_ON),
         deposit(LATER_DEPOSIT_AGOROT, '2026-01-03'),
@@ -181,7 +181,7 @@ describe('addDailyInterest', () => {
 
   it('lets a withdrawal cut later interest to zero', () => {
     const actualTransactions = addDailyInterest({
-      wallet: savings(OPENED_ON),
+      wallet: savingsWallet(OPENED_ON),
       transactions: [
         deposit(DEPOSIT_AGOROT, OPENED_ON),
         withdrawal(DEPOSIT_AGOROT, '2026-01-02'),
