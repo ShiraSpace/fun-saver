@@ -68,33 +68,46 @@ describe('addDailyInterest', () => {
   ): ReturnType<typeof createMockWallet> =>
     createMockWallet({ monthlyInterestRate: MONTHLY_RATE, lastInterestDate });
 
-  it('compounds one interest txn per day from settled-through+1 through asOf', () => {
-    const actualTransactions = addDailyInterest({
-      wallet: savingsWallet(OPENED_ON),
-      transactions: [deposit(DEPOSIT_AGOROT, OPENED_ON)],
-      asOf: '2026-01-03',
-      accountId: ACCOUNT_ID,
+  describe('accruing a single deposit from the settled day through asOf', () => {
+    let actualTransactions: Transaction[];
+
+    beforeEach(() => {
+      actualTransactions = addDailyInterest({
+        wallet: savingsWallet(OPENED_ON),
+        transactions: [deposit(DEPOSIT_AGOROT, OPENED_ON)],
+        asOf: '2026-01-03',
+        accountId: ACCOUNT_ID,
+      });
     });
 
-    const interestDays = actualTransactions.map(
-      (transaction) => transaction.occurredAt
-    );
-    const interestAmounts = actualTransactions.map(
-      (transaction) => transaction.amount
-    );
-    const everyTransactionIsInterest = actualTransactions.every(
-      (transaction) => transaction.type === 'interest'
-    );
+    it('credits one interest transaction per day after the settled day', () => {
+      const interestDays = actualTransactions.map(
+        (transaction) => transaction.occurredAt
+      );
 
-    const firstDayInterest = interestForDay(DEPOSIT_AGOROT, MONTHLY_RATE);
-    const secondDayInterest = interestForDay(
-      DEPOSIT_AGOROT + firstDayInterest,
-      MONTHLY_RATE
-    );
+      expect(interestDays).toEqual(['2026-01-02', '2026-01-03']);
+    });
 
-    expect(interestDays).toEqual(['2026-01-02', '2026-01-03']);
-    expect(interestAmounts).toEqual([firstDayInterest, secondDayInterest]);
-    expect(everyTransactionIsInterest).toBe(true);
+    it('compounds each day on the previous closing balance', () => {
+      const interestAmounts = actualTransactions.map(
+        (transaction) => transaction.amount
+      );
+      const firstDayInterest = interestForDay(DEPOSIT_AGOROT, MONTHLY_RATE);
+      const secondDayInterest = interestForDay(
+        DEPOSIT_AGOROT + firstDayInterest,
+        MONTHLY_RATE
+      );
+
+      expect(interestAmounts).toEqual([firstDayInterest, secondDayInterest]);
+    });
+
+    it('creates only interest transactions', () => {
+      const everyTransactionIsInterest = actualTransactions.every(
+        (transaction) => transaction.type === 'interest'
+      );
+
+      expect(everyTransactionIsInterest).toBe(true);
+    });
   });
 
   it('stamps walletId and accountId on every created transaction', () => {
