@@ -1,12 +1,12 @@
 import { dailyRate } from './daily-rate';
 
 export function interestForDay(
-  closingBalanceAgorot: number,
+  balanceAgorot: number,
   monthlyRate: number
 ): number {
-  if (closingBalanceAgorot <= 0) {
+  if (balanceAgorot <= 0) {
     return 0;
   }
 
-  return Math.round(closingBalanceAgorot * dailyRate(monthlyRate));
+  return Math.round(balanceAgorot * dailyRate(monthlyRate));
 }

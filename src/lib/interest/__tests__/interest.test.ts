@@ -52,7 +52,7 @@ describe('addDailyInterest', () => {
       accountId: 'a1',
     });
 
-    expect(actualTransactions.map((t) => t.occurredAt)).toEqual([
+    expect(actualTransactions.map((transaction) => transaction.occurredAt)).toEqual([
       '2026-01-02',
       '2026-01-03',
     ]);
@@ -60,8 +60,8 @@ describe('addDailyInterest', () => {
     const day1 = interestForDay(8000, 0.2);
     const day2 = interestForDay(8000 + day1, 0.2);
 
-    expect(actualTransactions.map((t) => t.amount)).toEqual([day1, day2]);
-    expect(actualTransactions.every((t) => t.type === 'interest')).toBe(true);
+    expect(actualTransactions.map((transaction) => transaction.amount)).toEqual([day1, day2]);
+    expect(actualTransactions.every((transaction) => transaction.type === 'interest')).toBe(true);
   });
 
   it('stamps walletId and accountId on every created transaction', () => {
@@ -103,7 +103,7 @@ describe('addDailyInterest', () => {
       accountId: 'a1',
     });
 
-    expect(actualTransactions.map((t) => t.occurredAt)).toEqual(['2026-01-06']);
+    expect(actualTransactions.map((transaction) => transaction.occurredAt)).toEqual(['2026-01-06']);
     expect(actualTransactions[0].amount).toBe(interestForDay(8000, 0.2));
   });
 
@@ -146,7 +146,7 @@ describe('addDailyInterest', () => {
       accountId: 'a1',
     });
 
-    expect(actualTransactions.map((t) => t.amount)).toEqual([
+    expect(actualTransactions.map((transaction) => transaction.amount)).toEqual([
       interestForDay(8000, 0.2),
     ]);
   });
