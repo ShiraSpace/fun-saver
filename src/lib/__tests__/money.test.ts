@@ -1,9 +1,21 @@
-import { agorotToShekels, coinBreakdown, shekelsToAgorot } from '../money';
+import {
+  agorotToShekels,
+  agorotToWholeShekels,
+  coinBreakdown,
+  shekelsToAgorot,
+} from '../money';
 
 describe('agorotToShekels', () => {
   it('converts agorot to shekels', () => {
     expect(agorotToShekels(8500)).toBe(85);
     expect(agorotToShekels(540)).toBe(5.4);
+  });
+});
+
+describe('agorotToWholeShekels', () => {
+  it('rounds to the nearest whole shekel', () => {
+    expect(agorotToWholeShekels(26484)).toBe(265);
+    expect(agorotToWholeShekels(8500)).toBe(85);
   });
 });
 

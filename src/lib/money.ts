@@ -12,6 +12,10 @@ export function agorotToShekels(agorot: number): number {
   return agorot / AGOROT_PER_SHEKEL;
 }
 
+export function agorotToWholeShekels(agorot: number): number {
+  return Math.round(agorotToShekels(agorot));
+}
+
 export function shekelsToAgorot(shekels: number): number {
   return shekels * AGOROT_PER_SHEKEL;
 }
