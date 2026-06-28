@@ -75,22 +75,20 @@ export async function addWithdrawal({
     throw new ValidationError('unknown wallet');
   }
 
-  const existing = await store.listTransactionsByWallet(walletId);
+  const buildWithdrawal = (existing: Transaction[]): Transaction => {
+    if (balance(existing) < amountAgorot) {
+      throw new OverdraftError('cannot withdraw more than the pot balance');
+    }
 
-  if (balance(existing) < amountAgorot) {
-    throw new OverdraftError('cannot withdraw more than the pot balance');
-  }
-
-  const transaction: Transaction = {
-    id: newId(),
-    walletId,
-    accountId: account.id,
-    type: 'withdrawal',
-    amount: amountAgorot,
-    occurredAt: asOf,
+    return {
+      id: newId(),
+      walletId,
+      accountId: account.id,
+      type: 'withdrawal',
+      amount: amountAgorot,
+      occurredAt: asOf,
+    };
   };
 
-  await store.insertTransactions([transaction]);
-
-  return transaction;
+  return store.insertTransactionWithGuard(walletId, buildWithdrawal);
 }
