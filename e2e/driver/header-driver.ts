@@ -1,6 +1,7 @@
 import { type BoundingBox } from 'puppeteer';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
+import { TOTAL_CHIP_TEST_IDS } from '@/components/Header/TotalChip/constants';
 import { Session } from './session';
 
 export class HeaderDriver {
@@ -28,6 +29,14 @@ export class HeaderDriver {
 
   avatarBox(): Promise<BoundingBox> {
     return this.session.box(HEADER_TEST_IDS.avatar);
+  }
+
+  totalChipBox(): Promise<BoundingBox> {
+    return this.session.box(TOTAL_CHIP_TEST_IDS.chip);
+  }
+
+  totalChipAmount(): Promise<string> {
+    return this.session.text(TOTAL_CHIP_TEST_IDS.amount);
   }
 
   nameFontSize(): Promise<string> {
