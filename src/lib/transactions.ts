@@ -21,12 +21,19 @@ export function splitDeposit(totalAgorot: number): DepositSplit {
   return { savings, spending, goodDeeds };
 }
 
-export async function addDeposit(
-  store: DataStore,
-  account: Account,
-  amountAgorot: number,
-  asOf: string
-): Promise<Transaction[]> {
+export interface AddDepositParams {
+  store: DataStore;
+  account: Account;
+  amountAgorot: number;
+  asOf: string;
+}
+
+export async function addDeposit({
+  store,
+  account,
+  amountAgorot,
+  asOf,
+}: AddDepositParams): Promise<Transaction[]> {
   assertPositiveAmount(amountAgorot);
 
   const split = splitDeposit(amountAgorot);
@@ -45,13 +52,21 @@ export async function addDeposit(
   return transactions;
 }
 
-export async function addWithdrawal(
-  store: DataStore,
-  account: Account,
-  walletId: string,
-  amountAgorot: number,
-  asOf: string
-): Promise<Transaction> {
+export interface AddWithdrawalParams {
+  store: DataStore;
+  account: Account;
+  walletId: string;
+  amountAgorot: number;
+  asOf: string;
+}
+
+export async function addWithdrawal({
+  store,
+  account,
+  walletId,
+  amountAgorot,
+  asOf,
+}: AddWithdrawalParams): Promise<Transaction> {
   assertPositiveAmount(amountAgorot);
 
   const wallet = account.wallets.find((candidate) => candidate.id === walletId);

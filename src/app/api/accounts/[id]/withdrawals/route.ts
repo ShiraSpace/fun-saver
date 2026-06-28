@@ -29,13 +29,13 @@ export async function POST(
   const { walletId, amount } = (await request.json()) as WithdrawalBody;
 
   try {
-    const transaction = await addWithdrawal(
+    const transaction = await addWithdrawal({
       store,
       account,
       walletId,
-      shekelsToAgorot(amount),
-      today()
-    );
+      amountAgorot: shekelsToAgorot(amount),
+      asOf: today(),
+    });
 
     return Response.json(transaction);
   } catch (error) {

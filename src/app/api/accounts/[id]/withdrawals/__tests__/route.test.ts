@@ -26,7 +26,12 @@ beforeEach(async () => {
     ASOF
   );
   savingsId = account.wallets.find((wallet) => wallet.name === 'savings')!.id;
-  await addDeposit(getStore(), account, 10000, ASOF);
+  await addDeposit({
+    store: getStore(),
+    account,
+    amountAgorot: 10000,
+    asOf: ASOF,
+  });
 });
 
 afterEach(() => {

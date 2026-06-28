@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import { agorotToShekels } from '@/lib/money';
+import { agorotToWholeShekels } from '@/lib/money';
 import { MONEY_COPY, MONEY_STYLE } from './constants';
 
 const Amount = styled.span`
@@ -28,10 +28,12 @@ interface MoneyProps {
 }
 
 export function Money({ amountAgorot, testId }: MoneyProps): JSX.Element {
+  const wholeShekels = agorotToWholeShekels(amountAgorot);
+
   return (
     <Amount dir="ltr" data-testid={testId}>
       <Currency>{MONEY_COPY.currency}</Currency>
-      <Number>{agorotToShekels(amountAgorot)}</Number>
+      <Number>{wholeShekels}</Number>
     </Amount>
   );
 }

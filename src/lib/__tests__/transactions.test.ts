@@ -30,7 +30,12 @@ describe('addDeposit', () => {
     const walletId = (name: WalletName): string =>
       wallets.find((wallet) => wallet.name === name)!.id;
 
-    const transactions = await addDeposit(store, account, 2000, ASOF);
+    const transactions = await addDeposit({
+      store,
+      account,
+      amountAgorot: 2000,
+      asOf: ASOF,
+    });
     const amountFor = (name: WalletName): number =>
       transactions.find(
         (transaction) => transaction.walletId === walletId(name)
@@ -55,7 +60,7 @@ describe('addDeposit', () => {
       (wallet) => wallet.name === 'savings'
     )!;
 
-    await addDeposit(store, account, 2000, ASOF);
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
     const saved = await store.listTransactionsByWallet(savings.id);
 
     expect(saved).toHaveLength(1);
@@ -65,17 +70,17 @@ describe('addDeposit', () => {
   it('rejects a non-positive amount', async () => {
     const { store, account } = await seedAccount();
 
-    await expect(addDeposit(store, account, 0, ASOF)).rejects.toBeInstanceOf(
-      ValidationError
-    );
+    await expect(
+      addDeposit({ store, account, amountAgorot: 0, asOf: ASOF })
+    ).rejects.toBeInstanceOf(ValidationError);
   });
 
   it('rejects a non-integer amount', async () => {
     const { store, account } = await seedAccount();
 
-    await expect(addDeposit(store, account, 10.5, ASOF)).rejects.toBeInstanceOf(
-      ValidationError
-    );
+    await expect(
+      addDeposit({ store, account, amountAgorot: 10.5, asOf: ASOF })
+    ).rejects.toBeInstanceOf(ValidationError);
   });
 });
 
@@ -86,9 +91,15 @@ describe('addWithdrawal', () => {
   it('records and persists a withdrawal on the chosen pot', async () => {
     const { store, account } = await seedAccount();
     const savings = walletIdFor(account, 'savings');
-    await addDeposit(store, account, 2000, ASOF);
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
 
-    const transaction = await addWithdrawal(store, account, savings, 500, ASOF);
+    const transaction = await addWithdrawal({
+      store,
+      account,
+      walletId: savings,
+      amountAgorot: 500,
+      asOf: ASOF,
+    });
 
     expect(transaction.type).toBe('withdrawal');
     expect(transaction.walletId).toBe(savings);
@@ -101,22 +112,34 @@ describe('addWithdrawal', () => {
   it('allows withdrawing the exact pot balance', async () => {
     const { store, account } = await seedAccount();
     const savings = walletIdFor(account, 'savings');
-    await addDeposit(store, account, 2000, ASOF);
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
     const potBalance = splitDeposit(2000).savings;
 
     await expect(
-      addWithdrawal(store, account, savings, potBalance, ASOF)
+      addWithdrawal({
+        store,
+        account,
+        walletId: savings,
+        amountAgorot: potBalance,
+        asOf: ASOF,
+      })
     ).resolves.toMatchObject({ amount: potBalance });
   });
 
   it('rejects withdrawing more than the pot balance', async () => {
     const { store, account } = await seedAccount();
     const savings = walletIdFor(account, 'savings');
-    await addDeposit(store, account, 2000, ASOF);
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
     const tooMuch = splitDeposit(2000).savings + 1;
 
     await expect(
-      addWithdrawal(store, account, savings, tooMuch, ASOF)
+      addWithdrawal({
+        store,
+        account,
+        walletId: savings,
+        amountAgorot: tooMuch,
+        asOf: ASOF,
+      })
     ).rejects.toBeInstanceOf(OverdraftError);
   });
 
@@ -125,17 +148,29 @@ describe('addWithdrawal', () => {
     const savings = walletIdFor(account, 'savings');
 
     await expect(
-      addWithdrawal(store, account, savings, 0, ASOF)
+      addWithdrawal({
+        store,
+        account,
+        walletId: savings,
+        amountAgorot: 0,
+        asOf: ASOF,
+      })
     ).rejects.toBeInstanceOf(ValidationError);
   });
 
   it('rejects a non-integer amount', async () => {
     const { store, account } = await seedAccount();
     const savings = walletIdFor(account, 'savings');
-    await addDeposit(store, account, 2000, ASOF);
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
 
     await expect(
-      addWithdrawal(store, account, savings, 10.5, ASOF)
+      addWithdrawal({
+        store,
+        account,
+        walletId: savings,
+        amountAgorot: 10.5,
+        asOf: ASOF,
+      })
     ).rejects.toBeInstanceOf(ValidationError);
   });
 
@@ -143,7 +178,13 @@ describe('addWithdrawal', () => {
     const { store, account } = await seedAccount();
 
     await expect(
-      addWithdrawal(store, account, 'nope', 100, ASOF)
+      addWithdrawal({
+        store,
+        account,
+        walletId: 'nope',
+        amountAgorot: 100,
+        asOf: ASOF,
+      })
     ).rejects.toBeInstanceOf(ValidationError);
   });
 });
