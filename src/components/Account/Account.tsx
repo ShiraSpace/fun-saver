@@ -2,7 +2,7 @@
 
 import { JSX, useState } from 'react';
 import styled from '@emotion/styled';
-import type { WalletWithDerived } from '@/lib/types';
+import type { AccountWithDerivedWallets } from '@/lib/types';
 import { totalBalance } from '@/lib/derivations';
 import { Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
@@ -22,18 +22,11 @@ const Column = styled.div`
 `;
 
 interface AccountProps {
-  accountId: string;
-  name: string;
-  avatarId: string;
-  wallets: WalletWithDerived[];
+  account: AccountWithDerivedWallets;
 }
 
-export function Account({
-  accountId,
-  name,
-  avatarId,
-  wallets,
-}: AccountProps): JSX.Element {
+export function Account({ account }: AccountProps): JSX.Element {
+  const { name, avatarId, wallets } = account;
   const savings = wallets.find((wallet) => wallet.name === 'savings')!;
   const others = wallets.filter((wallet) => wallet.name !== 'savings')!;
   const total = totalBalance(wallets);
@@ -55,7 +48,7 @@ export function Account({
       </Column>
       {isDrawerOpen && (
         <TransactionDrawer
-          accountId={accountId}
+          account={account}
           onClose={() => setIsDrawerOpen(false)}
         />
       )}

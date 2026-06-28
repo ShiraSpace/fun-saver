@@ -6,7 +6,7 @@ const CONSTANT_FILES = [
   'Account/CoinRow/constants.ts',
   'Account/WalletHero/constants.ts',
   'Account/TransactionDrawer/constants.ts',
-  'Account/TransactionDrawer/DepositSplit/constants.ts',
+  'Account/TransactionDrawer/WalletTile/constants.ts',
   'Menu/AccountsSection/constants.ts',
 ];
 

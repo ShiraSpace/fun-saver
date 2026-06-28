@@ -1,7 +1,18 @@
+import type { WalletName } from '@/lib/types';
+
 export const WALLET_CARD_TEST_IDS = {
   card: 'wallet-card',
   balance: 'wallet-balance',
 } as const;
+
+export const WALLET_GRADIENT: Record<
+  WalletName,
+  'potSavings' | 'potSpending' | 'potGood'
+> = {
+  savings: 'potSavings',
+  spending: 'potSpending',
+  goodDeeds: 'potGood',
+};
 
 export const WALLET_CARD_COPY = {
   name: {

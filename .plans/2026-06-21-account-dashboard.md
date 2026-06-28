@@ -167,7 +167,7 @@ go green without them. One test at a time; stop for review before each commit.
 ### NEXT — Cycle 2: clicking the CTA opens the transaction drawer
 Failing test: click `account-action-cta` → a `TransactionDrawer` becomes visible. This forces
 `Account/TransactionDrawer/` into existence (bottom sheet). Build it out piece-by-piece from there
-(pot select → deposit/withdraw toggle → amount → submit → loading/error), pulling in the hook + API +
+(wallet select → deposit/withdraw toggle → amount → submit → loading/error), pulling in the hook + API +
 `transactions.ts` + `errors.ts` as later cycles' tests require them.
 
 ### Gotchas learned this session (read before resuming)
@@ -181,10 +181,10 @@ Failing test: click `account-action-cta` → a `TransactionDrawer` becomes visib
 - `.e2e-data/` is untracked harness output; leave it out of commits.
 
 **Decisions (2026-06-21):**
-1. **Actions:** deposit + withdraw on a chosen pot (withdrawal from good-deeds = a donation). Interest stays
-   automatic. **Overdraft-protected** (can't withdraw more than the pot balance).
+1. **Actions:** deposit + withdraw on a chosen wallet (withdrawal from good-deeds = a donation). Interest stays
+   automatic. **Overdraft-protected** (can't withdraw more than the wallet balance).
 2. **Mechanism:** **API route + React Query** (POST `/api/wallets/[id]/transactions`).
-3. **Entry UX:** **bottom drawer** — pick pot → deposit/withdraw → amount → confirm.
+3. **Entry UX:** **bottom drawer** — pick wallet → deposit/withdraw → amount → confirm.
 
 **Scaffolding reality (confirmed — all MISSING, must be built):**
 - `src/app/providers.tsx` sets up **Emotion only** — **no `QueryClientProvider`**. Must add one (client) for
@@ -207,7 +207,7 @@ Failing test: click `account-action-cta` → a `TransactionDrawer` becomes visib
    map errors to status. (Validated by E2E; keep logic in the service.)
 4. `QueryClientProvider` in providers; `src/hooks/use-add-transaction.ts` (`useMutation` → POST → `router.refresh()`).
 5. UI: CTA pill (reuse `ActionButton` purple pill, "+ פעולה חדשה") on the dashboard → opens
-   `Account/TransactionDrawer/` (bottom sheet: pot select, deposit/withdraw toggle, amount, submit; loading +
+   `Account/TransactionDrawer/` (bottom sheet: wallet select, deposit/withdraw toggle, amount, submit; loading +
    error states). Component tests with the mutation/fetch mocked.
 6. Wire into `Account`; add an E2E (`e2e/*.visual.ts`) that deposits and asserts the balance changes
    (extend `useDriver`/`DashboardDriver`). Update README + this plan.
@@ -225,7 +225,7 @@ Variant B): `docs/superpowers/specs/mockup-transaction-drawer.html`. Built UI-dr
 red→green→refactor, one test at a time.
 
 **Scope reset (locked with user this session):** deposit-only MVP. A deposit is one amount that
-**auto-splits 60% savings / 20% spending / 20% good-deeds** — no pot picker, no deposit/withdraw
+**auto-splits 60% savings / 20% spending / 20% good-deeds** — no wallet picker, no deposit/withdraw
 toggle. Ratios live in `DEPOSIT_SPLIT` (`src/lib/constants.ts`). Whole shekels only via a custom
 in-drawer number pad.
 
@@ -234,8 +234,8 @@ in-drawer number pad.
   hook; mirrored that with co-located `use-add-transaction.ts` (`addDeposit`) — the drawer manages
   `isSubmitting`/`hasError` locally and calls `router.refresh()` on success.
 - **Account-level endpoint** `POST /api/accounts/[id]/deposits` (deposit auto-splits across the
-  account's pots), not the per-wallet `…/wallets/[id]/transactions`. Withdraw will get its own
-  per-pot route later.
+  account's wallets), not the per-wallet `…/wallets/[id]/transactions`. Withdraw will get its own
+  per-wallet route later.
 - **`OverdraftError` deferred** to the withdraw phase (nothing drove it — no unused code).
 
 **What shipped:**
@@ -256,7 +256,7 @@ Variant B.
   (pre-existing latent collision — worth deduping later).
 - `.e2e-data/` is now gitignored.
 
-**Owed:** withdraw phase (per-pot, overdraft-protected; the generic names/boundaries are already in
+**Owed:** withdraw phase (per-wallet, overdraft-protected; the generic names/boundaries are already in
 place).
 
 ---

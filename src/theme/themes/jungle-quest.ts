@@ -24,6 +24,9 @@ export const jungleQuest: ThemeTokens = {
     depositBg: '#F3F7E4',
     gainText: '#3A7D2E',
     gainSoftBg: '#E4F2D9',
+    alert: '#E5484D',
+    alertSoftBg: '#FDECEC',
+    withdrawText: '#D9480F',
   },
   gradients: {
     screen: 'linear-gradient(160deg, #2A9D8F, #43AA8B, #90BE6D)',

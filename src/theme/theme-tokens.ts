@@ -22,6 +22,9 @@ export interface ThemeColors {
   readonly depositBg: string;
   readonly gainText: string;
   readonly gainSoftBg: string;
+  readonly alert: string;
+  readonly alertSoftBg: string;
+  readonly withdrawText: string;
 }
 
 export interface ThemeGradients {

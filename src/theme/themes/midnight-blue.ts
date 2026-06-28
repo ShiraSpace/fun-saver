@@ -24,6 +24,9 @@ export const midnightBlue: ThemeTokens = {
     depositBg: '#111B30',
     gainText: '#34D399',
     gainSoftBg: '#0E2E2A',
+    alert: '#F87171',
+    alertSoftBg: '#3A1518',
+    withdrawText: '#FB923C',
   },
   gradients: {
     screen: 'linear-gradient(160deg, #0A0E14, #0F1620, #122036)',

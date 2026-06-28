@@ -1,3 +1,5 @@
+export type TransactionMode = 'deposit' | 'withdraw';
+
 export const TRANSACTION_DRAWER_TEST_IDS = {
   drawer: 'transaction-drawer',
   scrim: 'transaction-drawer-scrim',
@@ -19,5 +21,5 @@ export const TRANSACTION_DRAWER_STYLE = {
   maxWidth: 420,
   scrim: 'rgba(40, 20, 60, 0.42)',
   sheetRadius: 28,
-  gap: 14,
+  gap: 10,
 } as const;

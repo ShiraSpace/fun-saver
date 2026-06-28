@@ -1,4 +1,10 @@
-import { mkdtempSync, rmSync, existsSync, writeFileSync } from 'node:fs';
+import {
+  mkdtempSync,
+  rmSync,
+  existsSync,
+  writeFileSync,
+  readFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { JsonFileStore } from '../json-file-store';
@@ -55,6 +61,32 @@ describe('JsonFileStore', () => {
     expect((await new JsonFileStore(filePath).getAccount('a1'))?.themeId).toBe(
       'midnight-blue'
     );
+  });
+
+  it('keeps every transaction when inserts run concurrently', async () => {
+    const store = new JsonFileStore(filePath);
+    await store.insertAccount(mockAccount);
+
+    await Promise.all([
+      store.insertTransactions([createMockTransaction({ id: 'c1' })]),
+      store.insertTransactions([createMockTransaction({ id: 'c2' })]),
+      store.insertTransactions([createMockTransaction({ id: 'c3' })]),
+    ]);
+
+    const ids = (await store.listTransactionsByWallet('w1'))
+      .map((transaction) => transaction.id)
+      .sort();
+    expect(ids).toEqual(['c1', 'c2', 'c3']);
+  });
+
+  it('never erases existing data when a read hits an unparsable file', async () => {
+    const store = new JsonFileStore(filePath);
+    await store.insertAccount(mockAccount);
+
+    writeFileSync(filePath, '{ "accounts": [partial', 'utf8');
+
+    await expect(store.listAccounts()).rejects.toThrow();
+    expect(readFileSync(filePath, 'utf8')).toContain('partial');
   });
 
   it('reads a file missing the transactions array', async () => {

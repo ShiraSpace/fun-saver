@@ -13,6 +13,9 @@
 - The account dashboard renders three wallets (savings hero + spending/good-deeds cards).
   Wallet figures are **derived from seeded transactions**; no interest-accrual engine yet
   (`todayInterest` comes from interest transactions dated `asOf`).
+- The action drawer (`+ פעולה חדשה`) toggles between **deposit** (one amount auto-split 60/20/20
+  across the pots) and **withdraw** (pick one pot, overdraft-protected; a good-deeds withdrawal is
+  framed as a donation). Amounts are whole shekels; money is stored as integer agorot.
 - A local `src/db/data.json` is seeded with one account + three wallets so `npm run dev`
   shows the dashboard. It is gitignored. To see the daily-interest coin row and "active since"
   exactly like the mock, run with the same clock as the seed:
