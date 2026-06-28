@@ -79,6 +79,13 @@ export function TransactionDrawer({
 
   useCloseOnBack(onClose);
 
+  const withdrawOrDepositBody =
+    mode === 'deposit' ? (
+      <DepositBody account={account} onClose={onClose} />
+    ) : (
+      <WithdrawBody account={account} onClose={onClose} />
+    );
+
   return (
     <>
       <Scrim
@@ -88,13 +95,7 @@ export function TransactionDrawer({
       <Sheet data-testid={TRANSACTION_DRAWER_TEST_IDS.drawer}>
         <Handle />
         <ModeToggle mode={mode} onChange={setMode} />
-        <Body key={mode}>
-          {mode === 'deposit' ? (
-            <DepositBody account={account} onClose={onClose} />
-          ) : (
-            <WithdrawBody account={account} onClose={onClose} />
-          )}
-        </Body>
+        <Body key={mode}>{withdrawOrDepositBody}</Body>
       </Sheet>
     </>
   );
