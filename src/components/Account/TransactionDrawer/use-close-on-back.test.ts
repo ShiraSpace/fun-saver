@@ -1,5 +1,11 @@
+import { StrictMode } from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { useCloseOnBack } from './use-close-on-back';
+
+const flushAsync = (): Promise<void> =>
+  act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
 
 describe('useCloseOnBack', () => {
   it('pushes a history entry while open', () => {
@@ -29,5 +35,19 @@ describe('useCloseOnBack', () => {
     });
 
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('stays open under StrictMode remount', async () => {
+    const onClose = jest.fn();
+    const back = jest.spyOn(window.history, 'back').mockImplementation(() => {
+      setTimeout(() => window.dispatchEvent(new PopStateEvent('popstate')), 0);
+    });
+
+    renderHook(() => useCloseOnBack(onClose), { wrapper: StrictMode });
+    await flushAsync();
+
+    expect(onClose).not.toHaveBeenCalled();
+
+    back.mockRestore();
   });
 });
