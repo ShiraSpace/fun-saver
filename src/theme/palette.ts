@@ -21,4 +21,7 @@ export const COLORS = {
   depositBg: '#FFF6E0',
   gainText: '#2E7D32',
   gainSoftBg: '#E1F4E5',
+  alert: '#E5484D',
+  alertSoftBg: '#FDECEC',
+  withdrawText: '#D9480F',
 } as const;

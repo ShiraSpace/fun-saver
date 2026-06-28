@@ -1,5 +1,6 @@
 import type {
   Account,
+  AccountWithDerivedWallets,
   Transaction,
   Wallet,
   WalletWithDerived,
@@ -103,3 +104,8 @@ export const mockDerivedWallets: WalletWithDerived[] = createMockWallets().map(
   (wallet, index) =>
     createMockDerivedWallet({ ...wallet, ...MOCK_DERIVED_VALUES[index] })
 );
+
+export const mockDerivedAccount: AccountWithDerivedWallets = {
+  ...createMockAccount(),
+  wallets: mockDerivedWallets,
+};

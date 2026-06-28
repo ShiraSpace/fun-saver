@@ -1,10 +1,17 @@
 import type { DataStore } from '@/db/data-store';
 import { DEPOSIT_SPLIT } from './constants';
+import { balance } from './derivations';
 import { newId } from './ids';
-import { ValidationError } from './errors';
+import { OverdraftError, ValidationError } from './errors';
 import type { Account, Transaction, WalletName } from './types';
 
 export type DepositSplit = Record<WalletName, number>;
+
+function assertPositiveAmount(amountAgorot: number): void {
+  if (!Number.isInteger(amountAgorot) || amountAgorot <= 0) {
+    throw new ValidationError('amount must be a positive whole number');
+  }
+}
 
 export function splitDeposit(totalAgorot: number): DepositSplit {
   const spending = Math.floor(totalAgorot * DEPOSIT_SPLIT.spending);
@@ -20,9 +27,7 @@ export async function addDeposit(
   amountAgorot: number,
   asOf: string
 ): Promise<Transaction[]> {
-  if (!Number.isInteger(amountAgorot) || amountAgorot <= 0) {
-    throw new ValidationError('deposit amount must be a positive whole number');
-  }
+  assertPositiveAmount(amountAgorot);
 
   const split = splitDeposit(amountAgorot);
 
@@ -38,4 +43,39 @@ export async function addDeposit(
   await store.insertTransactions(transactions);
 
   return transactions;
+}
+
+export async function addWithdrawal(
+  store: DataStore,
+  account: Account,
+  walletId: string,
+  amountAgorot: number,
+  asOf: string
+): Promise<Transaction> {
+  assertPositiveAmount(amountAgorot);
+
+  const wallet = account.wallets.find((candidate) => candidate.id === walletId);
+
+  if (!wallet) {
+    throw new ValidationError('unknown wallet');
+  }
+
+  const existing = await store.listTransactionsByWallet(walletId);
+
+  if (balance(existing) < amountAgorot) {
+    throw new OverdraftError('cannot withdraw more than the pot balance');
+  }
+
+  const transaction: Transaction = {
+    id: newId(),
+    walletId,
+    accountId: account.id,
+    type: 'withdrawal',
+    amount: amountAgorot,
+    occurredAt: asOf,
+  };
+
+  await store.insertTransactions([transaction]);
+
+  return transaction;
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { splitDeposit, type DepositSplit } from '@/lib/transactions';
+import { pushDigit, popDigit } from './amount-keypad';
 import { useAddTransaction } from './use-add-transaction';
 
 interface DepositForm {
@@ -14,14 +15,6 @@ interface DepositForm {
   onClear: () => void;
   onBackspace: () => void;
   onConfirm: () => void;
-}
-
-function pushDigit(current: number, digit: number): number {
-  return current * 10 + digit;
-}
-
-function popDigit(current: number): number {
-  return Math.floor(current / 10);
 }
 
 export function useDepositForm(

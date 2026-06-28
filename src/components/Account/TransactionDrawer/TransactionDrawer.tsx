@@ -1,15 +1,16 @@
 'use client';
 
-import { JSX } from 'react';
+import { JSX, useState } from 'react';
 import styled from '@emotion/styled';
-import { ActionButton } from '@/components/ActionButton';
-import { MONEY_COPY } from '../Money/constants';
-import { AmountPad } from './AmountPad';
-import { DepositAmount } from './DepositAmount';
-import { DepositSplit } from './DepositSplit';
-import { useDepositForm } from './use-deposit-form';
+import { keyframes } from '@emotion/react';
+import type { AccountWithDerivedWallets } from '@/lib/types';
+import { LAYERS } from '@/theme/layers';
+import { ModeToggle } from './ModeToggle';
+import { DepositBody } from './DepositBody';
+import { WithdrawBody } from './WithdrawBody';
+import { useCloseOnBack } from './use-close-on-back';
+import type { TransactionMode } from './constants';
 import {
-  TRANSACTION_DRAWER_COPY,
   TRANSACTION_DRAWER_STYLE,
   TRANSACTION_DRAWER_TEST_IDS,
 } from './constants';
@@ -18,14 +19,14 @@ const Scrim = styled.div`
   position: fixed;
   inset: 0;
   background: ${TRANSACTION_DRAWER_STYLE.scrim};
-  z-index: 10;
+  z-index: ${LAYERS.modal};
 `;
 
 const Sheet = styled.div`
   position: fixed;
   inset-inline: 0;
   bottom: 0;
-  z-index: 11;
+  z-index: ${LAYERS.modalForeground};
   width: 100%;
   max-width: ${TRANSACTION_DRAWER_STYLE.maxWidth}px;
   margin: 0 auto;
@@ -47,44 +48,36 @@ const Handle = styled.div`
   margin: 2px auto;
 `;
 
-const Title = styled.span`
-  text-align: center;
-  font-size: ${({ theme }): number => theme.typography.heading}px;
-  font-weight: 700;
-  color: ${({ theme }): string => theme.colors.textStrong};
+const swapIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 `;
 
-const ErrorText = styled.span`
-  text-align: center;
-  font-size: ${({ theme }): number => theme.typography.label}px;
-  font-weight: 600;
-  color: ${({ theme }): string => theme.colors.accent};
+const Body = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${TRANSACTION_DRAWER_STYLE.gap}px;
+  animation: ${swapIn} 0.2s ease;
 `;
 
 interface TransactionDrawerProps {
-  accountId: string;
+  account: AccountWithDerivedWallets;
   onClose: () => void;
 }
 
 export function TransactionDrawer({
-  accountId,
+  account,
   onClose,
 }: TransactionDrawerProps): JSX.Element {
-  const {
-    amount,
-    split,
-    isSubmitting,
-    hasError,
-    canSubmit,
-    onDigit,
-    onClear,
-    onBackspace,
-    onConfirm,
-  } = useDepositForm(accountId, onClose);
+  const [mode, setMode] = useState<TransactionMode>('deposit');
 
-  const submitButtonText = isSubmitting
-    ? TRANSACTION_DRAWER_COPY.submitting
-    : `${TRANSACTION_DRAWER_COPY.confirm} ${MONEY_COPY.currency}${amount}`;
+  useCloseOnBack(onClose);
 
   return (
     <>
@@ -94,27 +87,14 @@ export function TransactionDrawer({
       />
       <Sheet data-testid={TRANSACTION_DRAWER_TEST_IDS.drawer}>
         <Handle />
-        <Title>{TRANSACTION_DRAWER_COPY.title}</Title>
-        <DepositAmount amount={amount} />
-        <DepositSplit split={split} />
-        <AmountPad
-          onDigit={onDigit}
-          onClear={onClear}
-          onBackspace={onBackspace}
-        />
-        {hasError && (
-          <ErrorText data-testid={TRANSACTION_DRAWER_TEST_IDS.error}>
-            {TRANSACTION_DRAWER_COPY.error}
-          </ErrorText>
-        )}
-        <ActionButton
-          type="button"
-          data-testid={TRANSACTION_DRAWER_TEST_IDS.confirm}
-          disabled={!canSubmit}
-          onClick={onConfirm}
-        >
-          {submitButtonText}
-        </ActionButton>
+        <ModeToggle mode={mode} onChange={setMode} />
+        <Body key={mode}>
+          {mode === 'deposit' ? (
+            <DepositBody account={account} onClose={onClose} />
+          ) : (
+            <WithdrawBody account={account} onClose={onClose} />
+          )}
+        </Body>
       </Sheet>
     </>
   );

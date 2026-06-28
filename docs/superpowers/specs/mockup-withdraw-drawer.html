@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<title>fun-saver — מגירת משיכה (בורר קופה + הגנת יתר)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; font-family:'Rubik','Roboto',sans-serif; background:#0a0a0a; min-height:100vh; color:#fff; direction:rtl; }
+  .page { max-width:1180px; margin:0 auto; padding:32px 20px 80px; }
+  h1 { font-size:22px; font-weight:600; margin:0 0 4px; text-align:center; color:#fff; }
+  .subtitle { color:#bdbdbd; text-align:center; margin:0 0 28px; font-size:14px; }
+  .phone-row { display:flex; justify-content:center; gap:34px; flex-wrap:wrap; }
+  .variant { display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .variant .cap { color:#e6e6e6; font-size:14px; font-weight:600; text-align:center; }
+  .variant .cap small { display:block; color:#9a9a9a; font-weight:400; font-size:12px; margin-top:2px; }
+
+  .phone { width:340px; background:#1a1a1a; border-radius:36px; padding:8px; box-shadow:0 18px 40px rgba(0,0,0,0.7); border:1px solid #2a2a2a; }
+  .screen {
+    border-radius:30px; overflow:hidden; height:760px; display:flex; flex-direction:column;
+    position:relative;
+    background:linear-gradient(160deg,#FFC34D 0%,#FF8A4C 40%,#E94E89 100%);
+    font-family:'Fredoka','Rubik',sans-serif; color:#2A1B4A;
+  }
+
+  .behind { position:absolute; inset:0; }
+  .behind .statusbar { display:flex; justify-content:space-between; padding:10px 22px 4px; font-size:10px; font-weight:600; color:#3a1f5a; opacity:0.7; }
+  .behind .ribbon { margin:6px 14px 0; background:#fff; border-radius:18px; padding:10px 14px; display:flex; align-items:center; gap:10px; box-shadow:0 4px 0 rgba(0,0,0,0.06); }
+  .behind .ribbon .title { flex:1; font-size:15px; font-weight:700; color:#3a1f5a; text-align:center; }
+  .behind .ghost-card { margin:14px 14px 0; height:150px; background:#fff; border-radius:24px; opacity:0.85; }
+  .behind .ghost-row { margin:10px 14px 0; height:52px; background:#fff; border-radius:16px; opacity:0.8; }
+  .scrim { position:absolute; inset:0; background:rgba(40,20,60,0.42); }
+
+  .sheet {
+    position:absolute; left:0; right:0; bottom:0;
+    background:#FFF7EE; border-radius:28px 28px 0 0;
+    padding:10px 18px 18px; box-shadow:0 -10px 30px rgba(0,0,0,0.25);
+    display:flex; flex-direction:column; gap:13px;
+  }
+  .handle { width:44px; height:5px; border-radius:999px; background:#E7D9C9; margin:2px auto 2px; }
+
+  /* mode toggle — הפקדה / משיכה */
+  .toggle { display:flex; background:#F0E6D8; border-radius:999px; padding:4px; gap:4px; }
+  .toggle button { flex:1; border:none; background:transparent; font-family:inherit; font-size:14px; font-weight:700; color:#8A7AA7; padding:9px 0; border-radius:999px; cursor:pointer; }
+  .toggle button.on { background:#fff; color:#3a1f5a; box-shadow:0 2px 0 rgba(0,0,0,0.06); }
+  .toggle .ar { font-weight:800; font-size:15px; margin-inline-start:5px; }
+  .toggle .ar.green { color:#2E7D32; }
+  .toggle .ar.red { color:#E5484D; }
+
+  .sheet-title { text-align:center; font-size:16px; font-weight:700; color:#3a1f5a; }
+
+  .money { display:inline-flex; align-items:baseline; direction:ltr; line-height:1; }
+  .money .cur { font-weight:600; font-size:0.42em; opacity:0.7; position:relative; top:0.3em; margin-inline-end:2px; }
+  .money .num { font-variant-numeric:tabular-nums; }
+
+  /* wallet picker — three selectable wallets with balances */
+  .wallets { display:flex; gap:8px; }
+  .wallets .p { flex:1; background:#fff; border-radius:14px; padding:9px 6px 8px; display:flex; flex-direction:column; align-items:center; gap:3px; box-shadow:0 3px 0 rgba(0,0,0,0.05); border:2px solid transparent; cursor:pointer; }
+  .wallets .p.sel { border-color:#8A3AAE; box-shadow:0 3px 0 rgba(138,58,174,0.25); }
+  .wallets .p .ic { width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .wallets .p.savings .ic { background:linear-gradient(135deg,#FFE6B0,#FFC34D); }
+  .wallets .p.spending .ic { background:linear-gradient(135deg,#FFD8C7,#FF8A4C); }
+  .wallets .p.good .ic { background:linear-gradient(135deg,#FBC4DA,#E94E89); }
+  .wallets .p .nm { font-size:9px; font-weight:600; color:#8A7AA7; }
+  .wallets .p .bal { font-size:13px; font-weight:700; color:#3a1f5a; }
+
+  /* amount display — withdraw is amber (money leaving) */
+  .amount { text-align:center; padding:2px 0 0; }
+  .amount .lbl { font-size:10px; font-weight:600; color:#8A7AA7; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:3px; }
+  .amount .big { font-size:46px; font-weight:700; color:#D9480F; }
+  .amount .big .cur { color:#E8845C; }
+  .amount.donate .big { color:#2E7D32; }
+  .amount.donate .big .cur { color:#5BA570; }
+
+  /* overdraft hint */
+  .overdraft { background:#FDECEC; border:1.5px dashed #E5484D; border-radius:12px; padding:7px 10px; font-size:11px; font-weight:600; color:#C2261B; text-align:center; }
+
+  /* number pad */
+  .pad { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .pad button { border:none; background:#fff; border-radius:14px; font-family:inherit; font-size:22px; font-weight:600; color:#3a1f5a; padding:12px 0; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,0.05); }
+  .pad button.muted { color:#8A7AA7; font-size:18px; }
+
+  .confirm {
+    border:none; width:100%; color:#fff; font-family:inherit; font-weight:700; font-size:16px;
+    padding:15px 0; border-radius:999px; cursor:pointer; letter-spacing:0.2px;
+    background:linear-gradient(180deg,#8A3AAE 0%,#6B2C8E 100%);
+    box-shadow:0 5px 0 #4A1A6E, 0 10px 18px rgba(107,44,142,0.45);
+  }
+  .confirm:disabled { background:#D8CBE2; box-shadow:0 5px 0 #C3B3D2; color:#fff; cursor:not-allowed; }
+
+  .note { margin-top:30px; padding:18px 22px; background:#161616; border:1px solid #242424; border-radius:14px; color:#cfcfcf; font-size:13px; line-height:1.7; }
+  .note h3 { color:#fff; margin:0 0 8px; font-size:15px; }
+  .note code { background:#1f1f1f; padding:2px 7px; border-radius:6px; font-size:12px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>מגירת משיכה — בורר קופה + הגנת יתר</h1>
+  <p class="subtitle">אותה מגירה כמו ההפקדה, עם מתג מצב למעלה. במשיכה: בוחרים קופה אחת → מקלידים סכום. אי אפשר למשוך יותר ממה שיש.</p>
+
+  <div class="phone-row">
+
+    <!-- ===================== STATE A — withdraw from savings (valid) ===================== -->
+    <div class="variant">
+      <div class="cap">מצב א — משיכה מהחיסכון<small>קופה נבחרה, סכום תקין → כפתור פעיל.</small></div>
+      <div class="phone">
+        <div class="screen">
+          <div class="behind">
+            <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+            <div class="ribbon"><div class="title">הקופות של נועה</div></div>
+            <div class="ghost-card"></div>
+            <div class="ghost-row"></div>
+            <div class="ghost-row"></div>
+          </div>
+          <div class="scrim"></div>
+
+          <div class="sheet">
+            <div class="handle"></div>
+            <div class="toggle">
+              <button>הפקדה <span class="ar green">↓</span></button>
+              <button class="on">משיכה <span class="ar red">↑</span></button>
+            </div>
+            <div class="sheet-title">מאיזו קופה מושכים?</div>
+
+            <div class="wallets">
+              <div class="p savings sel"><div class="ic">🐷</div><div class="nm">חיסכון</div><div class="bal">₪120</div></div>
+              <div class="p spending"><div class="ic">🛍️</div><div class="nm">בזבוזים</div><div class="bal">₪40</div></div>
+              <div class="p good"><div class="ic">💛</div><div class="nm">מעשים טובים</div><div class="bal">₪40</div></div>
+            </div>
+
+            <div class="amount">
+              <div class="lbl">סכום המשיכה</div>
+              <span class="money big"><span class="cur">₪</span><span class="num">50</span></span>
+            </div>
+
+            <div class="pad">
+              <button>1</button><button>2</button><button>3</button>
+              <button>4</button><button>5</button><button>6</button>
+              <button>7</button><button>8</button><button>9</button>
+              <button class="muted">C</button><button>0</button><button class="muted">⌫</button>
+            </div>
+
+            <button class="confirm">משיכה של ₪50</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== STATE B — good-deeds = donation framing ===================== -->
+    <div class="variant">
+      <div class="cap">מצב ב — מעשים טובים = תרומה<small>אותה מגירה, נימה חיובית: "כמה תורמים?", סכום ירוק.</small></div>
+      <div class="phone">
+        <div class="screen">
+          <div class="behind">
+            <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+            <div class="ribbon"><div class="title">הקופות של נועה</div></div>
+            <div class="ghost-card"></div>
+            <div class="ghost-row"></div>
+            <div class="ghost-row"></div>
+          </div>
+          <div class="scrim"></div>
+
+          <div class="sheet">
+            <div class="handle"></div>
+            <div class="toggle">
+              <button>הפקדה <span class="ar green">↓</span></button>
+              <button class="on">משיכה <span class="ar red">↑</span></button>
+            </div>
+            <div class="sheet-title">כמה תורמים? 💛</div>
+
+            <div class="wallets">
+              <div class="p savings"><div class="ic">🐷</div><div class="nm">חיסכון</div><div class="bal">₪120</div></div>
+              <div class="p spending"><div class="ic">🛍️</div><div class="nm">בזבוזים</div><div class="bal">₪40</div></div>
+              <div class="p good sel"><div class="ic">💛</div><div class="nm">מעשים טובים</div><div class="bal">₪40</div></div>
+            </div>
+
+            <div class="amount donate">
+              <div class="lbl">סכום התרומה</div>
+              <span class="money big"><span class="cur">₪</span><span class="num">25</span></span>
+            </div>
+
+            <div class="pad">
+              <button>1</button><button>2</button><button>3</button>
+              <button>4</button><button>5</button><button>6</button>
+              <button>7</button><button>8</button><button>9</button>
+              <button class="muted">C</button><button>0</button><button class="muted">⌫</button>
+            </div>
+
+            <button class="confirm">תרומה של ₪25</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== STATE C — overdraft blocked ===================== -->
+    <div class="variant">
+      <div class="cap">מצב ג — אין מספיק בקופה<small>סכום &gt; יתרה → רמז עדין + כפתור מנוטרל.</small></div>
+      <div class="phone">
+        <div class="screen">
+          <div class="behind">
+            <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+            <div class="ribbon"><div class="title">הקופות של נועה</div></div>
+            <div class="ghost-card"></div>
+            <div class="ghost-row"></div>
+            <div class="ghost-row"></div>
+          </div>
+          <div class="scrim"></div>
+
+          <div class="sheet">
+            <div class="handle"></div>
+            <div class="toggle">
+              <button>הפקדה <span class="ar green">↓</span></button>
+              <button class="on">משיכה <span class="ar red">↑</span></button>
+            </div>
+            <div class="sheet-title">מאיזו קופה מושכים?</div>
+
+            <div class="wallets">
+              <div class="p savings"><div class="ic">🐷</div><div class="nm">חיסכון</div><div class="bal">₪120</div></div>
+              <div class="p spending sel"><div class="ic">🛍️</div><div class="nm">בזבוזים</div><div class="bal">₪40</div></div>
+              <div class="p good"><div class="ic">💛</div><div class="nm">מעשים טובים</div><div class="bal">₪40</div></div>
+            </div>
+
+            <div class="amount">
+              <div class="lbl">סכום המשיכה</div>
+              <span class="money big"><span class="cur">₪</span><span class="num">60</span></span>
+            </div>
+
+            <div class="overdraft">אין מספיק בקופה — יש רק ₪40</div>
+
+            <div class="pad">
+              <button>1</button><button>2</button><button>3</button>
+              <button>4</button><button>5</button><button>6</button>
+              <button>7</button><button>8</button><button>9</button>
+              <button class="muted">C</button><button>0</button><button class="muted">⌫</button>
+            </div>
+
+            <button class="confirm" disabled>משיכה של ₪60</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note">
+    <h3>הערות עיצוב</h3>
+    <p>
+      <b>מודל:</b> משיכה מקופה <i>אחת</i> נבחרת (שלא כמו הפקדה שמתחלקת אוטומטית). מתג <code>הפקדה / משיכה</code>
+      בראש אותה מגירה; ברירת המחדל הפקדה. במשיכה נוסף בורר 3 הקופות עם היתרה הנוכחית.<br>
+      <b>הגנת יתר:</b> כשהסכום גדול מיתרת הקופה הנבחרת — רמז עדין "אין מספיק בקופה" וכפתור האישור מנוטרל
+      (אין שליחה לשרת). השרת אוכף <code>OverdraftError</code> כרשת ביטחון (400).<br>
+      <b>מעשים טובים = תרומה:</b> בבחירת קופת מעשים טובים הנימה חיובית — "כמה תורמים? 💛", סכום ירוק וכפתור
+      "תרומה של ₪X". שאר הקופות: סכום כתום (כסף יוצא), כפתור "משיכה של ₪X".<br>
+      <b>חישוב:</b> באגורות (שלמים), עסקה אחת מסוג <code>withdrawal</code> על הקופה הנבחרת; היתרה נגזרת מהעסקאות
+      (<code>principal</code> כבר מחסיר משיכות). כפתור אישור בפיל הסגול הקיים; הטקסט מתעדכן עם הסכום.<br>
+      <b>מצבים נוספים (לא מצוירים):</b> טעינה (כפתור "מושכים…") ושגיאת שרת (הודעה ענוגה) בעת שליחה ל-API.
+    </p>
+  </div>
+</div>
+</body>
+</html>

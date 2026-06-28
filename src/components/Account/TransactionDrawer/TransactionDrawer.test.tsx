@@ -2,11 +2,15 @@ import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { TransactionDrawer } from './TransactionDrawer';
 import { TRANSACTION_DRAWER_TEST_IDS } from './constants';
 import { AMOUNT_PAD_TEST_IDS } from './AmountPad/constants';
+import { MODE_TOGGLE_TEST_IDS } from './ModeToggle/constants';
+import { WALLET_PICKER_TEST_IDS } from './WalletPicker/constants';
 import { splitDeposit } from '@/lib/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
+import { mockDerivedAccount } from '@/test-support/fixtures';
 
 const mockAddDeposit = jest.fn();
+const mockWithdraw = jest.fn();
 const mockRefresh = jest.fn();
 const mockOnClose = jest.fn();
 
@@ -15,19 +19,42 @@ jest.mock('next/navigation', () => ({
 }));
 
 jest.mock('./use-add-transaction', () => ({
-  useAddTransaction: (): { addDeposit: jest.Mock } => ({
+  useAddTransaction: (): { addDeposit: jest.Mock; withdraw: jest.Mock } => ({
     addDeposit: mockAddDeposit,
+    withdraw: mockWithdraw,
   }),
 }));
-
-const ACCOUNT_ID = 'account-1';
 
 describe('TransactionDrawer', () => {
   beforeEach(() => {
     mockAddDeposit.mockReset().mockResolvedValue(undefined);
+    mockWithdraw.mockReset().mockResolvedValue(undefined);
     mockRefresh.mockClear();
     mockOnClose.mockClear();
-    render(<TransactionDrawer accountId={ACCOUNT_ID} onClose={mockOnClose} />);
+    render(
+      <TransactionDrawer account={mockDerivedAccount} onClose={mockOnClose} />
+    );
+  });
+
+  it('opens in deposit mode with the split visible', () => {
+    expect(screen.getByTestId(MODE_TOGGLE_TEST_IDS.deposit)).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(
+      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.split)
+    ).toBeInTheDocument();
+  });
+
+  it('switches to the withdraw wallet picker when the withdraw mode is chosen', () => {
+    fireEvent.click(screen.getByTestId(MODE_TOGGLE_TEST_IDS.withdraw));
+
+    expect(
+      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet('savings'))
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.split)
+    ).not.toBeInTheDocument();
   });
 
   it('shows a zero amount by default', () => {

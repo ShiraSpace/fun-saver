@@ -22,6 +22,19 @@ export const AMOUNT_PAD_TEST_IDS = {
 } as const;
 
 export const AMOUNT_PAD_COPY = {
-  clear: 'C',
-  backspace: '⌫',
+  clear: 'נקה',
+  backspace: 'מחק',
+  clearIcon: 'C',
+  backspaceIcon: '⌫',
+} as const;
+
+export const AMOUNT_PAD_STYLE = {
+  gap: 6,
+  radius: 13,
+  keyPaddingY: 9,
+  editPaddingY: 7,
+  topGap: 10,
+  shadow: '0 3px 0 rgba(0, 0, 0, 0.05)',
+  pressDrop: 3,
+  pressMs: 90,
 } as const;

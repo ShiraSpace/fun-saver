@@ -16,12 +16,5 @@ export function AccountSwitcher({
   const current =
     accounts.find((account) => account.id === selectedAccountId) ?? accounts[0];
 
-  return (
-    <Account
-      accountId={current.id}
-      name={current.name}
-      avatarId={current.avatarId}
-      wallets={current.wallets}
-    />
-  );
+  return <Account account={current} />;
 }
