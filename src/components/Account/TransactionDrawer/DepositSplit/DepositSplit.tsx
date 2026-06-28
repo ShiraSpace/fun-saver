@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import { Money } from '../../Money/Money';
+import { Money } from '@/components/Money';
 import { DEFAULT_WALLETS } from '@/lib/constants';
 import type { DepositSplit as DepositSplitValue } from '@/lib/transactions';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';

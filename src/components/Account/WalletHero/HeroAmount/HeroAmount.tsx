@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import { Money } from '../../Money/Money';
+import { Money } from '@/components/Money';
 import { WALLET_HERO_COPY, WALLET_HERO_TEST_IDS } from '../constants';
 
 interface HeroAmountProps {

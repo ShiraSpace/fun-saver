@@ -3,7 +3,7 @@
 import { JSX } from 'react';
 import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
-import { Money } from '../Money/Money';
+import { Money } from '@/components/Money';
 import {
   WALLET_CARD_COPY,
   WALLET_CARD_STYLE,
