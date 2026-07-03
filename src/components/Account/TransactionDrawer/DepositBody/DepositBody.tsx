@@ -3,7 +3,7 @@
 import { JSX } from 'react';
 import { ActionButton } from '@/components/ActionButton';
 import type { AccountWithDerivedWallets } from '@/lib/types';
-import { MONEY_COPY } from '../../Money/constants';
+import { MONEY_COPY } from '@/components/Money/constants';
 import { AmountPad } from '../AmountPad';
 import { DepositAmount } from '../DepositAmount';
 import { DepositSplit } from '../DepositSplit';

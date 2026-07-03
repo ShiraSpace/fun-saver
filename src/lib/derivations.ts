@@ -1,4 +1,4 @@
-import type { Transaction, TransactionType } from './types';
+import type { Transaction, TransactionType, WalletWithDerived } from './types';
 
 function sumOf(transactions: Transaction[], type: TransactionType): number {
   return transactions
@@ -16,6 +16,12 @@ export function interestGain(transactions: Transaction[]): number {
 
 export function balance(transactions: Transaction[]): number {
   return principal(transactions) + interestGain(transactions);
+}
+
+export function totalBalance(
+  wallets: Pick<WalletWithDerived, 'balance'>[]
+): number {
+  return wallets.reduce((sum, wallet) => sum + wallet.balance, 0);
 }
 
 export function todayInterest(

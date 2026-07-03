@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import { MONEY_COPY } from '../../../Money/constants';
+import { MONEY_COPY } from '@/components/Money/constants';
 import { DrawerError } from '../../drawer-parts';
 import {
   TRANSACTION_DRAWER_COPY,

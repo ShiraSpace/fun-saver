@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import styled from '@emotion/styled';
-import { Money } from '../../Money/Money';
+import { Money } from '@/components/Money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 

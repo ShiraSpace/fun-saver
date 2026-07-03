@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@/test-support/render';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
+import { TOTAL_CHIP_TEST_IDS } from './TotalChip/constants';
 import { TITLE_TEST_IDS } from './CrossfadeTitle/constants';
 import { MENU_TEST_IDS } from '../Menu/constants';
 import {
@@ -11,9 +12,16 @@ import {
 describe('Header', () => {
   const ACCOUNT_NAME = 'יעל';
   const AVATAR_ID = 'kid-01';
+  const TOTAL_BALANCE = 16000;
 
   beforeEach(() => {
-    render(<Header name={ACCOUNT_NAME} avatarId={AVATAR_ID} />);
+    render(
+      <Header
+        name={ACCOUNT_NAME}
+        avatarId={AVATAR_ID}
+        totalBalance={TOTAL_BALANCE}
+      />
+    );
   });
 
   it('shows the account name', () => {
@@ -29,6 +37,10 @@ describe('Header', () => {
   it('shows the account avatar', () => {
     const avatar = screen.getByTestId(HEADER_TEST_IDS.avatar);
     expect(avatar).toHaveAttribute('src', expect.stringContaining(AVATAR_ID));
+  });
+
+  it('shows the total balance chip', () => {
+    expect(screen.getByTestId(TOTAL_CHIP_TEST_IDS.chip)).toBeInTheDocument();
   });
 
   describe('the menu', () => {
@@ -84,6 +96,16 @@ describe('Header', () => {
       fireEvent.click(button);
 
       expect(bar).toHaveAttribute('data-open', 'true');
+    });
+
+    it('hides the total chip when the menu opens', () => {
+      expect(screen.getByTestId(TOTAL_CHIP_TEST_IDS.chip)).toBeInTheDocument();
+
+      fireEvent.click(button);
+
+      expect(
+        screen.queryByTestId(TOTAL_CHIP_TEST_IDS.chip)
+      ).not.toBeInTheDocument();
     });
   });
 });

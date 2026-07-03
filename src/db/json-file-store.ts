@@ -34,11 +34,8 @@ export class JsonFileStore implements DataStore {
   }
 
   getAccount(id: string): Promise<Account | undefined> {
-    return this.enqueue(
-      async (): Promise<Account | undefined> =>
-        (await this.readFromDisk()).accounts.find(
-          (account) => account.id === id
-        )
+    return this.enqueue(async (): Promise<Account | undefined> =>
+      (await this.readFromDisk()).accounts.find((account) => account.id === id)
     );
   }
 
@@ -67,11 +64,10 @@ export class JsonFileStore implements DataStore {
   }
 
   listTransactionsByWallet(walletId: string): Promise<Transaction[]> {
-    return this.enqueue(
-      async (): Promise<Transaction[]> =>
-        (await this.readFromDisk()).transactions.filter(
-          (transaction) => transaction.walletId === walletId
-        )
+    return this.enqueue(async (): Promise<Transaction[]> =>
+      (await this.readFromDisk()).transactions.filter(
+        (transaction) => transaction.walletId === walletId
+      )
     );
   }
 

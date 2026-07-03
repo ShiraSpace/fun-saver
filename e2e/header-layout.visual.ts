@@ -6,7 +6,6 @@ import { mockAccount } from '@/test-support/fixtures';
 import { useDriver } from './driver/use-driver';
 
 const EDGE_TOLERANCE = 24;
-const CENTER_TOLERANCE = 24;
 const HEADING_FONT_SIZE = `${TYPE_SCALE.title}px`;
 
 describe('header', () => {
@@ -16,12 +15,14 @@ describe('header', () => {
     let bar: BoundingBox;
     let menuButton: BoundingBox;
     let name: BoundingBox;
+    let chip: BoundingBox;
     let avatar: BoundingBox;
 
     beforeEach(async () => {
       bar = await header.box();
       menuButton = await menu.buttonBox();
       name = await header.nameBox();
+      chip = await header.totalChipBox();
       avatar = await header.avatarBox();
     });
 
@@ -36,18 +37,22 @@ describe('header', () => {
       assert.ok(Math.abs(avatar.x - bar.x) <= EDGE_TOLERANCE);
     });
 
-    it('centers the account name', () => {
-      const barCenter = bar.x + bar.width / 2;
-      const nameCenter = name.x + name.width / 2;
-
-      assert.ok(Math.abs(nameCenter - barCenter) <= CENTER_TOLERANCE);
+    it('anchors the account name to the start, beside the menu', () => {
+      assert.ok(Math.abs(name.x + name.width - menuButton.x) <= EDGE_TOLERANCE);
     });
 
-    it('keeps the menu, name and avatar on the top row', () => {
-      assert.ok(
-        menuButton.y < name.y + name.height &&
-          menuButton.y + menuButton.height > name.y
-      );
+    it('places the total chip between the name and the avatar', () => {
+      assert.ok(chip.x + chip.width <= name.x + EDGE_TOLERANCE);
+      assert.ok(avatar.x + avatar.width <= chip.x + EDGE_TOLERANCE);
+    });
+
+    it('keeps the menu, name, chip and avatar on the top row', () => {
+      const onNameRow = (box: BoundingBox): boolean =>
+        box.y < name.y + name.height && box.y + box.height > name.y;
+
+      assert.ok(onNameRow(menuButton));
+      assert.ok(onNameRow(chip));
+      assert.ok(onNameRow(avatar));
     });
   });
 

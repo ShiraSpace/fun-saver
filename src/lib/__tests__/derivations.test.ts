@@ -3,6 +3,7 @@ import {
   interestGain,
   principal,
   todayInterest,
+  totalBalance,
 } from '../derivations';
 import type { Transaction } from '../types';
 import { createMockTransaction } from '@/test-support/fixtures';
@@ -42,5 +43,15 @@ describe('derivations', () => {
   it('todayInterest = interest dated asOf only', () => {
     expect(todayInterest(transactions, '2026-01-03')).toBe(47);
     expect(todayInterest(transactions, '2026-01-10')).toBe(0);
+  });
+
+  it('totalBalance = sum of every wallet balance', () => {
+    expect(
+      totalBalance([{ balance: 8500 }, { balance: 5000 }, { balance: 2500 }])
+    ).toBe(16000);
+  });
+
+  it('totalBalance of no wallets is zero', () => {
+    expect(totalBalance([])).toBe(0);
   });
 });

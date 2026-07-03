@@ -6,6 +6,7 @@ import { Menu } from '../Menu';
 import { MENU_OVERLAY_CONTENT } from '../Menu/MenuOverlay/constants';
 import { AvatarBadge } from '../AvatarBadge';
 import { Title } from './CrossfadeTitle';
+import { TotalChip } from './TotalChip';
 import {
   HEADER_AVATAR_PROPS,
   HEADER_LAYOUT,
@@ -40,9 +41,14 @@ const HeaderAvatar = styled(AvatarBadge)`
 export interface HeaderProps {
   name: string;
   avatarId: string;
+  totalBalance: number;
 }
 
-export function Header({ name, avatarId }: HeaderProps): JSX.Element {
+export function Header({
+  name,
+  avatarId,
+  totalBalance,
+}: HeaderProps): JSX.Element {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const title = isMenuOpen ? MENU_OVERLAY_CONTENT.title : name;
 
@@ -50,6 +56,7 @@ export function Header({ name, avatarId }: HeaderProps): JSX.Element {
     <Bar data-testid={HEADER_TEST_IDS.bar} data-open={isMenuOpen}>
       <Menu isOpen={isMenuOpen} onToggle={setIsMenuOpen} />
       <Title text={title} />
+      {!isMenuOpen && <TotalChip totalBalance={totalBalance} />}
       <HeaderAvatar
         avatarId={avatarId}
         alt={name}

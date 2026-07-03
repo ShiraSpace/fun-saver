@@ -26,7 +26,7 @@ const Text = styled.span`
   position: relative;
   z-index: ${HEADER_LAYOUT.foregroundZIndex};
   flex: 1;
-  text-align: center;
+  text-align: start;
   font-size: ${titleSize}px;
   font-weight: ${HEADER_LAYOUT.nameWeight};
   color: inherit;
