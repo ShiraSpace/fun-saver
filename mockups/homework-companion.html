@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sprout — Homework Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f3f0ff;
+    --card: #ffffff;
+    --ink: #2c2350;
+    --ink-soft: #6b6291;
+    --grape: #7c5cff;
+    --grape-deep: #5b3df0;
+    --mint: #34d6a6;
+    --peach: #ff9d7a;
+    --sun: #ffc857;
+    --rose: #ff7eb6;
+    --sky: #5bc8ff;
+    --ring: rgba(124, 92, 255, 0.18);
+    --shadow: 0 18px 40px -18px rgba(91, 61, 240, 0.45);
+    --shadow-soft: 0 10px 30px -14px rgba(91, 61, 240, 0.35);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 600px at 90% -10%, #ffe3f1 0%, transparent 55%),
+      radial-gradient(900px 500px at -10% 10%, #d9f7ee 0%, transparent 50%),
+      var(--bg);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 28px 16px 60px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 1060px;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 22px;
+  }
+
+  .full { grid-column: 1 / -1; }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card);
+    border-radius: 26px;
+    padding: 16px 22px;
+    box-shadow: var(--shadow-soft);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand .logo {
+    width: 46px; height: 46px; border-radius: 16px;
+    background: linear-gradient(135deg, var(--mint), var(--sky));
+    display: grid; place-items: center; font-size: 24px;
+    box-shadow: 0 8px 18px -8px var(--mint);
+  }
+  .brand h1 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 22px; letter-spacing: .3px;
+  }
+  .brand small { color: var(--ink-soft); font-weight: 700; font-size: 12px; }
+
+  .streak {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .pill {
+    display: flex; align-items: center; gap: 8px;
+    background: #fff5e8; color: #c2730a;
+    padding: 9px 14px; border-radius: 999px;
+    font-weight: 800; font-size: 14px;
+  }
+  .pill.xp { background: #efeaff; color: var(--grape-deep); }
+  .avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose), var(--peach));
+    display: grid; place-items: center; font-size: 22px;
+    box-shadow: 0 8px 16px -8px var(--rose);
+  }
+
+  /* ---------- Companion hero ---------- */
+  .hero {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #7c5cff 0%, #9a7bff 50%, #b794ff 100%);
+    border-radius: 30px;
+    padding: 26px 30px;
+    color: #fff;
+    display: flex; align-items: center; gap: 26px;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .hero::after {
+    content: ""; position: absolute; right: -60px; top: -60px;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: rgba(255,255,255,.12);
+  }
+  .hero::before {
+    content: ""; position: absolute; right: 120px; bottom: -80px;
+    width: 180px; height: 180px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .companion {
+    width: 118px; height: 118px; flex: none;
+    border-radius: 30px;
+    background: rgba(255,255,255,.16);
+    display: grid; place-items: center;
+    font-size: 68px;
+    backdrop-filter: blur(2px);
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-8px) } }
+  .hero-text { z-index: 1; }
+  .hero-text .greet { font-size: 14px; opacity: .85; font-weight: 700; }
+  .hero-text h2 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 27px; line-height: 1.2; margin: 4px 0 10px;
+  }
+  .hero-text p { opacity: .92; max-width: 460px; font-weight: 600; }
+  .cta {
+    margin-top: 16px; display: inline-flex; align-items: center; gap: 8px;
+    background: #fff; color: var(--grape-deep);
+    border: none; cursor: pointer;
+    font-family: 'Nunito'; font-weight: 800; font-size: 15px;
+    padding: 12px 22px; border-radius: 999px;
+    box-shadow: 0 10px 24px -10px rgba(0,0,0,.35);
+    transition: transform .15s ease;
+  }
+  .cta:hover { transform: translateY(-2px) scale(1.02); }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--card);
+    border-radius: 26px;
+    padding: 22px;
+    box-shadow: var(--shadow-soft);
+  }
+  .card h3 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 19px; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card .sub { color: var(--ink-soft); font-size: 13px; font-weight: 700; margin-bottom: 16px; }
+
+  /* ---------- Homework list ---------- */
+  .task {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px; border-radius: 18px;
+    background: #faf9ff;
+    border: 2px solid transparent;
+    margin-bottom: 12px;
+    transition: all .18s ease;
+    cursor: pointer;
+  }
+  .task:hover { border-color: var(--ring); transform: translateX(3px); }
+  .task:last-child { margin-bottom: 0; }
+  .check {
+    width: 28px; height: 28px; flex: none;
+    border-radius: 50%;
+    border: 3px solid #d8d2f5;
+    display: grid; place-items: center;
+    color: #fff; font-size: 15px; font-weight: 900;
+    transition: all .18s ease;
+  }
+  .task.done { background: #f1fff8; }
+  .task.done .check { background: var(--mint); border-color: var(--mint); }
+  .task.done .t-title { text-decoration: line-through; color: var(--ink-soft); }
+  .subject {
+    width: 42px; height: 42px; flex: none; border-radius: 14px;
+    display: grid; place-items: center; font-size: 22px;
+  }
+  .s-math { background: #e7f0ff; }
+  .s-read { background: #ffeede; }
+  .s-sci  { background: #e4fbf0; }
+  .s-art  { background: #ffe6f3; }
+  .t-body { flex: 1; }
+  .t-title { font-weight: 800; font-size: 15px; }
+  .t-meta { color: var(--ink-soft); font-size: 12px; font-weight: 700; margin-top: 2px; }
+  .due {
+    font-size: 12px; font-weight: 800; padding: 5px 11px; border-radius: 999px;
+    background: #fff1f1; color: #e05656;
+  }
+  .due.soon { background: #fff6e6; color: #c2730a; }
+  .due.chill { background: #ecfff6; color: #1ba87a; }
+
+  /* ---------- Progress ring ---------- */
+  .ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 6px 0 2px; }
+  .ring {
+    --p: 60;
+    width: 130px; height: 130px; border-radius: 50%;
+    background:
+      radial-gradient(closest-side, #fff 78%, transparent 79% 100%),
+      conic-gradient(var(--grape) calc(var(--p) * 1%), #ece7ff 0);
+    display: grid; place-items: center;
+    position: relative;
+  }
+  .ring b { font-family: 'Baloo 2'; font-size: 30px; color: var(--grape-deep); }
+  .ring span { font-size: 11px; color: var(--ink-soft); font-weight: 800; }
+  .ring-caption { color: var(--ink-soft); font-weight: 700; font-size: 13px; text-align: center; }
+
+  /* ---------- Companion chat ---------- */
+  .chat-bubble {
+    background: #f6f3ff; border-radius: 18px 18px 18px 6px;
+    padding: 13px 15px; font-weight: 700; font-size: 14px;
+    color: var(--ink); line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .chat-row { display: flex; gap: 10px; align-items: flex-end; }
+  .mini-buddy {
+    width: 40px; height: 40px; flex: none; border-radius: 14px;
+    background: linear-gradient(135deg, var(--sun), var(--peach));
+    display: grid; place-items: center; font-size: 22px;
+  }
+  .quick {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;
+  }
+  .quick button {
+    border: 2px solid #ece7ff; background: #fff; color: var(--grape-deep);
+    font-family: 'Nunito'; font-weight: 800; font-size: 13px;
+    padding: 8px 14px; border-radius: 999px; cursor: pointer;
+    transition: all .15s ease;
+  }
+  .quick button:hover { background: var(--grape); color: #fff; border-color: var(--grape); }
+
+  /* ---------- Rewards row ---------- */
+  .rewards { display: flex; gap: 14px; }
+  .badge {
+    flex: 1; text-align: center; padding: 16px 8px; border-radius: 20px;
+    background: #faf9ff;
+  }
+  .badge .ic { font-size: 30px; }
+  .badge .lbl { font-weight: 800; font-size: 13px; margin-top: 6px; }
+  .badge .pts { color: var(--ink-soft); font-size: 11px; font-weight: 700; }
+  .badge.locked { opacity: .42; filter: grayscale(.6); }
+
+  @media (max-width: 820px) {
+    .app { grid-template-columns: 1fr; }
+    .hero { flex-direction: column; text-align: center; }
+    .hero-text p { max-width: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Top bar -->
+    <header class="topbar full">
+      <div class="brand">
+        <div class="logo">🌱</div>
+        <div>
+          <h1>Sprout</h1>
+          <small>Homework buddy for Maya, age 9</small>
+        </div>
+      </div>
+      <div class="streak">
+        <div class="pill">🔥 <span>7-day streak</span></div>
+        <div class="pill xp">⭐ <span>340 XP</span></div>
+        <div class="avatar">🦊</div>
+      </div>
+    </header>
+
+    <!-- Companion hero -->
+    <section class="hero">
+      <div class="companion">🦉</div>
+      <div class="hero-text">
+        <div class="greet">Good afternoon, Maya! 🌤️</div>
+        <h2>You've got 2 of 5 tasks done — let's knock out the next one!</h2>
+        <p>I'll keep you company. Start a focus session and I'll cheer you on, set a gentle timer, and help if you get stuck.</p>
+        <button class="cta" onclick="cheer()">▶ Start focus session</button>
+      </div>
+    </section>
+
+    <!-- Homework list -->
+    <main class="card">
+      <h3>📚 Today's homework</h3>
+      <div class="sub">Tap a task to mark it complete</div>
+
+      <div class="task done" onclick="toggle(this)">
+        <div class="check">✓</div>
+        <div class="subject s-math">➗</div>
+        <div class="t-body">
+          <div class="t-title">Math — Fractions worksheet</div>
+          <div class="t-meta">Page 24, problems 1–10 · 15 min</div>
+        </div>
+        <div class="due chill">Done</div>
+      </div>
+
+      <div class="task done" onclick="toggle(this)">
+        <div class="check">✓</div>
+        <div class="subject s-read">📖</div>
+        <div class="t-body">
+          <div class="t-title">Reading — Chapter 3 of <i>Wonder</i></div>
+          <div class="t-meta">Then write 2 sentences · 20 min</div>
+        </div>
+        <div class="due chill">Done</div>
+      </div>
+
+      <div class="task" onclick="toggle(this)">
+        <div class="check"></div>
+        <div class="subject s-sci">🔬</div>
+        <div class="t-body">
+          <div class="t-title">Science — Label the water cycle</div>
+          <div class="t-meta">Diagram handout · 10 min</div>
+        </div>
+        <div class="due soon">Due 6 PM</div>
+      </div>
+
+      <div class="task" onclick="toggle(this)">
+        <div class="check"></div>
+        <div class="subject s-math">✖️</div>
+        <div class="t-body">
+          <div class="t-title">Math — Times tables practice</div>
+          <div class="t-meta">7s and 8s, flashcards · 10 min</div>
+        </div>
+        <div class="due soon">Due 7 PM</div>
+      </div>
+
+      <div class="task" onclick="toggle(this)">
+        <div class="check"></div>
+        <div class="subject s-art">🎨</div>
+        <div class="t-body">
+          <div class="t-title">Art — Finish autumn leaf collage</div>
+          <div class="t-meta">Bring tomorrow · 25 min</div>
+        </div>
+        <div class="due">Tomorrow</div>
+      </div>
+    </main>
+
+    <!-- Right column -->
+    <aside style="display:flex; flex-direction:column; gap:22px;">
+      <div class="card">
+        <h3>🎯 Today's progress</h3>
+        <div class="ring-wrap">
+          <div class="ring" id="ring"><div style="text-align:center"><b id="ringPct">40</b><br><span>complete</span></div></div>
+          <div class="ring-caption" id="ringCaption">2 of 5 tasks · 35 min done</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🦉 Ask Sprout</h3>
+        <div class="chat-row">
+          <div class="mini-buddy">🦉</div>
+          <div class="chat-bubble" id="bubble">Stuck on the water cycle? I can give you a hint without giving the answer away. 😉</div>
+        </div>
+        <div class="quick">
+          <button onclick="say('Great job staying focused! Two more and you\'re free. 🌟')">I need a boost</button>
+          <button onclick="say('Take a 5-min stretch break — wiggle those arms! 🙆')">Break time</button>
+          <button onclick="say('Try this: rain → rivers → ocean → evaporation → clouds → repeat! ☁️')">Give me a hint</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Rewards -->
+    <section class="card full">
+      <h3>🏆 Rewards garden</h3>
+      <div class="sub">Earn XP to grow your garden and unlock new companions</div>
+      <div class="rewards">
+        <div class="badge"><div class="ic">🔥</div><div class="lbl">Week Warrior</div><div class="pts">Earned</div></div>
+        <div class="badge"><div class="ic">⚡</div><div class="lbl">Speedy Start</div><div class="pts">Earned</div></div>
+        <div class="badge"><div class="ic">🦊</div><div class="lbl">Fox Friend</div><div class="pts">Unlocked</div></div>
+        <div class="badge locked"><div class="ic">🐢</div><div class="lbl">Turtle Pal</div><div class="pts">500 XP</div></div>
+        <div class="badge locked"><div class="ic">🌈</div><div class="lbl">Rainbow Badge</div><div class="pts">10-day streak</div></div>
+      </div>
+    </section>
+
+  </div>
+
+<script>
+  const bubbles = [
+    "Nice! That's another one down. I'm proud of you! 🌟",
+    "Look at you go — keep that momentum! 🚀",
+    "One step closer to a free evening! 🎉",
+  ];
+
+  function refresh() {
+    const tasks = [...document.querySelectorAll('.task')];
+    const done = tasks.filter(t => t.classList.contains('done')).length;
+    const pct = Math.round((done / tasks.length) * 100);
+    document.getElementById('ring').style.setProperty('--p', pct);
+    document.getElementById('ringPct').textContent = pct;
+    document.getElementById('ringCaption').textContent =
+      done + ' of ' + tasks.length + ' tasks complete';
+  }
+
+  function toggle(el) {
+    el.classList.toggle('done');
+    const tag = el.querySelector('.due');
+    if (el.classList.contains('done')) {
+      tag.className = 'due chill'; tag.textContent = 'Done';
+      say(bubbles[Math.floor(Math.random()*bubbles.length)]);
+    } else {
+      tag.className = 'due soon'; tag.textContent = 'To do';
+    }
+    refresh();
+  }
+
+  function say(msg) { document.getElementById('bubble').textContent = msg; }
+  function cheer() { say("Focus mode on! I set a 15-minute timer. You've got this — I'm right here. ⏳🦉"); }
+
+  refresh();
+</script>
+</body>
+</html>

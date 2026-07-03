@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — Edit Account (shared AccountForm)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* ---- design tokens pulled from src/theme/themes/*.ts (jungle-quest, midnight-blue) ---- */
+  :root[data-theme='jungle-quest'] {
+    --primary:#2A9D8F; --primaryGradientTop:#3AB3A3; --primaryShadow:#1B6B61;
+    --primaryGlow:rgba(42,157,143,0.45); --textOnPrimary:#FFFFFF;
+    --surface:#FFFDF5; --textMuted:#5C7A6E; --textStrong:#1B4332;
+    --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+    --actionButton:linear-gradient(#3AB3A3,#2A9D8F);
+  }
+  :root[data-theme='midnight-blue'] {
+    --primary:#3B82F6; --primaryGradientTop:#60A5FA; --primaryShadow:#1E40AF;
+    --primaryGlow:rgba(59,130,246,0.40); --textOnPrimary:#FFFFFF;
+    --surface:#141B24; --textMuted:#8A96A8; --textStrong:#ECF1F8;
+    --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+    --actionButton:linear-gradient(#60A5FA,#3B82F6);
+  }
+
+  /* TYPE_SCALE (src/theme/typography.ts) */
+  /* title:22 heading:18 body:15 label:12 */
+
+  * { box-sizing:border-box; }
+  body {
+    margin:0; direction:rtl;
+    font-family:'Rubik','Roboto',sans-serif;
+    background:#0a0a0a; min-height:100vh; color:#fff;
+  }
+  .page { max-width:980px; margin:0 auto; padding:28px 20px 80px; }
+  h1.doc { font-size:22px; font-weight:600; margin:0 0 4px; text-align:center; }
+  .subtitle { color:#bdbdbd; text-align:center; margin:0 0 22px; font-size:14px; }
+
+  .toolbar { display:flex; gap:8px; justify-content:center; margin-bottom:26px; }
+  .toolbar button {
+    font-family:inherit; cursor:pointer; border:1px solid #333; background:#1a1a1a;
+    color:#ddd; padding:8px 16px; border-radius:999px; font-size:13px; font-weight:600;
+  }
+  .toolbar button.active { background:#fff; color:#111; border-color:#fff; }
+
+  .compare { display:flex; gap:26px; justify-content:center; flex-wrap:wrap; }
+  .col { width:360px; }
+  .col .cap { text-align:center; color:#bdbdbd; font-size:13px; margin-bottom:10px; font-weight:600; }
+
+  /* ---- phone shell + modal overlay (mirrors how CreateAccount renders inside Screen) ---- */
+  .phone { width:360px; background:#1a1a1a; border-radius:36px; padding:8px;
+           box-shadow:0 18px 40px rgba(0,0,0,0.7); border:1px solid #2a2a2a; }
+  .screen {
+    border-radius:30px; overflow:hidden; min-height:720px;
+    background:var(--screen);
+    font-family:'Fredoka','Rubik',sans-serif;
+    position:relative; padding:0 0 24px;
+  }
+  .statusbar { display:flex; justify-content:space-between; padding:10px 22px 4px;
+               font-size:10px; font-weight:600; color:var(--textOnPrimary); opacity:0.7; }
+
+  /* AccountForm body — Form in CreateAccount.tsx: column, centered, gap 22 (SCREEN_LAYOUT.gap-2) */
+  .form { display:flex; flex-direction:column; align-items:center; width:100%;
+          gap:22px; padding:22px 20px 0; position:relative; }
+
+  /* CloseButton — absolute, inline-start, 40px circle, rgba white .4 */
+  .close-btn {
+    position:absolute; inset-block-start:6px; inset-inline-start:6px;
+    width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+    padding:0; border:none; border-radius:50%;
+    background:rgba(255,255,255,0.4); font-size:18px; font-weight:700;
+    color:var(--textOnPrimary); cursor:pointer;
+  }
+
+  /* Title — h1, size 22 (title), weight 700, textOnPrimary; titleIcon shares the line */
+  .form .title { margin:0; font-size:22px; font-weight:700; color:var(--textOnPrimary);
+                 display:flex; align-items:center; gap:8px; }
+  .form .title .title-icon { font-size:22px; line-height:1; }
+  .form .title .title-icon--plus { color:#fff; font-weight:700; }
+
+
+  /* NameField Card — surface bg, radius 14, pad 12/14, gap 6, maxWidth 340, shadow */
+  .name-field {
+    display:flex; align-items:center; gap:6px; width:100%; max-width:340px;
+    padding:12px 14px; border-radius:14px; background:var(--surface);
+    box-shadow:0 4px 0 rgba(0,0,0,0.06); color:var(--textMuted);
+  }
+  .name-field .lbl { font-weight:500; }
+  .name-field input {
+    flex:1; min-width:0; border:none; background:transparent; outline:none;
+    font:inherit; font-weight:700; color:var(--textStrong);
+  }
+  .name-field input::placeholder { color:var(--textMuted); font-weight:500; }
+  /* pre-filled field reads as a real typed-in value, not an empty/placeholder field */
+  .name-field.has-value { box-shadow:0 0 0 2px var(--primary), 0 4px 0 rgba(0,0,0,0.06); }
+  .name-field.has-value input { font-weight:700; color:var(--textStrong); }
+
+  /* AvatarPicker Grid — 4 cols, gap 12, maxWidth 340 */
+  .avatar-grid {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:12px;
+    width:100%; max-width:340px;
+  }
+  /* OptionButton — circle, aspect 1, border 3 transparent, baseShadow */
+  .avatar-opt {
+    position:relative; width:100%; aspect-ratio:1; padding:0;
+    border:3px solid transparent; border-radius:50%; overflow:hidden; cursor:pointer;
+    background:var(--bg); box-shadow:0 3px 0 rgba(0,0,0,0.12);
+    transition:transform 100ms ease;
+    display:flex; align-items:center; justify-content:center; font-size:24px;
+  }
+  .avatar-opt:hover { transform:translateY(-2px); }
+  /* selected — border textOnPrimary + ring(4) primary, lifted + glow for a strong "chosen" read */
+  .avatar-opt[data-selected='true'] {
+    border-color:var(--textOnPrimary);
+    box-shadow:0 0 0 4px var(--primary), 0 0 16px var(--primaryGlow), 0 3px 0 rgba(0,0,0,0.12);
+    transform:translateY(-2px) scale(1.06);
+  }
+
+  /* ActionButton — radius 999, pad 14/32, size 18(heading), actionButton gradient, shadow+glow */
+  .action-btn {
+    font-family:inherit; font-size:18px; font-weight:700; padding:14px 32px;
+    border:none; border-radius:999px; background:var(--actionButton);
+    color:var(--textOnPrimary); cursor:pointer;
+    box-shadow:0 5px 0 var(--primaryShadow), 0 10px 18px var(--primaryGlow);
+    transition:transform 120ms ease, box-shadow 120ms ease;
+  }
+  .action-btn:hover { transform:translateY(-2px); }
+  .action-btn:disabled { opacity:0.45; cursor:not-allowed; box-shadow:0 5px 0 var(--primaryShadow); }
+
+  .note { color:#9a9a9a; font-size:12px; text-align:center; margin-top:36px; line-height:1.6; }
+  .note code { color:#d6c; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1 class="doc">חשבון — טופס משותף (AccountForm)</h1>
+  <p class="subtitle">צד-לצד: "צור חשבון" ו-"עריכת חשבון" חולקים אותו גוף טופס — NameField + AvatarPicker + כפתור פעולה. בעריכה השם והאווטאר מאוכלסים מראש.</p>
+
+  <div class="toolbar">
+    <button id="t-jungle" class="active" onclick="setTheme('jungle-quest')">🌴 jungle-quest</button>
+    <button id="t-midnight" onclick="setTheme('midnight-blue')">🌙 midnight-blue</button>
+  </div>
+
+  <div class="compare">
+    <!-- CREATE -->
+    <div class="col">
+      <div class="cap">CreateAccount — מצב יצירה</div>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+        <form class="form" onsubmit="return false">
+          <button type="button" class="close-btn" aria-label="סגירה">✕</button>
+          <h1 class="title"><span class="title-icon title-icon--plus" aria-hidden="true">+</span>צור חשבון</h1>
+          <label class="name-field">
+            <span class="lbl">שם:</span>
+            <input type="text" placeholder="" value="" />
+          </label>
+          <div class="avatar-grid" id="grid-create"></div>
+          <button type="submit" class="action-btn" disabled>✓ יצירת חשבון</button>
+        </form>
+      </div></div>
+    </div>
+
+    <!-- EDIT -->
+    <div class="col">
+      <div class="cap">AccountForm — מצב עריכה</div>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+        <form class="form" onsubmit="return false">
+          <button type="button" class="close-btn" aria-label="סגירה">✕</button>
+          <h1 class="title"><span class="title-icon" aria-hidden="true">✏️</span>עריכת חשבון</h1>
+          <label class="name-field has-value">
+            <span class="lbl">שם:</span>
+            <input type="text" value="נועה" />
+          </label>
+          <div class="avatar-grid" id="grid-edit"></div>
+          <button type="submit" class="action-btn">✓ שמירת שינויים</button>
+        </form>
+      </div></div>
+    </div>
+  </div>
+
+  <p class="note">
+    כל הצבעים, הרדיוסים, הריווחים והגופנים נלקחו ישירות מ-<code>src/theme/themes/*.ts</code>,
+    <code>CreateAccount</code>, <code>NameField</code>, <code>AvatarPicker</code> ו-<code>ActionButton</code>.<br />
+    האווטארים: רקעים אמיתיים מ-<code>AVATARS</code> (kid-01…kid-20); הפנים הן אימוג'י כמציין מקום
+    (באפליקציה נטענים SVG מ-<code>/avatars/*.svg</code>).
+  </p>
+</div>
+
+<script>
+  // AVATARS — real backgrounds from src/lib/avatars.ts
+  var AVATARS = [
+    {id:'kid-01',bg:'#7AB7E0'},{id:'kid-02',bg:'#84C98A'},{id:'kid-03',bg:'#F2C84B'},{id:'kid-04',bg:'#E090B0'},
+    {id:'kid-05',bg:'#C79BE0'},{id:'kid-06',bg:'#69C2C2'},{id:'kid-07',bg:'#E0875F'},{id:'kid-08',bg:'#9AA7E0'},
+    {id:'kid-09',bg:'#E0B36A'},{id:'kid-10',bg:'#7FBF7F'},{id:'kid-11',bg:'#E07A8A'},{id:'kid-12',bg:'#6FB2E0'},
+    {id:'kid-13',bg:'#C9A26A'},{id:'kid-14',bg:'#8FD0C0'},{id:'kid-15',bg:'#E0A0C8'},{id:'kid-16',bg:'#A8C66C'},
+    {id:'kid-17',bg:'#F0A868'},{id:'kid-18',bg:'#9CC3E0'},{id:'kid-19',bg:'#D6A2E0'},{id:'kid-20',bg:'#7CC9B0'}
+  ];
+  var FACES = ['🦁','🐵','🦊','🐸','🐯','🐱','🐶','🐼','🐨','🐰','🐻','🐷','🐔','🐧','🦄','🐢','🦉','🐙','🐝','🐳'];
+
+  function avatarHtml(a,i,selected) {
+    return '<button type="button" class="avatar-opt" style="--bg:'+a.bg+'"'
+      + (selected ? ' data-selected="true"' : '')
+      + '>'+FACES[i]+'</button>';
+  }
+  function fill(id, selectedId) {
+    document.getElementById(id).innerHTML =
+      AVATARS.map(function(a,i){ return avatarHtml(a,i,a.id===selectedId); }).join('');
+  }
+  fill('grid-create', null);   // create: nothing pre-selected
+  fill('grid-edit', 'kid-04'); // edit: pre-filled avatar (matches "נועה")
+
+  function setTheme(name) {
+    document.documentElement.setAttribute('data-theme', name);
+    document.getElementById('t-jungle').classList.toggle('active', name==='jungle-quest');
+    document.getElementById('t-midnight').classList.toggle('active', name==='midnight-blue');
+  }
+  setTheme('jungle-quest');
+</script>
+</body>
+</html>
