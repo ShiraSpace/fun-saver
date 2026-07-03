@@ -11,7 +11,7 @@ const Block = styled.div`
 `;
 
 const Value = styled.div`
-  font-size: ${({ theme }): number => theme.typography.display}px;
+  font-size: ${({ theme }): number => theme.typography.amount}px;
   font-weight: 700;
   color: ${({ theme }): string => theme.colors.gainText};
 `;

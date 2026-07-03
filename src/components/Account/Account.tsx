@@ -19,6 +19,7 @@ const Column = styled.div`
   flex-direction: column;
   gap: ${ACCOUNT_LAYOUT.gap}px;
   padding: ${ACCOUNT_LAYOUT.paddingY}px ${ACCOUNT_LAYOUT.paddingX}px;
+  overflow: hidden;
 `;
 
 interface AccountProps {

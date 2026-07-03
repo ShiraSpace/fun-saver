@@ -22,7 +22,7 @@ const EditKey = styled.button`
   background: ${({ theme }): string => theme.colors.surface};
   color: ${({ theme }): string => theme.colors.textMuted};
   font-family: inherit;
-  font-size: ${({ theme }): number => theme.typography.title}px;
+  font-size: ${({ theme }): number => theme.typography.heading}px;
   font-weight: 600;
   padding: ${AMOUNT_PAD_STYLE.editPaddingY}px 0;
   cursor: pointer;

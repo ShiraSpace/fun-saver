@@ -2,6 +2,7 @@ export type TransactionMode = 'deposit' | 'withdraw';
 
 export const TRANSACTION_DRAWER_TEST_IDS = {
   drawer: 'transaction-drawer',
+  handle: 'transaction-drawer-handle',
   scrim: 'transaction-drawer-scrim',
   amount: 'transaction-drawer-amount',
   split: 'transaction-drawer-split',
@@ -19,7 +20,16 @@ export const TRANSACTION_DRAWER_COPY = {
 
 export const TRANSACTION_DRAWER_STYLE = {
   maxWidth: 420,
+  maxHeight: '80svh',
   scrim: 'rgba(40, 20, 60, 0.42)',
   sheetRadius: 28,
-  gap: 10,
+  gap: 8,
+  padding: '8px 16px 0px',
+  handlePaddingBottom: 14,
+  bodyPaddingBottom: 24,
+} as const;
+
+export const SWIPE_TO_CLOSE = {
+  closeThreshold: 100,
+  snapMs: 200,
 } as const;

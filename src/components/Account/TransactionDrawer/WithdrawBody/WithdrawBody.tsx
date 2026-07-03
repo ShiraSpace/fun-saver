@@ -18,7 +18,7 @@ import { WITHDRAW_BODY_COPY, WITHDRAW_BODY_TEST_IDS } from './constants';
 
 const AmountValue = styled.div<{ donation: boolean }>`
   text-align: center;
-  font-size: ${({ theme }): number => theme.typography.display}px;
+  font-size: ${({ theme }): number => theme.typography.amount}px;
   font-weight: 700;
   color: ${({ theme, donation }): string =>
     donation ? theme.colors.gainText : theme.colors.withdrawText};

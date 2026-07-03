@@ -13,6 +13,7 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: ${AMOUNT_PAD_STYLE.gap}px;
+  margin-bottom: ${AMOUNT_PAD_STYLE.gridMarginBottom}px;
 `;
 
 const Key = styled.button`

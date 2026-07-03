@@ -20,7 +20,7 @@ const Pill = styled.button<{ active: boolean }>`
   font-family: inherit;
   font-size: ${({ theme }): number => theme.typography.body}px;
   font-weight: 700;
-  padding: 9px 0;
+  padding: 7px 0;
   border-radius: 999px;
   background: ${({ theme, active }): string =>
     active ? theme.colors.surface : 'transparent'};
