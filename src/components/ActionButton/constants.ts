@@ -4,7 +4,7 @@ export const ACTION_BUTTON = {
   radius: 999,
   shadowDepth: 5,
   glowOffsetY: 10,
-  glowBlur: 18,
+  glowBlur: 5,
   hoverLift: 2,
   pressDrop: 4,
   transitionMs: 120,
