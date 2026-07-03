@@ -20,6 +20,7 @@ const Tile = styled.button<{ selected: boolean }>`
   background: ${({ theme }): string => theme.colors.softBg};
   cursor: pointer;
   font-family: inherit;
+  padding: 8px 0;
 
   &:disabled {
     cursor: default;
