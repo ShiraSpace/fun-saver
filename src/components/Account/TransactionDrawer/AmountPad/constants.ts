@@ -29,10 +29,11 @@ export const AMOUNT_PAD_COPY = {
 } as const;
 
 export const AMOUNT_PAD_STYLE = {
-  gap: 6,
+  gap: 5,
   radius: 13,
-  keyPaddingY: 9,
-  editPaddingY: 7,
+  keyPaddingY: 6,
+  editPaddingY: 6,
+  gridMarginBottom: 10,
   topGap: 10,
   shadow: '0 3px 0 rgba(0, 0, 0, 0.05)',
   pressDrop: 3,

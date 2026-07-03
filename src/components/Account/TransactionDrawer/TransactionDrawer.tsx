@@ -9,8 +9,10 @@ import { ModeToggle } from './ModeToggle';
 import { DepositBody } from './DepositBody';
 import { WithdrawBody } from './WithdrawBody';
 import { useCloseOnBack } from './use-close-on-back';
+import { useSwipeToClose } from './use-swipe-to-close';
 import type { TransactionMode } from './constants';
 import {
+  SWIPE_TO_CLOSE,
   TRANSACTION_DRAWER_STYLE,
   TRANSACTION_DRAWER_TEST_IDS,
 } from './constants';
@@ -22,30 +24,41 @@ const Scrim = styled.div`
   z-index: ${LAYERS.modal};
 `;
 
-const Sheet = styled.div`
+const Sheet = styled.div<{ offset: number; dragging: boolean }>`
   position: fixed;
   inset-inline: 0;
   bottom: 0;
   z-index: ${LAYERS.modalForeground};
   width: 100%;
   max-width: ${TRANSACTION_DRAWER_STYLE.maxWidth}px;
+  max-height: ${TRANSACTION_DRAWER_STYLE.maxHeight};
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: ${TRANSACTION_DRAWER_STYLE.gap}px;
-  padding: 10px 18px 18px;
+  padding: ${TRANSACTION_DRAWER_STYLE.padding};
   background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${TRANSACTION_DRAWER_STYLE.sheetRadius}px
     ${TRANSACTION_DRAWER_STYLE.sheetRadius}px 0 0;
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25);
+  transform: translateY(${({ offset }): number => offset}px);
+  transition: ${({ dragging }): string =>
+    dragging ? 'none' : `transform ${SWIPE_TO_CLOSE.snapMs}ms ease`};
 `;
 
 const Handle = styled.div`
   width: 44px;
-  height: 5px;
+  height: 8px;
+  flex-shrink: 0;
+  padding-bottom: ${TRANSACTION_DRAWER_STYLE.handlePaddingBottom}px;
   border-radius: 999px;
   background: ${({ theme }): string => theme.colors.divider};
   margin: 2px auto;
+  cursor: grab;
+  touch-action: none;
+  &:active {
+    cursor: grabbing;
+  }
 `;
 
 const swapIn = keyframes`
@@ -61,8 +74,11 @@ const swapIn = keyframes`
 
 const Body = styled.div`
   display: flex;
+  padding-bottom: ${TRANSACTION_DRAWER_STYLE.bodyPaddingBottom}px;
   flex-direction: column;
-  gap: ${TRANSACTION_DRAWER_STYLE.gap}px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
   animation: ${swapIn} 0.2s ease;
 `;
 
@@ -76,6 +92,7 @@ export function TransactionDrawer({
   onClose,
 }: TransactionDrawerProps): JSX.Element {
   const [mode, setMode] = useState<TransactionMode>('deposit');
+  const swipe = useSwipeToClose(onClose);
 
   useCloseOnBack(onClose);
 
@@ -92,8 +109,17 @@ export function TransactionDrawer({
         data-testid={TRANSACTION_DRAWER_TEST_IDS.scrim}
         onClick={onClose}
       />
-      <Sheet data-testid={TRANSACTION_DRAWER_TEST_IDS.drawer}>
-        <Handle />
+      <Sheet
+        data-testid={TRANSACTION_DRAWER_TEST_IDS.drawer}
+        offset={swipe.offset}
+        dragging={swipe.isDragging}
+      >
+        <Handle
+          data-testid={TRANSACTION_DRAWER_TEST_IDS.handle}
+          onPointerDown={swipe.onPointerDown}
+          onPointerMove={swipe.onPointerMove}
+          onPointerUp={swipe.onPointerUp}
+        />
         <ModeToggle mode={mode} onChange={setMode} />
         <Body key={mode}>{withdrawOrDepositBody}</Body>
       </Sheet>
