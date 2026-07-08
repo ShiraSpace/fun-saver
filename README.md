@@ -14,6 +14,11 @@ Most kids see money as a single number in a piggy bank. They can't see it grow, 
 
 Each family can have multiple accounts (one per child), each with its own theme so every kid gets their own little world.
 
+
+<img width="350" height="682" alt="image" src="https://github.com/user-attachments/assets/e7904e24-7fcb-4470-9d78-fb96fe903d68" />
+<img width="344" height="672" alt="image" src="https://github.com/user-attachments/assets/1c7edf24-4bf9-46de-85db-93f5cfcfbb24" />
+
+
 ## How it helps
 
 - **Makes interest tangible.** A kid can see today's coins appear on the savings wallet, so "compound interest" stops being abstract.
