@@ -35,7 +35,7 @@ Each family can have multiple accounts (one per child), each with its own theme 
 git clone https://github.com/ShiraSpace/fun-saver.git
 cd fun-saver
 npm install
-npm run dev:monile
+npm run dev:mobile
 ```
 
 Then open http://localhost:3000.
