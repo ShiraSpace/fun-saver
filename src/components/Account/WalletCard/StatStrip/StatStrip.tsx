@@ -12,6 +12,20 @@ import {
 
 type StatTone = 'deposits' | 'gain';
 
+interface StatProps {
+  tone: StatTone;
+  label: string;
+  amountAgorot: number;
+  testId: string;
+  allowHalf?: boolean;
+}
+
+interface StatStripProps {
+  principal: number;
+  interestGain: number;
+  todayInterest: number;
+}
+
 const Strip = styled.div`
   display: flex;
   gap: ${STAT_STRIP_STYLE.gap}px;
@@ -47,14 +61,6 @@ const Amount = styled.span`
   font-size: ${STAT_STRIP_STYLE.amountSize}px;
 `;
 
-interface StatProps {
-  tone: StatTone;
-  label: string;
-  amountAgorot: number;
-  testId: string;
-  allowHalf?: boolean;
-}
-
 function Stat({
   tone,
   label,
@@ -74,12 +80,6 @@ function Stat({
       </Amount>
     </Cell>
   );
-}
-
-interface StatStripProps {
-  principal: number;
-  interestGain: number;
-  todayInterest: number;
 }
 
 export function StatStrip({
