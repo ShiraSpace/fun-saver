@@ -90,6 +90,8 @@ export function StatStrip({
   interestGain,
   todayInterest,
 }: StatStripProps): JSX.Element {
+  const hasTodayInterest = halfShekelAmount(todayInterest) !== null;
+
   return (
     <Strip data-testid={STAT_STRIP_TEST_IDS.strip}>
       <Stat
@@ -104,7 +106,7 @@ export function StatStrip({
         amountAgorot={interestGain}
         testId={STAT_STRIP_TEST_IDS.interestGain}
       />
-      {halfShekelAmount(todayInterest) !== null && (
+      {hasTodayInterest && (
         <Stat
           tone="gain"
           label={STAT_STRIP_COPY.todayLabel}

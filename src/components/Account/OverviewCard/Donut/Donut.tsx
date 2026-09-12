@@ -53,6 +53,17 @@ function toArcs(segments: DonutSegment[]): Arc[] {
 
 export function Donut({ segments }: DonutProps): JSX.Element {
   const theme = useTheme();
+  const arcs = toArcs(segments).map((arc) => (
+    <circle
+      key={arc.name}
+      cx={DONUT_STYLE.center}
+      cy={DONUT_STYLE.center}
+      r={DONUT_STYLE.radius}
+      stroke={theme.colors[WALLET_ARC_COLOR[arc.name]]}
+      strokeDasharray={`${arc.length} ${CIRCUMFERENCE - arc.length}`}
+      strokeDashoffset={arc.offset}
+    />
+  ));
 
   return (
     <Svg
@@ -67,17 +78,7 @@ export function Donut({ segments }: DonutProps): JSX.Element {
         r={DONUT_STYLE.radius}
         stroke={theme.colors.walletTrack}
       />
-      {toArcs(segments).map((arc) => (
-        <circle
-          key={arc.name}
-          cx={DONUT_STYLE.center}
-          cy={DONUT_STYLE.center}
-          r={DONUT_STYLE.radius}
-          stroke={theme.colors[WALLET_ARC_COLOR[arc.name]]}
-          strokeDasharray={`${arc.length} ${CIRCUMFERENCE - arc.length}`}
-          strokeDashoffset={arc.offset}
-        />
-      ))}
+      {arcs}
     </Svg>
   );
 }

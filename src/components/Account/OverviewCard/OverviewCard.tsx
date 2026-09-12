@@ -61,6 +61,7 @@ export function OverviewCard({ wallets }: OverviewCardProps): JSX.Element {
     ...wallet,
     share: shares[index],
   }));
+  const total = totalBalance(wallets);
 
   return (
     <Card data-testid={OVERVIEW_CARD_TEST_IDS.card}>
@@ -69,10 +70,7 @@ export function OverviewCard({ wallets }: OverviewCardProps): JSX.Element {
         <Hole>
           <HoleLabel>{OVERVIEW_CARD_COPY.totalLabel}</HoleLabel>
           <HoleAmount>
-            <Money
-              amountAgorot={totalBalance(wallets)}
-              testId={OVERVIEW_CARD_TEST_IDS.total}
-            />
+            <Money amountAgorot={total} testId={OVERVIEW_CARD_TEST_IDS.total} />
           </HoleAmount>
         </Hole>
       </Ring>

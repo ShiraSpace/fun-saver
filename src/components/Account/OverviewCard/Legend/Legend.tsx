@@ -60,22 +60,20 @@ interface LegendProps {
 }
 
 export function Legend({ entries }: LegendProps): JSX.Element {
-  return (
-    <List>
-      {entries.map((entry) => (
-        <Row key={entry.id} data-testid={OVERVIEW_CARD_TEST_IDS.legendRow}>
-          <Dot name={entry.name} />
-          {OVERVIEW_CARD_COPY.name[entry.name]}
-          <Share data-testid={OVERVIEW_CARD_TEST_IDS.legendShare}>
-            {OVERVIEW_CARD_COPY.share(entry.share)}
-          </Share>
-          <Leader />
-          <Money
-            amountAgorot={entry.balance}
-            testId={OVERVIEW_CARD_TEST_IDS.legendAmount}
-          />
-        </Row>
-      ))}
-    </List>
-  );
+  const rows = entries.map((entry) => (
+    <Row key={entry.id} data-testid={OVERVIEW_CARD_TEST_IDS.legendRow}>
+      <Dot name={entry.name} />
+      {OVERVIEW_CARD_COPY.name[entry.name]}
+      <Share data-testid={OVERVIEW_CARD_TEST_IDS.legendShare}>
+        {OVERVIEW_CARD_COPY.share(entry.share)}
+      </Share>
+      <Leader />
+      <Money
+        amountAgorot={entry.balance}
+        testId={OVERVIEW_CARD_TEST_IDS.legendAmount}
+      />
+    </Row>
+  ));
+
+  return <List>{rows}</List>;
 }

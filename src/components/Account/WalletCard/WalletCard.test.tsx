@@ -1,11 +1,18 @@
 import { render, screen } from '@/test-utils/render';
 import { WalletCard } from './WalletCard';
 import { WALLET_CARD_TEST_IDS } from './constants';
+import { createMockDerivedWallet } from '@/test-utils/fixtures';
 
 describe('WalletCard', () => {
   it('shows the wallet icon, localized name and balance', () => {
     render(
-      <WalletCard wallet={{ name: 'spending', icon: '🛍️', balance: 5000 }} />
+      <WalletCard
+        wallet={createMockDerivedWallet({
+          name: 'spending',
+          icon: '🛍️',
+          balance: 5000,
+        })}
+      />
     );
     const card = screen.getByTestId(WALLET_CARD_TEST_IDS.card);
     expect(card).toHaveTextContent('🛍️');

@@ -4,8 +4,7 @@ import { JSX } from 'react';
 import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
 import { WalletCard } from '../WalletCard/WalletCard';
-import { StatStrip } from '../WalletCard/StatStrip';
-import { WALLET_CARD_COPY } from '../WalletCard/constants';
+import { SavingsStatStrip } from './SavingsStatStrip';
 import {
   WALLET_LIST_COPY,
   WALLET_LIST_STYLE,
@@ -32,37 +31,18 @@ const Label = styled.span`
 `;
 
 export function WalletList({ wallets }: WalletListProps): JSX.Element {
+  const cards = wallets.map((wallet) => (
+    <WalletCard key={wallet.id} wallet={wallet}>
+      <SavingsStatStrip wallet={wallet} />
+    </WalletCard>
+  ));
+
   return (
     <List>
       <Label data-testid={WALLET_LIST_TEST_IDS.label}>
         {WALLET_LIST_COPY.label}
       </Label>
-      {wallets.map((wallet) => {
-        const isSavings = wallet.name === 'savings';
-
-        return (
-          <WalletCard
-            key={wallet.id}
-            wallet={wallet}
-            subLine={
-              isSavings
-                ? WALLET_CARD_COPY.savingsSubLine(
-                    wallet.monthlyInterestRate,
-                    wallet.openedAt
-                  )
-                : undefined
-            }
-          >
-            {isSavings && (
-              <StatStrip
-                principal={wallet.principal}
-                interestGain={wallet.interestGain}
-                todayInterest={wallet.todayInterest}
-              />
-            )}
-          </WalletCard>
-        );
-      })}
+      {cards}
     </List>
   );
 }

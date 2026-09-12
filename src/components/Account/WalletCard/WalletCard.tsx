@@ -11,7 +11,21 @@ import {
   WALLET_GRADIENT,
 } from './constants';
 
-type CardWallet = Pick<WalletWithDerived, 'name' | 'icon' | 'balance'>;
+type CardWallet = Pick<
+  WalletWithDerived,
+  'name' | 'icon' | 'balance' | 'monthlyInterestRate' | 'openedAt'
+>;
+
+function subLineOf(wallet: CardWallet): string | undefined {
+  if (wallet.name !== 'savings') {
+    return undefined;
+  }
+
+  return WALLET_CARD_COPY.savingsSubLine(
+    wallet.monthlyInterestRate,
+    wallet.openedAt
+  );
+}
 
 const Card = styled.div`
   padding: ${WALLET_CARD_STYLE.paddingY}px ${WALLET_CARD_STYLE.paddingX}px;
@@ -67,15 +81,12 @@ const Pill = styled.span`
 
 interface WalletCardProps {
   wallet: CardWallet;
-  subLine?: string;
   children?: ReactNode;
 }
 
-export function WalletCard({
-  wallet,
-  subLine,
-  children,
-}: WalletCardProps): JSX.Element {
+export function WalletCard({ wallet, children }: WalletCardProps): JSX.Element {
+  const subLine = subLineOf(wallet);
+
   return (
     <Card data-testid={WALLET_CARD_TEST_IDS.card}>
       <Head>
