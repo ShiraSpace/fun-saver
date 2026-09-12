@@ -1,5 +1,6 @@
 import type { Account, AccountUser } from '@/lib/types';
 import type { AccountUserRepository } from '../data-store';
+import { byAccountName } from '../account-users';
 import {
   toAccount,
   toAccountUser,
@@ -29,11 +30,10 @@ export class PostgresAccountUsers implements AccountUserRepository {
       this.sql,
       `SELECT accounts.* FROM accounts
        JOIN account_users ON account_users.account_id = accounts.id
-       WHERE account_users.user_id = $1
-       ORDER BY accounts.name`,
+       WHERE account_users.user_id = $1`,
       [userId]
     );
 
-    return rows.map(toAccount);
+    return byAccountName(rows.map(toAccount));
   }
 }

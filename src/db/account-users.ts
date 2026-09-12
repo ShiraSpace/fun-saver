@@ -11,6 +11,13 @@ export function findAccountUser(
   );
 }
 
+export function byAccountName(accounts: Account[]): Account[] {
+  return [...accounts].sort(
+    (left, right) =>
+      left.name.localeCompare(right.name) || left.id.localeCompare(right.id)
+  );
+}
+
 export function accountsForUser(
   accountUsers: AccountUser[],
   accounts: Account[],
@@ -22,9 +29,7 @@ export function accountsForUser(
       .map((accountUser) => accountUser.accountId)
   );
 
-  const userAccounts = accounts.filter((account) => accountIds.has(account.id));
-
-  return userAccounts.sort((left, right) =>
-    left.name.localeCompare(right.name)
+  return byAccountName(
+    accounts.filter((account) => accountIds.has(account.id))
   );
 }

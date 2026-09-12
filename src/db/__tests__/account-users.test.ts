@@ -1,5 +1,6 @@
 import { accountsForUser, findAccountUser } from '../account-users';
 import {
+  createMockAccount,
   createMockAccountUser,
   mockAccount,
   mockAccountUser,
@@ -25,17 +26,38 @@ describe('accountsForUser', () => {
     ]);
   });
 
-  it('orders the accounts by name', () => {
+  it('orders the accounts by name regardless of letter case', () => {
+    const mockUpperAccount = createMockAccount({ id: 'a3', name: 'Noa' });
+    const mockLowerAccount = createMockAccount({ id: 'a4', name: 'eitan' });
     const accountUsers = [
-      mockAccountUser,
-      createMockAccountUser({ accountId: mockSecondAccount.id }),
+      createMockAccountUser({ accountId: mockUpperAccount.id }),
+      createMockAccountUser({ accountId: mockLowerAccount.id }),
     ];
 
     expect(
-      accountsForUser(accountUsers, mockAccounts, mockUser.id).map(
-        (account) => account.name
-      )
-    ).toEqual([mockSecondAccount.name, mockAccount.name]);
+      accountsForUser(
+        accountUsers,
+        [mockUpperAccount, mockLowerAccount],
+        mockUser.id
+      ).map((account) => account.name)
+    ).toEqual([mockLowerAccount.name, mockUpperAccount.name]);
+  });
+
+  it('breaks a tie on equal names with the account id', () => {
+    const mockLaterAccount = createMockAccount({ id: 'a9', name: 'Noa' });
+    const mockEarlierAccount = createMockAccount({ id: 'a5', name: 'Noa' });
+    const accountUsers = [
+      createMockAccountUser({ accountId: mockLaterAccount.id }),
+      createMockAccountUser({ accountId: mockEarlierAccount.id }),
+    ];
+
+    expect(
+      accountsForUser(
+        accountUsers,
+        [mockLaterAccount, mockEarlierAccount],
+        mockUser.id
+      ).map((account) => account.id)
+    ).toEqual([mockEarlierAccount.id, mockLaterAccount.id]);
   });
 
   it('returns nothing for a user who belongs to no account', () => {

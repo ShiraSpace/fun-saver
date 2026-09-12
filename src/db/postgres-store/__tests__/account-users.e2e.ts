@@ -2,12 +2,7 @@
  * @jest-environment node
  */
 import type { Account, User } from '@/lib/types';
-import {
-  createMockAccount,
-  createMockUser,
-  mockAccount,
-  mockSecondAccount,
-} from '@/test-utils/fixtures';
+import { createMockAccount, createMockUser } from '@/test-utils/fixtures';
 import { withLiveStore } from './live-store';
 
 const mockAddedAt = '2026-01-01T00:00:00.000Z';
@@ -23,11 +18,11 @@ describe('PostgresAccountUsers', () => {
   beforeEach(async () => {
     mockFirstAccount = createMockAccount({
       id: accountId('1'),
-      name: mockSecondAccount.name,
+      name: 'eitan',
     });
     mockLaterAccount = createMockAccount({
       id: accountId('2'),
-      name: mockAccount.name,
+      name: 'Noa',
     });
     mockStrangersAccount = createMockAccount({ id: accountId('3') });
     mockOwner = createMockUser({
@@ -77,7 +72,7 @@ describe('PostgresAccountUsers', () => {
     ).toEqual([mockFirstAccount.id, mockLaterAccount.id]);
   });
 
-  it('orders the accounts by name', async () => {
+  it('orders the accounts by name regardless of letter case', async () => {
     expect(
       (await store.listAccountsForUser(mockOwner.id)).map(
         (account) => account.name
