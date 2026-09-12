@@ -21,8 +21,8 @@ describe('create account', () => {
     await createAccount.submit();
 
     assert.equal(await header.name(), 'נועה');
-    assert.equal(await dashboard.heroExists(), true);
-    assert.equal(await dashboard.walletCardCount(), 2);
+    assert.equal(await dashboard.overviewExists(), true);
+    assert.equal(await dashboard.walletCardCount(), 3);
 
     const balances = await dashboard.walletBalances();
     assert.equal(balances.length, 3);

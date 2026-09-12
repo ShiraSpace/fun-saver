@@ -3,6 +3,8 @@ import { join } from 'path';
 
 const CONSTANT_FILES = [
   'Account/WalletCard/constants.ts',
+  'Account/WalletCard/StatStrip/constants.ts',
+  'Account/OverviewCard/constants.ts',
   'Account/CoinRow/constants.ts',
   'Account/WalletHero/constants.ts',
   'Account/TransactionDrawer/constants.ts',

@@ -52,7 +52,8 @@ header into the ring. Interest stays visible, but as **numbers instead of coins*
 - **Header** keeps burger · name · avatar only. No total, no interest chip.
 - **Everything on one screen.** No tap-through, no savings detail route.
 - **`היום` uses half-shekel steps** — the exact rounding `coinBreakdown` already does, rendered as a number
-  (`+₪0.5`, `+₪1`, `+₪1.5`, `+₪2.5`), and hidden when it rounds to zero. `CoinRow` doesn't get replaced by
+  (`₪0.5`, `₪1`, `₪1.5`, `₪2.5`), and hidden when it rounds to zero. No `+` sign: the label and the gain
+  colour already say it is a gain. `CoinRow` doesn't get replaced by
   new logic; its rounding is extracted and its drawing is dropped.
 - **Everything else stays whole shekels.** `רווח מריבית` is really ₪67.43 — half-stepping it prints ₪67.5 and
   then `137 + 67.5 ≠ 204` on screen. Whole shekels keep the strip adding up.
@@ -72,7 +73,8 @@ Lib only, no UI change. Lands first so PR 2 has a formatter to call.
   `halfShekelAmount(agorot): number | null` — the rounded shekel amount, or `null` when it rounds to zero.
 - Rewrite `coinBreakdown` on top of it so the new function has a real consumer from day one (no dead code).
   Existing `money.test.ts` cases for `coinBreakdown` must stay green untouched — that is the regression proof.
-- New cases: `18 → 0.5`, `102 → 1`, `140 → 1.5`, `238 → 2.5`, `20 → null`, `0 → null`.
+- New cases: `38 → 0.5`, `102 → 1`, `140 → 1.5`, `238 → 2.5`, `20 → null`, `0 → null`.
+  (`18 → 0.5` was impossible — the locked rounding puts the 0.5 threshold above 25 agorot, so 18 is `null`.)
 
 **Touches:** `src/lib/money.ts`, `src/lib/__tests__/money.test.ts`.
 
