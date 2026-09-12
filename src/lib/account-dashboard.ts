@@ -16,7 +16,10 @@ export async function getWalletsForAccount(
 ): Promise<WalletWithDerived[]> {
   const derived = await Promise.all(
     account.wallets.map(async (wallet) => {
-      const transactions = await store.listTransactionsByWallet(wallet.id);
+      const transactions = await store.listTransactionsByWallet(
+        account.id,
+        wallet.id
+      );
       const accrued = addDailyInterest({
         wallet,
         transactions,
