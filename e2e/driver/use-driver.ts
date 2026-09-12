@@ -3,6 +3,7 @@ import { after, afterEach, before, beforeEach } from 'node:test';
 import type { StoreData } from '@/db/data-store';
 import { JsonFileStore } from '@/db/json-file-store';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
+import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import { Session } from './session';
 import { MenuDriver } from './menu-driver';
 import { HeaderDriver } from './header-driver';
@@ -18,6 +19,7 @@ export interface AppDriver {
   header: HeaderDriver;
   emptyState: EmptyStateDriver;
   createAccount: AccountFormDriver;
+  editAccount: AccountFormDriver;
   avatarPicker: AvatarPickerDriver;
   dashboard: DashboardDriver;
 }
@@ -32,6 +34,10 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
     createAccount: new AccountFormDriver(
       session,
       CREATE_ACCOUNT_TEST_IDS.container
+    ),
+    editAccount: new AccountFormDriver(
+      session,
+      EDIT_ACCOUNT_TEST_IDS.container
     ),
     avatarPicker: new AvatarPickerDriver(session),
     dashboard: new DashboardDriver(session),
