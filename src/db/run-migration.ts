@@ -36,9 +36,8 @@ async function main(): Promise<void> {
 
   const sql = neon(url);
   const schema = await readFile(resolve('src/db/schema.sql'), 'utf8');
-  for (const statement of splitStatements(schema)) {
-    await sql.query(statement);
-  }
+  const statements = splitStatements(schema);
+  await sql.transaction(statements.map((statement) => sql.query(statement)));
   console.log(`Migration complete (${target.name} branch).`);
 }
 
