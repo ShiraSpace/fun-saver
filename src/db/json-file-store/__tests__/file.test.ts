@@ -6,11 +6,22 @@ import { withTempStoreFile } from '@/test-utils/test-utils';
 describe('JsonFileStore file handling', () => {
   const file = withTempStoreFile();
 
-  it('bootstraps an empty store file and lists no accounts', async () => {
-    const store = new JsonFileStore(file.path);
+  describe('a file that does not exist yet', () => {
+    let store: JsonFileStore;
 
-    expect(await store.listAccounts()).toEqual([]);
-    expect(existsSync(file.path)).toBe(true);
+    beforeEach(() => {
+      store = new JsonFileStore(file.path);
+    });
+
+    it('lists no accounts', async () => {
+      expect(await store.listAccounts()).toEqual([]);
+    });
+
+    it('bootstraps the store file on the first read', async () => {
+      await store.listAccounts();
+
+      expect(existsSync(file.path)).toBe(true);
+    });
   });
 
   it('never erases existing data when a read hits an unparsable file', async () => {
@@ -23,15 +34,30 @@ describe('JsonFileStore file handling', () => {
     expect(readFileSync(file.path, 'utf8')).toContain('partial');
   });
 
-  it('reads a file missing the transactions array', async () => {
-    writeFileSync(
-      file.path,
-      JSON.stringify({ accounts: [mockAccount] }),
-      'utf8'
-    );
-    const store = new JsonFileStore(file.path);
+  describe('a file written before transactions and users existed', () => {
+    let store: JsonFileStore;
 
-    expect(await store.listAccounts()).toEqual([mockAccount]);
-    expect(await store.listTransactionsByWallet('a1', 'w1')).toEqual([]);
+    beforeEach(() => {
+      writeFileSync(
+        file.path,
+        JSON.stringify({ accounts: [mockAccount] }),
+        'utf8'
+      );
+      store = new JsonFileStore(file.path);
+    });
+
+    it('reads the accounts it does have', async () => {
+      expect(await store.listAccounts()).toEqual([mockAccount]);
+    });
+
+    it('defaults the missing transactions', async () => {
+      expect(await store.listTransactionsByWallet('a1', 'w1')).toEqual([]);
+    });
+
+    it('defaults the missing users', async () => {
+      expect(
+        await store.findUserByProvider('google', 'any-sub')
+      ).toBeUndefined();
+    });
   });
 });
