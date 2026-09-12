@@ -82,6 +82,7 @@ For technical details (commands, architecture, dependencies), see [DEVELOPMENT.m
 - **NEVER** write multiple tests at once - one test at a time
 - **NEVER** move to next phase without explicit approval
 - **NEVER** push to remote unless explicitly requested
+- **NEVER** force-push, including `--force-with-lease` — once a branch is pushed, correct it with a new commit on top, never by rewriting published history (rebase/amend are fine on branches that have never been pushed)
 - **NEVER** start a new feature on top of an unrelated branch — Phase 0 is mandatory
 - **ALWAYS** start new features from a fresh branch off updated master, unless user explicitly says otherwise
 - **ALWAYS** stop and wait after showing work
