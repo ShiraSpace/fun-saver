@@ -1,30 +1,40 @@
-# Handover — 2026-06-17
+# Handover — 2026-09-12
 
 ## What shipped
 
-- 2006ee7 chore: capture brainstorm artifacts — palette spec, home mockup, inspiration
+- `main` — b9ae600 `docs(plan)`, cherry-picked from `docs/plan-progress` onto updated
+  `origin/main` (the branch itself, local and on origin, is now redundant — safe to delete)
+- **PR [#32](https://github.com/ShiraSpace/fun-saver/pull/32)** open on
+  `feat/user-store-methods`, four commits, plan PR 2 of `.plans/2026-09-12-google-login.md`:
+  - `feat(db)` user repositories in all three stores (`findUserByProvider`, `insertUser`)
+  - `refactor(db)` `BaseStore` — `DataStore` delegation written once instead of three times
+  - `test(db)` users tests + the `emptyData` guard in `file.test.ts`
+  - `test(db)` live suites renamed `*.db.ts`, per-file `TEST_DATABASE_URL` guards deleted
+
+Green at handover: `npx jest` 366, `npm run test:db` 9, `tsc`, ESLint. Background code
+review ran twice on the branch and found nothing.
 
 ## In flight
 
-- fun-saver brainstorm: Section 1 (Domain Model + Store interface) presented in chat —
-  awaiting user "looks right?" answer. Remaining sections: API surface, frontend
-  architecture, interest math + display rules, testing, migration path. Then write spec
-  to `docs/superpowers/specs/2026-06-17-fun-saver-design.md` and hand off to writing-plans
-  skill. Tasks #5–#9 still pending.
+- #32 awaits review and merge. It ships no behaviour change — nothing calls the new
+  store methods until plan PR 9.
+- `origin/main` moved to 232a591 (#31 `halfShekelAmount`) after #32 branched. Different
+  files, so no conflict; do **not** rebase #32, it is pushed.
+
+## Next
+
+**Plan PR 3 — `feat/membership-store-methods`**, branched off updated `origin/main` once
+#32 merges. Its section in the plan is current: `MemberRepository`, one `members.ts` per
+store folder, the three `DataStore` methods delegated once in `base-store.ts`, and a
+`members.db.ts` live suite needing `account_members` added to `live-store.ts` cleanup.
 
 ## Watch-outs
 
-- Architecture chosen: **API-first** (`/api/...` routes + React Query), NOT Server Actions
-- Only **savings** has interest in MVP; spending + good_deeds rate = 0
-- Display rule: numbers rounded to nearest half-shekel; ₪ lower-left of number (40% size,
-  opacity 0.65, top:0.35em). One coin design: full silver disc or D-half (no "½" text)
-- `git push` to GitHub needed `http.postBuffer=524288000` one-shot override to succeed
-  (HTTP 400 otherwise). Don't be alarmed if it recurs — same workaround
-- `.superpowers/` is gitignored; brainstorm scratch lives there. Visual companion server
-  auto-exits after 30 min idle. Restart via `superpowers/brainstorming/scripts/start-server.sh`
-- User switched language mid-session to **English** — continue in English
-
-## Open questions
-
-- Domain model approval (Section 1) — once answered, advance through sections 2–6, write
-  the spec, run spec self-review, request user review, then transition to writing-plans
+- **Neon main (production) has never been migrated** — `users` / `account_members` do not
+  exist there. Run `npm run db:migrate` against it only when you mean to.
+- **`e2e/*.e2e.ts` depends on the `next build` that `test:visual` performs.** Run it alone
+  and `next start` fails with "server did not start". Undocumented coupling, not fixed.
+- `stash@{0}` "PR2 user store methods" is obsolete — written against the pre-#29/#30 tree.
+  Drop it.
+- Repo workflow is checkpoint-driven: approval before every commit and push. See CLAUDE.md.
+- Never force-push; #32 is published, correct it with a commit on top.
