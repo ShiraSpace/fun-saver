@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
-import { validAccountEdits } from '@/lib/account-edits';
+import { validAccountEdits } from '@/lib/account-input';
 import { AccountsStore } from '@/lib/accounts-store';
 
 interface RouteContext {
