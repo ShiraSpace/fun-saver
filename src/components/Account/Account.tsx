@@ -1,7 +1,6 @@
 'use client';
 
 import { JSX, useState } from 'react';
-import styled from '@emotion/styled';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { totalBalance } from '@/lib/derivations';
 import { Screen } from '@/components/Screen';
@@ -10,17 +9,8 @@ import { ActionButton } from '@/components/ActionButton';
 import { WalletHero } from './WalletHero/WalletHero';
 import { WalletList } from './WalletList/WalletList';
 import { TransactionDrawer } from './TransactionDrawer';
-import { ACCOUNT_COPY, ACCOUNT_LAYOUT, ACCOUNT_TEST_IDS } from './constants';
-
-const Column = styled.div`
-  width: 100%;
-  max-width: ${ACCOUNT_LAYOUT.maxWidth}px;
-  display: flex;
-  flex-direction: column;
-  gap: ${ACCOUNT_LAYOUT.gap}px;
-  padding: ${ACCOUNT_LAYOUT.paddingY}px ${ACCOUNT_LAYOUT.paddingX}px;
-  overflow: hidden;
-`;
+import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
+import { Column } from './Account.styles';
 
 interface AccountProps {
   account: AccountWithDerivedWallets;

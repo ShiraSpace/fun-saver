@@ -1,18 +1,12 @@
 'use client';
 
 import { JSX } from 'react';
-import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
 import { WalletTile } from '../WalletTile';
-import { WALLET_TILE_STYLE } from '../WalletTile/constants';
 import { WALLET_PICKER_TEST_IDS } from './constants';
+import { Row } from './WalletPicker.styles';
 
 type WalletOption = Pick<WalletWithDerived, 'id' | 'name' | 'icon' | 'balance'>;
-
-const Row = styled.div`
-  display: flex;
-  gap: ${WALLET_TILE_STYLE.rowGap}px;
-`;
 
 interface WalletPickerProps {
   wallets: WalletOption[];

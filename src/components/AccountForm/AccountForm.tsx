@@ -1,74 +1,19 @@
 'use client';
 
 import { FormEvent, JSX, ReactNode, useState } from 'react';
-import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
 import { Screen } from '@/components/Screen';
 import { AvatarPicker } from '@/components/AvatarPicker';
 import { ActionButton } from '@/components/ActionButton';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { NameField } from './NameField';
+import { ACCOUNT_FORM_COPY, ACCOUNT_FORM_TEST_IDS } from './constants';
 import {
-  ACCOUNT_FORM_COPY,
-  ACCOUNT_FORM_LAYOUT,
-  ACCOUNT_FORM_TEST_IDS,
-} from './constants';
-
-const titleColor = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textOnPrimary;
-const titleSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.title;
-const backSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.heading;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  gap: ${ACCOUNT_FORM_LAYOUT.gap}px;
-  padding-top: ${ACCOUNT_FORM_LAYOUT.gap}px;
-`;
-
-const Title = styled.h1`
-  display: flex;
-  align-items: center;
-  gap: ${ACCOUNT_FORM_LAYOUT.titleGap}px;
-  margin: 0;
-  font-size: ${titleSize}px;
-  font-weight: 700;
-  color: ${titleColor};
-`;
-
-const TitleIcon = styled.span`
-  font-size: ${titleSize}px;
-  line-height: 1;
-`;
-
-const SaveError = styled.span`
-  font-size: ${({ theme }): number => theme.typography.label}px;
-  font-weight: 600;
-  color: ${titleColor};
-`;
-
-const CloseButton = styled.button`
-  position: absolute;
-  inset-block-start: ${ACCOUNT_FORM_LAYOUT.closeInset}px;
-  inset-inline-start: ${ACCOUNT_FORM_LAYOUT.closeInset}px;
-  width: ${ACCOUNT_FORM_LAYOUT.closeButtonSize}px;
-  height: ${ACCOUNT_FORM_LAYOUT.closeButtonSize}px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  font-size: ${backSize}px;
-  font-weight: 700;
-  color: ${titleColor};
-  cursor: pointer;
-`;
+  Form,
+  Title,
+  TitleIcon,
+  SaveError,
+  CloseButton,
+} from './AccountForm.styles';
 
 export interface AccountFormValues {
   name: string;

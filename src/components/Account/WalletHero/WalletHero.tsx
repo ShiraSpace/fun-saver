@@ -1,14 +1,13 @@
 'use client';
 
 import { JSX } from 'react';
-import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
 import { CoinRow } from '../CoinRow/CoinRow';
-import { Star } from './Star/Star';
 import { HeroHead } from './HeroHead/HeroHead';
 import { HeroAmount } from './HeroAmount/HeroAmount';
 import { HeroBreakdown } from './HeroBreakdown/HeroBreakdown';
-import { HERO_STYLE, WALLET_HERO_TEST_IDS } from './constants';
+import { WALLET_HERO_TEST_IDS } from './constants';
+import { Card, CornerStar } from './WalletHero.styles';
 
 type HeroWallet = Pick<
   WalletWithDerived,
@@ -19,25 +18,6 @@ type HeroWallet = Pick<
   | 'monthlyInterestRate'
   | 'openedAt'
 >;
-
-const Card = styled.div`
-  position: relative;
-  background: ${({ theme }): string => theme.colors.surface};
-  border-radius: ${HERO_STYLE.radius}px;
-  padding: ${HERO_STYLE.padding}px;
-  box-shadow: ${HERO_STYLE.shadow};
-  color: ${({ theme }): string => theme.colors.textStrong};
-`;
-
-const CornerStar = styled(Star)`
-  position: absolute;
-  top: ${HERO_STYLE.cornerStarTop}px;
-  right: ${HERO_STYLE.cornerStarRight}px;
-  width: ${HERO_STYLE.cornerStarSize}px;
-  height: ${HERO_STYLE.cornerStarSize}px;
-  transform: rotate(${HERO_STYLE.cornerStarRotation}deg);
-  pointer-events: none;
-`;
 
 interface WalletHeroProps {
   name: string;
