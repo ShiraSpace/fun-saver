@@ -6,6 +6,7 @@ import { SELECTED_ACCOUNT_COOKIE } from '@/components/Home/selected-account-cook
 import { getStore } from '@/db';
 import { getWalletsForAccount } from '@/lib/account-dashboard';
 import { today } from '@/lib/clock';
+import { selectedAccount } from '@/lib/selected-account';
 import { resolveThemeId } from '@/theme/registry';
 import { ThemeController } from '@/theme/ThemeController';
 
@@ -27,15 +28,9 @@ export default async function HomePage(): Promise<JSX.Element> {
   );
 
   const storedAccountId = cookieStore.get(SELECTED_ACCOUNT_COOKIE)?.value;
-  const defaultAccountId = accounts[0]?.id ?? '';
-
-  const initialAccountId =
-    storedAccountId && accounts.some(({ id }) => id === storedAccountId)
-      ? storedAccountId
-      : defaultAccountId;
-
-  const selectedAccount = accounts.find(({ id }) => id === initialAccountId);
-  const initialThemeId = resolveThemeId(selectedAccount?.themeId);
+  const initialAccount = selectedAccount(accounts, storedAccountId ?? '');
+  const initialAccountId = initialAccount?.id ?? '';
+  const initialThemeId = resolveThemeId(initialAccount?.themeId);
 
   return (
     <main>
