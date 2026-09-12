@@ -1,6 +1,8 @@
 import { mockAccount } from '@/test-support/fixtures';
 import { fetchJson } from '../fetch-json';
 
+const connectionError = new Error('offline');
+
 const mockRequest = {
   url: '/api/accounts/a1',
   method: 'PUT',
@@ -71,12 +73,15 @@ describe('fetchJson', () => {
     });
   });
 
-  it('lets a failed connection through untouched', async () => {
-    const connectionError = new Error('offline');
-    global.fetch = jest
-      .fn()
-      .mockRejectedValue(connectionError) as unknown as typeof fetch;
+  describe('when the connection fails', () => {
+    beforeEach(() => {
+      global.fetch = jest
+        .fn()
+        .mockRejectedValue(connectionError) as unknown as typeof fetch;
+    });
 
-    await expect(fetchJson(mockRequest)).rejects.toBe(connectionError);
+    it('lets the failure through untouched', async () => {
+      await expect(fetchJson(mockRequest)).rejects.toBe(connectionError);
+    });
   });
 });
