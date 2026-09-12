@@ -1,5 +1,6 @@
 import { InMemoryStore } from '../memory-store';
 import {
+  createMockAccount,
   mockAccount,
   mockSecondAccount,
   createMockTransaction,
@@ -7,6 +8,7 @@ import {
 } from '@/test-support/fixtures';
 
 const deposit = createMockTransaction();
+const pristine = createMockAccount();
 
 describe('InMemoryStore', () => {
   it('lists inserted accounts', async () => {
@@ -32,7 +34,7 @@ describe('InMemoryStore', () => {
 
   it('changes an account theme and ignores unknown ids', async () => {
     const store = new InMemoryStore();
-    await store.insertAccount(mockAccount);
+    await store.insertAccount(createMockAccount());
 
     await store.setAccountTheme('a1', 'midnight-blue');
     await store.setAccountTheme('missing', 'jungle-quest');
@@ -45,7 +47,7 @@ describe('InMemoryStore', () => {
 
     beforeEach(async () => {
       store = new InMemoryStore();
-      await store.insertAccount(mockAccount);
+      await store.insertAccount(createMockAccount());
     });
 
     it('updates the name and avatar', async () => {
@@ -60,8 +62,8 @@ describe('InMemoryStore', () => {
 
       expect(await store.getAccount('a1')).toMatchObject({
         name: mockAccountEdit.name,
-        avatarId: mockAccount.avatarId,
-        wallets: mockAccount.wallets,
+        avatarId: pristine.avatarId,
+        wallets: pristine.wallets,
       });
     });
 
