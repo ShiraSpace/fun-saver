@@ -9,6 +9,11 @@ export interface Account {
   wallets: Wallet[];
 }
 
+export interface AccountEdits {
+  name?: string;
+  avatarId?: string;
+}
+
 export type TransactionType = 'deposit' | 'withdrawal' | 'interest';
 export type WalletName = 'savings' | 'spending' | 'goodDeeds';
 

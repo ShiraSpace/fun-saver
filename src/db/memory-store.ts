@@ -1,4 +1,4 @@
-import type { Account, Transaction } from '../lib/types';
+import type { Account, AccountEdits, Transaction } from '../lib/types';
 import type { ThemeId } from '@/theme/registry';
 import type { BuildGuardedTransaction, DataStore } from './data-store';
 
@@ -29,6 +29,21 @@ export class InMemoryStore implements DataStore {
     }
 
     account.themeId = themeId;
+
+    return account;
+  }
+
+  async updateAccount(
+    id: string,
+    edits: AccountEdits
+  ): Promise<Account | undefined> {
+    const account = this.accounts.find((candidate) => candidate.id === id);
+
+    if (!account) {
+      return;
+    }
+
+    Object.assign(account, edits);
 
     return account;
   }
