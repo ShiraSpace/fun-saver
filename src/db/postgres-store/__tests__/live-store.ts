@@ -29,7 +29,7 @@ export function withLiveStore(): LiveStore {
   const sql = neon(url);
 
   afterEach(async () => {
-    await sql`DELETE FROM account_users WHERE account_id LIKE ${runPrefix + '%'}`;
+    await sql`DELETE FROM account_users WHERE account_id LIKE ${runPrefix + '%'} OR user_id LIKE ${runPrefix + '%'}`;
     await sql`DELETE FROM transactions WHERE id LIKE ${runPrefix + '%'}`;
     await sql`DELETE FROM accounts WHERE id LIKE ${runPrefix + '%'}`;
     await sql`DELETE FROM users WHERE id LIKE ${runPrefix + '%'}`;
