@@ -3,6 +3,7 @@
  */
 import type { User } from '@/lib/types';
 import { createMockUser } from '@/test-utils/fixtures';
+import { DuplicateUserError } from '@/lib/errors';
 import { withLiveStore } from './live-store';
 
 describe('PostgresUsers', () => {
@@ -27,5 +28,16 @@ describe('PostgresUsers', () => {
     expect(
       await store.findUserByProvider('google', userId('missing'))
     ).toBeUndefined();
+  });
+
+  it('rejects a second insert of the same provider identity', async () => {
+    await expect(
+      store.insertUser(
+        createMockUser({
+          id: userId('2'),
+          providerAccountId: user.providerAccountId,
+        })
+      )
+    ).rejects.toThrow(DuplicateUserError);
   });
 });

@@ -1,5 +1,6 @@
 import { InMemoryStore } from '../index';
-import { mockUser } from '@/test-utils/fixtures';
+import { mockUser, createMockUser } from '@/test-utils/fixtures';
+import { DuplicateUserError } from '@/lib/errors';
 
 describe('InMemoryStore users', () => {
   let store: InMemoryStore;
@@ -19,5 +20,11 @@ describe('InMemoryStore users', () => {
     expect(
       await store.findUserByProvider('google', 'unknown-sub')
     ).toBeUndefined();
+  });
+
+  it('rejects a second insert of the same provider identity', async () => {
+    await expect(
+      store.insertUser(createMockUser({ id: 'u2' }))
+    ).rejects.toThrow(DuplicateUserError);
   });
 });

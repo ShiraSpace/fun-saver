@@ -31,6 +31,7 @@ export interface UserRepository {
     provider: AuthProvider,
     providerAccountId: string
   ): Promise<User | undefined>;
+  /** Throws `DuplicateUserError` if the provider identity already has a user. */
   insert(user: User): Promise<void>;
 }
 

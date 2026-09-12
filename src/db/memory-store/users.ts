@@ -1,5 +1,6 @@
 import type { AuthProvider, User } from '@/lib/types';
 import type { UserRepository } from '../data-store';
+import { DuplicateUserError } from '@/lib/errors';
 
 export class MemoryUsers implements UserRepository {
   private readonly users: User[] = [];
@@ -16,6 +17,11 @@ export class MemoryUsers implements UserRepository {
   }
 
   async insert(user: User): Promise<void> {
+    if (await this.findByProvider(user.provider, user.providerAccountId)) {
+      throw new DuplicateUserError(
+        `${user.provider} account ${user.providerAccountId} already has a user`
+      );
+    }
     this.users.push(user);
   }
 }

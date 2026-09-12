@@ -1,5 +1,6 @@
 import { JsonFileStore } from '../index';
-import { mockUser } from '@/test-utils/fixtures';
+import { mockUser, createMockUser } from '@/test-utils/fixtures';
+import { DuplicateUserError } from '@/lib/errors';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 describe('JsonFileStore users', () => {
@@ -14,5 +15,14 @@ describe('JsonFileStore users', () => {
         mockUser.providerAccountId
       )
     ).toEqual(mockUser);
+  });
+
+  it('rejects a second insert of the same provider identity', async () => {
+    const store = new JsonFileStore(file.path);
+    await store.insertUser(mockUser);
+
+    await expect(
+      store.insertUser(createMockUser({ id: 'u2' }))
+    ).rejects.toThrow(DuplicateUserError);
   });
 });
