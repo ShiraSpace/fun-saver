@@ -4,6 +4,7 @@ import {
   principal,
   todayInterest,
   totalBalance,
+  walletShares,
 } from '../derivations';
 import type { Transaction } from '../types';
 import { createMockTransaction } from '@/test-utils/fixtures';
@@ -53,5 +54,9 @@ describe('derivations', () => {
 
   it('totalBalance of no wallets is zero', () => {
     expect(totalBalance([])).toBe(0);
+  });
+
+  it('walletShares = percentages that sum to 100', () => {
+    expect(walletShares([20443, 12500, 3000])).toEqual([57, 35, 8]);
   });
 });
