@@ -14,6 +14,7 @@
     "test:e2e": "npm run test:visual && tsx --test e2e/create-account.e2e.ts",
     "test:visual": "next build && tsx --test --test-concurrency=4 e2e/*.visual.ts",
     "db:migrate": "tsx --env-file=.env.local src/db/run-migration.ts",
+    "db:migrate-dev": "tsx --env-file=.env.local src/db/run-migration.ts --dev",
     "db:migrate-test": "tsx --env-file=.env.local src/db/run-migration.ts --test"
   },
   "dependencies": {
