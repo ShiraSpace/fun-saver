@@ -1,6 +1,6 @@
 import { readFile, writeFile, mkdir, rename } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import type { Account, Transaction } from '../lib/types';
+import type { Account, AccountEdits, Transaction } from '../lib/types';
 import type { ThemeId } from '@/theme/registry';
 import type { DataStore, StoreData } from './data-store';
 
@@ -42,10 +42,26 @@ export class JsonFileStore implements DataStore {
       const account = this.findAccountById(data, id);
 
       if (!account) {
-        return undefined;
+        return;
       }
 
       account.themeId = themeId;
+      await this.persist(data);
+
+      return account;
+    });
+  }
+
+  updateAccount(id: string, edits: AccountEdits): Promise<Account | undefined> {
+    return this.enqueue(async (): Promise<Account | undefined> => {
+      const data = await this.readFromDisk();
+      const account = this.findAccountById(data, id);
+
+      if (!account) {
+        return;
+      }
+
+      Object.assign(account, edits);
       await this.persist(data);
 
       return account;

@@ -2,7 +2,7 @@ import type { DataStore } from '@/db/data-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { newId } from './ids';
 import { DEFAULT_WALLETS } from './constants';
-import type { Account, Wallet } from './types';
+import type { Account, AccountEdits, Wallet } from './types';
 
 export interface CreateAccountInput {
   name: string;
@@ -28,6 +28,13 @@ export class AccountsStore {
     await this.store.insertAccount(account);
 
     return account;
+  }
+
+  async updateAccount(
+    id: string,
+    edits: AccountEdits
+  ): Promise<Account | undefined> {
+    return this.store.updateAccount(id, edits);
   }
 
   private buildDefaultWallets(asOf: string): Wallet[] {

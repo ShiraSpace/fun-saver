@@ -2,7 +2,11 @@ import { InMemoryStore } from '@/db/memory-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { AccountsStore } from '../accounts-store';
 import { SAVINGS_MONTHLY_RATE } from '../constants';
-import { mockCreateAccountInput } from '@/test-support/fixtures';
+import {
+  mockCreateAccountInput,
+  mockAccountEdit,
+} from '@/test-support/fixtures';
+import type { Account } from '@/lib/types';
 
 const ASOF = '2026-01-01';
 
@@ -55,5 +59,30 @@ describe('AccountsStore', () => {
     );
 
     expect(account.themeId).toBe(DEFAULT_THEME_ID);
+  });
+
+  describe('edit account', () => {
+    let accountsStore: AccountsStore;
+    let account: Account;
+
+    beforeEach(async () => {
+      accountsStore = new AccountsStore(new InMemoryStore());
+      account = await accountsStore.createAccount(mockCreateAccountInput, ASOF);
+    });
+
+    it('updates the name and avatar of an existing account', async () => {
+      const updated = await accountsStore.updateAccount(
+        account.id,
+        mockAccountEdit
+      );
+
+      expect(updated).toMatchObject(mockAccountEdit);
+    });
+
+    it('returns undefined for an unknown id', async () => {
+      expect(
+        await accountsStore.updateAccount('missing', mockAccountEdit)
+      ).toBeUndefined();
+    });
   });
 });

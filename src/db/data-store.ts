@@ -1,4 +1,4 @@
-import type { Account, Transaction } from '@/lib/types';
+import type { Account, AccountEdits, Transaction } from '@/lib/types';
 import type { ThemeId } from '@/theme/registry';
 
 export interface StoreData {
@@ -11,6 +11,7 @@ export interface DataStore {
   listAccounts(): Promise<Account[]>;
   getAccount(id: string): Promise<Account | undefined>;
   setAccountTheme(id: string, themeId: ThemeId): Promise<Account | undefined>;
+  updateAccount(id: string, edits: AccountEdits): Promise<Account | undefined>;
   insertTransactions(transactions: Transaction[]): Promise<void>;
   listTransactionsByWallet(
     accountId: string,

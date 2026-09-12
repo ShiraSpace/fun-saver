@@ -6,6 +6,7 @@ import { PostgresStore } from '../postgres-store';
 import {
   createMockAccount,
   createMockTransaction,
+  mockAccountEdit,
 } from '@/test-support/fixtures';
 
 describe('PostgresStore integration', () => {
@@ -95,5 +96,44 @@ describe('PostgresStore integration', () => {
     expect(
       await store.setAccountTheme(accountId('missing'), 'sunshine-quest')
     ).toBeUndefined();
+  });
+
+  describe('edit account', () => {
+    it('updates the name and avatar and returns the updated account', async () => {
+      const account = createMockAccount({ id: accountId('edit-both') });
+      await store.insertAccount(account);
+
+      const updated = await store.updateAccount(account.id, mockAccountEdit);
+
+      expect(updated).toMatchObject(mockAccountEdit);
+      expect(await store.getAccount(account.id)).toMatchObject(mockAccountEdit);
+    });
+
+    it('leaves the columns a partial edit does not carry alone', async () => {
+      const account = createMockAccount({ id: accountId('edit-partial') });
+      await store.insertAccount(account);
+
+      await store.updateAccount(account.id, { name: mockAccountEdit.name });
+
+      expect(await store.getAccount(account.id)).toMatchObject({
+        name: mockAccountEdit.name,
+        avatarId: account.avatarId,
+        themeId: account.themeId,
+        wallets: account.wallets,
+      });
+    });
+
+    it('returns the account untouched when the edit carries nothing', async () => {
+      const account = createMockAccount({ id: accountId('edit-empty') });
+      await store.insertAccount(account);
+
+      expect(await store.updateAccount(account.id, {})).toEqual(account);
+    });
+
+    it('returns undefined for an unknown account', async () => {
+      expect(
+        await store.updateAccount(accountId('missing'), mockAccountEdit)
+      ).toBeUndefined();
+    });
   });
 });

@@ -8,7 +8,12 @@ import {
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { JsonFileStore } from '../json-file-store';
-import { mockAccount, createMockTransaction } from '@/test-support/fixtures';
+import {
+  mockAccount,
+  mockSecondAccount,
+  createMockTransaction,
+  mockAccountEdit,
+} from '@/test-support/fixtures';
 
 const deposit = createMockTransaction();
 
@@ -61,6 +66,41 @@ describe('JsonFileStore', () => {
     expect((await new JsonFileStore(filePath).getAccount('a1'))?.themeId).toBe(
       'midnight-blue'
     );
+  });
+
+  describe('edit account', () => {
+    let store: JsonFileStore;
+
+    beforeEach(async () => {
+      store = new JsonFileStore(filePath);
+      await store.insertAccount(mockAccount);
+      await store.insertAccount(mockSecondAccount);
+    });
+
+    it('persists a name and avatar change across instances', async () => {
+      const updated = await store.updateAccount('a1', mockAccountEdit);
+
+      expect(updated).toMatchObject(mockAccountEdit);
+      expect(await new JsonFileStore(filePath).getAccount('a1')).toMatchObject({
+        ...mockAccountEdit,
+        wallets: mockAccount.wallets,
+      });
+    });
+
+    it('leaves the other accounts untouched', async () => {
+      await store.updateAccount('a1', mockAccountEdit);
+
+      expect(await new JsonFileStore(filePath).getAccount('a2')).toEqual(
+        mockSecondAccount
+      );
+    });
+
+    it('returns undefined when updating an unknown account', async () => {
+      expect(
+        await store.updateAccount('missing', mockAccountEdit)
+      ).toBeUndefined();
+      expect((await store.getAccount('a1'))?.name).toBe(mockAccount.name);
+    });
   });
 
   it('keeps every transaction when inserts run concurrently', async () => {
