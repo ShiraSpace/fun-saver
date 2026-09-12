@@ -39,7 +39,7 @@ export class AccountsStore {
 
   private buildDefaultWallets(asOf: string): Wallet[] {
     return DEFAULT_WALLETS.map((seed) => ({
-      id: newId(),
+      id: seed.name,
       name: seed.name,
       icon: seed.icon,
       monthlyInterestRate: seed.monthlyInterestRate,

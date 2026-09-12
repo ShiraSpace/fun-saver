@@ -33,6 +33,7 @@ export interface Transaction {
   type: TransactionType;
   amount: number;
   occurredAt: string;
+  createdAt: string;
 }
 
 export interface WalletWithDerived extends Wallet {
