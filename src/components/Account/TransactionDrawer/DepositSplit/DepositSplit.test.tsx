@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-support/render';
 import { DepositSplit } from './DepositSplit';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { splitDeposit } from '@/lib/transactions';

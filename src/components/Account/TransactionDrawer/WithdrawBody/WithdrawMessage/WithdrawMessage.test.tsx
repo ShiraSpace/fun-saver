@@ -1,5 +1,5 @@
 import { type ComponentProps } from 'react';
-import { render, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-support/render';
 import { WithdrawMessage } from './WithdrawMessage';
 import { WITHDRAW_BODY_TEST_IDS } from '../constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../../constants';

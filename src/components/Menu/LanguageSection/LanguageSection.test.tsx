@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-support/render';
 import { LanguageSection } from './LanguageSection';
 import {
   LANGUAGE_SECTION_CONTENT,

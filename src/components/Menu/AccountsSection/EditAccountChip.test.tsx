@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-support/render';
 import { EditAccountChip } from './EditAccountChip';
 import { ACCOUNTS_SECTION_TEST_IDS } from './constants';
 

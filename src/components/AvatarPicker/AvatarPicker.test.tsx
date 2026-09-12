@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-support/render';
 import { AVATARS } from '@/lib/avatars';
 import { AvatarPicker } from './AvatarPicker';
 import { AVATAR_PICKER_TEST_IDS } from './constants';

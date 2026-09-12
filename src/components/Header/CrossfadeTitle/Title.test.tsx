@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-support/render';
 import { Title } from './Title';
 import { TITLE_TEST_IDS } from './constants';
 

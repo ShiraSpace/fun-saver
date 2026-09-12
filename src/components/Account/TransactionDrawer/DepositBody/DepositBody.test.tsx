@@ -1,11 +1,11 @@
-import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { DepositBody } from './DepositBody';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { AMOUNT_PAD_TEST_IDS } from '../AmountPad/constants';
 import { splitDeposit } from '@/lib/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import { mockDerivedAccount } from '@/test-utils/fixtures';
+import { mockDerivedAccount } from '@/test-support/fixtures';
 
 const mockAddDeposit = jest.fn();
 const mockRefresh = jest.fn();

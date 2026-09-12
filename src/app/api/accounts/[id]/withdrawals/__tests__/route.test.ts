@@ -8,7 +8,7 @@ import { getStore } from '@/db';
 import { AccountsStore } from '@/lib/accounts-store';
 import { addDeposit } from '@/lib/transactions';
 import { balance } from '@/lib/derivations';
-import { mockCreateAccountInput } from '@/test-utils/fixtures';
+import { mockCreateAccountInput } from '@/test-support/fixtures';
 import type { Account } from '@/lib/types';
 import { POST } from '../route';
 

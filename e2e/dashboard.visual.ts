@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockAccount, mockTransactions } from '@/test-utils/fixtures';
+import { mockAccount, mockTransactions } from '@/test-support/fixtures';
 import { WALLET_LIST_COPY } from '@/components/Account/WalletList/constants';
 import { useDriver } from './driver/use-driver';
 

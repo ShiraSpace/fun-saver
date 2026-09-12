@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
-import { mockAccount, mockCreateAccountInput } from '@/test-utils/fixtures';
+import { mockAccount, mockCreateAccountInput } from '@/test-support/fixtures';
 import { CreateAccount } from './CreateAccount';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
 import {

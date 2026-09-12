@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { useThemeId } from '@/theme/ThemeController';
 import { Home } from './Home';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
@@ -16,13 +16,13 @@ import {
   pickFirstAvatar,
   submitForm,
   typeName,
-} from '@/test-utils/account-form';
+} from '@/test-support/account-form';
 import {
   createMockAccount,
   mockAccount,
   mockDerivedWallets,
   mockSecondAccount,
-} from '@/test-utils/fixtures';
+} from '@/test-support/fixtures';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 
 const mockRefresh = jest.fn();

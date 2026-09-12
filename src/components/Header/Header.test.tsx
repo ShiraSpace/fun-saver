@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-support/render';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
 import { TOTAL_CHIP_TEST_IDS } from './TotalChip/constants';

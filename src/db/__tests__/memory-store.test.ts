@@ -5,7 +5,7 @@ import {
   mockSecondAccount,
   createMockTransaction,
   mockAccountEdit,
-} from '@/test-utils/fixtures';
+} from '@/test-support/fixtures';
 
 const deposit = createMockTransaction();
 const pristine = createMockAccount();

@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { getStore } from '@/db';
 import { AccountsStore } from '@/lib/accounts-store';
 import { splitDeposit } from '@/lib/transactions';
-import { mockCreateAccountInput } from '@/test-utils/fixtures';
+import { mockCreateAccountInput } from '@/test-support/fixtures';
 import { POST } from '../route';
 
 const ASOF = '2026-01-01';

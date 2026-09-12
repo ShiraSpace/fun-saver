@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-support/render';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { NameField } from './NameField';
 import { NAME_FIELD_COPY, NAME_FIELD_TEST_IDS } from './constants';

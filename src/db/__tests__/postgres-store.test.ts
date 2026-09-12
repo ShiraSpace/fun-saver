@@ -7,7 +7,7 @@ import {
   createMockAccount,
   createMockTransaction,
   mockAccountEdit,
-} from '@/test-utils/fixtures';
+} from '@/test-support/fixtures';
 
 describe('PostgresStore integration', () => {
   const url = process.env.TEST_DATABASE_URL;

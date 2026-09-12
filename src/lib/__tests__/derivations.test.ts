@@ -6,7 +6,7 @@ import {
   totalBalance,
 } from '../derivations';
 import type { Transaction } from '../types';
-import { createMockTransaction } from '@/test-utils/fixtures';
+import { createMockTransaction } from '@/test-support/fixtures';
 
 const transactionOf = (
   type: Transaction['type'],

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@/test-utils/render';
+import { render, screen, waitFor } from '@/test-support/render';
 import {
   ACCOUNT_FORM_COPY,
   ACCOUNT_FORM_TEST_IDS,
@@ -10,9 +10,9 @@ import {
   pickFirstAvatar,
   submitForm,
   typeName,
-} from '@/test-utils/account-form';
+} from '@/test-support/account-form';
 import { AVATARS } from '@/lib/avatars';
-import { mockAccount, mockAccountEdit } from '@/test-utils/fixtures';
+import { mockAccount, mockAccountEdit } from '@/test-support/fixtures';
 import { EditAccount } from './EditAccount';
 import { EDIT_ACCOUNT_COPY, EDIT_ACCOUNT_TEST_IDS } from './constants';
 

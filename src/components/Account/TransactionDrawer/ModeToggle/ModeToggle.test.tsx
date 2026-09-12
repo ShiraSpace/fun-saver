@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-support/render';
 import { ModeToggle } from './ModeToggle';
 import type { TransactionMode } from '../constants';
 import { MODE_TOGGLE_TEST_IDS } from './constants';

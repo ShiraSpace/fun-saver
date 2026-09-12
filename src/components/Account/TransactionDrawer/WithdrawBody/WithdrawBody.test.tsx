@@ -1,10 +1,13 @@
-import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { WithdrawBody } from './WithdrawBody';
 import { WITHDRAW_BODY_COPY, WITHDRAW_BODY_TEST_IDS } from './constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { WALLET_PICKER_TEST_IDS } from '../WalletPicker/constants';
 import { AMOUNT_PAD_TEST_IDS } from '../AmountPad/constants';
-import { mockDerivedAccount, mockDerivedWallets } from '@/test-utils/fixtures';
+import {
+  mockDerivedAccount,
+  mockDerivedWallets,
+} from '@/test-support/fixtures';
 import { agorotToShekels } from '@/lib/money';
 
 const mockWithdraw = jest.fn();

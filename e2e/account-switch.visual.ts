@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockAccount, mockSecondAccount } from '@/test-utils/fixtures';
+import { mockAccount, mockSecondAccount } from '@/test-support/fixtures';
 import { useDriver } from './driver/use-driver';
 
 describe('account switching', () => {

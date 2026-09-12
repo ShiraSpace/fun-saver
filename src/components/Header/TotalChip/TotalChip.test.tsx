@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-support/render';
 import { TotalChip } from './TotalChip';
 import { TOTAL_CHIP_COPY, TOTAL_CHIP_TEST_IDS } from './constants';
 
