@@ -1,8 +1,8 @@
-import { render, screen } from '@/test-support/render';
+import { render, screen } from '@/test-utils/render';
 import { WalletHero } from './WalletHero';
 import { WALLET_HERO_TEST_IDS } from './constants';
 import { COIN_ROW_TEST_IDS } from '../CoinRow/constants';
-import { mockDerivedWallets } from '@/test-support/fixtures';
+import { mockDerivedWallets } from '@/test-utils/fixtures';
 
 describe('WalletHero', () => {
   beforeEach(() => {

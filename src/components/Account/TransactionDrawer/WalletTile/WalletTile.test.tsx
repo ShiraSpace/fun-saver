@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-support/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { WalletTile } from './WalletTile';
 import { agorotToShekels } from '@/lib/money';
 

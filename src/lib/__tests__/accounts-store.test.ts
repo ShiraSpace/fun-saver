@@ -2,10 +2,7 @@ import { InMemoryStore } from '@/db/memory-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { AccountsStore } from '../accounts-store';
 import { SAVINGS_MONTHLY_RATE } from '../constants';
-import {
-  mockCreateAccountInput,
-  mockAccountEdit,
-} from '@/test-support/fixtures';
+import { mockCreateAccountInput, mockAccountEdit } from '@/test-utils/fixtures';
 import type { Account } from '@/lib/types';
 
 const ASOF = '2026-01-01';

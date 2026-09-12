@@ -1,9 +1,12 @@
-import { fireEvent, render, screen, waitFor } from '@/test-support/render';
+import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
-import { mockAccount, mockCreateAccountInput } from '@/test-support/fixtures';
+import { mockAccount, mockCreateAccountInput } from '@/test-utils/fixtures';
 import { CreateAccount } from './CreateAccount';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
-import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
+import {
+  ACCOUNT_FORM_COPY,
+  ACCOUNT_FORM_TEST_IDS,
+} from '@/components/AccountForm/constants';
 import { CREATE_ACCOUNT_COPY } from './constants';
 
 const mockPush = jest.fn();
@@ -77,6 +80,17 @@ describe('CreateAccount', () => {
 
       fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
       expect(submit).toBeEnabled();
+    });
+
+    it('stays put and says so when the create fails', async () => {
+      mockCreateAccount.mockRejectedValue(new Error('nope'));
+
+      fillAndSubmit(mockCreateAccountInput.name);
+
+      expect(
+        await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
+      ).toHaveTextContent(ACCOUNT_FORM_COPY.saveError);
+      expect(mockPush).not.toHaveBeenCalled();
     });
 
     it('creates the account and navigates home on submit', async () => {

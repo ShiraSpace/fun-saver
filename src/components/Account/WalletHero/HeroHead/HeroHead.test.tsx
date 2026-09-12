@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-support/render';
+import { render, screen } from '@/test-utils/render';
 import { HeroHead } from './HeroHead';
 import { WALLET_HERO_TEST_IDS } from '../constants';
 

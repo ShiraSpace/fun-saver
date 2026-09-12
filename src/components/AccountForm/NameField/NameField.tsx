@@ -42,9 +42,14 @@ const Input = styled.input`
 export interface NameFieldProps {
   value: string;
   onChange: (value: string) => void;
+  maxLength: number;
 }
 
-export function NameField({ value, onChange }: NameFieldProps): JSX.Element {
+export function NameField({
+  value,
+  onChange,
+  maxLength,
+}: NameFieldProps): JSX.Element {
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void =>
     onChange(event.target.value);
 
@@ -56,6 +61,7 @@ export function NameField({ value, onChange }: NameFieldProps): JSX.Element {
       <Input
         data-testid={NAME_FIELD_TEST_IDS.input}
         value={value}
+        maxLength={maxLength}
         onChange={handleChange}
       />
     </Card>
