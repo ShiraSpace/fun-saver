@@ -9,6 +9,7 @@ export const ACCOUNTS_SECTION_CONTENT = {
   label: 'החשבונות',
   editIcon: '✏️',
   editLabel: 'עריכת חשבון',
+  editPrefix: 'עריכת',
   addIcon: '＋',
   addLabel: 'הוספת חשבון',
 } as const;
@@ -22,4 +23,7 @@ export const ACCOUNTS_SECTION_STYLE = {
   pressMs: 120,
   badgeSize: 20,
   actionFontSize: 20,
+  pillPadding: 16,
+  pillGap: 7,
+  pillFontSize: 15,
 } as const;

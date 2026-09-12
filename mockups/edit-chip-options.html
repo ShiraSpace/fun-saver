@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — which account does ✏️ edit?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root[data-theme='jungle-quest'] {
+    --primary:#2A9D8F; --textOnPrimary:#FFFFFF; --surface:#FFFDF5;
+    --textMuted:#5C7A6E; --textStrong:#1B4332;
+    --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+  }
+  :root[data-theme='midnight-blue'] {
+    --primary:#3B82F6; --textOnPrimary:#FFFFFF; --surface:#141B24;
+    --textMuted:#8A96A8; --textStrong:#ECF1F8;
+    --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; direction:rtl; font-family:'Rubik','Roboto',sans-serif;
+         background:#0a0a0a; min-height:100vh; color:#fff; }
+  .page { max-width:1180px; margin:0 auto; padding:28px 20px 80px; }
+  h1.doc { font-size:22px; font-weight:600; margin:0 0 4px; text-align:center; }
+  .subtitle { color:#bdbdbd; text-align:center; margin:0 0 22px; font-size:14px; }
+  .toolbar { display:flex; gap:8px; justify-content:center; margin-bottom:26px; }
+  .toolbar button { font-family:inherit; cursor:pointer; border:1px solid #333; background:#1a1a1a;
+                    color:#ddd; padding:8px 16px; border-radius:999px; font-size:13px; font-weight:600; }
+  .toolbar button.active { background:#fff; color:#111; border-color:#fff; }
+
+  .compare { display:flex; gap:22px; justify-content:center; flex-wrap:wrap; align-items:flex-start; }
+  .col { width:340px; }
+  .col .cap { text-align:center; font-size:14px; margin-bottom:6px; font-weight:700; }
+  .col .note { text-align:center; color:#bdbdbd; font-size:12.5px; margin-bottom:12px; min-height:52px; line-height:1.5; }
+  .col.current .cap { color:#9aa0a6; }
+  .col.a .cap { color:#8BD3C7; }
+  .col.b .cap { color:#9DBBF5; }
+
+  .phone { width:340px; background:#1a1a1a; border-radius:36px; padding:8px;
+           box-shadow:0 18px 40px rgba(0,0,0,0.7); border:1px solid #2a2a2a; }
+  .screen { border-radius:30px; overflow:hidden; min-height:420px; background:var(--screen);
+            font-family:'Fredoka','Rubik',sans-serif; position:relative; padding:0 0 24px; }
+  .statusbar { display:flex; justify-content:space-between; padding:10px 20px 4px;
+               font-size:12px; color:var(--textOnPrimary); opacity:.85; }
+
+  /* menu panel — mirrors MenuOverlay + AccountsSection */
+  .menu { margin:14px 16px 0; padding:16px 16px 20px; border-radius:22px;
+          background:rgba(255,255,255,0.12); backdrop-filter:blur(6px); }
+  .menu-label { font-size:12px; font-weight:700; color:var(--textOnPrimary);
+                opacity:.75; margin:0 0 10px; letter-spacing:.02em; }
+  .row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+
+  .chip { width:46px; height:46px; border-radius:50%; border:none; cursor:pointer;
+          display:flex; align-items:center; justify-content:center; flex-shrink:0;
+          font-family:inherit; font-size:19px; font-weight:700; position:relative;
+          background:#7AB7E0; color:#fff; }
+  .chip.second { background:#E9A23B; }
+  .chip[data-selected='true'] { outline:3px solid var(--textOnPrimary); outline-offset:2px; }
+  .action { width:46px; height:46px; border-radius:50%; border:none; cursor:pointer;
+            background:rgba(255,255,255,0.4); color:var(--textOnPrimary);
+            font-size:19px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+  /* option A — a pencil badge on each account chip */
+  .badge { position:absolute; inset-block-end:-3px; inset-inline-start:-3px;
+           width:21px; height:21px; border-radius:50%; background:var(--surface);
+           color:var(--textStrong); font-size:11px; display:flex; align-items:center;
+           justify-content:center; box-shadow:0 2px 4px rgba(0,0,0,0.35); }
+
+  /* option B — the shared chip becomes a labelled pill */
+  .pill { height:46px; padding:0 16px; border-radius:999px; border:none; cursor:pointer;
+          background:rgba(255,255,255,0.4); color:var(--textOnPrimary); font-family:inherit;
+          font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:7px; }
+
+  .verdict { margin-top:14px; font-size:12.5px; line-height:1.6; color:#cfcfcf;
+             background:#151515; border:1px solid #262626; border-radius:12px; padding:12px 14px; }
+  .verdict b { color:#fff; }
+  .verdict .bad { color:#F2A1A1; }
+  .verdict .good { color:#9BD8A8; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1 class="doc">איזה חשבון ה-✏️ עורך?</h1>
+  <p class="subtitle">שתי אפשרויות לפתרון הדו-משמעות בצ׳יפ העריכה המשותף</p>
+
+  <div class="toolbar">
+    <button id="t-jungle" class="active" onclick="setTheme('jungle-quest')">🌴 jungle-quest</button>
+    <button id="t-midnight" onclick="setTheme('midnight-blue')">🌙 midnight-blue</button>
+  </div>
+
+  <div class="compare">
+
+    <!-- CURRENT -->
+    <div class="col current">
+      <div class="cap">היום</div>
+      <div class="note">צ׳יפ אחד משותף. עורך את החשבון הנבחר — בלי לומר איזה.</div>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+        <div class="menu">
+          <p class="menu-label">החשבונות</p>
+          <div class="row">
+            <button class="chip" data-selected="true">נ</button>
+            <button class="chip second" data-selected="false">מ</button>
+            <button class="action">✏️</button>
+            <button class="action">＋</button>
+          </div>
+        </div>
+      </div></div>
+      <div class="verdict">
+        <span class="bad">כדי לערוך את מושית:</span> לבחור אותה → התפריט נסגר → לפתוח שוב → ✏️.
+      </div>
+    </div>
+
+    <!-- OPTION A -->
+    <div class="col a">
+      <div class="cap">א׳ — עיפרון על כל צ׳יפ</div>
+      <div class="note">כל חשבון נושא את העריכה שלו. הצ׳יפ המשותף נעלם.</div>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+        <div class="menu">
+          <p class="menu-label">החשבונות</p>
+          <div class="row">
+            <button class="chip" data-selected="true">נ<span class="badge">✏️</span></button>
+            <button class="chip second" data-selected="false">מ<span class="badge">✏️</span></button>
+            <button class="action">＋</button>
+          </div>
+        </div>
+      </div></div>
+      <div class="verdict">
+        <span class="good">עריכת מושית:</span> הקשה אחת על העיפרון שלה.<br>
+        <b>המחיר:</b> יעד הקשה 21px בתוך צ׳יפ 46px, ושתי פעולות על אותו עיגול.
+      </div>
+    </div>
+
+    <!-- OPTION B -->
+    <div class="col b">
+      <div class="cap">ב׳ — צ׳יפ מתויג</div>
+      <div class="note">אותו צ׳יפ משותף, אבל אומר את שם החשבון שייפתח.</div>
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+        <div class="menu">
+          <p class="menu-label">החשבונות</p>
+          <div class="row">
+            <button class="chip" data-selected="true">נ</button>
+            <button class="chip second" data-selected="false">מ</button>
+            <button class="pill">✏️ עריכת נועה</button>
+            <button class="action">＋</button>
+          </div>
+        </div>
+      </div></div>
+      <div class="verdict">
+        <span class="good">אין הפתעה:</span> הצ׳יפ אומר במה הוא ייגע.<br>
+        <b>המחיר:</b> עריכת מושית עדיין דורשת בחירה תחילה; הרוחב משתנה לפי אורך השם.
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+  function setTheme(name) {
+    document.documentElement.dataset.theme = name;
+    document.getElementById('t-jungle').classList.toggle('active', name === 'jungle-quest');
+    document.getElementById('t-midnight').classList.toggle('active', name === 'midnight-blue');
+  }
+  setTheme('jungle-quest');
+</script>
+</body>
+</html>

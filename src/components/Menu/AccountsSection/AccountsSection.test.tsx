@@ -79,10 +79,10 @@ describe('AccountsSection', () => {
     expect(chips[1]).toHaveTextContent('מ');
   });
 
-  it('renders the edit chip', () => {
+  it('names the selected account on the edit chip', () => {
     expect(
       screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip)
-    ).toBeInTheDocument();
+    ).toHaveTextContent(mockAccount.name);
   });
 
   it('renders the add chip', () => {
@@ -125,5 +125,20 @@ describe('AccountsSection', () => {
     fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip));
 
     expect(mockOnAccountSelect).toHaveBeenCalled();
+  });
+});
+
+describe('AccountsSection with a different account selected', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    renderSection({
+      contextOverrides: { selectedAccountId: mockSecondAccount.id },
+    });
+  });
+
+  it('names that account on the edit chip instead', () => {
+    expect(
+      screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip)
+    ).toHaveTextContent(mockSecondAccount.name);
   });
 });
