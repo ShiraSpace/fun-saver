@@ -64,28 +64,28 @@ export class PostgresStore implements DataStore {
   async insertTransactions(transactions: Transaction[]): Promise<void> {
     if (transactions.length === 0) return;
 
-    const columnsPerRow = 7;
-    const rowPlaceholders = transactions
-      .map((_, rowIdx) => {
-        const cells = Array.from({ length: columnsPerRow }, (_, colIdx) => {
-          return `$${rowIdx * columnsPerRow + colIdx + 1}`;
-        });
-        return `(${cells.join(', ')})`;
-      })
-      .join(', ');
+    const values: QueryParam[] = [];
+    const rowPlaceholders: string[] = [];
 
-    const values = transactions.flatMap((transaction) => [
-      transaction.id,
-      transaction.walletId,
-      transaction.accountId,
-      transaction.type,
-      transaction.amount,
-      transaction.occurredAt,
-      transaction.createdAt,
-    ]);
+    for (const transaction of transactions) {
+      const cells: QueryParam[] = [
+        transaction.id,
+        transaction.walletId,
+        transaction.accountId,
+        transaction.type,
+        transaction.amount,
+        transaction.occurredAt,
+        transaction.createdAt,
+      ];
+      const start = values.length;
+      values.push(...cells);
+      rowPlaceholders.push(
+        `(${cells.map((_, i) => `$${start + i + 1}`).join(', ')})`
+      );
+    }
 
     await this.sql.query(
-      `INSERT INTO transactions (id, wallet_id, account_id, type, amount, occurred_at, created_at) VALUES ${rowPlaceholders}`,
+      `INSERT INTO transactions (id, wallet_id, account_id, type, amount, occurred_at, created_at) VALUES ${rowPlaceholders.join(', ')}`,
       values
     );
   }
