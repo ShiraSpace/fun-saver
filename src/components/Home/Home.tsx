@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import type { Account, AccountWithDerivedWallets } from '@/lib/types';
 import { AccountSwitcher } from '@/components/AccountSwitcher';
 import { CreateAccount } from '@/components/CreateAccount';
+import { EditAccount } from '@/components/EditAccount';
 import { EmptyState } from '@/components/EmptyState';
 import { AccountsProvider } from '@/components/AccountSwitcher/accounts-context';
 import { LAYERS } from '@/theme/layers';
@@ -19,7 +20,7 @@ interface HomeProps {
   initialAccountId: string;
 }
 
-const CreateOverlay = styled.div`
+const Overlay = styled.div`
   position: fixed;
   inset: 0;
   z-index: ${LAYERS.modal};
@@ -49,7 +50,16 @@ export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
     router.refresh();
   };
 
+  const handleUpdated = (): void => {
+    setMode(APP_MODE.viewing);
+    router.refresh();
+  };
+
   const hasAccounts = accounts.length > 0;
+  const editingAccount =
+    mode === APP_MODE.editingAccount
+      ? accounts.find((account) => account.id === selectedAccountId)
+      : undefined;
 
   return (
     <AppModeProvider value={{ mode, setMode }}>
@@ -59,12 +69,22 @@ export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
           <EmptyState onCreate={() => setMode(APP_MODE.creatingAccount)} />
         )}
         {isCreating && (
-          <CreateOverlay>
+          <Overlay>
             <CreateAccount
               onCreated={handleCreated}
               onCancel={() => setMode(APP_MODE.viewing)}
             />
-          </CreateOverlay>
+          </Overlay>
+        )}
+        {editingAccount && (
+          <Overlay>
+            <EditAccount
+              key={editingAccount.id}
+              account={editingAccount}
+              onUpdated={handleUpdated}
+              onCancel={() => setMode(APP_MODE.viewing)}
+            />
+          </Overlay>
         )}
       </AccountsProvider>
     </AppModeProvider>
