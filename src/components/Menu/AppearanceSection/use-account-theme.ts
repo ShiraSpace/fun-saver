@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useAccounts } from '@/components/AccountSwitcher/accounts-context';
 import { useSetThemeId, useThemeId } from '@/theme/ThemeController';
 import type { ThemeId } from '@/theme/registry';
+import { fetchJson } from '@/lib/fetch-json';
 
 interface AccountTheme {
   activeThemeId: ThemeId;
@@ -31,16 +32,11 @@ export function useAccountTheme(): AccountTheme {
 
     async function rememberOnAccount(): Promise<void> {
       try {
-        const response = await fetch(accountThemeEndpoint(selectedAccountId), {
+        await fetchJson({
+          url: accountThemeEndpoint(selectedAccountId),
           method: 'PUT',
-          cache: 'no-store',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ themeId }),
+          body: { themeId },
         });
-
-        if (!response.ok) {
-          throw new Error('failed to save account theme');
-        }
 
         router.refresh();
       } catch {

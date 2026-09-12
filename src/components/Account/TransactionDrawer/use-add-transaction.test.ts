@@ -7,7 +7,7 @@ describe('useAddTransaction', () => {
   let fetchMock: jest.Mock;
 
   beforeEach(() => {
-    fetchMock = jest.fn().mockResolvedValue({ ok: true });
+    fetchMock = jest.fn().mockResolvedValue({ ok: true, json: async () => [] });
     global.fetch = fetchMock as unknown as typeof fetch;
   });
 
