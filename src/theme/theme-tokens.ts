@@ -25,6 +25,10 @@ export interface ThemeColors {
   readonly alert: string;
   readonly alertSoftBg: string;
   readonly withdrawText: string;
+  readonly walletSavings: string;
+  readonly walletSpending: string;
+  readonly walletGood: string;
+  readonly walletTrack: string;
 }
 
 export interface ThemeGradients {

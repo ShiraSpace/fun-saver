@@ -27,6 +27,10 @@ export const jungleQuest: ThemeTokens = {
     alert: '#E5484D',
     alertSoftBg: '#FDECEC',
     withdrawText: '#D9480F',
+    walletSavings: '#2A9D8F',
+    walletSpending: '#90BE6D',
+    walletGood: '#E76F51',
+    walletTrack: '#E8EFDC',
   },
   gradients: {
     screen: 'linear-gradient(160deg, #2A9D8F, #43AA8B, #90BE6D)',
