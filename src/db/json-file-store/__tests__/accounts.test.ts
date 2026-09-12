@@ -1,0 +1,68 @@
+import { JsonFileStore } from '../index';
+import {
+  mockAccount,
+  mockAccountEdit,
+  mockSecondAccount,
+} from '@/test-utils/fixtures';
+import { withTempStoreFile } from '@/test-utils/test-utils';
+
+describe('JsonFileStore accounts', () => {
+  const file = withTempStoreFile();
+
+  it('persists accounts with embedded wallets across instances', async () => {
+    await new JsonFileStore(file.path).insertAccount(mockAccount);
+
+    const reopened = new JsonFileStore(file.path);
+    expect(await reopened.listAccounts()).toEqual([mockAccount]);
+    expect(
+      (await reopened.getAccount('a1'))?.wallets.map((wallet) => wallet.id)
+    ).toEqual(['w1', 'w2', 'w3']);
+  });
+
+  it('persists an account theme change across instances', async () => {
+    await new JsonFileStore(file.path).insertAccount(mockAccount);
+
+    await new JsonFileStore(file.path).setAccountTheme('a1', 'midnight-blue');
+
+    expect((await new JsonFileStore(file.path).getAccount('a1'))?.themeId).toBe(
+      'midnight-blue'
+    );
+  });
+
+  describe('edit account', () => {
+    let store: JsonFileStore;
+
+    beforeEach(async () => {
+      store = new JsonFileStore(file.path);
+      await store.insertAccount(mockAccount);
+      await store.insertAccount(mockSecondAccount);
+    });
+
+    it('persists a name and avatar change across instances', async () => {
+      const updated = await store.updateAccount('a1', mockAccountEdit);
+
+      expect(updated).toMatchObject(mockAccountEdit);
+      expect(await new JsonFileStore(file.path).getAccount('a1')).toMatchObject(
+        {
+          ...mockAccountEdit,
+          wallets: mockAccount.wallets,
+        }
+      );
+    });
+
+    it('leaves the other accounts untouched', async () => {
+      await store.updateAccount('a1', mockAccountEdit);
+
+      expect(await new JsonFileStore(file.path).getAccount('a2')).toEqual(
+        mockSecondAccount
+      );
+    });
+
+    it('returns undefined when updating an unknown account', async () => {
+      expect(
+        await store.updateAccount('missing', mockAccountEdit)
+      ).toBeUndefined();
+      expect((await store.getAccount('a1'))?.name).toBe(mockAccount.name);
+    });
+  });
+});
