@@ -20,10 +20,6 @@ export class DashboardDriver {
     return this.session.text(STAT_STRIP_TEST_IDS.todayInterest);
   }
 
-  totalAmount(): Promise<string> {
-    return this.session.text(OVERVIEW_CARD_TEST_IDS.total);
-  }
-
   supportingLabel(): Promise<string> {
     return this.session.text(WALLET_LIST_TEST_IDS.label);
   }
