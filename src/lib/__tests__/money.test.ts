@@ -2,6 +2,7 @@ import {
   agorotToShekels,
   agorotToWholeShekels,
   coinBreakdown,
+  halfShekelAmount,
   shekelsToAgorot,
 } from '../money';
 
@@ -23,6 +24,30 @@ describe('shekelsToAgorot', () => {
   it('converts shekels to agorot', () => {
     expect(shekelsToAgorot(85)).toBe(8500);
     expect(shekelsToAgorot(20)).toBe(2000);
+  });
+});
+
+describe('halfShekelAmount', () => {
+  it('rounds to a whole shekel', () => {
+    expect(halfShekelAmount(102)).toBe(1);
+  });
+
+  it('rounds to a half shekel', () => {
+    expect(halfShekelAmount(140)).toBe(1.5);
+  });
+
+  it('rounds up to half a shekel', () => {
+    expect(halfShekelAmount(38)).toBe(0.5);
+  });
+
+  it('rounds up to two and a half shekels', () => {
+    expect(halfShekelAmount(238)).toBe(2.5);
+  });
+
+  it('returns null when the amount rounds to zero', () => {
+    expect(halfShekelAmount(0)).toBeNull();
+    expect(halfShekelAmount(18)).toBeNull();
+    expect(halfShekelAmount(20)).toBeNull();
   });
 });
 
