@@ -1,9 +1,16 @@
-import type { Account, AccountEdits, Transaction } from '@/lib/types';
+import type {
+  Account,
+  AccountEdits,
+  AuthProvider,
+  Transaction,
+  User,
+} from '@/lib/types';
 import type { ThemeId } from '@/theme/registry';
 
 export interface StoreData {
   accounts: Account[];
   transactions: Transaction[];
+  users: User[];
 }
 
 export interface AccountRepository {
@@ -19,6 +26,14 @@ export interface TransactionRepository {
   listByWallet(accountId: string, walletId: string): Promise<Transaction[]>;
 }
 
+export interface UserRepository {
+  findByProvider(
+    provider: AuthProvider,
+    providerAccountId: string
+  ): Promise<User | undefined>;
+  insert(user: User): Promise<void>;
+}
+
 export interface DataStore {
   insertAccount(account: Account): Promise<void>;
   listAccounts(): Promise<Account[]>;
@@ -30,4 +45,9 @@ export interface DataStore {
     accountId: string,
     walletId: string
   ): Promise<Transaction[]>;
+  findUserByProvider(
+    provider: AuthProvider,
+    providerAccountId: string
+  ): Promise<User | undefined>;
+  insertUser(user: User): Promise<void>;
 }
