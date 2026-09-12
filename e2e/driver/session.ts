@@ -27,6 +27,10 @@ export class Session {
     await this.activePage.goto(baseUrl, { waitUntil: 'networkidle0' });
   }
 
+  async reload(): Promise<void> {
+    await this.page.reload({ waitUntil: 'networkidle0' });
+  }
+
   async closePage(): Promise<void> {
     await this.activePage?.close();
     this.activePage = undefined;
@@ -70,6 +74,17 @@ export class Session {
   async type(testId: string, value: string): Promise<void> {
     const element = await this.find(testId);
     await element.type(value);
+  }
+
+  async imageSource(testId: string): Promise<string> {
+    const element = await this.find(testId);
+
+    return element.evaluate(
+      (node) =>
+        node.getAttribute('src') ??
+        node.querySelector('img')?.getAttribute('src') ??
+        ''
+    );
   }
 
   async value(testId: string): Promise<string> {
@@ -166,6 +181,22 @@ export class Session {
       selector,
       property,
       value
+    );
+  }
+
+  async waitForImageSource(testId: string, fragment: string): Promise<void> {
+    await this.page.waitForFunction(
+      (id, part) => {
+        const node = document.querySelector(`[data-testid="${id}"]`);
+        const source =
+          node?.getAttribute('src') ??
+          node?.querySelector('img')?.getAttribute('src') ??
+          '';
+        return source.includes(part);
+      },
+      {},
+      testId,
+      fragment
     );
   }
 

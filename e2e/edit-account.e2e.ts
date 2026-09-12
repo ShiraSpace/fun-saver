@@ -1,12 +1,12 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockAccount } from '@/test-utils/fixtures';
+import { mockAccount, mockAccountEdit } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
 const EDITED_NAME = 'רוני';
 
 describe('edit account from the menu', () => {
-  const { menu, editAccount, avatarPicker, header } = useDriver({
+  const { menu, editAccount, avatarPicker, header, session } = useDriver({
     accounts: [mockAccount],
   });
 
@@ -29,18 +29,31 @@ describe('edit account from the menu', () => {
   });
 
   it('saves a new avatar without touching the name', async () => {
-    await avatarPicker.selectFirst();
+    assert.ok(
+      (await header.avatarSource()).includes(mockAccount.avatarId),
+      'header starts on the account avatar'
+    );
+
+    await avatarPicker.select(mockAccountEdit.avatarId);
     await editAccount.submit();
 
-    await header.waitForName(mockAccount.name);
+    await header.waitForAvatar(mockAccountEdit.avatarId);
     assert.equal(await header.name(), mockAccount.name);
   });
 
-  it('keeps the current name when the edit is cancelled', async () => {
+  it('closes the form when the edit is cancelled', async () => {
     await editAccount.replaceName(EDITED_NAME);
     await editAccount.cancel();
 
     await header.waitForName(mockAccount.name);
+    assert.equal(await editAccount.isClosed(), true);
+  });
+
+  it('keeps the stored name when the edit is cancelled', async () => {
+    await editAccount.replaceName(EDITED_NAME);
+    await editAccount.cancel();
+    await session.reload();
+
     assert.equal(await header.name(), mockAccount.name);
   });
 });

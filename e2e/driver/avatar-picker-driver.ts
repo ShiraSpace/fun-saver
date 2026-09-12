@@ -14,6 +14,12 @@ export class AvatarPickerDriver {
     return this.session.clickSelector(OPTION_SELECTOR);
   }
 
+  select(avatarId: string): Promise<void> {
+    return this.session.clickSelector(
+      `${OPTION_SELECTOR}:has(img[alt="${avatarId}"])`
+    );
+  }
+
   async selectedOption(): Promise<{ borderColor: string; boxShadow: string }> {
     const [borderColor, boxShadow] = await Promise.all([
       this.session.styleOf(SELECTED_OPTION_SELECTOR, 'border-top-color'),
