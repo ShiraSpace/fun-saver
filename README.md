@@ -14,10 +14,8 @@ Most kids see money as a single number in a piggy bank. They can't see it grow, 
 
 Each family can have multiple accounts (one per child), each with its own theme so every kid gets their own little world.
 
-
 <img width="350" height="682" alt="image" src="https://github.com/user-attachments/assets/e7904e24-7fcb-4470-9d78-fb96fe903d68" />
 <img width="344" height="672" alt="image" src="https://github.com/user-attachments/assets/1c7edf24-4bf9-46de-85db-93f5cfcfbb24" />
-
 
 ## How it helps
 
@@ -50,26 +48,30 @@ FUNSAVER_NOW=2026-01-01 npm run dev
 
 ## What's inside
 
-| Layer          | Where                       | Notes                                                |
-| -------------- | --------------------------- | ---------------------------------------------------- |
-| UI             | `src/app`, `src/components` | Next.js 16 App Router, React 19, MUI + Emotion (RTL) |
-| Business logic | `src/lib`                   | Framework-agnostic, unit-tested                      |
-| API routes     | `src/app/api`               | Thin — validate, call `src/lib`, return JSON         |
-| Persistence    | `src/db`                    | JSON file store, seeded on first run                 |
-| Tests          | `*.test.ts(x)`, `e2e/`      | Jest + Puppeteer visual/e2e                          |
+| Layer          | Where                       | Notes                                                                                                  |
+| -------------- | --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| UI             | `src/app`, `src/components` | Next.js 16 App Router, React 19, MUI + Emotion (RTL)                                                   |
+| Business logic | `src/lib`                   | Framework-agnostic, unit-tested                                                                        |
+| API routes     | `src/app/api`               | Thin — validate, call `src/lib`, return JSON                                                           |
+| Persistence    | `src/db`                    | JSON file store by default; Neon Postgres when `DATABASE_URL` is set (see [Persistence](#persistence)) |
+| Tests          | `*.test.ts(x)`, `e2e/`      | Jest + Puppeteer visual/e2e                                                                            |
 
 ---
 
 ## Common commands
 
-| Command              | What it does                  |
-| -------------------- | ----------------------------- |
-| `npm run dev`        | Start the dev server          |
-| `npm run dev:mobile` | Dev server bound to `0.0.0.0` |
-| `npm test`           | Run unit tests                |
-| `npm run test:e2e`   | Run visual + e2e tests        |
-| `npm run lint`       | Lint and auto-fix             |
-| `npm run build`      | Production build              |
+| Command                   | What it does                                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `npm run dev`             | Start the dev server                                                                                   |
+| `npm run dev:mobile`      | Dev server bound to `0.0.0.0`                                                                          |
+| `npm test`                | Run unit tests (Postgres integration suite skips cleanly if `TEST_DATABASE_URL` isn't in `.env.local`) |
+| `npm run test:db`         | Run the Postgres integration suite against the Neon `test` branch                                      |
+| `npm run test:e2e`        | Run visual + Postgres integration + e2e tests                                                          |
+| `npm run lint`            | Lint and auto-fix                                                                                      |
+| `npm run build`           | Production build                                                                                       |
+| `npm run db:migrate`      | Apply `src/db/schema.sql` to the Neon `main` branch (uses `DATABASE_URL`)                              |
+| `npm run db:migrate-dev`  | Apply the same schema to the Neon `dev` branch (uses `DEV_DATABASE_URL`)                               |
+| `npm run db:migrate-test` | Apply the same schema to the Neon `test` branch (uses `TEST_DATABASE_URL`)                             |
 
 ---
 
@@ -79,6 +81,50 @@ FUNSAVER_NOW=2026-01-01 npm run dev
 - **Withdrawals** pick a single wallet and are **overdraft-protected**; a good-deeds withdrawal is framed as a donation.
 - Money is stored as **integer agorot**; displayed rounded to the nearest half-shekel with a small `₪` glyph.
 - Interest **compounds daily** on the savings wallet and is idempotent per day.
+
+---
+
+## Persistence
+
+The app runs on a JSON file at `src/db/data.json` by default — zero setup, works on a fresh clone. Point it at a Neon Postgres branch by setting the appropriate env var in `.env.local`.
+
+### `.env.local`
+
+```env
+# Optional. When set, the app uses Neon Postgres in production/next-start.
+DATABASE_URL=
+
+# Optional. When set and NODE_ENV=development (i.e. `next dev`), this wins
+# over DATABASE_URL so local experiments stay off the production branch.
+DEV_DATABASE_URL=
+
+# Optional. Used by `npm run db:migrate-test` and `npm run test:db`.
+TEST_DATABASE_URL=
+```
+
+`.env.example` at the repo root has these keys ready to copy.
+
+### Which store is used when
+
+| Context                             | Store                                             |
+| ----------------------------------- | ------------------------------------------------- |
+| `FUNSAVER_DATA_PATH` set (e2e)      | JSON at the given path — always wins              |
+| `NODE_ENV=development` (`next dev`) | Postgres via `DEV_DATABASE_URL` if set, else JSON |
+| `next start` / Vercel               | Postgres via `DATABASE_URL` if set, else JSON     |
+| Jest (`npm test`)                   | JSON (env not loaded)                             |
+| `npm run test:db`                   | Postgres via `TEST_DATABASE_URL`                  |
+
+### Applying the schema
+
+`src/db/schema.sql` is the target schema. To apply it against any Neon branch:
+
+```bash
+npm run db:migrate          # → DATABASE_URL      (main / production)
+npm run db:migrate-dev      # → DEV_DATABASE_URL  (local dev)
+npm run db:migrate-test     # → TEST_DATABASE_URL (integration tests)
+```
+
+Each script runs the whole schema in a single Postgres transaction — a failure mid-way rolls the whole thing back rather than leaving half-applied DDL.
 
 ---
 
