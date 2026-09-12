@@ -1,10 +1,16 @@
-import { fireEvent, render, screen, waitFor } from '@/test-support/render';
-import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
+import { render, screen, waitFor } from '@/test-support/render';
 import {
   ACCOUNT_FORM_COPY,
   ACCOUNT_FORM_TEST_IDS,
 } from '@/components/AccountForm/constants';
-import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
+import {
+  cancelForm,
+  chosenAvatars,
+  nameInput,
+  pickFirstAvatar,
+  submitForm,
+  typeName,
+} from '@/test-support/account-form';
 import { AVATARS } from '@/lib/avatars';
 import { mockAccount, mockAccountEdit } from '@/test-support/fixtures';
 import { EditAccount } from './EditAccount';
@@ -53,15 +59,11 @@ describe('EditAccount', () => {
   });
 
   it('opens with the name already typed in', () => {
-    expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(
-      mockAccount.name
-    );
+    expect(nameInput()).toHaveValue(mockAccount.name);
   });
 
   it('opens with the account avatar already chosen', () => {
-    const selected = screen
-      .getAllByTestId(AVATAR_PICKER_TEST_IDS.option)
-      .filter((option) => option.dataset.selected === 'true');
+    const selected = chosenAvatars();
 
     expect(selected).toHaveLength(1);
     expect(
@@ -70,11 +72,9 @@ describe('EditAccount', () => {
   });
 
   it('saves the edited values against the account id', () => {
-    fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-      target: { value: mockAccountEdit.name },
-    });
-    fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
-    fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+    typeName(mockAccountEdit.name);
+    pickFirstAvatar();
+    submitForm();
 
     expect(mockUpdateAccount).toHaveBeenCalledWith(mockAccount.id, {
       name: mockAccountEdit.name,
@@ -83,7 +83,7 @@ describe('EditAccount', () => {
   });
 
   it('saves an untouched form as the values it opened with', () => {
-    fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+    submitForm();
 
     expect(mockUpdateAccount).toHaveBeenCalledWith(mockAccount.id, {
       name: mockAccount.name,
@@ -92,7 +92,7 @@ describe('EditAccount', () => {
   });
 
   it('tells the caller once the save lands', async () => {
-    fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+    submitForm();
 
     await waitFor(() => expect(mockOnUpdated).toHaveBeenCalledTimes(1));
   });
@@ -100,7 +100,7 @@ describe('EditAccount', () => {
   it('says so when the save fails', async () => {
     mockUpdateAccount.mockRejectedValue(new Error('nope'));
 
-    fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+    submitForm();
 
     expect(
       await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
@@ -110,20 +110,20 @@ describe('EditAccount', () => {
   it('does not tell the caller when the save fails', async () => {
     mockUpdateAccount.mockRejectedValue(new Error('nope'));
 
-    fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+    submitForm();
 
     await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError);
     expect(mockOnUpdated).not.toHaveBeenCalled();
   });
 
   it('calls onCancel from the close button', () => {
-    fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+    cancelForm();
 
     expect(mockOnCancel).toHaveBeenCalledTimes(1);
   });
 
   it('saves nothing when cancelled', () => {
-    fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+    cancelForm();
 
     expect(mockUpdateAccount).not.toHaveBeenCalled();
   });

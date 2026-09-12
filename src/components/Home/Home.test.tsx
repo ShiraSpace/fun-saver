@@ -10,9 +10,13 @@ import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/con
 import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
-import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
-import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
-import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
+import {
+  cancelForm,
+  nameInput,
+  pickFirstAvatar,
+  submitForm,
+  typeName,
+} from '@/test-support/account-form';
 import {
   createMockAccount,
   mockAccount,
@@ -83,18 +87,14 @@ function tapEditChip(): void {
 }
 
 function submitEditForm(): void {
-  fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-    target: { value: renamedAccount.name },
-  });
-  fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+  typeName(renamedAccount.name);
+  submitForm();
 }
 
 function submitCreateForm(): void {
-  fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-    target: { value: createdAccount.name },
-  });
-  fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
-  fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+  typeName(createdAccount.name);
+  pickFirstAvatar();
+  submitForm();
 }
 
 describe('Home', () => {
@@ -198,7 +198,7 @@ describe('Home', () => {
     });
 
     it('closes the overlay without creating when cancelled', () => {
-      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+      cancelForm();
 
       expect(
         screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
@@ -235,9 +235,7 @@ describe('Home', () => {
     });
 
     it('opens it on the account currently selected', () => {
-      expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(
-        mockAccount.name
-      );
+      expect(nameInput()).toHaveValue(mockAccount.name);
     });
 
     it('leaves the create overlay closed', () => {
@@ -247,7 +245,7 @@ describe('Home', () => {
     });
 
     it('closes the overlay when cancelled', () => {
-      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+      cancelForm();
 
       expect(
         screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)
@@ -255,7 +253,7 @@ describe('Home', () => {
     });
 
     it('saves nothing when cancelled', () => {
-      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+      cancelForm();
 
       expect(mockUpdateAccount).not.toHaveBeenCalled();
     });
