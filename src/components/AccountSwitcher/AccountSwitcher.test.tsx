@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-support/render';
+import { render, screen } from '@/test-utils/render';
 import { AccountSwitcher } from './AccountSwitcher';
 import { AccountsProvider } from './accounts-context';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
@@ -6,7 +6,7 @@ import {
   mockAccount,
   mockDerivedWallets,
   mockSecondAccount,
-} from '@/test-support/fixtures';
+} from '@/test-utils/fixtures';
 
 const accounts = [
   { ...mockAccount, wallets: mockDerivedWallets },

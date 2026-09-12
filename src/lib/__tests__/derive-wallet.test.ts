@@ -1,8 +1,5 @@
 import { deriveWallet } from '../derive-wallet';
-import {
-  createMockTransaction,
-  createMockWallet,
-} from '@/test-support/fixtures';
+import { createMockTransaction, createMockWallet } from '@/test-utils/fixtures';
 
 const wallet = createMockWallet({ lastInterestDate: '2026-01-03' });
 

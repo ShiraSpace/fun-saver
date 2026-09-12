@@ -1,4 +1,12 @@
-import type { Account, Transaction, Wallet } from '@/lib/types';
+import type {
+  Account,
+  AccountMember,
+  AuthProvider,
+  MembershipRole,
+  Transaction,
+  User,
+  Wallet,
+} from '@/lib/types';
 import type { ThemeId } from '@/theme/registry';
 
 export interface AccountRow {
@@ -40,5 +48,41 @@ export function toTransaction(row: TransactionRow): Transaction {
     amount: row.amount,
     occurredAt: row.occurred_at,
     createdAt: row.created_at,
+  };
+}
+
+export interface UserRow {
+  id: string;
+  provider: string;
+  provider_account_id: string;
+  email: string;
+  name: string;
+  created_at: string;
+}
+
+export interface AccountMemberRow {
+  account_id: string;
+  user_id: string;
+  role: string;
+  added_at: string;
+}
+
+export function toUser(row: UserRow): User {
+  return {
+    id: row.id,
+    provider: row.provider as AuthProvider,
+    providerAccountId: row.provider_account_id,
+    email: row.email,
+    name: row.name,
+    createdAt: row.created_at,
+  };
+}
+
+export function toAccountMember(row: AccountMemberRow): AccountMember {
+  return {
+    accountId: row.account_id,
+    userId: row.user_id,
+    role: row.role as MembershipRole,
+    addedAt: row.added_at,
   };
 }

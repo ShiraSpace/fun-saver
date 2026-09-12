@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@/test-support/render';
+import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { AVATARS } from '@/lib/avatars';
 import { AccountForm } from './AccountForm';
