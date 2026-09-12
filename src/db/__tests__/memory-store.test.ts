@@ -45,7 +45,7 @@ describe('InMemoryStore', () => {
     await store.insertTransactions([deposit]);
 
     expect(
-      (await store.listTransactionsByWallet('w1')).map(
+      (await store.listTransactionsByWallet('a1', 'w1')).map(
         (transaction) => transaction.id
       )
     ).toEqual(['t1']);

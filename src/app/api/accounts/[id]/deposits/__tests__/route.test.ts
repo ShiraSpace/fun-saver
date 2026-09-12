@@ -53,7 +53,10 @@ describe('POST /api/accounts/[id]/deposits', () => {
     const savings = account!.wallets.find(
       (wallet) => wallet.name === 'savings'
     )!;
-    const saved = await getStore().listTransactionsByWallet(savings.id);
+    const saved = await getStore().listTransactionsByWallet(
+      accountId,
+      savings.id
+    );
     expect(saved[0].amount).toBe(splitDeposit(2000).savings);
   });
 

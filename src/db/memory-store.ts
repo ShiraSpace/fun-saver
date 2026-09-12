@@ -1,6 +1,6 @@
 import type { Account, Transaction } from '../lib/types';
 import type { ThemeId } from '@/theme/registry';
-import type { BuildGuardedTransaction, DataStore } from './data-store';
+import type { DataStore, GuardedTransactionInput } from './data-store';
 
 export class InMemoryStore implements DataStore {
   private readonly accounts: Account[] = [];
@@ -37,18 +37,24 @@ export class InMemoryStore implements DataStore {
     this.transactions.push(...transactions);
   }
 
-  async listTransactionsByWallet(walletId: string): Promise<Transaction[]> {
+  async listTransactionsByWallet(
+    accountId: string,
+    walletId: string
+  ): Promise<Transaction[]> {
     return this.transactions.filter(
-      (transaction) => transaction.walletId === walletId
+      (transaction) =>
+        transaction.accountId === accountId && transaction.walletId === walletId
     );
   }
 
-  async insertTransactionWithGuard(
-    walletId: string,
-    build: BuildGuardedTransaction
-  ): Promise<Transaction> {
+  async insertTransactionWithGuard({
+    accountId,
+    walletId,
+    build,
+  }: GuardedTransactionInput): Promise<Transaction> {
     const walletTransactions = this.transactions.filter(
-      (transaction) => transaction.walletId === walletId
+      (transaction) =>
+        transaction.accountId === accountId && transaction.walletId === walletId
     );
 
     const transaction = build(walletTransactions);

@@ -56,13 +56,15 @@ function postWithdraw(
 describe('POST /api/accounts/[id]/withdrawals', () => {
   it('withdraws from the chosen pot and persists it', async () => {
     const before = balance(
-      await getStore().listTransactionsByWallet(savingsId)
+      await getStore().listTransactionsByWallet(account.id, savingsId)
     );
 
     const response = await postWithdraw(savingsId, 20, account.id);
 
     expect(response.status).toBe(200);
-    const after = balance(await getStore().listTransactionsByWallet(savingsId));
+    const after = balance(
+      await getStore().listTransactionsByWallet(account.id, savingsId)
+    );
     expect(after).toBe(before - 2000);
   });
 

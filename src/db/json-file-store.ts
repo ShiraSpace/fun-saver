@@ -3,8 +3,8 @@ import { dirname } from 'node:path';
 import type { Account, Transaction } from '../lib/types';
 import type { ThemeId } from '@/theme/registry';
 import type {
-  BuildGuardedTransaction,
   DataStore,
+  GuardedTransactionInput,
   StoreData,
 } from './data-store';
 
@@ -34,8 +34,11 @@ export class JsonFileStore implements DataStore {
   }
 
   getAccount(id: string): Promise<Account | undefined> {
-    return this.enqueue(async (): Promise<Account | undefined> =>
-      (await this.readFromDisk()).accounts.find((account) => account.id === id)
+    return this.enqueue(
+      async (): Promise<Account | undefined> =>
+        (await this.readFromDisk()).accounts.find(
+          (account) => account.id === id
+        )
     );
   }
 
@@ -63,22 +66,31 @@ export class JsonFileStore implements DataStore {
     });
   }
 
-  listTransactionsByWallet(walletId: string): Promise<Transaction[]> {
-    return this.enqueue(async (): Promise<Transaction[]> =>
-      (await this.readFromDisk()).transactions.filter(
-        (transaction) => transaction.walletId === walletId
-      )
+  listTransactionsByWallet(
+    accountId: string,
+    walletId: string
+  ): Promise<Transaction[]> {
+    return this.enqueue(
+      async (): Promise<Transaction[]> =>
+        (await this.readFromDisk()).transactions.filter(
+          (transaction) =>
+            transaction.accountId === accountId &&
+            transaction.walletId === walletId
+        )
     );
   }
 
-  insertTransactionWithGuard(
-    walletId: string,
-    build: BuildGuardedTransaction
-  ): Promise<Transaction> {
+  insertTransactionWithGuard({
+    accountId,
+    walletId,
+    build,
+  }: GuardedTransactionInput): Promise<Transaction> {
     return this.enqueue(async (): Promise<Transaction> => {
       const data = await this.readFromDisk();
       const walletTransactions = data.transactions.filter(
-        (transaction) => transaction.walletId === walletId
+        (transaction) =>
+          transaction.accountId === accountId &&
+          transaction.walletId === walletId
       );
 
       const transaction = build(walletTransactions);

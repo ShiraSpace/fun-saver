@@ -90,5 +90,9 @@ export async function addWithdrawal({
     };
   };
 
-  return store.insertTransactionWithGuard(walletId, buildWithdrawal);
+  return store.insertTransactionWithGuard({
+    accountId: account.id,
+    walletId,
+    build: buildWithdrawal,
+  });
 }

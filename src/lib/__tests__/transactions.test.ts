@@ -61,7 +61,7 @@ describe('addDeposit', () => {
     )!;
 
     await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
-    const saved = await store.listTransactionsByWallet(savings.id);
+    const saved = await store.listTransactionsByWallet(account.id, savings.id);
 
     expect(saved).toHaveLength(1);
     expect(saved[0].amount).toBe(splitDeposit(2000).savings);
@@ -105,7 +105,7 @@ describe('addWithdrawal', () => {
     expect(transaction.walletId).toBe(savings);
     expect(transaction.amount).toBe(500);
 
-    const saved = await store.listTransactionsByWallet(savings);
+    const saved = await store.listTransactionsByWallet(account.id, savings);
     expect(balance(saved)).toBe(splitDeposit(2000).savings - 500);
   });
 
