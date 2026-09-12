@@ -18,13 +18,13 @@ describe('dashboard', () => {
     assert.match(await header.totalChipAmount(), /₪\s*160/);
   });
 
-  it('shows the savings hero with its daily-interest coin row', async () => {
-    assert.equal(await dashboard.heroExists(), true);
-    assert.equal(await dashboard.dailyRowExists(), true);
+  it('shows the overview card with the savings daily interest', async () => {
+    assert.equal(await dashboard.overviewExists(), true);
+    assert.match(await dashboard.savingsTodayInterest(), /\+/);
   });
 
-  it('shows the additional wallets with one card per non-savings wallet', async () => {
+  it('shows one card per wallet', async () => {
     assert.equal(await dashboard.supportingLabel(), WALLET_LIST_COPY.label);
-    assert.equal(await dashboard.walletCardCount(), 2);
+    assert.equal(await dashboard.walletCardCount(), 3);
   });
 });

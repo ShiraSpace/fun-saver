@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX } from 'react';
+import { JSX, ReactNode } from 'react';
 import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
 import { Money } from '@/components/Money';
@@ -14,13 +14,16 @@ import {
 type CardWallet = Pick<WalletWithDerived, 'name' | 'icon' | 'balance'>;
 
 const Card = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${WALLET_CARD_STYLE.gap}px;
   padding: ${WALLET_CARD_STYLE.paddingY}px ${WALLET_CARD_STYLE.paddingX}px;
   background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${WALLET_CARD_STYLE.radius}px;
   box-shadow: ${WALLET_CARD_STYLE.shadow};
+`;
+
+const Head = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${WALLET_CARD_STYLE.gap}px;
 `;
 
 const Illust = styled.span<{ name: CardWallet['name'] }>`
@@ -40,8 +43,16 @@ const Name = styled.span`
   flex: 1;
   text-align: start;
   font-size: ${({ theme }): number => theme.typography.body}px;
-  font-weight: 600;
+  font-weight: 700;
   color: ${({ theme }): string => theme.colors.textStrong};
+`;
+
+const SubLine = styled.small`
+  display: block;
+  font-size: ${WALLET_CARD_STYLE.subLineSize}px;
+  font-weight: 500;
+  color: ${({ theme }): string => theme.colors.textMuted};
+  margin-top: ${WALLET_CARD_STYLE.subLineGap}px;
 `;
 
 const Pill = styled.span`
@@ -56,19 +67,35 @@ const Pill = styled.span`
 
 interface WalletCardProps {
   wallet: CardWallet;
+  subLine?: string;
+  children?: ReactNode;
 }
 
-export function WalletCard({ wallet }: WalletCardProps): JSX.Element {
+export function WalletCard({
+  wallet,
+  subLine,
+  children,
+}: WalletCardProps): JSX.Element {
   return (
     <Card data-testid={WALLET_CARD_TEST_IDS.card}>
-      <Illust name={wallet.name}>{wallet.icon}</Illust>
-      <Name>{WALLET_CARD_COPY.name[wallet.name]}</Name>
-      <Pill>
-        <Money
-          amountAgorot={wallet.balance}
-          testId={WALLET_CARD_TEST_IDS.balance}
-        />
-      </Pill>
+      <Head>
+        <Illust name={wallet.name}>{wallet.icon}</Illust>
+        <Name>
+          {WALLET_CARD_COPY.name[wallet.name]}
+          {subLine && (
+            <SubLine data-testid={WALLET_CARD_TEST_IDS.subLine}>
+              {subLine}
+            </SubLine>
+          )}
+        </Name>
+        <Pill>
+          <Money
+            amountAgorot={wallet.balance}
+            testId={WALLET_CARD_TEST_IDS.balance}
+          />
+        </Pill>
+      </Head>
+      {children}
     </Card>
   );
 }

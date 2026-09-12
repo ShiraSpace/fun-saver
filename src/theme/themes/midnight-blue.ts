@@ -27,6 +27,10 @@ export const midnightBlue: ThemeTokens = {
     alert: '#F87171',
     alertSoftBg: '#3A1518',
     withdrawText: '#FB923C',
+    walletSavings: '#1E40AF',
+    walletSpending: '#60A5FA',
+    walletGood: '#818CF8',
+    walletTrack: '#1E2A40',
   },
   gradients: {
     screen: 'linear-gradient(160deg, #0A0E14, #0F1620, #122036)',

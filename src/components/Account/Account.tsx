@@ -7,7 +7,7 @@ import { totalBalance } from '@/lib/derivations';
 import { Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { ActionButton } from '@/components/ActionButton';
-import { WalletHero } from './WalletHero/WalletHero';
+import { OverviewCard } from './OverviewCard';
 import { WalletList } from './WalletList/WalletList';
 import { TransactionDrawer } from './TransactionDrawer';
 import { ACCOUNT_COPY, ACCOUNT_LAYOUT, ACCOUNT_TEST_IDS } from './constants';
@@ -28,8 +28,9 @@ interface AccountProps {
 
 export function Account({ account }: AccountProps): JSX.Element {
   const { name, avatarId, wallets } = account;
-  const savings = wallets.find((wallet) => wallet.name === 'savings')!;
-  const others = wallets.filter((wallet) => wallet.name !== 'savings')!;
+  const savings = wallets.find((wallet) => wallet.name === 'savings');
+  const others = wallets.filter((wallet) => wallet.name !== 'savings');
+  const ordered = savings ? [savings, ...others] : others;
   const total = totalBalance(wallets);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -37,8 +38,8 @@ export function Account({ account }: AccountProps): JSX.Element {
     <Screen align="top">
       <Column>
         <Header name={name} avatarId={avatarId} totalBalance={total} />
-        {savings && <WalletHero name={name} wallet={savings} />}
-        <WalletList wallets={others} />
+        <OverviewCard wallets={ordered} />
+        <WalletList wallets={ordered} />
         <ActionButton
           type="button"
           data-testid={ACCOUNT_TEST_IDS.actionCta}
