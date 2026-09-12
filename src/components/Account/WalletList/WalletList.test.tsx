@@ -2,15 +2,11 @@ import { render, screen } from '@/test-utils/render';
 import { WalletList } from './WalletList';
 import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
 import { WALLET_CARD_TEST_IDS } from '../WalletCard/constants';
-
-const wallets = [
-  { id: 'w2', name: 'spending' as const, icon: '🛍️', balance: 5000 },
-  { id: 'w3', name: 'goodDeeds' as const, icon: '💛', balance: 2500 },
-];
+import { mockDerivedWallets } from '@/test-utils/fixtures';
 
 describe('WalletList', () => {
   beforeEach(() => {
-    render(<WalletList wallets={wallets} />);
+    render(<WalletList wallets={mockDerivedWallets} />);
   });
 
   it('shows the supporting label', () => {
@@ -20,6 +16,6 @@ describe('WalletList', () => {
   });
 
   it('renders one card per wallet', () => {
-    expect(screen.getAllByTestId(WALLET_CARD_TEST_IDS.card)).toHaveLength(2);
+    expect(screen.getAllByTestId(WALLET_CARD_TEST_IDS.card)).toHaveLength(3);
   });
 });

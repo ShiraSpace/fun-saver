@@ -126,6 +126,8 @@ export const mockDerivedWallets: WalletWithDerived[] = createMockWallets().map(
     createMockDerivedWallet({ ...wallet, ...MOCK_DERIVED_VALUES[index] })
 );
 
+export const mockWalletShares: number[] = [53, 31, 16];
+
 export const mockDerivedAccount: AccountWithDerivedWallets = {
   ...createMockAccount(),
   wallets: mockDerivedWallets,

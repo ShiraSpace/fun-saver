@@ -4,6 +4,7 @@ import { JSX } from 'react';
 import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
 import { WalletCard } from '../WalletCard/WalletCard';
+import { SavingsStatStrip } from './SavingsStatStrip';
 import {
   WALLET_LIST_COPY,
   WALLET_LIST_STYLE,
@@ -11,10 +12,8 @@ import {
 } from './constants';
 
 interface WalletListProps {
-  wallets: ListWallet[];
+  wallets: WalletWithDerived[];
 }
-
-type ListWallet = Pick<WalletWithDerived, 'id' | 'name' | 'icon' | 'balance'>;
 
 const List = styled.div`
   display: flex;
@@ -32,14 +31,18 @@ const Label = styled.span`
 `;
 
 export function WalletList({ wallets }: WalletListProps): JSX.Element {
+  const cards = wallets.map((wallet) => (
+    <WalletCard key={wallet.id} wallet={wallet}>
+      <SavingsStatStrip wallet={wallet} />
+    </WalletCard>
+  ));
+
   return (
     <List>
       <Label data-testid={WALLET_LIST_TEST_IDS.label}>
         {WALLET_LIST_COPY.label}
       </Label>
-      {wallets.map((wallet) => (
-        <WalletCard key={wallet.id} wallet={wallet} />
-      ))}
+      {cards}
     </List>
   );
 }
