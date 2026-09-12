@@ -1,7 +1,6 @@
 import {
   agorotToShekels,
   agorotToWholeShekels,
-  coinBreakdown,
   halfShekelAmount,
   shekelsToAgorot,
 } from '../money';
@@ -40,6 +39,10 @@ describe('halfShekelAmount', () => {
     expect(halfShekelAmount(38)).toBe(0.5);
   });
 
+  it('rounds an exact midpoint down', () => {
+    expect(halfShekelAmount(525)).toBe(5);
+  });
+
   it('rounds up to two and a half shekels', () => {
     expect(halfShekelAmount(238)).toBe(2.5);
   });
@@ -48,28 +51,5 @@ describe('halfShekelAmount', () => {
     expect(halfShekelAmount(0)).toBeNull();
     expect(halfShekelAmount(18)).toBeNull();
     expect(halfShekelAmount(20)).toBeNull();
-  });
-});
-
-describe('coinBreakdown', () => {
-  it('splits an exact half-shekel into full coins and a half', () => {
-    expect(coinBreakdown(550)).toEqual({ show: true, full: 5, half: true });
-  });
-
-  it('splits a whole-shekel amount into full coins only', () => {
-    expect(coinBreakdown(500)).toEqual({ show: true, full: 5, half: false });
-  });
-
-  it('rounds down to the nearest half-shekel', () => {
-    expect(coinBreakdown(525)).toEqual({ show: true, full: 5, half: false });
-  });
-
-  it('rounds up to the nearest half-shekel', () => {
-    expect(coinBreakdown(540)).toEqual({ show: true, full: 5, half: true });
-  });
-
-  it('hides when the amount rounds to zero', () => {
-    expect(coinBreakdown(0)).toEqual({ show: false, full: 0, half: false });
-    expect(coinBreakdown(20)).toEqual({ show: false, full: 0, half: false });
   });
 });

@@ -5,21 +5,12 @@ const CONSTANT_FILES = [
   'Account/WalletCard/constants.ts',
   'Account/WalletCard/StatStrip/constants.ts',
   'Account/OverviewCard/constants.ts',
-  'Account/CoinRow/constants.ts',
-  'Account/WalletHero/constants.ts',
   'Account/TransactionDrawer/constants.ts',
   'Account/TransactionDrawer/WalletTile/constants.ts',
   'Menu/AccountsSection/constants.ts',
 ];
 
-const ALLOW = new Set([
-  '#FFFFFF',
-  '#E8ECEF',
-  '#A6AEB5',
-  '#6C7681',
-  '#5B6570',
-  '#3A4750',
-]);
+const ALLOW = new Set<string>([]);
 
 it('migrated component constants hold no theme hex', () => {
   for (const rel of CONSTANT_FILES) {
