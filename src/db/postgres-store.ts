@@ -124,7 +124,7 @@ export class PostgresStore implements DataStore {
     const rows = (await this.sql`
       SELECT * FROM transactions
       WHERE account_id = ${accountId} AND wallet_id = ${walletId}
-      ORDER BY occurred_at
+      ORDER BY occurred_at, created_at, id
     `) as TransactionRow[];
     return rows.map(toTransaction);
   }
