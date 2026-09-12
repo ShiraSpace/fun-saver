@@ -63,8 +63,9 @@ Tests mirror the source, one test file per module, under each folder's `__tests_
 Production has never been migrated. Run `npm run db:migrate` against it only
 when you mean to. Dev and test got the CHECK via a one-off
 `ALTER TABLE ... ADD CONSTRAINT`, because `CREATE TABLE IF NOT EXISTS` cannot
-add a constraint to a table that already exists — the runner ceiling this plan
-documents, hit on its first real use. A fresh database gets it from `CREATE TABLE`.
+add a constraint to a table that already exists. A fresh database gets it from
+`CREATE TABLE`. That constraint could equally be carried in `schema.sql` as an
+idempotent `ALTER`, the way the `account_users` rename now is.
 
 ### Conventions PR 2 added
 
@@ -265,10 +266,15 @@ CREATE INDEX IF NOT EXISTS account_users_user_idx ON account_users(user_id);
 
 Run `db:migrate`, `db:migrate-dev`, `db:migrate-test`.
 
-> **Known ceiling:** `run-migration.ts` only replays `CREATE ... IF NOT EXISTS`.
-> It has no mechanism to ALTER an existing table idempotently. This feature adds
-> tables only, so it is not a problem today — the day a column changes, the
-> runner needs a versioned migrations table first.
+> **Corrected 2026-09-13.** This plan previously claimed the runner "has no
+> mechanism to ALTER an existing table idempotently". That was wrong.
+> `run-migration.ts` splits `schema.sql` and runs every statement inside one
+> `sql.transaction`, so `ALTER TABLE IF EXISTS ... RENAME TO` and
+> `ALTER INDEX IF EXISTS ... RENAME TO` replay safely forever — they no-op once
+> the old name is gone. The `account_users` rename is carried in `schema.sql`
+> itself for exactly this reason, rather than being a manual step recorded in a
+> PR description. A column *type* change would still want a versioned
+> migrations table; a rename does not.
 
 ## Authorization seam — the one file that tightens later
 

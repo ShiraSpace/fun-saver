@@ -1,3 +1,6 @@
+ALTER TABLE IF EXISTS account_members RENAME TO account_users;
+ALTER INDEX IF EXISTS account_members_user_idx RENAME TO account_users_user_idx;
+
 CREATE TABLE IF NOT EXISTS accounts (
   id        TEXT PRIMARY KEY,
   name      TEXT NOT NULL,
