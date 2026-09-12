@@ -18,7 +18,7 @@ type CardWallet = Pick<
 
 function subLineOf(wallet: CardWallet): string | undefined {
   if (wallet.name !== 'savings') {
-    return undefined;
+    return;
   }
 
   return WALLET_CARD_COPY.savingsSubLine(

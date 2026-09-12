@@ -26,14 +26,12 @@ interface MoneyProps {
   amountAgorot: number;
   testId: string;
   allowHalf?: boolean;
-  showSign?: boolean;
 }
 
 export function Money({
   amountAgorot,
   testId,
   allowHalf = false,
-  showSign = false,
 }: MoneyProps): JSX.Element {
   const shekels = allowHalf
     ? (halfShekelAmount(amountAgorot) ?? 0)
@@ -41,7 +39,6 @@ export function Money({
 
   return (
     <Amount dir="ltr" data-testid={testId}>
-      {showSign && MONEY_COPY.plus}
       <Currency>{MONEY_COPY.currency}</Currency>
       <Number>{shekels}</Number>
     </Amount>

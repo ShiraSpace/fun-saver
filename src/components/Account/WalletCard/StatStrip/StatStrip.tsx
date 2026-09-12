@@ -53,7 +53,6 @@ interface StatProps {
   amountAgorot: number;
   testId: string;
   allowHalf?: boolean;
-  showSign?: boolean;
 }
 
 function Stat({
@@ -62,7 +61,6 @@ function Stat({
   amountAgorot,
   testId,
   allowHalf,
-  showSign,
 }: StatProps): JSX.Element {
   return (
     <Cell tone={tone}>
@@ -72,7 +70,6 @@ function Stat({
           amountAgorot={amountAgorot}
           testId={testId}
           allowHalf={allowHalf}
-          showSign={showSign}
         />
       </Amount>
     </Cell>
@@ -113,7 +110,6 @@ export function StatStrip({
           amountAgorot={todayInterest}
           testId={STAT_STRIP_TEST_IDS.todayInterest}
           allowHalf
-          showSign
         />
       )}
     </Strip>

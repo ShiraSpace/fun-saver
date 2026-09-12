@@ -20,7 +20,7 @@ describe('dashboard', () => {
 
   it('shows the overview card with the savings daily interest', async () => {
     assert.equal(await dashboard.overviewExists(), true);
-    assert.match(await dashboard.savingsTodayInterest(), /\+/);
+    assert.match(await dashboard.savingsTodayInterest(), /₪\s*1/);
   });
 
   it('shows one card per wallet', async () => {
