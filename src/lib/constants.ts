@@ -2,6 +2,8 @@ import type { WalletName } from './types';
 
 export const AGOROT_PER_SHEKEL = 100;
 
+export const PERCENT_TOTAL = 100;
+
 export const MAX_ACCOUNT_NAME_LENGTH = 60;
 
 export const DAYS_PER_MONTH = 30;
