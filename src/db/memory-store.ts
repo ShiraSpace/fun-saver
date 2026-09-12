@@ -1,6 +1,6 @@
 import type { Account, Transaction } from '../lib/types';
 import type { ThemeId } from '@/theme/registry';
-import type { DataStore, GuardedTransactionInput } from './data-store';
+import type { DataStore } from './data-store';
 
 export class InMemoryStore implements DataStore {
   private readonly accounts: Account[] = [];
@@ -45,21 +45,5 @@ export class InMemoryStore implements DataStore {
       (transaction) =>
         transaction.accountId === accountId && transaction.walletId === walletId
     );
-  }
-
-  async insertTransactionWithGuard({
-    accountId,
-    walletId,
-    build,
-  }: GuardedTransactionInput): Promise<Transaction> {
-    const walletTransactions = this.transactions.filter(
-      (transaction) =>
-        transaction.accountId === accountId && transaction.walletId === walletId
-    );
-
-    const transaction = build(walletTransactions);
-    this.transactions.push(transaction);
-
-    return transaction;
   }
 }

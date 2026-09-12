@@ -2,11 +2,7 @@ import { readFile, writeFile, mkdir, rename } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import type { Account, Transaction } from '../lib/types';
 import type { ThemeId } from '@/theme/registry';
-import type {
-  DataStore,
-  GuardedTransactionInput,
-  StoreData,
-} from './data-store';
+import type { DataStore, StoreData } from './data-store';
 
 function emptyData(): StoreData {
   return { accounts: [], transactions: [] };
@@ -78,27 +74,6 @@ export class JsonFileStore implements DataStore {
             transaction.walletId === walletId
         )
     );
-  }
-
-  insertTransactionWithGuard({
-    accountId,
-    walletId,
-    build,
-  }: GuardedTransactionInput): Promise<Transaction> {
-    return this.enqueue(async (): Promise<Transaction> => {
-      const data = await this.readFromDisk();
-      const walletTransactions = data.transactions.filter(
-        (transaction) =>
-          transaction.accountId === accountId &&
-          transaction.walletId === walletId
-      );
-
-      const transaction = build(walletTransactions);
-      data.transactions.push(transaction);
-      await this.persist(data);
-
-      return transaction;
-    });
   }
 
   private enqueue<T>(operation: () => Promise<T>): Promise<T> {

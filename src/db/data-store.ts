@@ -6,16 +6,6 @@ export interface StoreData {
   transactions: Transaction[];
 }
 
-export type BuildGuardedTransaction = (
-  walletTransactions: Transaction[]
-) => Transaction;
-
-export interface GuardedTransactionInput {
-  accountId: string;
-  walletId: string;
-  build: BuildGuardedTransaction;
-}
-
 export interface DataStore {
   insertAccount(account: Account): Promise<void>;
   listAccounts(): Promise<Account[]>;
@@ -26,7 +16,4 @@ export interface DataStore {
     accountId: string,
     walletId: string
   ): Promise<Transaction[]>;
-  insertTransactionWithGuard(
-    input: GuardedTransactionInput
-  ): Promise<Transaction>;
 }
