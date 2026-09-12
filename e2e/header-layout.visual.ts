@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { type BoundingBox } from 'puppeteer';
 import { TYPE_SCALE } from '@/theme/typography';
-import { mockAccount } from '@/test-support/fixtures';
+import { mockAccount } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
 const EDGE_TOLERANCE = 24;

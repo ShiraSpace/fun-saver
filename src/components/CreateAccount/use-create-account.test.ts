@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { mockAccount, mockCreateAccountInput } from '@/test-support/fixtures';
+import { mockAccount, mockCreateAccountInput } from '@/test-utils/fixtures';
 import { useCreateAccount } from './use-create-account';
 
 describe('useCreateAccount', () => {

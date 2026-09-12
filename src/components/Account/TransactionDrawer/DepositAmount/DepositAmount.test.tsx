@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-support/render';
+import { render, screen } from '@/test-utils/render';
 import { DepositAmount } from './DepositAmount';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 
