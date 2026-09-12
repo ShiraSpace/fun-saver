@@ -29,9 +29,7 @@ export class JsonUsers implements UserRepository {
   insert(user: User): Promise<void> {
     return this.session.write(async (data, save): Promise<void> => {
       if (findUser(data.users, user.provider, user.providerAccountId)) {
-        throw new DuplicateUserError(
-          `${user.provider} account ${user.providerAccountId} already has a user`
-        );
+        throw new DuplicateUserError(user);
       }
       data.users.push(user);
       await save();

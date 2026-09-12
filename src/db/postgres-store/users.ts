@@ -35,9 +35,7 @@ export class PostgresUsers implements UserRepository {
     `;
 
     if (inserted.length === 0) {
-      throw new DuplicateUserError(
-        `${user.provider} account ${user.providerAccountId} already has a user`
-      );
+      throw new DuplicateUserError(user);
     }
   }
 
