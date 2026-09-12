@@ -20,14 +20,15 @@ export function CreateAccount({
   const router = useRouter();
   const { createAccount } = useCreateAccount();
 
-  const handleSubmit = (values: AccountFormValues): void => {
-    void createAccount(values).then((account) => {
-      if (onCreated) {
-        onCreated(account);
-        return;
-      }
-      router.push('/');
-    });
+  const handleSubmit = async (values: AccountFormValues): Promise<void> => {
+    const account = await createAccount(values);
+
+    if (onCreated) {
+      onCreated(account);
+      return;
+    }
+
+    router.push('/');
   };
 
   return (

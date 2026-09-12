@@ -5,6 +5,7 @@ export const ACCOUNT_FORM_TEST_IDS = {
   titleIcon: 'account-form-title-icon',
   submit: 'account-form-submit',
   cancel: 'account-form-cancel',
+  saveError: 'account-form-save-error',
 } as const;
 
 export const ACCOUNT_FORM_LAYOUT = {
@@ -17,4 +18,5 @@ export const ACCOUNT_FORM_LAYOUT = {
 export const ACCOUNT_FORM_COPY = {
   cancel: '✕',
   cancelLabel: 'סגירה',
+  saveError: 'לא הצלחנו לשמור את החשבון, נסו שוב',
 } as const;
