@@ -3,6 +3,8 @@ import type { Account, Transaction, Wallet } from '@/lib/types';
 import type { ThemeId } from '@/theme/registry';
 import type { DataStore } from './data-store';
 
+type QueryParam = string | number | boolean | null;
+
 interface AccountRow {
   id: string;
   name: string;
@@ -67,14 +69,19 @@ export class PostgresStore implements DataStore {
   }
 
   async listAccounts(): Promise<Account[]> {
-    const rows = (await this
-      .sql`SELECT * FROM accounts ORDER BY name`) as AccountRow[];
+    const rows = await this.selectRows<AccountRow>(
+      'SELECT * FROM accounts ORDER BY name'
+    );
+
     return rows.map(toAccount);
   }
 
   async getAccount(id: string): Promise<Account | undefined> {
-    const rows = (await this
-      .sql`SELECT * FROM accounts WHERE id = ${id}`) as AccountRow[];
+    const rows = await this.selectRows<AccountRow>(
+      'SELECT * FROM accounts WHERE id = $1',
+      [id]
+    );
+
     return rows[0] ? toAccount(rows[0]) : undefined;
   }
 
@@ -82,9 +89,11 @@ export class PostgresStore implements DataStore {
     id: string,
     themeId: ThemeId
   ): Promise<Account | undefined> {
-    const rows = (await this.sql`
-      UPDATE accounts SET theme_id = ${themeId} WHERE id = ${id} RETURNING *
-    `) as AccountRow[];
+    const rows = await this.selectRows<AccountRow>(
+      'UPDATE accounts SET theme_id = $1 WHERE id = $2 RETURNING *',
+      [themeId, id]
+    );
+
     return rows[0] ? toAccount(rows[0]) : undefined;
   }
 
@@ -121,11 +130,21 @@ export class PostgresStore implements DataStore {
     accountId: string,
     walletId: string
   ): Promise<Transaction[]> {
-    const rows = (await this.sql`
-      SELECT * FROM transactions
-      WHERE account_id = ${accountId} AND wallet_id = ${walletId}
-      ORDER BY occurred_at, created_at, id
-    `) as TransactionRow[];
+    const rows = await this.selectRows<TransactionRow>(
+      `SELECT * FROM transactions
+       WHERE account_id = $1 AND wallet_id = $2
+       ORDER BY occurred_at, created_at, id`,
+      [accountId, walletId]
+    );
+
     return rows.map(toTransaction);
+  }
+
+  private async selectRows<Row>(
+    text: string,
+    params?: QueryParam[]
+  ): Promise<Row[]> {
+    const rows = await this.sql.query(text, params);
+    return rows as Row[];
   }
 }
