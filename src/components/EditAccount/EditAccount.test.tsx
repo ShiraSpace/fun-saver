@@ -1,6 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
-import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
+import {
+  ACCOUNT_FORM_COPY,
+  ACCOUNT_FORM_TEST_IDS,
+} from '@/components/AccountForm/constants';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
 import { AVATARS } from '@/lib/avatars';
 import { mockAccount, mockAccountEdit } from '@/test-support/fixtures';
@@ -80,6 +83,17 @@ describe('EditAccount', () => {
       avatarId: mockAccount.avatarId,
     });
     await waitFor(() => expect(mockOnUpdated).toHaveBeenCalledTimes(1));
+  });
+
+  it('keeps the form open and says so when the save fails', async () => {
+    mockUpdateAccount.mockRejectedValue(new Error('nope'));
+
+    fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+
+    expect(
+      await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
+    ).toHaveTextContent(ACCOUNT_FORM_COPY.saveError);
+    expect(mockOnUpdated).not.toHaveBeenCalled();
   });
 
   it('cancels without saving', () => {

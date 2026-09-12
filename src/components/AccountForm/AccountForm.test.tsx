@@ -1,9 +1,9 @@
-import { fireEvent, render, screen } from '@/test-support/render';
+import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { AVATARS } from '@/lib/avatars';
 import { AccountForm } from './AccountForm';
 import { NAME_FIELD_TEST_IDS } from './NameField/constants';
-import { ACCOUNT_FORM_TEST_IDS } from './constants';
+import { ACCOUNT_FORM_COPY, ACCOUNT_FORM_TEST_IDS } from './constants';
 
 const mockForm = {
   testId: 'account-form-under-test',
@@ -122,6 +122,41 @@ describe('AccountForm', () => {
         name: mockForm.name,
         avatarId: AVATARS[0].id,
       });
+    });
+
+    it('shows nothing about saving until a save fails', () => {
+      expect(
+        screen.queryByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
+      ).not.toBeInTheDocument();
+    });
+
+    it('tells the user when the save fails', async () => {
+      mockOnSubmit.mockRejectedValue(new Error('nope'));
+
+      typeName(mockForm.name);
+      pickFirstAvatar();
+      submit();
+
+      expect(
+        await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
+      ).toHaveTextContent(ACCOUNT_FORM_COPY.saveError);
+    });
+
+    it('clears a previous failure when the next save succeeds', async () => {
+      mockOnSubmit.mockRejectedValueOnce(new Error('nope'));
+
+      typeName(mockForm.name);
+      pickFirstAvatar();
+      submit();
+      await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError);
+
+      submit();
+
+      await waitFor(() =>
+        expect(
+          screen.queryByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
+        ).not.toBeInTheDocument()
+      );
     });
 
     it('calls onCancel when the close button is tapped', () => {
