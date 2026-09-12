@@ -6,6 +6,7 @@ import type { Theme } from '@emotion/react';
 import { Screen } from '@/components/Screen';
 import { AvatarPicker } from '@/components/AvatarPicker';
 import { ActionButton } from '@/components/ActionButton';
+import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { NameField } from './NameField';
 import {
   ACCOUNT_FORM_COPY,
@@ -44,6 +45,12 @@ const TitleIcon = styled.span`
   line-height: 1;
 `;
 
+const SaveError = styled.span`
+  font-size: ${({ theme }): number => theme.typography.label}px;
+  font-weight: 600;
+  color: ${titleColor};
+`;
+
 const CloseButton = styled.button`
   position: absolute;
   inset-block-start: ${ACCOUNT_FORM_LAYOUT.closeInset}px;
@@ -74,7 +81,7 @@ interface AccountFormProps {
   submitLabel: string;
   initialName?: string;
   initialAvatarId?: string | null;
-  onSubmit: (values: AccountFormValues) => void;
+  onSubmit: (values: AccountFormValues) => Promise<void> | void;
   onCancel?: () => void;
   'data-testid': string;
 }
@@ -91,21 +98,37 @@ export function AccountForm({
 }: AccountFormProps): JSX.Element {
   const [name, setName] = useState(initialName);
   const [selectedAvatarId, setSelectedAvatarId] = useState(initialAvatarId);
+  const [saveFailed, setSaveFailed] = useState(false);
 
   const canSubmit = name.trim() !== '' && selectedAvatarId !== null;
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
     if (selectedAvatarId === null) {
       return;
     }
-    onSubmit({ name: name.trim(), avatarId: selectedAvatarId });
+
+    setSaveFailed(false);
+
+    try {
+      await onSubmit({ name: name.trim(), avatarId: selectedAvatarId });
+    } catch {
+      setSaveFailed(true);
+    }
   };
 
   const icon = titleIcon ? (
     <TitleIcon aria-hidden="true" data-testid={ACCOUNT_FORM_TEST_IDS.titleIcon}>
       {titleIcon}
     </TitleIcon>
+  ) : null;
+
+  const saveError = saveFailed ? (
+    <SaveError data-testid={ACCOUNT_FORM_TEST_IDS.saveError}>
+      {ACCOUNT_FORM_COPY.saveError}
+    </SaveError>
   ) : null;
 
   const cancelButton = onCancel ? (
@@ -121,13 +144,17 @@ export function AccountForm({
 
   return (
     <Screen align="top" data-testid={testId}>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={(event): void => void handleSubmit(event)}>
         {cancelButton}
         <Title data-testid={ACCOUNT_FORM_TEST_IDS.title}>
           {icon}
           {title}
         </Title>
-        <NameField value={name} onChange={setName} />
+        <NameField
+          value={name}
+          onChange={setName}
+          maxLength={MAX_ACCOUNT_NAME_LENGTH}
+        />
         <AvatarPicker
           selectedId={selectedAvatarId}
           onSelect={setSelectedAvatarId}
@@ -139,6 +166,7 @@ export function AccountForm({
         >
           {submitLabel}
         </ActionButton>
+        {saveError}
       </Form>
     </Screen>
   );
