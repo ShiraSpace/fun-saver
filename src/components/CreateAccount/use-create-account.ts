@@ -1,25 +1,20 @@
 import type { Account } from '@/lib/types';
 import type { CreateAccountInput } from '@/lib/accounts-store';
+import { fetchJson } from '@/lib/fetch-json';
 
 const ACCOUNTS_ENDPOINT = '/api/accounts';
 
-export function useCreateAccount(): {
+interface AccountCreator {
   createAccount: (input: CreateAccountInput) => Promise<Account>;
-} {
-  const createAccount = async (input: CreateAccountInput): Promise<Account> => {
-    const response = await fetch(ACCOUNTS_ENDPOINT, {
+}
+
+export function useCreateAccount(): AccountCreator {
+  const createAccount = (input: CreateAccountInput): Promise<Account> =>
+    fetchJson<Account>({
+      url: ACCOUNTS_ENDPOINT,
       method: 'POST',
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input),
+      body: input,
     });
-
-    if (!response.ok) {
-      throw new Error('failed to create account');
-    }
-
-    return response.json();
-  };
 
   return { createAccount };
 }

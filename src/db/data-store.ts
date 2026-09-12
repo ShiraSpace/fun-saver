@@ -6,6 +6,19 @@ export interface StoreData {
   transactions: Transaction[];
 }
 
+export interface AccountRepository {
+  insert(account: Account): Promise<void>;
+  list(): Promise<Account[]>;
+  get(id: string): Promise<Account | undefined>;
+  setTheme(id: string, themeId: ThemeId): Promise<Account | undefined>;
+  update(id: string, edits: AccountEdits): Promise<Account | undefined>;
+}
+
+export interface TransactionRepository {
+  insert(transactions: Transaction[]): Promise<void>;
+  listByWallet(accountId: string, walletId: string): Promise<Transaction[]>;
+}
+
 export interface DataStore {
   insertAccount(account: Account): Promise<void>;
   listAccounts(): Promise<Account[]>;
