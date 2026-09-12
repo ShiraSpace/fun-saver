@@ -23,14 +23,14 @@ review ran twice on the branch and found nothing.
 
 ## Next
 
-**Plan PR 3 — `feat/membership-store-methods`**, branched off updated `origin/main` once
-#32 merges. Its section in the plan is current: `MemberRepository`, one `members.ts` per
+**Plan PR 3 — `feat/account-user-store-methods`**, branched off updated `origin/main` once
+#32 merges. Its section in the plan is current: `AccountUserRepository`, one `account-users.ts` per
 store folder, the three `DataStore` methods delegated once in `base-store.ts`, and a
-`members.e2e.ts` live suite needing `account_members` added to `live-store.ts` cleanup.
+`account-users.e2e.ts` live suite needing `account_users` added to `live-store.ts` cleanup.
 
 ## Watch-outs
 
-- **Neon main (production) has never been migrated** — `users` / `account_members` do not
+- **Neon main (production) has never been migrated** — `users` / `account_users` do not
   exist there. Run `npm run db:migrate` against it only when you mean to.
 - **`e2e/*.e2e.ts` depends on the `next build` that `test:visual` performs.** Run it alone
   and `next start` fails with "server did not start". Undocumented coupling, not fixed.

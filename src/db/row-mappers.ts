@@ -1,8 +1,8 @@
 import type {
   Account,
-  AccountMember,
+  AccountUser,
   AuthProvider,
-  MembershipRole,
+  AccountUserRole,
   Transaction,
   User,
   Wallet,
@@ -60,7 +60,7 @@ export interface UserRow {
   created_at: string;
 }
 
-export interface AccountMemberRow {
+export interface AccountUserRow {
   account_id: string;
   user_id: string;
   role: string;
@@ -78,11 +78,11 @@ export function toUser(row: UserRow): User {
   };
 }
 
-export function toAccountMember(row: AccountMemberRow): AccountMember {
+export function toAccountUser(row: AccountUserRow): AccountUser {
   return {
     accountId: row.account_id,
     userId: row.user_id,
-    role: row.role as MembershipRole,
+    role: row.role as AccountUserRole,
     addedAt: row.added_at,
   };
 }
