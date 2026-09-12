@@ -1,4 +1,4 @@
-import { mockAccount } from '@/test-support/fixtures';
+import { mockAccount } from '@/test-utils/fixtures';
 import { fetchJson } from '../fetch-json';
 
 const connectionError = new Error('offline');
