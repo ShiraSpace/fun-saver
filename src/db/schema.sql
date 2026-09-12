@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS account_members (
   account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   user_id    TEXT NOT NULL REFERENCES users(id)    ON DELETE CASCADE,
-  role       TEXT NOT NULL,
+  role       TEXT NOT NULL CHECK (role IN ('owner', 'editor', 'viewer')),
   added_at   TEXT NOT NULL,
   PRIMARY KEY (account_id, user_id)
 );
