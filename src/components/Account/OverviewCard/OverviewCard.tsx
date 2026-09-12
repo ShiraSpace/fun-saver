@@ -4,14 +4,34 @@ import { JSX } from 'react';
 import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
 import { totalBalance, walletShares } from '@/lib/derivations';
+import { agorotToWholeShekels } from '@/lib/money';
 import { Money } from '@/components/Money';
 import { Donut } from './Donut';
+import { DONUT_STYLE } from './constants';
 import { Legend } from './Legend';
 import {
   OVERVIEW_CARD_COPY,
   OVERVIEW_CARD_STYLE,
   OVERVIEW_CARD_TEST_IDS,
 } from './constants';
+
+const HOLE_DIAMETER =
+  (DONUT_STYLE.radius - DONUT_STYLE.strokeWidth / 2) *
+  2 *
+  (DONUT_STYLE.size / DONUT_STYLE.viewBox);
+
+function holeFontSize(totalAgorot: number): number {
+  const digits = String(agorotToWholeShekels(totalAgorot)).length;
+
+  if (digits <= OVERVIEW_CARD_STYLE.holeMaxDigits) {
+    return OVERVIEW_CARD_STYLE.holeAmountSize;
+  }
+
+  return Math.floor(
+    (OVERVIEW_CARD_STYLE.holeAmountSize * OVERVIEW_CARD_STYLE.holeMaxDigits) /
+      digits
+  );
+}
 
 type OverviewWallet = Pick<WalletWithDerived, 'id' | 'name' | 'balance'>;
 
@@ -47,8 +67,9 @@ const HoleLabel = styled.span`
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
 
-const HoleAmount = styled.span`
-  font-size: ${OVERVIEW_CARD_STYLE.holeAmountSize}px;
+const HoleAmount = styled.span<{ fontSize: number }>`
+  font-size: ${({ fontSize }): number => fontSize}px;
+  max-width: ${HOLE_DIAMETER}px;
 `;
 
 interface OverviewCardProps {
@@ -69,7 +90,7 @@ export function OverviewCard({ wallets }: OverviewCardProps): JSX.Element {
         <Donut segments={entries} />
         <Hole>
           <HoleLabel>{OVERVIEW_CARD_COPY.totalLabel}</HoleLabel>
-          <HoleAmount>
+          <HoleAmount fontSize={holeFontSize(total)}>
             <Money amountAgorot={total} testId={OVERVIEW_CARD_TEST_IDS.total} />
           </HoleAmount>
         </Hole>

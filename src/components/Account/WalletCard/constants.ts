@@ -1,14 +1,6 @@
 import type { WalletName } from '@/lib/types';
 import { PERCENT_TOTAL } from '@/lib/constants';
-
-const HEBREW_DAY_MONTH = new Intl.DateTimeFormat('he', {
-  day: 'numeric',
-  month: 'long',
-  timeZone: 'UTC',
-});
-
-const dayMonth = (isoDate: string): string =>
-  HEBREW_DAY_MONTH.format(new Date(`${isoDate}T00:00:00Z`));
+import { dayMonth } from '@/lib/dates';
 
 export const WALLET_CARD_TEST_IDS = {
   card: 'wallet-card',

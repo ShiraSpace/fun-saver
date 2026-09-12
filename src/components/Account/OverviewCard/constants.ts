@@ -44,6 +44,7 @@ export const OVERVIEW_CARD_STYLE = {
   holeLabelSize: 10,
   holeLabelSpacing: 0.4,
   holeAmountSize: 26,
+  holeMaxDigits: 4,
   legendGap: 11,
   legendRowGap: 9,
   dotSize: 14,

@@ -40,7 +40,7 @@ const Head = styled.div`
   gap: ${WALLET_CARD_STYLE.gap}px;
 `;
 
-const Illust = styled.span<{ name: CardWallet['name'] }>`
+const Illust = styled.span<{ walletName: CardWallet['name'] }>`
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -49,8 +49,8 @@ const Illust = styled.span<{ name: CardWallet['name'] }>`
   height: ${WALLET_CARD_STYLE.illustSize}px;
   border-radius: ${WALLET_CARD_STYLE.illustRadius}px;
   font-size: ${WALLET_CARD_STYLE.illustFontSize}px;
-  background: ${({ name, theme }): string =>
-    theme.gradients[WALLET_GRADIENT[name]]};
+  background: ${({ walletName, theme }): string =>
+    theme.gradients[WALLET_GRADIENT[walletName]]};
 `;
 
 const Name = styled.span`
@@ -90,7 +90,7 @@ export function WalletCard({ wallet, children }: WalletCardProps): JSX.Element {
   return (
     <Card data-testid={WALLET_CARD_TEST_IDS.card}>
       <Head>
-        <Illust name={wallet.name}>{wallet.icon}</Illust>
+        <Illust walletName={wallet.name}>{wallet.icon}</Illust>
         <Name>
           {WALLET_CARD_COPY.name[wallet.name]}
           {subLine && (

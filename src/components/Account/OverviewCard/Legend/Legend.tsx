@@ -26,13 +26,13 @@ const Row = styled.div`
   font-weight: 600;
 `;
 
-const Dot = styled.span<{ name: WalletName }>`
+const Dot = styled.span<{ walletName: WalletName }>`
   flex-shrink: 0;
   width: ${OVERVIEW_CARD_STYLE.dotSize}px;
   height: ${OVERVIEW_CARD_STYLE.dotSize}px;
   border-radius: ${OVERVIEW_CARD_STYLE.dotRadius}px;
-  background: ${({ name, theme }): string =>
-    theme.colors[WALLET_ARC_COLOR[name]]};
+  background: ${({ walletName, theme }): string =>
+    theme.colors[WALLET_ARC_COLOR[walletName]]};
 `;
 
 const Share = styled.span`
@@ -62,7 +62,7 @@ interface LegendProps {
 export function Legend({ entries }: LegendProps): JSX.Element {
   const rows = entries.map((entry) => (
     <Row key={entry.id} data-testid={OVERVIEW_CARD_TEST_IDS.legendRow}>
-      <Dot name={entry.name} />
+      <Dot walletName={entry.name} />
       {OVERVIEW_CARD_COPY.name[entry.name]}
       <Share data-testid={OVERVIEW_CARD_TEST_IDS.legendShare}>
         {OVERVIEW_CARD_COPY.share(entry.share)}
