@@ -1,5 +1,5 @@
 import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
-import type { Account, Transaction } from '@/lib/types';
+import type { Account, AccountEdits, Transaction } from '@/lib/types';
 import type { ThemeId } from '@/theme/registry';
 import type { DataStore } from './data-store';
 import {
@@ -49,6 +49,31 @@ function buildInsertBatch(transactions: Transaction[]): InsertBatch {
   return { values, placeholders: rows.join(', ') };
 }
 
+function editedColumns(edits: AccountEdits): {
+  assignments: string;
+  values: QueryParam[];
+} {
+  const columns: string[] = [];
+  const values: QueryParam[] = [];
+
+  if (edits.name !== undefined) {
+    columns.push('name');
+    values.push(edits.name);
+  }
+
+  if (edits.avatarId !== undefined) {
+    columns.push('avatar_id');
+    values.push(edits.avatarId);
+  }
+
+  return {
+    assignments: columns
+      .map((column, index) => `${column} = $${index + 1}`)
+      .join(', '),
+    values,
+  };
+}
+
 export class PostgresStore implements DataStore {
   private readonly sql: NeonQueryFunction<false, false>;
 
@@ -94,6 +119,24 @@ export class PostgresStore implements DataStore {
     const rows = await this.selectRows<AccountRow>(
       'UPDATE accounts SET theme_id = $1 WHERE id = $2 RETURNING *',
       [themeId, id]
+    );
+
+    return rows[0] ? toAccount(rows[0]) : undefined;
+  }
+
+  async updateAccount(
+    id: string,
+    edits: AccountEdits
+  ): Promise<Account | undefined> {
+    const { assignments, values } = editedColumns(edits);
+
+    if (values.length === 0) {
+      return;
+    }
+
+    const rows = await this.selectRows<AccountRow>(
+      `UPDATE accounts SET ${assignments} WHERE id = $${values.length + 1} RETURNING *`,
+      [...values, id]
     );
 
     return rows[0] ? toAccount(rows[0]) : undefined;

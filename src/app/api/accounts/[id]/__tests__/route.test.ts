@@ -33,25 +33,26 @@ afterEach(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-function putAccount(body: unknown, id: string): Promise<Response> {
-  const request = new Request('http://localhost/api/accounts/x', {
+function putRawBody(id: string, body: string | undefined): Promise<Response> {
+  const request = new Request(`http://localhost/api/accounts/${id}`, {
     method: 'PUT',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body),
+    body,
   });
 
   return PUT(request, { params: Promise.resolve({ id }) });
 }
 
+function putAccount(id: string, body: unknown): Promise<Response> {
+  return putRawBody(id, JSON.stringify(body));
+}
+
 describe('PUT /api/accounts/[id]', () => {
   it('saves the new name and avatar on the account', async () => {
-    const response = await putAccount(
-      {
-        name: `  ${mockAccountEdit.name}  `,
-        avatarId: mockAccountEdit.avatarId,
-      },
-      accountId
-    );
+    const response = await putAccount(accountId, {
+      name: `  ${mockAccountEdit.name}  `,
+      avatarId: mockAccountEdit.avatarId,
+    });
 
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject(mockAccountEdit);
@@ -61,10 +62,9 @@ describe('PUT /api/accounts/[id]', () => {
   });
 
   it('updates the name alone without touching the avatar', async () => {
-    const response = await putAccount(
-      { name: mockAccountEdit.name },
-      accountId
-    );
+    const response = await putAccount(accountId, {
+      name: mockAccountEdit.name,
+    });
 
     expect(response.status).toBe(200);
     expect(await getStore().getAccount(accountId)).toMatchObject({
@@ -74,10 +74,9 @@ describe('PUT /api/accounts/[id]', () => {
   });
 
   it('updates the avatar alone without touching the name', async () => {
-    const response = await putAccount(
-      { avatarId: mockAccountEdit.avatarId },
-      accountId
-    );
+    const response = await putAccount(accountId, {
+      avatarId: mockAccountEdit.avatarId,
+    });
 
     expect(response.status).toBe(200);
     expect(await getStore().getAccount(accountId)).toMatchObject({
@@ -93,9 +92,20 @@ describe('PUT /api/accounts/[id]', () => {
     ['an unknown avatar', { avatarId: 'not-an-avatar' }],
     ['a non-string name', { name: 7 }],
     ['a non-object body', 'רוני'],
-    ['an unparsable body', undefined],
   ])('rejects %s with 400', async (_label, body) => {
-    const response = await putAccount(body, accountId);
+    const response = await putAccount(accountId, body);
+
+    expect(response.status).toBe(400);
+    expect(await getStore().getAccount(accountId)).toMatchObject(
+      mockCreateAccountInput
+    );
+  });
+
+  it.each([
+    ['malformed json', '{ "name": '],
+    ['no body at all', undefined],
+  ])('rejects %s with 400', async (_label, body) => {
+    const response = await putRawBody(accountId, body);
 
     expect(response.status).toBe(400);
     expect(await getStore().getAccount(accountId)).toMatchObject(
@@ -104,10 +114,9 @@ describe('PUT /api/accounts/[id]', () => {
   });
 
   it('returns 404 for an unknown account', async () => {
-    const response = await putAccount(
-      { name: mockAccountEdit.name },
-      'does-not-exist'
-    );
+    const response = await putAccount('does-not-exist', {
+      name: mockAccountEdit.name,
+    });
 
     expect(response.status).toBe(404);
   });
