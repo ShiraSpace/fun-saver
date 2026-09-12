@@ -2,6 +2,7 @@ import type {
   Account,
   AccountWithDerivedWallets,
   Transaction,
+  User,
   Wallet,
   WalletWithDerived,
 } from '@/lib/types';
@@ -58,6 +59,18 @@ export function createMockTransaction(
   };
 }
 
+export function createMockUser(overrides: Partial<User> = {}): User {
+  return {
+    id: 'u1',
+    provider: 'google',
+    providerAccountId: 'google-sub-1',
+    email: 'eli@example.com',
+    name: 'אלי',
+    createdAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
 export function createMockDerivedWallet(
   overrides: Partial<WalletWithDerived> = {}
 ): WalletWithDerived {
@@ -79,6 +92,8 @@ export const mockSecondAccount: Account = createMockAccount({
   avatarId: 'kid-08',
   wallets: [],
 });
+
+export const mockUser: User = createMockUser();
 
 export const mockCreateAccountInput = {
   name: mockAccount.name,

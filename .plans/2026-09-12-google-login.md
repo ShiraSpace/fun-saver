@@ -6,17 +6,18 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-12
+## Progress — updated 2026-09-12 (PR 2 open)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
-| Plan    | GitHub                                                 | Branch                        | Status                                                        |
-| ------- | ------------------------------------------------------ | ----------------------------- | ------------------------------------------------------------- |
-| PR 1    | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`         | **merged**                                                    |
-| —       | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename             | **merged** (not in this plan)                                 |
-| —       | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity` | **merged** (not in this plan)                                 |
-| PR 2    | —                                                      | `feat/user-store-methods`     | **next** — see its section, rewritten for the post-#30 layout |
-| PR 3–10 | —                                                      | —                             | not started                                                   |
+| Plan    | GitHub                                                 | Branch                          | Status                                                       |
+| ------- | ------------------------------------------------------ | ------------------------------- | ------------------------------------------------------------ |
+| PR 1    | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`           | **merged**                                                   |
+| —       | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename               | **merged** (not in this plan)                                |
+| —       | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`   | **merged** (not in this plan)                                |
+| PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`       | **open** — also carries `BaseStore` and the `*.e2e.ts` rename |
+| PR 3    | —                                                      | `feat/membership-store-methods` | **next**                                                     |
+| PR 4–10 | —                                                      | —                               | not started                                                  |
 
 **Two out-of-plan refactors landed between PR 1 and PR 2.** Neither is part of
 the feature; both were done to stop later PRs making things worse.
@@ -26,19 +27,22 @@ the feature; both were done to stop later PRs making things worse.
 - **#30** split the three stores into folders. This is the important one for
   PR 2 and PR 3 — see **Store layout after #30** below.
 
-### Store layout after #30
+### Store layout after #30 and PR 2
 
 ```
-src/db/data-store.ts       DataStore + AccountRepository + TransactionRepository
+src/db/data-store.ts       DataStore + the three repository interfaces
+src/db/base-store.ts       BaseStore — every DataStore method, written once
 
-src/db/memory-store/       index.ts  accounts.ts  transactions.ts
-src/db/json-file-store/    index.ts  accounts.ts  transactions.ts  file.ts  file-session.ts
-src/db/postgres-store/     index.ts  accounts.ts  transactions.ts  query.ts
+src/db/memory-store/       index.ts  accounts.ts  transactions.ts  users.ts
+src/db/json-file-store/    index.ts  accounts.ts  transactions.ts  users.ts  file-session.ts
+src/db/postgres-store/     index.ts  accounts.ts  transactions.ts  users.ts  query.ts
 ```
 
-Each `index.ts` implements the flat `DataStore` and only delegates. Each entity
-file is one class implementing its repository interface. `DataStore` itself is
-unchanged, so no caller outside `src/db` moved.
+Each entity file is one class implementing its repository interface. Each
+`index.ts` now only constructs those classes and hands them to `super(...)` —
+`BaseStore` holds the delegation, so a new `DataStore` method is written once
+rather than three times. Class names are unchanged, so no caller outside
+`src/db` moved.
 
 The dependency each class takes differs by store: `PostgresAccounts` takes `sql`
 (from `query.ts`), `MemoryAccounts` owns its own array, `JsonAccounts` takes a
@@ -62,17 +66,26 @@ when you mean to. Dev and test got the CHECK via a one-off
 add a constraint to a table that already exists — the runner ceiling this plan
 documents, hit on its first real use. A fresh database gets it from `CREATE TABLE`.
 
-### Do not use the old stash
+### Conventions PR 2 added
 
-There is a `git stash` entry named `PR2 user store methods`. **It is obsolete —
-drop it.** It was taken against the pre-#29/#30 tree: it edits
-`src/db/{json-file,memory,postgres}-store.ts` (deleted by #30) and
-`src/test-support/test-utils.ts` (renamed by #29). Write PR 2 fresh from the
-section below instead.
+- **`BaseStore` owns delegation.** A new `DataStore` method is one method in
+  `src/db/base-store.ts` plus one method per repository class. Do not add
+  delegating methods to a store's `index.ts`.
+- **A test needing a live database is named `*.e2e.ts`**, the same suffix as
+  the browser suites in `e2e/`, beside `*.visual.ts`: `accounts.e2e.ts`,
+  `transactions.e2e.ts`, `users.e2e.ts`. `npm test` only matches `*.test.ts` and
+  never loads them; `npm run test:db` selects them by the same name, scoped to
+  `src/**/__tests__/` so the browser suites in `e2e/` stay out of it. This replaced a per-file `TEST_DATABASE_URL`
+  guard that skipped the suite at runtime. `jest.config.ts` needs no entry.
+- **`live-store.ts` reads `TEST_DATABASE_URL` itself and throws** when it is
+  missing, so `test:db` without a database fails loudly rather than reporting
+  green with everything skipped. `withLiveStore()` takes no argument and hands
+  back `accountId` / `txId` / `userId` prefix helpers.
+- **`test:e2e` runs `test:db` first**, so a broken query fails in seconds
+  instead of after a full `next build`.
 
-One defect in it not to reproduce: a regex substitution corrupted a test
-description to `it('maps a mockTransaction row to a Transaction')`. Rename
-identifiers, not words inside strings.
+The old `git stash` entry named `PR2 user store methods` is obsolete — PR 2 was
+written fresh against the split folders. Drop it.
 
 ### Naming settled in review
 
@@ -295,58 +308,36 @@ Tests: row-mapper unit tests alongside the existing ones.
 
 Depends on: nothing. Ships: two unread tables; zero behaviour change.
 
-### PR 2 — `feat/user-store-methods` — NEXT
+### PR 2 — `feat/user-store-methods` — OPEN (#32)
 
-Rewritten for the post-#30 folder layout. Branch off updated `origin/main`.
+Shipped as described, plus two things the section did not anticipate.
 
-**`src/db/data-store.ts`**
+**`src/db/data-store.ts`** — `StoreData` gains `users: User[]`; a
+`UserRepository` interface (`findByProvider`, `insert`); `DataStore` gains
+`findUserByProvider` and `insertUser`.
 
-- `StoreData` gains `users: User[]`.
-- New `UserRepository` interface, beside the existing two:
-  ```ts
-  export interface UserRepository {
-    findByProvider(
-      provider: AuthProvider,
-      providerAccountId: string
-    ): Promise<User | undefined>;
-    insert(user: User): Promise<void>;
-  }
-  ```
-- `DataStore` gains the two flat methods callers use:
-  ```ts
-  findUserByProvider(
-    provider: AuthProvider,
-    providerAccountId: string
-  ): Promise<User | undefined>;
-  insertUser(user: User): Promise<void>;
-  ```
+**One `users.ts` per store folder** — `MemoryUsers` (own array), `JsonUsers`
+(the shared `FileSession`), `PostgresUsers` (`Sql` from `./query`, a
+parameterised `SELECT` through `toUser` and a tagged-template `INSERT`, backed
+by PR 1's `UNIQUE (provider, provider_account_id)`).
 
-**One new `users.ts` per store folder**, each a class implementing
-`UserRepository`, taking the same dependency its sibling entity classes take:
+**`emptyData()` gains `users: []`** — it lives in `json-file-store/file-session.ts`,
+not `file.ts`; this plan named a file that does not exist.
 
-| File                       | Class           | Takes                    |
-| -------------------------- | --------------- | ------------------------ |
-| `memory-store/users.ts`    | `MemoryUsers`   | owns its own `User[]`    |
-| `json-file-store/users.ts` | `JsonUsers`     | the shared `FileSession` |
-| `postgres-store/users.ts`  | `PostgresUsers` | `Sql` from `./query`     |
+**`BaseStore`** — the three `index.ts` files were 196 lines that differed only
+in how they built their repositories. See _Conventions PR 2 added_ above.
 
-**Each `index.ts`** constructs the new repository and delegates the two
-`DataStore` methods to it. `JsonFileStore` must pass the **same** `FileSession`
-instance it already gives `JsonAccounts` and `JsonTransactions` — a separate
-session would break write serialization.
+**`*.e2e.ts`** — the live postgres suites were renamed and their per-file skip
+guards deleted. Same section.
 
-**`json-file-store/file.ts`** — `emptyData()` gains `users: []`, so a file
-written before this change still loads through the
-`{ ...emptyData(), ...parsed }` merge in `readFromDisk`.
-
-**Postgres SQL** — `SELECT * FROM users WHERE provider = $1 AND provider_account_id = $2`
-through `toUser`; a plain parameterised `INSERT`. The `UNIQUE (provider,
-provider_account_id)` constraint from PR 1 already backs it.
-
-Tests: one `__tests__/users.test.ts` per store folder — insert then find by
-`(provider, providerAccountId)`; an unknown provider id returns `undefined`;
-for json, a user survives reopening the file. The Postgres suite runs under
-`npm run test:db` and needs its own cleanup prefix in `live-store.ts`.
+Tests: `users.test.ts` under `memory-store` and `json-file-store`, `users.e2e.ts`
+under `postgres-store`. Each covers what is distinctive about its store — the
+lookup, surviving a reopen of the file, live SQL — and both unit suites insert a
+user before the unknown-id case so it proves the lookup discriminates rather
+than passing on an empty store. `file.test.ts` gained the case that guards
+`emptyData`: a file written before users existed reads back as no user. No test
+for `BaseStore` — pure delegation, no branching, and `implements DataStore`
+catches a missing method at compile time.
 
 Depends on: PR 1 (merged) and #30. Ships: unused interface methods.
 
@@ -357,7 +348,9 @@ Same shape as PR 2: a `MemberRepository` in `data-store.ts` and one new
 
 - `DataStore` gains `getMembership`, `listAccountsForUser`,
   `insertAccountWithOwner`. `listAccounts` **stays** — nothing breaks mid-stack.
-- `StoreData` gains `members: AccountMember[]`; `emptyData()` gains `members: []`.
+  The three delegating methods are written **once**, in `base-store.ts`.
+- `StoreData` gains `members: AccountMember[]`; `emptyData()` — in
+  `json-file-store/file-session.ts` — gains `members: []`.
 - `postgres-store/members.ts` — JOIN for `listAccountsForUser`, keeping
   `ORDER BY accounts.name`; `sql.transaction([...])` for `insertAccountWithOwner`.
 - `json-file-store/members.ts` — the shared `FileSession` is what makes the
@@ -372,7 +365,9 @@ atomicity.
 
 Tests: `memory-store` and `json-file-store` — `listAccountsForUser` returns only
 the user's accounts, `getMembership` returns undefined for a non-member,
-`insertAccountWithOwner` writes both rows or neither.
+`insertAccountWithOwner` writes both rows or neither. The postgres suite is
+`postgres-store/__tests__/members.e2e.ts`; `live-store.ts` needs `account_members`
+in its cleanup.
 
 Depends on: PR 1. Ships: unused interface methods.
 
@@ -509,9 +504,10 @@ Depends on: PR 9. Ships: writes are authorized.
 | `src/lib/types.ts`                                                | add `User`, `MembershipRole`, `AccountMember`                             | 1       |
 | `src/db/row-mappers.ts`                                           | add `UserRow`/`toUser`, `AccountMemberRow`/`toAccountMember`              | 1       |
 | `src/db/data-store.ts`                                            | add user methods, then membership methods, then **remove** `listAccounts` | 2, 3, 9 |
-| `src/db/postgres-store.ts`                                        | implement — JOIN, `sql.transaction([...])`                                | 2, 3, 9 |
-| `src/db/json-file-store.ts`                                       | implement — `StoreData` gains `users`, `members`                          | 2, 3, 9 |
-| `src/db/memory-store.ts`                                          | implement — two arrays                                                    | 2, 3, 9 |
+| `src/db/base-store.ts`                                            | delegate each new `DataStore` method once                                 | 2, 3, 9 |
+| `src/db/postgres-store/{users,members}.ts`                        | implement — JOIN, `sql.transaction([...])`                                | 2, 3, 9 |
+| `src/db/json-file-store/{users,members}.ts`                       | implement — `StoreData` gains `users`, `members`                          | 2, 3, 9 |
+| `src/db/memory-store/{users,members}.ts`                          | implement — two arrays                                                    | 2, 3, 9 |
 | `src/lib/user-provisioning.ts`                                    | **new** — Google `sub` → user, else create                                | 4       |
 | `src/auth.ts`                                                     | **new** — Auth.js config                                                  | 4       |
 | `src/app/api/auth/[...nextauth]/route.ts`                         | **new** — handler re-export                                               | 4       |
@@ -580,8 +576,8 @@ migrating `data.json` into Neon.
    (live Neon), `npm run build`, and `npm run test:e2e`. The last three catch
    what the first three miss — folder resolution, and anything only the real
    app exercises.
-6. **Start with PR 2.** It is additive only; nothing reads the new methods until
-   PR 9.
+6. **Start with PR 3.** PR 2 is open as #32. Both are additive only; nothing
+   reads the new methods until PR 9.
 
 ### Still undecided
 

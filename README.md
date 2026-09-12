@@ -64,9 +64,9 @@ FUNSAVER_NOW=2026-01-01 npm run dev
 | ------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `npm run dev`             | Start the dev server                                                                                   |
 | `npm run dev:mobile`      | Dev server bound to `0.0.0.0`                                                                          |
-| `npm test`                | Run unit tests (Postgres integration suite skips cleanly if `TEST_DATABASE_URL` isn't in `.env.local`) |
-| `npm run test:db`         | Run the Postgres integration suite against the Neon `test` branch                                      |
-| `npm run test:e2e`        | Run visual + Postgres integration + e2e tests                                                          |
+| `npm test`                | Run unit tests — matches `*.test.ts` only, so the live-database suites never load                      |
+| `npm run test:db`         | Run the `src/**/__tests__/*.e2e.ts` Postgres suites against the Neon `test` branch                      |
+| `npm run test:e2e`        | Postgres suites, then the visual build, then the browser suites — needs `TEST_DATABASE_URL`             |
 | `npm run lint`            | Lint and auto-fix                                                                                      |
 | `npm run build`           | Production build                                                                                       |
 | `npm run db:migrate`      | Apply `src/db/schema.sql` to the Neon `main` branch (uses `DATABASE_URL`)                              |
@@ -98,7 +98,7 @@ DATABASE_URL=
 # over DATABASE_URL so local experiments stay off the production branch.
 DEV_DATABASE_URL=
 
-# Optional. Used by `npm run db:migrate-test` and `npm run test:db`.
+# Required by `npm run db:migrate-test`, `npm run test:db` and `npm run test:e2e`.
 TEST_DATABASE_URL=
 ```
 
