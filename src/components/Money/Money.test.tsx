@@ -1,19 +1,47 @@
 import { render, screen } from '@testing-library/react';
 import { Money } from './Money';
+import { MONEY_COPY } from './constants';
 
 describe('Money', () => {
-  it('renders the shekel amount with a currency mark', () => {
-    render(<Money amountAgorot={8500} testId="amount" />);
-    const amount = screen.getByTestId('amount');
+  describe('a whole-shekel amount', () => {
+    beforeEach(() => {
+      render(<Money amountAgorot={8500} testId="amount" />);
+    });
 
-    expect(amount).toHaveTextContent('₪');
-    expect(amount).toHaveTextContent('85');
+    it('shows the currency mark', () => {
+      expect(screen.getByTestId('amount')).toHaveTextContent(
+        MONEY_COPY.currency
+      );
+    });
+
+    it('shows the amount in shekels', () => {
+      expect(screen.getByTestId('amount')).toHaveTextContent('85');
+    });
   });
 
-  it('shows whole shekels only, no fraction digits', () => {
-    render(<Money amountAgorot={26484} testId="amount" />);
+  describe('an amount carrying agorot', () => {
+    beforeEach(() => {
+      render(<Money amountAgorot={26484} testId="amount" />);
+    });
 
-    expect(screen.getByTestId('amount')).toHaveTextContent('₪265');
-    expect(screen.getByTestId('amount').textContent).not.toContain('.');
+    it('rounds to the nearest whole shekel', () => {
+      expect(screen.getByTestId('amount')).toHaveTextContent('₪265');
+    });
+
+    it('shows no fraction digits', () => {
+      expect(screen.getByTestId('amount').textContent).not.toContain('.');
+    });
+  });
+
+  it('shows half shekels when allowHalf is set', () => {
+    render(<Money amountAgorot={140} testId="amount" allowHalf />);
+
+    expect(screen.getByTestId('amount')).toHaveTextContent('₪1.5');
+  });
+
+  it('shows nothing extra when a half-shekel amount rounds to zero', () => {
+    render(<Money amountAgorot={20} testId="amount" allowHalf />);
+
+    expect(screen.getByTestId('amount')).toHaveTextContent('₪0');
   });
 });
