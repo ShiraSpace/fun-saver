@@ -24,9 +24,8 @@ export interface AppDriver {
   dashboard: DashboardDriver;
 }
 
-export function useDriver(state: Partial<StoreData> = {}): AppDriver {
-  const session = Session.create();
-  const drivers: AppDriver = {
+function createDrivers(session: Session): AppDriver {
+  return {
     session,
     menu: new MenuDriver(session),
     header: new HeaderDriver(session),
@@ -42,6 +41,29 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
     avatarPicker: new AvatarPickerDriver(session),
     dashboard: new DashboardDriver(session),
   };
+}
+
+async function seedStore(
+  dataPath: string,
+  state: Partial<StoreData>
+): Promise<void> {
+  await rm(dataPath, { force: true });
+  const store = new JsonFileStore(dataPath);
+
+  for (const account of state.accounts ?? []) {
+    await store.insertAccount(account);
+  }
+  if (state.transactions?.length) {
+    await store.insertTransactions(state.transactions);
+  }
+  for (const user of state.users ?? []) {
+    await store.insertUser(user);
+  }
+}
+
+export function useDriver(state: Partial<StoreData> = {}): AppDriver {
+  const session = Session.create();
+  const drivers = createDrivers(session);
   let server: RunningServer;
 
   before(async () => {
@@ -55,17 +77,7 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
   });
 
   beforeEach(async () => {
-    await rm(server.dataPath, { force: true });
-    const store = new JsonFileStore(server.dataPath);
-    for (const account of state.accounts ?? []) {
-      await store.insertAccount(account);
-    }
-    if (state.transactions?.length) {
-      await store.insertTransactions(state.transactions);
-    }
-    for (const user of state.users ?? []) {
-      await store.insertUser(user);
-    }
+    await seedStore(server.dataPath, state);
     await session.open(server.baseUrl);
   });
 

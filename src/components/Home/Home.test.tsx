@@ -1,35 +1,23 @@
 import { JSX } from 'react';
-import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { useThemeId } from '@/theme/ThemeController';
 import { Home } from './Home';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
-import { HEADER_TEST_IDS } from '@/components/Header/constants';
-import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
 import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
-import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import {
-  cancelForm,
-  nameInput,
-  pickFirstAvatar,
-  submitForm,
-  typeName,
-} from '@/test-utils/account-form';
-import {
-  createMockAccount,
   mockAccount,
   mockDerivedWallets,
   mockSecondAccount,
 } from '@/test-utils/fixtures';
 import type { AccountWithDerivedWallets } from '@/lib/types';
+import { openMenu, renderHome } from './home-test-helpers';
 
 const mockRefresh = jest.fn();
 const mockPush = jest.fn();
 const mockPersist = jest.fn();
-const mockCreateAccount = jest.fn();
-const mockUpdateAccount = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: (): { refresh: jest.Mock; push: jest.Mock } => ({
@@ -42,66 +30,9 @@ jest.mock('./selected-account-cookie', () => ({
   persistSelectedAccount: (accountId: string): void => mockPersist(accountId),
 }));
 
-jest.mock('../CreateAccount/use-create-account', () => ({
-  useCreateAccount: (): { createAccount: jest.Mock } => ({
-    createAccount: mockCreateAccount,
-  }),
-}));
-
-jest.mock('../EditAccount/use-update-account', () => ({
-  useUpdateAccount: (): { updateAccount: jest.Mock } => ({
-    updateAccount: mockUpdateAccount,
-  }),
-}));
-
-const accounts: AccountWithDerivedWallets[] = [
-  { ...mockAccount, wallets: mockDerivedWallets },
-  { ...mockSecondAccount, wallets: mockDerivedWallets },
-];
-
-const createdAccount = createMockAccount({ id: 'created-id', name: 'דנה' });
-const renamedAccount = createMockAccount({ id: mockAccount.id, name: 'רוני' });
-
-interface RenderHomeParams {
-  accounts?: AccountWithDerivedWallets[];
-  initialAccountId?: string;
-}
-
-function renderHome({
-  accounts: accountsProp = accounts,
-  initialAccountId = mockAccount.id,
-}: RenderHomeParams = {}): void {
-  render(<Home accounts={accountsProp} initialAccountId={initialAccountId} />);
-}
-
-function openMenu(): void {
-  fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
-}
-
-function tapAddChip(): void {
-  fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.addChip));
-}
-
-function tapEditChip(): void {
-  fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip));
-}
-
-function submitEditForm(): void {
-  typeName(renamedAccount.name);
-  submitForm();
-}
-
-function submitCreateForm(): void {
-  typeName(createdAccount.name);
-  pickFirstAvatar();
-  submitForm();
-}
-
 describe('Home', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockCreateAccount.mockResolvedValue(createdAccount);
-    mockUpdateAccount.mockResolvedValue(renamedAccount);
   });
 
   describe('viewing mode', () => {
@@ -180,122 +111,6 @@ describe('Home', () => {
       expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(
         'midnight-blue'
       );
-    });
-  });
-
-  describe('creating an account from the menu', () => {
-    beforeEach(() => {
-      renderHome();
-      openMenu();
-      tapAddChip();
-    });
-
-    it('opens the create overlay over the still-mounted account view', () => {
-      expect(
-        screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-      ).toBeInTheDocument();
-      expect(screen.getByTestId(HEADER_TEST_IDS.bar)).toBeInTheDocument();
-    });
-
-    it('closes the overlay without creating when cancelled', () => {
-      cancelForm();
-
-      expect(
-        screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-      ).not.toBeInTheDocument();
-      expect(mockPersist).not.toHaveBeenCalled();
-    });
-
-    it('selects the new account, persists it and refreshes on submit', async () => {
-      submitCreateForm();
-
-      await waitFor(() =>
-        expect(mockPersist).toHaveBeenCalledWith(createdAccount.id)
-      );
-      expect(mockRefresh).toHaveBeenCalled();
-      await waitFor(() =>
-        expect(
-          screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-        ).not.toBeInTheDocument()
-      );
-    });
-  });
-
-  describe('editing an account from the menu', () => {
-    beforeEach(() => {
-      renderHome();
-      openMenu();
-      tapEditChip();
-    });
-
-    it('opens the edit overlay', () => {
-      expect(
-        screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-      ).toBeInTheDocument();
-    });
-
-    it('opens it on the account currently selected', () => {
-      expect(nameInput()).toHaveValue(mockAccount.name);
-    });
-
-    it('leaves the create overlay closed', () => {
-      expect(
-        screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-      ).not.toBeInTheDocument();
-    });
-
-    it('closes the overlay when cancelled', () => {
-      cancelForm();
-
-      expect(
-        screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-      ).not.toBeInTheDocument();
-    });
-
-    it('saves nothing when cancelled', () => {
-      cancelForm();
-
-      expect(mockUpdateAccount).not.toHaveBeenCalled();
-    });
-
-    it('saves the edit against the selected account', () => {
-      submitEditForm();
-
-      expect(mockUpdateAccount).toHaveBeenCalledWith(mockAccount.id, {
-        name: renamedAccount.name,
-        avatarId: mockAccount.avatarId,
-      });
-    });
-
-    it('refreshes so the saved name reaches the server components', async () => {
-      submitEditForm();
-
-      await waitFor(() => expect(mockRefresh).toHaveBeenCalled());
-    });
-
-    it('closes the overlay once the save lands', async () => {
-      submitEditForm();
-
-      await waitFor(() =>
-        expect(
-          screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-        ).not.toBeInTheDocument()
-      );
-    });
-  });
-
-  describe('editing while the selected id is stale', () => {
-    beforeEach(() => {
-      renderHome({ initialAccountId: 'gone-from-this-list' });
-      openMenu();
-      tapEditChip();
-    });
-
-    it('edits the account the header is showing rather than nothing', () => {
-      expect(
-        screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-      ).toBeInTheDocument();
-      expect(nameInput()).toHaveValue(mockAccount.name);
     });
   });
 

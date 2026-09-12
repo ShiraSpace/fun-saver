@@ -26,6 +26,14 @@ module.exports = [
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': 'error',
+      'max-lines': ['error', { max: 200, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': ['error', { max: 40, skipBlankLines: true, skipComments: true }],
+    },
+  },
+  {
+    files: ['**/__tests__/**', '**/*.test.ts', '**/*.test.tsx', '**/*.e2e.ts', '**/*.visual.ts'],
+    rules: {
+      'max-lines-per-function': 'off',
     },
   },
   {

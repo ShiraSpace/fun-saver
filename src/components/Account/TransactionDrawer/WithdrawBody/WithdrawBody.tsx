@@ -1,19 +1,17 @@
 'use client';
 
 import { JSX } from 'react';
-import { ActionButton } from '@/components/ActionButton';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { Money } from '@/components/Money';
-import { MONEY_COPY } from '@/components/Money/constants';
-import { AmountPad } from '../AmountPad';
 import { WalletPicker } from '../WalletPicker';
+import { PadAndConfirm } from '../PadAndConfirm';
 import { useWithdrawForm } from '../use-withdraw-form';
 import { DrawerTitle } from '../drawer-parts';
-import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { WithdrawMessage } from './WithdrawMessage';
-import { WITHDRAW_BODY_COPY, WITHDRAW_BODY_TEST_IDS } from './constants';
+import { withdrawCopy } from './withdraw-copy';
+import { WITHDRAW_BODY_TEST_IDS } from './constants';
 import { AmountValue } from './WithdrawBody.styles';
 
 interface WithdrawBodyProps {
@@ -27,17 +25,7 @@ export function WithdrawBody({
 }: WithdrawBodyProps): JSX.Element {
   const wallets = account.wallets;
   const form = useWithdrawForm(account.id, wallets, onClose);
-  const balanceShekels = agorotToShekels(form.selectedBalance);
-
-  const title = form.isDonation
-    ? WITHDRAW_BODY_COPY.donationTitle
-    : WITHDRAW_BODY_COPY.title;
-  const confirmVerb = form.isDonation
-    ? WITHDRAW_BODY_COPY.donationConfirm
-    : WITHDRAW_BODY_COPY.confirm;
-  const submitButtonText = form.isSubmitting
-    ? WITHDRAW_BODY_COPY.submitting
-    : `${confirmVerb} ${MONEY_COPY.currency}${form.amount}`;
+  const { title, submitLabel } = withdrawCopy(form);
 
   return (
     <>
@@ -56,21 +44,13 @@ export function WithdrawBody({
       <WithdrawMessage
         isOverdraft={form.isOverdraft}
         hasError={form.hasError}
-        balanceShekels={balanceShekels}
+        balanceShekels={agorotToShekels(form.selectedBalance)}
       />
-      <AmountPad
-        onDigit={form.onDigit}
-        onClear={form.onClear}
-        onBackspace={form.onBackspace}
+      <PadAndConfirm
+        form={form}
+        canSubmit={form.canSubmit}
+        submitLabel={submitLabel}
       />
-      <ActionButton
-        type="button"
-        data-testid={TRANSACTION_DRAWER_TEST_IDS.confirm}
-        disabled={!form.canSubmit}
-        onClick={form.onConfirm}
-      >
-        {submitButtonText}
-      </ActionButton>
     </>
   );
 }

@@ -1,55 +1,23 @@
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { splitDeposit, type DepositSplit } from '@/lib/transactions';
-import { pushDigit, popDigit } from './amount-keypad';
 import { useAddTransaction } from './use-add-transaction';
+import { useAmountForm, type AmountForm } from './use-amount-form';
 
-interface DepositForm {
-  amount: number;
+interface DepositForm extends AmountForm {
   split: DepositSplit;
-  isSubmitting: boolean;
-  hasError: boolean;
   canSubmit: boolean;
-  onDigit: (digit: number) => void;
-  onClear: () => void;
-  onBackspace: () => void;
-  onConfirm: () => void;
 }
 
 export function useDepositForm(
   accountId: string,
   onClose: () => void
 ): DepositForm {
-  const router = useRouter();
   const { addDeposit } = useAddTransaction(accountId);
-  const [amount, setAmount] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasError, setHasError] = useState(false);
-
-  const submit = async (): Promise<void> => {
-    setIsSubmitting(true);
-    setHasError(false);
-
-    try {
-      await addDeposit(amount);
-      router.refresh();
-      onClose();
-    } catch {
-      setHasError(true);
-      setIsSubmitting(false);
-    }
-  };
+  const form = useAmountForm(addDeposit, onClose);
 
   return {
-    amount,
-    split: splitDeposit(amount * AGOROT_PER_SHEKEL),
-    isSubmitting,
-    hasError,
-    canSubmit: amount > 0 && !isSubmitting,
-    onDigit: (digit) => setAmount((current) => pushDigit(current, digit)),
-    onClear: () => setAmount(0),
-    onBackspace: () => setAmount((current) => popDigit(current)),
-    onConfirm: () => void submit(),
+    ...form,
+    split: splitDeposit(form.amount * AGOROT_PER_SHEKEL),
+    canSubmit: form.amount > 0 && !form.isSubmitting,
   };
 }
