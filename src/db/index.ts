@@ -59,6 +59,7 @@ function buildStore(target: Target): DataStore {
 
   const postgresModule: typeof import('./postgres-store') =
     requireModule('./postgres-store');
+
   return new postgresModule.PostgresStore(target.url);
 }
 
