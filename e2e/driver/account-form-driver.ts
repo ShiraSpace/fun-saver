@@ -1,14 +1,16 @@
-import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
 import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { Session } from './session';
 
-export class CreateAccountDriver {
-  constructor(private readonly session: Session) {}
+export class AccountFormDriver {
+  constructor(
+    private readonly session: Session,
+    private readonly containerTestId: string
+  ) {}
 
   async isOpen(): Promise<boolean> {
-    await this.session.box(NAME_FIELD_TEST_IDS.input);
+    await this.session.box(this.containerTestId);
     return true;
   }
 
@@ -25,17 +27,11 @@ export class CreateAccountDriver {
   }
 
   background(): Promise<string> {
-    return this.session.computedStyle(
-      CREATE_ACCOUNT_TEST_IDS.container,
-      'background-image'
-    );
+    return this.session.computedStyle(this.containerTestId, 'background-image');
   }
 
   contentAlignment(): Promise<string> {
-    return this.session.computedStyle(
-      CREATE_ACCOUNT_TEST_IDS.container,
-      'justify-content'
-    );
+    return this.session.computedStyle(this.containerTestId, 'justify-content');
   }
 
   async formGaps(): Promise<number[]> {
