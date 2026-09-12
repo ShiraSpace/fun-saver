@@ -17,6 +17,18 @@ export function pickFirstAvatar(): void {
   fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
 }
 
+export function pickAvatar(avatarId: string): void {
+  const option = screen
+    .getAllByTestId(AVATAR_PICKER_TEST_IDS.option)
+    .find((candidate) => candidate.querySelector(`img[alt="${avatarId}"]`));
+
+  if (!option) {
+    throw new Error(`no avatar option for ${avatarId}`);
+  }
+
+  fireEvent.click(option);
+}
+
 export function chosenAvatars(): HTMLElement[] {
   return screen
     .getAllByTestId(AVATAR_PICKER_TEST_IDS.option)

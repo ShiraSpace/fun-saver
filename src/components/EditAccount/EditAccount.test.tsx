@@ -7,11 +7,10 @@ import {
   cancelForm,
   chosenAvatars,
   nameInput,
-  pickFirstAvatar,
+  pickAvatar,
   submitForm,
   typeName,
 } from '@/test-utils/account-form';
-import { AVATARS } from '@/lib/avatars';
 import { mockAccount, mockAccountEdit } from '@/test-utils/fixtures';
 import { EditAccount } from './EditAccount';
 import { EDIT_ACCOUNT_COPY, EDIT_ACCOUNT_TEST_IDS } from './constants';
@@ -73,12 +72,12 @@ describe('EditAccount', () => {
 
   it('saves the edited values against the account id', () => {
     typeName(mockAccountEdit.name);
-    pickFirstAvatar();
+    pickAvatar(mockAccountEdit.avatarId);
     submitForm();
 
     expect(mockUpdateAccount).toHaveBeenCalledWith(mockAccount.id, {
       name: mockAccountEdit.name,
-      avatarId: AVATARS[0].id,
+      avatarId: mockAccountEdit.avatarId,
     });
   });
 

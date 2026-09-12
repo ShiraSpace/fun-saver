@@ -284,6 +284,21 @@ describe('Home', () => {
     });
   });
 
+  describe('editing while the selected id is stale', () => {
+    beforeEach(() => {
+      renderHome({ initialAccountId: 'gone-from-this-list' });
+      openMenu();
+      tapEditChip();
+    });
+
+    it('edits the account the header is showing rather than nothing', () => {
+      expect(
+        screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)
+      ).toBeInTheDocument();
+      expect(nameInput()).toHaveValue(mockAccount.name);
+    });
+  });
+
   it('opens the create overlay from the empty-state call to action', () => {
     renderHome({ accounts: [], initialAccountId: '' });
 
