@@ -92,10 +92,15 @@ describe('AccountsSection', () => {
     expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.creatingAccount);
   });
 
-  it('enters edit mode and closes the menu when the edit chip is tapped', () => {
+  it('enters edit mode when the edit chip is tapped', () => {
+    fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip));
+
+    expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.editingAccount);
+  });
+
+  it('closes the menu when the edit chip is tapped', () => {
     fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip));
 
     expect(mockOnAccountSelect).toHaveBeenCalled();
-    expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.editingAccount);
   });
 });

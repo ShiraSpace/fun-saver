@@ -82,6 +82,13 @@ function tapEditChip(): void {
   fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip));
 }
 
+function submitEditForm(): void {
+  fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
+    target: { value: renamedAccount.name },
+  });
+  fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+}
+
 function submitCreateForm(): void {
   fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
     target: { value: createdAccount.name },
@@ -221,38 +228,56 @@ describe('Home', () => {
       tapEditChip();
     });
 
-    it('opens the edit overlay for the selected account', () => {
+    it('opens the edit overlay', () => {
       expect(
         screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)
       ).toBeInTheDocument();
+    });
+
+    it('opens it on the account currently selected', () => {
       expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(
         mockAccount.name
       );
+    });
+
+    it('leaves the create overlay closed', () => {
       expect(
         screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
       ).not.toBeInTheDocument();
     });
 
-    it('closes the overlay without saving when cancelled', () => {
+    it('closes the overlay when cancelled', () => {
       fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
 
       expect(
         screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)
       ).not.toBeInTheDocument();
+    });
+
+    it('saves nothing when cancelled', () => {
+      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+
       expect(mockUpdateAccount).not.toHaveBeenCalled();
     });
 
-    it('saves the edit, refreshes and closes the overlay', async () => {
-      fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-        target: { value: renamedAccount.name },
-      });
-      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+    it('saves the edit against the selected account', () => {
+      submitEditForm();
 
       expect(mockUpdateAccount).toHaveBeenCalledWith(mockAccount.id, {
         name: renamedAccount.name,
         avatarId: mockAccount.avatarId,
       });
+    });
+
+    it('refreshes so the saved name reaches the server components', async () => {
+      submitEditForm();
+
       await waitFor(() => expect(mockRefresh).toHaveBeenCalled());
+    });
+
+    it('closes the overlay once the save lands', async () => {
+      submitEditForm();
+
       await waitFor(() =>
         expect(
           screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)
