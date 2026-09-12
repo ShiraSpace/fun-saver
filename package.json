@@ -12,7 +12,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:e2e": "npm run test:visual && tsx --test e2e/create-account.e2e.ts",
-    "test:visual": "next build && tsx --test --test-concurrency=4 e2e/*.visual.ts"
+    "test:visual": "next build && tsx --test --test-concurrency=4 e2e/*.visual.ts",
+    "db:migrate": "tsx --env-file=.env.local src/db/run-migration.ts",
+    "db:migrate-test": "tsx --env-file=.env.local src/db/run-migration.ts --test"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -20,6 +22,7 @@
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^9.1.1",
+    "@neondatabase/serverless": "^1.1.0",
     "@tanstack/react-query": "^5.101.0",
     "next": "16.2.6",
     "react": "19.2.4",
