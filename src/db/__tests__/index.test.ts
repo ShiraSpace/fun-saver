@@ -4,8 +4,8 @@ import { join } from 'node:path';
 import { getStore } from '../index';
 import { JsonFileStore } from '../json-file-store';
 import { PostgresStore } from '../postgres-store';
-import { mockAccount } from '@/test-support/fixtures';
-import { mutableEnv, withCleanEnv } from '@/test-support/test-utils';
+import { mockAccount } from '@/test-utils/fixtures';
+import { mutableEnv, withCleanEnv } from '@/test-utils/test-utils';
 
 const POSTGRES_URL = 'postgres://user:pass@example.neon.tech/main';
 const DEV_POSTGRES_URL = 'postgres://user:pass@example.neon.tech/dev';

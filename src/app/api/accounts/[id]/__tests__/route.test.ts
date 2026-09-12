@@ -6,10 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { getStore } from '@/db';
 import { AccountsStore } from '@/lib/accounts-store';
-import {
-  mockCreateAccountInput,
-  mockAccountEdit,
-} from '@/test-support/fixtures';
+import { mockCreateAccountInput, mockAccountEdit } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { PUT } from '../route';
 

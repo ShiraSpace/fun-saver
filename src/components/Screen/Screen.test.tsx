@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-support/render';
+import { render, screen } from '@/test-utils/render';
 import { Screen } from './Screen';
 
 describe('Screen', () => {

@@ -12,7 +12,7 @@ import {
   createMockTransaction,
   createMockWallets,
   mockAccount,
-} from '@/test-support/fixtures';
+} from '@/test-utils/fixtures';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 
 const accountRow: AccountRow = {
