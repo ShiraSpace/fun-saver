@@ -41,19 +41,19 @@ async function main(): Promise<void> {
   console.log(`Migration complete (${target.name} branch).`);
 }
 
-// Splits a SQL script into individual statements.
-// Handles: -- line comments and /* ... */ block comments.
-// Does NOT handle: semicolons inside string literals, $$-quoted bodies, or
-// PL/pgSQL functions. Fine for our simple DDL — reach for a proper parser
-// (or switch to Pool.query which accepts multi-statement text) if we start
-// adding stored procedures or COPY blocks.
+const SQL_BLOCK_COMMENT = /\/\*[\s\S]*?\*\//g;
+const SQL_LINE_COMMENT = /--[^\n]*/g;
+const STATEMENT_SEPARATOR = ';';
+
 function splitStatements(schema: string): string[] {
-  return schema
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/--[^\n]*/g, '')
-    .split(';')
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
+  return stripComments(schema)
+    .split(STATEMENT_SEPARATOR)
+    .map((statement) => statement.trim())
+    .filter((statement) => statement.length > 0);
+}
+
+function stripComments(schema: string): string {
+  return schema.replace(SQL_BLOCK_COMMENT, '').replace(SQL_LINE_COMMENT, '');
 }
 
 main().catch((err) => {
