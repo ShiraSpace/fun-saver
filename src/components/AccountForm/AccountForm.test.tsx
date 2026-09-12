@@ -90,6 +90,17 @@ describe('AccountForm', () => {
       expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit)).toBeDisabled();
     });
 
+    it('ignores a submit that beats the avatar choice', () => {
+      typeName(mockForm.name);
+      fireEvent.submit(
+        screen
+          .getByTestId(mockForm.testId)
+          .querySelector('form') as HTMLFormElement
+      );
+
+      expect(mockOnSubmit).not.toHaveBeenCalled();
+    });
+
     it('submits the typed name and the chosen avatar', () => {
       typeName(mockForm.name);
       pickFirstAvatar();

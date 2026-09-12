@@ -44,6 +44,12 @@ describe('CreateAccount', () => {
       );
     });
 
+    it('shows the create icon beside the title', () => {
+      expect(
+        screen.getByTestId(ACCOUNT_FORM_TEST_IDS.titleIcon)
+      ).toHaveTextContent(CREATE_ACCOUNT_COPY.titleIcon);
+    });
+
     it('renders the name field', () => {
       expect(screen.getByTestId(NAME_FIELD_TEST_IDS.field)).toBeInTheDocument();
     });
