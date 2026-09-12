@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS wallets CASCADE;
-
 CREATE TABLE IF NOT EXISTS accounts (
   id        TEXT PRIMARY KEY,
   name      TEXT NOT NULL,
@@ -8,10 +6,6 @@ CREATE TABLE IF NOT EXISTS accounts (
   theme_id  TEXT NOT NULL DEFAULT 'sunshine-quest',
   wallets   JSONB NOT NULL DEFAULT '[]'::jsonb
 );
-
-ALTER TABLE accounts DROP COLUMN IF EXISTS user_id;
-
-ALTER TABLE accounts ADD COLUMN IF NOT EXISTS wallets JSONB NOT NULL DEFAULT '[]'::jsonb;
 
 CREATE TABLE IF NOT EXISTS transactions (
   id          TEXT PRIMARY KEY,
@@ -23,6 +17,5 @@ CREATE TABLE IF NOT EXISTS transactions (
   created_at  TEXT NOT NULL
 );
 
-ALTER TABLE transactions ADD COLUMN IF NOT EXISTS created_at TEXT;
-
-CREATE INDEX IF NOT EXISTS transactions_wallet_idx ON transactions(wallet_id);
+CREATE INDEX IF NOT EXISTS transactions_account_wallet_idx
+  ON transactions(account_id, wallet_id);
