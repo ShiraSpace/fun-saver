@@ -89,20 +89,32 @@ export class PostgresStore implements DataStore {
   }
 
   async insertTransactions(transactions: Transaction[]): Promise<void> {
-    for (const transaction of transactions) {
-      await this.sql`
-        INSERT INTO transactions (id, wallet_id, account_id, type, amount, occurred_at, created_at)
-        VALUES (
-          ${transaction.id},
-          ${transaction.walletId},
-          ${transaction.accountId},
-          ${transaction.type},
-          ${transaction.amount},
-          ${transaction.occurredAt},
-          ${transaction.createdAt}
-        )
-      `;
-    }
+    if (transactions.length === 0) return;
+
+    const columnsPerRow = 7;
+    const rowPlaceholders = transactions
+      .map((_, rowIdx) => {
+        const cells = Array.from({ length: columnsPerRow }, (_, colIdx) => {
+          return `$${rowIdx * columnsPerRow + colIdx + 1}`;
+        });
+        return `(${cells.join(', ')})`;
+      })
+      .join(', ');
+
+    const values = transactions.flatMap((transaction) => [
+      transaction.id,
+      transaction.walletId,
+      transaction.accountId,
+      transaction.type,
+      transaction.amount,
+      transaction.occurredAt,
+      transaction.createdAt,
+    ]);
+
+    await this.sql.query(
+      `INSERT INTO transactions (id, wallet_id, account_id, type, amount, occurred_at, created_at) VALUES ${rowPlaceholders}`,
+      values
+    );
   }
 
   async listTransactionsByWallet(
