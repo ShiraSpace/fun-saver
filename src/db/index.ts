@@ -1,29 +1,72 @@
+import { createRequire } from 'node:module';
 import { JsonFileStore } from './json-file-store';
-import { PostgresStore } from './postgres-store';
 import type { DataStore } from './data-store';
+
+const requireModule = createRequire(__filename);
 
 const DEFAULT_PATH = 'src/db/data.json';
 
-let cached: { key: string; store: DataStore } | null = null;
+interface CachedStore {
+  key: string;
+  store: DataStore;
+}
+
+type Target =
+  | { kind: 'json'; path: string }
+  | { kind: 'postgres'; url: string };
+
+let cached: CachedStore | null = null;
 
 export function getStore(): DataStore {
-  const explicitJsonPath = process.env.FUNSAVER_DATA_PATH;
-  const databaseUrl = explicitJsonPath ? undefined : resolveDatabaseUrl();
-  const jsonPath = explicitJsonPath ?? DEFAULT_PATH;
-  const key = databaseUrl ? `postgres:${databaseUrl}` : `json:${jsonPath}`;
+  const target = resolveTarget();
+  const key = keyOf(target);
 
   if (cached?.key !== key) {
-    const store = databaseUrl
-      ? new PostgresStore(databaseUrl)
-      : new JsonFileStore(jsonPath);
-    cached = { key, store };
+    cached = { key, store: buildStore(target) };
   }
+
   return cached.store;
+}
+
+function resolveTarget(): Target {
+  const explicitJsonPath = process.env.FUNSAVER_DATA_PATH;
+
+  if (explicitJsonPath) {
+    return { kind: 'json', path: explicitJsonPath };
+  }
+
+  const url = resolveDatabaseUrl();
+
+  if (url) {
+    return { kind: 'postgres', url };
+  }
+
+  return { kind: 'json', path: DEFAULT_PATH };
+}
+
+function keyOf(target: Target): string {
+  if (target.kind === 'json') {
+    return `json:${target.path}`;
+  }
+
+  return `postgres:${target.url}`;
+}
+
+function buildStore(target: Target): DataStore {
+  if (target.kind === 'json') {
+    return new JsonFileStore(target.path);
+  }
+
+  const postgresModule = requireModule(
+    './postgres-store'
+  ) as typeof import('./postgres-store');
+  return new postgresModule.PostgresStore(target.url);
 }
 
 function resolveDatabaseUrl(): string | undefined {
   if (process.env.NODE_ENV === 'development') {
     return process.env.DEV_DATABASE_URL;
   }
+
   return process.env.DATABASE_URL;
 }
