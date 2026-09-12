@@ -5,7 +5,6 @@ import type { BuildGuardedTransaction, DataStore } from './data-store';
 
 interface AccountRow {
   id: string;
-  user_id: string | null;
   name: string;
   avatar_id: string;
   is_active: boolean;
@@ -20,6 +19,7 @@ interface TransactionRow {
   type: string;
   amount: number;
   occurred_at: string;
+  created_at: string;
 }
 
 function toAccount(row: AccountRow): Account {
@@ -41,6 +41,7 @@ function toTransaction(row: TransactionRow): Transaction {
     type: row.type as Transaction['type'],
     amount: row.amount,
     occurredAt: row.occurred_at,
+    createdAt: row.created_at,
   };
 }
 
@@ -90,14 +91,15 @@ export class PostgresStore implements DataStore {
   async insertTransactions(transactions: Transaction[]): Promise<void> {
     for (const transaction of transactions) {
       await this.sql`
-        INSERT INTO transactions (id, wallet_id, account_id, type, amount, occurred_at)
+        INSERT INTO transactions (id, wallet_id, account_id, type, amount, occurred_at, created_at)
         VALUES (
           ${transaction.id},
           ${transaction.walletId},
           ${transaction.accountId},
           ${transaction.type},
           ${transaction.amount},
-          ${transaction.occurredAt}
+          ${transaction.occurredAt},
+          ${transaction.createdAt}
         )
       `;
     }

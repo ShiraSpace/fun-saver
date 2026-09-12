@@ -39,11 +39,14 @@ Steps:
 
 **Files:** `src/db/postgres-store.ts`, `src/db/schema.sql`
 
-Schema decision: **wallets are embedded on the `accounts` row as JSONB**, not a separate table. Each account owns exactly three wallets, always created together — no independent lifecycle to justify a join table. `transactions.wallet_id` stays as plain TEXT (no FK).
+Schema decisions:
+
+- **Wallets are embedded on the `accounts` row as JSONB**, not a separate table. Each account owns exactly three wallets, always created together — no independent lifecycle to justify a join table. `transactions.wallet_id` stays as plain TEXT (no FK).
+- **No `user_id` column on `accounts`**. An account represents a child (or shared savings pot) that multiple humans may access (kid + parent + sibling). The user-to-account relationship is many-to-many and will live in a future `account_members` join table (see Task 4 note). Do not couple `accounts` to a single owner.
 
 Steps:
 
-1. Revise `src/db/schema.sql`: drop the `wallets` table, add `wallets JSONB NOT NULL DEFAULT '[]'::jsonb` on `accounts`, make `user_id` nullable (Stack Auth wires it up in Task 4).
+1. Revise `src/db/schema.sql`: drop the `wallets` table, add `wallets JSONB NOT NULL DEFAULT '[]'::jsonb` on `accounts`, drop `user_id` column (idempotent).
 2. Re-run `npm run db:migrate` and `npm run db:migrate-test`.
 3. Create `src/db/postgres-store.ts` implementing the `DataStore` interface using `neon` tagged-template queries. Comment the intentional race-window trade-off on `insertTransactionWithGuard` (read-then-insert, no `SELECT ... FOR UPDATE`; acceptable for family scope).
 4. Run `npm test` — all existing tests still pass.
@@ -96,6 +99,24 @@ Steps:
 7. Commit
 
 **Test:** All tests pass. Sign-in page renders and sign-up flow works.
+
+### Deferred: `account_members` join table (many-to-many users ↔ accounts)
+
+Explicitly out of scope for this task. Sign-in gets a user; that user gets access to _all_ accounts for now (single-family app, blanket access is fine). Add later when we introduce per-account permissions.
+
+**Shape when we add it:**
+
+```sql
+CREATE TABLE account_members (
+  account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  user_id    TEXT NOT NULL,
+  role       TEXT NOT NULL,       -- 'owner' | 'guardian' | 'viewer'
+  added_at   TEXT NOT NULL,
+  PRIMARY KEY (account_id, user_id)
+);
+```
+
+**Why not now:** premature — no permission model yet, no UX for inviting members, single household using it. Adding it before it's needed forces speculative design decisions on the role vocabulary.
 
 ---
 

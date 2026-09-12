@@ -1,6 +1,6 @@
 import type { DataStore } from '@/db/data-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
-import { newId } from './ids';
+import { newId, newWalletId } from './ids';
 import { DEFAULT_WALLETS } from './constants';
 import type { Account, Wallet } from './types';
 
@@ -32,7 +32,7 @@ export class AccountsStore {
 
   private buildDefaultWallets(asOf: string): Wallet[] {
     return DEFAULT_WALLETS.map((seed) => ({
-      id: newId(),
+      id: newWalletId(seed.name),
       name: seed.name,
       icon: seed.icon,
       monthlyInterestRate: seed.monthlyInterestRate,

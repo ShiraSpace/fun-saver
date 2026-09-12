@@ -46,6 +46,8 @@ export async function addDeposit({
 
   const split = splitDeposit(amountAgorot);
 
+  const createdAt = new Date().toISOString();
+
   const transactions: Transaction[] = account.wallets.map((wallet) => ({
     id: newId(),
     walletId: wallet.id,
@@ -53,6 +55,7 @@ export async function addDeposit({
     type: 'deposit',
     amount: split[wallet.name],
     occurredAt: asOf,
+    createdAt,
   }));
 
   await store.insertTransactions(transactions);
@@ -87,6 +90,7 @@ export async function addWithdrawal({
       type: 'withdrawal',
       amount: amountAgorot,
       occurredAt: asOf,
+      createdAt: new Date().toISOString(),
     };
   };
 

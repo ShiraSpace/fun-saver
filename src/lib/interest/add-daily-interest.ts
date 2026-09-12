@@ -84,6 +84,7 @@ export function addDailyInterest({
         type: 'interest',
         amount: interestForToday,
         occurredAt: day,
+        createdAt: new Date().toISOString(),
       });
       balance += interestForToday;
     }
