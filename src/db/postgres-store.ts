@@ -11,6 +11,44 @@ import {
 
 type QueryParam = string | number | boolean | null;
 
+const TRANSACTION_COLUMNS =
+  'id, wallet_id, account_id, type, amount, occurred_at, created_at';
+
+interface InsertBatch {
+  values: QueryParam[];
+  placeholders: string;
+}
+
+function transactionCells(transaction: Transaction): QueryParam[] {
+  return [
+    transaction.id,
+    transaction.walletId,
+    transaction.accountId,
+    transaction.type,
+    transaction.amount,
+    transaction.occurredAt,
+    transaction.createdAt,
+  ];
+}
+
+function placeholderRow(cells: QueryParam[], offset: number): string {
+  const slots = cells.map((_, i) => `$${offset + i + 1}`);
+  return `(${slots.join(', ')})`;
+}
+
+function buildInsertBatch(transactions: Transaction[]): InsertBatch {
+  const values: QueryParam[] = [];
+  const rows: string[] = [];
+
+  for (const transaction of transactions) {
+    const cells = transactionCells(transaction);
+    rows.push(placeholderRow(cells, values.length));
+    values.push(...cells);
+  }
+
+  return { values, placeholders: rows.join(', ') };
+}
+
 export class PostgresStore implements DataStore {
   private readonly sql: NeonQueryFunction<false, false>;
 
@@ -64,28 +102,10 @@ export class PostgresStore implements DataStore {
   async insertTransactions(transactions: Transaction[]): Promise<void> {
     if (transactions.length === 0) return;
 
-    const values: QueryParam[] = [];
-    const rowPlaceholders: string[] = [];
-
-    for (const transaction of transactions) {
-      const cells: QueryParam[] = [
-        transaction.id,
-        transaction.walletId,
-        transaction.accountId,
-        transaction.type,
-        transaction.amount,
-        transaction.occurredAt,
-        transaction.createdAt,
-      ];
-      const start = values.length;
-      values.push(...cells);
-      rowPlaceholders.push(
-        `(${cells.map((_, i) => `$${start + i + 1}`).join(', ')})`
-      );
-    }
+    const { values, placeholders } = buildInsertBatch(transactions);
 
     await this.sql.query(
-      `INSERT INTO transactions (id, wallet_id, account_id, type, amount, occurred_at, created_at) VALUES ${rowPlaceholders.join(', ')}`,
+      `INSERT INTO transactions (${TRANSACTION_COLUMNS}) VALUES ${placeholders}`,
       values
     );
   }
