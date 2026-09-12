@@ -36,14 +36,25 @@ async function main(): Promise<void> {
 
   const sql = neon(url);
   const schema = await readFile(resolve('src/db/schema.sql'), 'utf8');
-  const statements = schema
-    .split(';')
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
-  for (const statement of statements) {
+  for (const statement of splitStatements(schema)) {
     await sql.query(statement);
   }
   console.log(`Migration complete (${target.name} branch).`);
+}
+
+// Splits a SQL script into individual statements.
+// Handles: -- line comments and /* ... */ block comments.
+// Does NOT handle: semicolons inside string literals, $$-quoted bodies, or
+// PL/pgSQL functions. Fine for our simple DDL — reach for a proper parser
+// (or switch to Pool.query which accepts multi-statement text) if we start
+// adding stored procedures or COPY blocks.
+function splitStatements(schema: string): string[] {
+  return schema
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/--[^\n]*/g, '')
+    .split(';')
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
 }
 
 main().catch((err) => {
