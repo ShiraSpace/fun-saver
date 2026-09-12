@@ -5,15 +5,10 @@ import {
   createMockAccount,
   createMockTransaction,
 } from '@/test-utils/fixtures';
-import { liveDatabaseUrl, withLiveStore } from './live-store';
+import { withLiveStore } from './live-store';
 
 describe('PostgresTransactions', () => {
-  if (!liveDatabaseUrl) {
-    it.skip('skipped because TEST_DATABASE_URL is not set', () => undefined);
-    return;
-  }
-
-  const { store, accountId, txId } = withLiveStore(liveDatabaseUrl);
+  const { store, accountId, txId } = withLiveStore();
 
   it('scopes listByWallet by accountId so two accounts never mix', async () => {
     const accountA = createMockAccount({ id: accountId('a') });

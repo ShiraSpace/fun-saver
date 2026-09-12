@@ -2,15 +2,10 @@
  * @jest-environment node
  */
 import { createMockAccount, mockAccountEdit } from '@/test-utils/fixtures';
-import { liveDatabaseUrl, withLiveStore } from './live-store';
+import { withLiveStore } from './live-store';
 
 describe('PostgresAccounts', () => {
-  if (!liveDatabaseUrl) {
-    it.skip('skipped because TEST_DATABASE_URL is not set', () => undefined);
-    return;
-  }
-
-  const { store, accountId } = withLiveStore(liveDatabaseUrl);
+  const { store, accountId } = withLiveStore();
 
   it('round-trips an account with embedded wallets through JSONB', async () => {
     const account = createMockAccount({
