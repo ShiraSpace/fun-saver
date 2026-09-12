@@ -37,7 +37,9 @@ function swatches(): HTMLElement[] {
 describe('AppearanceSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    global.fetch = jest.fn().mockResolvedValue({ ok: true });
+    global.fetch = jest
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => mockAccount });
   });
 
   it('renders a swatch per theme', () => {
