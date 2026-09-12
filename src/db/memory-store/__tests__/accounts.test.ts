@@ -1,16 +1,14 @@
-import { InMemoryStore } from '../memory-store';
+import { InMemoryStore } from '../index';
 import {
   createMockAccount,
   mockAccount,
-  mockSecondAccount,
-  createMockTransaction,
   mockAccountEdit,
+  mockSecondAccount,
 } from '@/test-utils/fixtures';
 
-const deposit = createMockTransaction();
 const pristine = createMockAccount();
 
-describe('InMemoryStore', () => {
+describe('InMemoryStore accounts', () => {
   it('lists inserted accounts', async () => {
     const store = new InMemoryStore();
 
@@ -72,17 +70,5 @@ describe('InMemoryStore', () => {
         await store.updateAccount('missing', mockAccountEdit)
       ).toBeUndefined();
     });
-  });
-
-  it('lists transactions filtered by wallet', async () => {
-    const store = new InMemoryStore();
-
-    await store.insertTransactions([deposit]);
-
-    expect(
-      (await store.listTransactionsByWallet('a1', 'w1')).map(
-        (transaction) => transaction.id
-      )
-    ).toEqual(['t1']);
   });
 });
