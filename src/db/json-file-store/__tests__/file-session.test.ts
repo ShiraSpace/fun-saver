@@ -5,16 +5,17 @@ import { withTempStoreFile } from '@/test-utils/test-utils';
 describe('FileSession write queue', () => {
   const file = withTempStoreFile();
 
-  it('keeps every transaction when inserts run concurrently', async () => {
+  it('keeps every write when repositories write concurrently', async () => {
     const store = new JsonFileStore(file.path);
-    await store.insertAccount(mockAccount);
 
     await Promise.all([
+      store.insertAccount(mockAccount),
       store.insertTransactions([createMockTransaction({ id: 'c1' })]),
       store.insertTransactions([createMockTransaction({ id: 'c2' })]),
       store.insertTransactions([createMockTransaction({ id: 'c3' })]),
     ]);
 
+    expect(await store.listAccounts()).toEqual([mockAccount]);
     const ids = (await store.listTransactionsByWallet('a1', 'w1'))
       .map((transaction) => transaction.id)
       .sort();
