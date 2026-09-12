@@ -29,18 +29,22 @@ export function getStore(): DataStore {
 }
 
 function resolveTarget(): Target {
-  const explicitJsonPath = process.env.FUNSAVER_DATA_PATH;
+  return explicitJsonTarget() ?? postgresTarget() ?? defaultJsonTarget();
+}
 
-  if (explicitJsonPath) {
-    return { kind: 'json', path: explicitJsonPath };
-  }
+function explicitJsonTarget(): Target | undefined {
+  const path = process.env.FUNSAVER_DATA_PATH;
 
+  return path ? { kind: 'json', path } : undefined;
+}
+
+function postgresTarget(): Target | undefined {
   const url = resolveDatabaseUrl();
 
-  if (url) {
-    return { kind: 'postgres', url };
-  }
+  return url ? { kind: 'postgres', url } : undefined;
+}
 
+function defaultJsonTarget(): Target {
   return { kind: 'json', path: DEFAULT_PATH };
 }
 
