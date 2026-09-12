@@ -13,6 +13,7 @@ import { LAYERS } from '@/theme/layers';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/ThemeController';
 import { APP_MODE, AppMode, AppModeProvider } from './app-mode-context';
+import { selectedAccount } from '@/lib/selected-account';
 import { persistSelectedAccount } from './selected-account-cookie';
 
 interface HomeProps {
@@ -56,9 +57,10 @@ export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
   };
 
   const hasAccounts = accounts.length > 0;
+  const isEditing = mode === APP_MODE.editingAccount;
   const editingAccount =
-    mode === APP_MODE.editingAccount
-      ? accounts.find((account) => account.id === selectedAccountId)
+    isEditing && hasAccounts
+      ? selectedAccount(accounts, selectedAccountId)
       : undefined;
 
   return (

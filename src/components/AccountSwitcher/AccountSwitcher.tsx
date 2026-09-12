@@ -3,6 +3,7 @@
 import { JSX } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { Account } from '@/components/Account';
+import { selectedAccount } from '@/lib/selected-account';
 import { useAccounts } from './accounts-context';
 
 interface AccountSwitcherProps {
@@ -13,8 +14,7 @@ export function AccountSwitcher({
   accounts,
 }: AccountSwitcherProps): JSX.Element {
   const { selectedAccountId } = useAccounts();
-  const current =
-    accounts.find((account) => account.id === selectedAccountId) ?? accounts[0];
+  const current = selectedAccount(accounts, selectedAccountId);
 
   return <Account account={current} />;
 }
