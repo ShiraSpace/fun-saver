@@ -91,4 +91,11 @@ describe('AccountsSection', () => {
     expect(mockOnAccountSelect).toHaveBeenCalled();
     expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.creatingAccount);
   });
+
+  it('enters edit mode and closes the menu when the edit chip is tapped', () => {
+    fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip));
+
+    expect(mockOnAccountSelect).toHaveBeenCalled();
+    expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.editingAccount);
+  });
 });
