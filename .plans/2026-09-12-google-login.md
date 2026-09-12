@@ -15,7 +15,7 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 1    | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`           | **merged**                                                   |
 | —       | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename               | **merged** (not in this plan)                                |
 | —       | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`   | **merged** (not in this plan)                                |
-| PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`       | **open** — also carries `BaseStore` and the `*.db.ts` rename |
+| PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`       | **open** — also carries `BaseStore` and the `*.e2e.ts` rename |
 | PR 3    | —                                                      | `feat/membership-store-methods` | **next**                                                     |
 | PR 4–10 | —                                                      | —                               | not started                                                  |
 
@@ -71,10 +71,11 @@ documents, hit on its first real use. A fresh database gets it from `CREATE TABL
 - **`BaseStore` owns delegation.** A new `DataStore` method is one method in
   `src/db/base-store.ts` plus one method per repository class. Do not add
   delegating methods to a store's `index.ts`.
-- **A test needing a live database is named `*.db.ts`**, beside `*.e2e.ts` and
-  `*.visual.ts`: `accounts.db.ts`, `transactions.db.ts`, `users.db.ts`.
-  `npm test` only matches `*.test.ts` and never loads them; `npm run test:db`
-  selects them by the same name. This replaced a per-file `TEST_DATABASE_URL`
+- **A test needing a live database is named `*.e2e.ts`**, the same suffix as
+  the browser suites in `e2e/`, beside `*.visual.ts`: `accounts.e2e.ts`,
+  `transactions.e2e.ts`, `users.e2e.ts`. `npm test` only matches `*.test.ts` and
+  never loads them; `npm run test:db` selects them by the same name, scoped to
+  `src/**/__tests__/` so the browser suites in `e2e/` stay out of it. This replaced a per-file `TEST_DATABASE_URL`
   guard that skipped the suite at runtime. `jest.config.ts` needs no entry.
 - **`live-store.ts` reads `TEST_DATABASE_URL` itself and throws** when it is
   missing, so `test:db` without a database fails loudly rather than reporting
@@ -326,10 +327,10 @@ not `file.ts`; this plan named a file that does not exist.
 **`BaseStore`** — the three `index.ts` files were 196 lines that differed only
 in how they built their repositories. See _Conventions PR 2 added_ above.
 
-**`*.db.ts`** — the live postgres suites were renamed and their per-file skip
+**`*.e2e.ts`** — the live postgres suites were renamed and their per-file skip
 guards deleted. Same section.
 
-Tests: `users.test.ts` under `memory-store` and `json-file-store`, `users.db.ts`
+Tests: `users.test.ts` under `memory-store` and `json-file-store`, `users.e2e.ts`
 under `postgres-store`. Each covers what is distinctive about its store — the
 lookup, surviving a reopen of the file, live SQL — and both unit suites insert a
 user before the unknown-id case so it proves the lookup discriminates rather
@@ -365,7 +366,7 @@ atomicity.
 Tests: `memory-store` and `json-file-store` — `listAccountsForUser` returns only
 the user's accounts, `getMembership` returns undefined for a non-member,
 `insertAccountWithOwner` writes both rows or neither. The postgres suite is
-`postgres-store/__tests__/members.db.ts`; `live-store.ts` needs `account_members`
+`postgres-store/__tests__/members.e2e.ts`; `live-store.ts` needs `account_members`
 in its cleanup.
 
 Depends on: PR 1. Ships: unused interface methods.

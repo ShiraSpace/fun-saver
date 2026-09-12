@@ -9,7 +9,7 @@
   - `feat(db)` user repositories in all three stores (`findUserByProvider`, `insertUser`)
   - `refactor(db)` `BaseStore` — `DataStore` delegation written once instead of three times
   - `test(db)` users tests + the `emptyData` guard in `file.test.ts`
-  - `test(db)` live suites renamed `*.db.ts`, per-file `TEST_DATABASE_URL` guards deleted
+  - `test(db)` live suites renamed `*.e2e.ts`, per-file `TEST_DATABASE_URL` guards deleted
 
 Green at handover: `npx jest` 366, `npm run test:db` 9, `tsc`, ESLint. Background code
 review ran twice on the branch and found nothing.
@@ -26,7 +26,7 @@ review ran twice on the branch and found nothing.
 **Plan PR 3 — `feat/membership-store-methods`**, branched off updated `origin/main` once
 #32 merges. Its section in the plan is current: `MemberRepository`, one `members.ts` per
 store folder, the three `DataStore` methods delegated once in `base-store.ts`, and a
-`members.db.ts` live suite needing `account_members` added to `live-store.ts` cleanup.
+`members.e2e.ts` live suite needing `account_members` added to `live-store.ts` cleanup.
 
 ## Watch-outs
 
