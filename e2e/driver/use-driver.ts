@@ -63,6 +63,9 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
     if (state.transactions?.length) {
       await store.insertTransactions(state.transactions);
     }
+    for (const user of state.users ?? []) {
+      await store.insertUser(user);
+    }
     await session.open(server.baseUrl);
   });
 
