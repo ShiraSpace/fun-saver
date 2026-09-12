@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@/test-support/render';
+import { fireEvent, screen } from '@/test-utils/render';
 import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-support/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { MenuOverlay } from './MenuOverlay';
 import { MENU_OVERLAY_CONTENT } from './constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '../AccountsSection/constants';

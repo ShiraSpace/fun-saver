@@ -4,7 +4,7 @@ import { addDeposit, addWithdrawal, splitDeposit } from '../transactions';
 import { balance } from '../derivations';
 import { DEPOSIT_SPLIT } from '../constants';
 import { OverdraftError, ValidationError } from '../errors';
-import { mockCreateAccountInput } from '@/test-support/fixtures';
+import { mockCreateAccountInput } from '@/test-utils/fixtures';
 import type { Account, WalletName } from '../types';
 
 const ASOF = '2026-01-01';

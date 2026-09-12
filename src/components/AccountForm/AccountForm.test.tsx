@@ -1,11 +1,11 @@
-import { fireEvent, render, screen, waitFor } from '@/test-support/render';
+import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import {
   chosenAvatars,
   nameInput,
   pickFirstAvatar,
   submitForm,
   typeName,
-} from '@/test-support/account-form';
+} from '@/test-utils/account-form';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { AVATARS } from '@/lib/avatars';
 import { AccountForm } from './AccountForm';

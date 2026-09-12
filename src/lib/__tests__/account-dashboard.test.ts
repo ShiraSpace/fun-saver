@@ -4,7 +4,7 @@ import {
   createMockAccount,
   createMockTransaction,
   createMockWallet,
-} from '@/test-support/fixtures';
+} from '@/test-utils/fixtures';
 import type { WalletWithDerived } from '../types';
 
 const account = createMockAccount({

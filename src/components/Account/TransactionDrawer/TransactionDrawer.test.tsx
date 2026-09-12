@@ -1,9 +1,9 @@
-import { fireEvent, render, screen } from '@/test-support/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { TransactionDrawer } from './TransactionDrawer';
 import { TRANSACTION_DRAWER_TEST_IDS } from './constants';
 import { MODE_TOGGLE_TEST_IDS } from './ModeToggle/constants';
 import { WALLET_PICKER_TEST_IDS } from './WalletPicker/constants';
-import { mockDerivedAccount } from '@/test-support/fixtures';
+import { mockDerivedAccount } from '@/test-utils/fixtures';
 
 const mockRefresh = jest.fn();
 

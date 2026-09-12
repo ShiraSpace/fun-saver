@@ -46,3 +46,23 @@ export interface WalletWithDerived extends Wallet {
 export interface AccountWithDerivedWallets extends Account {
   wallets: WalletWithDerived[];
 }
+
+export type AuthProvider = 'google';
+
+export type MembershipRole = 'owner' | 'editor' | 'viewer';
+
+export interface User {
+  id: string;
+  provider: AuthProvider;
+  providerAccountId: string;
+  email: string;
+  name: string;
+  createdAt: string;
+}
+
+export interface AccountMember {
+  accountId: string;
+  userId: string;
+  role: MembershipRole;
+  addedAt: string;
+}
