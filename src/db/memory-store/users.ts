@@ -1,6 +1,7 @@
 import type { AuthProvider, User } from '@/lib/types';
-import type { UserRepository } from '../data-store';
 import { DuplicateUserError } from '@/lib/errors';
+import type { UserRepository } from '../data-store';
+import { findUserByIdentity } from '../user-identity';
 
 export class MemoryUsers implements UserRepository {
   private readonly users: User[] = [];
@@ -9,11 +10,7 @@ export class MemoryUsers implements UserRepository {
     provider: AuthProvider,
     providerAccountId: string
   ): Promise<User | undefined> {
-    return this.users.find(
-      (user) =>
-        user.provider === provider &&
-        user.providerAccountId === providerAccountId
-    );
+    return findUserByIdentity(this.users, provider, providerAccountId);
   }
 
   async insert(user: User): Promise<void> {

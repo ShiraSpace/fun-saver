@@ -1,8 +1,8 @@
 import type { AuthProvider, User } from '@/lib/types';
+import { DuplicateUserError } from '@/lib/errors';
 import type { UserRepository } from '../data-store';
 import { toUser, type UserRow } from '../row-mappers';
 import { selectRows, type QueryParam, type Sql } from './query';
-import { DuplicateUserError } from '@/lib/errors';
 
 export class PostgresUsers implements UserRepository {
   constructor(private readonly sql: Sql) {}
