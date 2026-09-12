@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@/test-support/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
+import { AVATARS } from '@/lib/avatars';
 import { AccountForm } from './AccountForm';
 import { NAME_FIELD_TEST_IDS } from './NameField/constants';
 import { ACCOUNT_FORM_TEST_IDS } from './constants';
@@ -108,7 +109,18 @@ describe('AccountForm', () => {
 
       expect(mockOnSubmit).toHaveBeenCalledWith({
         name: mockForm.name,
-        avatarId: 'kid-01',
+        avatarId: AVATARS[0].id,
+      });
+    });
+
+    it('submits the name without the padding around it', () => {
+      typeName(`  ${mockForm.name}  `);
+      pickFirstAvatar();
+      submit();
+
+      expect(mockOnSubmit).toHaveBeenCalledWith({
+        name: mockForm.name,
+        avatarId: AVATARS[0].id,
       });
     });
 
@@ -166,6 +178,28 @@ describe('AccountForm', () => {
     it('renders no close button without onCancel', () => {
       expect(
         screen.queryByTestId(ACCOUNT_FORM_TEST_IDS.cancel)
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('without a title icon', () => {
+    beforeEach(() => {
+      render(
+        <AccountForm
+          data-testid={mockForm.testId}
+          title={mockForm.title}
+          submitLabel={mockForm.submitLabel}
+          onSubmit={mockOnSubmit}
+        />
+      );
+    });
+
+    it('renders the title with no icon slot at all', () => {
+      expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.title)).toHaveTextContent(
+        mockForm.title
+      );
+      expect(
+        screen.queryByTestId(ACCOUNT_FORM_TEST_IDS.titleIcon)
       ).not.toBeInTheDocument();
     });
   });

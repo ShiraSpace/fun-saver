@@ -70,7 +70,7 @@ export interface AccountFormValues {
 
 interface AccountFormProps {
   title: string;
-  titleIcon: ReactNode;
+  titleIcon?: ReactNode;
   submitLabel: string;
   initialName?: string;
   initialAvatarId?: string | null;
@@ -99,8 +99,14 @@ export function AccountForm({
     if (selectedAvatarId === null) {
       return;
     }
-    onSubmit({ name, avatarId: selectedAvatarId });
+    onSubmit({ name: name.trim(), avatarId: selectedAvatarId });
   };
+
+  const icon = titleIcon ? (
+    <TitleIcon aria-hidden="true" data-testid={ACCOUNT_FORM_TEST_IDS.titleIcon}>
+      {titleIcon}
+    </TitleIcon>
+  ) : null;
 
   const cancelButton = onCancel ? (
     <CloseButton
@@ -118,12 +124,7 @@ export function AccountForm({
       <Form onSubmit={handleSubmit}>
         {cancelButton}
         <Title data-testid={ACCOUNT_FORM_TEST_IDS.title}>
-          <TitleIcon
-            aria-hidden="true"
-            data-testid={ACCOUNT_FORM_TEST_IDS.titleIcon}
-          >
-            {titleIcon}
-          </TitleIcon>
+          {icon}
           {title}
         </Title>
         <NameField value={name} onChange={setName} />
