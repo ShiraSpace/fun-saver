@@ -55,7 +55,7 @@ export class JsonFileStore implements DataStore {
   updateAccount(id: string, edits: AccountEdits): Promise<Account | undefined> {
     return this.enqueue(async (): Promise<Account | undefined> => {
       const data = await this.readFromDisk();
-      const account = data.accounts.find((candidate) => candidate.id === id);
+      const account = this.findAccountById(data, id);
 
       if (!account) {
         return;
