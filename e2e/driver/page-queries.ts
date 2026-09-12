@@ -57,11 +57,23 @@ export function hasVerticalScroll(page: Page): Promise<boolean> {
   );
 }
 
-export function styleOf(
-  page: Page,
-  selector: string,
-  property: string
-): Promise<string> {
+interface StyleQuery {
+  page: Page;
+  selector: string;
+  property: string;
+}
+
+interface TestIdStyleQuery {
+  page: Page;
+  testId: string;
+  property: string;
+}
+
+export function styleOf({
+  page,
+  selector,
+  property,
+}: StyleQuery): Promise<string> {
   return page.$eval(
     selector,
     (element, name) => getComputedStyle(element).getPropertyValue(name),
@@ -69,10 +81,10 @@ export function styleOf(
   );
 }
 
-export function computedStyle(
-  page: Page,
-  testId: string,
-  property: string
-): Promise<string> {
-  return styleOf(page, `[data-testid="${testId}"]`, property);
+export function computedStyle({
+  page,
+  testId,
+  property,
+}: TestIdStyleQuery): Promise<string> {
+  return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
 }

@@ -73,11 +73,11 @@ export class Session {
   }
 
   computedStyle(testId: string, property: string): Promise<string> {
-    return queries.computedStyle(this.page, testId, property);
+    return queries.computedStyle({ page: this.page, testId, property });
   }
 
   styleOf(selector: string, property: string): Promise<string> {
-    return queries.styleOf(this.page, selector, property);
+    return queries.styleOf({ page: this.page, selector, property });
   }
 
   click(testId: string): Promise<void> {
@@ -89,11 +89,11 @@ export class Session {
   }
 
   type(testId: string, value: string): Promise<void> {
-    return actions.type(this.page, testId, value);
+    return actions.type({ page: this.page, testId, value });
   }
 
   replace(testId: string, value: string): Promise<void> {
-    return actions.replace(this.page, testId, value);
+    return actions.replace({ page: this.page, testId, value });
   }
 
   clickSelector(selector: string): Promise<void> {
@@ -105,7 +105,7 @@ export class Session {
   }
 
   clickNth(selector: string, index: number): Promise<void> {
-    return actions.clickNth(this.page, selector, index);
+    return actions.clickNth({ page: this.page, selector, index });
   }
 
   waitForStyle(
@@ -113,15 +113,15 @@ export class Session {
     property: string,
     value: string
   ): Promise<void> {
-    return waits.waitForStyle(this.page, selector, property, value);
+    return waits.waitForStyle({ page: this.page, selector, property, value });
   }
 
   waitForText(testId: string, expected: string): Promise<void> {
-    return waits.waitForText(this.page, testId, expected);
+    return waits.waitForText({ page: this.page, testId, expected });
   }
 
-  waitForImageSource(testId: string, fragment: string): Promise<void> {
-    return waits.waitForImageSource(this.page, testId, fragment);
+  waitForImageSource(testId: string, expected: string): Promise<void> {
+    return waits.waitForImageSource({ page: this.page, testId, expected });
   }
 
   private get page(): Page {
