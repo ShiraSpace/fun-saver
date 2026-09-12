@@ -6,10 +6,6 @@ export interface StoreData {
   transactions: Transaction[];
 }
 
-export type BuildGuardedTransaction = (
-  walletTransactions: Transaction[]
-) => Transaction;
-
 export interface DataStore {
   insertAccount(account: Account): Promise<void>;
   listAccounts(): Promise<Account[]>;
@@ -17,9 +13,8 @@ export interface DataStore {
   setAccountTheme(id: string, themeId: ThemeId): Promise<Account | undefined>;
   updateAccount(id: string, edits: AccountEdits): Promise<Account | undefined>;
   insertTransactions(transactions: Transaction[]): Promise<void>;
-  listTransactionsByWallet(walletId: string): Promise<Transaction[]>;
-  insertTransactionWithGuard(
-    walletId: string,
-    build: BuildGuardedTransaction
-  ): Promise<Transaction>;
+  listTransactionsByWallet(
+    accountId: string,
+    walletId: string
+  ): Promise<Transaction[]>;
 }

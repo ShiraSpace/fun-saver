@@ -52,7 +52,7 @@ describe('JsonFileStore', () => {
 
     const reopened = new JsonFileStore(filePath);
     expect(
-      (await reopened.listTransactionsByWallet('w1')).map(
+      (await reopened.listTransactionsByWallet('a1', 'w1')).map(
         (transaction) => transaction.id
       )
     ).toEqual(['t1']);
@@ -113,7 +113,7 @@ describe('JsonFileStore', () => {
       store.insertTransactions([createMockTransaction({ id: 'c3' })]),
     ]);
 
-    const ids = (await store.listTransactionsByWallet('w1'))
+    const ids = (await store.listTransactionsByWallet('a1', 'w1'))
       .map((transaction) => transaction.id)
       .sort();
     expect(ids).toEqual(['c1', 'c2', 'c3']);
@@ -138,6 +138,6 @@ describe('JsonFileStore', () => {
     const store = new JsonFileStore(filePath);
 
     expect(await store.listAccounts()).toEqual([mockAccount]);
-    expect(await store.listTransactionsByWallet('w1')).toEqual([]);
+    expect(await store.listTransactionsByWallet('a1', 'w1')).toEqual([]);
   });
 });

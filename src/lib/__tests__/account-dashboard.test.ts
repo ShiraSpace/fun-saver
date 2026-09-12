@@ -96,7 +96,12 @@ describe('getWalletsForAccount', () => {
       );
 
       expect(reread[0].balance).toBe(8080);
-      expect(await store.listTransactionsByWallet('w1')).toHaveLength(3);
+      expect(
+        await store.listTransactionsByWallet(
+          accountWithUnsettledInterest.id,
+          'w1'
+        )
+      ).toHaveLength(3);
     });
   });
 });
