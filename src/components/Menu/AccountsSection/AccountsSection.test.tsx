@@ -59,37 +59,60 @@ describe('AccountsSection', () => {
     });
   });
 
-  it('renders a chip per account marking the selected one', () => {
+  it('renders a chip per account', () => {
+    expect(screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip)).toHaveLength(
+      accounts.length
+    );
+  });
+
+  it('marks only the selected account', () => {
     const chips = screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip);
-    expect(chips).toHaveLength(accounts.length);
 
     expect(chips[0]).toHaveAttribute('data-selected', 'true');
-    expect(chips[0]).toHaveTextContent('נ');
     expect(chips[1]).toHaveAttribute('data-selected', 'false');
+  });
+
+  it('shows each account by its initial', () => {
+    const chips = screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip);
+
+    expect(chips[0]).toHaveTextContent('נ');
     expect(chips[1]).toHaveTextContent('מ');
   });
 
-  it('renders edit and add action chips', () => {
+  it('renders the edit chip', () => {
     expect(
       screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip)
     ).toBeInTheDocument();
+  });
+
+  it('renders the add chip', () => {
     expect(
       screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.addChip)
     ).toBeInTheDocument();
   });
 
-  it('selects the tapped account and notifies the parent', () => {
+  it('selects the tapped account', () => {
     fireEvent.click(screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip)[1]);
 
     expect(mockSelectAccount).toHaveBeenCalledWith(mockSecondAccount.id);
+  });
+
+  it('closes the menu when an account is tapped', () => {
+    fireEvent.click(screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip)[1]);
+
     expect(mockOnAccountSelect).toHaveBeenCalled();
   });
 
-  it('enters create mode and closes the menu when the add chip is tapped', () => {
+  it('enters create mode when the add chip is tapped', () => {
+    fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.addChip));
+
+    expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.creatingAccount);
+  });
+
+  it('closes the menu when the add chip is tapped', () => {
     fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.addChip));
 
     expect(mockOnAccountSelect).toHaveBeenCalled();
-    expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.creatingAccount);
   });
 
   it('enters edit mode when the edit chip is tapped', () => {
