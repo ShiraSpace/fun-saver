@@ -24,4 +24,8 @@ export const COLORS = {
   alert: '#E5484D',
   alertSoftBg: '#FDECEC',
   withdrawText: '#D9480F',
+  walletSavings: '#FFC34D',
+  walletSpending: '#FF8A4C',
+  walletGood: '#E94E89',
+  walletTrack: '#F3ECE4',
 } as const;
