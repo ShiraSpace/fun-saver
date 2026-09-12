@@ -14,8 +14,21 @@ export class AccountFormDriver {
     return true;
   }
 
+  async isClosed(): Promise<boolean> {
+    const present = await this.session.exists(this.containerTestId);
+    return !present;
+  }
+
   fillName(value: string): Promise<void> {
     return this.session.type(NAME_FIELD_TEST_IDS.input, value);
+  }
+
+  nameValue(): Promise<string> {
+    return this.session.value(NAME_FIELD_TEST_IDS.input);
+  }
+
+  replaceName(value: string): Promise<void> {
+    return this.session.replace(NAME_FIELD_TEST_IDS.input, value);
   }
 
   submit(): Promise<void> {

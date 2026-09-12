@@ -1,12 +1,11 @@
 import puppeteer, {
   type BoundingBox,
   type Browser,
-  type ElementHandle,
   type Page,
 } from 'puppeteer';
-import { getDocument, queries } from 'pptr-testing-library';
-
-const { findByTestId, queryByTestId, queryAllByTestId } = queries;
+import * as actions from './page-actions';
+import * as queries from './page-queries';
+import * as waits from './page-waits';
 
 export class Session {
   private browser?: Browser;
@@ -27,6 +26,14 @@ export class Session {
     await this.activePage.goto(baseUrl, { waitUntil: 'networkidle0' });
   }
 
+  async reload(): Promise<void> {
+    await this.page.reload({ waitUntil: 'networkidle0' });
+  }
+
+  async resize(width: number, height: number): Promise<void> {
+    await this.page.setViewport({ width, height });
+  }
+
   async closePage(): Promise<void> {
     await this.activePage?.close();
     this.activePage = undefined;
@@ -37,136 +44,88 @@ export class Session {
     this.browser = undefined;
   }
 
-  async exists(testId: string): Promise<boolean> {
-    const element = await queryByTestId(await getDocument(this.page), testId);
-    return element !== null;
+  exists(testId: string): Promise<boolean> {
+    return queries.exists(this.page, testId);
   }
 
-  async count(testId: string): Promise<number> {
-    const elements = await queryAllByTestId(
-      await getDocument(this.page),
-      testId
-    );
-    return elements.length;
+  count(testId: string): Promise<number> {
+    return queries.count(this.page, testId);
   }
 
-  async text(testId: string): Promise<string> {
-    const element = await this.find(testId);
-    return element.evaluate((node) => node.textContent ?? '');
+  text(testId: string): Promise<string> {
+    return queries.text(this.page, testId);
   }
 
-  async texts(testId: string): Promise<string[]> {
-    const elements = await queryAllByTestId(
-      await getDocument(this.page),
-      testId
-    );
-    return Promise.all(
-      elements.map((element) =>
-        element.evaluate((node) => node.textContent ?? '')
-      )
-    );
+  texts(testId: string): Promise<string[]> {
+    return queries.texts(this.page, testId);
   }
 
-  async type(testId: string, value: string): Promise<void> {
-    const element = await this.find(testId);
-    await element.type(value);
+  value(testId: string): Promise<string> {
+    return queries.value(this.page, testId);
   }
 
-  async click(testId: string): Promise<void> {
-    const element = await this.find(testId);
-    await element.click();
+  imageSource(testId: string): Promise<string> {
+    return queries.imageSource(this.page, testId);
   }
 
-  async hover(testId: string): Promise<void> {
-    const element = await this.find(testId);
-    await element.hover();
+  box(testId: string): Promise<BoundingBox> {
+    return queries.box(this.page, testId);
   }
 
-  async clickSelector(selector: string): Promise<void> {
-    const element = await this.page.$(selector);
-
-    if (!element) {
-      throw new Error(`no element matches "${selector}"`);
-    }
-
-    await element.click();
+  hasVerticalScroll(): Promise<boolean> {
+    return queries.hasVerticalScroll(this.page);
   }
 
-  async hoverSelector(selector: string): Promise<void> {
-    const element = await this.page.$(selector);
-
-    if (!element) {
-      throw new Error(`no element matches "${selector}"`);
-    }
-
-    await element.hover();
+  computedStyle(testId: string, property: string): Promise<string> {
+    return queries.computedStyle({ page: this.page, testId, property });
   }
 
-  async clickNth(selector: string, index: number): Promise<void> {
-    const elements = await this.page.$$(selector);
-    const element = elements[index];
-
-    if (!element) {
-      throw new Error(`no element at index ${index} for "${selector}"`);
-    }
-
-    await element.click();
+  styleOf(selector: string, property: string): Promise<string> {
+    return queries.styleOf({ page: this.page, selector, property });
   }
 
-  async box(testId: string): Promise<BoundingBox> {
-    const element = await this.find(testId);
-    const box = await element.boundingBox();
-    if (!box) {
-      throw new Error(`element "${testId}" has no bounding box`);
-    }
-    return box;
+  click(testId: string): Promise<void> {
+    return actions.click(this.page, testId);
   }
 
-  async hasVerticalScroll(): Promise<boolean> {
-    return this.page.evaluate(
-      () => document.scrollingElement!.scrollHeight > window.innerHeight
-    );
+  hover(testId: string): Promise<void> {
+    return actions.hover(this.page, testId);
   }
 
-  async computedStyle(testId: string, property: string): Promise<string> {
-    return this.styleOf(`[data-testid="${testId}"]`, property);
+  type(testId: string, value: string): Promise<void> {
+    return actions.type({ page: this.page, testId, value });
   }
 
-  async styleOf(selector: string, property: string): Promise<string> {
-    return this.page.$eval(
-      selector,
-      (el, prop) => getComputedStyle(el).getPropertyValue(prop),
-      property
-    );
+  replace(testId: string, value: string): Promise<void> {
+    return actions.replace({ page: this.page, testId, value });
   }
 
-  async waitForStyle(
+  clickSelector(selector: string): Promise<void> {
+    return actions.clickSelector(this.page, selector);
+  }
+
+  hoverSelector(selector: string): Promise<void> {
+    return actions.hoverSelector(this.page, selector);
+  }
+
+  clickNth(selector: string, index: number): Promise<void> {
+    return actions.clickNth({ page: this.page, selector, index });
+  }
+
+  waitForStyle(
     selector: string,
     property: string,
     value: string
   ): Promise<void> {
-    await this.page.waitForFunction(
-      (sel, prop, expected) =>
-        getComputedStyle(
-          document.querySelector(sel) as Element
-        ).getPropertyValue(prop) === expected,
-      {},
-      selector,
-      property,
-      value
-    );
+    return waits.waitForStyle({ page: this.page, selector, property, value });
   }
 
-  async waitForText(testId: string, expected: string): Promise<void> {
-    await this.page.waitForFunction(
-      (id, exp) => {
-        const element = document.querySelector(`[data-testid="${id}"]`);
-        return element !== null && (element.textContent ?? '').includes(exp);
-      },
-      {},
-      testId,
-      expected
-    );
+  waitForText(testId: string, expected: string): Promise<void> {
+    return waits.waitForText({ page: this.page, testId, expected });
+  }
+
+  waitForImageSource(testId: string, expected: string): Promise<void> {
+    return waits.waitForImageSource({ page: this.page, testId, expected });
   }
 
   private get page(): Page {
@@ -181,9 +140,5 @@ export class Session {
       throw new Error('session not started; call start() first');
     }
     return this.browser;
-  }
-
-  private async find(testId: string): Promise<ElementHandle<Element>> {
-    return findByTestId(await getDocument(this.page), testId);
   }
 }

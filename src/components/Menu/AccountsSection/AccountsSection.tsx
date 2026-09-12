@@ -56,6 +56,11 @@ export function AccountsSection({
     setMode(APP_MODE.creatingAccount);
   };
 
+  const handleEditAccount = (): void => {
+    onAccountSelect();
+    setMode(APP_MODE.editingAccount);
+  };
+
   const accountChips = accounts.map((account) => (
     <AccountChip
       key={account.id}
@@ -70,7 +75,7 @@ export function AccountsSection({
       <MenuLabel>{ACCOUNTS_SECTION_CONTENT.label}</MenuLabel>
       <Row>
         {accountChips}
-        <EditAccountChip />
+        <EditAccountChip onEditAccount={handleEditAccount} />
         <AddAccountChip onAddAccount={handleAddAccount} />
       </Row>
     </section>

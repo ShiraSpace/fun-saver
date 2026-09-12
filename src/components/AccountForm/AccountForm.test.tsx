@@ -1,4 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import {
+  chosenAvatars,
+  nameInput,
+  pickFirstAvatar,
+  submitForm,
+  typeName,
+} from '@/test-utils/account-form';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { AVATARS } from '@/lib/avatars';
 import { AccountForm } from './AccountForm';
@@ -16,20 +23,6 @@ const mockForm = {
 
 const mockOnSubmit = jest.fn();
 const mockOnCancel = jest.fn();
-
-function typeName(name: string): void {
-  fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-    target: { value: name },
-  });
-}
-
-function pickFirstAvatar(): void {
-  fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
-}
-
-function submit(): void {
-  fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
-}
 
 describe('AccountForm', () => {
   beforeEach(() => {
@@ -105,7 +98,7 @@ describe('AccountForm', () => {
     it('submits the typed name and the chosen avatar', () => {
       typeName(mockForm.name);
       pickFirstAvatar();
-      submit();
+      submitForm();
 
       expect(mockOnSubmit).toHaveBeenCalledWith({
         name: mockForm.name,
@@ -116,7 +109,7 @@ describe('AccountForm', () => {
     it('submits the name without the padding around it', () => {
       typeName(`  ${mockForm.name}  `);
       pickFirstAvatar();
-      submit();
+      submitForm();
 
       expect(mockOnSubmit).toHaveBeenCalledWith({
         name: mockForm.name,
@@ -135,7 +128,7 @@ describe('AccountForm', () => {
 
       typeName(mockForm.name);
       pickFirstAvatar();
-      submit();
+      submitForm();
 
       expect(
         await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
@@ -147,10 +140,10 @@ describe('AccountForm', () => {
 
       typeName(mockForm.name);
       pickFirstAvatar();
-      submit();
+      submitForm();
       await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError);
 
-      submit();
+      submitForm();
 
       await waitFor(() =>
         expect(
@@ -183,17 +176,12 @@ describe('AccountForm', () => {
     });
 
     it('opens pre-filled and ready to submit', () => {
-      expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(
-        mockForm.name
-      );
+      expect(nameInput()).toHaveValue(mockForm.name);
       expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit)).toBeEnabled();
     });
 
     it('marks the initial avatar as the selected one', () => {
-      const options = screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option);
-      const selected = options.filter(
-        (option) => option.dataset.selected === 'true'
-      );
+      const selected = chosenAvatars();
 
       expect(selected).toHaveLength(1);
       expect(
@@ -202,7 +190,7 @@ describe('AccountForm', () => {
     });
 
     it('submits the initial values untouched', () => {
-      submit();
+      submitForm();
 
       expect(mockOnSubmit).toHaveBeenCalledWith({
         name: mockForm.name,

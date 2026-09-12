@@ -1,0 +1,83 @@
+import { beforeEach, describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import { mockAccount, mockAccountEdit } from '@/test-utils/fixtures';
+import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
+import { useDriver } from './driver/use-driver';
+
+const EDITED_NAME = 'רוני';
+const LONGEST_NAME = 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH);
+const PHONE = { width: 402, height: 874 };
+
+describe('edit account from the menu', () => {
+  const { menu, editAccount, avatarPicker, header, session } = useDriver({
+    accounts: [mockAccount],
+  });
+
+  beforeEach(async () => {
+    await menu.open();
+    await menu.clickEditAccountChip();
+  });
+
+  it('opens the edit form pre-filled with the current account', async () => {
+    assert.equal(await editAccount.isOpen(), true);
+    assert.equal(await editAccount.nameValue(), mockAccount.name);
+  });
+
+  it('renames the account and shows the new name in the header', async () => {
+    await editAccount.replaceName(EDITED_NAME);
+    await editAccount.submit();
+
+    await header.waitForName(EDITED_NAME);
+    assert.equal(await header.name(), EDITED_NAME);
+  });
+
+  it('saves a new avatar without touching the name', async () => {
+    assert.ok(
+      (await header.avatarSource()).includes(mockAccount.avatarId),
+      'header starts on the account avatar'
+    );
+
+    await avatarPicker.select(mockAccountEdit.avatarId);
+    await editAccount.submit();
+
+    await header.waitForAvatar(mockAccountEdit.avatarId);
+    assert.equal(await header.name(), mockAccount.name);
+  });
+
+  it('keeps the edit chip inside the menu for the longest name', async () => {
+    await editAccount.replaceName(LONGEST_NAME);
+    await editAccount.submit();
+
+    await header.waitForName(LONGEST_NAME);
+    await session.resize(PHONE.width, PHONE.height);
+    await menu.open();
+
+    const section = await menu.accountsSectionBox();
+    const chip = await menu.editAccountChipBox();
+
+    assert.ok(
+      chip.width <= section.width,
+      `edit chip is ${chip.width}px wide inside a ${section.width}px menu`
+    );
+    assert.ok(
+      chip.x >= section.x,
+      `edit chip starts at ${chip.x}px, left of the ${section.x}px menu`
+    );
+  });
+
+  it('closes the form when the edit is cancelled', async () => {
+    await editAccount.replaceName(EDITED_NAME);
+    await editAccount.cancel();
+
+    await header.waitForName(mockAccount.name);
+    assert.equal(await editAccount.isClosed(), true);
+  });
+
+  it('keeps the stored name when the edit is cancelled', async () => {
+    await editAccount.replaceName(EDITED_NAME);
+    await editAccount.cancel();
+    await session.reload();
+
+    assert.equal(await header.name(), mockAccount.name);
+  });
+});

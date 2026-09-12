@@ -27,6 +27,14 @@ export class HeaderDriver {
     return this.session.box(TITLE_TEST_IDS.title);
   }
 
+  avatarSource(): Promise<string> {
+    return this.session.imageSource(HEADER_TEST_IDS.avatar);
+  }
+
+  waitForAvatar(avatarId: string): Promise<void> {
+    return this.session.waitForImageSource(HEADER_TEST_IDS.avatar, avatarId);
+  }
+
   avatarBox(): Promise<BoundingBox> {
     return this.session.box(HEADER_TEST_IDS.avatar);
   }

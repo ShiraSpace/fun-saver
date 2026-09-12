@@ -9,9 +9,14 @@ import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
 import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
-import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
-import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
-import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
+import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
+import {
+  cancelForm,
+  nameInput,
+  pickFirstAvatar,
+  submitForm,
+  typeName,
+} from '@/test-utils/account-form';
 import {
   createMockAccount,
   mockAccount,
@@ -24,6 +29,7 @@ const mockRefresh = jest.fn();
 const mockPush = jest.fn();
 const mockPersist = jest.fn();
 const mockCreateAccount = jest.fn();
+const mockUpdateAccount = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: (): { refresh: jest.Mock; push: jest.Mock } => ({
@@ -42,12 +48,19 @@ jest.mock('../CreateAccount/use-create-account', () => ({
   }),
 }));
 
+jest.mock('../EditAccount/use-update-account', () => ({
+  useUpdateAccount: (): { updateAccount: jest.Mock } => ({
+    updateAccount: mockUpdateAccount,
+  }),
+}));
+
 const accounts: AccountWithDerivedWallets[] = [
   { ...mockAccount, wallets: mockDerivedWallets },
   { ...mockSecondAccount, wallets: mockDerivedWallets },
 ];
 
 const createdAccount = createMockAccount({ id: 'created-id', name: 'דנה' });
+const renamedAccount = createMockAccount({ id: mockAccount.id, name: 'רוני' });
 
 interface RenderHomeParams {
   accounts?: AccountWithDerivedWallets[];
@@ -69,18 +82,26 @@ function tapAddChip(): void {
   fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.addChip));
 }
 
+function tapEditChip(): void {
+  fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip));
+}
+
+function submitEditForm(): void {
+  typeName(renamedAccount.name);
+  submitForm();
+}
+
 function submitCreateForm(): void {
-  fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
-    target: { value: createdAccount.name },
-  });
-  fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
-  fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
+  typeName(createdAccount.name);
+  pickFirstAvatar();
+  submitForm();
 }
 
 describe('Home', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockCreateAccount.mockResolvedValue(createdAccount);
+    mockUpdateAccount.mockResolvedValue(renamedAccount);
   });
 
   describe('viewing mode', () => {
@@ -177,7 +198,7 @@ describe('Home', () => {
     });
 
     it('closes the overlay without creating when cancelled', () => {
-      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+      cancelForm();
 
       expect(
         screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
@@ -197,6 +218,84 @@ describe('Home', () => {
           screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
         ).not.toBeInTheDocument()
       );
+    });
+  });
+
+  describe('editing an account from the menu', () => {
+    beforeEach(() => {
+      renderHome();
+      openMenu();
+      tapEditChip();
+    });
+
+    it('opens the edit overlay', () => {
+      expect(
+        screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)
+      ).toBeInTheDocument();
+    });
+
+    it('opens it on the account currently selected', () => {
+      expect(nameInput()).toHaveValue(mockAccount.name);
+    });
+
+    it('leaves the create overlay closed', () => {
+      expect(
+        screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
+      ).not.toBeInTheDocument();
+    });
+
+    it('closes the overlay when cancelled', () => {
+      cancelForm();
+
+      expect(
+        screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)
+      ).not.toBeInTheDocument();
+    });
+
+    it('saves nothing when cancelled', () => {
+      cancelForm();
+
+      expect(mockUpdateAccount).not.toHaveBeenCalled();
+    });
+
+    it('saves the edit against the selected account', () => {
+      submitEditForm();
+
+      expect(mockUpdateAccount).toHaveBeenCalledWith(mockAccount.id, {
+        name: renamedAccount.name,
+        avatarId: mockAccount.avatarId,
+      });
+    });
+
+    it('refreshes so the saved name reaches the server components', async () => {
+      submitEditForm();
+
+      await waitFor(() => expect(mockRefresh).toHaveBeenCalled());
+    });
+
+    it('closes the overlay once the save lands', async () => {
+      submitEditForm();
+
+      await waitFor(() =>
+        expect(
+          screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)
+        ).not.toBeInTheDocument()
+      );
+    });
+  });
+
+  describe('editing while the selected id is stale', () => {
+    beforeEach(() => {
+      renderHome({ initialAccountId: 'gone-from-this-list' });
+      openMenu();
+      tapEditChip();
+    });
+
+    it('edits the account the header is showing rather than nothing', () => {
+      expect(
+        screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)
+      ).toBeInTheDocument();
+      expect(nameInput()).toHaveValue(mockAccount.name);
     });
   });
 
