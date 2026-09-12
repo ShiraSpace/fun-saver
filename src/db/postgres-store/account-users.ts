@@ -1,16 +1,20 @@
 import type { Account, AccountUser } from '@/lib/types';
-import type { AccountUserRepository } from '../data-store';
-import { byAccountName } from '../account-users';
+import type { AccountOwner, AccountUserRepository } from '../data-store';
+import { byAccountName, ownerAccountUser } from '../account-users';
 import {
   toAccount,
   toAccountUser,
   type AccountRow,
   type AccountUserRow,
 } from '../row-mappers';
+import { PostgresAccounts } from './accounts';
 import { selectRows, type Sql } from './query';
 
 export class PostgresAccountUsers implements AccountUserRepository {
-  constructor(private readonly sql: Sql) {}
+  constructor(
+    private readonly sql: Sql,
+    private readonly accounts: PostgresAccounts
+  ) {}
 
   async get(
     accountId: string,
@@ -35,5 +39,20 @@ export class PostgresAccountUsers implements AccountUserRepository {
     );
 
     return byAccountName(rows.map(toAccount));
+  }
+
+  async insertAccountWithOwner(
+    account: Account,
+    owner: AccountOwner
+  ): Promise<void> {
+    const accountUser = ownerAccountUser(account.id, owner);
+
+    await this.sql.transaction([
+      this.accounts.insertQuery(account),
+      this.sql`
+        INSERT INTO account_users (account_id, user_id, role, added_at)
+        VALUES (${accountUser.accountId}, ${accountUser.userId}, ${accountUser.role}, ${accountUser.addedAt})
+      `,
+    ]);
   }
 }

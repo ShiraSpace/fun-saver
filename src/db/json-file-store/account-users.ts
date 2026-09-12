@@ -1,6 +1,10 @@
 import type { Account, AccountUser } from '@/lib/types';
-import type { AccountUserRepository } from '../data-store';
-import { accountsForUser, findAccountUser } from '../account-users';
+import type { AccountOwner, AccountUserRepository } from '../data-store';
+import {
+  accountsForUser,
+  findAccountUser,
+  ownerAccountUser,
+} from '../account-users';
 import type { FileSession } from './file-session';
 
 export class JsonAccountUsers implements AccountUserRepository {
@@ -16,5 +20,13 @@ export class JsonAccountUsers implements AccountUserRepository {
     return this.session.read((data): Account[] =>
       accountsForUser(data.accountUsers, data.accounts, userId)
     );
+  }
+
+  insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void> {
+    return this.session.write(async (data, save): Promise<void> => {
+      data.accounts.push(account);
+      data.accountUsers.push(ownerAccountUser(account.id, owner));
+      await save();
+    });
   }
 }
