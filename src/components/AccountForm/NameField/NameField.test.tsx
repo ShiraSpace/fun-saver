@@ -6,7 +6,7 @@ import { NAME_FIELD_COPY, NAME_FIELD_TEST_IDS } from './constants';
 const mockName = 'נועה';
 const mockOnChange = jest.fn();
 
-function renderField(value: string): void {
+function renderField(value = ''): void {
   render(
     <NameField
       value={value}
@@ -23,7 +23,7 @@ describe('NameField', () => {
 
   describe('empty', () => {
     beforeEach(() => {
-      renderField('');
+      renderField();
     });
 
     it('labels the input', () => {
