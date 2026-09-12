@@ -59,4 +59,12 @@ describe('derivations', () => {
   it('walletShares = percentages that sum to 100', () => {
     expect(walletShares([20443, 12500, 3000])).toEqual([57, 35, 8]);
   });
+
+  it('walletShares of empty wallets is all zeros, not NaN', () => {
+    expect(walletShares([0, 0, 0])).toEqual([0, 0, 0]);
+  });
+
+  it('walletShares breaks a tie so the shares still sum to 100', () => {
+    expect(walletShares([1000, 1000, 1000])).toEqual([34, 33, 33]);
+  });
 });
