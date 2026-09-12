@@ -29,6 +29,10 @@ export class MenuDriver {
     return this.session.click(ACCOUNTS_SECTION_TEST_IDS.addChip);
   }
 
+  clickEditAccountChip(): Promise<void> {
+    return this.session.click(ACCOUNTS_SECTION_TEST_IDS.editChip);
+  }
+
   waitForClosed(): Promise<void> {
     return this.session.waitForStyle(OVERLAY, 'opacity', '0');
   }

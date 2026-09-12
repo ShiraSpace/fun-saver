@@ -72,6 +72,18 @@ export class Session {
     await element.type(value);
   }
 
+  async value(testId: string): Promise<string> {
+    const element = await this.find(testId);
+    return element.evaluate((node) => (node as HTMLInputElement).value);
+  }
+
+  async replace(testId: string, value: string): Promise<void> {
+    const element = await this.find(testId);
+    await element.click();
+    await element.evaluate((node) => (node as HTMLInputElement).select());
+    await element.type(value);
+  }
+
   async click(testId: string): Promise<void> {
     const element = await this.find(testId);
     await element.click();
