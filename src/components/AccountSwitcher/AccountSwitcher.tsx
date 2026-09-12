@@ -16,5 +16,9 @@ export function AccountSwitcher({
   const { selectedAccountId } = useAccounts();
   const current = selectedAccount(accounts, selectedAccountId);
 
+  if (!current) {
+    return <></>;
+  }
+
   return <Account account={current} />;
 }
