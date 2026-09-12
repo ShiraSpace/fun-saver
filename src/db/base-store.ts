@@ -1,6 +1,7 @@
 import type {
   Account,
   AccountEdits,
+  AccountUser,
   AuthProvider,
   Transaction,
   User,
@@ -9,6 +10,7 @@ import type { ThemeId } from '@/theme/registry';
 import type {
   AccountRepository,
   DataStore,
+  AccountUserRepository,
   TransactionRepository,
   UserRepository,
 } from './data-store';
@@ -17,7 +19,8 @@ export class BaseStore implements DataStore {
   constructor(
     private readonly accounts: AccountRepository,
     private readonly transactions: TransactionRepository,
-    private readonly users: UserRepository
+    private readonly users: UserRepository,
+    private readonly accountUsers: AccountUserRepository
   ) {}
 
   insertAccount(account: Account): Promise<void> {
@@ -60,5 +63,24 @@ export class BaseStore implements DataStore {
 
   insertUser(user: User): Promise<void> {
     return this.users.insert(user);
+  }
+
+  getAccountUser(
+    accountId: string,
+    userId: string
+  ): Promise<AccountUser | undefined> {
+    return this.accountUsers.get(accountId, userId);
+  }
+
+  listAccountsForUser(userId: string): Promise<Account[]> {
+    return this.accountUsers.listAccountsForUser(userId);
+  }
+
+  insertAccountWithOwner(
+    account: Account,
+    ownerId: string,
+    addedAt: string
+  ): Promise<void> {
+    return this.accountUsers.insertAccountWithOwner(account, ownerId, addedAt);
   }
 }
