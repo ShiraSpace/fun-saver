@@ -8,20 +8,20 @@ import { withLiveStore } from './live-store';
 
 describe('PostgresUsers', () => {
   const { store, userId } = withLiveStore();
-  let user: User;
+  let mockUser: User;
 
   beforeEach(async () => {
-    user = createMockUser({
+    mockUser = createMockUser({
       id: userId('1'),
       providerAccountId: userId('sub'),
     });
-    await store.insertUser(user);
+    await store.insertUser(mockUser);
   });
 
   it('finds an inserted user by its provider identity', async () => {
     expect(
-      await store.findUserByProvider('google', user.providerAccountId)
-    ).toEqual(user);
+      await store.findUserByProvider('google', mockUser.providerAccountId)
+    ).toEqual(mockUser);
   });
 
   it('returns undefined for an unknown provider account id', async () => {
@@ -35,7 +35,7 @@ describe('PostgresUsers', () => {
       store.insertUser(
         createMockUser({
           id: userId('2'),
-          providerAccountId: user.providerAccountId,
+          providerAccountId: mockUser.providerAccountId,
         })
       )
     ).rejects.toThrow(DuplicateUserError);
