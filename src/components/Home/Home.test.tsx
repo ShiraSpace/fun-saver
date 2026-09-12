@@ -9,7 +9,8 @@ import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
 import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
-import { NAME_FIELD_TEST_IDS } from '@/components/CreateAccount/NameField/constants';
+import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
+import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import {
   createMockAccount,
@@ -73,7 +74,7 @@ function submitCreateForm(): void {
     target: { value: createdAccount.name },
   });
   fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
-  fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit));
+  fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
 }
 
 describe('Home', () => {
@@ -176,7 +177,7 @@ describe('Home', () => {
     });
 
     it('closes the overlay without creating when cancelled', () => {
-      fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.cancel));
+      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
 
       expect(
         screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
