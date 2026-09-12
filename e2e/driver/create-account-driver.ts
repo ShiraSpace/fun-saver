@@ -1,5 +1,6 @@
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
-import { NAME_FIELD_TEST_IDS } from '@/components/CreateAccount/NameField/constants';
+import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
+import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { Session } from './session';
 
@@ -16,11 +17,11 @@ export class CreateAccountDriver {
   }
 
   submit(): Promise<void> {
-    return this.session.click(CREATE_ACCOUNT_TEST_IDS.submit);
+    return this.session.click(ACCOUNT_FORM_TEST_IDS.submit);
   }
 
   cancel(): Promise<void> {
-    return this.session.click(CREATE_ACCOUNT_TEST_IDS.cancel);
+    return this.session.click(ACCOUNT_FORM_TEST_IDS.cancel);
   }
 
   background(): Promise<string> {
@@ -39,10 +40,10 @@ export class CreateAccountDriver {
 
   async formGaps(): Promise<number[]> {
     const [title, field, picker, submit] = await Promise.all([
-      this.session.box(CREATE_ACCOUNT_TEST_IDS.title),
+      this.session.box(ACCOUNT_FORM_TEST_IDS.title),
       this.session.box(NAME_FIELD_TEST_IDS.field),
       this.session.box(AVATAR_PICKER_TEST_IDS.container),
-      this.session.box(CREATE_ACCOUNT_TEST_IDS.submit),
+      this.session.box(ACCOUNT_FORM_TEST_IDS.submit),
     ]);
     return [
       title.y,
@@ -54,7 +55,7 @@ export class CreateAccountDriver {
 
   async titleSpacing(): Promise<{ fromTop: number; toNameField: number }> {
     const [title, field] = await Promise.all([
-      this.session.box(CREATE_ACCOUNT_TEST_IDS.title),
+      this.session.box(ACCOUNT_FORM_TEST_IDS.title),
       this.session.box(NAME_FIELD_TEST_IDS.field),
     ]);
     return {
@@ -64,14 +65,11 @@ export class CreateAccountDriver {
   }
 
   titleColor(): Promise<string> {
-    return this.session.computedStyle(CREATE_ACCOUNT_TEST_IDS.title, 'color');
+    return this.session.computedStyle(ACCOUNT_FORM_TEST_IDS.title, 'color');
   }
 
   titleFontSize(): Promise<string> {
-    return this.session.computedStyle(
-      CREATE_ACCOUNT_TEST_IDS.title,
-      'font-size'
-    );
+    return this.session.computedStyle(ACCOUNT_FORM_TEST_IDS.title, 'font-size');
   }
 
   nameFieldBackground(): Promise<string> {

@@ -2,8 +2,9 @@ import { fireEvent, render, screen, waitFor } from '@/test-support/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { mockAccount, mockCreateAccountInput } from '@/test-support/fixtures';
 import { CreateAccount } from './CreateAccount';
-import { NAME_FIELD_TEST_IDS } from './NameField/constants';
-import { CREATE_ACCOUNT_COPY, CREATE_ACCOUNT_TEST_IDS } from './constants';
+import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
+import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
+import { CREATE_ACCOUNT_COPY } from './constants';
 
 const mockPush = jest.fn();
 const mockCreateAccount = jest.fn();
@@ -23,7 +24,7 @@ function fillAndSubmit(name: string): void {
     target: { value: name },
   });
   fireEvent.click(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)[0]);
-  fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit));
+  fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit));
 }
 
 describe('CreateAccount', () => {
@@ -38,9 +39,15 @@ describe('CreateAccount', () => {
     });
 
     it('shows the create-account title', () => {
+      expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.title)).toHaveTextContent(
+        CREATE_ACCOUNT_COPY.title
+      );
+    });
+
+    it('shows the create icon beside the title', () => {
       expect(
-        screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.title)
-      ).toHaveTextContent(CREATE_ACCOUNT_COPY.title);
+        screen.getByTestId(ACCOUNT_FORM_TEST_IDS.titleIcon)
+      ).toHaveTextContent(CREATE_ACCOUNT_COPY.titleIcon);
     });
 
     it('renders the name field', () => {
@@ -55,12 +62,12 @@ describe('CreateAccount', () => {
 
     it('shows the submit button', () => {
       expect(
-        screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit)
+        screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit)
       ).toHaveTextContent(CREATE_ACCOUNT_COPY.submit);
     });
 
     it('disables submit until a name and an avatar are chosen', () => {
-      const submit = screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.submit);
+      const submit = screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit);
       expect(submit).toBeDisabled();
 
       fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
@@ -93,7 +100,7 @@ describe('CreateAccount', () => {
     });
 
     it('calls onCancel when the close button is tapped', () => {
-      fireEvent.click(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.cancel));
+      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
 
       expect(mockOnCancel).toHaveBeenCalledTimes(1);
     });
