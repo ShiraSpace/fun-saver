@@ -2,25 +2,43 @@ import { neon } from '@neondatabase/serverless';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-type Target = 'main' | 'dev' | 'test';
+type TargetName = 'main' | 'dev' | 'test';
 
-function resolveTarget(): {
-  name: Target;
+interface MigrationTarget {
+  name: TargetName;
   envVar: string;
   url: string | undefined;
-} {
-  if (process.argv.includes('--test'))
-    return {
-      name: 'test',
-      envVar: 'TEST_DATABASE_URL',
-      url: process.env.TEST_DATABASE_URL,
-    };
-  if (process.argv.includes('--dev'))
-    return {
-      name: 'dev',
-      envVar: 'DEV_DATABASE_URL',
-      url: process.env.DEV_DATABASE_URL,
-    };
+}
+
+function resolveTarget(): MigrationTarget {
+  return testTarget() ?? devTarget() ?? mainTarget();
+}
+
+function testTarget(): MigrationTarget | undefined {
+  if (!process.argv.includes('--test')) {
+    return undefined;
+  }
+
+  return {
+    name: 'test',
+    envVar: 'TEST_DATABASE_URL',
+    url: process.env.TEST_DATABASE_URL,
+  };
+}
+
+function devTarget(): MigrationTarget | undefined {
+  if (!process.argv.includes('--dev')) {
+    return undefined;
+  }
+
+  return {
+    name: 'dev',
+    envVar: 'DEV_DATABASE_URL',
+    url: process.env.DEV_DATABASE_URL,
+  };
+}
+
+function mainTarget(): MigrationTarget {
   return {
     name: 'main',
     envVar: 'DATABASE_URL',
