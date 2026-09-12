@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — Home (ring total + per-wallet detail)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root, :root[data-theme='sunshine-quest'] {
+  --textOnPrimary:#FFFFFF; --surface:#FFFFFF;
+  --textMuted:#8A7AA7; --textStrong:#3A1F5A;
+  --divider:#F2D9D2; --softBg:#FFF8E0; --softBorder:#FFD23F; --softText:#7A5A0A;
+  --depositBg:#FFF6E0; --gainText:#2E7D32; --gainSoftBg:#E1F4E5;
+  --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+  --actionButton:linear-gradient(#8A3AAE,#6B2C8E);
+  --sunnyTile:linear-gradient(135deg,#FFE6B0,#FFC34D);
+  --potSavings:linear-gradient(135deg,#FFE6B0,#FFC34D);
+  --potSpending:linear-gradient(135deg,#FFD8C7,#FF8A4C);
+  --potGood:linear-gradient(135deg,#FBC4DA,#E94E89);
+  --arcSavings:#FFC34D; --arcSpending:#FF8A4C; --arcGood:#E94E89; --arcTrack:#F3ECE4;
+}
+:root[data-theme='jungle-quest'] {
+  --textOnPrimary:#FFFFFF; --surface:#FFFDF5;
+  --textMuted:#5C7A6E; --textStrong:#1B4332;
+  --divider:#DDE7CC; --softBg:#F3F7E4; --softBorder:#B5D94C; --softText:#4A6A1E;
+  --depositBg:#F3F7E4; --gainText:#3A7D2E; --gainSoftBg:#E4F2D9;
+  --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+  --actionButton:linear-gradient(#3AB3A3,#2A9D8F);
+  --sunnyTile:linear-gradient(135deg,#52B69A,#2A9D8F);
+  --potSavings:linear-gradient(135deg,#52B69A,#2A9D8F);
+  --potSpending:linear-gradient(135deg,#B5D94C,#90BE6D);
+  --potGood:linear-gradient(135deg,#F4A261,#E76F51);
+  --arcSavings:#2A9D8F; --arcSpending:#90BE6D; --arcGood:#E76F51; --arcTrack:#E8EFDC;
+}
+:root[data-theme='midnight-blue'] {
+  --textOnPrimary:#FFFFFF; --surface:#141B24;
+  --textMuted:#8A96A8; --textStrong:#ECF1F8;
+  --divider:#1E2A40; --softBg:#121E36; --softBorder:#3B82F6; --softText:#93C5FD;
+  --depositBg:#111B30; --gainText:#34D399; --gainSoftBg:#0E2E2A;
+  --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  --actionButton:linear-gradient(#60A5FA,#3B82F6);
+  --sunnyTile:linear-gradient(135deg,#1E40AF,#172554);
+  --potSavings:linear-gradient(135deg,#1E40AF,#172554);
+  --potSpending:linear-gradient(135deg,#2563EB,#1E40AF);
+  --potGood:linear-gradient(135deg,#4338CA,#312E81);
+  --arcSavings:#1E40AF; --arcSpending:#60A5FA; --arcGood:#818CF8; --arcTrack:#1E2A40;
+}
+/* TYPE_SCALE: display 48 / amount 38 / title 22 / heading 18 / body 15 / label 12 */
+
+* { box-sizing:border-box; }
+body { margin:0; padding:24px 20px 60px; background:#20242c; color:#fff; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
+.sub { color:#9aa3b2; font-size:13px; line-height:1.6; margin:0 0 18px; max-width:620px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.new { color:#ffd23f; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px; }
+.controls button { font-family:Rubik,sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+  padding:7px 14px; border-radius:999px; border:1.5px solid #3a4150; background:#2a303a; color:#dfe4ec; }
+.controls button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff; }
+
+.phone { width:392px; border-radius:30px; overflow:hidden; background:var(--screen);
+  box-shadow:0 18px 40px rgba(0,0,0,.45); font-family:Rubik,sans-serif; direction:rtl; }
+.col { display:flex; flex-direction:column; gap:16px; padding:16px 14px; }
+
+.header { display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--surface);
+  border-radius:18px; box-shadow:0 4px 0 rgba(0,0,0,.06); color:var(--textStrong); }
+.burger { width:22px; display:flex; flex-direction:column; gap:4px; }
+.burger i { height:2.5px; border-radius:2px; background:var(--textStrong); display:block; }
+.hname { flex:1; text-align:start; font-weight:700; font-size:18px; font-family:Fredoka,Rubik,sans-serif; }
+.avatar { width:40px; height:40px; border-radius:50%; background:var(--sunnyTile);
+  display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+
+/* ---- overview card: total inside the ring ---- */
+.card { position:relative; background:var(--surface); border-radius:24px; padding:16px;
+  box-shadow:0 6px 0 rgba(0,0,0,.06); color:var(--textStrong); }
+.donutRow { display:flex; align-items:center; gap:16px; }
+.donut { flex-shrink:0; position:relative; }
+.donut svg { display:block; transform:rotate(-90deg); }
+.donut circle { fill:none; stroke-linecap:butt; }
+.holeText { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.holeText .lbl { font-size:10px; font-weight:600; color:var(--textMuted); letter-spacing:.4px; }
+.holeText .amt { font-size:26px; font-weight:800; line-height:1.05; direction:ltr; font-variant-numeric:tabular-nums; }
+.holeText .amt small { font-size:.55em; opacity:.6; margin-inline-end:2px; }
+
+.legend { flex:1; display:flex; flex-direction:column; gap:11px; }
+.leg { display:flex; align-items:center; gap:9px; font-size:15px; font-weight:600; }
+.dot { width:14px; height:14px; border-radius:5px; flex-shrink:0; }
+.dot.savings { background:var(--arcSavings); }
+.dot.spending { background:var(--arcSpending); }
+.dot.good { background:var(--arcGood); }
+.leg .pct { font-size:13px; font-weight:500; color:var(--textMuted); }
+.leader { flex:1; border-bottom:2.5px dotted var(--divider); margin-bottom:5px; }
+.leg .val { font-weight:800; direction:ltr; font-variant-numeric:tabular-nums; }
+.leg .val small { font-size:.72em; opacity:.6; margin-inline-end:2px; }
+
+/* ---- per-wallet detail ---- */
+.sectionLabel { text-align:start; padding-inline:4px; font-size:12px; font-weight:700;
+  color:var(--textOnPrimary); opacity:.92; }
+.details { display:flex; flex-direction:column; gap:8px; }
+.detail { background:var(--surface); border-radius:16px; box-shadow:0 3px 0 rgba(0,0,0,.06);
+  color:var(--textStrong); padding:11px 12px; }
+.detailHead { display:flex; align-items:center; gap:11px; }
+.illust { flex-shrink:0; width:40px; height:40px; border-radius:12px; font-size:21px;
+  display:inline-flex; align-items:center; justify-content:center; }
+.illust.savings { background:var(--potSavings); }
+.illust.spending { background:var(--potSpending); }
+.illust.good { background:var(--potGood); }
+.detailName { flex:1; text-align:start; font-size:15px; font-weight:700; }
+.detailName small { display:block; font-size:11.5px; font-weight:500; color:var(--textMuted); margin-top:2px; }
+.pill { padding:5px 11px; border-radius:999px; background:var(--depositBg); border:1.5px solid var(--softBorder);
+  font-size:15px; font-weight:700; direction:ltr; font-variant-numeric:tabular-nums; }
+.pill small { font-size:.72em; opacity:.6; margin-inline-end:3px; }
+
+.stats { display:flex; gap:8px; margin-top:10px; padding-top:10px; border-top:1.5px dashed var(--divider); }
+.stat { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:8px 6px; border-radius:12px; background:var(--depositBg); }
+.stat.gain { background:var(--gainSoftBg); color:var(--gainText); }
+.stat .lbl { font-size:11px; font-weight:600; color:var(--textMuted); }
+.stat.gain .lbl { color:var(--gainText); opacity:.85; }
+.stat .num { font-size:17px; font-weight:800; direction:ltr; font-variant-numeric:tabular-nums; }
+.stat .num small { font-size:.65em; opacity:.6; margin-inline-end:2px; }
+
+.ladder { margin-top:18px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  font-size:12.5px; color:#9aa3b2; max-width:620px; }
+.ladderTitle { font-weight:600; color:#dfe4ec; }
+.step { background:#2a303a; border:1.5px solid #3a4150; border-radius:999px; padding:4px 10px;
+  direction:ltr; color:#9be7b4; font-weight:600; }
+.step.off { color:#8a93a2; }
+.step i { font-style:normal; color:#9aa3b2; font-weight:500; }
+
+.cta { width:100%; padding:15px; border:none; border-radius:20px; background:var(--actionButton);
+  color:var(--textOnPrimary); font-family:Fredoka,Rubik,sans-serif; font-size:18px; font-weight:600;
+  box-shadow:0 5px 0 rgba(0,0,0,.22); cursor:pointer; }
+</style>
+</head>
+<body>
+
+<h1>fun-saver — המסך הראשי</h1>
+<p class="sub">
+  Header = burger · name · avatar (no total). Ring card owns the total and the split.
+  Interest is numbers only — no coin row: it lives in the savings stat strip.
+  Seed account אלי: חיסכון ₪204 (57%) · בזבוזים ₪125 (35%) · מעשים טובים ₪30 (8%) → ₪359.
+  <b>היום</b> uses the same half-shekel rounding as the old coin row — <code>coinBreakdown</code> becomes a number formatter (₪0.5 / ₪1 / ₪1.5 / ₪2.5…). Balances stay whole shekels.
+  <br /><span class="new">Needs new derivations</span>: <code>ביזבזת ₪45</code> and <code>תרמת ₪18</code>
+  (withdrawals per wallet — today only <code>principal</code> = deposits−withdrawals is exposed).
+</p>
+
+<div class="controls">
+  <button data-theme-btn="sunshine-quest">sunshine-quest</button>
+  <button data-theme-btn="jungle-quest" aria-pressed="true">jungle-quest</button>
+  <button data-theme-btn="midnight-blue">midnight-blue</button>
+</div>
+
+<div class="phone"><div class="col">
+
+  <div class="header">
+    <span class="burger"><i></i><i></i><i></i></span>
+    <span class="hname">אלי</span>
+    <span class="avatar">🧒</span>
+  </div>
+
+  <div class="card">
+    <div class="donutRow">
+      <div class="donut">
+        <svg width="122" height="122" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="42" stroke="var(--arcTrack)"     stroke-width="14" />
+          <circle cx="52" cy="52" r="42" stroke="var(--arcSavings)"   stroke-width="14" stroke-dasharray="149.9 114.0" stroke-dashoffset="0" />
+          <circle cx="52" cy="52" r="42" stroke="var(--arcSpending)"  stroke-width="14" stroke-dasharray="91.9 172.0"  stroke-dashoffset="-149.9" />
+          <circle cx="52" cy="52" r="42" stroke="var(--arcGood)"      stroke-width="14" stroke-dasharray="22.1 241.8"  stroke-dashoffset="-241.8" />
+        </svg>
+        <div class="holeText">
+          <span class="lbl">סך הכל</span>
+          <span class="amt"><small>₪</small>359</span>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="leg"><span class="dot savings"></span>חיסכון <span class="pct">57%</span><span class="leader"></span><span class="val"><small>₪</small>204</span></div>
+        <div class="leg"><span class="dot spending"></span>בזבוזים <span class="pct">35%</span><span class="leader"></span><span class="val"><small>₪</small>125</span></div>
+        <div class="leg"><span class="dot good"></span>מעשים <span class="pct">8%</span><span class="leader"></span><span class="val"><small>₪</small>30</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="details">
+    <div class="sectionLabel">מה קורה בכל קופה</div>
+
+    <div class="detail">
+      <div class="detailHead">
+        <span class="illust savings">🐷</span>
+        <span class="detailName">חיסכון<small>צובר 15% בחודש · פעיל מאז 20 ביוני</small></span>
+        <span class="pill"><small>₪</small>204</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="lbl">הפקדת</span><span class="num"><small>₪</small>137</span></div>
+        <div class="stat gain"><span class="lbl">רווח מריבית</span><span class="num"><small>₪</small>67</span></div>
+        <div class="stat gain"><span class="lbl">היום</span><span class="num">+<small>₪</small>1</span></div>
+      </div>
+    </div>
+
+    <div class="detail">
+      <div class="detailHead">
+        <span class="illust spending">🛍️</span>
+        <span class="detailName">בזבוזים<small>כבר ביזבזת ₪45</small></span>
+        <span class="pill"><small>₪</small>125</span>
+      </div>
+    </div>
+
+    <div class="detail">
+      <div class="detailHead">
+        <span class="illust good">💛</span>
+        <span class="detailName">מעשים טובים<small>תרמת ₪18 עד היום</small></span>
+        <span class="pill"><small>₪</small>30</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="cta">＋ פעולה חדשה</button>
+
+</div></div>
+
+<div class="ladder">
+  <span class="ladderTitle">היום — half-shekel steps (same rule the coins used):</span>
+  <span class="step"><i>18אֲ</i> → +₪0.5</span>
+  <span class="step"><i>102אֲ</i> → +₪1</span>
+  <span class="step"><i>140אֲ</i> → +₪1.5</span>
+  <span class="step"><i>238אֲ</i> → +₪2.5</span>
+  <span class="step off"><i>20אֲ</i> → לא מוצג</span>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('[data-theme-btn]');
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      document.documentElement.dataset.theme = button.dataset.themeBtn;
+      buttons.forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+    });
+  });
+  document.documentElement.dataset.theme = 'jungle-quest';
+</script>
+</body>
+</html>
