@@ -10,8 +10,7 @@ interface CachedStore {
 }
 
 type Target =
-  | { kind: 'json'; path: string }
-  | { kind: 'postgres'; url: string };
+  { kind: 'json'; path: string } | { kind: 'postgres'; url: string };
 
 let cached: CachedStore | null = null;
 
