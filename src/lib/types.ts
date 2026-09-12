@@ -49,7 +49,7 @@ export interface AccountWithDerivedWallets extends Account {
 
 export type AuthProvider = 'google';
 
-export type MembershipRole = 'owner' | 'editor' | 'viewer';
+export type AccountUserRole = 'owner' | 'editor' | 'viewer';
 
 export interface User {
   id: string;
@@ -60,9 +60,9 @@ export interface User {
   createdAt: string;
 }
 
-export interface AccountMember {
+export interface AccountUser {
   accountId: string;
   userId: string;
-  role: MembershipRole;
+  role: AccountUserRole;
   addedAt: string;
 }
