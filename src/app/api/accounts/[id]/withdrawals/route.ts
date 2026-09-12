@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
 import { addWithdrawal } from '@/lib/transactions';
 import { shekelsToAgorot } from '@/lib/money';
@@ -23,7 +24,10 @@ export async function POST(
   const account = await store.getAccount(id);
 
   if (!account) {
-    return Response.json({ error: 'account not found' }, { status: 404 });
+    return Response.json(
+      { error: 'account not found' },
+      { status: StatusCodes.NOT_FOUND }
+    );
   }
 
   const { walletId, amount } = (await request.json()) as WithdrawalBody;
@@ -40,7 +44,10 @@ export async function POST(
     return Response.json(transaction);
   } catch (error) {
     if (error instanceof ValidationError || error instanceof OverdraftError) {
-      return Response.json({ error: error.message }, { status: 400 });
+      return Response.json(
+        { error: error.message },
+        { status: StatusCodes.BAD_REQUEST }
+      );
     }
 
     throw error;

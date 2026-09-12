@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
 import { AccountsStore, type CreateAccountInput } from '@/lib/accounts-store';
 import { today } from '@/lib/clock';
@@ -9,5 +10,5 @@ export async function POST(request: Request): Promise<Response> {
     today()
   );
 
-  return Response.json(account, { status: 201 });
+  return Response.json(account, { status: StatusCodes.CREATED });
 }

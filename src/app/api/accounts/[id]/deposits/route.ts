@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
 import { addDeposit } from '@/lib/transactions';
 import { shekelsToAgorot } from '@/lib/money';
@@ -22,7 +23,10 @@ export async function POST(
   const account = await store.getAccount(id);
 
   if (!account) {
-    return Response.json({ error: 'account not found' }, { status: 404 });
+    return Response.json(
+      { error: 'account not found' },
+      { status: StatusCodes.NOT_FOUND }
+    );
   }
 
   const { amount } = (await request.json()) as DepositBody;
@@ -38,7 +42,10 @@ export async function POST(
     return Response.json(transactions);
   } catch (error) {
     if (error instanceof ValidationError) {
-      return Response.json({ error: error.message }, { status: 400 });
+      return Response.json(
+        { error: error.message },
+        { status: StatusCodes.BAD_REQUEST }
+      );
     }
 
     throw error;
