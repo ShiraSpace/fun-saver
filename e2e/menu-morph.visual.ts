@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockAccount } from '@/test-support/fixtures';
+import { mockAccount } from '@/test-utils/fixtures';
 import { MENU_OVERLAY_CONTENT } from '@/components/Menu/MenuOverlay/constants';
 import { useDriver } from './driver/use-driver';
 

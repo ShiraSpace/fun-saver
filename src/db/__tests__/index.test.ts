@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { getStore } from '../index';
-import { mockAccount } from '@/test-support/fixtures';
+import { mockAccount } from '@/test-utils/fixtures';
 
 describe('getStore', () => {
   let directory: string;

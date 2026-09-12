@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-support/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { EditRow } from './EditRow';
 import { AMOUNT_PAD_COPY, AMOUNT_PAD_TEST_IDS } from '../constants';
 

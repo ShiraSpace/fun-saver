@@ -4,7 +4,7 @@
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { mockCreateAccountInput } from '@/test-support/fixtures';
+import { mockCreateAccountInput } from '@/test-utils/fixtures';
 import { getStore } from '@/db';
 import { POST } from '../route';
 

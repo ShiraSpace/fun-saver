@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-support/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { AccountsSection } from './AccountsSection';
 import { ACCOUNTS_SECTION_TEST_IDS } from './constants';
 import {
@@ -10,7 +10,7 @@ import {
   AppModeProvider,
   type AppMode,
 } from '@/components/Home/app-mode-context';
-import { mockAccount, mockSecondAccount } from '@/test-support/fixtures';
+import { mockAccount, mockSecondAccount } from '@/test-utils/fixtures';
 
 interface RenderSectionParams {
   contextOverrides?: Partial<AccountsContextValue>;
