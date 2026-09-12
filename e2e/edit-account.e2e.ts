@@ -1,9 +1,12 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockAccount, mockAccountEdit } from '@/test-utils/fixtures';
+import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { useDriver } from './driver/use-driver';
 
 const EDITED_NAME = 'רוני';
+const LONGEST_NAME = 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH);
+const PHONE = { width: 402, height: 874 };
 
 describe('edit account from the menu', () => {
   const { menu, editAccount, avatarPicker, header, session } = useDriver({
@@ -39,6 +42,27 @@ describe('edit account from the menu', () => {
 
     await header.waitForAvatar(mockAccountEdit.avatarId);
     assert.equal(await header.name(), mockAccount.name);
+  });
+
+  it('keeps the edit chip inside the menu for the longest name', async () => {
+    await editAccount.replaceName(LONGEST_NAME);
+    await editAccount.submit();
+
+    await header.waitForName(LONGEST_NAME);
+    await session.resize(PHONE.width, PHONE.height);
+    await menu.open();
+
+    const section = await menu.accountsSectionBox();
+    const chip = await menu.editAccountChipBox();
+
+    assert.ok(
+      chip.width <= section.width,
+      `edit chip is ${chip.width}px wide inside a ${section.width}px menu`
+    );
+    assert.ok(
+      chip.x >= section.x,
+      `edit chip starts at ${chip.x}px, left of the ${section.x}px menu`
+    );
   });
 
   it('closes the form when the edit is cancelled', async () => {

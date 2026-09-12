@@ -30,6 +30,10 @@ export class Session {
     await this.page.reload({ waitUntil: 'networkidle0' });
   }
 
+  async resize(width: number, height: number): Promise<void> {
+    await this.page.setViewport({ width, height });
+  }
+
   async closePage(): Promise<void> {
     await this.activePage?.close();
     this.activePage = undefined;

@@ -41,6 +41,7 @@ export const ActionPill = styled.button`
   gap: ${ACCOUNTS_SECTION_STYLE.pillGap}px;
   cursor: pointer;
   flex-shrink: 0;
+  max-width: 100%;
 `;
 
 export const ActionChip = styled.button`

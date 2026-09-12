@@ -41,6 +41,14 @@ export class MenuDriver {
     return this.session.box(MENU_TEST_IDS.menuButton);
   }
 
+  accountsSectionBox(): Promise<BoundingBox> {
+    return this.session.box(ACCOUNTS_SECTION_TEST_IDS.section);
+  }
+
+  editAccountChipBox(): Promise<BoundingBox> {
+    return this.session.box(ACCOUNTS_SECTION_TEST_IDS.editChip);
+  }
+
   iconTransform(): Promise<string> {
     return this.session.computedStyle(MENU_TEST_IDS.menuIcon, 'transform');
   }

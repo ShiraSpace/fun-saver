@@ -1,9 +1,16 @@
 import { JSX } from 'react';
+import styled from '@emotion/styled';
 import {
   ACCOUNTS_SECTION_CONTENT,
   ACCOUNTS_SECTION_TEST_IDS,
 } from '@/components/Menu/AccountsSection/constants';
 import { ActionPill } from '@/components/Menu/AccountsSection/AccountsSection';
+
+const Label = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
 
 interface EditAccountChipProps {
   accountName: string;
@@ -21,6 +28,6 @@ export const EditAccountChip = ({
     onClick={onEditAccount}
   >
     <span aria-hidden="true">{ACCOUNTS_SECTION_CONTENT.editIcon}</span>
-    {`${ACCOUNTS_SECTION_CONTENT.editPrefix} ${accountName}`}
+    <Label>{`${ACCOUNTS_SECTION_CONTENT.editPrefix} ${accountName}`}</Label>
   </ActionPill>
 );
