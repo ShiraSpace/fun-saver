@@ -2,6 +2,8 @@ import type { WalletName } from './types';
 
 export const AGOROT_PER_SHEKEL = 100;
 
+export const MAX_ACCOUNT_NAME_LENGTH = 30;
+
 export const DAYS_PER_MONTH = 30;
 
 export const SAVINGS_MONTHLY_RATE = 0.15;

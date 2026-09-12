@@ -1,36 +1,54 @@
 import type { AccountEdits } from './types';
 import { AVATARS } from './avatars';
+import { MAX_ACCOUNT_NAME_LENGTH } from './constants';
 
-function asRequestedEdits(body: unknown): AccountEdits | undefined {
+const EDITABLE_FIELDS = ['name', 'avatarId'] as const;
+
+function asEditsObject(body: unknown): Record<string, unknown> | undefined {
   if (typeof body !== 'object' || body === null || Array.isArray(body)) {
     return;
   }
 
-  return body as AccountEdits;
+  return body as Record<string, unknown>;
 }
 
-function isValidRename({ name }: AccountEdits): boolean {
-  return name === undefined || (typeof name === 'string' && name.trim() !== '');
+function hasOnlyEditableFields(body: Record<string, unknown>): boolean {
+  return Object.keys(body).every((field) =>
+    EDITABLE_FIELDS.some((editable) => editable === field)
+  );
 }
 
-function isValidAvatarChange({ avatarId }: AccountEdits): boolean {
+function isValidRename({ name }: Record<string, unknown>): boolean {
+  if (name === undefined) {
+    return true;
+  }
+
+  return (
+    typeof name === 'string' &&
+    name.trim() !== '' &&
+    name.trim().length <= MAX_ACCOUNT_NAME_LENGTH
+  );
+}
+
+function isValidAvatarChange({ avatarId }: Record<string, unknown>): boolean {
   return (
     avatarId === undefined || AVATARS.some((avatar) => avatar.id === avatarId)
   );
 }
 
-function collectEdits({ name, avatarId }: AccountEdits): AccountEdits {
+function collectEdits(body: Record<string, unknown>): AccountEdits {
   return {
-    ...(name !== undefined && { name: name.trim() }),
-    ...(avatarId !== undefined && { avatarId }),
+    ...(body.name !== undefined && { name: String(body.name).trim() }),
+    ...(body.avatarId !== undefined && { avatarId: String(body.avatarId) }),
   };
 }
 
 export function validAccountEdits(body: unknown): AccountEdits | undefined {
-  const requested = asRequestedEdits(body);
+  const requested = asEditsObject(body);
 
   if (
     !requested ||
+    !hasOnlyEditableFields(requested) ||
     !isValidRename(requested) ||
     !isValidAvatarChange(requested)
   ) {

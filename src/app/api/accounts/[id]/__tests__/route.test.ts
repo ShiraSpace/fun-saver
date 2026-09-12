@@ -10,6 +10,7 @@ import {
   mockCreateAccountInput,
   mockAccountEdit,
 } from '@/test-support/fixtures';
+import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { PUT } from '../route';
 
 const ASOF = '2026-01-01';
@@ -92,6 +93,15 @@ describe('PUT /api/accounts/[id]', () => {
     ['an unknown avatar', { avatarId: 'not-an-avatar' }],
     ['a non-string name', { name: 7 }],
     ['a non-object body', 'רוני'],
+    [
+      'a name past the length cap',
+      { name: 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH + 1) },
+    ],
+    [
+      'a field that is not editable',
+      { name: 'רוני', themeId: 'midnight-blue' },
+    ],
+    ['only fields that are not editable', { themeId: 'midnight-blue' }],
   ])('rejects %s with 400', async (_label, body) => {
     const response = await putAccount(accountId, body);
 
@@ -111,6 +121,15 @@ describe('PUT /api/accounts/[id]', () => {
     expect(await getStore().getAccount(accountId)).toMatchObject(
       mockCreateAccountInput
     );
+  });
+
+  it('accepts a name exactly at the length cap', async () => {
+    const name = 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH);
+
+    const response = await putAccount(accountId, { name });
+
+    expect(response.status).toBe(200);
+    expect(await getStore().getAccount(accountId)).toMatchObject({ name });
   });
 
   it('returns 404 for an unknown account', async () => {
