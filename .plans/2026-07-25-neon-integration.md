@@ -84,27 +84,17 @@ Steps:
 
 ---
 
-## Task 4 — Stack Auth setup
+## Tasks 4, 5, 6 — Deferred (Stack Auth and e2e bypass)
 
-**Files:** `src/stack.ts`, `src/app/handler/[...stack]/page.tsx`, `src/app/layout.tsx`
+Skipped for now. Ship the app publicly on Vercel first, add auth later once we have real users beyond ourselves.
 
-Steps:
+**What's deferred and why:**
 
-1. Install `@stackframe/stack`
-2. Create `src/stack.ts` — `StackServerApp` with `tokenStore: 'nextjs-cookie'`
-3. Create `src/app/handler/[...stack]/page.tsx` — renders `StackHandler`
-4. Update `src/app/layout.tsx` — wrap children in `StackProvider` and `StackTheme`
-5. Run `npm test` — all tests green
-6. Manual: visit `/handler/sign-in`, sign up, confirm redirect to app
-7. Commit
+- Task 4 (Stack Auth setup) — no sign-in flow yet
+- Task 5 (route-protecting middleware) — nothing to protect while there's no auth
+- Task 6 (e2e `FUNSAVER_SKIP_AUTH=true` bypass) — nothing to bypass
 
-**Test:** All tests pass. Sign-in page renders and sign-up flow works.
-
-### Deferred: `account_members` join table (many-to-many users ↔ accounts)
-
-Explicitly out of scope for this task. Sign-in gets a user; that user gets access to _all_ accounts for now (single-family app, blanket access is fine). Add later when we introduce per-account permissions.
-
-**Shape when we add it:**
+**Also deferred (from earlier Task 4 note): `account_members` join table** — many-to-many users ↔ accounts. Add when we introduce per-account permissions.
 
 ```sql
 CREATE TABLE account_members (
@@ -116,47 +106,22 @@ CREATE TABLE account_members (
 );
 ```
 
-**Why not now:** premature — no permission model yet, no UX for inviting members, single household using it. Adding it before it's needed forces speculative design decisions on the role vocabulary.
+**Revisit when:** we want to share the URL beyond the immediate household, when logs show unknown visitors, or before adding any feature that writes sensitive data.
 
 ---
 
-## Task 5 — Protect routes with middleware
+## Task 7 — Deploy to Vercel (no app-level auth)
 
-**Files:** `src/middleware.ts`
-
-Steps:
-
-1. Create `src/middleware.ts` — delegates to `stackServerApp.middleware`. When `FUNSAVER_SKIP_AUTH=true`, passes through (for e2e tests).
-2. Run `npm test` — all tests green
-3. Manual: clear cookies, visit `/` — expect redirect to sign-in. Sign in — expect app loads. Sign out — expect redirect.
-4. Commit
-
-**Test:** All tests pass. Unauthenticated access redirects to sign-in.
-
----
-
-## Task 6 — E2e auth bypass
-
-**Files:** `e2e/server.ts`
+**Public deployment.** Anyone with the URL can view and modify data. Acceptable for now — the URL isn't shared and there's no sensitive data. Revisit when Task 4 is picked up.
 
 Steps:
 
-1. Add `FUNSAVER_SKIP_AUTH: 'true'` to the env block in `e2e/server.ts`
-2. Run `npm run test:e2e` — all e2e tests pass unchanged
-3. Commit
+1. `next build` locally — catch any Next.js 16 build issues before Vercel does
+2. Confirm `main` branch schema in Neon matches the current `schema.sql` (it does — migrations already ran)
+3. **Merge PR #15 into `main`.** Vercel deploys from `main` by default; without the merge the deployed build won't contain any Neon integration code and the `DATABASE_URL` env var will do nothing
+4. Vercel → New Project → import `ShiraSpace/fun-saver`, production branch = `main`
+5. Add env var: `DATABASE_URL` = Neon **main** branch pooled connection string. Do not set `DEV_DATABASE_URL` (that's for local dev only).
+6. Deploy
+7. Smoke test on phone: create account, deposit, refresh; confirm data persists in Neon main branch
 
-**Test:** All e2e tests pass (Puppeteer bypasses the sign-in wall via env var).
-
----
-
-## Task 7 — Deploy to Vercel
-
-Steps:
-
-1. Push branch to GitHub
-2. Import project on vercel.com → New Project → select `fun-saver`
-3. Set env vars: `DATABASE_URL` (Neon pooled), Stack Auth keys
-4. Deploy
-5. Smoke test on phone: sign in, confirm שירה's balances, make a deposit, refresh — confirm it persists
-
-**Test:** App loads on phone, data persists after deposit.
+**Test:** App loads on phone. Data survives a refresh. Neon `accounts` and `transactions` on main branch reflect the smoke-test writes.
