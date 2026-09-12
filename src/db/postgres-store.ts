@@ -131,7 +131,7 @@ export class PostgresStore implements DataStore {
     const { assignments, values } = editedColumns(edits);
 
     if (values.length === 0) {
-      return;
+      return this.getAccount(id);
     }
 
     const rows = await this.selectRows<AccountRow>(
