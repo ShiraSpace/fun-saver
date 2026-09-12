@@ -2,11 +2,7 @@ import { readFile, writeFile, mkdir, rename } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import type { Account, Transaction } from '../lib/types';
 import type { ThemeId } from '@/theme/registry';
-import type {
-  BuildGuardedTransaction,
-  DataStore,
-  StoreData,
-} from './data-store';
+import type { DataStore, StoreData } from './data-store';
 
 function emptyData(): StoreData {
   return { accounts: [], transactions: [] };
@@ -34,15 +30,16 @@ export class JsonFileStore implements DataStore {
   }
 
   getAccount(id: string): Promise<Account | undefined> {
-    return this.enqueue(async (): Promise<Account | undefined> =>
-      (await this.readFromDisk()).accounts.find((account) => account.id === id)
-    );
+    return this.enqueue(async () => {
+      const data = await this.readFromDisk();
+      return this.findAccountById(data, id);
+    });
   }
 
   setAccountTheme(id: string, themeId: ThemeId): Promise<Account | undefined> {
-    return this.enqueue(async (): Promise<Account | undefined> => {
+    return this.enqueue(async () => {
       const data = await this.readFromDisk();
-      const account = data.accounts.find((candidate) => candidate.id === id);
+      const account = this.findAccountById(data, id);
 
       if (!account) {
         return undefined;
@@ -63,30 +60,28 @@ export class JsonFileStore implements DataStore {
     });
   }
 
-  listTransactionsByWallet(walletId: string): Promise<Transaction[]> {
-    return this.enqueue(async (): Promise<Transaction[]> =>
-      (await this.readFromDisk()).transactions.filter(
-        (transaction) => transaction.walletId === walletId
-      )
+  listTransactionsByWallet(
+    accountId: string,
+    walletId: string
+  ): Promise<Transaction[]> {
+    return this.enqueue(() =>
+      this.filterTransactionsByWallet(accountId, walletId)
     );
   }
 
-  insertTransactionWithGuard(
-    walletId: string,
-    build: BuildGuardedTransaction
-  ): Promise<Transaction> {
-    return this.enqueue(async (): Promise<Transaction> => {
-      const data = await this.readFromDisk();
-      const walletTransactions = data.transactions.filter(
-        (transaction) => transaction.walletId === walletId
-      );
+  private findAccountById(data: StoreData, id: string): Account | undefined {
+    return data.accounts.find((account) => account.id === id);
+  }
 
-      const transaction = build(walletTransactions);
-      data.transactions.push(transaction);
-      await this.persist(data);
-
-      return transaction;
-    });
+  private async filterTransactionsByWallet(
+    accountId: string,
+    walletId: string
+  ): Promise<Transaction[]> {
+    const data = await this.readFromDisk();
+    return data.transactions.filter(
+      (transaction) =>
+        transaction.accountId === accountId && transaction.walletId === walletId
+    );
   }
 
   private enqueue<T>(operation: () => Promise<T>): Promise<T> {

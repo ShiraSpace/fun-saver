@@ -1,7 +1,7 @@
 import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
 import type { Account, Transaction, Wallet } from '@/lib/types';
 import type { ThemeId } from '@/theme/registry';
-import type { BuildGuardedTransaction, DataStore } from './data-store';
+import type { DataStore } from './data-store';
 
 interface AccountRow {
   id: string;
@@ -105,26 +105,15 @@ export class PostgresStore implements DataStore {
     }
   }
 
-  async listTransactionsByWallet(walletId: string): Promise<Transaction[]> {
+  async listTransactionsByWallet(
+    accountId: string,
+    walletId: string
+  ): Promise<Transaction[]> {
     const rows = (await this.sql`
-      SELECT * FROM transactions WHERE wallet_id = ${walletId} ORDER BY occurred_at
+      SELECT * FROM transactions
+      WHERE account_id = ${accountId} AND wallet_id = ${walletId}
+      ORDER BY occurred_at
     `) as TransactionRow[];
     return rows.map(toTransaction);
-  }
-
-  // Intentional design decision: read existing transactions, run build() in JS,
-  // then insert. A tiny race window exists between the read and the insert where two
-  // concurrent writers could both pass a balance check before either row lands.
-  // Accepted for fun-saver's family scope — concurrent writes on the same wallet in
-  // the same millisecond are effectively impossible. If concurrency grows, wrap this
-  // in a real transaction with SELECT ... FOR UPDATE (needs Pool, not the HTTP driver).
-  async insertTransactionWithGuard(
-    walletId: string,
-    build: BuildGuardedTransaction
-  ): Promise<Transaction> {
-    const existing = await this.listTransactionsByWallet(walletId);
-    const transaction = build(existing);
-    await this.insertTransactions([transaction]);
-    return transaction;
   }
 }
