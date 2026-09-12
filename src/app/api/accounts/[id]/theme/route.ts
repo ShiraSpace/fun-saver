@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
 import { THEMES, type ThemeId } from '@/theme/registry';
 
@@ -17,13 +18,19 @@ export async function PUT(
   const { themeId } = (await request.json()) as ThemeBody;
 
   if (!(themeId in THEMES)) {
-    return Response.json({ error: 'unknown theme' }, { status: 400 });
+    return Response.json(
+      { error: 'unknown theme' },
+      { status: StatusCodes.BAD_REQUEST }
+    );
   }
 
   const updated = await getStore().setAccountTheme(id, themeId as ThemeId);
 
   if (!updated) {
-    return Response.json({ error: 'account not found' }, { status: 404 });
+    return Response.json(
+      { error: 'account not found' },
+      { status: StatusCodes.NOT_FOUND }
+    );
   }
 
   return Response.json(updated);
