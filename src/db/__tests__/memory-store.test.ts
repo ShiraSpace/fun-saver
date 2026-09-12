@@ -3,6 +3,7 @@ import {
   mockAccount,
   mockSecondAccount,
   createMockTransaction,
+  mockAccountEdit,
 } from '@/test-support/fixtures';
 
 const deposit = createMockTransaction();
@@ -37,6 +38,38 @@ describe('InMemoryStore', () => {
     await store.setAccountTheme('missing', 'jungle-quest');
 
     expect((await store.getAccount('a1'))?.themeId).toBe('midnight-blue');
+  });
+
+  describe('edit account', () => {
+    let store: InMemoryStore;
+
+    beforeEach(async () => {
+      store = new InMemoryStore();
+      await store.insertAccount(mockAccount);
+    });
+
+    it('updates the name and avatar', async () => {
+      const updated = await store.updateAccount('a1', mockAccountEdit);
+
+      expect(updated).toMatchObject(mockAccountEdit);
+      expect(await store.getAccount('a1')).toMatchObject(mockAccountEdit);
+    });
+
+    it('leaves untouched fields alone on a partial update', async () => {
+      await store.updateAccount('a1', { name: mockAccountEdit.name });
+
+      expect(await store.getAccount('a1')).toMatchObject({
+        name: mockAccountEdit.name,
+        avatarId: mockAccount.avatarId,
+        wallets: mockAccount.wallets,
+      });
+    });
+
+    it('returns undefined for an unknown id', async () => {
+      expect(
+        await store.updateAccount('missing', mockAccountEdit)
+      ).toBeUndefined();
+    });
   });
 
   it('lists transactions filtered by wallet', async () => {

@@ -84,6 +84,11 @@ export const mockCreateAccountInput = {
   avatarId: mockAccount.avatarId,
 };
 
+export const mockAccountEdit = {
+  name: 'רוני',
+  avatarId: 'kid-07',
+};
+
 export const mockTransactions: Transaction[] = [
   createMockTransaction(),
   createMockTransaction({ id: 't2', type: 'interest', amount: 500 }),
