@@ -2,11 +2,12 @@ import { rm } from 'node:fs/promises';
 import { after, afterEach, before, beforeEach } from 'node:test';
 import type { StoreData } from '@/db/data-store';
 import { JsonFileStore } from '@/db/json-file-store';
+import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { Session } from './session';
 import { MenuDriver } from './menu-driver';
 import { HeaderDriver } from './header-driver';
 import { EmptyStateDriver } from './empty-state-driver';
-import { CreateAccountDriver } from './create-account-driver';
+import { AccountFormDriver } from './account-form-driver';
 import { AvatarPickerDriver } from './avatar-picker-driver';
 import { DashboardDriver } from './dashboard-driver';
 import { startServer, type RunningServer } from '../server';
@@ -16,7 +17,7 @@ export interface AppDriver {
   menu: MenuDriver;
   header: HeaderDriver;
   emptyState: EmptyStateDriver;
-  createAccount: CreateAccountDriver;
+  createAccount: AccountFormDriver;
   avatarPicker: AvatarPickerDriver;
   dashboard: DashboardDriver;
 }
@@ -28,7 +29,10 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
     menu: new MenuDriver(session),
     header: new HeaderDriver(session),
     emptyState: new EmptyStateDriver(session),
-    createAccount: new CreateAccountDriver(session),
+    createAccount: new AccountFormDriver(
+      session,
+      CREATE_ACCOUNT_TEST_IDS.container
+    ),
     avatarPicker: new AvatarPickerDriver(session),
     dashboard: new DashboardDriver(session),
   };
