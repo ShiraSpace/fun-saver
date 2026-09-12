@@ -1,33 +1,23 @@
 import { JSX } from 'react';
-import styled from '@emotion/styled';
 import {
   ACCOUNTS_SECTION_CONTENT,
   ACCOUNTS_SECTION_TEST_IDS,
 } from '@/components/Menu/AccountsSection/constants';
-import { ActionPill } from '@/components/Menu/AccountsSection/AccountsSection';
-
-const Label = styled.span`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
+import { ActionChip } from '@/components/Menu/AccountsSection/AccountsSection';
 
 interface EditAccountChipProps {
-  accountName: string;
   onEditAccount: () => void;
 }
 
 export const EditAccountChip = ({
-  accountName,
   onEditAccount,
 }: EditAccountChipProps): JSX.Element => (
-  <ActionPill
+  <ActionChip
     type="button"
-    aria-label={`${ACCOUNTS_SECTION_CONTENT.editPrefix} ${accountName}`}
+    aria-label={ACCOUNTS_SECTION_CONTENT.editLabel}
     data-testid={ACCOUNTS_SECTION_TEST_IDS.editChip}
     onClick={onEditAccount}
   >
-    <span aria-hidden="true">{ACCOUNTS_SECTION_CONTENT.editIcon}</span>
-    <Label>{`${ACCOUNTS_SECTION_CONTENT.editPrefix} ${accountName}`}</Label>
-  </ActionPill>
+    {ACCOUNTS_SECTION_CONTENT.editIcon}
+  </ActionChip>
 );
