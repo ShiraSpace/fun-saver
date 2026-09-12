@@ -1,8 +1,6 @@
-import { createRequire } from 'node:module';
 import { JsonFileStore } from './json-file-store';
+import { PostgresStore } from './postgres-store';
 import type { DataStore } from './data-store';
-
-const requireModule = createRequire(__filename);
 
 const DEFAULT_PATH = 'src/db/data.json';
 
@@ -61,10 +59,7 @@ function buildStore(target: Target): DataStore {
     return new JsonFileStore(target.path);
   }
 
-  const postgresModule: typeof import('./postgres-store') =
-    requireModule('./postgres-store');
-
-  return new postgresModule.PostgresStore(target.url);
+  return new PostgresStore(target.url);
 }
 
 function resolveDatabaseUrl(): string | undefined {
