@@ -20,8 +20,9 @@ export function EditAccount({
 }: EditAccountProps): JSX.Element {
   const { updateAccount } = useUpdateAccount();
 
-  const handleSubmit = (values: AccountFormValues): void => {
-    void updateAccount(account.id, values).then(onUpdated);
+  const handleSubmit = async (values: AccountFormValues): Promise<void> => {
+    await updateAccount(account.id, values);
+    onUpdated();
   };
 
   return (
