@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { AVATARS } from '@/lib/avatars';
 import { AVATAR_PICKER_LAYOUT } from '@/components/AvatarPicker/constants';
 import { COLORS } from '@/theme/palette';
-import { hexToRgb } from './support/css-color';
+import { hexToRgb } from './test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
 describe('avatar picker', () => {
