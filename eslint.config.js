@@ -29,6 +29,12 @@ module.exports = [
     },
   },
   {
+    files: ['src/**/*.ts', 'src/**/*.tsx'],
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'error',
+    },
+  },
+  {
     ignores: ['.next/**', 'node_modules/**'],
   },
 ];

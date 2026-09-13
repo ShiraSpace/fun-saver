@@ -36,9 +36,15 @@ export interface UserRepository {
   insert(user: User): Promise<void>;
 }
 
+export interface AccountOwner {
+  userId: string;
+  addedAt: string;
+}
+
 export interface AccountUserRepository {
   get(accountId: string, userId: string): Promise<AccountUser | undefined>;
   listAccountsForUser(userId: string): Promise<Account[]>;
+  insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void>;
 }
 
 export interface DataStore {
@@ -62,4 +68,5 @@ export interface DataStore {
     userId: string
   ): Promise<AccountUser | undefined>;
   listAccountsForUser(userId: string): Promise<Account[]>;
+  insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void>;
 }

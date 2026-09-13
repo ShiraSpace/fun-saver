@@ -1,5 +1,10 @@
 import { JsonFileStore } from '../index';
-import { createMockTransaction, mockAccount } from '@/test-utils/fixtures';
+import {
+  createMockTransaction,
+  mockAccount,
+  mockAccountUser,
+  mockUser,
+} from '@/test-utils/fixtures';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 describe('FileSession write queue', () => {
@@ -20,5 +25,23 @@ describe('FileSession write queue', () => {
       .map((transaction) => transaction.id)
       .sort();
     expect(ids).toEqual(['c1', 'c2', 'c3']);
+  });
+
+  it('keeps an account and its owner together when other writes race them', async () => {
+    const store = new JsonFileStore(file.path);
+
+    await Promise.all([
+      store.insertAccountWithOwner(mockAccount, {
+        userId: mockUser.id,
+        addedAt: mockAccountUser.addedAt,
+      }),
+      store.insertUser(mockUser),
+      store.insertTransactions([createMockTransaction({ id: 'c1' })]),
+    ]);
+
+    expect(await store.getAccount(mockAccount.id)).toEqual(mockAccount);
+    expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(
+      mockAccountUser
+    );
   });
 });

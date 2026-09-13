@@ -8,6 +8,7 @@ import type {
 } from '@/lib/types';
 import type { ThemeId } from '@/theme/registry';
 import type {
+  AccountOwner,
   AccountRepository,
   AccountUserRepository,
   DataStore,
@@ -74,5 +75,9 @@ export class BaseStore implements DataStore {
 
   listAccountsForUser(userId: string): Promise<Account[]> {
     return this.accountUsers.listAccountsForUser(userId);
+  }
+
+  insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void> {
+    return this.accountUsers.insertAccountWithOwner(account, owner);
   }
 }

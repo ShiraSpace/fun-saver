@@ -1,4 +1,5 @@
 import type { Account, AccountUser } from '@/lib/types';
+import type { AccountOwner } from './data-store';
 
 export function findAccountUser(
   accountUsers: AccountUser[],
@@ -9,6 +10,18 @@ export function findAccountUser(
     (accountUser) =>
       accountUser.accountId === accountId && accountUser.userId === userId
   );
+}
+
+export function ownerAccountUser(
+  accountId: string,
+  owner: AccountOwner
+): AccountUser {
+  return {
+    accountId,
+    userId: owner.userId,
+    role: 'owner',
+    addedAt: owner.addedAt,
+  };
 }
 
 export function byAccountName(accounts: Account[]): Account[] {

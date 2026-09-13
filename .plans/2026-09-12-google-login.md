@@ -1,4 +1,4 @@
-# Google Login + Account Members — 10 PRs
+# Google Login + Account Users — 10 PRs
 
 > Written against `main` **after** the Neon/Postgres merge (`66f9c68`, PR #15).
 > Supersedes the deferred Tasks 4–6 of `.plans/2026-07-25-neon-integration.md`.
@@ -6,66 +6,98 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-12 (PR 2 open)
+## Progress — updated 2026-09-13 (plan PR 3 open as two GitHub PRs)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
-| Plan    | GitHub                                                 | Branch                          | Status                                                       |
-| ------- | ------------------------------------------------------ | ------------------------------- | ------------------------------------------------------------ |
-| PR 1    | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`           | **merged**                                                   |
-| —       | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename               | **merged** (not in this plan)                                |
-| —       | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`   | **merged** (not in this plan)                                |
-| PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`       | **open** — also carries `BaseStore` and the `*.e2e.ts` rename |
-| PR 3    | —                                                      | `feat/account-user-store-methods` | **next**                                                     |
-| PR 4–10 | —                                                      | —                               | not started                                                  |
+| Plan    | GitHub                                                       | Branch                      | Status                                                |
+| ------- | ------------------------------------------------------------ | --------------------------- | ----------------------------------------------------- |
+| PR 1    | [#28](https://github.com/ShiraSpace/fun-saver/pull/28)       | `feat/members-schema`       | **merged**                                            |
+| —       | [#29](https://github.com/ShiraSpace/fun-saver/pull/29)       | test-utils rename           | **merged** (not in this plan)                         |
+| —       | [#30](https://github.com/ShiraSpace/fun-saver/pull/30)       | `feat/split-stores-by-entity` | **merged** (not in this plan)                       |
+| PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32)       | `feat/user-store-methods`   | **merged** — also carried `BaseStore` and `*.e2e.ts`  |
+| —       | [#33](https://github.com/ShiraSpace/fun-saver/pull/33)       | `refactor/user-identity-predicate` | **merged** (not in this plan)                  |
+| PR 3a   | [#41](https://github.com/ShiraSpace/fun-saver/pull/41)       | `feat/account-user-reads`   | **open** — rename + the two read methods              |
+| PR 3b   | [#47](https://github.com/ShiraSpace/fun-saver/pull/47)       | `feat/account-user-create`  | **open** — stacked on #41, `insertAccountWithOwner`    |
+| PR 4–10 | —                                                            | —                           | not started                                           |
 
-**Two out-of-plan refactors landed between PR 1 and PR 2.** Neither is part of
-the feature; both were done to stop later PRs making things worse.
+[#34](https://github.com/ShiraSpace/fun-saver/pull/34) was plan PR 3 as a single
+PR. It was **closed unmerged** and split into #41 and #47 — see _Why PR 3 became
+two_ below. Nothing was force-pushed; two fresh branches replaced it.
+
+**Three out-of-plan refactors have landed.** None is part of the feature; each
+was done to stop later PRs making things worse.
 
 - **#29** renamed `src/test-support/` → `src/test-utils/` and `e2e/support/` →
   `e2e/test-utils/`. Every `@/test-support/...` import is now `@/test-utils/...`.
-- **#30** split the three stores into folders. This is the important one for
-  PR 2 and PR 3 — see **Store layout after #30** below.
+  One file was missed and completed later: `e2e/support/css-color.ts`.
+- **#30** split the three stores into folders — see **Store layout** below.
+- **#33** extracted `findUserByIdentity` into `src/db/user-identity.ts`, which
+  `MemoryUsers` and `JsonUsers` had each written for themselves.
 
-### Store layout after #30 and PR 2
+### Why PR 3 became two
+
+The single PR carried a rename, three store implementations, a shared helper and
+a two-table transaction. Splitting **by store** was impossible: `BaseStore`
+gaining a fourth constructor argument forces all three to change together.
+Splitting **by capability** worked, and put everything arguable in the smaller
+half — the transaction, the single-`FileSession`-write atomicity, and
+`PostgresAccountUsers` needing the concrete `PostgresAccounts`.
+`postgres-store/accounts.ts` is untouched by #41, which is the evidence the cut
+landed in the right place.
+
+### Store layout after #30, PR 2 and PR 3
 
 ```
-src/db/data-store.ts       DataStore + the three repository interfaces
+src/db/data-store.ts       DataStore + the four repository interfaces + AccountOwner
 src/db/base-store.ts       BaseStore — every DataStore method, written once
+src/db/user-identity.ts    findUserByIdentity — shared by memory and json (#33)
+src/db/account-users.ts    findAccountUser, ownerAccountUser, byAccountName, accountsForUser
 
-src/db/memory-store/       index.ts  accounts.ts  transactions.ts  users.ts
-src/db/json-file-store/    index.ts  accounts.ts  transactions.ts  users.ts  file-session.ts
-src/db/postgres-store/     index.ts  accounts.ts  transactions.ts  users.ts  query.ts
+src/db/memory-store/       index.ts  accounts.ts  transactions.ts  users.ts  account-users.ts
+src/db/json-file-store/    index.ts  accounts.ts  transactions.ts  users.ts  account-users.ts  file-session.ts
+src/db/postgres-store/     index.ts  accounts.ts  transactions.ts  users.ts  account-users.ts  query.ts
 ```
 
 Each entity file is one class implementing its repository interface. Each
-`index.ts` now only constructs those classes and hands them to `super(...)` —
+`index.ts` only constructs those classes and hands them to `super(...)` —
 `BaseStore` holds the delegation, so a new `DataStore` method is written once
-rather than three times. Class names are unchanged, so no caller outside
-`src/db` moved.
+rather than three times.
 
 The dependency each class takes differs by store: `PostgresAccounts` takes `sql`
 (from `query.ts`), `MemoryAccounts` owns its own array, `JsonAccounts` takes a
-`FileSession` — and **both json repositories must share one `FileSession`**, or
-concurrent writes to the single file lose data. `json-file-store/__tests__/file-session.test.ts`
-guards that.
+`FileSession` — and **all json repositories must share one `FileSession`**, or
+concurrent writes to the single file lose data.
+`json-file-store/__tests__/file-session.test.ts` guards that, and its
+account-plus-owner case fails if `JsonAccountUsers` is handed its own session.
+
+**Two repositories reach a second entity**, because one operation spans two
+tables: `MemoryAccountUsers` takes the `AccountRepository`, and
+`PostgresAccountUsers` takes the concrete `PostgresAccounts` — not the
+interface, because it needs `insertQuery()`, an *unexecuted* statement, which is
+a notion only SQL has. `JsonAccountUsers` needs nothing extra; the shared
+session already reaches every array.
 
 Tests mirror the source, one test file per module, under each folder's `__tests__/`.
 
 ### Database state
 
-| Branch                     | `users` / `account_users` | `role` CHECK |
-| -------------------------- | --------------------------- | ------------ |
-| Neon **dev**               | created                     | yes          |
-| Neon **test**              | created                     | yes          |
-| Neon **main** (production) | **not created**             | —            |
+| Branch                           | `users` / `account_users` | `role` CHECK |
+| -------------------------------- | ------------------------- | ------------ |
+| Neon **dev**                     | created                   | yes          |
+| Neon **test**                    | created                   | yes          |
+| Neon **production** (default)    | **not created**           | —            |
 
-Production has never been migrated. Run `npm run db:migrate` against it only
-when you mean to. Dev and test got the CHECK via a one-off
-`ALTER TABLE ... ADD CONSTRAINT`, because `CREATE TABLE IF NOT EXISTS` cannot
-add a constraint to a table that already exists. A fresh database gets it from
-`CREATE TABLE`. That constraint could equally be carried in `schema.sql` as an
-idempotent `ALTER`, the way the `account_users` rename now is.
+The default branch is named **`production`**, not `main`. It has never been
+migrated: run `npm run db:migrate` against it only when you mean to. Nothing
+before plan PR 4 requires it, because everything through PR 3 ships unused
+interface methods.
+
+Dev and test got the CHECK via a one-off `ALTER TABLE ... ADD CONSTRAINT`,
+because `CREATE TABLE IF NOT EXISTS` cannot add a constraint to a table that
+already exists. A fresh database gets it from `CREATE TABLE`. That constraint
+could equally be carried in `schema.sql` as an idempotent `ALTER`, the way the
+`account_users` rename now is.
 
 ### Conventions PR 2 added
 
@@ -87,6 +119,41 @@ idempotent `ALTER`, the way the `account_users` rename now is.
 
 The old `git stash` entry named `PR2 user store methods` is obsolete — PR 2 was
 written fresh against the split folders. Drop it.
+
+### Conventions PR 3 added
+
+- **One comparator orders accounts, in JavaScript, for every store.**
+  `byAccountName` in `src/db/account-users.ts` is the only thing that sorts
+  accounts; `listAccountsForUser` does **not** order in SQL. Postgres orders by
+  its own collation, which on Neon is code point, while JS `localeCompare` is
+  ICU: `Noa` and `eitan` come back as `Noa, eitan` from a live database and
+  `eitan, Noa` from the json store dev runs on. Sorting in the app is what makes
+  the three stores agree. The comparator is **total** — it falls back to the
+  account id — so equal names cannot reorder between two identical calls.
+  Ordering tests must use fixtures that would actually diverge; the Hebrew
+  fixtures could not, since מ precedes נ under both collations.
+- **A schema change that is not additive goes in `schema.sql` as an idempotent
+  `ALTER`.** `run-migration.ts` splits the file and runs every statement inside
+  one `sql.transaction`, so `ALTER TABLE IF EXISTS ... RENAME TO` replays
+  forever and no-ops once the old name is gone. Do not leave a rename as a
+  manual step recorded in a PR description — a database still holding the old
+  name would silently gain a second, empty table from `CREATE TABLE IF NOT
+  EXISTS` and report success.
+- **Parameters of the same type do not sit next to each other on a write.**
+  `insertAccountWithOwner(account, ownerId, addedAt)` let a transposition
+  compile and write a timestamp into the user column; it takes
+  `AccountOwner { userId, addedAt }` instead. Read methods keep positional
+  arguments, matching `listTransactionsByWallet(accountId, walletId)`.
+- **Type-aware lint is on for `src/` only.** `@typescript-eslint/no-floating-promises`
+  guards `PostgresAccounts.insertQuery`, which returns an unexecuted
+  `NeonQueryPromise`: a bare `accounts.insertQuery(account)` is a silent no-op —
+  no INSERT, no error, no unhandled rejection. CLAUDE.md forbids the explanatory
+  comment that would otherwise warn about it, so the rule does the job instead.
+  It is scoped to `src/`, because `e2e/` uses `node:test`, whose `describe`/`it`
+  are floating promises by design.
+- **A test is not finished until a mutation proves it can fail.** Both rollback
+  claims in PR 3 were written wrong the first time and passed anyway — see
+  _What PR 3's tests do and do not prove_ below.
 
 ### Naming settled in review
 
@@ -314,9 +381,12 @@ Tests: row-mapper unit tests alongside the existing ones.
 
 Depends on: nothing. Ships: two unread tables; zero behaviour change.
 
-### PR 2 — `feat/user-store-methods` — OPEN (#32)
+### PR 2 — `feat/user-store-methods` — MERGED (#32)
 
-Shipped as described, plus two things the section did not anticipate.
+Shipped as described, plus three things the section did not anticipate. It also
+gained a duplicate-identity guard on the branch: `DuplicateUserError` is thrown
+by all three stores, postgres via `ON CONFLICT ... DO NOTHING RETURNING id`
+rather than sniffing an error code.
 
 **`src/db/data-store.ts`** — `StoreData` gains `users: User[]`; a
 `UserRepository` interface (`findByProvider`, `insert`); `DataStore` gains
@@ -347,35 +417,96 @@ catches a missing method at compile time.
 
 Depends on: PR 1 (merged) and #30. Ships: unused interface methods.
 
-### PR 3 — `feat/account-user-store-methods`
+### PR 3 — shipped as two: #41 reads, #47 writes
 
-Same shape as PR 2: a `AccountUserRepository` in `data-store.ts` and one new
-`account-users.ts` per store folder.
+Both open, #47 stacked on #41. Merge #41 first; #47 retargets to `main` itself.
 
-- `DataStore` gains `getAccountUser`, `listAccountsForUser`,
-  `insertAccountWithOwner`. `listAccounts` **stays** — nothing breaks mid-stack.
-  The three delegating methods are written **once**, in `base-store.ts`.
+**#41 — `feat/account-user-reads`**
+
+- The rename: `AccountMember`→`AccountUser`, `MembershipRole`→`AccountUserRole`,
+  `account_members`→`account_users`, table, index, mockups, docs. Carried in
+  `schema.sql` as idempotent `ALTER`s, so it replays rather than depending on the
+  two databases that were fixed by hand.
+- `AccountUserRepository` with `get` and `listAccountsForUser`; `DataStore` gains
+  `getAccountUser` and `listAccountsForUser`; both delegated once in
+  `base-store.ts`. `listAccounts` **stays** — nothing breaks mid-stack.
 - `StoreData` gains `accountUsers: AccountUser[]`; `emptyData()` — in
   `json-file-store/file-session.ts` — gains `accountUsers: []`.
-- `postgres-store/account-users.ts` — JOIN for `listAccountsForUser`, keeping
-  `ORDER BY accounts.name`; `sql.transaction([...])` for `insertAccountWithOwner`.
-- `json-file-store/account-users.ts` — the shared `FileSession` is what makes the
-  two-write `insertAccountWithOwner` atomic; write both rows inside one
-  `session.write(...)` before calling `save()` once.
-- `memory-store/account-users.ts` — a second array.
+- `postgres-store/account-users.ts` — JOIN on `account_users(user_id)`, **no**
+  `ORDER BY`; rows go through `byAccountName` like every other store.
 
-`insertAccountWithOwner` spans two entities, so it belongs on the member
-repository, which needs to reach accounts too — give `AccountUserRepository` the
-whole operation rather than splitting it across two repositories and losing
-atomicity.
+**#47 — `feat/account-user-create`**
 
-Tests: `memory-store` and `json-file-store` — `listAccountsForUser` returns only
-the user's accounts, `getAccountUser` returns undefined for a non-member of the account,
-`insertAccountWithOwner` writes both rows or neither. The postgres suite is
-`postgres-store/__tests__/account-users.e2e.ts`; `live-store.ts` needs `account_users`
-in its cleanup.
+- `insertAccountWithOwner(account, owner)` on the repository, `DataStore` and
+  `BaseStore`. It spans two tables, so one repository owns the whole operation
+  rather than two calls a caller could half-complete.
+- postgres: both inserts through `sql.transaction`, account first so the foreign
+  key resolves inside it, using `PostgresAccounts.insertQuery` so the accounts
+  INSERT exists once. json: both rows inside one `session.write` before one
+  `save()`. memory: writes the account through the accounts repository.
+- `ownerAccountUser` is the only place `'owner'` is written.
 
-Depends on: PR 1. Ships: unused interface methods.
+### What PR 3's tests do and do not prove
+
+Each claim below was mutation-checked — the implementation was broken
+deliberately and the suite re-run. **Two tests passed against a broken
+implementation on the first attempt** and had to be rewritten:
+
+| claim | mutation | result |
+| ----- | -------- | ------ |
+| postgres writes both rows **or neither** | `sql.transaction` → two sequential `await`s | **caught** |
+| the three stores order accounts identically | restore `ORDER BY accounts.name` | **caught** |
+| `JsonAccountUsers` shares one `FileSession` | give it its own session | **caught** |
+| json writes both rows in **one** `save()` | split into two `session.write` calls | **not caught** |
+
+- The rollback test first failed the *accounts* insert. That is the first
+  statement, so it throws before the second runs and two sequential inserts pass
+  too. It now fails the *second* statement, via a foreign key to a user that was
+  never inserted.
+- The ordering test first used נועה and מתן, which agree under every collation.
+  It now uses `Noa` and `eitan`.
+- **The json single-`save()` property is not covered.** It holds structurally —
+  two synchronous pushes, no `await` between them, one `save()` — but catching a
+  split needs a failed disk write, and a read-only directory fails the first
+  write too, so it does not discriminate either. Postgres covers the analogous
+  risk where it is real, across two network round trips.
+
+Depends on: PR 1, PR 2. Ships: unused interface methods.
+
+### Known divergences to settle before PR 9
+
+Raised in #47's review. Neither blocks that PR; both are decisions PR 9 has to
+make rather than defects in the store layer.
+
+- **A repeat `insertAccountWithOwner` diverges by store.** Postgres rejects it —
+  `accounts.id` is a primary key and `account_users` is PK `(account_id,
+  user_id)`. The memory and json stores push unconditionally, so calling it twice
+  with the same account leaves two entries in `data.accounts`, and because
+  `accountsForUser` filters by an id `Set`, **both survive and
+  `listAccountsForUser` returns the same account twice** — a duplicated card
+  rather than an error. The realistic route is a caller retrying after a timeout
+  on a write that actually committed.
+
+  The root cause is `AccountRepository.insert`, not `insertAccountWithOwner`, so
+  the fix is a `DuplicateAccountError` in the memory and json `insert` methods —
+  the same shape as PR 2's `DuplicateUserError` — and it belongs in its own PR
+  rather than widening #47. **PR 9 has to decide whether account creation is
+  retryable**; if it is, that PR is a prerequisite.
+
+- **`insertAccountWithOwner` assumes one accounts repository instance.** It
+  routes an account write through the account-users repository, which holds its
+  own `AccountRepository`. Nothing in the types requires it to be the same object
+  `BaseStore` reads through: `new BaseStore(accountsA, tx, users, new
+  MemoryAccountUsers(accountsB))` compiles, and then the account is written to
+  one and read from the other — a silent disappearing write. Before this PR a
+  mismatch only degraded `listAccountsForUser`.
+
+  Both call sites are two lines apart in the same constructor and hoist a `const
+  accounts`, so the risk is small. It stays unenforced deliberately: the
+  alternative is `BaseStore` orchestrating the two writes itself, which gives up
+  the atomicity the whole operation exists for. **A new store must not get this
+  wrong.**
+
 
 ### PR 4 — `feat/google-auth`
 
@@ -566,8 +697,10 @@ migrating `data.json` into Neon.
 1. **Read the Progress section at the top of this file first.** It records what
    has merged, the store layout PR 2 and PR 3 now land in, and which database
    branches are migrated.
-2. **Fetch, then** `git checkout -b feat/user-store-methods origin/main`.
-   Drop the stale `PR2 user store methods` stash — see the Progress section.
+2. **Fetch, then branch off updated `origin/main`** — or off the parent branch
+   when the work depends on a PR that has not merged, rebasing once it lands.
+   Never force-push a branch that is already published; correct it with a commit
+   on top. Drop the stale `PR2 user store methods` stash — see Progress.
 3. **Read before coding:** `src/db/data-store.ts` (the interface plus the three
    repository interfaces), any one store folder end to end — `memory-store/` is
    the smallest — `src/db/index.ts` (store selection), `src/app/page.tsx` (the
@@ -582,11 +715,25 @@ migrating `data.json` into Neon.
    (live Neon), `npm run build`, and `npm run test:e2e`. The last three catch
    what the first three miss — folder resolution, and anything only the real
    app exercises.
-6. **Start with PR 3.** PR 2 is open as #32. Both are additive only; nothing
-   reads the new methods until PR 9.
+6. **Verify what you commit, not what you have.** Two defects this plan's own
+   work shipped came from checking the working tree instead of `HEAD`: a commit
+   that moved a file but left every importer pointing at the old path (one bad
+   pathspec aborted the whole `git add`), and a test that was never run against
+   a broken implementation. Confirm the tree is clean before quoting a result,
+   and break the code on purpose to see the test fail.
+7. **`rtk` output is not trustworthy for facts.** It has reported `git status
+   --short` as `ok` on a dirty tree, a jest count of 364 where the real number
+   was 368, and swallowed an `eslint --fix`. Use `rtk proxy <cmd>` for anything
+   you intend to report as a number, and capture to a file rather than piping.
+8. **Start with PR 4**, once the Google Cloud step below is done. Plan PR 3 is
+   open as #41 and #47; both are additive only, and nothing reads the new
+   methods until PR 9.
 
 ### Still undecided
 
+- Whether the json store's single-`save()` atomicity is worth an `fs`-mocking
+  test, or whether reading the code is enough. Postgres covers the same risk
+  where it is real.
 - Whether to delete the pre-existing Neon **dev** account (1 account, 8
   transactions, from the Postgres work) before PR 8. If kept, the backfill
   adopts it as yours.

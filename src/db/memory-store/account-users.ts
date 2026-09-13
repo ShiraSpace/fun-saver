@@ -1,6 +1,14 @@
 import type { Account, AccountUser } from '@/lib/types';
-import type { AccountRepository, AccountUserRepository } from '../data-store';
-import { accountsForUser, findAccountUser } from '../account-users';
+import type {
+  AccountOwner,
+  AccountRepository,
+  AccountUserRepository,
+} from '../data-store';
+import {
+  accountsForUser,
+  findAccountUser,
+  ownerAccountUser,
+} from '../account-users';
 
 export class MemoryAccountUsers implements AccountUserRepository {
   private readonly accountUsers: AccountUser[] = [];
@@ -20,5 +28,13 @@ export class MemoryAccountUsers implements AccountUserRepository {
       await this.accounts.list(),
       userId
     );
+  }
+
+  async insertAccountWithOwner(
+    account: Account,
+    owner: AccountOwner
+  ): Promise<void> {
+    await this.accounts.insert(account);
+    this.accountUsers.push(ownerAccountUser(account.id, owner));
   }
 }
