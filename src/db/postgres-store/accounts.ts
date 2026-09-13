@@ -34,8 +34,8 @@ function editedColumns(edits: AccountEdits): EditedColumns {
 export class PostgresAccounts implements AccountRepository {
   constructor(private readonly sql: Sql) {}
 
-  async insert(account: Account): Promise<void> {
-    await this.sql`
+  insertStatement(account: Account): ReturnType<Sql> {
+    return this.sql`
       INSERT INTO accounts (id, name, avatar_id, is_active, theme_id, wallets)
       VALUES (
         ${account.id},
@@ -46,6 +46,10 @@ export class PostgresAccounts implements AccountRepository {
         ${JSON.stringify(account.wallets)}::jsonb
       )
     `;
+  }
+
+  async insert(account: Account): Promise<void> {
+    await this.insertStatement(account);
   }
 
   async list(): Promise<Account[]> {
