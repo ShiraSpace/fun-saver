@@ -1,5 +1,19 @@
+const HEBREW_DAY_MONTH = new Intl.DateTimeFormat('he', {
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'UTC',
+});
+
+function utcDate(iso: string): Date {
+  return new Date(`${iso}T00:00:00Z`);
+}
+
+export function dayMonth(iso: string): string {
+  return HEBREW_DAY_MONTH.format(utcDate(iso));
+}
+
 export function addDays(iso: string, days: number): string {
-  const date = new Date(`${iso}T00:00:00Z`);
+  const date = utcDate(iso);
   date.setUTCDate(date.getUTCDate() + days);
 
   return date.toISOString().slice(0, 10);

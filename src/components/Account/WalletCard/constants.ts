@@ -1,8 +1,11 @@
-import type { WalletName } from '@/lib/types';
+import type { WalletName, WalletWithDerived } from '@/lib/types';
+import { PERCENT_TOTAL } from '@/lib/constants';
+import { dayMonth } from '@/lib/dates';
 
 export const WALLET_CARD_TEST_IDS = {
   card: 'wallet-card',
   balance: 'wallet-balance',
+  subLine: 'wallet-sub-line',
 } as const;
 
 export const WALLET_GRADIENT: Record<
@@ -20,6 +23,10 @@ export const WALLET_CARD_COPY = {
     spending: 'בזבוזים',
     goodDeeds: 'מעשים טובים',
   },
+  savingsSubLine: (
+    wallet: Pick<WalletWithDerived, 'monthlyInterestRate' | 'openedAt'>
+  ): string =>
+    `צובר ${Math.round(wallet.monthlyInterestRate * PERCENT_TOTAL)}% בחודש · פעיל מאז ${dayMonth(wallet.openedAt)}`,
 } as const;
 
 export const WALLET_CARD_STYLE = {
@@ -33,4 +40,6 @@ export const WALLET_CARD_STYLE = {
   illustFontSize: 22,
   pillPaddingY: 5,
   pillPaddingX: 11,
+  subLineSize: 11.5,
+  subLineGap: 2,
 } as const;

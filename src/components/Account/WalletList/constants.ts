@@ -3,7 +3,7 @@ export const WALLET_LIST_TEST_IDS = {
 } as const;
 
 export const WALLET_LIST_COPY = {
-  label: 'הקופות הנוספות',
+  label: 'מה קורה בכל קופה',
 } as const;
 
 export const WALLET_LIST_STYLE = {

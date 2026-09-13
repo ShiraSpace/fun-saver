@@ -1,0 +1,1 @@
+export { SavingsStatStrip } from './SavingsStatStrip';
