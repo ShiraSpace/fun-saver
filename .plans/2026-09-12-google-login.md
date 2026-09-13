@@ -6,24 +6,40 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-13 (plan PR 3 open as two GitHub PRs)
+## Progress — updated 2026-09-13 (plan PR 3 all but landed)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
-| Plan    | GitHub                                                       | Branch                      | Status                                                |
-| ------- | ------------------------------------------------------------ | --------------------------- | ----------------------------------------------------- |
-| PR 1    | [#28](https://github.com/ShiraSpace/fun-saver/pull/28)       | `feat/members-schema`       | **merged**                                            |
-| —       | [#29](https://github.com/ShiraSpace/fun-saver/pull/29)       | test-utils rename           | **merged** (not in this plan)                         |
-| —       | [#30](https://github.com/ShiraSpace/fun-saver/pull/30)       | `feat/split-stores-by-entity` | **merged** (not in this plan)                       |
-| PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32)       | `feat/user-store-methods`   | **merged** — also carried `BaseStore` and `*.e2e.ts`  |
-| —       | [#33](https://github.com/ShiraSpace/fun-saver/pull/33)       | `refactor/user-identity-predicate` | **merged** (not in this plan)                  |
-| PR 3a   | [#41](https://github.com/ShiraSpace/fun-saver/pull/41)       | `feat/account-user-reads`   | **open** — rename + the two read methods              |
-| PR 3b   | [#47](https://github.com/ShiraSpace/fun-saver/pull/47)       | `feat/account-user-create`  | **open** — stacked on #41, `insertAccountWithOwner`    |
-| PR 4–10 | —                                                            | —                           | not started                                           |
+| Plan    | GitHub                                                 | Branch                             | Status                                               |
+| ------- | ------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------- |
+| PR 1    | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                           |
+| —       | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                        |
+| —       | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                        |
+| PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged** — also carried `BaseStore` and `*.e2e.ts` |
+| —       | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                        |
+| PR 3a   | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505` on `main`                     |
+| PR 3b   | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **open** — the only thing left in plan PR 3          |
+| PR 4–10 | —                                                      | —                                  | not started                                          |
 
-[#34](https://github.com/ShiraSpace/fun-saver/pull/34) was plan PR 3 as a single
-PR. It was **closed unmerged** and split into #41 and #47 — see _Why PR 3 became
-two_ below. Nothing was force-pushed; two fresh branches replaced it.
+**#49 is the first thing to deal with in a new session.** It is green against
+current `main` and needs review and merge; nothing else in this plan depends on
+it, so PR 4 can start in parallel.
+
+### Two PRs that are not what their status says
+
+- [**#34**](https://github.com/ShiraSpace/fun-saver/pull/34) — plan PR 3 as a
+  single PR. **Closed unmerged**, deliberately, and split into #41 and #47.
+- [**#47**](https://github.com/ShiraSpace/fun-saver/pull/47) — GitHub says
+  **merged**, and `main` never received a line of it. It was stacked on
+  `feat/account-user-reads`, and when it was merged it went **into that branch**
+  (`99a539b`) rather than into `main`, because it was never retargeted after #41
+  landed. #49 is its four commits replayed onto current `main`.
+
+  **The lesson, for any future stacked PR:** merging the parent does not
+  retarget the child on its own in this repo. Either retarget the child to
+  `main` before merging it, or merge the parent and confirm the child's base
+  changed. Verify with `git log origin/main..origin/<branch>` — an empty result
+  is the only proof the work actually landed. A green PR page is not.
 
 **Three out-of-plan refactors have landed.** None is part of the feature; each
 was done to stop later PRs making things worse.
@@ -34,6 +50,11 @@ was done to stop later PRs making things worse.
 - **#30** split the three stores into folders — see **Store layout** below.
 - **#33** extracted `findUserByIdentity` into `src/db/user-identity.ts`, which
   `MemoryUsers` and `JsonUsers` had each written for themselves.
+
+**`main` also moved underneath this work** while plan PR 3 was open: #36, #42,
+#43, #44 and #45 (styled-components extracted to `<Component>.styles.ts`), plus
+**#46**, which caps files at 200 lines and functions at 40. #46 is the one to
+keep in mind — PR 4 onward will be linted against it.
 
 ### Why PR 3 became two
 
@@ -417,9 +438,10 @@ catches a missing method at compile time.
 
 Depends on: PR 1 (merged) and #30. Ships: unused interface methods.
 
-### PR 3 — shipped as two: #41 reads, #47 writes
+### PR 3 — shipped as two: #41 reads (merged), #49 writes (open)
 
-Both open, #47 stacked on #41. Merge #41 first; #47 retargets to `main` itself.
+#41 merged as `ca1a505`. #49 is open and is all that remains — see _Two PRs
+that are not what their status says_ above for why it is numbered 49 and not 47.
 
 **#41 — `feat/account-user-reads`**
 
@@ -435,7 +457,7 @@ Both open, #47 stacked on #41. Merge #41 first; #47 retargets to `main` itself.
 - `postgres-store/account-users.ts` — JOIN on `account_users(user_id)`, **no**
   `ORDER BY`; rows go through `byAccountName` like every other store.
 
-**#47 — `feat/account-user-create`**
+**#49 — `feat/account-user-writes`**
 
 - `insertAccountWithOwner(account, owner)` on the repository, `DataStore` and
   `BaseStore`. It spans two tables, so one repository owns the whole operation
@@ -475,7 +497,7 @@ Depends on: PR 1, PR 2. Ships: unused interface methods.
 
 ### Known divergences to settle before PR 9
 
-Raised in #47's review. Neither blocks that PR; both are decisions PR 9 has to
+Raised in #47's review, and carried into #49. Neither blocks that PR; both are decisions PR 9 has to
 make rather than defects in the store layer.
 
 - **A repeat `insertAccountWithOwner` diverges by store.** Postgres rejects it —
@@ -493,6 +515,19 @@ make rather than defects in the store layer.
   rather than widening #47. **PR 9 has to decide whether account creation is
   retryable**; if it is, that PR is a prerequisite.
 
+- **An owner who does not exist is accepted by memory and json, rejected by
+  postgres.** `account_users.user_id REFERENCES users(id)`, so postgres throws
+  and rolls back — the live rollback test relies on exactly that. The memory and
+  json stores push the row unconditionally, so the same call succeeds and leaves
+  an account whose only member row points at a user that does not exist. That
+  account is then unreachable: no `listAccountsForUser` will ever return it.
+
+  This matters for PR 9's signup flow, which inserts the user and then calls
+  `insertAccountWithOwner`. If the user insert did not land, dev on the json
+  store passes and production on postgres throws — a failure that only appears
+  after deploy. Same decision as the repeat-insert divergence above, and it wants
+  deciding at the same time.
+
 - **`insertAccountWithOwner` assumes one accounts repository instance.** It
   routes an account write through the account-users repository, which holds its
   own `AccountRepository`. Nothing in the types requires it to be the same object
@@ -501,8 +536,14 @@ make rather than defects in the store layer.
   one and read from the other — a silent disappearing write. Before this PR a
   mismatch only degraded `listAccountsForUser`.
 
-  Both call sites are two lines apart in the same constructor and hoist a `const
-  accounts`, so the risk is small. It stays unenforced deliberately: the
+  **For postgres this is now unrepresentable**: `PostgresAccountUsers` takes only
+  `sql` and builds its own `PostgresAccounts` from it, so the statement it batches
+  and the transaction it batches into cannot belong to different connections. The
+  repository is stateless, so the second instance costs nothing.
+
+  **The memory store still carries the assumption**, and cannot shed it the same
+  way: `MemoryAccounts` owns an actual array, so `MemoryAccountUsers` needs *that
+  instance*, not an equivalent one. It stays unenforced deliberately — the
   alternative is `BaseStore` orchestrating the two writes itself, which gives up
   the atomicity the whole operation exists for. **A new store must not get this
   wrong.**
@@ -725,9 +766,12 @@ migrating `data.json` into Neon.
    --short` as `ok` on a dirty tree, a jest count of 364 where the real number
    was 368, and swallowed an `eslint --fix`. Use `rtk proxy <cmd>` for anything
    you intend to report as a number, and capture to a file rather than piping.
-8. **Start with PR 4**, once the Google Cloud step below is done. Plan PR 3 is
-   open as #41 and #47; both are additive only, and nothing reads the new
-   methods until PR 9.
+8. **Confirm what is actually on `main` before trusting any status.**
+   `git log origin/main..origin/<branch>` empty is the only proof work landed; a
+   PR page saying "merged" is not — see #47 above. Expect the Neon `production`
+   branch to still be unmigrated.
+9. **Start with #49** — review and merge it, which closes plan PR 3 — **then
+   PR 4**, once the Google Cloud step below is done. PR 4 does not depend on #49.
 
 ### Still undecided
 
