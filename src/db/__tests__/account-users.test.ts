@@ -1,3 +1,4 @@
+import type { Account, AccountUser } from '@/lib/types';
 import { accountsForUser, findAccountUser } from '../account-users';
 import {
   createMockAccount,
@@ -8,81 +9,124 @@ import {
   mockUser,
 } from '@/test-utils/fixtures';
 
-const mockOtherUserId = 'u2';
-const mockAccounts = [mockAccount, mockSecondAccount];
+const mockParentId = mockUser.id;
+const mockUnrelatedParentId = 'u2';
+
+const mockOwnChildAccount = mockAccount;
+const mockUnrelatedChildAccount = mockSecondAccount;
+const mockEveryChildAccount = [mockOwnChildAccount, mockUnrelatedChildAccount];
+
+const mockParentOwnsOwnChild = mockAccountUser;
+const mockUnrelatedParentOwnsTheirChild = createMockAccountUser({
+  accountId: mockUnrelatedChildAccount.id,
+  userId: mockUnrelatedParentId,
+});
+
+const mockCapitalisedChildName = 'Noa';
+const mockLowercaseChildName = 'eitan';
+const mockSharedChildName = 'Noa';
+
+function ownedByParent(account: Account): AccountUser {
+  return createMockAccountUser({
+    accountId: account.id,
+    userId: mockParentId,
+  });
+}
 
 describe('accountsForUser', () => {
-  it('returns only the accounts the user belongs to', () => {
-    const accountUsers = [
-      mockAccountUser,
-      createMockAccountUser({
-        accountId: mockSecondAccount.id,
-        userId: mockOtherUserId,
-      }),
-    ];
-
-    expect(accountsForUser(accountUsers, mockAccounts, mockUser.id)).toEqual([
-      mockAccount,
-    ]);
+  it('returns only the accounts the parent belongs to', () => {
+    expect(
+      accountsForUser(
+        [mockParentOwnsOwnChild, mockUnrelatedParentOwnsTheirChild],
+        mockEveryChildAccount,
+        mockParentId
+      )
+    ).toEqual([mockOwnChildAccount]);
   });
 
-  it('orders the accounts by name regardless of letter case', () => {
-    const mockUpperAccount = createMockAccount({ id: 'a3', name: 'Noa' });
-    const mockLowerAccount = createMockAccount({ id: 'a4', name: 'eitan' });
-    const accountUsers = [
-      createMockAccountUser({ accountId: mockUpperAccount.id }),
-      createMockAccountUser({ accountId: mockLowerAccount.id }),
-    ];
+  it('orders children by name whatever case the name was typed in', () => {
+    const mockCapitalisedChild = createMockAccount({
+      id: 'a3',
+      name: mockCapitalisedChildName,
+    });
+    const mockLowercaseChild = createMockAccount({
+      id: 'a4',
+      name: mockLowercaseChildName,
+    });
 
     expect(
       accountsForUser(
-        accountUsers,
-        [mockUpperAccount, mockLowerAccount],
-        mockUser.id
+        [
+          ownedByParent(mockCapitalisedChild),
+          ownedByParent(mockLowercaseChild),
+        ],
+        [mockCapitalisedChild, mockLowercaseChild],
+        mockParentId
       ).map((account) => account.name)
-    ).toEqual([mockLowerAccount.name, mockUpperAccount.name]);
+    ).toEqual([mockLowercaseChildName, mockCapitalisedChildName]);
   });
 
-  it('breaks a tie on equal names with the account id', () => {
-    const mockLaterAccount = createMockAccount({ id: 'a9', name: 'Noa' });
-    const mockEarlierAccount = createMockAccount({ id: 'a5', name: 'Noa' });
-    const accountUsers = [
-      createMockAccountUser({ accountId: mockLaterAccount.id }),
-      createMockAccountUser({ accountId: mockEarlierAccount.id }),
-    ];
+  it('orders two children sharing a name by account id', () => {
+    const mockLaterCreatedSibling = createMockAccount({
+      id: 'a9',
+      name: mockSharedChildName,
+    });
+    const mockEarlierCreatedSibling = createMockAccount({
+      id: 'a5',
+      name: mockSharedChildName,
+    });
 
     expect(
       accountsForUser(
-        accountUsers,
-        [mockLaterAccount, mockEarlierAccount],
-        mockUser.id
+        [
+          ownedByParent(mockLaterCreatedSibling),
+          ownedByParent(mockEarlierCreatedSibling),
+        ],
+        [mockLaterCreatedSibling, mockEarlierCreatedSibling],
+        mockParentId
       ).map((account) => account.id)
-    ).toEqual([mockEarlierAccount.id, mockLaterAccount.id]);
+    ).toEqual([mockEarlierCreatedSibling.id, mockLaterCreatedSibling.id]);
   });
 
-  it('returns nothing for a user who belongs to no account', () => {
+  it('returns nothing for a parent who belongs to no account', () => {
     expect(
-      accountsForUser([mockAccountUser], mockAccounts, mockOtherUserId)
+      accountsForUser(
+        [mockParentOwnsOwnChild],
+        mockEveryChildAccount,
+        mockUnrelatedParentId
+      )
     ).toEqual([]);
   });
 });
 
 describe('findAccountUser', () => {
-  it('finds the row joining the account and the user', () => {
+  it('finds the row joining the child account to its parent', () => {
     expect(
-      findAccountUser([mockAccountUser], mockAccount.id, mockUser.id)
-    ).toEqual(mockAccountUser);
+      findAccountUser(
+        [mockParentOwnsOwnChild],
+        mockOwnChildAccount.id,
+        mockParentId
+      )
+    ).toEqual(mockParentOwnsOwnChild);
   });
 
-  it('returns undefined for a user who is not on the account', () => {
+  it('returns undefined for a parent who is not on the account', () => {
     expect(
-      findAccountUser([mockAccountUser], mockAccount.id, mockOtherUserId)
+      findAccountUser(
+        [mockParentOwnsOwnChild],
+        mockOwnChildAccount.id,
+        mockUnrelatedParentId
+      )
     ).toBeUndefined();
   });
 
-  it('returns undefined for the user on an account they do not belong to', () => {
+  it('returns undefined for a parent on a child account that is not theirs', () => {
     expect(
-      findAccountUser([mockAccountUser], mockSecondAccount.id, mockUser.id)
+      findAccountUser(
+        [mockParentOwnsOwnChild],
+        mockUnrelatedChildAccount.id,
+        mockParentId
+      )
     ).toBeUndefined();
   });
 });
