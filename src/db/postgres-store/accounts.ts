@@ -34,7 +34,7 @@ function editedColumns(edits: AccountEdits): EditedColumns {
 export class PostgresAccounts implements AccountRepository {
   constructor(private readonly sql: Sql) {}
 
-  insertQuery(account: Account): ReturnType<Sql> {
+  insertStatement(account: Account): ReturnType<Sql> {
     return this.sql`
       INSERT INTO accounts (id, name, avatar_id, is_active, theme_id, wallets)
       VALUES (
@@ -49,7 +49,7 @@ export class PostgresAccounts implements AccountRepository {
   }
 
   async insert(account: Account): Promise<void> {
-    await this.insertQuery(account);
+    await this.insertStatement(account);
   }
 
   async list(): Promise<Account[]> {

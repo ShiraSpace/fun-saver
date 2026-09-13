@@ -11,10 +11,11 @@ import { PostgresAccounts } from './accounts';
 import { selectRows, type Sql } from './query';
 
 export class PostgresAccountUsers implements AccountUserRepository {
-  constructor(
-    private readonly sql: Sql,
-    private readonly accounts: PostgresAccounts
-  ) {}
+  private readonly accounts: PostgresAccounts;
+
+  constructor(private readonly sql: Sql) {
+    this.accounts = new PostgresAccounts(sql);
+  }
 
   async get(
     accountId: string,
@@ -48,7 +49,7 @@ export class PostgresAccountUsers implements AccountUserRepository {
     const accountUser = ownerAccountUser(account.id, owner);
 
     await this.sql.transaction([
-      this.accounts.insertQuery(account),
+      this.accounts.insertStatement(account),
       this.sql`
         INSERT INTO account_users (account_id, user_id, role, added_at)
         VALUES (${accountUser.accountId}, ${accountUser.userId}, ${accountUser.role}, ${accountUser.addedAt})

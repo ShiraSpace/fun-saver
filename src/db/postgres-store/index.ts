@@ -8,13 +8,12 @@ import { PostgresUsers } from './users';
 export class PostgresStore extends BaseStore {
   constructor(databaseUrl: string) {
     const sql = neon(databaseUrl);
-    const accounts = new PostgresAccounts(sql);
 
     super(
-      accounts,
+      new PostgresAccounts(sql),
       new PostgresTransactions(sql),
       new PostgresUsers(sql),
-      new PostgresAccountUsers(sql, accounts)
+      new PostgresAccountUsers(sql)
     );
   }
 }
