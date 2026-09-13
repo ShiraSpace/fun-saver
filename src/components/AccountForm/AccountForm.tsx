@@ -36,6 +36,12 @@ export function AccountForm({
 }: AccountFormProps): JSX.Element {
   const form = useAccountForm({ initialName, initialAvatarId, onSubmit });
 
+  const saveError = form.saveFailed ? (
+    <SaveError data-testid={ACCOUNT_FORM_TEST_IDS.saveError}>
+      {ACCOUNT_FORM_COPY.saveError}
+    </SaveError>
+  ) : null;
+
   return (
     <Screen align="top" data-testid={testId}>
       <Form onSubmit={(event): void => void form.handleSubmit(event)}>
@@ -56,11 +62,7 @@ export function AccountForm({
         >
           {submitLabel}
         </ActionButton>
-        {form.saveFailed ? (
-          <SaveError data-testid={ACCOUNT_FORM_TEST_IDS.saveError}>
-            {ACCOUNT_FORM_COPY.saveError}
-          </SaveError>
-        ) : null}
+        {saveError}
       </Form>
     </Screen>
   );
