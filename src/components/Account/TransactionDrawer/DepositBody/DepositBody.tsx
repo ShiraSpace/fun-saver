@@ -1,12 +1,11 @@
 'use client';
 
 import { JSX } from 'react';
-import { ActionButton } from '@/components/ActionButton';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { MONEY_COPY } from '@/components/Money/constants';
-import { AmountPad } from '../AmountPad';
 import { DepositAmount } from '../DepositAmount';
 import { DepositSplit } from '../DepositSplit';
+import { ConfirmAmount } from '../ConfirmAmount';
 import { useDepositForm } from '../use-deposit-form';
 import { DrawerError, DrawerTitle } from '../drawer-parts';
 import {
@@ -23,45 +22,26 @@ export function DepositBody({
   account,
   onClose,
 }: DepositBodyProps): JSX.Element {
-  const {
-    amount,
-    split,
-    isSubmitting,
-    hasError,
-    canSubmit,
-    onDigit,
-    onClear,
-    onBackspace,
-    onConfirm,
-  } = useDepositForm(account.id, onClose);
-
-  const submitButtonText = isSubmitting
+  const form = useDepositForm(account.id, onClose);
+  const submitLabel = form.isSubmitting
     ? TRANSACTION_DRAWER_COPY.submitting
-    : `${TRANSACTION_DRAWER_COPY.confirm} ${MONEY_COPY.currency}${amount}`;
+    : `${TRANSACTION_DRAWER_COPY.confirm} ${MONEY_COPY.currency}${form.amount}`;
 
   return (
     <>
       <DrawerTitle>{TRANSACTION_DRAWER_COPY.title}</DrawerTitle>
-      <DepositAmount amount={amount} />
-      <DepositSplit split={split} />
-      {hasError && (
+      <DepositAmount amount={form.amount} />
+      <DepositSplit split={form.split} />
+      {form.hasError && (
         <DrawerError data-testid={TRANSACTION_DRAWER_TEST_IDS.error}>
           {TRANSACTION_DRAWER_COPY.error}
         </DrawerError>
       )}
-      <AmountPad
-        onDigit={onDigit}
-        onClear={onClear}
-        onBackspace={onBackspace}
+      <ConfirmAmount
+        entry={form}
+        canSubmit={form.canSubmit}
+        submitLabel={submitLabel}
       />
-      <ActionButton
-        type="button"
-        data-testid={TRANSACTION_DRAWER_TEST_IDS.confirm}
-        disabled={!canSubmit}
-        onClick={onConfirm}
-      >
-        {submitButtonText}
-      </ActionButton>
     </>
   );
 }

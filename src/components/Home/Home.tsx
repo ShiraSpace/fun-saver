@@ -1,18 +1,14 @@
 'use client';
 
-import { JSX, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import type { Account, AccountWithDerivedWallets } from '@/lib/types';
+import { JSX } from 'react';
+import type { AccountWithDerivedWallets } from '@/lib/types';
 import { AccountSwitcher } from '@/components/AccountSwitcher';
 import { CreateAccount } from '@/components/CreateAccount';
 import { EditAccount } from '@/components/EditAccount';
 import { EmptyState } from '@/components/EmptyState';
 import { AccountsProvider } from '@/components/AccountSwitcher/accounts-context';
-import { resolveThemeId } from '@/theme/registry';
-import { useSetThemeId } from '@/theme/ThemeController';
-import { APP_MODE, AppMode, AppModeProvider } from './app-mode-context';
-import { selectedAccount } from '@/lib/selected-account';
-import { persistSelectedAccount } from './selected-account-cookie';
+import { APP_MODE, AppModeProvider } from './app-mode-context';
+import { useHomeNavigation } from './use-home-navigation';
 import { Overlay } from './Home.styles';
 
 interface HomeProps {
@@ -21,62 +17,33 @@ interface HomeProps {
 }
 
 export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
-  const router = useRouter();
-  const setThemeId = useSetThemeId();
-
-  const [mode, setMode] = useState<AppMode>(APP_MODE.viewing);
-  const [selectedAccountId, setSelectedAccountId] = useState(initialAccountId);
-
-  const isCreating = mode === APP_MODE.creatingAccount;
-
-  const selectAccount = (id: string): void => {
-    setSelectedAccountId(id);
-    persistSelectedAccount(id);
-
-    const target = accounts.find((account) => account.id === id);
-    setThemeId(resolveThemeId(target?.themeId));
-  };
-
-  const handleCreated = (account: Account): void => {
-    selectAccount(account.id);
-    setMode(APP_MODE.viewing);
-    router.refresh();
-  };
-
-  const handleUpdated = (): void => {
-    setMode(APP_MODE.viewing);
-    router.refresh();
-  };
-
-  const hasAccounts = accounts.length > 0;
-  const isEditing = mode === APP_MODE.editingAccount;
-  const editingAccount =
-    isEditing && hasAccounts
-      ? selectedAccount(accounts, selectedAccountId)
-      : undefined;
+  const navigation = useHomeNavigation(accounts, initialAccountId);
+  const { mode, setMode, selectedAccountId, selectAccount, cancel } =
+    navigation;
+  const startCreating = (): void => setMode(APP_MODE.creatingAccount);
 
   return (
     <AppModeProvider value={{ mode, setMode }}>
       <AccountsProvider value={{ accounts, selectedAccountId, selectAccount }}>
-        {hasAccounts && <AccountSwitcher accounts={accounts} />}
-        {!hasAccounts && !isCreating && (
-          <EmptyState onCreate={() => setMode(APP_MODE.creatingAccount)} />
+        {navigation.hasAccounts && <AccountSwitcher accounts={accounts} />}
+        {!navigation.hasAccounts && !navigation.isCreating && (
+          <EmptyState onCreate={startCreating} />
         )}
-        {isCreating && (
+        {navigation.isCreating && (
           <Overlay>
             <CreateAccount
-              onCreated={handleCreated}
-              onCancel={() => setMode(APP_MODE.viewing)}
+              onCreated={navigation.showNewAccount}
+              onCancel={cancel}
             />
           </Overlay>
         )}
-        {editingAccount && (
+        {navigation.editingAccount && (
           <Overlay>
             <EditAccount
-              key={editingAccount.id}
-              account={editingAccount}
-              onUpdated={handleUpdated}
-              onCancel={() => setMode(APP_MODE.viewing)}
+              key={navigation.editingAccount.id}
+              account={navigation.editingAccount}
+              onUpdated={navigation.finishEditing}
+              onCancel={cancel}
             />
           </Overlay>
         )}

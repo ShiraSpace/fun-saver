@@ -1,24 +1,16 @@
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import type { WalletWithDerived } from '@/lib/types';
-import { pushDigit, popDigit } from './amount-keypad';
 import { useAddTransaction } from './use-add-transaction';
+import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 
-interface WithdrawForm {
+interface WithdrawForm extends AmountEntry {
   selectedId: string;
   selectedBalance: number;
-  amount: number;
   isDonation: boolean;
   isOverdraft: boolean;
-  isSubmitting: boolean;
-  hasError: boolean;
   canSubmit: boolean;
   onSelectWallet: (id: string) => void;
-  onDigit: (digit: number) => void;
-  onClear: () => void;
-  onBackspace: () => void;
-  onConfirm: () => void;
 }
 
 export function useWithdrawForm(
@@ -26,45 +18,25 @@ export function useWithdrawForm(
   wallets: WalletWithDerived[],
   onClose: () => void
 ): WithdrawForm {
-  const router = useRouter();
   const { withdraw } = useAddTransaction(accountId);
   const [selectedId, setSelectedId] = useState(wallets[0]?.id ?? '');
-  const [amount, setAmount] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const entry = useAmountEntry(
+    (amount) => withdraw(selectedId, amount),
+    onClose
+  );
 
   const selectedWallet = wallets.find((wallet) => wallet.id === selectedId);
   const isOverdraft =
-    !!selectedWallet && amount * AGOROT_PER_SHEKEL > selectedWallet.balance;
-  const isDonation = selectedWallet?.name === 'goodDeeds';
-
-  const submit = async (): Promise<void> => {
-    setIsSubmitting(true);
-    setHasError(false);
-
-    try {
-      await withdraw(selectedId, amount);
-      router.refresh();
-      onClose();
-    } catch {
-      setHasError(true);
-      setIsSubmitting(false);
-    }
-  };
+    !!selectedWallet &&
+    entry.amount * AGOROT_PER_SHEKEL > selectedWallet.balance;
 
   return {
+    ...entry,
     selectedId,
     selectedBalance: selectedWallet?.balance ?? 0,
-    amount,
-    isDonation,
+    isDonation: selectedWallet?.name === 'goodDeeds',
     isOverdraft,
-    isSubmitting,
-    hasError,
-    canSubmit: amount > 0 && !isOverdraft && !isSubmitting,
+    canSubmit: entry.amount > 0 && !isOverdraft && !entry.isSubmitting,
     onSelectWallet: setSelectedId,
-    onDigit: (digit) => setAmount((current) => pushDigit(current, digit)),
-    onClear: () => setAmount(0),
-    onBackspace: () => setAmount((current) => popDigit(current)),
-    onConfirm: () => void submit(),
   };
 }
