@@ -5,7 +5,6 @@ import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 
 interface DepositForm extends AmountEntry {
   split: DepositSplit;
-  canSubmit: boolean;
 }
 
 export function useDepositForm(
@@ -18,6 +17,5 @@ export function useDepositForm(
   return {
     ...entry,
     split: splitDeposit(entry.amount * AGOROT_PER_SHEKEL),
-    canSubmit: entry.amount > 0 && !entry.isSubmitting,
   };
 }

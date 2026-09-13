@@ -6,6 +6,7 @@ export interface AmountEntry {
   amount: number;
   isSubmitting: boolean;
   hasError: boolean;
+  canSubmit: boolean;
   onDigit: (digit: number) => void;
   onClear: () => void;
   onBackspace: () => void;
@@ -39,6 +40,7 @@ export function useAmountEntry(
     amount,
     isSubmitting,
     hasError,
+    canSubmit: amount > 0 && !isSubmitting,
     onDigit: (digit) => setAmount((current) => pushDigit(current, digit)),
     onClear: () => setAmount(0),
     onBackspace: () => setAmount((current) => popDigit(current)),

@@ -1,7 +1,7 @@
 import { MONEY_COPY } from '@/components/Money/constants';
 import { WITHDRAW_BODY_COPY } from './constants';
 
-interface WithdrawState {
+interface WithdrawInProgress {
   isDonation: boolean;
   isSubmitting: boolean;
   amount: number;
@@ -16,7 +16,7 @@ export function withdrawCopy({
   isDonation,
   isSubmitting,
   amount,
-}: WithdrawState): WithdrawCopy {
+}: WithdrawInProgress): WithdrawCopy {
   const confirmVerb = isDonation
     ? WITHDRAW_BODY_COPY.donationConfirm
     : WITHDRAW_BODY_COPY.confirm;

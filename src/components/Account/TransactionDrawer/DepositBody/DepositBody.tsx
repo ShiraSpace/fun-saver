@@ -37,11 +37,7 @@ export function DepositBody({
           {TRANSACTION_DRAWER_COPY.error}
         </DrawerError>
       )}
-      <ConfirmAmount
-        entry={form}
-        canSubmit={form.canSubmit}
-        submitLabel={submitLabel}
-      />
+      <ConfirmAmount entry={form} submitLabel={submitLabel} />
     </>
   );
 }

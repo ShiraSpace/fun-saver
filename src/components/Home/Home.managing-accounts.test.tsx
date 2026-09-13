@@ -1,7 +1,8 @@
-import { screen, waitFor } from '@/test-utils/render';
+import { fireEvent, screen, waitFor } from '@/test-utils/render';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
+import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { cancelForm, nameInput } from '@/test-utils/account-form';
 import { mockAccount } from '@/test-utils/fixtures';
 import {
@@ -49,6 +50,17 @@ describe('Home — managing accounts', () => {
     jest.clearAllMocks();
     mockCreateAccount.mockResolvedValue(createdAccount);
     mockUpdateAccount.mockResolvedValue(renamedAccount);
+  });
+
+  it('opens the create overlay from the empty-state call to action', () => {
+    renderHome({ accounts: [], initialAccountId: '' });
+
+    fireEvent.click(screen.getByTestId(EMPTY_STATE_TEST_IDS.createAccount));
+    fireEvent.animationEnd(screen.getByTestId(EMPTY_STATE_TEST_IDS.pig));
+
+    expect(
+      screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)
+    ).toBeInTheDocument();
   });
 
   describe('creating an account from the menu', () => {

@@ -6,7 +6,6 @@ import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
 import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
-import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import {
   mockAccount,
   mockDerivedWallets,
@@ -112,16 +111,5 @@ describe('Home', () => {
         'midnight-blue'
       );
     });
-  });
-
-  it('opens the create overlay from the empty-state call to action', () => {
-    renderHome({ accounts: [], initialAccountId: '' });
-
-    fireEvent.click(screen.getByTestId(EMPTY_STATE_TEST_IDS.createAccount));
-    fireEvent.animationEnd(screen.getByTestId(EMPTY_STATE_TEST_IDS.pig));
-
-    expect(
-      screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-    ).toBeInTheDocument();
   });
 });

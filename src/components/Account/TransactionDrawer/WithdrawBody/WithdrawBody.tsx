@@ -26,6 +26,7 @@ export function WithdrawBody({
   const wallets = account.wallets;
   const form = useWithdrawForm(account.id, wallets, onClose);
   const { title, submitLabel } = withdrawCopy(form);
+  const balanceShekels = agorotToShekels(form.selectedBalance);
 
   return (
     <>
@@ -44,13 +45,9 @@ export function WithdrawBody({
       <WithdrawMessage
         isOverdraft={form.isOverdraft}
         hasError={form.hasError}
-        balanceShekels={agorotToShekels(form.selectedBalance)}
+        balanceShekels={balanceShekels}
       />
-      <ConfirmAmount
-        entry={form}
-        canSubmit={form.canSubmit}
-        submitLabel={submitLabel}
-      />
+      <ConfirmAmount entry={form} submitLabel={submitLabel} />
     </>
   );
 }

@@ -11,29 +11,30 @@ interface AccountFormOptions {
   onSubmit: (values: AccountFormValues) => Promise<void> | void;
 }
 
-interface AccountFormState {
+interface EditableAccount {
   name: string;
   setName: Dispatch<SetStateAction<string>>;
   selectedAvatarId: string | null;
   setSelectedAvatarId: Dispatch<SetStateAction<string | null>>;
   saveFailed: boolean;
   canSubmit: boolean;
-  handleSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>;
+  saveAccount: (event: FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
 export function useAccountForm({
   initialName,
   initialAvatarId,
   onSubmit,
-}: AccountFormOptions): AccountFormState {
+}: AccountFormOptions): EditableAccount {
   const [name, setName] = useState(initialName);
   const [selectedAvatarId, setSelectedAvatarId] = useState(initialAvatarId);
   const [saveFailed, setSaveFailed] = useState(false);
 
-  const handleSubmit = async (
+  const saveAccount = async (
     event: FormEvent<HTMLFormElement>
   ): Promise<void> => {
     event.preventDefault();
+
     if (selectedAvatarId === null) {
       return;
     }
@@ -54,6 +55,6 @@ export function useAccountForm({
     setSelectedAvatarId,
     saveFailed,
     canSubmit: name.trim() !== '' && selectedAvatarId !== null,
-    handleSubmit,
+    saveAccount,
   };
 }

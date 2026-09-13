@@ -8,13 +8,11 @@ import type { AmountEntry } from '../use-amount-entry';
 
 interface ConfirmAmountProps {
   entry: AmountEntry;
-  canSubmit: boolean;
   submitLabel: string;
 }
 
 export function ConfirmAmount({
   entry,
-  canSubmit,
   submitLabel,
 }: ConfirmAmountProps): JSX.Element {
   return (
@@ -27,7 +25,7 @@ export function ConfirmAmount({
       <ActionButton
         type="button"
         data-testid={TRANSACTION_DRAWER_TEST_IDS.confirm}
-        disabled={!canSubmit}
+        disabled={!entry.canSubmit}
         onClick={entry.onConfirm}
       >
         {submitLabel}

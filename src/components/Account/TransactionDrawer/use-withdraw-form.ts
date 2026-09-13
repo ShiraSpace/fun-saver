@@ -9,7 +9,6 @@ interface WithdrawForm extends AmountEntry {
   selectedBalance: number;
   isDonation: boolean;
   isOverdraft: boolean;
-  canSubmit: boolean;
   onSelectWallet: (id: string) => void;
 }
 
@@ -36,7 +35,7 @@ export function useWithdrawForm(
     selectedBalance: selectedWallet?.balance ?? 0,
     isDonation: selectedWallet?.name === 'goodDeeds',
     isOverdraft,
-    canSubmit: entry.amount > 0 && !isOverdraft && !entry.isSubmitting,
+    canSubmit: entry.canSubmit && !isOverdraft,
     onSelectWallet: setSelectedId,
   };
 }

@@ -38,10 +38,10 @@ export function useHomeNavigation(
     setThemeId(resolveThemeId(target?.themeId));
   };
 
-  const returnToViewing = (): void => setMode(APP_MODE.viewing);
+  const cancel = (): void => setMode(APP_MODE.viewing);
 
   const finishEditing = (): void => {
-    returnToViewing();
+    cancel();
     router.refresh();
   };
 
@@ -58,7 +58,7 @@ export function useHomeNavigation(
       finishEditing();
     },
     finishEditing,
-    cancel: returnToViewing,
+    cancel,
     hasAccounts,
     isCreating: mode === APP_MODE.creatingAccount,
     editingAccount:

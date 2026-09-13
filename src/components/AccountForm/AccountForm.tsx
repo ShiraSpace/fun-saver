@@ -38,7 +38,7 @@ export function AccountForm({
 
   return (
     <Screen align="top" data-testid={testId}>
-      <Form onSubmit={(event): void => void form.handleSubmit(event)}>
+      <Form onSubmit={(event): void => void form.saveAccount(event)}>
         <CancelButton onCancel={onCancel} />
         <FormTitle title={title} titleIcon={titleIcon} />
         <NameField
