@@ -1,7 +1,6 @@
 'use client';
 
 import { JSX } from 'react';
-import styled from '@emotion/styled';
 import { ActionButton } from '@/components/ActionButton';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { agorotToShekels } from '@/lib/money';
@@ -15,14 +14,7 @@ import { DrawerTitle } from '../drawer-parts';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { WithdrawMessage } from './WithdrawMessage';
 import { WITHDRAW_BODY_COPY, WITHDRAW_BODY_TEST_IDS } from './constants';
-
-const AmountValue = styled.div<{ donation: boolean }>`
-  text-align: center;
-  font-size: ${({ theme }): number => theme.typography.amount}px;
-  font-weight: 700;
-  color: ${({ theme, donation }): string =>
-    donation ? theme.colors.gainText : theme.colors.withdrawText};
-`;
+import { AmountValue } from './WithdrawBody.styles';
 
 interface WithdrawBodyProps {
   account: AccountWithDerivedWallets;

@@ -1,9 +1,9 @@
 import {
   toAccount,
-  toAccountMember,
+  toAccountUser,
   toTransaction,
   toUser,
-  type AccountMemberRow,
+  type AccountUserRow,
   type AccountRow,
   type TransactionRow,
   type UserRow,
@@ -45,7 +45,7 @@ const userRow: UserRow = {
   created_at: '2026-01-01T00:00:00.000Z',
 };
 
-const accountMemberRow: AccountMemberRow = {
+const accountUserRow: AccountUserRow = {
   account_id: mockAccount.id,
   user_id: userRow.id,
   role: 'owner',
@@ -77,9 +77,9 @@ describe('toUser', () => {
   });
 });
 
-describe('toAccountMember', () => {
-  it('maps an account member row to an AccountMember', () => {
-    expect(toAccountMember(accountMemberRow)).toEqual({
+describe('toAccountUser', () => {
+  it('maps an account user row to an AccountUser', () => {
+    expect(toAccountUser(accountUserRow)).toEqual({
       accountId: mockAccount.id,
       userId: 'u1',
       role: 'owner',

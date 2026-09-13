@@ -16,7 +16,7 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | —       | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename               | **merged** (not in this plan)                                |
 | —       | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`   | **merged** (not in this plan)                                |
 | PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`       | **open** — also carries `BaseStore` and the `*.e2e.ts` rename |
-| PR 3    | —                                                      | `feat/membership-store-methods` | **next**                                                     |
+| PR 3    | —                                                      | `feat/account-user-store-methods` | **next**                                                     |
 | PR 4–10 | —                                                      | —                               | not started                                                  |
 
 **Two out-of-plan refactors landed between PR 1 and PR 2.** Neither is part of
@@ -54,7 +54,7 @@ Tests mirror the source, one test file per module, under each folder's `__tests_
 
 ### Database state
 
-| Branch                     | `users` / `account_members` | `role` CHECK |
+| Branch                     | `users` / `account_users` | `role` CHECK |
 | -------------------------- | --------------------------- | ------------ |
 | Neon **dev**               | created                     | yes          |
 | Neon **test**              | created                     | yes          |
@@ -63,8 +63,9 @@ Tests mirror the source, one test file per module, under each folder's `__tests_
 Production has never been migrated. Run `npm run db:migrate` against it only
 when you mean to. Dev and test got the CHECK via a one-off
 `ALTER TABLE ... ADD CONSTRAINT`, because `CREATE TABLE IF NOT EXISTS` cannot
-add a constraint to a table that already exists — the runner ceiling this plan
-documents, hit on its first real use. A fresh database gets it from `CREATE TABLE`.
+add a constraint to a table that already exists. A fresh database gets it from
+`CREATE TABLE`. That constraint could equally be carried in `schema.sql` as an
+idempotent `ALTER`, the way the `account_users` rename now is.
 
 ### Conventions PR 2 added
 
@@ -104,7 +105,7 @@ Leave it alone.
 
 `page.tsx` calls `store.listAccounts()` and renders **every** account to whoever
 opens the app. The Vercel deployment is public and ungated. Add Google sign-in
-so a person owns what they created, and model ownership as a membership table
+so a person owns what they created, and model ownership as an account_users join table
 so sharing and per-child logins are later a row insert, not a re-architecture.
 
 ## Current state — verified 2026-09-12
@@ -180,7 +181,7 @@ differs.
   in the managed `neon_auth.users_sync` table, so adding a child PIN identity
   later would mean running a second auth system. Auth.js keeps identity in our
   schema and a PIN is a Credentials provider away.
-- **`account_members` join table**, name and shape carried over from the neon
+- **`account_users` join table**, name and shape carried over from the neon
   plan's deferred sketch. Users ↔ Accounts is many-to-many.
 - **Roles:** `owner` | `editor` | `viewer` (the neon sketch said `guardian`;
   we use `editor`). Owner can share. Owner and editor can edit. Viewer reads.
@@ -213,12 +214,12 @@ export interface User {
   createdAt: string;
 }
 
-export type MembershipRole = 'owner' | 'editor' | 'viewer';
+export type AccountUserRole = 'owner' | 'editor' | 'viewer';
 
-export interface AccountMember {
+export interface AccountUser {
   accountId: string;
   userId: string;
-  role: MembershipRole;
+  role: AccountUserRole;
   addedAt: string;
 }
 ```
@@ -228,7 +229,7 @@ User u1  Eli                       Account a1  נועה  ── wallets(JSONB) �
 User u2  Dana   (later)            Account a2  איתי  ── wallets(JSONB) → transactions
 User u3  נועה   (later, own login)
 
-account_members
+account_users
   a1 → u1  owner     a2 → u1  owner
   a1 → u2  editor    (later: shared)
   a1 → u3  viewer    (later: נועה signs in herself)
@@ -252,7 +253,7 @@ CREATE TABLE IF NOT EXISTS users (
   UNIQUE (provider, provider_account_id)
 );
 
-CREATE TABLE IF NOT EXISTS account_members (
+CREATE TABLE IF NOT EXISTS account_users (
   account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   user_id    TEXT NOT NULL REFERENCES users(id)    ON DELETE CASCADE,
   role       TEXT NOT NULL,
@@ -260,15 +261,20 @@ CREATE TABLE IF NOT EXISTS account_members (
   PRIMARY KEY (account_id, user_id)
 );
 
-CREATE INDEX IF NOT EXISTS account_members_user_idx ON account_members(user_id);
+CREATE INDEX IF NOT EXISTS account_users_user_idx ON account_users(user_id);
 ```
 
 Run `db:migrate`, `db:migrate-dev`, `db:migrate-test`.
 
-> **Known ceiling:** `run-migration.ts` only replays `CREATE ... IF NOT EXISTS`.
-> It has no mechanism to ALTER an existing table idempotently. This feature adds
-> tables only, so it is not a problem today — the day a column changes, the
-> runner needs a versioned migrations table first.
+> **Corrected 2026-09-13.** This plan previously claimed the runner "has no
+> mechanism to ALTER an existing table idempotently". That was wrong.
+> `run-migration.ts` splits `schema.sql` and runs every statement inside one
+> `sql.transaction`, so `ALTER TABLE IF EXISTS ... RENAME TO` and
+> `ALTER INDEX IF EXISTS ... RENAME TO` replay safely forever — they no-op once
+> the old name is gone. The `account_users` rename is carried in `schema.sql`
+> itself for exactly this reason, rather than being a manual step recorded in a
+> PR description. A column *type* change would still want a versioned
+> migrations table; a rename does not.
 
 ## Authorization seam — the one file that tightens later
 
@@ -277,7 +283,7 @@ place that decides who may do what:
 
 ```ts
 listAccountsForUser(store, userId): Promise<Account[]>   // replaces listAccounts()
-requireMembership(store, userId, accountId): Promise<AccountMember>  // else Forbidden
+requireAccountUser(store, userId, accountId): Promise<AccountUser>  // else Forbidden
 assertCanEdit(role): void    // owner | editor
 assertCanShare(role): void   // owner — defined, unused today
 ```
@@ -298,11 +304,11 @@ PRs 3 and 7 can land in parallel with that chain.
 
 ### PR 1 — `feat/members-schema` — MERGED (#28)
 
-- Append `users` and `account_members` to `schema.sql`; run all three migrate
+- Append `users` and `account_users` to `schema.sql`; run all three migrate
   scripts.
-- `src/lib/types.ts` — add `User`, `MembershipRole`, `AccountMember`.
+- `src/lib/types.ts` — add `User`, `AccountUserRole`, `AccountUser`.
   `Account` unchanged.
-- `src/db/row-mappers.ts` — `UserRow`/`toUser`, `AccountMemberRow`/`toAccountMember`.
+- `src/db/row-mappers.ts` — `UserRow`/`toUser`, `AccountUserRow`/`toAccountUser`.
 
 Tests: row-mapper unit tests alongside the existing ones.
 
@@ -341,32 +347,32 @@ catches a missing method at compile time.
 
 Depends on: PR 1 (merged) and #30. Ships: unused interface methods.
 
-### PR 3 — `feat/membership-store-methods`
+### PR 3 — `feat/account-user-store-methods`
 
-Same shape as PR 2: a `MemberRepository` in `data-store.ts` and one new
-`members.ts` per store folder.
+Same shape as PR 2: a `AccountUserRepository` in `data-store.ts` and one new
+`account-users.ts` per store folder.
 
-- `DataStore` gains `getMembership`, `listAccountsForUser`,
+- `DataStore` gains `getAccountUser`, `listAccountsForUser`,
   `insertAccountWithOwner`. `listAccounts` **stays** — nothing breaks mid-stack.
   The three delegating methods are written **once**, in `base-store.ts`.
-- `StoreData` gains `members: AccountMember[]`; `emptyData()` — in
-  `json-file-store/file-session.ts` — gains `members: []`.
-- `postgres-store/members.ts` — JOIN for `listAccountsForUser`, keeping
+- `StoreData` gains `accountUsers: AccountUser[]`; `emptyData()` — in
+  `json-file-store/file-session.ts` — gains `accountUsers: []`.
+- `postgres-store/account-users.ts` — JOIN for `listAccountsForUser`, keeping
   `ORDER BY accounts.name`; `sql.transaction([...])` for `insertAccountWithOwner`.
-- `json-file-store/members.ts` — the shared `FileSession` is what makes the
+- `json-file-store/account-users.ts` — the shared `FileSession` is what makes the
   two-write `insertAccountWithOwner` atomic; write both rows inside one
   `session.write(...)` before calling `save()` once.
-- `memory-store/members.ts` — a second array.
+- `memory-store/account-users.ts` — a second array.
 
 `insertAccountWithOwner` spans two entities, so it belongs on the member
-repository, which needs to reach accounts too — give `MemberRepository` the
+repository, which needs to reach accounts too — give `AccountUserRepository` the
 whole operation rather than splitting it across two repositories and losing
 atomicity.
 
 Tests: `memory-store` and `json-file-store` — `listAccountsForUser` returns only
-the user's accounts, `getMembership` returns undefined for a non-member,
+the user's accounts, `getAccountUser` returns undefined for a non-member of the account,
 `insertAccountWithOwner` writes both rows or neither. The postgres suite is
-`postgres-store/__tests__/members.e2e.ts`; `live-store.ts` needs `account_members`
+`postgres-store/__tests__/account-users.e2e.ts`; `live-store.ts` needs `account_users`
 in its cleanup.
 
 Depends on: PR 1. Ships: unused interface methods.
@@ -444,11 +450,11 @@ and go invisible the moment PR 9 lands.**
 
 ```sql
 SELECT COUNT(*) FROM accounts a
-LEFT JOIN account_members m ON m.account_id = a.id
+LEFT JOIN account_users m ON m.account_id = a.id
 WHERE m.account_id IS NULL;   -- must be 0
 ```
 
-Running this before anything enforces is free: nothing reads `account_members`
+Running this before anything enforces is free: nothing reads `account_users`
 yet, so a wrong result breaks nothing and is fixed by re-running — which is
 exactly when you want to find a bug in it.
 
@@ -480,7 +486,7 @@ caller in one commit. Measured: one production caller.**
   birth. Request body stays `{name, avatarId}`.
 
 Tests: `account-access` unit tests — owner and editor pass `assertCanEdit`,
-viewer throws, `requireMembership` throws for a non-member. Route test:
+viewer throws, `requireAccountUser` throws for a non-member of the account. Route test:
 unauthenticated `POST /api/accounts` → 401.
 
 Depends on: PR 3, PR 8. Ships: users see only their own accounts.
@@ -488,9 +494,9 @@ Depends on: PR 3, PR 8. Ships: users see only their own accounts.
 ### PR 10 — `feat/guard-transaction-routes`
 
 - `src/app/api/accounts/[id]/{deposits,withdrawals,theme}/route.ts` —
-  `requireMembership` + `assertCanEdit` before the existing `getAccount`.
+  `requireAccountUser` + `assertCanEdit` before the existing `getAccount`.
 
-Tests: per route — unauthenticated → 401, non-member `accountId` → 403.
+Tests: per route — unauthenticated → 401, non-member of the account `accountId` → 403.
 
 Depends on: PR 9. Ships: writes are authorized.
 
@@ -500,9 +506,9 @@ Depends on: PR 9. Ships: writes are authorized.
 
 | Layer                                                             | Change                                                                    | PR      |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------- | ------- |
-| `src/db/schema.sql`                                               | append `users`, `account_members`                                         | 1       |
-| `src/lib/types.ts`                                                | add `User`, `MembershipRole`, `AccountMember`                             | 1       |
-| `src/db/row-mappers.ts`                                           | add `UserRow`/`toUser`, `AccountMemberRow`/`toAccountMember`              | 1       |
+| `src/db/schema.sql`                                               | append `users`, `account_users`                                         | 1       |
+| `src/lib/types.ts`                                                | add `User`, `AccountUserRole`, `AccountUser`                             | 1       |
+| `src/db/row-mappers.ts`                                           | add `UserRow`/`toUser`, `AccountUserRow`/`toAccountUser`              | 1       |
 | `src/db/data-store.ts`                                            | add user methods, then membership methods, then **remove** `listAccounts` | 2, 3, 9 |
 | `src/db/base-store.ts`                                            | delegate each new `DataStore` method once                                 | 2, 3, 9 |
 | `src/db/postgres-store/{users,members}.ts`                        | implement — JOIN, `sql.transaction([...])`                                | 2, 3, 9 |
@@ -521,7 +527,7 @@ Depends on: PR 9. Ships: writes are authorized.
 | `src/lib/account-access.ts`                                       | **new** — the authorization seam                                          | 9       |
 | `src/app/page.tsx`                                                | `listAccounts()` → `listAccountsForUser(store, session.userId)`           | 9       |
 | `src/app/api/accounts/route.ts`                                   | session `userId` + `insertAccountWithOwner`                               | 9       |
-| `src/app/api/accounts/[id]/{deposits,withdrawals,theme}/route.ts` | `requireMembership` + `assertCanEdit`                                     | 10      |
+| `src/app/api/accounts/[id]/{deposits,withdrawals,theme}/route.ts` | `requireAccountUser` + `assertCanEdit`                                     | 10      |
 
 Unchanged throughout: `AccountSwitcher`, `Account`, `AccountForm`, wallets,
 drawer, transactions, theme, `EmptyState`, `use-create-account`.
@@ -547,7 +553,7 @@ None requires new architecture.
 | No child login                                                                                                                              | Credentials provider + `provider='pin'` user + member row. **No schema change.**                                   |
 | `FUNSAVER_SKIP_AUTH` exists                                                                                                                 | Delete the env var once e2e can seed a real session cookie. Production already refuses it.                         |
 | No rate limiting on sign-in                                                                                                                 | Vercel/Neon edge config; no app change.                                                                            |
-| No audit trail                                                                                                                              | `account_members.added_at` is the start; add `added_by` when sharing ships.                                        |
+| No audit trail                                                                                                                              | `account_users.added_at` is the start; add `added_by` when sharing ships.                                        |
 
 ## Out of scope
 

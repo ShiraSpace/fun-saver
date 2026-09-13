@@ -1,5 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { mockDerivedWallets, mockWalletShares } from '@/test-utils/fixtures';
+import { getThemeTokens } from '@/theme/registry';
 import { Donut } from './Donut';
 import { OVERVIEW_CARD_TEST_IDS } from '../constants';
 
@@ -34,7 +35,7 @@ const DECIMAL_PLACES = 2;
 const RING_TOP = 0;
 const SAVINGS_ARC_LENGTH = 139.864;
 const GOOD_DEEDS_ARC_LENGTH = 42.223;
-const SAVINGS_ARC_COLOR = '#FFC34D';
+const SAVINGS_ARC_COLOR = getThemeTokens().colors.walletSavings;
 
 describe('Donut', () => {
   let walletArcs: Element[];

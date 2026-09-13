@@ -2,31 +2,23 @@
 
 import { JSX, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import styled from '@emotion/styled';
 import type { Account, AccountWithDerivedWallets } from '@/lib/types';
 import { AccountSwitcher } from '@/components/AccountSwitcher';
 import { CreateAccount } from '@/components/CreateAccount';
 import { EditAccount } from '@/components/EditAccount';
 import { EmptyState } from '@/components/EmptyState';
 import { AccountsProvider } from '@/components/AccountSwitcher/accounts-context';
-import { LAYERS } from '@/theme/layers';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/ThemeController';
 import { APP_MODE, AppMode, AppModeProvider } from './app-mode-context';
 import { selectedAccount } from '@/lib/selected-account';
 import { persistSelectedAccount } from './selected-account-cookie';
+import { Overlay } from './Home.styles';
 
 interface HomeProps {
   accounts: AccountWithDerivedWallets[];
   initialAccountId: string;
 }
-
-const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  z-index: ${LAYERS.modal};
-  overflow-y: auto;
-`;
 
 export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
   const router = useRouter();

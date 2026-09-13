@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 import type { WalletWithDerived } from '@/lib/types';
-import { StatStrip } from '../WalletCard/StatStrip';
+import { StatStrip } from '../../WalletCard/StatStrip';
 
 interface SavingsStatStripProps {
   wallet: WalletWithDerived;

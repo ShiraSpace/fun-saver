@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { mockDerivedWallets, mockWalletShares } from '@/test-utils/fixtures';
+import { mockDerivedWallets } from '@/test-utils/fixtures';
 import { OverviewCard } from './OverviewCard';
 import { OVERVIEW_CARD_COPY, OVERVIEW_CARD_TEST_IDS } from './constants';
 
@@ -35,6 +35,6 @@ describe('OverviewCard', () => {
   it('gives each wallet its share of the total', () => {
     expect(
       screen.getAllByTestId(OVERVIEW_CARD_TEST_IDS.legendShare)[0]
-    ).toHaveTextContent(OVERVIEW_CARD_COPY.share(mockWalletShares[0]));
+    ).toHaveTextContent('53%');
   });
 });

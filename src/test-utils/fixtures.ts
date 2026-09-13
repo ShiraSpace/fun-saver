@@ -1,5 +1,6 @@
 import type {
   Account,
+  AccountUser,
   AccountWithDerivedWallets,
   Transaction,
   User,
@@ -84,6 +85,18 @@ export function createMockDerivedWallet(
   };
 }
 
+export function createMockAccountUser(
+  overrides: Partial<AccountUser> = {}
+): AccountUser {
+  return {
+    accountId: 'a1',
+    userId: 'u1',
+    role: 'owner',
+    addedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
 export const mockAccount: Account = createMockAccount();
 
 export const mockSecondAccount: Account = createMockAccount({
@@ -94,6 +107,8 @@ export const mockSecondAccount: Account = createMockAccount({
 });
 
 export const mockUser: User = createMockUser();
+
+export const mockAccountUser: AccountUser = createMockAccountUser();
 
 export const mockCreateAccountInput = {
   name: mockAccount.name,

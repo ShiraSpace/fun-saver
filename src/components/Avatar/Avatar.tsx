@@ -1,14 +1,8 @@
 'use client';
 
 import { JSX } from 'react';
-import Image from 'next/image';
-import styled from '@emotion/styled';
 import { avatarSource } from '@/lib/avatars';
-
-const Circle = styled(Image)`
-  border-radius: 50%;
-  object-fit: cover;
-`;
+import { Circle } from './Avatar.styles';
 
 interface AvatarBaseProps {
   avatarId: string;

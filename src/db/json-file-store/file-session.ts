@@ -5,7 +5,7 @@ import type { StoreData } from '../data-store';
 let writeSequence = 0;
 
 function emptyData(): StoreData {
-  return { accounts: [], transactions: [], users: [] };
+  return { accounts: [], transactions: [], users: [], accountUsers: [] };
 }
 
 /**

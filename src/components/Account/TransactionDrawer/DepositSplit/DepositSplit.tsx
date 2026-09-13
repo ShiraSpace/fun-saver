@@ -1,17 +1,11 @@
 'use client';
 
 import { JSX } from 'react';
-import styled from '@emotion/styled';
 import { DEFAULT_WALLETS } from '@/lib/constants';
 import type { DepositSplit as DepositSplitValue } from '@/lib/transactions';
 import { WalletTile } from '../WalletTile';
-import { WALLET_TILE_STYLE } from '../WalletTile/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
-
-const Row = styled.div`
-  display: flex;
-  gap: ${WALLET_TILE_STYLE.rowGap}px;
-`;
+import { Row } from './DepositSplit.styles';
 
 interface DepositSplitProps {
   split: DepositSplitValue;

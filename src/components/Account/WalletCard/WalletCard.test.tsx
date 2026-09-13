@@ -47,15 +47,10 @@ describe('WalletCard', () => {
   });
 
   it('shows the savings rate and opening date as a sub-line', () => {
-    const wallet = createMockDerivedWallet();
-
-    render(<WalletCard wallet={wallet} />);
+    render(<WalletCard wallet={createMockDerivedWallet()} />);
 
     expect(screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)).toHaveTextContent(
-      WALLET_CARD_COPY.savingsSubLine(
-        wallet.monthlyInterestRate,
-        wallet.openedAt
-      )
+      'צובר 15% בחודש · פעיל מאז 1 בינואר'
     );
   });
 

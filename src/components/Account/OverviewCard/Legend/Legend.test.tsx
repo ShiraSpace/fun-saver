@@ -30,7 +30,7 @@ describe('Legend', () => {
   it('shows the share of each wallet as a percentage', () => {
     expect(
       screen.getAllByTestId(OVERVIEW_CARD_TEST_IDS.legendShare)[0]
-    ).toHaveTextContent(OVERVIEW_CARD_COPY.share(mockWalletShares[0]));
+    ).toHaveTextContent('53%');
   });
 
   it('shows the balance of each wallet', () => {
@@ -39,7 +39,7 @@ describe('Legend', () => {
     ).toHaveTextContent('₪85');
   });
 
-  it('shows the smallest wallet last', () => {
+  it('renders the wallets in the order it is given', () => {
     expect(
       screen.getAllByTestId(OVERVIEW_CARD_TEST_IDS.legendAmount)[2]
     ).toHaveTextContent('₪25');

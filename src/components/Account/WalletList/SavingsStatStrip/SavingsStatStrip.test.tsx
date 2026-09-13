@@ -1,7 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { createMockDerivedWallet } from '@/test-utils/fixtures';
 import { SavingsStatStrip } from './SavingsStatStrip';
-import { STAT_STRIP_TEST_IDS } from '../WalletCard/StatStrip/constants';
+import { STAT_STRIP_TEST_IDS } from '../../WalletCard/StatStrip/constants';
 
 describe('SavingsStatStrip', () => {
   it('shows the strip for the savings wallet', () => {

@@ -1,7 +1,6 @@
 'use client';
 
 import { JSX } from 'react';
-import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
 import type { WalletName } from '@/lib/types';
 import { PERCENT_TOTAL } from '@/lib/constants';
@@ -10,19 +9,9 @@ import {
   OVERVIEW_CARD_TEST_IDS,
   WALLET_ARC_COLOR,
 } from '../constants';
+import { Svg } from './Donut.styles';
 
 const CIRCUMFERENCE = 2 * Math.PI * DONUT_STYLE.radius;
-
-const Svg = styled.svg`
-  display: block;
-  transform: rotate(${DONUT_STYLE.rotation}deg);
-
-  circle {
-    fill: none;
-    stroke-linecap: butt;
-    stroke-width: ${DONUT_STYLE.strokeWidth};
-  }
-`;
 
 export interface DonutSegment {
   name: WalletName;
