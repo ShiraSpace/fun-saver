@@ -96,7 +96,7 @@ For technical details (commands, architecture, dependencies), see [DEVELOPMENT.m
 2. **Exports**: Use named exports ONLY (no default exports)
 3. **Return Types**: Add explicit return types to ALL functions
 4. **Component Composition**: Extract to small, focused components when needed
-4a. **Styles live in `<Component>.styles.ts`**: no `styled.*` / `keyframes` / `css` declarations inside a `.tsx`. Style-only helpers (`({ theme }) => theme.colors.x`) go there too. A style shared by several components in a folder goes in a sibling `*-parts.ts` (e.g. `drawer-parts.ts`).
+4a. **Styles live in `<Component>.styles.ts`**: no `styled.*` / `keyframes` / `css` declarations inside a `.tsx`. Style-only helpers (`({ theme }) => theme.colors.x`) go there too. A style shared by several components in a folder goes in a sibling `*-parts.ts` (e.g. `drawer-parts.ts`). Exempt: a component that *is* a styled component and nothing else (`ActionButton.tsx`, `Screen.tsx`) — the `.tsx` is already the style module, so no `.styles.ts` sibling.
 5. **ESLint Rules**: Never modify ESLint configuration to suppress warnings or errors — always fix the code itself
 6. Files should not pass 200 lines, if it does trigger a question what to do to refactor it.
 7. Hard coded values should be a dedicated constant file.
