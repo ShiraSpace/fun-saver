@@ -1,20 +1,10 @@
 'use client';
 
 import { JSX } from 'react';
-import styled from '@emotion/styled';
 import { Money } from '@/components/Money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
-
-const Block = styled.div`
-  text-align: center;
-`;
-
-const Value = styled.div`
-  font-size: ${({ theme }): number => theme.typography.amount}px;
-  font-weight: 700;
-  color: ${({ theme }): string => theme.colors.gainText};
-`;
+import { Block, Value } from './DepositAmount.styles';
 
 interface DepositAmountProps {
   amount: number;

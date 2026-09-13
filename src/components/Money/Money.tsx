@@ -1,26 +1,9 @@
 'use client';
 
 import { JSX } from 'react';
-import styled from '@emotion/styled';
 import { agorotToWholeShekels, halfShekelAmount } from '@/lib/money';
-import { MONEY_COPY, MONEY_STYLE } from './constants';
-
-const Amount = styled.span`
-  display: inline-flex;
-  align-items: flex-end;
-  line-height: 1;
-  font-weight: 700;
-`;
-
-const Currency = styled.span`
-  font-size: ${MONEY_STYLE.currencyScale}em;
-  opacity: ${MONEY_STYLE.currencyOpacity};
-  margin-inline-end: ${MONEY_STYLE.currencyGap}px;
-`;
-
-const Number = styled.span`
-  font-variant-numeric: tabular-nums;
-`;
+import { MONEY_COPY } from './constants';
+import { Amount, Currency, Number } from './Money.styles';
 
 interface MoneyProps {
   amountAgorot: number;

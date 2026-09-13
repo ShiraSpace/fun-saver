@@ -1,35 +1,16 @@
 'use client';
 
 import { JSX } from 'react';
-import styled from '@emotion/styled';
 import type { WalletWithDerived } from '@/lib/types';
 import { WalletCard } from '../WalletCard/WalletCard';
-import {
-  WALLET_LIST_COPY,
-  WALLET_LIST_STYLE,
-  WALLET_LIST_TEST_IDS,
-} from './constants';
+import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
+import { List, Label } from './WalletList.styles';
 
 interface WalletListProps {
   wallets: ListWallet[];
 }
 
 type ListWallet = Pick<WalletWithDerived, 'id' | 'name' | 'icon' | 'balance'>;
-
-const List = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${WALLET_LIST_STYLE.gap}px;
-`;
-
-const Label = styled.span`
-  text-align: start;
-  padding-inline: ${WALLET_LIST_STYLE.labelPaddingX}px;
-  font-size: ${({ theme }): number => theme.typography.label}px;
-  font-weight: 700;
-  color: ${({ theme }): string => theme.colors.textOnPrimary};
-  opacity: ${WALLET_LIST_STYLE.labelOpacity};
-`;
 
 export function WalletList({ wallets }: WalletListProps): JSX.Element {
   return (

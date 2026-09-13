@@ -3,7 +3,7 @@ import {
   ACCOUNTS_SECTION_CONTENT,
   ACCOUNTS_SECTION_TEST_IDS,
 } from '@/components/Menu/AccountsSection/constants';
-import { ActionChip } from '@/components/Menu/AccountsSection/AccountsSection';
+import { ActionChip } from './AccountsSection.styles';
 
 interface AddAccountChipProps {
   onAddAccount: () => void;

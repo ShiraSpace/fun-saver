@@ -1,33 +1,10 @@
 'use client';
 
 import { Fragment, JSX, useCallback } from 'react';
-import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
 import { BurgerIcon } from './BurgerIcon';
 import { MenuOverlay } from './MenuOverlay';
-import { MENU_ICON, MENU_TEST_IDS, MENU_TOGGLE } from './constants';
-
-const openColor = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textOnPrimary;
-
-const ToggleButton = styled.button`
-  position: relative;
-  z-index: ${MENU_TOGGLE.zIndex};
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: ${MENU_ICON.buttonSize}px;
-  height: ${MENU_ICON.buttonSize}px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: currentColor;
-  cursor: pointer;
-
-  &[data-open='true'] {
-    color: ${openColor};
-  }
-`;
+import { MENU_TEST_IDS } from './constants';
+import { ToggleButton } from './Menu.styles';
 
 export interface MenuProps {
   isOpen: boolean;

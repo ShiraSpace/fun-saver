@@ -1,7 +1,6 @@
 'use client';
 
 import { JSX } from 'react';
-import styled from '@emotion/styled';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { DrawerError } from '../../drawer-parts';
 import {
@@ -9,16 +8,7 @@ import {
   TRANSACTION_DRAWER_TEST_IDS,
 } from '../../constants';
 import { WITHDRAW_BODY_COPY, WITHDRAW_BODY_TEST_IDS } from '../constants';
-
-const Overdraft = styled.span`
-  text-align: center;
-  font-size: ${({ theme }): number => theme.typography.label}px;
-  font-weight: 600;
-  color: ${({ theme }): string => theme.colors.alert};
-  background: ${({ theme }): string => theme.colors.alertSoftBg};
-  border-radius: 12px;
-  padding: 7px 10px;
-`;
+import { Overdraft } from './WithdrawMessage.styles';
 
 interface WithdrawMessageProps {
   isOverdraft: boolean;
