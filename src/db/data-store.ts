@@ -1,6 +1,7 @@
 import type {
   Account,
   AccountEdits,
+  AccountUser,
   AuthProvider,
   Transaction,
   User,
@@ -11,6 +12,7 @@ export interface StoreData {
   accounts: Account[];
   transactions: Transaction[];
   users: User[];
+  accountUsers: AccountUser[];
 }
 
 export interface AccountRepository {
@@ -34,6 +36,11 @@ export interface UserRepository {
   insert(user: User): Promise<void>;
 }
 
+export interface AccountUserRepository {
+  get(accountId: string, userId: string): Promise<AccountUser | undefined>;
+  listAccountsForUser(userId: string): Promise<Account[]>;
+}
+
 export interface DataStore {
   insertAccount(account: Account): Promise<void>;
   listAccounts(): Promise<Account[]>;
@@ -50,4 +57,9 @@ export interface DataStore {
     providerAccountId: string
   ): Promise<User | undefined>;
   insertUser(user: User): Promise<void>;
+  getAccountUser(
+    accountId: string,
+    userId: string
+  ): Promise<AccountUser | undefined>;
+  listAccountsForUser(userId: string): Promise<Account[]>;
 }

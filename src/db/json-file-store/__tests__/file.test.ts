@@ -34,7 +34,7 @@ describe('JsonFileStore file handling', () => {
     expect(readFileSync(file.path, 'utf8')).toContain('partial');
   });
 
-  describe('a file written before transactions and users existed', () => {
+  describe('a file written before transactions, users and account users existed', () => {
     let store: JsonFileStore;
 
     beforeEach(() => {
@@ -58,6 +58,10 @@ describe('JsonFileStore file handling', () => {
       expect(
         await store.findUserByProvider('google', 'any-sub')
       ).toBeUndefined();
+    });
+
+    it('defaults the missing account users', async () => {
+      expect(await store.listAccountsForUser('u1')).toEqual([]);
     });
   });
 });
