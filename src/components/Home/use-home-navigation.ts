@@ -7,22 +7,23 @@ import { selectedAccount } from '@/lib/selected-account';
 import { APP_MODE, AppMode } from './app-mode-context';
 import { persistSelectedAccount } from './selected-account-cookie';
 
-interface HomeState {
+interface HomeNavigation {
   mode: AppMode;
   setMode: Dispatch<SetStateAction<AppMode>>;
   selectedAccountId: string;
   selectAccount: (id: string) => void;
-  handleCreated: (account: Account) => void;
-  handleUpdated: () => void;
+  showNewAccount: (account: Account) => void;
+  finishEditing: () => void;
+  cancel: () => void;
   hasAccounts: boolean;
   isCreating: boolean;
   editingAccount?: AccountWithDerivedWallets;
 }
 
-export function useHomeState(
+export function useHomeNavigation(
   accounts: AccountWithDerivedWallets[],
   initialAccountId: string
-): HomeState {
+): HomeNavigation {
   const router = useRouter();
   const setThemeId = useSetThemeId();
 
@@ -37,14 +38,10 @@ export function useHomeState(
     setThemeId(resolveThemeId(target?.themeId));
   };
 
-  const handleCreated = (account: Account): void => {
-    selectAccount(account.id);
-    setMode(APP_MODE.viewing);
-    router.refresh();
-  };
+  const returnToViewing = (): void => setMode(APP_MODE.viewing);
 
-  const handleUpdated = (): void => {
-    setMode(APP_MODE.viewing);
+  const finishEditing = (): void => {
+    returnToViewing();
     router.refresh();
   };
 
@@ -56,8 +53,12 @@ export function useHomeState(
     setMode,
     selectedAccountId,
     selectAccount,
-    handleCreated,
-    handleUpdated,
+    showNewAccount: (account): void => {
+      selectAccount(account.id);
+      finishEditing();
+    },
+    finishEditing,
+    cancel: returnToViewing,
     hasAccounts,
     isCreating: mode === APP_MODE.creatingAccount,
     editingAccount:

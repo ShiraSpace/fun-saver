@@ -5,8 +5,9 @@ import { Screen } from '@/components/Screen';
 import { AvatarPicker } from '@/components/AvatarPicker';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { NameField } from './NameField';
-import { FormHeader } from './FormHeader';
-import { FormFooter } from './FormFooter';
+import { CancelButton } from './CancelButton';
+import { FormTitle } from './FormTitle';
+import { SaveAccount } from './SaveAccount';
 import { Form } from './AccountForm.styles';
 import { useAccountForm, type AccountFormValues } from './use-account-form';
 
@@ -38,7 +39,8 @@ export function AccountForm({
   return (
     <Screen align="top" data-testid={testId}>
       <Form onSubmit={(event): void => void form.handleSubmit(event)}>
-        <FormHeader title={title} titleIcon={titleIcon} onCancel={onCancel} />
+        <CancelButton onCancel={onCancel} />
+        <FormTitle title={title} titleIcon={titleIcon} />
         <NameField
           value={form.name}
           onChange={form.setName}
@@ -48,7 +50,7 @@ export function AccountForm({
           selectedId={form.selectedAvatarId}
           onSelect={form.setSelectedAvatarId}
         />
-        <FormFooter
+        <SaveAccount
           submitLabel={submitLabel}
           canSubmit={form.canSubmit}
           saveFailed={form.saveFailed}

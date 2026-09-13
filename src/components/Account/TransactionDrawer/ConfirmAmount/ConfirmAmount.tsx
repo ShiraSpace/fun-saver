@@ -4,31 +4,31 @@ import { JSX } from 'react';
 import { ActionButton } from '@/components/ActionButton';
 import { AmountPad } from '../AmountPad';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
-import type { AmountForm } from '../use-amount-form';
+import type { AmountEntry } from '../use-amount-entry';
 
-interface PadAndConfirmProps {
-  form: AmountForm;
+interface ConfirmAmountProps {
+  entry: AmountEntry;
   canSubmit: boolean;
   submitLabel: string;
 }
 
-export function PadAndConfirm({
-  form,
+export function ConfirmAmount({
+  entry,
   canSubmit,
   submitLabel,
-}: PadAndConfirmProps): JSX.Element {
+}: ConfirmAmountProps): JSX.Element {
   return (
     <>
       <AmountPad
-        onDigit={form.onDigit}
-        onClear={form.onClear}
-        onBackspace={form.onBackspace}
+        onDigit={entry.onDigit}
+        onClear={entry.onClear}
+        onBackspace={entry.onBackspace}
       />
       <ActionButton
         type="button"
         data-testid={TRANSACTION_DRAWER_TEST_IDS.confirm}
         disabled={!canSubmit}
-        onClick={form.onConfirm}
+        onClick={entry.onConfirm}
       >
         {submitLabel}
       </ActionButton>

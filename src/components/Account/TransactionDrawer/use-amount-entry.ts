@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { pushDigit, popDigit } from './amount-keypad';
 
-export interface AmountForm {
+export interface AmountEntry {
   amount: number;
   isSubmitting: boolean;
   hasError: boolean;
@@ -12,10 +12,10 @@ export interface AmountForm {
   onConfirm: () => void;
 }
 
-export function useAmountForm(
+export function useAmountEntry(
   commit: (amountShekels: number) => Promise<void>,
   onClose: () => void
-): AmountForm {
+): AmountEntry {
   const router = useRouter();
   const [amount, setAmount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);

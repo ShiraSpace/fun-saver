@@ -5,7 +5,7 @@ import type { AccountWithDerivedWallets } from '@/lib/types';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { DepositAmount } from '../DepositAmount';
 import { DepositSplit } from '../DepositSplit';
-import { PadAndConfirm } from '../PadAndConfirm';
+import { ConfirmAmount } from '../ConfirmAmount';
 import { useDepositForm } from '../use-deposit-form';
 import { DrawerError, DrawerTitle } from '../drawer-parts';
 import {
@@ -37,8 +37,8 @@ export function DepositBody({
           {TRANSACTION_DRAWER_COPY.error}
         </DrawerError>
       )}
-      <PadAndConfirm
-        form={form}
+      <ConfirmAmount
+        entry={form}
         canSubmit={form.canSubmit}
         submitLabel={submitLabel}
       />

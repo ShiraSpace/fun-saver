@@ -6,7 +6,7 @@ import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { Money } from '@/components/Money';
 import { WalletPicker } from '../WalletPicker';
-import { PadAndConfirm } from '../PadAndConfirm';
+import { ConfirmAmount } from '../ConfirmAmount';
 import { useWithdrawForm } from '../use-withdraw-form';
 import { DrawerTitle } from '../drawer-parts';
 import { WithdrawMessage } from './WithdrawMessage';
@@ -46,8 +46,8 @@ export function WithdrawBody({
         hasError={form.hasError}
         balanceShekels={agorotToShekels(form.selectedBalance)}
       />
-      <PadAndConfirm
-        form={form}
+      <ConfirmAmount
+        entry={form}
         canSubmit={form.canSubmit}
         submitLabel={submitLabel}
       />

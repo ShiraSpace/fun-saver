@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import type { WalletWithDerived } from '@/lib/types';
 import { useAddTransaction } from './use-add-transaction';
-import { useAmountForm, type AmountForm } from './use-amount-form';
+import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 
-interface WithdrawForm extends AmountForm {
+interface WithdrawForm extends AmountEntry {
   selectedId: string;
   selectedBalance: number;
   isDonation: boolean;
@@ -20,20 +20,23 @@ export function useWithdrawForm(
 ): WithdrawForm {
   const { withdraw } = useAddTransaction(accountId);
   const [selectedId, setSelectedId] = useState(wallets[0]?.id ?? '');
-  const form = useAmountForm((amount) => withdraw(selectedId, amount), onClose);
+  const entry = useAmountEntry(
+    (amount) => withdraw(selectedId, amount),
+    onClose
+  );
 
   const selectedWallet = wallets.find((wallet) => wallet.id === selectedId);
   const isOverdraft =
     !!selectedWallet &&
-    form.amount * AGOROT_PER_SHEKEL > selectedWallet.balance;
+    entry.amount * AGOROT_PER_SHEKEL > selectedWallet.balance;
 
   return {
-    ...form,
+    ...entry,
     selectedId,
     selectedBalance: selectedWallet?.balance ?? 0,
     isDonation: selectedWallet?.name === 'goodDeeds',
     isOverdraft,
-    canSubmit: form.amount > 0 && !isOverdraft && !form.isSubmitting,
+    canSubmit: entry.amount > 0 && !isOverdraft && !entry.isSubmitting,
     onSelectWallet: setSelectedId,
   };
 }

@@ -8,7 +8,7 @@ import { EditAccount } from '@/components/EditAccount';
 import { EmptyState } from '@/components/EmptyState';
 import { AccountsProvider } from '@/components/AccountSwitcher/accounts-context';
 import { APP_MODE, AppModeProvider } from './app-mode-context';
-import { useHomeState } from './use-home-state';
+import { useHomeNavigation } from './use-home-navigation';
 import { Overlay } from './Home.styles';
 
 interface HomeProps {
@@ -17,29 +17,33 @@ interface HomeProps {
 }
 
 export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
-  const home = useHomeState(accounts, initialAccountId);
-  const { mode, setMode, selectedAccountId, selectAccount } = home;
-  const viewing = (): void => setMode(APP_MODE.viewing);
+  const navigation = useHomeNavigation(accounts, initialAccountId);
+  const { mode, setMode, selectedAccountId, selectAccount, cancel } =
+    navigation;
+  const startCreating = (): void => setMode(APP_MODE.creatingAccount);
 
   return (
     <AppModeProvider value={{ mode, setMode }}>
       <AccountsProvider value={{ accounts, selectedAccountId, selectAccount }}>
-        {home.hasAccounts && <AccountSwitcher accounts={accounts} />}
-        {!home.hasAccounts && !home.isCreating && (
-          <EmptyState onCreate={() => setMode(APP_MODE.creatingAccount)} />
+        {navigation.hasAccounts && <AccountSwitcher accounts={accounts} />}
+        {!navigation.hasAccounts && !navigation.isCreating && (
+          <EmptyState onCreate={startCreating} />
         )}
-        {home.isCreating && (
+        {navigation.isCreating && (
           <Overlay>
-            <CreateAccount onCreated={home.handleCreated} onCancel={viewing} />
+            <CreateAccount
+              onCreated={navigation.showNewAccount}
+              onCancel={cancel}
+            />
           </Overlay>
         )}
-        {home.editingAccount && (
+        {navigation.editingAccount && (
           <Overlay>
             <EditAccount
-              key={home.editingAccount.id}
-              account={home.editingAccount}
-              onUpdated={home.handleUpdated}
-              onCancel={viewing}
+              key={navigation.editingAccount.id}
+              account={navigation.editingAccount}
+              onUpdated={navigation.finishEditing}
+              onCancel={cancel}
             />
           </Overlay>
         )}

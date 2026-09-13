@@ -44,7 +44,7 @@ jest.mock('../EditAccount/use-update-account', () => ({
   }),
 }));
 
-describe('Home overlays', () => {
+describe('Home — managing accounts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockCreateAccount.mockResolvedValue(createdAccount);
