@@ -15,14 +15,12 @@ describe('header', () => {
     let bar: BoundingBox;
     let menuButton: BoundingBox;
     let name: BoundingBox;
-    let chip: BoundingBox;
     let avatar: BoundingBox;
 
     beforeEach(async () => {
       bar = await header.box();
       menuButton = await menu.buttonBox();
       name = await header.nameBox();
-      chip = await header.totalChipBox();
       avatar = await header.avatarBox();
     });
 
@@ -41,17 +39,15 @@ describe('header', () => {
       assert.ok(Math.abs(name.x + name.width - menuButton.x) <= EDGE_TOLERANCE);
     });
 
-    it('places the total chip between the name and the avatar', () => {
-      assert.ok(chip.x + chip.width <= name.x + EDGE_TOLERANCE);
-      assert.ok(avatar.x + avatar.width <= chip.x + EDGE_TOLERANCE);
+    it('places the avatar after the name', () => {
+      assert.ok(avatar.x + avatar.width <= name.x + EDGE_TOLERANCE);
     });
 
-    it('keeps the menu, name, chip and avatar on the top row', () => {
+    it('keeps the menu, name and avatar on the top row', () => {
       const onNameRow = (box: BoundingBox): boolean =>
         box.y < name.y + name.height && box.y + box.height > name.y;
 
       assert.ok(onNameRow(menuButton));
-      assert.ok(onNameRow(chip));
       assert.ok(onNameRow(avatar));
     });
   });

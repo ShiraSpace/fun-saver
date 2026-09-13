@@ -14,10 +14,6 @@ describe('dashboard', () => {
     assert.equal(await header.exists(), true);
   });
 
-  it('shows the total across all wallets in the header chip', async () => {
-    assert.match(await header.totalChipAmount(), /₪\s*160/);
-  });
-
   it('shows the overview card with the savings daily interest', async () => {
     assert.equal(await dashboard.overviewExists(), true);
     assert.match(await dashboard.savingsTodayInterest(), /₪\s*5/);
