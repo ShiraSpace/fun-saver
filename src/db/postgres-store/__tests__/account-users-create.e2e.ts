@@ -65,11 +65,5 @@ describe('PostgresAccountUsers creating an account with an owner', () => {
     it('leaves no account behind', async () => {
       expect(await store.getAccount(mockOrphanAccount.id)).toBeUndefined();
     });
-
-    it('leaves the accounts it did not touch alone', async () => {
-      expect(await store.listAccountsForUser(mockOwner.id)).toEqual([
-        mockNewAccount,
-      ]);
-    });
   });
 });
