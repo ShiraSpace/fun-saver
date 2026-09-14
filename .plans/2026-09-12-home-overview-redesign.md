@@ -28,7 +28,7 @@ Freeze the clock with `FUNSAVER_NOW=2026-09-12 npm run dev` to see the seeded da
 ## Progress
 
 - [x] PR 1 — `halfShekelAmount`
-- [ ] PR 2 — Overview card + savings detail row
+- [x] PR 2 — Overview card + savings detail row
 - [ ] PR 3 — Header drops the total chip
 - [ ] PR 4 — spending & good-deeds sub-lines
 

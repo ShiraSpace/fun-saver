@@ -1,1 +1,0 @@
-export { TotalChip } from './TotalChip';
