@@ -24,6 +24,8 @@ export const SIGN_IN_LAYOUT = {
   cardGap: 14,
   cardMaxWidth: 340,
   googleMarkSize: 26,
+  googleButtonGap: 10,
+  googleLogoSize: 16,
   taglineMaxWidth: 22,
   fineprintMaxWidth: 26,
 } as const;

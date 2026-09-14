@@ -23,6 +23,10 @@ import {
 } from './SignIn.styles';
 
 export function SignIn(): JSX.Element {
+  const continueWithGoogle = (): void => {
+    void signIn(GOOGLE_PROVIDER_ID, { redirectTo: SIGNED_IN_DESTINATION });
+  };
+
   return (
     <Screen data-testid={SIGN_IN_TEST_IDS.container}>
       <Pig data-testid={SIGN_IN_TEST_IDS.pig}>{SIGN_IN_COPY.pig}</Pig>
@@ -34,11 +38,7 @@ export function SignIn(): JSX.Element {
         <GoogleButton
           type="button"
           data-testid={SIGN_IN_TEST_IDS.continueWithGoogle}
-          onClick={(): void => {
-            void signIn(GOOGLE_PROVIDER_ID, {
-              redirectTo: SIGNED_IN_DESTINATION,
-            });
-          }}
+          onClick={continueWithGoogle}
         >
           <GoogleMark>
             <GoogleLogo />

@@ -64,7 +64,7 @@ export const GoogleButton = styled(ActionButton)`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: ${SIGN_IN_LAYOUT.googleButtonGap}px;
   width: 100%;
   font-size: ${TYPE_SCALE.body}px;
 `;
@@ -79,8 +79,8 @@ export const GoogleMark = styled.span`
   flex: none;
 
   svg {
-    width: 16px;
-    height: 16px;
+    width: ${SIGN_IN_LAYOUT.googleLogoSize}px;
+    height: ${SIGN_IN_LAYOUT.googleLogoSize}px;
     display: block;
   }
 `;
