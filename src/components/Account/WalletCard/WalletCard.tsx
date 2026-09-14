@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, ReactNode } from 'react';
-import type { WalletWithDerived } from '@/lib/types';
+import type { WalletName, WalletWithDerived } from '@/lib/types';
 import { Money } from '@/components/Money';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import { Card, Head, Illust, Name, Pill, SubLine } from './WalletCard.styles';
@@ -16,8 +16,9 @@ type CardWallet = Pick<
   | 'withdrawals'
 >;
 
-const SPENT_SUB_LINE: Partial<
-  Record<CardWallet['name'], (wallet: CardWallet) => string>
+const SPENT_SUB_LINE: Record<
+  Exclude<WalletName, 'savings'>,
+  (wallet: CardWallet) => string
 > = {
   spending: WALLET_CARD_COPY.spendingSubLine,
   goodDeeds: WALLET_CARD_COPY.goodDeedsSubLine,
@@ -37,7 +38,7 @@ function subLineOf(wallet: CardWallet): string | undefined {
     return;
   }
 
-  return SPENT_SUB_LINE[wallet.name]?.(wallet);
+  return SPENT_SUB_LINE[wallet.name](wallet);
 }
 
 export function WalletCard({ wallet, children }: WalletCardProps): JSX.Element {

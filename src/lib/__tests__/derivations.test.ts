@@ -1,6 +1,5 @@
 import {
   balance,
-  deposits,
   interestGain,
   withdrawals,
   principal,
@@ -33,10 +32,6 @@ describe('derivations', () => {
 
   it('balance = deposits - withdrawals + interest', () => {
     expect(balance(transactions)).toBe(8000 - 1000 + 53 + 47);
-  });
-
-  it('deposits = sum of deposit transactions', () => {
-    expect(deposits(transactions)).toBe(8000);
   });
 
   it('withdrawals = sum of withdrawal transactions', () => {

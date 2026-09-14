@@ -7,7 +7,7 @@ function sumOf(transactions: Transaction[], type: TransactionType): number {
     .reduce((total, transaction) => total + transaction.amount, 0);
 }
 
-export function deposits(transactions: Transaction[]): number {
+function deposits(transactions: Transaction[]): number {
   return sumOf(transactions, 'deposit');
 }
 
