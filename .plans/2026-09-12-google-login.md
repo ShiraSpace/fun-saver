@@ -389,6 +389,26 @@ Run `db:migrate`, `db:migrate-dev`, `db:migrate-test`.
 > PR description. A column *type* change would still want a versioned
 > migrations table; a rename does not.
 
+## Authentication is open by design — and what that costs
+
+Plan PR 4 (#53) ships **no allowlist**: any Google account completes sign-in and
+gets a `users` row. That is safe only because such a user has no `account_users`
+rows, so once PR 9 deletes `listAccounts()` they see an empty app.
+
+**It therefore constrains the merge order: PR 9's read path lands before or with
+PR 6.** A PR 6 that gates on "has a session" while `page.tsx` still calls
+`listAccounts()` hands every signed-in stranger all four real accounts. If PR 6
+must ship first, it carries the allowlist itself — `AUTH_ALLOWED_EMAILS` checked
+in `signIn`, alongside `profile.email_verified` because it keys on email.
+
+`signIn` is kept free of database work on purpose: `@auth/core` wraps any
+non-`AuthError` thrown there in `AccessDenied`, so a database outage would look
+identical to a refusal. Provisioning lives in `jwt`.
+
+**A stored user is never reconciled with the Google profile.** A changed name or
+email stays as first seen. `UserRepository` has no `update`; adding one across
+the three stores is its own PR.
+
 ## Authorization seam — the one file that tightens later
 
 `src/lib/account-access.ts` (PR 9), framework-agnostic, unit-tested, the only

@@ -16,6 +16,16 @@ is live exposure, not a theoretical one. Nothing in PR 4 gates anything.
 **Next is plan PR 5 — `feat/login-page`**, then PR 6, which is the one that
 actually closes the hole. PR 7 can land in parallel.
 
+> **PR 6 must not ship a session-only gate.** Sign-in is open to any Google
+> account by design — #53 has no allowlist. A stranger who signs in gets a
+> `users` row and no `account_users` rows, which is harmless *only* once PR 9
+> has deleted `DataStore.listAccounts()` and routed reads through
+> `listAccountsForUser`. Gate on a session while `page.tsx` still calls
+> `listAccounts()` and every signed-in stranger sees all four real accounts.
+> **So PR 9's read path lands before or with PR 6.** If PR 6 has to go first,
+> add the allowlist in it — `AUTH_ALLOWED_EMAILS` checked in `signIn`, plus
+> `profile.email_verified`, since it keys on email.
+
 After #53 merges, **sign in once on production** — that creates the `users` row
 plan PR 8 assigns those four accounts to.
 
