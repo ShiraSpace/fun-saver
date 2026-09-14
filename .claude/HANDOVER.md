@@ -1,25 +1,23 @@
-# Handover — 2026-09-13
+# Handover — 2026-09-14
 
 ## Start here
 
-**Plan PR 3 is done. Nothing in this plan is open.** The entire store layer has
-landed: `DataStore` can find and create users, read memberships, and create an
-account with its owner — and **nothing calls any of it**. `src/app/page.tsx`
-still calls `listAccounts()` and renders every account to whoever opens the
-public Vercel URL. That hole is still open.
+**Plan PR 4 is open as [#53](https://github.com/ShiraSpace/fun-saver/pull/53)**
+— `feat/google-auth`. Google sign-in works end to end: signing in provisions a
+`users` row, and the session carries our own user id rather than the provider's
+`sub`. Its prerequisites are both done — the Google Cloud OAuth client exists,
+and Neon `production` has been migrated.
 
-**Next is plan PR 4 — `feat/google-auth`**, branched off `main`. It is blocked on
-one manual step that has to happen first:
+**The public hole is still open.** `src/app/page.tsx` calls `listAccounts()` and
+renders every account to whoever opens the public URL. Production holds **4 real
+accounts and 216 transactions**, and an anonymous request renders them — so this
+is live exposure, not a theoretical one. Nothing in PR 4 gates anything.
 
-> Google Cloud Console → OAuth 2.0 Client ID (Web). Authorised redirect URIs:
-> `http://localhost:3000/api/auth/callback/google` and the Vercel origin.
-> Secrets into `.env.local` and Vercel env; **names only** into `.env.example`.
+**Next is plan PR 5 — `feat/login-page`**, then PR 6, which is the one that
+actually closes the hole. PR 7 can land in parallel.
 
-After PR 4 merges, **sign in once on production** — that creates the `users` row
-plan PR 8 assigns the existing accounts to.
-
-The critical path to closing the public hole is **4 → 5 → 6**. PR 7 can land in
-parallel.
+After #53 merges, **sign in once on production** — that creates the `users` row
+plan PR 8 assigns those four accounts to.
 
 ## What landed
 
@@ -47,11 +45,20 @@ For any future stacked PR: retarget the child to `main` before merging it.
 
 ## Watch-outs
 
-- **The Neon default branch is named `production`, not `main`, and has never been
-  migrated** — `users` and `account_users` do not exist there. **PR 4 is the
-  first thing that needs them.** Confirm `DATABASE_URL` points at `production`
-  before running `npm run db:migrate`. The rename is carried in `schema.sql` as
-  idempotent `ALTER`s, so a plain migrate is safe and replayable.
+- **The Neon default branch is named `production`, not `main`.** It was migrated
+  on 2026-09-14; `users` and `account_users` now exist there with the `role`
+  CHECK, both foreign keys and `account_users_user_idx`. `DATABASE_URL` points at
+  endpoint `ep-jolly-truth-a21toeir`, which is that branch — confirm it before
+  any future `npm run db:migrate`. `schema.sql` is idempotent, so a replay is
+  safe.
+- **`~/.npmrc` sets `package-lock=false` and a Nexus registry.** An `npm install`
+  here updates `node_modules` but leaves `package-lock.json` untouched, so the
+  dependency never reaches Vercel. Regenerate with
+  `npm install --package-lock-only --package-lock=true --registry=https://registry.npmjs.org/`
+  and check that every `resolved` URL still points at `registry.npmjs.org`.
+- **The public production origin is `https://fun-saver.vercel.app`.** The
+  per-deployment and `-git-main-` URLs are behind Vercel deployment protection
+  and redirect to `vercel.com/sso-api`, so OAuth cannot complete through them.
 - **`rtk` output is not trustworthy for facts.** It reported `git status --short`
   as `ok` on a dirty tree, a jest count of 364 where the truth was 368, and
   swallowed an `eslint --fix`. Use `rtk proxy <cmd>` for anything you will report

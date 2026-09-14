@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-13 (plan PR 3 done; PR 4 is next)
+## Progress — updated 2026-09-14 (plan PR 4 open as #53; PR 5 is next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -19,8 +19,8 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | —       | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                        |
 | PR 3a   | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                               |
 | PR 3b   | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
-| PR 4    | —                                                      | `feat/google-auth`                 | **next** — blocked on the Google Cloud step below    |
-| PR 5–10 | —                                                      | —                                  | not started                                          |
+| PR 4    | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **open** — Google sign-in, user provisioning         |
+| PR 5–10 | —                                                      | —                                  | not started — **PR 5 is next**                       |
 
 **The whole store layer is now in place.** `DataStore` can find and create users,
 read memberships, and create an account with its owner. Nothing calls any of it:
@@ -124,12 +124,13 @@ Tests mirror the source, one test file per module, under each folder's `__tests_
 | -------------------------------- | ------------------------- | ------------ |
 | Neon **dev**                     | created                   | yes          |
 | Neon **test**                    | created                   | yes          |
-| Neon **production** (default)    | **not created**           | —            |
+| Neon **production** (default)    | created                   | yes          |
 
-The default branch is named **`production`**, not `main`. It has never been
-migrated: run `npm run db:migrate` against it only when you mean to. Nothing
-before plan PR 4 requires it, because everything through PR 3 ships unused
-interface methods.
+The default branch is named **`production`**, not `main`. It was migrated on
+2026-09-14 for plan PR 4, the first code that needs those tables. Unlike dev
+and test it took the `role` CHECK straight from `CREATE TABLE`, so no one-off
+`ALTER` was needed. Confirm `DATABASE_URL` points at `production`
+(endpoint `ep-jolly-truth-a21toeir`) before running `npm run db:migrate`.
 
 Dev and test got the CHECK via a one-off `ALTER TABLE ... ADD CONSTRAINT`,
 because `CREATE TABLE IF NOT EXISTS` cannot add a constraint to a table that
@@ -222,11 +223,18 @@ Everything below was measured, not assumed. Re-check before relying on it.
 - `origin` = `git@github.com:ShiraSpace/fun-saver.git`, default branch `main`.
 - Production is live on Vercel (team `shiraspaces-projects`), deployed from
   `main` through the GitHub integration. It is **public and ungated**.
-  `https://fun-saver-bz2phs1ad-shiraspaces-projects.vercel.app`
-  (per-deployment URL; the stable alias is in the Vercel dashboard).
+  **`https://fun-saver.vercel.app`** — the stable alias, and the only origin
+  worth registering with an OAuth provider. The per-deployment URLs
+  (`fun-saver-<hash>-shiraspaces-projects.vercel.app`) rotate every deploy, and
+  both they and the branch alias `fun-saver-git-main-shiraspaces-projects.vercel.app`
+  sit behind Vercel deployment protection — they redirect to `vercel.com/sso-api`,
+  so an OAuth round-trip can never complete through them. Preview deployments
+  cannot sign in, by the same rule.
 - **Every merged PR ships to public production.** This is the constraint the
-  PR ordering below is built around. Production currently has 0 rows, so
-  nothing real is exposed — but the app is reachable by anyone until PR 6.
+  PR ordering below is built around. Production holds **4 accounts and 216
+  transactions**, and an anonymous request renders them — so PR 6 is the real
+  urgency, not a formality, and PR 8 has four accounts to assign rather than
+  none. `users` and `account_users` are empty.
 - No `.vercel` directory and no Vercel CLI locally.
 
 **Environment**
