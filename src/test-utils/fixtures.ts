@@ -79,6 +79,7 @@ export function createMockDerivedWallet(
     ...createMockWallet(),
     balance: 8500,
     principal: 8000,
+    withdrawals: 0,
     interestGain: 500,
     todayInterest: 150,
     ...overrides,
@@ -129,11 +130,29 @@ export const mockTransactions: Transaction[] = [
 
 const MOCK_DERIVED_VALUES: Pick<
   WalletWithDerived,
-  'balance' | 'principal' | 'interestGain' | 'todayInterest'
+  'balance' | 'principal' | 'withdrawals' | 'interestGain' | 'todayInterest'
 >[] = [
-  { balance: 8500, principal: 8000, interestGain: 500, todayInterest: 150 },
-  { balance: 5000, principal: 5000, interestGain: 0, todayInterest: 0 },
-  { balance: 2500, principal: 2500, interestGain: 0, todayInterest: 0 },
+  {
+    balance: 8500,
+    principal: 8000,
+    withdrawals: 0,
+    interestGain: 500,
+    todayInterest: 150,
+  },
+  {
+    balance: 5000,
+    principal: 5000,
+    withdrawals: 4500,
+    interestGain: 0,
+    todayInterest: 0,
+  },
+  {
+    balance: 2500,
+    principal: 2500,
+    withdrawals: 1800,
+    interestGain: 0,
+    todayInterest: 0,
+  },
 ];
 
 export const mockDerivedWallets: WalletWithDerived[] = createMockWallets().map(

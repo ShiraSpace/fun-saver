@@ -7,8 +7,16 @@ function sumOf(transactions: Transaction[], type: TransactionType): number {
     .reduce((total, transaction) => total + transaction.amount, 0);
 }
 
+export function deposits(transactions: Transaction[]): number {
+  return sumOf(transactions, 'deposit');
+}
+
+export function withdrawals(transactions: Transaction[]): number {
+  return sumOf(transactions, 'withdrawal');
+}
+
 export function principal(transactions: Transaction[]): number {
-  return sumOf(transactions, 'deposit') - sumOf(transactions, 'withdrawal');
+  return deposits(transactions) - withdrawals(transactions);
 }
 
 export function interestGain(transactions: Transaction[]): number {
