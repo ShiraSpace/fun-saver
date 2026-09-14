@@ -71,12 +71,13 @@ All files sit well under #46's 200-line file and 40-line function caps.
 
 The parent plan says `signIn` provisions and `jwt` stamps `userId`. In Auth.js
 v5 the `signIn` callback returns a boolean and **cannot hand data to `jwt`**, so
-`jwt` re-reads the user by `('google', sub)`.
+provisioning would have to happen twice or be re-read.
 
-Keeping that shape anyway: a provisioning failure inside `signIn` produces a
-clean `AccessDenied` rather than an opaque token error. The extra read happens
-on first sign-in only — afterwards the token carries `userId` and neither
-callback touches the database.
+Settled the other way under review: **`signIn` only validates the profile shape
+and `jwt` does the provisioning.** One provisioning site, and `AccessDenied` keeps
+a single meaning. `provisionUser` is idempotent and always returns a user, so
+`token.userId` cannot be undefined. `jwt` sees a `profile` only at sign-in;
+afterwards the token carries `userId` and neither callback touches the database.
 
 ## Tests — written after the production code is committed, one at a time
 
@@ -100,6 +101,34 @@ provisioning logic lives in its own module. It is verified by signing in.
   Auth.js's own default page. No UI ships in this PR.
 - Confirm the `users` row landed by querying Neon `dev` (`npm run dev` resolves
   `DEV_DATABASE_URL`).
+
+## Decisions taken under review
+
+**Sign-in is open to any Google account, deliberately.** There is no allowlist.
+A stranger who signs in gets a `users` row and no `account_users` rows, so once
+PR 9 deletes `DataStore.listAccounts()` and routes every read through
+`listAccountsForUser`, they see an empty app rather than anyone's data.
+
+**This makes an ordering constraint, not a free choice: PR 9's read path must
+land before or together with PR 6's gate.** A PR 6 that gates on "has a session"
+while `page.tsx` still calls `listAccounts()` would let every signed-in stranger
+see all four real accounts. If PR 6 has to ship first, add the allowlist
+(`AUTH_ALLOWED_EMAILS` checked in `signIn`, plus `profile.email_verified`, since
+it keys on email) in the same PR.
+
+**A stored user is never reconciled with the Google profile.** A changed display
+name or email stays as it was at first sign-in. `UserRepository` has no `update`,
+and adding one means three store implementations plus tests — its own PR, not a
+widening of this one. The reuse test pins the current behaviour on purpose; it is
+a record of the decision, not an accident.
+
+**`signIn` does pure logic only.** `@auth/core` wraps any non-`AuthError` thrown
+from `signIn` in `AccessDenied`
+(`lib/actions/callback/index.js`), so a database outage there would render to the
+user as "Access Denied" — indistinguishable from "you are not permitted". All
+database work happens in `jwt`, where a failure surfaces as a real error, and
+`signIn` only validates the profile shape. This is also where an allowlist
+belongs if one is ever added.
 
 ## Deliberately out of scope
 

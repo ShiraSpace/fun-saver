@@ -14,15 +14,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [Google],
   callbacks: {
     async signIn({ profile }): Promise<boolean> {
-      const identity = toGoogleIdentity(profile);
-
-      if (!identity) {
-        return false;
-      }
-
-      await provisionUser(getStore(), identity);
-
-      return true;
+      return Boolean(toGoogleIdentity(profile));
     },
 
     async jwt({ token, profile }): Promise<JWT> {
