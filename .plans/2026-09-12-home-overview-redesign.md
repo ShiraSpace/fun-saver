@@ -29,8 +29,9 @@ Freeze the clock with `FUNSAVER_NOW=2026-09-12 npm run dev` to see the seeded da
 
 - [x] PR 1 — `halfShekelAmount`
 - [x] PR 2 — Overview card + savings detail row
-- [ ] PR 3 — Header drops the total chip
+- [x] PR 3 — Header drops the total chip
 - [ ] PR 4 — spending & good-deeds sub-lines
+- [ ] PR 5 — legend squares carry the wallet icons
 
 ## Goal
 
@@ -58,6 +59,9 @@ header into the ring. Interest stays visible, but as **numbers instead of coins*
 - **Everything else stays whole shekels.** `רווח מריבית` is really ₪67.43 — half-stepping it prints ₪67.5 and
   then `137 + 67.5 ≠ 204` on screen. Whole shekels keep the strip adding up.
 - **Legend percentages use largest-remainder rounding** so they always sum to 100.
+- **Legend squares carry the wallet icon** — the same emoji as the wallet's own tile (🐷 / 🛍️ / 💛), centred
+  on the arc colour. A legend row then maps to its arc by icon as well as by colour, which is what the colour
+  alone was doing on its own.
 
 ## PR slicing
 
@@ -148,6 +152,21 @@ Independent of PR 3; needs PR 2's sub-line support on `WalletCard`.
 
 This is what makes the good-deeds wallet finally say what the README promises — a running total of what the kid
 has given.
+
+---
+
+### PR 5 — legend squares carry the wallet icons
+
+Independent of PR 4. The mockup already shows it; the app's `Legend` still renders plain colour squares.
+
+- `Legend/Legend.styles.ts`: `Dot` grows 14px → 22px, radius 5 → 7, and becomes a centred `inline-flex` box so
+  a glyph sits in the middle. Sizes come from `OVERVIEW_CARD_STYLE`, not literals.
+- `LegendEntry` gains `icon`; `OverviewCard` already spreads the whole wallet into `entries`, so it is carried
+  through rather than looked up.
+- `Legend.test.tsx`: one case that a row renders its wallet's icon.
+
+Check the glyphs against all three themes before calling it done — midnight-blue's arcs are the darkest
+(`#1E40AF` / `#60A5FA` / `#818CF8`).
 
 ## Out of scope
 
