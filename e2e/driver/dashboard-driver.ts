@@ -28,6 +28,10 @@ export class DashboardDriver {
     return this.session.count(WALLET_CARD_TEST_IDS.card);
   }
 
+  walletSubLines(): Promise<string[]> {
+    return this.session.texts(WALLET_CARD_TEST_IDS.subLine);
+  }
+
   walletBalances(): Promise<string[]> {
     return this.session.texts(WALLET_CARD_TEST_IDS.balance);
   }

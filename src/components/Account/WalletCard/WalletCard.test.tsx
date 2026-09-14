@@ -3,6 +3,8 @@ import { WalletCard } from './WalletCard';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import { createMockDerivedWallet } from '@/test-utils/fixtures';
 
+const SAVINGS_SUB_LINE = 'צובר 15% בחודש · פעיל מאז 1 בינואר';
+
 describe('WalletCard', () => {
   describe('a spending wallet', () => {
     beforeEach(() => {
@@ -36,63 +38,102 @@ describe('WalletCard', () => {
     });
   });
 
-  it('stays silent about a wallet nothing has been withdrawn from', () => {
-    render(
-      <WalletCard
-        wallet={createMockDerivedWallet({ name: 'spending', withdrawals: 0 })}
-      />
-    );
+  describe('a wallet nothing has been withdrawn from', () => {
+    beforeEach(() => {
+      render(
+        <WalletCard
+          wallet={createMockDerivedWallet({ name: 'spending', withdrawals: 0 })}
+        />
+      );
+    });
 
-    expect(
-      screen.queryByTestId(WALLET_CARD_TEST_IDS.subLine)
-    ).not.toBeInTheDocument();
+    it('stays silent', () => {
+      expect(
+        screen.queryByTestId(WALLET_CARD_TEST_IDS.subLine)
+      ).not.toBeInTheDocument();
+    });
   });
 
-  it('shows what has already been spent', () => {
-    render(
-      <WalletCard
-        wallet={createMockDerivedWallet({
-          name: 'spending',
-          withdrawals: 4500,
-        })}
-      />
-    );
+  describe('a spending wallet that has been withdrawn from', () => {
+    beforeEach(() => {
+      render(
+        <WalletCard
+          wallet={createMockDerivedWallet({
+            name: 'spending',
+            withdrawals: 4500,
+          })}
+        />
+      );
+    });
 
-    expect(screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)).toHaveTextContent(
-      'כבר ביזבזת ₪45'
-    );
+    it('shows what has already been spent', () => {
+      expect(
+        screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)
+      ).toHaveTextContent('כבר ביזבזת ₪45');
+    });
   });
 
-  it('shows what has already been given', () => {
-    render(
-      <WalletCard
-        wallet={createMockDerivedWallet({
-          name: 'goodDeeds',
-          withdrawals: 1800,
-        })}
-      />
-    );
+  describe('a good-deeds wallet that has been withdrawn from', () => {
+    beforeEach(() => {
+      render(
+        <WalletCard
+          wallet={createMockDerivedWallet({
+            name: 'goodDeeds',
+            withdrawals: 1800,
+          })}
+        />
+      );
+    });
 
-    expect(screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)).toHaveTextContent(
-      'תרמת ₪18 עד היום'
-    );
+    it('shows what has already been given', () => {
+      expect(
+        screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)
+      ).toHaveTextContent('תרמת ₪18 עד היום');
+    });
   });
 
-  it('shows the savings rate and opening date as a sub-line', () => {
-    render(<WalletCard wallet={createMockDerivedWallet()} />);
+  describe('a savings wallet', () => {
+    beforeEach(() => {
+      render(<WalletCard wallet={createMockDerivedWallet()} />);
+    });
 
-    expect(screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)).toHaveTextContent(
-      'צובר 15% בחודש · פעיל מאז 1 בינואר'
-    );
+    it('shows the savings rate and opening date as a sub-line', () => {
+      expect(
+        screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)
+      ).toHaveTextContent(SAVINGS_SUB_LINE);
+    });
   });
 
-  it('renders what it is given below the head', () => {
-    render(
-      <WalletCard wallet={createMockDerivedWallet()}>
-        <span data-testid="extra" />
-      </WalletCard>
-    );
+  describe('a savings wallet that has been withdrawn from', () => {
+    beforeEach(() => {
+      render(
+        <WalletCard
+          wallet={createMockDerivedWallet({
+            name: 'savings',
+            withdrawals: 4500,
+          })}
+        />
+      );
+    });
 
-    expect(screen.getByTestId('extra')).toBeInTheDocument();
+    it('keeps its own sub-line rather than the spent one', () => {
+      expect(
+        screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)
+      ).toHaveTextContent(SAVINGS_SUB_LINE);
+    });
+  });
+
+  describe('given children', () => {
+    beforeEach(() => {
+      render(
+        <WalletCard wallet={createMockDerivedWallet()}>
+          <span data-testid="extra" />
+        </WalletCard>
+      );
+    });
+
+    it('renders what it is given below the head', () => {
+      expect(screen.getByTestId('extra')).toBeInTheDocument();
+    });
   });
 });

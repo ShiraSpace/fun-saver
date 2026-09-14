@@ -1,8 +1,15 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockAccount, mockTransactions } from '@/test-utils/fixtures';
+import {
+  mockAccount,
+  mockDerivedWallets,
+  mockTransactions,
+} from '@/test-utils/fixtures';
 import { WALLET_LIST_COPY } from '@/components/Account/WalletList/constants';
+import { WALLET_CARD_COPY } from '@/components/Account/WalletCard/constants';
 import { useDriver } from './driver/use-driver';
+
+const [, spending, goodDeeds] = mockDerivedWallets;
 
 describe('dashboard', () => {
   const { header, dashboard } = useDriver({
@@ -22,5 +29,12 @@ describe('dashboard', () => {
   it('shows one card per wallet', async () => {
     assert.equal(await dashboard.supportingLabel(), WALLET_LIST_COPY.label);
     assert.equal(await dashboard.walletCardCount(), 3);
+  });
+
+  it('shows what the spending and good-deeds wallets have spent', async () => {
+    const subLines = await dashboard.walletSubLines();
+
+    assert.ok(subLines.includes(WALLET_CARD_COPY.spendingSubLine(spending)));
+    assert.ok(subLines.includes(WALLET_CARD_COPY.goodDeedsSubLine(goodDeeds)));
   });
 });

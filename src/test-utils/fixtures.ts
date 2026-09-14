@@ -124,8 +124,20 @@ export const mockAccountEdit = {
 export const mockTransactions: Transaction[] = [
   createMockTransaction(),
   createMockTransaction({ id: 't2', type: 'interest', amount: 500 }),
-  createMockTransaction({ id: 't3', walletId: 'w2', amount: 5000 }),
-  createMockTransaction({ id: 't4', walletId: 'w3', amount: 2500 }),
+  createMockTransaction({ id: 't3', walletId: 'w2', amount: 9500 }),
+  createMockTransaction({ id: 't4', walletId: 'w3', amount: 4300 }),
+  createMockTransaction({
+    id: 't5',
+    walletId: 'w2',
+    type: 'withdrawal',
+    amount: 4500,
+  }),
+  createMockTransaction({
+    id: 't6',
+    walletId: 'w3',
+    type: 'withdrawal',
+    amount: 1800,
+  }),
 ];
 
 const MOCK_DERIVED_VALUES: Pick<
