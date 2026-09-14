@@ -21,7 +21,12 @@ interface LegendProps {
 export function Legend({ entries }: LegendProps): JSX.Element {
   const rows = entries.map((entry) => (
     <Row key={entry.id} data-testid={OVERVIEW_CARD_TEST_IDS.legendRow}>
-      <Dot walletName={entry.name}>{entry.icon}</Dot>
+      <Dot
+        walletName={entry.name}
+        data-testid={OVERVIEW_CARD_TEST_IDS.legendDot}
+      >
+        {entry.icon}
+      </Dot>
       {OVERVIEW_CARD_COPY.name[entry.name]}
       <Share data-testid={OVERVIEW_CARD_TEST_IDS.legendShare}>
         {OVERVIEW_CARD_COPY.share(entry.share)}

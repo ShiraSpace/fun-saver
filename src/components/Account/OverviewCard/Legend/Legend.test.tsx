@@ -30,7 +30,7 @@ describe('Legend', () => {
 
   it("shows each wallet's icon in its square", () => {
     expect(
-      screen.getAllByTestId(OVERVIEW_CARD_TEST_IDS.legendRow)[0]
+      screen.getAllByTestId(OVERVIEW_CARD_TEST_IDS.legendDot)[0]
     ).toHaveTextContent(mockDerivedWallets[0].icon);
   });
 

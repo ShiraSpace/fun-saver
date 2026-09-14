@@ -5,6 +5,7 @@ export const OVERVIEW_CARD_TEST_IDS = {
   total: 'overview-total',
   donut: 'overview-donut',
   legendRow: 'overview-legend-row',
+  legendDot: 'overview-legend-dot',
   legendShare: 'overview-legend-share',
   legendAmount: 'overview-legend-amount',
 } as const;
