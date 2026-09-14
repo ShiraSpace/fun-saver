@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — Donut load animation (three candidates)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root, :root[data-theme='sunshine-quest'] {
+  --surface:#FFFFFF; --textMuted:#8A7AA7; --textStrong:#3A1F5A; --divider:#F2D9D2;
+  --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+  --arcSavings:#FFC34D; --arcSpending:#FF8A4C; --arcGood:#E94E89; --arcTrack:#F3ECE4;
+}
+:root[data-theme='jungle-quest'] {
+  --surface:#FFFDF5; --textMuted:#5C7A6E; --textStrong:#1B4332; --divider:#DDE7CC;
+  --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+  --arcSavings:#2A9D8F; --arcSpending:#90BE6D; --arcGood:#E76F51; --arcTrack:#E8EFDC;
+}
+:root[data-theme='midnight-blue'] {
+  --surface:#141B24; --textMuted:#8A96A8; --textStrong:#ECF1F8; --divider:#1E2A40;
+  --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  --arcSavings:#1E40AF; --arcSpending:#60A5FA; --arcGood:#818CF8; --arcTrack:#1E2A40;
+}
+
+* { box-sizing:border-box; }
+body { margin:0; padding:24px 20px 60px; background:#20242c; color:#fff; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
+.sub { color:#9aa3b2; font-size:13px; line-height:1.6; margin:0 0 18px; max-width:680px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px; }
+.controls button { font-family:Rubik,sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+  padding:7px 14px; border-radius:999px; border:1.5px solid #3a4150; background:#2a303a; color:#dfe4ec; }
+.controls button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff; }
+.controls .replay { background:#ffd23f; border-color:#ffd23f; color:#20242c; }
+
+.grid { display:flex; gap:18px; flex-wrap:wrap; align-items:flex-start; }
+.variant { width:392px; }
+.variantHead { display:flex; align-items:baseline; gap:8px; margin-bottom:8px; }
+.variantHead h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:0; }
+.variantHead .ms { font-size:12px; color:#ffd23f; font-variant-numeric:tabular-nums; }
+.note { color:#9aa3b2; font-size:12px; line-height:1.6; margin:8px 2px 0; }
+.stage { border-radius:26px; padding:16px 14px; background:var(--screen); box-shadow:0 14px 30px rgba(0,0,0,.4); }
+
+.card { background:var(--surface); border-radius:24px; padding:16px;
+  box-shadow:0 6px 0 rgba(0,0,0,.06); color:var(--textStrong); }
+.donutRow { display:flex; align-items:center; gap:16px; }
+.donut { flex-shrink:0; position:relative; }
+.donut svg { display:block; transform:rotate(-90deg); }
+.donut circle { fill:none; stroke-linecap:butt; stroke-width:14; }
+.holeText { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.holeText .lbl { font-size:10px; font-weight:600; color:var(--textMuted); letter-spacing:.4px; }
+.holeText .amt { font-size:26px; font-weight:800; line-height:1.05; direction:ltr; font-variant-numeric:tabular-nums; }
+.holeText .amt small { font-size:.55em; opacity:.6; margin-inline-end:2px; }
+
+.legend { flex:1; display:flex; flex-direction:column; gap:11px; }
+.leg { display:flex; align-items:center; gap:9px; font-size:15px; font-weight:600; }
+.dot { width:22px; height:22px; border-radius:7px; flex-shrink:0; display:inline-flex;
+  align-items:center; justify-content:center; font-size:12px; line-height:1; }
+.dot.savings { background:var(--arcSavings); }
+.dot.spending { background:var(--arcSpending); }
+.dot.good { background:var(--arcGood); }
+.leg .pct { font-size:13px; font-weight:500; color:var(--textMuted); }
+.leader { flex:1; border-bottom:2.5px dotted var(--divider); margin-bottom:5px; }
+.leg .val { font-weight:800; direction:ltr; font-variant-numeric:tabular-nums; }
+.leg .val small { font-size:.72em; opacity:.6; margin-inline-end:2px; }
+
+/* ---- A · sweep: one continuous clockwise draw, arc after arc ---- */
+@keyframes drawArc { from { stroke-dasharray: 0 263.9; } }
+.sweep.play .arc, .sweepFast.play .arc, .sweepFastest.play .arc { animation: drawArc var(--dur) linear backwards; animation-delay: var(--delay); }
+.sweep.play .holeText .amt { animation: fadeUp .3s ease-out backwards 1s; }
+.sweep.play .leg { animation: fadeUp .26s ease-out backwards; animation-delay: calc(1s + var(--i) * .07s); }
+
+/* ---- B · pop: the whole ring lands at once, then the legend ---- */
+@keyframes popRing { from { transform: rotate(-90deg) scale(.72); opacity:0; }
+  60% { transform: rotate(-90deg) scale(1.06); opacity:1; } }
+@keyframes fadeUp { from { opacity:0; transform: translateY(6px); } }
+.pop.play .donut svg { animation: popRing .46s cubic-bezier(.34,1.56,.64,1) backwards; }
+.pop.play .holeText { animation: fadeUp .28s ease-out backwards .2s; }
+.pop.play .leg, .sweepFast.play .leg { animation: fadeUp .24s ease-out backwards; animation-delay: calc(.3s + var(--i) * .06s); }
+
+/* ---- D · סוויפ קצר: the sweep at 0.8s, with the legend fading in over it ---- */
+.sweepFast.play .holeText .amt { animation: fadeUp .3s ease-out backwards .1s; }
+
+/* ---- E · סוויפ הכי קצר: the same shape as D, squeezed into 0.6s ---- */
+.sweepFastest.play .holeText .amt { animation: fadeUp .24s ease-out backwards .08s; }
+.sweepFastest.play .leg { animation: fadeUp .22s ease-out backwards; animation-delay: calc(.22s + var(--i) * .05s); }
+
+/* ---- C · stagger: three arcs draw together, each entering a beat apart ---- */
+.stagger.play .arc { animation: drawArc .52s cubic-bezier(.22,1,.36,1) backwards;
+  animation-delay: calc(var(--i) * .12s); }
+.stagger.play .holeText .amt { animation: fadeUp .3s ease-out backwards .34s; }
+.stagger.play .dot { animation: popDot .34s cubic-bezier(.34,1.56,.64,1) backwards;
+  animation-delay: calc(.2s + var(--i) * .12s); }
+@keyframes popDot { from { transform: scale(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .play .arc, .play .donut svg, .play .holeText, .play .holeText .amt, .play .leg, .play .dot { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<h1>טעינת הדונאט — חמישה מועמדים</h1>
+<p class="sub">
+  אותו כרטיס מ־<code>home-overview.html</code>, חמש כניסות שונות. החלף ערכת נושא והרץ שוב.
+  הסכום בחור סופר מ־0 ל־₪359 יחד עם הקשת. כל וריאנט מכבד <code>prefers-reduced-motion</code> —
+  בהגדרה הזו הכל מופיע מיד, בלי תנועה.
+</p>
+
+<div class="controls">
+  <button data-theme-btn="jungle-quest" aria-pressed="true">jungle-quest</button>
+  <button data-theme-btn="sunshine-quest" aria-pressed="false">sunshine-quest</button>
+  <button data-theme-btn="midnight-blue" aria-pressed="false">midnight-blue</button>
+  <button class="replay" data-replay>הרץ שוב</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<template id="cardTemplate">
+  <div class="variant">
+    <div class="variantHead"><h2></h2><span class="ms"></span></div>
+    <div class="stage">
+      <div class="card">
+        <div class="donutRow">
+          <div class="donut">
+            <svg width="122" height="122" viewBox="0 0 104 104">
+              <circle cx="52" cy="52" r="42" stroke="var(--arcTrack)" />
+              <circle class="arc" style="--i:0" cx="52" cy="52" r="42" stroke="var(--arcSavings)"  stroke-dasharray="149.9 114.0" stroke-dashoffset="0" />
+              <circle class="arc" style="--i:1" cx="52" cy="52" r="42" stroke="var(--arcSpending)" stroke-dasharray="91.9 172.0"  stroke-dashoffset="-149.9" />
+              <circle class="arc" style="--i:2" cx="52" cy="52" r="42" stroke="var(--arcGood)"     stroke-dasharray="22.1 241.8"  stroke-dashoffset="-241.8" />
+            </svg>
+            <div class="holeText">
+              <span class="lbl">סך הכל</span>
+              <span class="amt"><small>₪</small><b data-count>359</b></span>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="leg" style="--i:0"><span class="dot savings">🐷</span>חיסכון <span class="pct">57%</span><span class="leader"></span><span class="val"><small>₪</small>204</span></div>
+            <div class="leg" style="--i:1"><span class="dot spending">🛍️</span>בזבוזים <span class="pct">35%</span><span class="leader"></span><span class="val"><small>₪</small>125</span></div>
+            <div class="leg" style="--i:2"><span class="dot good">💛</span>מעשים <span class="pct">8%</span><span class="leader"></span><span class="val"><small>₪</small>30</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note"></p>
+  </div>
+</template>
+
+<script>
+  const TOTAL = 359;
+
+  const VARIANTS = [
+    {
+      key: 'sweep', title: 'א · סוויפ', budget: '1.3s',
+      arcDurations: ['.57s', '.35s', '.09s'],
+      count: { delay: 0, duration: 1010 },
+      note: 'הקשתות נמשכות ברצף — חיסכון, בזבוזים, מעשים — כאילו יד אחת מציירת את הטבעת. הכי מספר סיפור, והכי ארוך: 1.3 שניות עד שהכרטיס שקט. כל קשת נמשכת לפי גודלה, כך שהחיסכון מקבל את רוב הזמן.'
+    },
+    {
+      key: 'pop', title: 'ב · פופ', budget: '0.6s',
+      count: { delay: 200, duration: 320 },
+      note: 'הטבעת נוחתת שלמה עם overshoot קטן, אחריה המקרא. הכי זול והכי מהיר — 0.6 שניות, בלי לעכב את המסך. לא מסביר את החלוקה, רק נותן לכרטיס כניסה.'
+    },
+    {
+      key: 'stagger', title: 'ג · סטאגר', budget: '0.8s',
+      count: { delay: 340, duration: 300 },
+      note: 'שלוש הקשתות נמשכות במקביל, כל אחת מתחילה ביט אחרי הקודמת, והאייקונים קופצים לתוך הריבועים באותו קצב. פשרה: קורא כמו חלוקה ולא כמו רצף, ונגמר ב־0.8 שניות.'
+    },
+    {
+      key: 'sweepFast', title: 'ד · סוויפ קצר', budget: '0.8s',
+      arcDurations: ['.45s', '.28s', '.07s'],
+      count: { delay: 100, duration: 800 },
+      note: 'אותו רצף של א, דחוס ל־0.8 שניות, והמקרא נכנס ב־fade של ב במקום לחכות לסוף הקשת. הסכום עולה יחד עם הטבעת מההתחלה. אותו סיפור כמו א, בלי ההמתנה.'
+    },
+    {
+      key: 'sweepFastest', title: 'ה · סוויפ הכי קצר', budget: '0.6s',
+      arcDurations: ['.34s', '.21s', '.05s'],
+      count: { delay: 80, duration: 600 },
+      note: 'ד באותה צורה בדיוק, דחוס ל־0.6 שניות — תקציב הזמן של ב. גם המקרא מתהדק (מתחיל ב־0.22s, 50ms בין שורות) כדי לא לגלוש מעבר לטבעת. הקשת של מעשים יורדת ל־50ms, כמעט הבהוב.'
+    },
+  ];
+
+  const grid = document.getElementById('grid');
+  const template = document.getElementById('cardTemplate');
+
+  VARIANTS.forEach((variant) => {
+    const node = template.content.cloneNode(true);
+    node.querySelector('h2').textContent = variant.title;
+    node.querySelector('.ms').textContent = variant.budget;
+    node.querySelector('.note').textContent = variant.note;
+    const card = node.querySelector('.card');
+    card.classList.add(variant.key);
+    card.dataset.variant = variant.key;
+    grid.appendChild(node);
+  });
+
+  VARIANTS.filter((variant) => variant.arcDurations).forEach((variant) => {
+    document.querySelectorAll('.' + variant.key + ' .arc').forEach((arc, index) => {
+      const start = variant.arcDurations.slice(0, index).reduce((sum, d) => sum + parseFloat(d), 0);
+      arc.style.setProperty('--dur', variant.arcDurations[index]);
+      arc.style.setProperty('--delay', start + 's');
+    });
+  });
+
+  function countUp(element, duration) {
+    const start = performance.now();
+    function frame(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      element.textContent = Math.round(TOTAL * progress);
+      if (progress < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function play() {
+    VARIANTS.forEach((variant) => {
+      const card = document.querySelector('.card.' + variant.key);
+      const counter = card.querySelector('[data-count]');
+      card.classList.remove('play');
+      void card.offsetWidth;
+      card.classList.add('play');
+      if (reducedMotion.matches) {
+        counter.textContent = TOTAL;
+        return;
+      }
+      counter.textContent = '0';
+      setTimeout(() => countUp(counter, variant.count.duration), variant.count.delay);
+    });
+  }
+
+  const themeButtons = document.querySelectorAll('[data-theme-btn]');
+  themeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      document.documentElement.dataset.theme = button.dataset.themeBtn;
+      themeButtons.forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+      play();
+    });
+  });
+
+  document.querySelector('[data-replay]').addEventListener('click', play);
+  document.documentElement.dataset.theme = 'jungle-quest';
+  play();
+</script>
+</body>
+</html>
