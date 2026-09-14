@@ -28,6 +28,12 @@ describe('Legend', () => {
     ).toHaveTextContent(OVERVIEW_CARD_COPY.name.savings);
   });
 
+  it("shows each wallet's icon in its square", () => {
+    expect(
+      screen.getAllByTestId(OVERVIEW_CARD_TEST_IDS.legendRow)[0]
+    ).toHaveTextContent(mockDerivedWallets[0].icon);
+  });
+
   it('shows the share of each wallet as a percentage', () => {
     expect(
       screen.getAllByTestId(OVERVIEW_CARD_TEST_IDS.legendShare)[0]
