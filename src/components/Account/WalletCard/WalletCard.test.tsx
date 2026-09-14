@@ -36,14 +36,46 @@ describe('WalletCard', () => {
     });
   });
 
-  it('shows no sub-line for a wallet without one', () => {
+  it('stays silent about a wallet nothing has been withdrawn from', () => {
     render(
-      <WalletCard wallet={createMockDerivedWallet({ name: 'spending' })} />
+      <WalletCard
+        wallet={createMockDerivedWallet({ name: 'spending', withdrawals: 0 })}
+      />
     );
 
     expect(
       screen.queryByTestId(WALLET_CARD_TEST_IDS.subLine)
     ).not.toBeInTheDocument();
+  });
+
+  it('shows what has already been spent', () => {
+    render(
+      <WalletCard
+        wallet={createMockDerivedWallet({
+          name: 'spending',
+          withdrawals: 4500,
+        })}
+      />
+    );
+
+    expect(screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)).toHaveTextContent(
+      'כבר ביזבזת ₪45'
+    );
+  });
+
+  it('shows what has already been given', () => {
+    render(
+      <WalletCard
+        wallet={createMockDerivedWallet({
+          name: 'goodDeeds',
+          withdrawals: 1800,
+        })}
+      />
+    );
+
+    expect(screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)).toHaveTextContent(
+      'תרמת ₪18 עד היום'
+    );
   });
 
   it('shows the savings rate and opening date as a sub-line', () => {
