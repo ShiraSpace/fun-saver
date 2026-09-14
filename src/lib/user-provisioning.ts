@@ -1,4 +1,5 @@
 import type { DataStore } from '@/db/data-store';
+import { GOOGLE_PROVIDER } from './constants';
 import { newId } from './ids';
 import type { User } from './types';
 
@@ -13,7 +14,7 @@ export async function provisionUser(
   identity: GoogleIdentity
 ): Promise<User> {
   const existing = await store.findUserByProvider(
-    'google',
+    GOOGLE_PROVIDER,
     identity.providerAccountId
   );
 
@@ -30,7 +31,7 @@ export async function provisionUser(
 function newGoogleUser(identity: GoogleIdentity): User {
   return {
     id: newId(),
-    provider: 'google',
+    provider: GOOGLE_PROVIDER,
     providerAccountId: identity.providerAccountId,
     email: identity.email,
     name: identity.name,

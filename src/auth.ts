@@ -2,6 +2,7 @@ import NextAuth, { type Profile, type Session } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import Google from 'next-auth/providers/google';
 import { getStore } from '@/db';
+import { GOOGLE_PROVIDER } from '@/lib/constants';
 import { provisionUser, type GoogleIdentity } from '@/lib/user-provisioning';
 
 declare module 'next-auth/jwt' {
@@ -14,7 +15,7 @@ function toGoogleIdentity(profile?: Profile): GoogleIdentity | undefined {
   const { sub, email, name } = profile ?? {};
 
   if (!sub || !email || !name) {
-    return undefined;
+    return;
   }
 
   return { providerAccountId: sub, email, name };
@@ -40,7 +41,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       if (identity) {
         const user = await getStore().findUserByProvider(
-          'google',
+          GOOGLE_PROVIDER,
           identity.providerAccountId
         );
         token.userId = user?.id;

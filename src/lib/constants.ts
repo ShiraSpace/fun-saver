@@ -1,4 +1,6 @@
-import type { WalletName } from './types';
+import type { AuthProvider, WalletName } from './types';
+
+export const GOOGLE_PROVIDER: AuthProvider = 'google';
 
 export const AGOROT_PER_SHEKEL = 100;
 
