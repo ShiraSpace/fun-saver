@@ -86,7 +86,8 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 
 .legend { flex:1; display:flex; flex-direction:column; gap:11px; }
 .leg { display:flex; align-items:center; gap:9px; font-size:15px; font-weight:600; }
-.dot { width:14px; height:14px; border-radius:5px; flex-shrink:0; }
+.dot { width:22px; height:22px; border-radius:7px; flex-shrink:0; display:inline-flex;
+  align-items:center; justify-content:center; font-size:12px; line-height:1; }
 .dot.savings { background:var(--arcSavings); }
 .dot.spending { background:var(--arcSpending); }
 .dot.good { background:var(--arcGood); }
@@ -176,9 +177,9 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
         </div>
       </div>
       <div class="legend">
-        <div class="leg"><span class="dot savings"></span>חיסכון <span class="pct">57%</span><span class="leader"></span><span class="val"><small>₪</small>204</span></div>
-        <div class="leg"><span class="dot spending"></span>בזבוזים <span class="pct">35%</span><span class="leader"></span><span class="val"><small>₪</small>125</span></div>
-        <div class="leg"><span class="dot good"></span>מעשים <span class="pct">8%</span><span class="leader"></span><span class="val"><small>₪</small>30</span></div>
+        <div class="leg"><span class="dot savings">🐷</span>חיסכון <span class="pct">57%</span><span class="leader"></span><span class="val"><small>₪</small>204</span></div>
+        <div class="leg"><span class="dot spending">🛍️</span>בזבוזים <span class="pct">35%</span><span class="leader"></span><span class="val"><small>₪</small>125</span></div>
+        <div class="leg"><span class="dot good">💛</span>מעשים <span class="pct">8%</span><span class="leader"></span><span class="val"><small>₪</small>30</span></div>
       </div>
     </div>
   </div>
