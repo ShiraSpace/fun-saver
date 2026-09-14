@@ -31,7 +31,7 @@ Freeze the clock with `FUNSAVER_NOW=2026-09-12 npm run dev` to see the seeded da
 - [x] PR 2 — Overview card + savings detail row
 - [x] PR 3 — Header drops the total chip
 - [ ] PR 4 — spending & good-deeds sub-lines
-- [ ] PR 5 — legend squares carry the wallet icons
+- [x] PR 5 — legend squares carry the wallet icons
 
 ## Goal
 

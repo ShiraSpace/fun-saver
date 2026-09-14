@@ -6,6 +6,7 @@ import { OVERVIEW_CARD_COPY, OVERVIEW_CARD_TEST_IDS } from '../constants';
 const entries = mockDerivedWallets.map((wallet, index) => ({
   id: wallet.id,
   name: wallet.name,
+  icon: wallet.icon,
   balance: wallet.balance,
   share: mockWalletShares[index],
 }));
@@ -25,6 +26,12 @@ describe('Legend', () => {
     expect(
       screen.getAllByTestId(OVERVIEW_CARD_TEST_IDS.legendRow)[0]
     ).toHaveTextContent(OVERVIEW_CARD_COPY.name.savings);
+  });
+
+  it("shows each wallet's icon in its square", () => {
+    expect(
+      screen.getAllByTestId(OVERVIEW_CARD_TEST_IDS.legendDot)[0]
+    ).toHaveTextContent(mockDerivedWallets[0].icon);
   });
 
   it('shows the share of each wallet as a percentage', () => {
