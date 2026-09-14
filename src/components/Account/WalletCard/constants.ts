@@ -1,6 +1,7 @@
 import type { WalletName, WalletWithDerived } from '@/lib/types';
 import { PERCENT_TOTAL } from '@/lib/constants';
 import { dayMonth } from '@/lib/dates';
+import { agorotToWholeShekels } from '@/lib/money';
 
 export const WALLET_CARD_TEST_IDS = {
   card: 'wallet-card',
@@ -27,6 +28,10 @@ export const WALLET_CARD_COPY = {
     wallet: Pick<WalletWithDerived, 'monthlyInterestRate' | 'openedAt'>
   ): string =>
     `צובר ${Math.round(wallet.monthlyInterestRate * PERCENT_TOTAL)}% בחודש · פעיל מאז ${dayMonth(wallet.openedAt)}`,
+  spendingSubLine: (wallet: Pick<WalletWithDerived, 'withdrawals'>): string =>
+    `כבר ביזבזת ₪${agorotToWholeShekels(wallet.withdrawals)}`,
+  goodDeedsSubLine: (wallet: Pick<WalletWithDerived, 'withdrawals'>): string =>
+    `תרמת ₪${agorotToWholeShekels(wallet.withdrawals)} עד היום`,
 } as const;
 
 export const WALLET_CARD_STYLE = {

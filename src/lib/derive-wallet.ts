@@ -1,5 +1,11 @@
 import type { Transaction, Wallet, WalletWithDerived } from './types';
-import { balance, interestGain, principal, todayInterest } from './derivations';
+import {
+  balance,
+  interestGain,
+  principal,
+  todayInterest,
+  withdrawals,
+} from './derivations';
 
 export interface DeriveWalletParams {
   wallet: Wallet;
@@ -16,6 +22,7 @@ export function deriveWallet({
     ...wallet,
     balance: balance(transactions),
     principal: principal(transactions),
+    withdrawals: withdrawals(transactions),
     interestGain: interestGain(transactions),
     todayInterest: todayInterest(transactions, asOf),
   };

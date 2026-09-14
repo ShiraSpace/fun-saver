@@ -39,6 +39,7 @@ export interface Transaction {
 export interface WalletWithDerived extends Wallet {
   balance: number;
   principal: number;
+  withdrawals: number;
   interestGain: number;
   todayInterest: number;
 }

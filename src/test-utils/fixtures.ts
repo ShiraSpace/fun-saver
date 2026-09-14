@@ -79,6 +79,7 @@ export function createMockDerivedWallet(
     ...createMockWallet(),
     balance: 8500,
     principal: 8000,
+    withdrawals: 0,
     interestGain: 500,
     todayInterest: 150,
     ...overrides,
@@ -123,17 +124,47 @@ export const mockAccountEdit = {
 export const mockTransactions: Transaction[] = [
   createMockTransaction(),
   createMockTransaction({ id: 't2', type: 'interest', amount: 500 }),
-  createMockTransaction({ id: 't3', walletId: 'w2', amount: 5000 }),
-  createMockTransaction({ id: 't4', walletId: 'w3', amount: 2500 }),
+  createMockTransaction({ id: 't3', walletId: 'w2', amount: 9500 }),
+  createMockTransaction({ id: 't4', walletId: 'w3', amount: 4300 }),
+  createMockTransaction({
+    id: 't5',
+    walletId: 'w2',
+    type: 'withdrawal',
+    amount: 4500,
+  }),
+  createMockTransaction({
+    id: 't6',
+    walletId: 'w3',
+    type: 'withdrawal',
+    amount: 1800,
+  }),
 ];
 
 const MOCK_DERIVED_VALUES: Pick<
   WalletWithDerived,
-  'balance' | 'principal' | 'interestGain' | 'todayInterest'
+  'balance' | 'principal' | 'withdrawals' | 'interestGain' | 'todayInterest'
 >[] = [
-  { balance: 8500, principal: 8000, interestGain: 500, todayInterest: 150 },
-  { balance: 5000, principal: 5000, interestGain: 0, todayInterest: 0 },
-  { balance: 2500, principal: 2500, interestGain: 0, todayInterest: 0 },
+  {
+    balance: 8500,
+    principal: 8000,
+    withdrawals: 0,
+    interestGain: 500,
+    todayInterest: 150,
+  },
+  {
+    balance: 5000,
+    principal: 5000,
+    withdrawals: 4500,
+    interestGain: 0,
+    todayInterest: 0,
+  },
+  {
+    balance: 2500,
+    principal: 2500,
+    withdrawals: 1800,
+    interestGain: 0,
+    todayInterest: 0,
+  },
 ];
 
 export const mockDerivedWallets: WalletWithDerived[] = createMockWallets().map(
