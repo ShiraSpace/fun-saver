@@ -27,7 +27,10 @@ function holeFontSize(totalAgorot: number): number {
   );
 }
 
-type OverviewWallet = Pick<WalletWithDerived, 'id' | 'name' | 'balance'>;
+type OverviewWallet = Pick<
+  WalletWithDerived,
+  'id' | 'name' | 'icon' | 'balance'
+>;
 
 interface OverviewCardProps {
   wallets: OverviewWallet[];

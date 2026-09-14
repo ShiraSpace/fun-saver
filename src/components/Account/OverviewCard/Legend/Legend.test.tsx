@@ -6,6 +6,7 @@ import { OVERVIEW_CARD_COPY, OVERVIEW_CARD_TEST_IDS } from '../constants';
 const entries = mockDerivedWallets.map((wallet, index) => ({
   id: wallet.id,
   name: wallet.name,
+  icon: wallet.icon,
   balance: wallet.balance,
   share: mockWalletShares[index],
 }));

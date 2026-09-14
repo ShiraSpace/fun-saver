@@ -22,6 +22,11 @@ export const Dot = styled.span<{ walletName: WalletName }>`
   width: ${OVERVIEW_CARD_STYLE.dotSize}px;
   height: ${OVERVIEW_CARD_STYLE.dotSize}px;
   border-radius: ${OVERVIEW_CARD_STYLE.dotRadius}px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${OVERVIEW_CARD_STYLE.dotFontSize}px;
+  line-height: 1;
   background: ${({ walletName, theme }): string =>
     theme.colors[WALLET_ARC_COLOR[walletName]]};
 `;
