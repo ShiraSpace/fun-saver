@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-13 (plan PR 3 all but landed)
+## Progress — updated 2026-09-13 (plan PR 3 done; PR 4 is next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -15,15 +15,32 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 1    | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                           |
 | —       | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                        |
 | —       | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                        |
-| PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged** — also carried `BaseStore` and `*.e2e.ts` |
+| PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged**                                           |
 | —       | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                        |
-| PR 3a   | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505` on `main`                     |
-| PR 3b   | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **open** — the only thing left in plan PR 3          |
-| PR 4–10 | —                                                      | —                                  | not started                                          |
+| PR 3a   | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                               |
+| PR 3b   | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
+| PR 4    | —                                                      | `feat/google-auth`                 | **next** — blocked on the Google Cloud step below    |
+| PR 5–10 | —                                                      | —                                  | not started                                          |
 
-**#49 is the first thing to deal with in a new session.** It is green against
-current `main` and needs review and merge; nothing else in this plan depends on
-it, so PR 4 can start in parallel.
+**The whole store layer is now in place.** `DataStore` can find and create users,
+read memberships, and create an account with its owner. Nothing calls any of it:
+`page.tsx` still calls `listAccounts()` and renders every account to whoever
+opens the public URL. PR 4 onward is what changes that.
+
+**No PR in this plan is open.** PR 4 branches off `main` and depends only on PR 2.
+
+### How to confirm work actually landed
+
+`git log origin/main..origin/<branch>` is **not** the check — this repo
+squash-merges, so a merged branch's commits are never ancestors of `main` and
+that command always looks alarming. Use content instead:
+
+```
+git diff origin/main origin/<branch> --stat     # empty, or only main's newer work
+git grep -c <a symbol the PR added> origin/main
+```
+
+This matters because a PR page saying "merged" is not proof either — see #47.
 
 ### Two PRs that are not what their status says
 
@@ -438,10 +455,10 @@ catches a missing method at compile time.
 
 Depends on: PR 1 (merged) and #30. Ships: unused interface methods.
 
-### PR 3 — shipped as two: #41 reads (merged), #49 writes (open)
+### PR 3 — shipped as two, both merged: #41 reads, #49 writes
 
-#41 merged as `ca1a505`. #49 is open and is all that remains — see _Two PRs
-that are not what their status says_ above for why it is numbered 49 and not 47.
+#41 merged as `ca1a505`, #49 as `41319f8`. See _Two PRs that are not what their
+status says_ above for why the second is numbered 49 and not 47.
 
 **#41 — `feat/account-user-reads`**
 
@@ -766,12 +783,13 @@ migrating `data.json` into Neon.
    --short` as `ok` on a dirty tree, a jest count of 364 where the real number
    was 368, and swallowed an `eslint --fix`. Use `rtk proxy <cmd>` for anything
    you intend to report as a number, and capture to a file rather than piping.
-8. **Confirm what is actually on `main` before trusting any status.**
-   `git log origin/main..origin/<branch>` empty is the only proof work landed; a
-   PR page saying "merged" is not — see #47 above. Expect the Neon `production`
-   branch to still be unmigrated.
-9. **Start with #49** — review and merge it, which closes plan PR 3 — **then
-   PR 4**, once the Google Cloud step below is done. PR 4 does not depend on #49.
+8. **Confirm work landed by content, not by commit ancestry.** This repo
+   squash-merges, so `git log origin/main..origin/<branch>` always shows commits
+   for a merged branch. Use `git diff origin/main origin/<branch> --stat` or
+   `git grep` for a symbol the PR added. A PR page saying "merged" is not proof
+   either — see #47.
+9. **Start with PR 4** — the Google Cloud step below has to happen first, and it
+   is manual. Nothing in this plan is open; PR 4 branches off `main`.
 
 ### Still undecided
 
