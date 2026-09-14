@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-14 (plan PR 4 open as #53; PR 5 is next)
+## Progress — updated 2026-09-14 (plan PR 4 merged; PR 5 is next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -19,15 +19,17 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | —       | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                        |
 | PR 3a   | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                               |
 | PR 3b   | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
-| PR 4    | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **open** — Google sign-in, user provisioning         |
-| PR 5–10 | —                                                      | —                                  | not started — **PR 5 is next**                       |
+| PR 4    | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                               |
+| PR 5    | —                                                      | `feat/login-page`                  | **next**                                             |
+| PR 6–10 | —                                                      | —                                  | not started                                          |
 
-**The whole store layer is now in place.** `DataStore` can find and create users,
-read memberships, and create an account with its owner. Nothing calls any of it:
-`page.tsx` still calls `listAccounts()` and renders every account to whoever
-opens the public URL. PR 4 onward is what changes that.
+**Sign-in works; nothing is gated.** PR 4 shipped Auth.js with Google, and
+signing in provisions a `users` row and puts our own user id on the session.
+`page.tsx` still calls `listAccounts()` and renders all four real accounts to
+whoever opens the public URL. **PR 6 is what closes that, and it may not ship
+before PR 9's read path — see _Authentication is open by design_ below.**
 
-**No PR in this plan is open.** PR 4 branches off `main` and depends only on PR 2.
+**No PR in this plan is open.** PR 5 branches off `main` and depends on PR 4.
 
 ### How to confirm work actually landed
 
@@ -623,7 +625,12 @@ Reachable by URL; nothing redirects to it yet.
 
 Tests: `SignIn` component test — renders the button, calls `signIn('google')`.
 
-Depends on: PR 4. Ships: a new route.
+**Import `signIn` from `next-auth/react`, not from `@/auth`.** `src/auth.ts`
+exports a server-side `signIn` for server actions; a `"use client"` button needs
+the react one. Both exist and only one works in a client component.
+
+Depends on: PR 4 — `next-auth` reached `main` with `5d02045`, so this branches
+off `main` normally. Ships: a new route.
 
 ### PR 6 — `feat/auth-middleware`
 

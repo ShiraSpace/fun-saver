@@ -2,19 +2,30 @@
 
 ## Start here
 
-**Plan PR 4 is open as [#53](https://github.com/ShiraSpace/fun-saver/pull/53)**
-— `feat/google-auth`. Google sign-in works end to end: signing in provisions a
-`users` row, and the session carries our own user id rather than the provider's
-`sub`. Its prerequisites are both done — the Google Cloud OAuth client exists,
-and Neon `production` has been migrated.
+**Plan PR 4 is merged (`5d02045`, [#53](https://github.com/ShiraSpace/fun-saver/pull/53)).**
+Verified by reading `main`'s tree, not the PR page. Google sign-in works end to
+end: signing in provisions a `users` row and the session carries our own user id
+rather than the provider's `sub`. The auth route is live on production and its
+callback URL matches the registered one.
+
+**One follow-up is still outstanding: sign in once on production.** Neon
+`production` still has `users = 0`. That row is what plan PR 8 assigns the four
+existing accounts to. Open <https://fun-saver.vercel.app/api/auth/signin> and
+sign in with the Google account that should own them.
 
 **The public hole is still open.** `src/app/page.tsx` calls `listAccounts()` and
 renders every account to whoever opens the public URL. Production holds **4 real
 accounts and 216 transactions**, and an anonymous request renders them — so this
 is live exposure, not a theoretical one. Nothing in PR 4 gates anything.
 
-**Next is plan PR 5 — `feat/login-page`**, then PR 6, which is the one that
-actually closes the hole. PR 7 can land in parallel.
+**Next is plan PR 5 — `feat/login-page`**, branched off `main`. `next-auth` is
+on `main` now, so it needs no stacking. One trap: import `signIn` from
+`next-auth/react` for the client button — `src/auth.ts` exports a server-side
+`signIn` for server actions, and only one of them works in a `"use client"`
+component.
+
+Then PR 6, which is the one that actually closes the hole. PR 7 can land in
+parallel.
 
 > **PR 6 must not ship a session-only gate.** Sign-in is open to any Google
 > account by design — #53 has no allowlist. A stranger who signs in gets a
@@ -31,7 +42,10 @@ plan PR 8 assigns those four accounts to.
 
 ## What landed
 
-Plan PRs 1, 2 and 3 (`#28`, `#32`, `#41`, `#49`), plus `#29`, `#30` and `#33`.
+Plan PRs 1, 2, 3 and 4 (`#28`, `#32`, `#41`, `#49`, `#53`), plus `#29`, `#30`
+and `#33`. **`#52` ("show what each wallet has already spent") also landed on
+`main` while PR 4 was open** — unrelated to this plan, and the reason the suite
+jumped to 426 tests.
 
 `main` also moved a long way underneath this work: #36, #42, #43, #44, #45
 (styled-components extracted to `<Component>.styles.ts`), #48 (wallet hero and
