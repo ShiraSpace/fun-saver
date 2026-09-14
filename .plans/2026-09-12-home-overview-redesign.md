@@ -30,7 +30,7 @@ Freeze the clock with `FUNSAVER_NOW=2026-09-12 npm run dev` to see the seeded da
 - [x] PR 1 — `halfShekelAmount`
 - [x] PR 2 — Overview card + savings detail row
 - [x] PR 3 — Header drops the total chip
-- [ ] PR 4 — spending & good-deeds sub-lines
+- [x] PR 4 — spending & good-deeds sub-lines
 - [x] PR 5 — legend squares carry the wallet icons
 
 ## Goal
@@ -65,7 +65,7 @@ header into the ring. Interest stays visible, but as **numbers instead of coins*
 
 ## PR slicing
 
-Four PRs. 1 → 2 → 3 in order; 4 is independent once 2 lands.
+Five PRs. 1 → 2 → 3 in order; 4 is independent once 2 lands, and 5 is independent of 4.
 
 ---
 
