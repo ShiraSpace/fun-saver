@@ -27,7 +27,9 @@ export class JsonAccountUsers implements AccountUserRepository {
 
   insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void> {
     return this.session.write(async (data, save): Promise<void> => {
-      if (findAccount(data, account.id)) {
+      const accountExists = Boolean(findAccount(data, account.id));
+
+      if (accountExists) {
         throw new DuplicateAccountError(account.id);
       }
 

@@ -1,5 +1,5 @@
 import type { Account, AccountUser } from '@/lib/types';
-import { UnknownOwnerError } from '@/lib/errors';
+import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
 import type {
   AccountOwner,
   AccountRepository,
@@ -39,6 +39,12 @@ export class MemoryAccountUsers implements AccountUserRepository {
     account: Account,
     owner: AccountOwner
   ): Promise<void> {
+    const accountExists = Boolean(await this.accounts.get(account.id));
+
+    if (accountExists) {
+      throw new DuplicateAccountError(account.id);
+    }
+
     const ownerIsKnownUser = this.users.isKnown(owner.userId);
 
     if (!ownerIsKnownUser) {
