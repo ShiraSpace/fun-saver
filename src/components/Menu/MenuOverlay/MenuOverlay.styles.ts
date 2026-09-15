@@ -1,11 +1,20 @@
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
-import { MENU_OVERLAY_LAYOUT, MENU_OVERLAY_STYLE } from './constants';
+import Link from 'next/link';
+import { MENU_LABEL_STYLE } from '../MenuLabel/constants';
+import {
+  MENU_LINK_STYLE,
+  MENU_OVERLAY_LAYOUT,
+  MENU_OVERLAY_STYLE,
+} from './constants';
 
 const surface = ({ theme }: { theme: Theme }): string => theme.gradients.screen;
 
 const onSurface = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
+
+const labelSize = ({ theme }: { theme: Theme }): number =>
+  theme.typography.label;
 
 export const Panel = styled.div`
   position: fixed;
@@ -35,4 +44,19 @@ export const Panel = styled.div`
 export const Content = styled.div`
   padding: ${MENU_OVERLAY_LAYOUT.contentPaddingTop}px
     ${MENU_OVERLAY_LAYOUT.contentPaddingX}px 0;
+`;
+
+export const NavLink = styled(Link)`
+  display: block;
+  margin-top: ${MENU_LABEL_STYLE.marginTop}px;
+  padding: ${MENU_LINK_STYLE.paddingY}px 2px;
+  border-top: 1px solid currentColor;
+  border-top-color: rgba(255, 255, 255, ${MENU_LINK_STYLE.dividerOpacity});
+  border-radius: ${MENU_LINK_STYLE.radius}px;
+  text-align: start;
+  font-size: ${labelSize}px;
+  font-weight: 700;
+  letter-spacing: ${MENU_LABEL_STYLE.letterSpacing}px;
+  color: inherit;
+  text-decoration: none;
 `;

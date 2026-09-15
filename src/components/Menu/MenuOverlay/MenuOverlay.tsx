@@ -9,7 +9,8 @@ import {
   MENU_OVERLAY_CONTENT,
   MENU_OVERLAY_TEST_IDS,
 } from './constants';
-import { Panel, Content } from './MenuOverlay.styles';
+import { METHOD_ROUTE } from '@/components/Method/constants';
+import { Panel, Content, NavLink } from './MenuOverlay.styles';
 
 export interface MenuOverlayProps {
   isOpen: boolean;
@@ -47,6 +48,13 @@ export function MenuOverlay({
         <AccountsSection onAccountSelect={onClose} />
         <AppearanceSection />
         <LanguageSection />
+        <NavLink
+          href={METHOD_ROUTE}
+          data-testid={MENU_OVERLAY_TEST_IDS.methodLink}
+          onClick={onClose}
+        >
+          {MENU_OVERLAY_CONTENT.methodLink}
+        </NavLink>
       </Content>
     </Panel>
   );
