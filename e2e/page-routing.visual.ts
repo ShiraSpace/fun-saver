@@ -1,6 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockAccount } from '@/test-utils/fixtures';
+import { METHOD_ROUTE } from '@/components/Method/constants';
 import { useDriver } from './driver/use-driver';
 
 describe('page routing', () => {
@@ -19,6 +20,16 @@ describe('page routing', () => {
     it('shows the header and not the empty state', async () => {
       assert.equal(await header.exists(), true);
       assert.equal(await emptyState.exists(), false);
+    });
+  });
+
+  describe('the method page', () => {
+    const { menu } = useDriver({ accounts: [mockAccount] });
+
+    it('is where the menu link takes the parent', async () => {
+      await menu.open();
+
+      assert.equal(await menu.openMethodPage(), METHOD_ROUTE);
     });
   });
 });

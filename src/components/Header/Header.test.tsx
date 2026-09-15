@@ -10,7 +10,7 @@ describe('Header', () => {
   const AVATAR_ID = 'kid-01';
 
   beforeEach(() => {
-    render(<Header name={ACCOUNT_NAME} avatarId={AVATAR_ID} />);
+    render(<Header title={ACCOUNT_NAME} avatarId={AVATAR_ID} />);
   });
 
   it('shows the account name', () => {

@@ -58,7 +58,7 @@ of its own — testing a styled `div` tests Emotion, not us.
 Card surface, eyebrow pill, divider rule, chevron, muted paragraph, scroll
 wrapper, layout containers.
 
-## PR 1 — copy data
+## PR 1 — copy data (done)
 
 `src/components/Method/copy/` — the 66 keys from the deck as typed data, split
 by section (`goal.ts`, `why.ts`, `wallets.ts`, `promise.ts`, `actions.ts`,
@@ -72,24 +72,33 @@ Block shape carries its format so components don't guess:
 
 ```ts
 type MethodBlock =
-  | { kind: 'text'; body: string }
+  | { kind: 'text'; body: string; muted?: boolean }
   | { kind: 'quote'; body: string; citation: string }
-  | { kind: 'talk'; label: string; lines: TalkLine[] };
+  | { kind: 'talk'; label: string; lines: readonly TalkLine[] };
 ```
 
-`copy.test.ts` asserts **structure, not prose** — all keys present, none empty,
-every `quote` has a citation, every `talk` has a label. Copy edits must not
-break tests.
+**No test ships with this PR.** A suite over a static object walks literals and
+runs no production code — it restates the data in a second place and fails only
+when someone edits both. TypeScript already rejects a component reading a key
+that is not there, and PRs 3 to 8 exercise every block for real when they render
+it, which is where a wrong shape should surface.
 
 No UI in this PR.
 
-## PR 2 — route, header, menu link
+## PR 2 — route, header, menu link (done)
 
 - `src/app/method/page.tsx` — server component, no data fetching beyond the
   theme cookie (decision 2). Renders `Screen` + header + title only.
 - `Header` gains a title-only mode (decision 3).
 - `MenuOverlay` gains a `next/link` entry alongside the existing sections;
   update `MenuOverlay.test.tsx`.
+- `Header` takes a `title`, not a `name`, and `avatarId` is optional — a page
+  title was never a name, and one required prop beats two optional ones.
+- `Method.styles.ts` carries `'use client'`: emotion's `styled` evaluates
+  `createContext`, which a server component's module graph cannot, so the build
+  fails collecting `/method` without it.
+- Known gap: `/method` mounts no accounts or app-mode provider, so the accounts
+  and appearance sections of the menu render inert there.
 - e2e: menu link navigates to `/method`.
 
 ## PR 3 — the opener

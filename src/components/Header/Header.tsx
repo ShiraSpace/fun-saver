@@ -7,23 +7,26 @@ import { HEADER_AVATAR_PROPS, HEADER_TEST_IDS } from './constants';
 import { Bar, HeaderAvatar } from './Header.styles';
 
 export interface HeaderProps {
-  name: string;
-  avatarId: string;
+  title: string;
+  avatarId?: string;
 }
 
-export function Header({ name, avatarId }: HeaderProps): JSX.Element {
+export function Header({ title, avatarId }: HeaderProps): JSX.Element {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const avatar = avatarId && (
+    <HeaderAvatar
+      avatarId={avatarId}
+      alt={title}
+      size={HEADER_AVATAR_PROPS.size}
+      testId={HEADER_TEST_IDS.avatar}
+    />
+  );
 
   return (
     <Bar data-testid={HEADER_TEST_IDS.bar}>
       <Menu isOpen={isMenuOpen} onToggle={setIsMenuOpen} />
-      <Title text={name} />
-      <HeaderAvatar
-        avatarId={avatarId}
-        alt={name}
-        size={HEADER_AVATAR_PROPS.size}
-        testId={HEADER_TEST_IDS.avatar}
-      />
+      <Title text={title} />
+      {avatar}
     </Bar>
   );
 }
