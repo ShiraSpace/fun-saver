@@ -5,6 +5,7 @@ import { JsonFileStore } from '@/db/json-file-store';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import { Session } from './session';
+import type { MotionPreference } from './page-queries';
 import { MenuDriver } from './menu-driver';
 import { HeaderDriver } from './header-driver';
 import { EmptyStateDriver } from './empty-state-driver';
@@ -61,7 +62,10 @@ async function seedStore(
   }
 }
 
-export function useDriver(state: Partial<StoreData> = {}): AppDriver {
+export function useDriver(
+  state: Partial<StoreData> = {},
+  motion: MotionPreference = 'reduce'
+): AppDriver {
   const session = Session.create();
   const drivers = createDrivers(session);
   let server: RunningServer;
@@ -78,7 +82,7 @@ export function useDriver(state: Partial<StoreData> = {}): AppDriver {
 
   beforeEach(async () => {
     await seedStore(server.dataPath, state);
-    await session.open(server.baseUrl);
+    await session.open(server.baseUrl, motion);
   });
 
   afterEach(async () => {

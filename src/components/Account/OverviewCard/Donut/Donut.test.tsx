@@ -1,7 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { mockDerivedWallets, mockWalletShares } from '@/test-utils/fixtures';
 import { getThemeTokens } from '@/theme/registry';
-import { Donut } from './Donut';
+import { Donut, type DonutSegment } from './Donut';
 import { OVERVIEW_CARD_TEST_IDS } from '../constants';
 
 const walletSegments = mockDerivedWallets.map((wallet, index) => ({
@@ -31,11 +31,15 @@ function arcEnd(arc: Element): number {
   return arcStart(arc) - arcLength(arc);
 }
 
+function arcSweepMs(arc: Element): number {
+  return Number.parseFloat(getComputedStyle(arc).animationDuration);
+}
+
+function arcDelayMs(arc: Element): number {
+  return Number.parseFloat(getComputedStyle(arc).animationDelay);
+}
+
 const DECIMAL_PLACES = 2;
-const RING_TOP = 0;
-const SAVINGS_ARC_LENGTH = 139.864;
-const GOOD_DEEDS_ARC_LENGTH = 42.223;
-const SAVINGS_ARC_COLOR = getThemeTokens().colors.walletSavings;
 
 describe('Donut', () => {
   let walletArcs: Element[];
@@ -54,21 +58,24 @@ describe('Donut', () => {
   });
 
   it('sizes the savings arc to its share of the ring', () => {
-    expect(arcLength(savingsArc)).toBeCloseTo(
-      SAVINGS_ARC_LENGTH,
-      DECIMAL_PLACES
-    );
+    const savingsArcLength = 139.864;
+
+    expect(arcLength(savingsArc)).toBeCloseTo(savingsArcLength, DECIMAL_PLACES);
   });
 
   it('sizes the good-deeds arc to its smaller share', () => {
+    const goodDeedsArcLength = 42.223;
+
     expect(arcLength(goodDeedsArc)).toBeCloseTo(
-      GOOD_DEEDS_ARC_LENGTH,
+      goodDeedsArcLength,
       DECIMAL_PLACES
     );
   });
 
   it('starts the savings arc at the top of the ring', () => {
-    expect(arcStart(savingsArc)).toBe(RING_TOP);
+    const ringTop = 0;
+
+    expect(arcStart(savingsArc)).toBe(ringTop);
   });
 
   it('starts the spending arc where the savings arc ended', () => {
@@ -77,7 +84,39 @@ describe('Donut', () => {
     expect(arcStart(spendingArc)).toBeCloseTo(savingsArcEnd, DECIMAL_PLACES);
   });
 
+  it('sweeps the savings arc for its share of the ring', () => {
+    const savingsSweepMs = 318;
+
+    expect(arcSweepMs(savingsArc)).toBe(savingsSweepMs);
+  });
+
+  it('starts the spending arc when the savings arc has finished', () => {
+    expect(arcDelayMs(spendingArc)).toBe(arcSweepMs(savingsArc));
+  });
+
   it('colours the savings arc with its wallet token', () => {
-    expect(savingsArc.getAttribute('stroke')).toBe(SAVINGS_ARC_COLOR);
+    const savingsArcColor = getThemeTokens().colors.walletSavings;
+
+    expect(savingsArc.getAttribute('stroke')).toBe(savingsArcColor);
+  });
+});
+
+describe('Donut with an empty wallet', () => {
+  const emptyWalletSegments: DonutSegment[] = [
+    { name: 'savings', share: 60 },
+    { name: 'spending', share: 40 },
+    { name: 'goodDeeds', share: 0 },
+  ];
+  let emptyWalletArc: Element;
+
+  beforeEach(() => {
+    render(<Donut segments={emptyWalletSegments} />);
+    [, , emptyWalletArc] = getArcs();
+  });
+
+  it('gives a wallet with nothing in it no time in the sweep', () => {
+    const noSweepMs = 0;
+
+    expect(arcSweepMs(emptyWalletArc)).toBe(noSweepMs);
   });
 });

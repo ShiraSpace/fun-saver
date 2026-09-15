@@ -1,5 +1,11 @@
-import { type BoundingBox, type Page } from 'puppeteer';
+import { type BoundingBox, type MediaFeature, type Page } from 'puppeteer';
 import { findByTest, queryAllByTest, queryByTest } from './page-element';
+
+export type MotionPreference = 'reduce' | 'no-preference';
+
+export function motionFeatures(motion: MotionPreference): MediaFeature[] {
+  return [{ name: 'prefers-reduced-motion', value: motion }];
+}
 
 export async function exists(page: Page, testId: string): Promise<boolean> {
   return (await queryByTest(page, testId)) !== null;
@@ -87,4 +93,21 @@ export function computedStyle({
   property,
 }: TestIdStyleQuery): Promise<string> {
   return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
+}
+
+export async function styleValues(
+  page: Page,
+  testId: string,
+  property: string
+): Promise<string[]> {
+  const elements = await queryAllByTest(page, testId);
+
+  return Promise.all(
+    elements.map((element) =>
+      element.evaluate(
+        (node, name) => getComputedStyle(node).getPropertyValue(name),
+        property
+      )
+    )
+  );
 }

@@ -28,6 +28,13 @@ export class DashboardDriver {
     return this.session.count(WALLET_CARD_TEST_IDS.card);
   }
 
+  arcAnimations(): Promise<string[]> {
+    return this.session.styleValues(
+      OVERVIEW_CARD_TEST_IDS.arc,
+      'animation-name'
+    );
+  }
+
   walletSubLines(): Promise<string[]> {
     return this.session.texts(WALLET_CARD_TEST_IDS.subLine);
   }

@@ -21,8 +21,9 @@ export class Session {
     this.browser = await puppeteer.launch({ headless: true });
   }
 
-  async open(baseUrl: string): Promise<void> {
+  async open(baseUrl: string, motion: queries.MotionPreference): Promise<void> {
     this.activePage = await this.requireBrowser().newPage();
+    await this.activePage.emulateMediaFeatures(queries.motionFeatures(motion));
     await this.activePage.goto(baseUrl, { waitUntil: 'networkidle0' });
   }
 
@@ -50,6 +51,10 @@ export class Session {
 
   count(testId: string): Promise<number> {
     return queries.count(this.page, testId);
+  }
+
+  styleValues(testId: string, property: string): Promise<string[]> {
+    return queries.styleValues(this.page, testId, property);
   }
 
   text(testId: string): Promise<string> {

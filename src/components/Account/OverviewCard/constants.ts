@@ -4,6 +4,7 @@ export const OVERVIEW_CARD_TEST_IDS = {
   card: 'overview-card',
   total: 'overview-total',
   donut: 'overview-donut',
+  arc: 'overview-arc',
   legendRow: 'overview-legend-row',
   legendDot: 'overview-legend-dot',
   legendShare: 'overview-legend-share',
@@ -35,6 +36,12 @@ export const DONUT_STYLE = {
   radius: 42,
   strokeWidth: 14,
   rotation: -90,
+} as const;
+
+export const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_STYLE.radius;
+
+export const DONUT_ANIMATION = {
+  sweepMs: 600,
 } as const;
 
 export const OVERVIEW_CARD_STYLE = {
