@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — סיכום חשבון (מוקאפ אינטראקטיבי)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root, :root[data-theme='sunshine-quest'] {
+  --textOnPrimary:#FFFFFF; --surface:#FFFFFF;
+  --textMuted:#8A7AA7; --textStrong:#3A1F5A;
+  --divider:#F2D9D2; --softBg:#FFF8E0; --softBorder:#FFD23F; --softText:#7A5A0A;
+  --depositBg:#FFF6E0; --gainText:#2E7D32; --gainSoftBg:#E1F4E5; --lossText:#C62828;
+  --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+  --actionButton:linear-gradient(#8A3AAE,#6B2C8E);
+  --sunnyTile:linear-gradient(135deg,#FFE6B0,#FFC34D);
+  --potSavings:linear-gradient(135deg,#FFE6B0,#FFC34D);
+  --potSpending:linear-gradient(135deg,#FFD8C7,#FF8A4C);
+  --potGood:linear-gradient(135deg,#FBC4DA,#E94E89);
+  --arcSavings:#E0A020; --arcSpending:#FF8A4C; --arcGood:#E94E89; --arcTrack:#F3ECE4;
+  --grid:#EFE7F2; --globalBg:#F4EEFA; --globalBorder:#C9B6E4;
+}
+:root[data-theme='jungle-quest'] {
+  --textOnPrimary:#FFFFFF; --surface:#FFFDF5;
+  --textMuted:#5C7A6E; --textStrong:#1B4332;
+  --divider:#DDE7CC; --softBg:#F3F7E4; --softBorder:#B5D94C; --softText:#4A6A1E;
+  --depositBg:#F3F7E4; --gainText:#3A7D2E; --gainSoftBg:#E4F2D9; --lossText:#C0492F;
+  --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+  --actionButton:linear-gradient(#3AB3A3,#2A9D8F);
+  --sunnyTile:linear-gradient(135deg,#52B69A,#2A9D8F);
+  --potSavings:linear-gradient(135deg,#52B69A,#2A9D8F);
+  --potSpending:linear-gradient(135deg,#B5D94C,#90BE6D);
+  --potGood:linear-gradient(135deg,#F4A261,#E76F51);
+  --arcSavings:#2A9D8F; --arcSpending:#6E9B22; --arcGood:#E76F51; --arcTrack:#E8EFDC;
+  --grid:#E8EFDC; --globalBg:#EDF4E6; --globalBorder:#A9C77E;
+}
+:root[data-theme='midnight-blue'] {
+  --textOnPrimary:#FFFFFF; --surface:#141B24;
+  --textMuted:#8A96A8; --textStrong:#ECF1F8;
+  --divider:#1E2A40; --softBg:#121E36; --softBorder:#3B82F6; --softText:#93C5FD;
+  --depositBg:#111B30; --gainText:#34D399; --gainSoftBg:#0E2E2A; --lossText:#F87171;
+  --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  --actionButton:linear-gradient(#60A5FA,#3B82F6);
+  --sunnyTile:linear-gradient(135deg,#1E40AF,#172554);
+  --potSavings:linear-gradient(135deg,#1E40AF,#172554);
+  --potSpending:linear-gradient(135deg,#2563EB,#1E40AF);
+  --potGood:linear-gradient(135deg,#4338CA,#312E81);
+  --arcSavings:#60A5FA; --arcSpending:#38BDF8; --arcGood:#A78BFA; --arcTrack:#1E2A40;
+  --grid:#1E2A40; --globalBg:#101A2C; --globalBorder:#2F4470;
+}
+/* TYPE_SCALE: display 48 / amount 38 / title 22 / heading 18 / body 15 / label 12 */
+
+* { box-sizing:border-box; }
+body { margin:0; padding:24px 20px 60px; background:#20242c; color:#fff; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
+.sub { color:#9aa3b2; font-size:13px; line-height:1.65; margin:0 0 16px; max-width:820px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.sub b { color:#9be7b4; font-weight:600; }
+.new { color:#ffd23f; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; align-items:center; }
+.controls button { font-family:Rubik,sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+  padding:7px 14px; border-radius:999px; border:1.5px solid #3a4150; background:#2a303a; color:#dfe4ec; }
+.controls button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff; }
+.row { display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; }
+.slot { width:392px; }
+.slotTitle { font-family:Fredoka,Rubik,sans-serif; font-size:15px; margin:0 0 4px; }
+.slotNote { font-size:12px; color:#9aa3b2; line-height:1.55; margin:0 0 10px; min-height:60px; }
+.slotNote b { color:#9be7b4; font-weight:600; }
+
+.phone { width:392px; height:812px; border-radius:30px; overflow:hidden; background:var(--screen);
+  box-shadow:0 18px 40px rgba(0,0,0,.45); font-family:Rubik,sans-serif; direction:rtl;
+  display:flex; flex-direction:column; position:relative; }
+.col { display:flex; flex-direction:column; gap:12px; padding:14px 14px 0; flex:1; min-height:0; }
+
+.header { display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--surface);
+  border-radius:18px; box-shadow:0 4px 0 rgba(0,0,0,.06); color:var(--textStrong); flex-shrink:0; }
+.burgerBtn { border:none; background:transparent; padding:0; cursor:pointer; width:22px;
+  display:flex; flex-direction:column; gap:4px; }
+.burgerBtn i { height:2.5px; border-radius:2px; background:var(--textStrong); display:block; }
+.hname { flex:1; text-align:start; font-weight:700; font-size:17px; font-family:Fredoka,Rubik,sans-serif; }
+.avatar { width:40px; height:40px; border-radius:50%; background:var(--sunnyTile);
+  display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+
+/* ---------- chart card ---------- */
+.card { background:var(--surface); border-radius:24px; padding:13px 14px 11px;
+  box-shadow:0 6px 0 rgba(0,0,0,.06); color:var(--textStrong); flex-shrink:0; }
+.totalHead { display:flex; align-items:flex-end; gap:9px; }
+.totalHead .lbl { font-size:12px; font-weight:600; color:var(--textMuted); }
+.totalHead .amt { font-size:30px; font-weight:800; line-height:1; direction:ltr;
+  font-variant-numeric:tabular-nums; font-family:Fredoka,Rubik,sans-serif; }
+.totalHead .amt small { font-size:.55em; opacity:.6; margin-inline-end:2px; }
+.totalHead .delta { margin-inline-start:auto; font-size:12.5px; font-weight:700; direction:ltr;
+  padding:4px 9px; border-radius:999px; background:var(--gainSoftBg); color:var(--gainText); }
+.totalHead .delta.down { background:var(--depositBg); color:var(--lossText); }
+.chart { display:block; width:100%; margin-top:4px; }
+.chart .grid { stroke:var(--grid); stroke-width:1; }
+.chart .line { fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.chart .total { stroke:var(--textStrong); stroke-width:3.25; }
+.chart .fill { fill:var(--textStrong); opacity:.07; }
+.chart .savings { stroke:var(--arcSavings); stroke-width:2.25; }
+.chart .spending { stroke:var(--arcSpending); stroke-width:2.25; }
+.chart .good { stroke:var(--arcGood); stroke-width:2.25; }
+.chart text { font-family:Rubik,sans-serif; font-size:9.5px; font-weight:700;
+  paint-order:stroke; stroke:var(--surface); stroke-width:3px; stroke-linejoin:round; }
+.chart .axis { font-size:9px; font-weight:500; fill:var(--textMuted); stroke-width:2.5px; }
+.chart .empty { font-size:11px; font-weight:600; fill:var(--textMuted); }
+
+.chips { display:flex; gap:5px; flex-wrap:wrap; }
+.chips.top { margin:8px 0 2px; align-items:center; }
+.chips.top .allWallets { margin-inline-start:auto; }
+.chips.walletChips { margin-top:9px; flex-wrap:nowrap; }
+.chips.walletChips .chip { flex-shrink:0; }
+.chip { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:999px;
+  border:1.5px solid var(--divider); background:transparent; color:var(--textMuted);
+  font-family:Rubik,sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; }
+.chip .sw { width:9px; height:9px; border-radius:3px; flex-shrink:0; }
+.chip[aria-pressed='true'] { background:var(--depositBg); border-color:currentColor; }
+.chip.solid[aria-pressed='true'] { background:var(--textStrong); color:var(--surface); border-color:var(--textStrong); }
+.chip.ghost { border-style:dashed; }
+
+/* ---------- transactions ---------- */
+.txWrap { flex:1; min-height:0; background:var(--surface); border-radius:24px 24px 0 0;
+  box-shadow:0 -6px 0 rgba(0,0,0,.06); color:var(--textStrong); display:flex; flex-direction:column; }
+.txHead { padding:11px 14px 7px; flex-shrink:0; }
+.txTitleRow { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.txTitleRow .t { font-family:Fredoka,Rubik,sans-serif; font-size:16px; font-weight:700; }
+.txTitleRow .count { font-size:11.5px; color:var(--textMuted); font-weight:600; }
+.txHead .subTitle { font-family:Fredoka,Rubik,sans-serif; font-size:13px; font-weight:700;
+  margin:11px 0 5px; text-align:start; }
+.seg { display:inline-flex; border:1.5px solid var(--divider); border-radius:999px; overflow:hidden; }
+.seg button { border:none; background:transparent; cursor:pointer; font-family:Rubik,sans-serif;
+  padding:5px 12px; font-size:12px; font-weight:600; color:var(--textMuted); }
+.seg button[aria-pressed='true'] { background:var(--textStrong); color:var(--surface); }
+.txScroll { flex:1; overflow-y:auto; padding:0 0 14px; }
+.monthHead { position:sticky; top:0; z-index:2; background:var(--surface); padding:8px 12px 6px;
+  border-bottom:1px solid var(--divider); display:flex; align-items:center; gap:9px; }
+.monthHead .mh { flex:1; min-width:0; text-align:start;
+  font-family:Fredoka,Rubik,sans-serif; font-size:12.5px; font-weight:700; color:var(--textStrong); }
+.monthHead .nums .a, .monthHead .nums .b { font-size:10px; font-weight:700; color:var(--textMuted); }
+.tx { display:flex; align-items:center; gap:9px; padding:9px 12px; }
+.tx + .tx { border-top:1px solid var(--divider); }
+.tx .ic { width:34px; height:34px; border-radius:11px; flex-shrink:0; display:flex;
+  align-items:center; justify-content:center; font-size:17px; background:var(--depositBg); }
+.tx .ic.savings { background:var(--potSavings); }
+.tx .ic.spending { background:var(--potSpending); }
+.tx .ic.good { background:var(--potGood); }
+.tx .body { flex:1; min-width:0; text-align:start;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tx .body .n { font-size:14.5px; font-weight:700; }
+.tx .body .m { font-size:11.5px; color:var(--textMuted); margin-inline-start:6px; }
+.txWrap .nums { display:flex; align-items:center; direction:ltr; white-space:nowrap;
+  font-variant-numeric:tabular-nums; flex-shrink:0; }
+.txWrap .nums .a { width:56px; text-align:center; font-size:11.5px; font-weight:600; }
+.txWrap .nums .b { width:46px; text-align:end; font-size:11.5px; color:var(--textMuted);
+  padding-inline-start:4px; margin-inline-start:4px; border-inline-start:1px solid var(--divider); }
+.tx .nums .a.up { color:var(--gainText); }
+.tx .nums .a.down { color:var(--lossText); }
+.tx .ic.savings, .tx .fL.savings, .tx .d1.savings { background:var(--potSavings); }
+.tx .ic.spending, .tx .fL.spending, .tx .d1.spending { background:var(--potSpending); }
+.tx .ic.good, .tx .fL.good, .tx .d1.good { background:var(--potGood); }
+
+/* direction:ltr כדי שיישור ה-flex יהיה פיזי ולא יתהפך עם ה-RTL */
+.tx .ic.split { position:relative; overflow:hidden; direction:ltr; background:var(--depositBg); }
+.tx .ic.split .f { position:absolute; top:0; bottom:0; width:50%; overflow:hidden; }
+.tx .ic.split .fL { left:0; }
+.tx .ic.split .fR { right:0; background:var(--gainSoftBg); }
+/* האמוג'י בגודל מלא וממורכז בריבוע כולו; רק חצי ממנו נחשף בכל צד */
+.tx .ic.split .f > span { position:absolute; top:0; width:34px; height:100%;
+  display:flex; align-items:center; justify-content:center; font-size:27px; line-height:1; }
+.tx .ic.split .fL > span { left:0; }
+.tx .ic.split .fR > span { right:0; }
+.tx .ic.split::after { content:''; position:absolute; top:0; bottom:0; left:calc(50% - 0.75px);
+  width:1.5px; background:var(--surface); z-index:1; }
+
+.tx .ic.badged { position:relative; direction:ltr; overflow:visible; }
+.tx .ic.badged .tag { position:absolute; left:-5px; bottom:-5px; width:19px; height:19px; border-radius:50%;
+  background:var(--surface); border:1.5px solid var(--divider); box-shadow:0 1px 3px rgba(0,0,0,.14);
+  display:flex; align-items:center; justify-content:center; font-size:10px; }
+
+.tx .ic.duo { width:48px; background:transparent; position:relative; direction:ltr; }
+.tx .ic.duo .d1, .tx .ic.duo .d2 { position:absolute; top:2px; width:29px; height:29px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:14px; border:2px solid var(--surface); }
+.tx .ic.duo .d1 { left:0; z-index:1; }
+.tx .ic.duo .d2 { left:19px; background:var(--gainSoftBg); }
+
+.tx.interest .ic:not(.split):not(.duo):not(.badged) { background:var(--gainSoftBg); }
+.tx.interest .body .n { font-weight:600; }
+.txEmpty { padding:28px 16px; text-align:center; color:var(--textMuted); font-size:13px; }
+
+/* ---------- menu ---------- */
+.menuPanel { position:absolute; inset:0; background:var(--surface); color:var(--textStrong);
+  display:flex; flex-direction:column; z-index:10; transition:transform .22s ease; }
+.menuPanel[data-open='false'] { transform:translateX(-100%); }
+.menuBar { display:flex; align-items:center; gap:10px; padding:16px 16px 10px; flex-shrink:0; }
+.menuBar .t { flex:1; text-align:start; font-family:Fredoka,Rubik,sans-serif; font-size:18px; font-weight:700; }
+.menuContent { padding:0 16px 22px; overflow:auto; }
+
+.scopeBlock { border-radius:20px; padding:12px 13px 14px; margin-bottom:14px; }
+.scopeBlock.global { background:var(--globalBg); border:1.5px solid var(--globalBorder);
+  position:relative; z-index:3; padding:11px; }
+.scopeBlock.perAccount { background:transparent; border:1.5px dashed var(--divider);
+  box-shadow:inset 4px 0 0 var(--softBorder); }
+.scopeHead { display:flex; align-items:center; gap:7px; margin-bottom:3px; }
+.scopeHead .badge { font-size:10px; font-weight:800; letter-spacing:.3px; padding:3px 8px;
+  border-radius:999px; background:var(--textStrong); color:var(--surface); }
+.scopeHead .badge.soft { background:var(--softBorder); color:var(--softText); }
+.scopeHead .ttl { font-size:13.5px; font-weight:700; }
+.scopeHead .who { display:inline-flex; align-items:center; gap:4px; }
+.scopeSub { font-size:11.5px; color:var(--textMuted); line-height:1.5; margin-bottom:10px; }
+
+.editUnder { display:flex; align-items:center; justify-content:center; width:100%;
+  gap:6px; margin:7px 0 0; padding:5px 2px;
+  border:none; background:transparent; cursor:pointer; color:var(--textMuted);
+  font-family:Rubik,sans-serif; font-size:12.5px; font-weight:600; text-decoration:underline;
+  text-underline-offset:3px; text-decoration-color:var(--globalBorder); }
+.acctOptRow { display:flex; align-items:stretch; gap:5px; }
+.acctOptRow .acctOpt { flex:1; min-width:0; }
+.editInList { flex-shrink:0; width:34px; border:none; border-radius:12px; cursor:pointer;
+  background:var(--globalBg); font-size:15px; }
+.acctBtn { display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; border-radius:16px;
+  border:1.5px solid var(--globalBorder); background:var(--surface); color:var(--textStrong);
+  font-family:Rubik,sans-serif; cursor:pointer; text-align:start; }
+.acctBtn .av { width:38px; height:38px; border-radius:50%; background:var(--sunnyTile); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:20px; }
+.acctBtn .nm { flex:1; }
+.acctBtn .nm b { display:block; font-size:15.5px; font-weight:700; }
+.acctBtn .nm span { display:block; font-size:11px; color:var(--textMuted); margin-top:1px; }
+.acctBtn .car { font-size:11px; color:var(--textMuted); }
+.acctList { position:absolute; inset-inline:11px; top:calc(100% - 8px); z-index:4;
+  display:flex; flex-direction:column; gap:5px; padding:7px; border-radius:16px;
+  background:var(--surface); border:1.5px solid var(--globalBorder);
+  box-shadow:0 14px 30px rgba(0,0,0,.22); }
+.acctOpt { display:flex; align-items:center; gap:10px; width:100%; padding:8px 11px; border-radius:14px;
+  border:1.5px solid transparent; background:var(--surface); color:var(--textStrong);
+  font-family:Rubik,sans-serif; font-size:14.5px; font-weight:600; cursor:pointer; text-align:start; }
+.acctOpt .av { width:30px; height:30px; border-radius:50%; background:var(--sunnyTile);
+  display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.acctOpt .tot { margin-inline-start:auto; font-size:12.5px; font-weight:700; color:var(--textMuted);
+  direction:ltr; font-variant-numeric:tabular-nums; }
+.acctOpt[aria-current='true'] { border-color:var(--globalBorder); background:var(--globalBg); }
+.acctOpt.add { border-style:dashed; border-color:var(--divider); color:var(--textMuted); }
+
+.menuLabel { font-size:11.5px; font-weight:700; color:var(--textMuted); margin:13px 0 5px; text-align:start; }
+.menuRow { display:flex; align-items:center; gap:11px; width:100%; padding:11px 12px; border-radius:15px;
+  border:1.5px solid var(--divider); background:transparent; color:var(--textStrong);
+  font-family:Rubik,sans-serif; font-size:15px; font-weight:600; cursor:pointer; text-align:start; margin-bottom:5px; }
+.menuRow .ic { font-size:18px; }
+.menuRow[aria-current='page'] { background:var(--depositBg); border-color:var(--softBorder); }
+.menuRow .chev { margin-inline-start:auto; color:var(--textMuted); font-size:13px; }
+.swatches { display:flex; gap:9px; }
+.swatch { width:38px; height:38px; border-radius:12px; border:2.5px solid transparent; cursor:pointer;
+  position:relative; padding:0; }
+.swatch[aria-pressed='true'] { border-color:var(--textStrong); }
+</style>
+</head>
+<body>
+
+<h1>fun-saver — סיכום חשבון · מוקאפ אינטראקטיבי</h1>
+<p class="sub">
+  שני המסכים חיים וחולקים מצב. <b>בחירת חשבון בתפריט משנה גם את הגרף, גם את הרשימה וגם את הערכת הנושא</b> — כך רואים שהחשבון הוא הדבר הגלובלי היחיד וכל השאר תלוי-חשבון.
+  הכספים מחושבים ב<b>אגורות</b> כמו בקוד (<code>interestForDay = round(balanceAgorot × 0.15/30)</code>), ולכן הריבית היומית יוצאת סכום ריאלי ולא ₪1 עגול.
+  פיצול הפקדה <code>40/50/10</code> כמו ב-<code>DEPOSIT_SPLIT</code>. 90 יום היסטוריה לכל חשבון.
+  <br /><span class="new">פתוח</span>: <b>שפה</b> יושבת כרגע בקבוצה תלוית-החשבון לפי ההנחיה, אבל בקוד היא <code>LANGUAGE_SECTION_CONTENT.selectedCode</code> קבוע ללא שמירה — סביר שהיא העדפת משתמש/מכשיר ומקומה בקבוצה הגלובלית. שורה אחת להזיז.
+</p>
+
+<div class="controls">
+  <button data-act="axis" aria-pressed="true" id="axisBtn">ציר זמן: ימין→שמאל (RTL)</button>
+  <button data-act="menu">פתח / סגור תפריט</button>
+</div>
+<div class="controls"><span class="ctlLabel">אייקון תנועה:</span><span class="ctlGroup" id="iconControls"></span></div>
+<div class="controls"><span class="ctlLabel">כפתור עריכה:</span><span class="ctlGroup" id="pencilControls"></span></div>
+
+<div class="row">
+  <div class="slot">
+    <div class="slotTitle">מסך סיכום חשבון — גרף A + רשימה עם בקרת ריבית</div>
+    <div class="slotNote">
+      צ'יפים: <b>סך הכל</b> תמיד ניתן לכיבוי/הדלקה, כל קופה בנפרד, ו־<b>הכל</b> מדליק את שלושתן יחד.
+      טווח שבוע/חודש/הכל. ברשימה: מסנני סוג + מיתוג <b>ריבית חודשית / יומית</b>.
+    </div>
+    <div id="summaryPhone"></div>
+  </div>
+  <div class="slot">
+    <div class="slotTitle">תפריט — הפרדת היקף</div>
+    <div class="slotNote">
+      למעלה בלוק <b>גלובלי</b> עם בורר החשבון בלבד (נפתח, מציג את החשבון הנוכחי ואת היתרה של כל חשבון).
+      מתחת בלוק <b>תלוי-חשבון</b> ממוסגר בקו מקווקו עם שם הילד — מסכים, עריכה, מראה, שפה.
+    </div>
+    <div id="menuPhone"></div>
+  </div>
+</div>
+
+<script src="account-summary.js"></script>
+</body>
+</html>
