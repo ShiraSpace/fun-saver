@@ -29,4 +29,18 @@ describe('a goal outcome', () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  describe('when the note itself carries emphasis', () => {
+    const MARKED_NOTE = 'נוספים **מטבעות** בכל יום';
+
+    beforeEach(() => {
+      render(<GoalOutcome {...OUTCOME} note={MARKED_NOTE} />);
+    });
+
+    it('renders it through the same emphasis as the body, so no markers reach the page', () => {
+      expect(screen.getByTestId(GOAL_OUTCOME_TEST_IDS.note)).toHaveTextContent(
+        'נוספים מטבעות בכל יום'
+      );
+    });
+  });
 });
