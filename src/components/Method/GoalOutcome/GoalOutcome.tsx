@@ -5,7 +5,8 @@ import { GOAL_OUTCOME_TEST_IDS } from './constants';
 import { Icon, Note, Outcome, Text } from './GoalOutcome.styles';
 
 export function GoalOutcome({ icon, body, note }: IconLine): JSX.Element {
-  const maybeNote = note && (
+  const emphasizedBody = emphasize(body);
+  const noteLine = note && (
     <Note data-testid={GOAL_OUTCOME_TEST_IDS.note}>{note}</Note>
   );
 
@@ -13,8 +14,8 @@ export function GoalOutcome({ icon, body, note }: IconLine): JSX.Element {
     <Outcome data-testid={GOAL_OUTCOME_TEST_IDS.outcome}>
       <Icon>{icon}</Icon>
       <Text>
-        {emphasize(body)}
-        {maybeNote}
+        {emphasizedBody}
+        {noteLine}
       </Text>
     </Outcome>
   );
