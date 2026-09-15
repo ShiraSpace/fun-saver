@@ -178,3 +178,8 @@ export const mockDerivedAccount: AccountWithDerivedWallets = {
   ...createMockAccount(),
   wallets: mockDerivedWallets,
 };
+
+export const mockSecondDerivedAccount: AccountWithDerivedWallets = {
+  ...mockSecondAccount,
+  wallets: [],
+};
