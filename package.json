@@ -16,7 +16,10 @@
     "test:visual": "next build && tsx --test --test-concurrency=4 e2e/*.visual.ts",
     "db:migrate": "tsx --env-file=.env.local src/db/run-migration.ts",
     "db:migrate-dev": "tsx --env-file=.env.local src/db/run-migration.ts --dev",
-    "db:migrate-test": "tsx --env-file=.env.local src/db/run-migration.ts --test"
+    "db:migrate-test": "tsx --env-file=.env.local src/db/run-migration.ts --test",
+    "db:backfill": "tsx --env-file=.env.local src/db/run-backfill.ts",
+    "db:backfill-dev": "tsx --env-file=.env.local src/db/run-backfill.ts --dev",
+    "db:backfill-test": "tsx --env-file=.env.local src/db/run-backfill.ts --test"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
