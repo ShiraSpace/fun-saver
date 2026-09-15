@@ -1,5 +1,10 @@
 # The Three Jars Method (Save, Spend, Share)
 
+> This file maps the method onto the code. For **why** any of it works — the
+> evidence, the effect sizes, the counter-evidence, the Israeli context, and
+> the full source list — see [`research/jar-method.md`](./research/jar-method.md).
+> Parent-facing copy lives in [`copy/`](./copy/).
+
 ## Core Principle
 
 Instead of putting allowance into a single wallet, the money is divided into three transparent jars. This visual approach helps children understand the different purposes of money and teaches basic financial management.
@@ -36,4 +41,9 @@ Instead of putting allowance into a single wallet, the money is divided into thr
 | Save  | 40%   |
 | Share | 10%   |
 
-> **In the app:** allocation percentages are not currently a configured input — deposits are made per-wallet. If auto-split on allowance is added later, these defaults are the natural starting point.
+> **In the app:** this split **is** implemented. `DEPOSIT_SPLIT` in
+> `src/lib/constants.ts` holds `{spending: 0.5, savings: 0.4, goodDeeds: 0.1}`,
+> and `splitDeposit()` in `src/lib/transactions.ts` applies it to every deposit.
+> Making the split configurable per account is on the roadmap — see
+> `docs/backlog.md`. There is **no evidence for any particular split**; it is a
+> values choice, not a finding. See `docs/research/jar-method.md` §1.4.

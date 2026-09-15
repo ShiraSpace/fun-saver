@@ -20,7 +20,7 @@ Each family can have multiple accounts (one per child), each with its own theme 
 ## How it helps
 
 - **Makes interest tangible.** A kid can see today's coins appear on the savings wallet, so "compound interest" stops being abstract.
-- **Teaches the split by default.** Every deposit auto-splits 60/20/20, so saving and giving happen automatically instead of being an afterthought.
+- **Teaches the split by default.** Every deposit auto-splits 50/40/10, so saving and giving happen automatically instead of being an afterthought.
 - **Protects them from mistakes.** Withdrawals are overdraft-protected — you can't spend money you don't have.
 - **Celebrates giving.** The good-deeds wallet reframes withdrawals as donations and keeps a running total to be proud of.
 - **Speaks their language.** Hebrew, RTL, mobile-first, and warm — not a beige banking form.
@@ -77,7 +77,7 @@ FUNSAVER_NOW=2026-01-01 npm run dev
 
 ## Key behaviours
 
-- **Deposits** auto-split one amount **60% savings / 20% spending / 20% good deeds**.
+- **Deposits** auto-split one amount **50% spending / 40% savings / 10% good deeds**.
 - **Withdrawals** pick a single wallet and are **overdraft-protected**; a good-deeds withdrawal is framed as a donation.
 - Money is stored as **integer agorot**; displayed rounded to the nearest half-shekel with a small `₪` glyph.
 - Interest **compounds daily** on the savings wallet and is idempotent per day.
