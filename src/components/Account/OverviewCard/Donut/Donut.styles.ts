@@ -19,9 +19,14 @@ const drawArc = keyframes`
   }
 `;
 
-export const Arc = styled.circle<{ durationMs: number; delayMs: number }>`
-  animation: ${drawArc} ${({ durationMs }): number => durationMs}ms linear
-    backwards;
+export const ArcCircle = styled.circle<{
+  durationMs: number;
+  delayMs: number;
+}>`
+  animation-name: ${drawArc};
+  animation-duration: ${({ durationMs }): number => durationMs}ms;
+  animation-timing-function: linear;
+  animation-fill-mode: backwards;
   animation-delay: ${({ delayMs }): number => delayMs}ms;
 
   @media (prefers-reduced-motion: reduce) {

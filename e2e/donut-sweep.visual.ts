@@ -3,28 +3,28 @@ import assert from 'node:assert/strict';
 import { mockAccount, mockTransactions } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
+const seed = { accounts: [mockAccount], transactions: mockTransactions };
 const ARCS_PER_RING = 3;
 const NOTHING_MOVES = 0;
-const MOTION_ALLOWED = true;
-const MOTION_REDUCED = false;
 
 describe('donut sweep', () => {
-  const { dashboard } = useDriver({
-    accounts: [mockAccount],
-    transactions: mockTransactions,
-  });
+  const { dashboard } = useDriver(seed, 'no-preference');
 
-  it('draws every arc when the browser allows motion', async () => {
-    assert.equal(
-      await dashboard.donutAnimationsOnLoad(MOTION_ALLOWED),
-      ARCS_PER_RING
-    );
+  it('draws every arc of the ring', async () => {
+    assert.deepEqual(await dashboard.arcsOnLoad(), {
+      elements: ARCS_PER_RING,
+      animations: ARCS_PER_RING,
+    });
   });
+});
 
-  it('draws nothing when the browser asks for reduced motion', async () => {
-    assert.equal(
-      await dashboard.donutAnimationsOnLoad(MOTION_REDUCED),
-      NOTHING_MOVES
-    );
+describe('donut sweep under reduced motion', () => {
+  const { dashboard } = useDriver(seed);
+
+  it('leaves every arc of the ring still', async () => {
+    assert.deepEqual(await dashboard.arcsOnLoad(), {
+      elements: ARCS_PER_RING,
+      animations: NOTHING_MOVES,
+    });
   });
 });

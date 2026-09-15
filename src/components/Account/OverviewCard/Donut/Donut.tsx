@@ -11,7 +11,7 @@ import {
   OVERVIEW_CARD_TEST_IDS,
   WALLET_ARC_COLOR,
 } from '../constants';
-import { Arc as ArcCircle, Svg } from './Donut.styles';
+import { ArcCircle, Svg } from './Donut.styles';
 
 export interface DonutSegment {
   name: WalletName;
@@ -57,6 +57,7 @@ export function Donut({ segments }: DonutProps): JSX.Element {
   const arcs = toArcs(segments).map((arc) => (
     <ArcCircle
       key={arc.name}
+      data-testid={OVERVIEW_CARD_TEST_IDS.arc}
       cx={DONUT_STYLE.center}
       cy={DONUT_STYLE.center}
       r={DONUT_STYLE.radius}

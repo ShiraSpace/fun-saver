@@ -32,9 +32,7 @@ function arcEnd(arc: Element): number {
 }
 
 function arcSweepMs(arc: Element): number {
-  const [, duration] = getComputedStyle(arc).animation.split(' ');
-
-  return Number.parseFloat(duration);
+  return Number.parseFloat(getComputedStyle(arc).animationDuration);
 }
 
 function arcDelayMs(arc: Element): number {

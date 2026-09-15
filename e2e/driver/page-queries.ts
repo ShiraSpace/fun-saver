@@ -3,13 +3,35 @@ import { findByTest, queryAllByTest, queryByTest } from './page-element';
 
 declare global {
   interface Window {
-    animationsOnFirstFrame: Promise<number>;
+    animationsOnFirstFrame?: Record<string, number>;
   }
 }
 
-export const REDUCED_MOTION: MediaFeature[] = [
-  { name: 'prefers-reduced-motion', value: 'reduce' },
-];
+export type MotionPreference = 'reduce' | 'no-preference';
+
+export interface FirstFrame {
+  elements: number;
+  animations: number;
+}
+
+export function motionFeatures(motion: MotionPreference): MediaFeature[] {
+  return [{ name: 'prefers-reduced-motion', value: motion }];
+}
+
+export async function captureFirstFrameAnimations(page: Page): Promise<void> {
+  await page.evaluateOnNewDocument(() => {
+    requestAnimationFrame(() => {
+      const running: Record<string, number> = {};
+
+      for (const node of document.querySelectorAll('[data-testid]')) {
+        const testId = node.getAttribute('data-testid') ?? '';
+
+        running[testId] = (running[testId] ?? 0) + node.getAnimations().length;
+      }
+      window.animationsOnFirstFrame = running;
+    });
+  });
+}
 
 export async function exists(page: Page, testId: string): Promise<boolean> {
   return (await queryByTest(page, testId)) !== null;
@@ -101,25 +123,12 @@ export function computedStyle({
 
 export async function animationsOnLoad(
   page: Page,
-  testId: string,
-  allowMotion: boolean
-): Promise<number> {
-  await page.emulateMediaFeatures(allowMotion ? [] : REDUCED_MOTION);
-  await page.evaluateOnNewDocument((id: string) => {
-    window.animationsOnFirstFrame = new Promise((resolve) => {
-      requestAnimationFrame(() => {
-        const drawn = document.querySelectorAll(`[data-testid="${id}"] *`);
+  testId: string
+): Promise<FirstFrame> {
+  const animations = await page.evaluate(
+    (id: string) => window.animationsOnFirstFrame?.[id] ?? 0,
+    testId
+  );
 
-        resolve(
-          Array.from(drawn).reduce(
-            (running, node) => running + node.getAnimations().length,
-            0
-          )
-        );
-      });
-    });
-  }, testId);
-  await page.reload({ waitUntil: 'networkidle0' });
-
-  return page.evaluate(() => window.animationsOnFirstFrame);
+  return { elements: (await queryAllByTest(page, testId)).length, animations };
 }
