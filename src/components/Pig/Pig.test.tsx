@@ -16,7 +16,7 @@ describe('Pig', () => {
 
   it('takes the size it is given', () => {
     render(
-      <Pig pigSize={120} data-testid={TEST_ID}>
+      <Pig size={120} data-testid={TEST_ID}>
         {PIG_EMOJI}
       </Pig>
     );
