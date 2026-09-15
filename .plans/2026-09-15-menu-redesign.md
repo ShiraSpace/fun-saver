@@ -14,6 +14,62 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
+## Progress — updated 2026-09-15 (PRs 1–4 merged; PR 5 is next)
+
+Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
+
+| Plan PR       | GitHub                                                 | Branch                       | Status                 |
+| ------------- | ------------------------------------------------------ | ---------------------------- | ---------------------- |
+| PR 1          | [#58](https://github.com/ShiraSpace/fun-saver/pull/58) | `feat/menu-derived-accounts` | **merged** — `0085222` |
+| PR 2          | [#59](https://github.com/ShiraSpace/fun-saver/pull/59) | `feat/menu-light-sheet`      | **merged** — `6288806` |
+| PR 3          | [#62](https://github.com/ShiraSpace/fun-saver/pull/62) | `feat/menu-below-header`     | **merged** — `80d0b67` |
+| PR 4          | [#65](https://github.com/ShiraSpace/fun-saver/pull/65) | `feat/menu-account-list`     | **merged** — `8036baa` |
+| PR 5          | —                                                      | `feat/menu-account-picker`   | **next**               |
+| PR 6, 7, 8, 9 | —                                                      | —                            | not started            |
+
+The panel is now a `softBg` sheet that starts below a header which no longer fades,
+and the chip row is a list of `AccountRow`s carrying each account's total. What is
+left is collapsing that list behind a trigger (PR 5), making the expansion a popover
+(PR 6), moving edit under it (PR 7), grouping by scope (PR 8) and the nav section
+(PR 9).
+
+### What the merged PRs changed that this plan did not predict
+
+- **PR 2 also had to repaint `Header.styles.ts`.** Not on the plan's list, but
+  `Bar[data-open='true']` set `textOnPrimary`, which rendered the menu title white on
+  a pale sheet.
+- **PR 2 moved `MenuLabel` to `softText`, not `textMuted`.** `textMuted` on `softBg`
+  measures 3.6:1 in sunshine-quest and 4.3:1 in jungle-quest — both under WCAG AA for
+  a 12px label. `softText` measures 6.0 / 5.7 / 9.2 and is the token the palette ships
+  alongside `softBg`.
+- **PR 3 had to stop the header fading and stop it swapping its title.** The plan says
+  only to inset the panel, but variant ג׳'s note is explicit that _only the content
+  below the header changes_. Insetting alone would have left a gradient strip above the
+  panel and a header still relabelled `תפריט`. `Bar` lost its whole `data-open` block
+  and `Header` lost the prop.
+- **`header-layout.visual.ts` never needed new baselines.** It asserts geometry and
+  type size, no colour. Only `menu-morph.visual.ts` moved, in PRs 2 and 3.
+- **PR 4 needed `AccountRow` as its own component.** Hoisting the map into a variable
+  left `AccountList` at 41 lines against the 40-line `max-lines-per-function` cap.
+- **`AccountChip`'s `Badge` never needed a light-panel equivalent.** It is a
+  `primary`-filled pill on the avatar, independent of the panel colour. PR 4 deleted it.
+
+### Still open from the merged work
+
+- **`alert` is under AA on the sheet** — 3.7:1 in sunshine-quest, 3.6:1 in
+  jungle-quest, 6.0:1 in midnight-blue. `AppearanceSection`'s `SaveError` is the only
+  reader today. There is no darker red in the palette, so fixing it means a new token
+  across `ThemeColors` and all three themes — a theme PR, not a repaint. Deliberately
+  not done in PR 2.
+- **The edit pencil floats alone** under the account list since PR 4 deleted the chip
+  row that held it. PR 7 is what resolves this, which is an argument for not leaving
+  PR 5 and 6 sitting in review for long.
+- **`HEADER_LAYOUT.foregroundZIndex` and `MENU_TOGGLE.zIndex` are vestigial.** They
+  existed so the title, avatar and burger could float above a panel that covered them;
+  since PR 3 nothing covers them. Left in place because the panel still animates under
+  a `scale()` transform and removing them risks a stacking regression for no visible
+  gain.
+
 ## Decisions
 
 - **Panel is a light sheet**, not today's `theme.gradients.screen`. Decided
@@ -28,7 +84,9 @@ at) follows in its own plan.
 ## Phase 0 — branch
 
 One branch and one PR per phase below, each off updated `origin/main`. The repo
-default is `main`; there is no `master`.
+default is `main`; there is no `master`. The repo squash-merges, so a branch whose
+predecessor is still open should be rebased with `git rebase --onto origin/main
+<predecessor> <branch>` once that predecessor lands, not rebased plainly.
 
 ## PR 1 — derived accounts reach the menu
 
@@ -80,7 +138,7 @@ Inset the panel below the header instead and drop the 92px padding, leaving the
 real `Header` visible and mounted. Nothing about the header re-renders on open, so
 there is nothing to flicker.
 
-Mockup variant ג׳ shows the target by *duplicating* the header card inside the
+Mockup variant ג׳ shows the target by _duplicating_ the header card inside the
 panel. Do not build it that way — one header that is never covered beats two that
 have to match.
 
@@ -105,6 +163,15 @@ New `AccountPicker` wrapping the list: a trigger showing the current account, it
 total and a caret, expanding the list inline. Open state is local to the picker.
 
 Split from PR 4 on purpose — PR 4 is a layout rewrite, this is new state.
+
+As of PR 4 the pieces are in `src/components/Menu/AccountList/`: `AccountList` renders
+the rows plus the add row, and `AccountRow` is a standalone avatar / name / total row
+marked with `aria-current`. `AccountsSection` renders `AccountList` directly and owns
+the select and add handlers, so the picker slots between them. The trigger shows the
+same three things a row does — `selectedAccount(accounts, selectedAccountId)` from
+`src/lib/selected-account.ts` gives the current one — but it is not an `AccountRow`:
+it carries a caret, toggles rather than selects, and PR 7 hangs the edit button
+directly under it. Watch the 40-line cap; `AccountRow` already exists because of it.
 
 ## PR 6 — the expansion becomes a popover
 
@@ -157,9 +224,20 @@ ships inert.
   `ACCOUNTS_SECTION_TEST_IDS`, consumed by four suites. Because it is one file,
   each PR updates the driver plus only the suites whose flow it changed. Without
   it this epic would touch every suite in every PR.
-- **Visual baselines** change in PRs 2, 3, 4, 5, 7 and 8.
-- **`e2e/test-utils/fixtures`** — check `mockAccount` / `mockSecondAccount` produce
-  non-zero wallet balances once the picker renders totals, or the rows read ₪0.
+- **Visual baselines** changed in PRs 2 and 3 only so far (`menu-morph.visual.ts`),
+  and PR 4 moved `account-switch.visual.ts` onto the new row test ids. Still expected
+  in PRs 5, 7 and 8.
+- **Assert through the helper, never restate its output.** A component test checks
+  that the component uses the method we chose; `totalBalance` and
+  `agorotToWholeShekels` have their own tests in `derivations.test.ts` and
+  `money.test.ts`. Hardcoding an expected shekel figure couples a component test to a
+  dependency's implementation and reddens the wrong file when it changes.
+- **Fixtures — resolved in PR 4.** `mockSecondDerivedAccount` now carries
+  `createMockDerivedWallet({ id: 'w4', balance: 4200 })` so the two rows have totals
+  that can be told apart. `mockSecondAccount` itself stays wallet-less on purpose:
+  `src/db/memory-store/__tests__/accounts.test.ts` asserts account `a2` comes back
+  with no wallets, to prove wallets stay attached to their own account. The plain
+  fixture is the store layer's empty case, the derived one the menu's funded case.
 - **Whole epic is front-end.** No API, no store, no migration. Language was the
   only part that needed a data layer and it is out.
 - **README is stale** on the deposit split: it says 60/20/20 where
