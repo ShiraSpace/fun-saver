@@ -22,7 +22,7 @@ export function EmptyState({ onCreate }: EmptyStateProps): JSX.Element {
   return (
     <Screen data-testid={EMPTY_STATE_TEST_IDS.container}>
       <Pig
-        pigSize={EMPTY_STATE_LAYOUT.emojiSize}
+        size={EMPTY_STATE_LAYOUT.emojiSize}
         data-testid={EMPTY_STATE_TEST_IDS.pig}
         data-oinking={isOinking}
         onAnimationEnd={onPigDoneOinking}
