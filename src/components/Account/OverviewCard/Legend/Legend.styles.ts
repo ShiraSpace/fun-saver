@@ -1,7 +1,6 @@
-import { keyframes } from '@emotion/react';
+import { keyframes, type SerializedStyles } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { WalletName } from '@/lib/types';
-import type { SerializedStyles } from '@emotion/react';
 import { EASING, entrance } from '@/theme/motion';
 import {
   LEGEND_ANIMATION,

@@ -11,6 +11,10 @@ const entries = mockDerivedWallets.map((wallet, index) => ({
   share: mockWalletShares[index],
 }));
 
+function rowDelayMs(row: Element): number {
+  return Number.parseFloat(getComputedStyle(row).animationDelay);
+}
+
 describe('Legend', () => {
   beforeEach(() => {
     render(<Legend entries={entries} />);
@@ -32,6 +36,16 @@ describe('Legend', () => {
     expect(
       screen.getAllByTestId(OVERVIEW_CARD_TEST_IDS.legendDot)[0]
     ).toHaveTextContent(mockDerivedWallets[0].icon);
+  });
+
+  it('starts each row a beat after the one above it', () => {
+    const [first, second] = screen.getAllByTestId(
+      OVERVIEW_CARD_TEST_IDS.legendRow
+    );
+    const betweenRowsMs = rowDelayMs(second) - rowDelayMs(first);
+    const expectedBetweenRowsMs = 50;
+
+    expect(betweenRowsMs).toBe(expectedBetweenRowsMs);
   });
 
   it('shows the share of each wallet as a percentage', () => {
