@@ -19,8 +19,12 @@ interface LegendProps {
 }
 
 export function Legend({ entries }: LegendProps): JSX.Element {
-  const rows = entries.map((entry) => (
-    <Row key={entry.id} data-testid={OVERVIEW_CARD_TEST_IDS.legendRow}>
+  const rows = entries.map((entry, index) => (
+    <Row
+      key={entry.id}
+      rowIndex={index}
+      data-testid={OVERVIEW_CARD_TEST_IDS.legendRow}
+    >
       <Dot
         walletName={entry.name}
         data-testid={OVERVIEW_CARD_TEST_IDS.legendDot}
