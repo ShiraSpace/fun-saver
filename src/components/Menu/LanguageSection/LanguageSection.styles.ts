@@ -18,6 +18,7 @@ export const Segment = styled.div`
   display: flex;
   border-radius: ${LANGUAGE_SECTION_STYLE.radius}px;
   overflow: hidden;
+  border: 1px solid ${({ theme }): string => theme.colors.divider};
   background: ${({ theme }): string => theme.colors.surface};
 `;
 
