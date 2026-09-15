@@ -18,7 +18,7 @@ import {
 export function SignIn(): JSX.Element {
   return (
     <Screen data-testid={SIGN_IN_TEST_IDS.container}>
-      <Pig pigSize={SIGN_IN_LAYOUT.pigSize} data-testid={SIGN_IN_TEST_IDS.pig}>
+      <Pig size={SIGN_IN_LAYOUT.pigSize} data-testid={SIGN_IN_TEST_IDS.pig}>
         {PIG_EMOJI}
       </Pig>
       <Wordmark>{SIGN_IN_COPY.wordmark}</Wordmark>
