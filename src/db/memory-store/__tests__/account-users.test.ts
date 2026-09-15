@@ -1,4 +1,5 @@
 import { InMemoryStore } from '../index';
+import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
 import {
   mockAccount,
   mockAccountUser,
@@ -8,6 +9,7 @@ import {
 } from '@/test-utils/fixtures';
 
 const mockOwner = { userId: mockUser.id, addedAt: mockAccountUser.addedAt };
+const mockUnknownOwner = { userId: 'ghost', addedAt: mockAccountUser.addedAt };
 
 describe('InMemoryStore account users', () => {
   let store: InMemoryStore;
@@ -35,6 +37,18 @@ describe('InMemoryStore account users', () => {
 
   it('does not list the account for anyone else', async () => {
     expect(await store.listAccountsForUser(mockSecondUser.id)).toEqual([]);
+  });
+
+  it('rejects an owner that has no user row', async () => {
+    await expect(
+      store.insertAccountWithOwner(mockSecondAccount, mockUnknownOwner)
+    ).rejects.toThrow(UnknownOwnerError);
+  });
+
+  it('reports the duplicate account when the owner is also unknown', async () => {
+    await expect(
+      store.insertAccountWithOwner(mockAccount, mockUnknownOwner)
+    ).rejects.toThrow(DuplicateAccountError);
   });
 
   it('keeps accounts owned by different users apart', async () => {
