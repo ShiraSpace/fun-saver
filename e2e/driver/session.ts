@@ -23,9 +23,7 @@ export class Session {
 
   async open(baseUrl: string): Promise<void> {
     this.activePage = await this.requireBrowser().newPage();
-    await this.activePage.emulateMediaFeatures([
-      { name: 'prefers-reduced-motion', value: 'reduce' },
-    ]);
+    await this.activePage.emulateMediaFeatures(queries.REDUCED_MOTION);
     await this.activePage.goto(baseUrl, { waitUntil: 'networkidle0' });
   }
 

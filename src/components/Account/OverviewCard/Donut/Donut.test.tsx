@@ -47,7 +47,7 @@ const SAVINGS_ARC_LENGTH = 139.864;
 const GOOD_DEEDS_ARC_LENGTH = 42.223;
 const SAVINGS_ARC_COLOR = getThemeTokens().colors.walletSavings;
 const SAVINGS_SWEEP_MS = 318;
-const EMPTY_WALLET_SEGMENTS: DonutSegment[] = [
+const emptyWalletSegments: DonutSegment[] = [
   { name: 'savings', share: 60 },
   { name: 'spending', share: 40 },
   { name: 'goodDeeds', share: 0 },
@@ -111,7 +111,7 @@ describe('Donut with an empty wallet', () => {
   let emptyWalletArc: Element;
 
   beforeEach(() => {
-    render(<Donut segments={EMPTY_WALLET_SEGMENTS} />);
+    render(<Donut segments={emptyWalletSegments} />);
     [, , emptyWalletArc] = getArcs();
   });
 
