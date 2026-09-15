@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-15 (plan PR 8 open; both backfills have run)
+## Progress — updated 2026-09-15 (plan PR 8 merged; PR 9 is next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -21,26 +21,33 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 3b   | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
 | PR 4    | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                               |
 | PR 5    | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
-| PR 8    | —                                                      | `feat/assign-owner`                | **open** — backfilled, see below                     |
-| PR 6, 7, 9, 10 | —                                               | —                                  | not started                                          |
+| PR 8    | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                               |
+| PR 9    | —                                                      | `feat/scope-accounts-to-user`      | **next**                                             |
+| PR 6, 7, 10 | —                                                  | —                                  | not started                                          |
 
-### Next is PR 8, and PR 6 is not next
+### Next is PR 9, and PR 6 is still not next
 
-The obvious next step after a login page is the middleware that enforces it.
-**It is the wrong one.** PR 4 ships no allowlist, so any Google account can sign
-in. A PR 6 that gates on "has a session" while `page.tsx` still calls
-`listAccounts()` hands every signed-in stranger all four real accounts — it
-would look like the hole was closed while making it reachable by anyone with a
-Google account. See _Authentication is open by design_ below.
+**PR 9 is the one that closes the public hole**, not PR 6. PR 4 ships no
+allowlist, so any Google account can sign in. A PR 6 that gates on "has a
+session" while `page.tsx` still calls `listAccounts()` hands every signed-in
+stranger all four real accounts — it would look like the hole was closed while
+making it reachable by anyone with a Google account. See _Authentication is open
+by design_ below.
 
-The order that actually closes the hole is **PR 8 → PR 9 → PR 6**: give the
-existing accounts owners, scope reads to the signed-in user, then enforce the
-session. PR 7 is independent and can land at any time.
+The remaining order is **PR 9 → PR 6**: scope reads to the signed-in user, then
+enforce the session. PR 8 has already given the existing accounts their owners.
+PR 7 is independent and can land at any time.
+
+**PR 9 opens by re-running the backfill and closes by deleting it** — both are
+spelled out in its section below. Do not skip the re-run: it is what catches any
+account created between 2026-09-15 and the switch, and such an account goes
+invisible the moment `listAccounts()` is deleted.
 
 ### PR 8's backfill has run on both targets
 
 The manual step that blocked it — signing in on production — happened on
-2026-09-15, and both backfills ran the same evening. Measured after:
+2026-09-15, and both backfills ran the same evening. Measured after, and
+unchanged since:
 
 | branch       | `users` | `accounts` | `account_users` | orphan accounts |
 | ------------ | ------- | ---------- | --------------- | --------------- |
@@ -697,7 +704,7 @@ Tests: component test — renders the name, calls `signOut`.
 
 Depends on: PR 4. Independent of 5/6 — can land any time after 4.
 
-### PR 8 — `feat/assign-owner`
+### PR 8 — `feat/assign-owner` — MERGED (#61, `b93e218`)
 
 **The one data step. Without it, accounts created before auth have no member row
 and go invisible the moment PR 9 lands.**
@@ -901,8 +908,9 @@ migrating `data.json` into Neon.
    for a merged branch. Use `git diff origin/main origin/<branch> --stat` or
    `git grep` for a symbol the PR added. A PR page saying "merged" is not proof
    either — see #47.
-9. **Start with PR 4** — the Google Cloud step below has to happen first, and it
-   is manual. Nothing in this plan is open; PR 4 branches off `main`.
+9. **Start with PR 9** — PRs 1–5 and 8 have merged and the Google Cloud step is
+   long done. Nothing in this plan is open; PR 9 branches off `main`. Its first
+   act is re-running the backfill and its last is deleting it.
 
 ### Still undecided
 
