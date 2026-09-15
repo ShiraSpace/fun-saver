@@ -1,5 +1,13 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { DONUT_STYLE, OVERVIEW_CARD_STYLE } from './constants';
+import { EASING, entrance } from '@/theme/motion';
+import { DONUT_STYLE, OVERVIEW_CARD_STYLE, TOTAL_ANIMATION } from './constants';
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+`;
 
 const HOLE_DIAMETER =
   (DONUT_STYLE.radius - DONUT_STYLE.strokeWidth / 2) *
@@ -41,4 +49,10 @@ export const HoleLabel = styled.span`
 export const HoleAmount = styled.span<{ fontSize: number }>`
   font-size: ${({ fontSize }): number => fontSize}px;
   max-width: ${HOLE_DIAMETER}px;
+  ${entrance({
+    keyframes: fadeIn,
+    durationMs: TOTAL_ANIMATION.fadeMs,
+    delayMs: TOTAL_ANIMATION.startDelayMs,
+    easing: EASING.easeOut,
+  })}
 `;

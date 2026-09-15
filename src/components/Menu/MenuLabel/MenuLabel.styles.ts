@@ -2,6 +2,9 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { MENU_LABEL_STYLE } from './constants';
 
+const sheetText = ({ theme }: { theme: Theme }): string =>
+  theme.colors.softText;
+
 const labelSize = ({ theme }: { theme: Theme }): number =>
   theme.typography.label;
 
@@ -12,5 +15,5 @@ export const Label = styled.div`
   font-weight: 700;
   letter-spacing: ${MENU_LABEL_STYLE.letterSpacing}px;
   text-transform: uppercase;
-  opacity: ${MENU_LABEL_STYLE.opacity};
+  color: ${sheetText};
 `;

@@ -26,7 +26,7 @@ export function Account({ account }: AccountProps): JSX.Element {
     <Screen align="top">
       <Column>
         <Header title={name} avatarId={avatarId} />
-        <OverviewCard wallets={ordered} />
+        <OverviewCard key={account.id} wallets={ordered} />
         <WalletList wallets={ordered} />
         <ActionButton
           type="button"

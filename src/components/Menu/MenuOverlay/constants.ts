@@ -1,4 +1,6 @@
 import { LAYERS } from '@/theme/layers';
+import { ACCOUNT_LAYOUT } from '@/components/Account/constants';
+import { HEADER_LAYOUT } from '@/components/Header/constants';
 
 export const MENU_OVERLAY_TEST_IDS = {
   overlay: 'menu-overlay',
@@ -21,11 +23,12 @@ export const MENU_OVERLAY_STYLE = {
 
 export const MENU_OVERLAY_LAYOUT = {
   contentPaddingX: 22,
-  contentPaddingTop: 92,
+  contentPaddingTop: 8,
+  top: ACCOUNT_LAYOUT.paddingY + HEADER_LAYOUT.height,
 } as const;
 
 export const MENU_LINK_STYLE = {
   paddingY: 14,
   radius: 14,
-  dividerOpacity: 0.28,
+  dividerWidth: 1,
 } as const;

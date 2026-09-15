@@ -53,12 +53,4 @@ export class HeaderDriver {
   titleColor(): Promise<string> {
     return this.session.computedStyle(TITLE_TEST_IDS.title, 'color');
   }
-
-  async waitForTransparentBar(): Promise<void> {
-    await this.session.waitForStyle(
-      `[data-testid="${HEADER_TEST_IDS.bar}"]`,
-      'background-color',
-      'rgba(0, 0, 0, 0)'
-    );
-  }
 }

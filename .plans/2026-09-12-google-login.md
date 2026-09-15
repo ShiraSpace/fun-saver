@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-15 (plan PR 5 merged; PR 8 is next, not PR 6)
+## Progress — updated 2026-09-15 (plan PR 8 merged; PR 9 is next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -21,35 +21,51 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 3b   | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
 | PR 4    | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                               |
 | PR 5    | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
-| PR 8    | —                                                      | `feat/assign-owner`                | **next** — blocked, see below                        |
-| PR 6, 7, 9, 10 | —                                               | —                                  | not started                                          |
+| PR 8    | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                               |
+| PR 9    | —                                                      | `feat/scope-accounts-to-user`      | **next**                                             |
+| PR 6, 7, 10 | —                                                  | —                                  | not started                                          |
 
-### Next is PR 8, and PR 6 is not next
+### Next is PR 9, and PR 6 is still not next
 
-The obvious next step after a login page is the middleware that enforces it.
-**It is the wrong one.** PR 4 ships no allowlist, so any Google account can sign
-in. A PR 6 that gates on "has a session" while `page.tsx` still calls
-`listAccounts()` hands every signed-in stranger all four real accounts — it
-would look like the hole was closed while making it reachable by anyone with a
-Google account. See _Authentication is open by design_ below.
+**PR 9 is the one that closes the public hole**, not PR 6. PR 4 ships no
+allowlist, so any Google account can sign in. A PR 6 that gates on "has a
+session" while `page.tsx` still calls `listAccounts()` hands every signed-in
+stranger all four real accounts — it would look like the hole was closed while
+making it reachable by anyone with a Google account. See _Authentication is open
+by design_ below.
 
-The order that actually closes the hole is **PR 8 → PR 9 → PR 6**: give the
-existing accounts owners, scope reads to the signed-in user, then enforce the
-session. PR 7 is independent and can land at any time.
+The remaining order is **PR 9 → PR 6**: scope reads to the signed-in user, then
+enforce the session. PR 8 has already given the existing accounts their owners.
+PR 7 is independent and can land at any time.
 
-### PR 8 is blocked on one manual step
+**PR 9 opens by re-running the backfill and closes by deleting it** — both are
+spelled out in its section below. Do not skip the re-run: it is what catches any
+account created between 2026-09-15 and the switch, and such an account goes
+invisible the moment `listAccounts()` is deleted.
 
-**Nobody has signed in on production yet.** Measured 2026-09-15 against the Neon
-`production` branch:
+### PR 8's backfill has run on both targets
+
+The manual step that blocked it — signing in on production — happened on
+2026-09-15, and both backfills ran the same evening. Measured after, and
+unchanged since:
 
 | branch       | `users` | `accounts` | `account_users` | orphan accounts |
 | ------------ | ------- | ---------- | --------------- | --------------- |
-| `production` | **0**   | 4          | 0               | **4**           |
-| `dev`        | 1       | 3          | 0               | 3               |
+| `production` | 1       | 4          | **4**           | **0**           |
+| `dev`        | 1       | 3          | **3**           | **0**           |
 
-PR 8 assigns every orphan account to the user matching a given email, so on
-production there is currently no user to assign to. **Sign in once at the live
-Vercel URL** and that row appears; the dev run can proceed today either way.
+All four production accounts — אמא, יעל, רוני, שירי — carry an `owner` row for
+the one user, written in a single transaction. The plan's verification query
+returns 0 on both, which is the condition PR 9 depends on.
+
+**Re-running it is safe and PR 9 asks for one more run.** `assignOwners` skips
+any account that already has a member row, so a repeat reports `0 account(s)
+assigned` and writes nothing. That last run closes the window for accounts
+created between now and the switch.
+
+**Nothing is gated yet.** `page.tsx` still calls `listAccounts()`, so the 4
+accounts and their transactions still render to anonymous visitors. Ownership
+rows make PR 9 possible; they close nothing on their own.
 
 ### How to confirm work actually landed
 
@@ -688,7 +704,7 @@ Tests: component test — renders the name, calls `signOut`.
 
 Depends on: PR 4. Independent of 5/6 — can land any time after 4.
 
-### PR 8 — `feat/assign-owner`
+### PR 8 — `feat/assign-owner` — MERGED (#61, `b93e218`)
 
 **The one data step. Without it, accounts created before auth have no member row
 and go invisible the moment PR 9 lands.**
@@ -696,16 +712,22 @@ and go invisible the moment PR 9 lands.**
 - `src/db/migration-target.ts` — **new**, `resolveTarget()` / `requireTargetUrl()`
   lifted out of `run-migration.ts` so both scripts share `--dev` / `--test`
   targeting.
-- `src/db/assign-owner.ts` — every account with no member row gets an `owner`
-  row for the user matching a given email. Idempotent.
-- `db:backfill`, `db:backfill-dev`, `db:backfill-test` npm scripts.
+- `src/db/assign-owner.ts` — `assignOwners`, pure: every account with no member
+  row gets an `owner` row for a given owner. Idempotent, and it keys on
+  `account_id` alone, so an account owned by *anyone* is skipped rather than
+  colliding with the `(account_id, user_id)` primary key.
+- `src/db/run-backfill.ts` — the script around it, mirroring `run-migration.ts`.
+  **Split from the logic deliberately:** a module with a top-level `main()`
+  executes on import, so a test importing `assign-owner.ts` would run the
+  backfill.
+- `db:backfill`, `db:backfill-dev`, `db:backfill-test` npm scripts, taking
+  `--email=<address>`.
 - **Claude runs it from the session**, not you: `.env.local` is readable here and
   Neon is reachable (verified 2026-09-15 against dev and production). The **dev**
   run happens as part of this PR. The **production** run writes to real data and
   needs your explicit go-ahead each time — it is never run unprompted.
-- **Production cannot be backfilled until someone signs in there.** Measured
-  2026-09-15: production has 0 users, 4 accounts, 4 of them orphaned. Dev has 1
-  user and 3 orphans, so the dev half of this PR can proceed today.
+- **Both runs are done** — dev 3 accounts, production 4, orphans 0 on each. See
+  the Progress section for the measured state.
 - Verify zero orphans on every target, also run from the session:
 
 ```sql
@@ -718,12 +740,27 @@ Running this before anything enforces is free: nothing reads `account_users`
 yet, so a wrong result breaks nothing and is fixed by re-running — which is
 exactly when you want to find a bug in it.
 
-Tests: unit tests against `InMemoryStore` — accounts without a member get one,
-accounts with one are untouched, second run is a no-op.
+Tests: unit tests on `assignOwners` with plain arrays — accounts without a
+member get one, accounts with one are untouched, second run is a no-op. **Not
+against `InMemoryStore`**, because the script never touches the store: see below.
 
 Depends on: PR 3, and a real user row existing (so, after signing in once
-post-PR 4). **On production that has not happened yet** — see the Progress
-section.
+post-PR 4). Both are satisfied.
+
+> **Why raw SQL instead of the `DataStore`?** The script needs three things the
+> interface does not have: find a user by email, list every `account_users` row,
+> and insert a member for an account that already exists. `insertAccountWithOwner`
+> cannot stand in — it inserts an account and its member together in one
+> transaction, so there is no path through it to an existing account.
+>
+> Adding the three as repository methods means implementing them on postgres,
+> memory **and** json, widening the interface — and the memory and json `insert`
+> methods are already the subject of _Known divergences to settle before PR 9_.
+> All three would be dead the day PR 9 lands, because accounts are owned at
+> birth from then on and the orphan set is empty by construction. Deleting a
+> script, a pure function and its test is one clean commit; un-adding three
+> methods from three stores is not. A code review will flag the raw SQL — this
+> paragraph is the answer.
 
 > **Why not earlier?** Assigning an owner needs a user to assign to, and users
 > only exist after a Google sign-in. Seeding a placeholder user at migration time
@@ -738,6 +775,16 @@ caller in one commit. Measured: one production caller.**
 - **Re-run the backfill and re-check the orphan query first** (Claude runs both;
   production still needs your go-ahead). It is idempotent, and this closes the
   window for any account created during PRs 1–8.
+- **Then delete the backfill**, in this same PR and after that final run. Once
+  `POST /api/accounts` uses `insertAccountWithOwner`, every account is owned at
+  birth and the orphan set is empty by construction — the backfill can never
+  find anything again. It is one-time bootstrap code and its one time is over:
+  - `src/db/run-backfill.ts`
+  - `src/db/assign-owner.ts`
+  - `src/db/__tests__/assign-owner.test.ts`
+  - the three `db:backfill*` scripts in `package.json`
+
+  `src/db/migration-target.ts` **stays** — `run-migration.ts` uses it.
 - `src/lib/account-access.ts` — the seam above.
 - `src/app/page.tsx` — `listAccounts()` → `listAccountsForUser(store, session.userId)`.
 - **Delete `listAccounts`** from `DataStore` and all three stores; the compiler
@@ -861,17 +908,18 @@ migrating `data.json` into Neon.
    for a merged branch. Use `git diff origin/main origin/<branch> --stat` or
    `git grep` for a symbol the PR added. A PR page saying "merged" is not proof
    either — see #47.
-9. **Start with PR 4** — the Google Cloud step below has to happen first, and it
-   is manual. Nothing in this plan is open; PR 4 branches off `main`.
+9. **Start with PR 9** — PRs 1–5 and 8 have merged and the Google Cloud step is
+   long done. Nothing in this plan is open; PR 9 branches off `main`. Its first
+   act is re-running the backfill and its last is deleting it.
 
 ### Still undecided
 
 - Whether the json store's single-`save()` atomicity is worth an `fs`-mocking
   test, or whether reading the code is enough. Postgres covers the same risk
   where it is real.
-- Whether to delete the pre-existing Neon **dev** account (1 account, 8
-  transactions, from the Postgres work) before PR 8. If kept, the backfill
-  adopts it as yours.
+- ~~Whether to delete the pre-existing Neon **dev** account before PR 8.~~
+  Settled by default: it was kept, so PR 8's backfill adopted it. Dev only, and
+  a `DELETE` undoes it.
 - When "go-live" is — the moment production gets real data, PR 10 must already
   have merged.
 - Whether `data.json` and `JsonFileStore` retire once Neon is the real store.

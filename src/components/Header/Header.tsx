@@ -2,7 +2,6 @@
 
 import { JSX, useState } from 'react';
 import { Menu } from '../Menu';
-import { MENU_OVERLAY_CONTENT } from '../Menu/MenuOverlay/constants';
 import { Title } from './CrossfadeTitle';
 import { HEADER_AVATAR_PROPS, HEADER_TEST_IDS } from './constants';
 import { Bar, HeaderAvatar } from './Header.styles';
@@ -14,8 +13,6 @@ export interface HeaderProps {
 
 export function Header({ title, avatarId }: HeaderProps): JSX.Element {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const barTitle = isMenuOpen ? MENU_OVERLAY_CONTENT.title : title;
   const avatar = avatarId && (
     <HeaderAvatar
       avatarId={avatarId}
@@ -26,9 +23,9 @@ export function Header({ title, avatarId }: HeaderProps): JSX.Element {
   );
 
   return (
-    <Bar data-testid={HEADER_TEST_IDS.bar} data-open={isMenuOpen}>
+    <Bar data-testid={HEADER_TEST_IDS.bar}>
       <Menu isOpen={isMenuOpen} onToggle={setIsMenuOpen} />
-      <Title text={barTitle} />
+      <Title text={title} />
       {avatar}
     </Bar>
   );

@@ -12,15 +12,8 @@ export const Bar = styled.header`
   border-radius: ${HEADER_LAYOUT.radius}px;
   box-shadow: ${HEADER_LAYOUT.shadow};
   color: ${({ theme }): string => theme.colors.textStrong};
-  transition:
-    background ${HEADER_LAYOUT.transitionMs}ms ease,
-    box-shadow ${HEADER_LAYOUT.transitionMs}ms ease;
-
-  &[data-open='true'] {
-    background: transparent;
-    box-shadow: none;
-    color: ${({ theme }): string => theme.colors.textOnPrimary};
-  }
+  min-height: ${HEADER_LAYOUT.height}px;
+  box-sizing: border-box;
 `;
 
 export const HeaderAvatar = styled(AvatarBadge)`

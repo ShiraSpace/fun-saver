@@ -8,23 +8,25 @@ import {
   MENU_OVERLAY_STYLE,
 } from './constants';
 
-const surface = ({ theme }: { theme: Theme }): string => theme.gradients.screen;
+const sheet = ({ theme }: { theme: Theme }): string => theme.colors.softBg;
 
-const onSurface = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textOnPrimary;
+const onSheet = ({ theme }: { theme: Theme }): string =>
+  theme.colors.textStrong;
 
 const labelSize = ({ theme }: { theme: Theme }): number =>
   theme.typography.label;
 
+const rule = ({ theme }: { theme: Theme }): string => theme.colors.divider;
+
 export const Panel = styled.div`
   position: fixed;
-  inset: 0;
+  inset: ${MENU_OVERLAY_LAYOUT.top}px 0 0;
   z-index: ${MENU_OVERLAY_STYLE.zIndex};
   box-sizing: border-box;
   padding-bottom: ${MENU_OVERLAY_STYLE.paddingBottom}px;
   overflow-y: auto;
-  background: ${surface};
-  color: ${onSurface};
+  background: ${sheet};
+  color: ${onSheet};
   opacity: 0;
   transform: scale(${MENU_OVERLAY_STYLE.closedScale});
   transform-origin: top right;
@@ -50,8 +52,7 @@ export const NavLink = styled(Link)`
   display: block;
   margin-top: ${MENU_LABEL_STYLE.marginTop}px;
   padding: ${MENU_LINK_STYLE.paddingY}px 2px;
-  border-top: 1px solid currentColor;
-  border-top-color: rgba(255, 255, 255, ${MENU_LINK_STYLE.dividerOpacity});
+  border-top: ${MENU_LINK_STYLE.dividerWidth}px solid ${rule};
   border-radius: ${MENU_LINK_STYLE.radius}px;
   text-align: start;
   font-size: ${labelSize}px;

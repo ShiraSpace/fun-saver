@@ -3,10 +3,7 @@ import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
 import { TITLE_TEST_IDS } from './CrossfadeTitle/constants';
 import { MENU_TEST_IDS } from '../Menu/constants';
-import {
-  MENU_OVERLAY_CONTENT,
-  MENU_OVERLAY_TEST_IDS,
-} from '../Menu/MenuOverlay/constants';
+import { MENU_OVERLAY_TEST_IDS } from '../Menu/MenuOverlay/constants';
 
 describe('Header', () => {
   const ACCOUNT_NAME = 'יעל';
@@ -61,29 +58,13 @@ describe('Header', () => {
     });
   });
 
-  describe('the morphing bar', () => {
-    let button: HTMLElement;
-    let bar: HTMLElement;
-
-    beforeEach(() => {
-      button = screen.getByTestId(MENU_TEST_IDS.menuButton);
-      bar = screen.getByTestId(HEADER_TEST_IDS.bar);
-    });
-
-    it('swaps the title to the menu title when opened', () => {
-      fireEvent.click(button);
+  describe('the bar under an open menu', () => {
+    it('keeps the account name rather than swapping in a menu title', () => {
+      fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
 
       expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
-        MENU_OVERLAY_CONTENT.title
+        ACCOUNT_NAME
       );
-    });
-
-    it('flags the bar with the menu open state', () => {
-      expect(bar).toHaveAttribute('data-open', 'false');
-
-      fireEvent.click(button);
-
-      expect(bar).toHaveAttribute('data-open', 'true');
     });
   });
 });

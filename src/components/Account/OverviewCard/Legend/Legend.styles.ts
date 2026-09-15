@@ -1,6 +1,19 @@
+import { keyframes, type SerializedStyles } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { WalletName } from '@/lib/types';
-import { OVERVIEW_CARD_STYLE, WALLET_ARC_COLOR } from '../constants';
+import { EASING, entrance } from '@/theme/motion';
+import {
+  LEGEND_ANIMATION,
+  OVERVIEW_CARD_STYLE,
+  WALLET_ARC_COLOR,
+} from '../constants';
+
+const fadeUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(${LEGEND_ANIMATION.riseFromPx}px);
+  }
+`;
 
 export const List = styled.div`
   flex: 1;
@@ -9,12 +22,20 @@ export const List = styled.div`
   gap: ${OVERVIEW_CARD_STYLE.legendGap}px;
 `;
 
-export const Row = styled.div`
+export const Row = styled.div<{ rowIndex: number }>`
   display: flex;
   align-items: center;
   gap: ${OVERVIEW_CARD_STYLE.legendRowGap}px;
   font-size: ${({ theme }): number => theme.typography.body}px;
   font-weight: 600;
+  ${({ rowIndex }): SerializedStyles =>
+    entrance({
+      keyframes: fadeUp,
+      durationMs: LEGEND_ANIMATION.riseMs,
+      delayMs:
+        LEGEND_ANIMATION.delayMs + rowIndex * LEGEND_ANIMATION.betweenRowsMs,
+      easing: EASING.easeOut,
+    })}
 `;
 
 export const Dot = styled.span<{ walletName: WalletName }>`

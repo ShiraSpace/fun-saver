@@ -1,10 +1,10 @@
 'use client';
 
 import { createContext, useContext } from 'react';
-import type { Account } from '@/lib/types';
+import type { AccountWithDerivedWallets } from '@/lib/types';
 
 export interface AccountsContextValue {
-  accounts: Account[];
+  accounts: AccountWithDerivedWallets[];
   selectedAccountId: string;
   selectAccount: (id: string) => void;
 }

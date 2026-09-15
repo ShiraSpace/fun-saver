@@ -65,4 +65,15 @@ export class MenuDriver {
   middleBarOpacity(): Promise<string> {
     return this.session.styleOf(MIDDLE_BAR, 'opacity');
   }
+
+  panelBox(): Promise<BoundingBox> {
+    return this.session.box(MENU_OVERLAY_TEST_IDS.overlay);
+  }
+
+  panelBackground(): Promise<string> {
+    return this.session.computedStyle(
+      MENU_OVERLAY_TEST_IDS.overlay,
+      'background-color'
+    );
+  }
 }
