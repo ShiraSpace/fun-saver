@@ -1,0 +1,1 @@
+export { GoalOutcome } from './GoalOutcome';
