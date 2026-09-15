@@ -28,6 +28,13 @@ export class DashboardDriver {
     return this.session.count(WALLET_CARD_TEST_IDS.card);
   }
 
+  donutAnimationsOnLoad(allowMotion: boolean): Promise<number> {
+    return this.session.animationsOnLoad(
+      OVERVIEW_CARD_TEST_IDS.donut,
+      allowMotion
+    );
+  }
+
   walletSubLines(): Promise<string[]> {
     return this.session.texts(WALLET_CARD_TEST_IDS.subLine);
   }

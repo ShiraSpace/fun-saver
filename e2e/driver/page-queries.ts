@@ -88,3 +88,37 @@ export function computedStyle({
 }: TestIdStyleQuery): Promise<string> {
   return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
 }
+
+interface FirstFrameWindow extends Window {
+  animationsOnFirstFrame: Promise<number>;
+}
+
+export async function animationsOnLoad(
+  page: Page,
+  testId: string,
+  allowMotion: boolean
+): Promise<number> {
+  await page.emulateMediaFeatures(
+    allowMotion ? [] : [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+  );
+  await page.evaluateOnNewDocument((id: string) => {
+    (window as unknown as FirstFrameWindow).animationsOnFirstFrame =
+      new Promise((resolve) => {
+        requestAnimationFrame(() => {
+          const drawn = document.querySelectorAll(`[data-testid="${id}"] *`);
+
+          resolve(
+            Array.from(drawn).reduce(
+              (running, node) => running + node.getAnimations().length,
+              0
+            )
+          );
+        });
+      });
+  }, testId);
+  await page.reload({ waitUntil: 'networkidle0' });
+
+  return page.evaluate(
+    () => (window as unknown as FirstFrameWindow).animationsOnFirstFrame
+  );
+}

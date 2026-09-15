@@ -1,7 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { mockDerivedWallets, mockWalletShares } from '@/test-utils/fixtures';
 import { getThemeTokens } from '@/theme/registry';
-import { Donut } from './Donut';
+import { Donut, type DonutSegment } from './Donut';
 import { OVERVIEW_CARD_TEST_IDS } from '../constants';
 
 const walletSegments = mockDerivedWallets.map((wallet, index) => ({
@@ -31,11 +31,28 @@ function arcEnd(arc: Element): number {
   return arcStart(arc) - arcLength(arc);
 }
 
+function arcSweepMs(arc: Element): number {
+  const [, duration] = getComputedStyle(arc).animation.split(' ');
+
+  return Number.parseFloat(duration);
+}
+
+function arcDelayMs(arc: Element): number {
+  return Number.parseFloat(getComputedStyle(arc).animationDelay);
+}
+
 const DECIMAL_PLACES = 2;
 const RING_TOP = 0;
 const SAVINGS_ARC_LENGTH = 139.864;
 const GOOD_DEEDS_ARC_LENGTH = 42.223;
 const SAVINGS_ARC_COLOR = getThemeTokens().colors.walletSavings;
+const SAVINGS_SWEEP_MS = 318;
+const EMPTY_WALLET_SEGMENTS: DonutSegment[] = [
+  { name: 'savings', share: 60 },
+  { name: 'spending', share: 40 },
+  { name: 'goodDeeds', share: 0 },
+];
+const NO_SWEEP_MS = 0;
 
 describe('Donut', () => {
   let walletArcs: Element[];
@@ -77,7 +94,28 @@ describe('Donut', () => {
     expect(arcStart(spendingArc)).toBeCloseTo(savingsArcEnd, DECIMAL_PLACES);
   });
 
+  it('sweeps the savings arc for its share of the ring', () => {
+    expect(arcSweepMs(savingsArc)).toBe(SAVINGS_SWEEP_MS);
+  });
+
+  it('starts the spending arc when the savings arc has finished', () => {
+    expect(arcDelayMs(spendingArc)).toBe(arcSweepMs(savingsArc));
+  });
+
   it('colours the savings arc with its wallet token', () => {
     expect(savingsArc.getAttribute('stroke')).toBe(SAVINGS_ARC_COLOR);
+  });
+});
+
+describe('Donut with an empty wallet', () => {
+  let emptyWalletArc: Element;
+
+  beforeEach(() => {
+    render(<Donut segments={EMPTY_WALLET_SEGMENTS} />);
+    [, , emptyWalletArc] = getArcs();
+  });
+
+  it('gives a wallet with nothing in it no time in the sweep', () => {
+    expect(arcSweepMs(emptyWalletArc)).toBe(NO_SWEEP_MS);
   });
 });

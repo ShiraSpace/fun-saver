@@ -55,6 +55,10 @@ export class Session {
     return queries.count(this.page, testId);
   }
 
+  animationsOnLoad(testId: string, allowMotion: boolean): Promise<number> {
+    return queries.animationsOnLoad(this.page, testId, allowMotion);
+  }
+
   text(testId: string): Promise<string> {
     return queries.text(this.page, testId);
   }
