@@ -10,11 +10,11 @@ import {
 
 const mockedSignIn = signIn as unknown as jest.Mock<Promise<void>>;
 
-const button = (): HTMLElement =>
+const loginButton = (): HTMLElement =>
   screen.getByTestId(SIGN_IN_TEST_IDS.continueWithGoogle);
 
 const clickContinue = (): void => {
-  fireEvent.click(button());
+  fireEvent.click(loginButton());
 };
 
 describe('ContinueWithGoogle', () => {
@@ -25,7 +25,7 @@ describe('ContinueWithGoogle', () => {
   });
 
   it('invites the user to continue with Google', () => {
-    expect(button()).toHaveTextContent(SIGN_IN_COPY.continueWithGoogle);
+    expect(loginButton()).toHaveTextContent(SIGN_IN_COPY.continueWithGoogle);
   });
 
   it('starts the Google sign-in and lands the user on the home page', () => {
@@ -39,8 +39,8 @@ describe('ContinueWithGoogle', () => {
   it('says it is working while the round-trip is in flight', () => {
     clickContinue();
 
-    expect(button()).toBeDisabled();
-    expect(button()).toHaveTextContent(SIGN_IN_COPY.signingIn);
+    expect(loginButton()).toBeDisabled();
+    expect(loginButton()).toHaveTextContent(SIGN_IN_COPY.signingIn);
   });
 
   it('surfaces a sign-in that fails before we reach Google', async () => {
@@ -59,6 +59,6 @@ describe('ContinueWithGoogle', () => {
     clickContinue();
 
     await screen.findByTestId(SIGN_IN_TEST_IDS.error);
-    expect(button()).toBeEnabled();
+    expect(loginButton()).toBeEnabled();
   });
 });
