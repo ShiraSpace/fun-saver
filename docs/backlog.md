@@ -80,7 +80,16 @@ Scope when picked up:
 - Make `lang` / `dir` derive from the active locale — LTR must not break the
   RTL-first layouts (Emotion RTL cache is configured for RTL only today).
 - Wire `LanguageSection` to actually switch locale and persist the choice.
+- **Scope: per account** (decided 2026-09-15), following the `themeId`
+  precedent — a `language` field on `Account`, a
+  `PATCH /api/accounts/[id]/language` route, and support in all three stores.
+  So each child can have their own language, not the device.
 - Number/currency formatting per locale (`₪` glyph placement differs in LTR).
+
+Deliberately **out of the menu redesign**: that epic leaves `LanguageSection`
+as the stub it is today, sitting in the per-account block. It is the only part
+of the menu that needs a data layer, and bundling it would stop the redesign
+from being front-end-only.
 
 **English copy is already written and parked** at
 `docs/copy/method-page.en.md` so this task is wiring, not translating or
@@ -128,7 +137,11 @@ time** — Kidd, Palmeri & Aslin (2013): children whose adults broke promises
 stopped waiting. Today every deposit is manual, so the app depends on the
 parent remembering.
 
-- A recurring allowance: amount + weekday, auto-deposited and auto-split.
+- A recurring allowance: **amount + cadence + day**, auto-deposited and
+  auto-split. Cadence is its own setting, not just a weekday: **weekly** to
+  about age 9, **bi-weekly** at 10–11, **monthly** from 12 — a week is roughly
+  as far ahead as a 7-year-old plans (research §7.2). Storing only a weekday
+  silently locks every family to weekly.
 - A reminder if it hasn't been paid.
 - Surface a visible **streak** of on-time payments — aimed at the *parent*,
   not the child.
@@ -144,6 +157,33 @@ child who views, spends and donates.
 - Parent view: everything.
 - Blocked on deciding whether children get their own login or a device-level
   mode.
+
+## 6b. Live action checklist on the method page
+
+The method page (§7) shows the parent what to decide, what is already set, and
+what still needs doing — five decisions plus one conversation, as ticked and
+unticked items. **In v1 those values and tick states are hardcoded** from the
+copy deck, because none of the underlying settings exist yet.
+
+Making the checklist real depends on the features above and should follow them:
+
+| Checklist item | Needs | Status |
+| --- | --- | --- |
+| כמה בשבוע? | allowance amount on the account | §5 |
+| כל כמה זמן? | allowance cadence | §5 |
+| באיזה יום? | allowance day | §5 |
+| איך מחלקים? | per-account split | §3 |
+| מה יעד החיסכון? | savings goal | §1 |
+| קשור למטלות? | — family policy, **no app feature**, stays static | n/a |
+| לקיים את השיחה הראשונה | somewhere to persist a parent-side acknowledgement | new |
+
+That last row is the only genuinely new storage: a per-account flag for "the
+first conversation happened". Decide whether it is worth persisting at all —
+an unticked box the parent can never tick is worse than no box. If we don't
+persist it, render it as a plain instruction rather than a checkbox.
+
+Until then the page stays static and read-only, which is the approved v1 scope
+(`docs/superpowers/specs/2026-09-14-method-page-design.md`).
 
 ## 7. Method page itself
 
