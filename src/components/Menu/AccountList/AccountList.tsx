@@ -31,6 +31,7 @@ export function AccountList({
       ))}
       <AddRow
         type="button"
+        aria-label={ACCOUNT_LIST_CONTENT.addAccessibleLabel}
         data-testid={ACCOUNT_LIST_TEST_IDS.addRow}
         onClick={onAdd}
       >

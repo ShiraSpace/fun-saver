@@ -10,6 +10,6 @@ export const ACCOUNTS_SECTION_CONTENT = {
 } as const;
 
 export const ACCOUNTS_SECTION_STYLE = {
-  avatarSize: 46,
+  actionChipSize: 46,
   actionFontSize: 20,
 } as const;

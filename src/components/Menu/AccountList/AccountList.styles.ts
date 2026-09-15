@@ -77,8 +77,6 @@ export const Name = styled.span`
 `;
 
 export const Total = styled.span`
-  margin-inline-start: auto;
   font-size: ${totalSize}px;
-  font-weight: 700;
   color: ${mutedText};
 `;

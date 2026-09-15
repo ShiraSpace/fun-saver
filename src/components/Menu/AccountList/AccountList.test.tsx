@@ -3,10 +3,15 @@ import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
+import { totalBalance } from '@/lib/derivations';
+import { agorotToWholeShekels } from '@/lib/money';
 import { AccountList } from './AccountList';
 import { ACCOUNT_LIST_CONTENT, ACCOUNT_LIST_TEST_IDS } from './constants';
 
 const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
+
+const shekelsOf = (account: (typeof accounts)[number]): string =>
+  String(agorotToWholeShekels(totalBalance(account.wallets)));
 
 describe('AccountList', () => {
   const mockOnSelect = jest.fn();
@@ -28,6 +33,13 @@ describe('AccountList', () => {
     expect(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)).toHaveLength(
       accounts.length
     );
+  });
+
+  it('shows each account its own total', () => {
+    const totals = screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.total);
+
+    expect(totals[0]).toHaveTextContent(shekelsOf(mockDerivedAccount));
+    expect(totals[1]).toHaveTextContent(shekelsOf(mockSecondDerivedAccount));
   });
 
   it('marks the row matching the selected account', () => {

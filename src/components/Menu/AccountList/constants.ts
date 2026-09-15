@@ -7,6 +7,7 @@ export const ACCOUNT_LIST_TEST_IDS = {
 
 export const ACCOUNT_LIST_CONTENT = {
   addLabel: '＋ חשבון חדש',
+  addAccessibleLabel: 'הוספת חשבון',
 } as const;
 
 export const ACCOUNT_LIST_STYLE = {
