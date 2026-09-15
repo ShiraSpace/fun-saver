@@ -6,6 +6,7 @@ import { totalBalance, walletShares } from '@/lib/derivations';
 import { agorotToWholeShekels } from '@/lib/money';
 import { Money } from '@/components/Money';
 import { Donut } from './Donut';
+import { useAnimatedWalletTotal } from './use-animated-wallet-total';
 import { Legend } from './Legend';
 import {
   OVERVIEW_CARD_COPY,
@@ -42,7 +43,8 @@ export function OverviewCard({ wallets }: OverviewCardProps): JSX.Element {
     ...wallet,
     share: shares[index],
   }));
-  const total = totalBalance(wallets);
+  const walletTotal = totalBalance(wallets);
+  const animatedWalletTotal = useAnimatedWalletTotal(walletTotal);
 
   return (
     <Card data-testid={OVERVIEW_CARD_TEST_IDS.card}>
@@ -50,8 +52,11 @@ export function OverviewCard({ wallets }: OverviewCardProps): JSX.Element {
         <Donut segments={entries} />
         <Hole>
           <HoleLabel>{OVERVIEW_CARD_COPY.totalLabel}</HoleLabel>
-          <HoleAmount fontSize={holeFontSize(total)}>
-            <Money amountAgorot={total} testId={OVERVIEW_CARD_TEST_IDS.total} />
+          <HoleAmount fontSize={holeFontSize(walletTotal)}>
+            <Money
+              amountAgorot={animatedWalletTotal}
+              testId={OVERVIEW_CARD_TEST_IDS.total}
+            />
           </HoleAmount>
         </Hole>
       </Ring>

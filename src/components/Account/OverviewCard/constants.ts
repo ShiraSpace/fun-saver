@@ -44,6 +44,19 @@ export const DONUT_ANIMATION = {
   sweepMs: 600,
 } as const;
 
+export const TOTAL_ANIMATION = {
+  startDelayMs: 80,
+  fadeMs: 240,
+  countMs: DONUT_ANIMATION.sweepMs,
+} as const;
+
+export const LEGEND_ANIMATION = {
+  delayMs: 220,
+  betweenRowsMs: 50,
+  riseMs: 220,
+  riseFromPx: 6,
+} as const;
+
 export const OVERVIEW_CARD_STYLE = {
   radius: 24,
   padding: 16,

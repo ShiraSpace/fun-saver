@@ -1,10 +1,12 @@
 import { render, screen } from '@/test-utils/render';
 import { mockDerivedWallets } from '@/test-utils/fixtures';
+import { prefersReducedMotion } from '@/test-utils/motion';
 import { OverviewCard } from './OverviewCard';
 import { OVERVIEW_CARD_COPY, OVERVIEW_CARD_TEST_IDS } from './constants';
 
 describe('OverviewCard', () => {
   beforeEach(() => {
+    prefersReducedMotion();
     render(<OverviewCard wallets={mockDerivedWallets} />);
   });
 

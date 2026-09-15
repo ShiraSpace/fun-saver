@@ -1,5 +1,7 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import type { SerializedStyles } from '@emotion/react';
+import { EASING, entrance } from '@/theme/motion';
 import { DONUT_CIRCUMFERENCE, DONUT_STYLE } from '../constants';
 
 export const Svg = styled.svg`
@@ -25,13 +27,11 @@ interface ArcTiming {
 }
 
 export const ArcCircle = styled.circle<ArcTiming>`
-  animation-name: ${drawArc};
-  animation-duration: ${({ durationMs }): number => durationMs}ms;
-  animation-timing-function: linear;
-  animation-fill-mode: backwards;
-  animation-delay: ${({ delayMs }): number => delayMs}ms;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
+  ${({ durationMs, delayMs }): SerializedStyles =>
+    entrance({
+      keyframes: drawArc,
+      durationMs,
+      delayMs,
+      easing: EASING.linear,
+    })}
 `;
