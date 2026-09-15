@@ -3,8 +3,12 @@
 import styled from '@emotion/styled';
 import { PIG_SIZE } from './constants';
 
-export const Pig = styled.span<{ pigSize?: number }>`
-  font-size: ${({ pigSize }): number => pigSize ?? PIG_SIZE.default}px;
+interface PigProps {
+  size?: number;
+}
+
+export const Pig = styled.span<PigProps>`
+  font-size: ${({ size }): number => size ?? PIG_SIZE.default}px;
   line-height: 1;
   display: inline-block;
 `;
