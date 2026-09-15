@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
+import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import {
   pickFirstAvatar,
   submitForm,
@@ -45,8 +46,8 @@ export function openMenu(): void {
   fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
 }
 
-export function tapAddChip(): void {
-  fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.addChip));
+export function tapAddRow(): void {
+  fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
 }
 
 export function tapEditChip(): void {

@@ -43,7 +43,7 @@ describe('add account from the menu', () => {
 
   beforeEach(async () => {
     await menu.open();
-    await menu.clickAddAccountChip();
+    await menu.clickAddAccountRow();
   });
 
   it('opens the create form from the menu add chip', async () => {

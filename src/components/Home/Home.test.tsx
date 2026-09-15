@@ -4,7 +4,7 @@ import { useThemeId } from '@/theme/ThemeController';
 import { Home } from './Home';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
-import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
+import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import {
@@ -60,7 +60,7 @@ describe('Home', () => {
     });
 
     it('switches to and persists the tapped account, then closes the menu', () => {
-      fireEvent.click(screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip)[1]);
+      fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 
       expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
         mockSecondAccount.name
@@ -106,7 +106,7 @@ describe('Home', () => {
         'sunshine-quest'
       );
 
-      fireEvent.click(screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip)[1]);
+      fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 
       expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(
         'midnight-blue'

@@ -7,16 +7,9 @@ const chipFill = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 const chipBorder = ({ theme }: { theme: Theme }): string =>
   theme.colors.divider;
 
-export const Row = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${ACCOUNTS_SECTION_STYLE.rowGap}px;
-  flex-wrap: wrap;
-`;
-
 export const ActionChip = styled.button`
-  width: ${ACCOUNTS_SECTION_STYLE.avatarSize}px;
-  height: ${ACCOUNTS_SECTION_STYLE.avatarSize}px;
+  width: ${ACCOUNTS_SECTION_STYLE.actionChipSize}px;
+  height: ${ACCOUNTS_SECTION_STYLE.actionChipSize}px;
   border: 1px solid ${chipBorder};
   border-radius: 50%;
   background: ${chipFill};

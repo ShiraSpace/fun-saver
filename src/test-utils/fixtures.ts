@@ -181,5 +181,5 @@ export const mockDerivedAccount: AccountWithDerivedWallets = {
 
 export const mockSecondDerivedAccount: AccountWithDerivedWallets = {
   ...mockSecondAccount,
-  wallets: [],
+  wallets: [createMockDerivedWallet({ id: 'w4', balance: 4200 })],
 };
