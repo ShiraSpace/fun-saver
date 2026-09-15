@@ -7,12 +7,12 @@ import { Icon, Note, Outcome, Text } from './GoalOutcome.styles';
 export function GoalOutcome({ icon, body, note }: IconLine): JSX.Element {
   const emphasizedBody = emphasize(body);
   const noteLine = note && (
-    <Note data-testid={GOAL_OUTCOME_TEST_IDS.note}>{note}</Note>
+    <Note data-testid={GOAL_OUTCOME_TEST_IDS.note}>{emphasize(note)}</Note>
   );
 
   return (
     <Outcome data-testid={GOAL_OUTCOME_TEST_IDS.outcome}>
-      <Icon>{icon}</Icon>
+      <Icon aria-hidden="true">{icon}</Icon>
       <Text>
         {emphasizedBody}
         {noteLine}

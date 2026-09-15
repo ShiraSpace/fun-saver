@@ -30,7 +30,7 @@ export const Title = styled.h1`
 
 export const Lead = styled.p`
   margin: 0 0 14px;
-  font-size: 15px;
+  font-size: ${({ theme }): number => theme.typography.body}px;
   line-height: 1.8;
 `;
 
@@ -55,7 +55,7 @@ export const Divider = styled.hr`
 
 export const Brief = styled.p`
   margin: 0 0 5px;
-  font-size: 18px;
+  font-size: ${({ theme }): number => theme.typography.heading}px;
   font-weight: 600;
 `;
 
