@@ -14,18 +14,21 @@ split into three wallets, and what the parent has to do. Static and read-only.
 Worktree `~/Projects/technotronic/fun-saver-method-page` on `feat/method-page`
 off `origin/main`. Each PR below branches from the previous one.
 
-## Open decisions — settle before PR 2
+## Decisions (settled 2026-09-15)
 
-1. **Base.** `origin/main` has no `docs/copy/`; the deck is in PR #56
-   (`MERGEABLE`/`CLEAN`). Merge #56 first and base the stack on main.
-2. **Theme.** `/` resolves a per-account theme from a cookie via
-   `ThemeController` + `resolveThemeId`. `/method` has no account. Read the
-   same cookie so navigating doesn't flip the theme.
-3. **Header.** `Header` requires `name` + `avatarId` — account-shaped. The page
-   needs burger + plain title. Extend `Header` with a title-only mode rather
-   than adding a second header; the burger must behave identically on both.
-
-Recommendations above; confirm before PR 2 touches `Header`.
+1. **Base — merge PR #56 first.** It was docs-only and `CLEAN`, so the whole
+   stack bases off `main` normally and `docs/copy/` is simply there. The
+   alternative, stacking on the docs branch, would have forced a rebase of all
+   eight PRs once #56 landed.
+2. **Theme — read the selected-account cookie**, the same one `/` uses via
+   `ThemeController` + `resolveThemeId`. Pinning a default was simpler and
+   fully static, but the theme would visibly flip when opening the page from a
+   jungle or midnight account, which reads as a bug. Costs one cookie read in
+   the server component.
+3. **Header — extend `Header` with a title-only mode** (`name` / `avatarId`
+   become optional). One header component means the burger cannot drift
+   between pages. A second header would have been zero-risk to `/` but leaves
+   two things rendering a burger.
 
 ## Component rule
 
