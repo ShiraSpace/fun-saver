@@ -8,10 +8,10 @@ describe('JsonFileStore creating an account with an owner', () => {
   const file = withTempStoreFile();
 
   beforeEach(async () => {
-    await new JsonFileStore(file.path).insertAccountWithOwner(
-      mockAccount,
-      mockOwner
-    );
+    const store = new JsonFileStore(file.path);
+
+    await store.insertUser(mockUser);
+    await store.insertAccountWithOwner(mockAccount, mockOwner);
   });
 
   it('persists the account across instances', async () => {

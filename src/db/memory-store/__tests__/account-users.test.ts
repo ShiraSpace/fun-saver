@@ -3,17 +3,19 @@ import {
   mockAccount,
   mockAccountUser,
   mockSecondAccount,
+  mockSecondUser,
   mockUser,
 } from '@/test-utils/fixtures';
 
 const mockOwner = { userId: mockUser.id, addedAt: mockAccountUser.addedAt };
-const mockOtherUserId = 'u2';
 
 describe('InMemoryStore account users', () => {
   let store: InMemoryStore;
 
   beforeEach(async () => {
     store = new InMemoryStore();
+    await store.insertUser(mockUser);
+    await store.insertUser(mockSecondUser);
     await store.insertAccountWithOwner(mockAccount, mockOwner);
   });
 
@@ -32,12 +34,12 @@ describe('InMemoryStore account users', () => {
   });
 
   it('does not list the account for anyone else', async () => {
-    expect(await store.listAccountsForUser(mockOtherUserId)).toEqual([]);
+    expect(await store.listAccountsForUser(mockSecondUser.id)).toEqual([]);
   });
 
   it('keeps accounts owned by different users apart', async () => {
     await store.insertAccountWithOwner(mockSecondAccount, {
-      userId: mockOtherUserId,
+      userId: mockSecondUser.id,
       addedAt: mockAccountUser.addedAt,
     });
 

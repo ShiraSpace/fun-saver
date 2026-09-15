@@ -30,12 +30,13 @@ describe('FileSession write queue', () => {
   it('keeps an account and its owner together when other writes race them', async () => {
     const store = new JsonFileStore(file.path);
 
+    await store.insertUser(mockUser);
+
     await Promise.all([
       store.insertAccountWithOwner(mockAccount, {
         userId: mockUser.id,
         addedAt: mockAccountUser.addedAt,
       }),
-      store.insertUser(mockUser),
       store.insertTransactions([createMockTransaction({ id: 'c1' })]),
     ]);
 
