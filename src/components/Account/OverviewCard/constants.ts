@@ -37,6 +37,17 @@ export const DONUT_STYLE = {
   rotation: -90,
 } as const;
 
+export const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_STYLE.radius;
+
+export const DONUT_ANIMATION = {
+  sweepMs: 600,
+  amountDelayMs: 80,
+  amountMs: 240,
+  legendDelayMs: 220,
+  legendStepMs: 50,
+  legendMs: 220,
+} as const;
+
 export const OVERVIEW_CARD_STYLE = {
   radius: 24,
   padding: 16,

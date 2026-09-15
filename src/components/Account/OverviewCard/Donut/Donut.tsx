@@ -5,13 +5,13 @@ import { useTheme } from '@emotion/react';
 import type { WalletName } from '@/lib/types';
 import { PERCENT_TOTAL } from '@/lib/constants';
 import {
+  DONUT_ANIMATION,
+  DONUT_CIRCUMFERENCE,
   DONUT_STYLE,
   OVERVIEW_CARD_TEST_IDS,
   WALLET_ARC_COLOR,
 } from '../constants';
-import { Svg } from './Donut.styles';
-
-const CIRCUMFERENCE = 2 * Math.PI * DONUT_STYLE.radius;
+import { Arc as ArcCircle, Svg } from './Donut.styles';
 
 export interface DonutSegment {
   name: WalletName;
@@ -25,16 +25,28 @@ interface DonutProps {
 interface Arc extends DonutSegment {
   length: number;
   offset: number;
+  durationMs: number;
+  delayMs: number;
 }
 
 function toArcs(segments: DonutSegment[]): Arc[] {
   let consumed = 0;
+  let elapsedMs = 0;
 
   return segments.map((segment) => {
-    const length = (segment.share / PERCENT_TOTAL) * CIRCUMFERENCE;
-    const arc = { ...segment, length, offset: -consumed };
+    const portion = segment.share / PERCENT_TOTAL;
+    const length = portion * DONUT_CIRCUMFERENCE;
+    const durationMs = portion * DONUT_ANIMATION.sweepMs;
+    const arc = {
+      ...segment,
+      length,
+      offset: -consumed,
+      durationMs,
+      delayMs: elapsedMs,
+    };
 
     consumed += length;
+    elapsedMs += durationMs;
 
     return arc;
   });
@@ -43,14 +55,16 @@ function toArcs(segments: DonutSegment[]): Arc[] {
 export function Donut({ segments }: DonutProps): JSX.Element {
   const theme = useTheme();
   const arcs = toArcs(segments).map((arc) => (
-    <circle
+    <ArcCircle
       key={arc.name}
       cx={DONUT_STYLE.center}
       cy={DONUT_STYLE.center}
       r={DONUT_STYLE.radius}
       stroke={theme.colors[WALLET_ARC_COLOR[arc.name]]}
-      strokeDasharray={`${arc.length} ${CIRCUMFERENCE - arc.length}`}
+      strokeDasharray={`${arc.length} ${DONUT_CIRCUMFERENCE - arc.length}`}
       strokeDashoffset={arc.offset}
+      durationMs={arc.durationMs}
+      delayMs={arc.delayMs}
     />
   ));
 
