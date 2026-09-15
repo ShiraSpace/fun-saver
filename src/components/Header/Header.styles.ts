@@ -19,7 +19,6 @@ export const Bar = styled.header`
   &[data-open='true'] {
     background: transparent;
     box-shadow: none;
-    color: ${({ theme }): string => theme.colors.textStrong};
   }
 `;
 
