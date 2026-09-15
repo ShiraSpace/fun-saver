@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-14 (plan PR 4 merged; PR 5 is next)
+## Progress — updated 2026-09-15 (plan PR 5 merged; PR 8 is next, not PR 6)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -20,16 +20,36 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 3a   | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                               |
 | PR 3b   | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
 | PR 4    | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                               |
-| PR 5    | —                                                      | `feat/login-page`                  | **next**                                             |
-| PR 6–10 | —                                                      | —                                  | not started                                          |
+| PR 5    | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
+| PR 8    | —                                                      | `feat/assign-owner`                | **next** — blocked, see below                        |
+| PR 6, 7, 9, 10 | —                                               | —                                  | not started                                          |
 
-**Sign-in works; nothing is gated.** PR 4 shipped Auth.js with Google, and
-signing in provisions a `users` row and puts our own user id on the session.
-`page.tsx` still calls `listAccounts()` and renders all four real accounts to
-whoever opens the public URL. **PR 6 is what closes that, and it may not ship
-before PR 9's read path — see _Authentication is open by design_ below.**
+### Next is PR 8, and PR 6 is not next
 
-**No PR in this plan is open.** PR 5 branches off `main` and depends on PR 4.
+The obvious next step after a login page is the middleware that enforces it.
+**It is the wrong one.** PR 4 ships no allowlist, so any Google account can sign
+in. A PR 6 that gates on "has a session" while `page.tsx` still calls
+`listAccounts()` hands every signed-in stranger all four real accounts — it
+would look like the hole was closed while making it reachable by anyone with a
+Google account. See _Authentication is open by design_ below.
+
+The order that actually closes the hole is **PR 8 → PR 9 → PR 6**: give the
+existing accounts owners, scope reads to the signed-in user, then enforce the
+session. PR 7 is independent and can land at any time.
+
+### PR 8 is blocked on one manual step
+
+**Nobody has signed in on production yet.** Measured 2026-09-15 against the Neon
+`production` branch:
+
+| branch       | `users` | `accounts` | `account_users` | orphan accounts |
+| ------------ | ------- | ---------- | --------------- | --------------- |
+| `production` | **0**   | 4          | 0               | **4**           |
+| `dev`        | 1       | 3          | 0               | 3               |
+
+PR 8 assigns every orphan account to the user matching a given email, so on
+production there is currently no user to assign to. **Sign in once at the live
+Vercel URL** and that row appears; the dev run can proceed today either way.
 
 ### How to confirm work actually landed
 
@@ -57,8 +77,9 @@ This matters because a PR page saying "merged" is not proof either — see #47.
   **The lesson, for any future stacked PR:** merging the parent does not
   retarget the child on its own in this repo. Either retarget the child to
   `main` before merging it, or merge the parent and confirm the child's base
-  changed. Verify with `git log origin/main..origin/<branch>` — an empty result
-  is the only proof the work actually landed. A green PR page is not.
+  changed. Verify by content, per _How to confirm work actually landed_ above —
+  not with `git log origin/main..origin/<branch>`, which this repo's squash
+  merges make useless.
 
 **Three out-of-plan refactors have landed.** None is part of the feature; each
 was done to stop later PRs making things worse.
@@ -129,10 +150,17 @@ Tests mirror the source, one test file per module, under each folder's `__tests_
 | Neon **production** (default)    | created                   | yes          |
 
 The default branch is named **`production`**, not `main`. It was migrated on
-2026-09-14 for plan PR 4, the first code that needs those tables. Unlike dev
-and test it took the `role` CHECK straight from `CREATE TABLE`, so no one-off
-`ALTER` was needed. Confirm `DATABASE_URL` points at `production`
-(endpoint `ep-jolly-truth-a21toeir`) before running `npm run db:migrate`.
+2026-09-14 for plan PR 4, the first code that needs those tables. Unlike dev and
+test it took the `role` CHECK straight from `CREATE TABLE`, so no one-off
+`ALTER` was needed. Confirm `DATABASE_URL` points at `production` (endpoint
+`ep-jolly-truth-a21toeir`) before running `npm run db:migrate`.
+
+**Dev and test are Neon branches with a TTL.** Measured 2026-09-15: `dev`
+(`br-shiny-dawn-a29qxouu`) expires **2026-09-19**, `test`
+(`br-damp-silence-a229bobw`) expires **2026-09-27**. `npm run test:db` runs
+against `test` and `db:migrate-dev` against `dev`, so both start failing with a
+connection error rather than an obvious expiry message once those dates pass.
+Recreate the branch from `production` and re-run the migration.
 
 Dev and test got the CHECK via a one-off `ALTER TABLE ... ADD CONSTRAINT`,
 because `CREATE TABLE IF NOT EXISTS` cannot add a constraint to a table that
@@ -434,8 +462,10 @@ Each PR branches off updated `origin/main`; a PR that depends on an unmerged
 one branches off its parent and rebases when the parent lands. Every PR is
 green and deployable on its own — merging it ships it.
 
-**Critical path to closing the public hole: 1 → 2 → 4 → 5 → 6.**
-PRs 3 and 7 can land in parallel with that chain.
+**Critical path to closing the public hole: 1 → 2 → 3 → 4 → 5 → 8 → 9 → 6.**
+PR 6 is last, not fifth: gating on a session while `page.tsx` still calls
+`listAccounts()` would show every signed-in stranger all four real accounts. PR
+7 is independent of the chain and can land at any time after PR 4.
 
 ### PR 1 — `feat/members-schema` — MERGED (#28)
 
@@ -616,12 +646,12 @@ Tests: `user-provisioning` unit tests — a new `sub` creates a user, a known
 
 Depends on: PR 2. Ships: a working `/api/auth/*`; nothing else changes.
 
-### PR 5 — `feat/login-page`
+### PR 5 — `feat/login-page` — MERGED (#55)
 
 - `src/app/login/page.tsx` + `src/components/SignIn/` — one Google button, RTL,
   themed, per `mockups/login.html`. Sign-in and sign-up are the same button.
 
-Reachable by URL; nothing redirects to it yet.
+Reachable by URL; nothing redirects to it yet — PR 6 is what does that.
 
 Tests: `SignIn` component test — renders the button, calls `signIn('google')`.
 
@@ -644,7 +674,10 @@ off `main` normally. Ships: a new route.
 Tests: the existing e2e suite passing with the bypass is the test. Add a unit
 test that the production guard throws.
 
-Depends on: PR 5. Ships: the app goes private.
+Depends on: PR 5 **and PR 9**. PR 5 alone is not enough: with no allowlist in
+PR 4, a session gate over an unscoped `listAccounts()` shows every signed-in
+stranger all four real accounts. Either PR 9 lands first, or this PR carries
+`AUTH_ALLOWED_EMAILS` itself. Ships: the app goes private.
 
 ### PR 7 — `feat/profile-section`
 
@@ -667,9 +700,12 @@ and go invisible the moment PR 9 lands.**
   row for the user matching a given email. Idempotent.
 - `db:backfill`, `db:backfill-dev`, `db:backfill-test` npm scripts.
 - **Claude runs it from the session**, not you: `.env.local` is readable here and
-  Neon is reachable (verified 2026-09-12 against dev). The **dev** run happens as
-  part of this PR. The **main** run writes to production and needs your explicit
-  go-ahead each time — it is never run unprompted.
+  Neon is reachable (verified 2026-09-15 against dev and production). The **dev**
+  run happens as part of this PR. The **production** run writes to real data and
+  needs your explicit go-ahead each time — it is never run unprompted.
+- **Production cannot be backfilled until someone signs in there.** Measured
+  2026-09-15: production has 0 users, 4 accounts, 4 of them orphaned. Dev has 1
+  user and 3 orphans, so the dev half of this PR can proceed today.
 - Verify zero orphans on every target, also run from the session:
 
 ```sql
@@ -686,7 +722,8 @@ Tests: unit tests against `InMemoryStore` — accounts without a member get one,
 accounts with one are untouched, second run is a no-op.
 
 Depends on: PR 3, and a real user row existing (so, after signing in once
-post-PR 4).
+post-PR 4). **On production that has not happened yet** — see the Progress
+section.
 
 > **Why not earlier?** Assigning an owner needs a user to assign to, and users
 > only exist after a Google sign-in. Seeding a placeholder user at migration time
@@ -713,7 +750,8 @@ Tests: `account-access` unit tests — owner and editor pass `assertCanEdit`,
 viewer throws, `requireAccountUser` throws for a non-member of the account. Route test:
 unauthenticated `POST /api/accounts` → 401.
 
-Depends on: PR 3, PR 8. Ships: users see only their own accounts.
+Depends on: PR 3, PR 8. Ships: users see only their own accounts, and it is
+the prerequisite of PR 6 rather than a sequel to it.
 
 ### PR 10 — `feat/guard-transaction-routes`
 
