@@ -14,11 +14,18 @@ const mutedText = ({ theme }: { theme: Theme }): string =>
 const optionSize = ({ theme }: { theme: Theme }): number =>
   theme.typography.heading;
 
+const segmentFill = ({ theme }: { theme: Theme }): string =>
+  theme.colors.surface;
+
+const segmentBorder = ({ theme }: { theme: Theme }): string =>
+  theme.colors.divider;
+
 export const Segment = styled.div`
   display: flex;
   border-radius: ${LANGUAGE_SECTION_STYLE.radius}px;
   overflow: hidden;
-  background: ${({ theme }): string => theme.colors.surface};
+  border: 1px solid ${segmentBorder};
+  background: ${segmentFill};
 `;
 
 export const Option = styled.span`

@@ -1,5 +1,11 @@
 import styled from '@emotion/styled';
+import type { Theme } from '@emotion/react';
 import { ACCOUNTS_SECTION_STYLE } from './constants';
+
+const chipFill = ({ theme }: { theme: Theme }): string => theme.colors.surface;
+
+const chipBorder = ({ theme }: { theme: Theme }): string =>
+  theme.colors.divider;
 
 export const Row = styled.div`
   display: flex;
@@ -11,9 +17,9 @@ export const Row = styled.div`
 export const ActionChip = styled.button`
   width: ${ACCOUNTS_SECTION_STYLE.avatarSize}px;
   height: ${ACCOUNTS_SECTION_STYLE.avatarSize}px;
-  border: none;
+  border: 1px solid ${chipBorder};
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
+  background: ${chipFill};
   color: currentColor;
   font-size: ${ACCOUNTS_SECTION_STYLE.actionFontSize}px;
   display: flex;

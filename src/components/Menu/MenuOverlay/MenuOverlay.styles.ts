@@ -2,10 +2,10 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { MENU_OVERLAY_LAYOUT, MENU_OVERLAY_STYLE } from './constants';
 
-const surface = ({ theme }: { theme: Theme }): string => theme.gradients.screen;
+const sheet = ({ theme }: { theme: Theme }): string => theme.colors.softBg;
 
-const onSurface = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textOnPrimary;
+const onSheet = ({ theme }: { theme: Theme }): string =>
+  theme.colors.textStrong;
 
 export const Panel = styled.div`
   position: fixed;
@@ -14,8 +14,8 @@ export const Panel = styled.div`
   box-sizing: border-box;
   padding-bottom: ${MENU_OVERLAY_STYLE.paddingBottom}px;
   overflow-y: auto;
-  background: ${surface};
-  color: ${onSurface};
+  background: ${sheet};
+  color: ${onSheet};
   opacity: 0;
   transform: scale(${MENU_OVERLAY_STYLE.closedScale});
   transform-origin: top right;

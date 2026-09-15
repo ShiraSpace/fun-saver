@@ -3,7 +3,7 @@ import type { Theme } from '@emotion/react';
 import { MENU_ICON, MENU_TOGGLE } from './constants';
 
 const openColor = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textOnPrimary;
+  theme.colors.textStrong;
 
 export const ToggleButton = styled.button`
   position: relative;
