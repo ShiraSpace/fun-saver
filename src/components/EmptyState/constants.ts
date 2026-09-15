@@ -5,7 +5,6 @@ export const EMPTY_STATE_TEST_IDS = {
 } as const;
 
 export const EMPTY_STATE_COPY = {
-  pig: '🐷',
   createAccount: 'צור חשבון',
 } as const;
 

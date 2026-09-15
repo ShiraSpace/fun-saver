@@ -2,9 +2,14 @@
 
 import { JSX } from 'react';
 import { ActionButton } from '@/components/ActionButton';
+import { PIG_EMOJI } from '@/components/Pig';
 import { Screen } from '@/components/Screen';
 import { useOinkThenRun } from './use-oink-then-run';
-import { EMPTY_STATE_COPY, EMPTY_STATE_TEST_IDS } from './constants';
+import {
+  EMPTY_STATE_COPY,
+  EMPTY_STATE_LAYOUT,
+  EMPTY_STATE_TEST_IDS,
+} from './constants';
 import { Pig } from './EmptyState.styles';
 
 interface EmptyStateProps {
@@ -17,11 +22,12 @@ export function EmptyState({ onCreate }: EmptyStateProps): JSX.Element {
   return (
     <Screen data-testid={EMPTY_STATE_TEST_IDS.container}>
       <Pig
+        pigSize={EMPTY_STATE_LAYOUT.emojiSize}
         data-testid={EMPTY_STATE_TEST_IDS.pig}
         data-oinking={isOinking}
         onAnimationEnd={onPigDoneOinking}
       >
-        {EMPTY_STATE_COPY.pig}
+        {PIG_EMOJI}
       </Pig>
       <ActionButton
         type="button"

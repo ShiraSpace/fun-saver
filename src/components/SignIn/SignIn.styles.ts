@@ -1,22 +1,14 @@
 import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
 import { ActionButton } from '@/components/ActionButton';
 import { TYPE_SCALE } from '@/theme/typography';
-import { SIGN_IN_LAYOUT } from './constants';
-
-interface Themed {
-  theme: Theme;
-}
+import type { Themed } from '@/theme/themed';
+import { GOOGLE_BRAND_WHITE, SIGN_IN_LAYOUT } from './constants';
 
 const onPrimary = ({ theme }: Themed): string => theme.colors.textOnPrimary;
 const surface = ({ theme }: Themed): string => theme.colors.surface;
 const strong = ({ theme }: Themed): string => theme.colors.textStrong;
 const muted = ({ theme }: Themed): string => theme.colors.textMuted;
-
-export const Pig = styled.span`
-  font-size: ${SIGN_IN_LAYOUT.pigSize}px;
-  line-height: 1;
-`;
+const alert = ({ theme }: Themed): string => theme.colors.alert;
 
 export const Wordmark = styled.h1`
   font-size: ${SIGN_IN_LAYOUT.wordmarkSize}px;
@@ -67,10 +59,15 @@ export const GoogleButton = styled(ActionButton)`
   gap: ${SIGN_IN_LAYOUT.googleButtonGap}px;
   width: 100%;
   font-size: ${TYPE_SCALE.body}px;
+
+  &:disabled {
+    cursor: progress;
+    opacity: 0.75;
+  }
 `;
 
 export const GoogleMark = styled.span`
-  background: #ffffff;
+  background: ${GOOGLE_BRAND_WHITE};
   border-radius: 50%;
   width: ${SIGN_IN_LAYOUT.googleMarkSize}px;
   height: ${SIGN_IN_LAYOUT.googleMarkSize}px;
@@ -83,6 +80,13 @@ export const GoogleMark = styled.span`
     height: ${SIGN_IN_LAYOUT.googleLogoSize}px;
     display: block;
   }
+`;
+
+export const ErrorMessage = styled.p`
+  font-size: ${TYPE_SCALE.label}px;
+  margin: 0;
+  color: ${alert};
+  line-height: 1.6;
 `;
 
 export const Fineprint = styled.p`

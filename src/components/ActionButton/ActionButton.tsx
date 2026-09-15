@@ -1,13 +1,9 @@
 'use client';
 
 import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
 import { TYPE_SCALE } from '@/theme/typography';
+import type { Themed } from '@/theme/themed';
 import { ACTION_BUTTON } from './constants';
-
-interface Themed {
-  theme: Theme;
-}
 
 const fill = ({ theme }: Themed): string => theme.gradients.actionButton;
 const label = ({ theme }: Themed): string => theme.colors.textOnPrimary;
