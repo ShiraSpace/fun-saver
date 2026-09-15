@@ -1,4 +1,5 @@
 import { render, screen } from '@/test-utils/render';
+import { PIG_EMOJI } from '@/components/Pig/constants';
 import { EmptyState } from './EmptyState';
 import { EMPTY_STATE_COPY, EMPTY_STATE_TEST_IDS } from './constants';
 
@@ -15,7 +16,7 @@ describe('EmptyState', () => {
 
   it('shows the pig', () => {
     expect(screen.getByTestId(EMPTY_STATE_TEST_IDS.pig)).toHaveTextContent(
-      EMPTY_STATE_COPY.pig
+      PIG_EMOJI
     );
   });
 
