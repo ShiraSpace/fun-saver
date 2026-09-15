@@ -123,8 +123,7 @@ jars, and no way to withdraw more than is there.
 ## 4 · What you need to decide
 
 `key: method.rules.intro`
-Six decisions. Better made before the conversation with your child than
-halfway through it.
+Five decisions, and then one rule that isn't up for decision.
 
 `key: method.rules.amount`
 ### How much?
@@ -178,12 +177,13 @@ work? Pay separately, for **extra, non-routine** jobs, and call it a job — not
 allowance.
 
 `key: method.rules.rescue`
-### What happens when the money runs out mid-week?
-Decide now, calmly, not at the supermarket checkout.
+### And when the money runs out mid-week — you wait for next week
+This isn't a decision. It's the rule: **no early top-ups, and nothing taken
+from savings.** Top it up and there's no consequence; with no consequence
+there's nothing to learn, and the three jars become decoration.
 
-**The rule we recommend: no early top-ups, and nothing taken from savings.**
-Top it up and there's no consequence; with no consequence there's nothing to
-learn, and the three jars become decoration.
+What *is* worth settling in advance is **what you say** in the moment — the
+wording is in section 5.
 
 `key: method.rules.example`
 ### Worked example — ₪30/week, almost 7 years old

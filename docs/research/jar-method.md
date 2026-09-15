@@ -463,8 +463,8 @@ financial literacy, and is age-appropriate to start at 6–7.
 
 ## 7. Setting the rules — the parameters a family must decide
 
-These are the six decisions the method needs. The app's setup flow should be
-exactly these six, in this order.
+These are the five decisions the method needs, plus one rule that is **not** a
+decision (§7.4). The app's setup flow should be those five, in this order.
 
 ### 7.1 How much
 
@@ -499,6 +499,14 @@ sources soften it to $0.50–$1). Actual reported averages: ages 5–8 ≈ $6.66
 - roughly **2–3× the Israeli 5–7 guideline** and at the **top of the 8–10
   band**;
 - roughly **in line with the US $1/year-of-age rule** (~$7/wk ≈ ₪26).
+
+**Local price check (why ₪15/week of spending money is the right size here):**
+a scoop of ice cream at the shop near home is **₪17**; a basic ice cream is
+**₪10+**. So the weekly spending wallet buys roughly *one* treat — enough to
+make a real choice, not enough to make the choice painless. That is the
+correct calibration: the Spending wallet should force a trade-off every week,
+and a number that can't buy anything teaches as little as one that buys
+everything.
 
 That is a legitimate family choice — the research consistently says
 **consistency matters more than the amount** (Eker; the allowance literature;
@@ -585,8 +593,10 @@ and asks for more. If the parent tops it up, the entire method collapses —
 there is no consequence, therefore no lesson, and the partition becomes
 decorative.
 
-**Rule: the Spending wallet is not refilled early, and is never refilled from
-Savings.** fun-saver enforces the second half structurally: there is no
+**This is a rule, not a family preference: the Spending wallet is not refilled
+early, and is never refilled from Savings. When it runs out, you wait for next
+week.** Presenting it as something to decide invites renegotiating it at the
+checkout, which is precisely when it must not be renegotiable. fun-saver enforces the second half structurally: there is no
 `transfer` transaction type, so wallets cannot be cross-funded in the app.
 
 The parent's line should be rehearsed in advance, because it has to be said

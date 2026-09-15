@@ -107,13 +107,21 @@ values choice, so it should be the family's.
 That is deliberate (a realistic rate is invisible to a 7-year-old) but it is
 currently both hardcoded and unlabelled. See research §9.
 
-- Make the rate **per account**, so it can be dialled down as the child ages.
+**Decision (2026-09-14): keep 15% for now.** Visible interest is the point —
+a realistic rate is invisible at a 7-year-old's pace, and the distortion is
+acceptable while the balances are small. Revisit as the child ages.
+
+When picked up:
+
+- Make the rate **per account**, so it can be dialled down over time.
+- Offer **presets: 5% · 10% · 15% · custom**, defaulting to 15%.
 - **Label it in the UI as the family's rate**, e.g. "הריבית של בנק המשפחה" —
   never present it as what a real bank pays.
-- Consider a preset ladder tied to age (high and visible at 6–8, lower and
-  more realistic at 12+).
 
 ## 5. Allowance schedule / standing order
+
+**Decision (2026-09-14): manual deposits are fine for now.** Automate later if
+remembering turns out to be the failure mode.
 
 The most load-bearing rule in the whole method is **pay on the same day, every
 time** — Kidd, Palmeri & Aslin (2013): children whose adults broke promises
