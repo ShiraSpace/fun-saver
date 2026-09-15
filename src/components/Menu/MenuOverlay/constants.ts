@@ -30,5 +30,5 @@ export const MENU_OVERLAY_LAYOUT = {
 export const MENU_LINK_STYLE = {
   paddingY: 14,
   radius: 14,
-  dividerWidth: 1,
+  dividerOpacity: 0.28,
 } as const;

@@ -16,8 +16,6 @@ const onSheet = ({ theme }: { theme: Theme }): string =>
 const labelSize = ({ theme }: { theme: Theme }): number =>
   theme.typography.label;
 
-const rule = ({ theme }: { theme: Theme }): string => theme.colors.divider;
-
 export const Panel = styled.div`
   position: fixed;
   inset: ${MENU_OVERLAY_LAYOUT.top}px 0 0;
@@ -52,7 +50,8 @@ export const NavLink = styled(Link)`
   display: block;
   margin-top: ${MENU_LABEL_STYLE.marginTop}px;
   padding: ${MENU_LINK_STYLE.paddingY}px 2px;
-  border-top: ${MENU_LINK_STYLE.dividerWidth}px solid ${rule};
+  border-top: 1px solid currentColor;
+  border-top-color: rgba(255, 255, 255, ${MENU_LINK_STYLE.dividerOpacity});
   border-radius: ${MENU_LINK_STYLE.radius}px;
   text-align: start;
   font-size: ${labelSize}px;
