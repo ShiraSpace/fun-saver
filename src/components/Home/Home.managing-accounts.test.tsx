@@ -11,7 +11,7 @@ import {
   renderHome,
   submitCreateForm,
   submitEditForm,
-  tapAddChip,
+  tapAddRow,
   tapEditChip,
 } from './home-test-helpers';
 
@@ -55,7 +55,7 @@ describe('Home — managing accounts', () => {
     beforeEach(() => {
       renderHome();
       openMenu();
-      tapAddChip();
+      tapAddRow();
     });
 
     it('opens the create overlay over the still-mounted account view', () => {

@@ -2,13 +2,14 @@ import { type BoundingBox } from 'puppeteer';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
+import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { Session } from './session';
 
 const MIDDLE_BAR = `[data-testid="${MENU_TEST_IDS.menuIcon}"] > span:nth-of-type(2)`;
 const OVERLAY = `[data-testid="${MENU_OVERLAY_TEST_IDS.overlay}"]`;
-const ACCOUNT_CHIP = `[data-testid="${ACCOUNTS_SECTION_TEST_IDS.chip}"]`;
+const ACCOUNT_ROW = `[data-testid="${ACCOUNT_LIST_TEST_IDS.row}"]`;
 
 export class MenuDriver {
   constructor(private readonly session: Session) {}
@@ -19,16 +20,16 @@ export class MenuDriver {
     await this.session.waitForStyle(OVERLAY, 'opacity', '1');
   }
 
-  accountChipCount(): Promise<number> {
-    return this.session.count(ACCOUNTS_SECTION_TEST_IDS.chip);
+  accountRowCount(): Promise<number> {
+    return this.session.count(ACCOUNT_LIST_TEST_IDS.row);
   }
 
   selectAccount(index: number): Promise<void> {
-    return this.session.clickNth(ACCOUNT_CHIP, index);
+    return this.session.clickNth(ACCOUNT_ROW, index);
   }
 
-  clickAddAccountChip(): Promise<void> {
-    return this.session.click(ACCOUNTS_SECTION_TEST_IDS.addChip);
+  clickAddAccountRow(): Promise<void> {
+    return this.session.click(ACCOUNT_LIST_TEST_IDS.addRow);
   }
 
   clickEditAccountChip(): Promise<void> {
