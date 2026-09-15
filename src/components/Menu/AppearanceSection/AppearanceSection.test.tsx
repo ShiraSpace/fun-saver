@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { render } from '@/test-utils/render';
 import { AccountsProvider } from '@/components/AccountSwitcher/accounts-context';
-import { mockAccount } from '@/test-utils/fixtures';
+import { mockAccount, mockDerivedAccount } from '@/test-utils/fixtures';
 import { AppearanceSection } from './AppearanceSection';
 import {
   APPEARANCE_SECTION_CONTENT,
@@ -20,7 +20,7 @@ function renderSection(): void {
   render(
     <AccountsProvider
       value={{
-        accounts: [mockAccount],
+        accounts: [mockDerivedAccount],
         selectedAccountId,
         selectAccount: jest.fn(),
       }}

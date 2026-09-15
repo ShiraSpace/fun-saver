@@ -10,7 +10,10 @@ import {
   AppModeProvider,
   type AppMode,
 } from '@/components/Home/app-mode-context';
-import { mockAccount, mockSecondAccount } from '@/test-utils/fixtures';
+import {
+  mockDerivedAccount,
+  mockSecondDerivedAccount,
+} from '@/test-utils/fixtures';
 
 interface RenderSectionParams {
   contextOverrides?: Partial<AccountsContextValue>;
@@ -18,7 +21,7 @@ interface RenderSectionParams {
   setMode?: (mode: AppMode) => void;
 }
 
-const accounts = [mockAccount, mockSecondAccount];
+const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
 
 function renderSection({
   contextOverrides,
@@ -27,7 +30,7 @@ function renderSection({
 }: RenderSectionParams = {}): void {
   const value: AccountsContextValue = {
     accounts,
-    selectedAccountId: mockAccount.id,
+    selectedAccountId: mockDerivedAccount.id,
     selectAccount: () => {},
     ...contextOverrides,
   };
@@ -94,7 +97,7 @@ describe('AccountsSection', () => {
   it('selects the tapped account', () => {
     fireEvent.click(screen.getAllByTestId(ACCOUNTS_SECTION_TEST_IDS.chip)[1]);
 
-    expect(mockSelectAccount).toHaveBeenCalledWith(mockSecondAccount.id);
+    expect(mockSelectAccount).toHaveBeenCalledWith(mockSecondDerivedAccount.id);
   });
 
   it('closes the menu when an account is tapped', () => {
