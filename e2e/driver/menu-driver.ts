@@ -2,6 +2,8 @@ import { type BoundingBox } from 'puppeteer';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
+import { METHOD_COPY } from '@/components/Method/copy';
+import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { Session } from './session';
 
 const MIDDLE_BAR = `[data-testid="${MENU_TEST_IDS.menuIcon}"] > span:nth-of-type(2)`;
@@ -31,6 +33,13 @@ export class MenuDriver {
 
   clickEditAccountChip(): Promise<void> {
     return this.session.click(ACCOUNTS_SECTION_TEST_IDS.editChip);
+  }
+
+  async openMethodPage(): Promise<string> {
+    await this.session.click(MENU_OVERLAY_TEST_IDS.methodLink);
+    await this.session.waitForText(TITLE_TEST_IDS.title, METHOD_COPY.title);
+
+    return this.session.currentPath();
   }
 
   waitForClosed(): Promise<void> {

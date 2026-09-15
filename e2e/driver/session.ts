@@ -45,6 +45,10 @@ export class Session {
     this.browser = undefined;
   }
 
+  currentPath(): string {
+    return queries.currentPath(this.page);
+  }
+
   exists(testId: string): Promise<boolean> {
     return queries.exists(this.page, testId);
   }

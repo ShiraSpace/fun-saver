@@ -7,6 +7,10 @@ export function motionFeatures(motion: MotionPreference): MediaFeature[] {
   return [{ name: 'prefers-reduced-motion', value: motion }];
 }
 
+export function currentPath(page: Page): string {
+  return new URL(page.url()).pathname;
+}
+
 export async function exists(page: Page, testId: string): Promise<boolean> {
   return (await queryByTest(page, testId)) !== null;
 }
