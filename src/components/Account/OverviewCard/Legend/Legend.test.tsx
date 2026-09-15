@@ -1,7 +1,11 @@
 import { render, screen } from '@/test-utils/render';
 import { mockDerivedWallets, mockWalletShares } from '@/test-utils/fixtures';
 import { Legend } from './Legend';
-import { OVERVIEW_CARD_COPY, OVERVIEW_CARD_TEST_IDS } from '../constants';
+import {
+  LEGEND_ANIMATION,
+  OVERVIEW_CARD_COPY,
+  OVERVIEW_CARD_TEST_IDS,
+} from '../constants';
 
 const entries = mockDerivedWallets.map((wallet, index) => ({
   id: wallet.id,
@@ -43,9 +47,8 @@ describe('Legend', () => {
       OVERVIEW_CARD_TEST_IDS.legendRow
     );
     const betweenRowsMs = rowDelayMs(second) - rowDelayMs(first);
-    const expectedBetweenRowsMs = 50;
 
-    expect(betweenRowsMs).toBe(expectedBetweenRowsMs);
+    expect(betweenRowsMs).toBe(LEGEND_ANIMATION.betweenRowsMs);
   });
 
   it('shows the share of each wallet as a percentage', () => {

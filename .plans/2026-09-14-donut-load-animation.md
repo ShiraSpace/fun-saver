@@ -25,8 +25,11 @@ src/db/data.json` then `FUNSAVER_NOW=2026-09-12 npm run dev`.
 
 ## Progress
 
-- [x] PR 1 — the ring sweep
-- [x] PR 2 — the count-up and the legend fade
+- [x] PR 1 — the ring sweep (#57, merged)
+- [x] PR 2 — the count-up and the legend fade (#60)
+
+Both steps shipped. The sections below record the plan as written; **What actually shipped** at the bottom
+records where the build departed from it and why.
 
 ## Goal
 
@@ -106,6 +109,30 @@ into `animation-delay: legendDelayMs + index × legendStepMs`.
 
 **Tests:** the hook returns the target immediately under reduced motion; a legend row carries the delay for
 its position.
+
+## What actually shipped
+
+The plan held, but review changed four things worth carrying forward:
+
+- **No pre-laid constants.** PR 1 was going to add PR 2's five timing fields up front. Review called it
+  correctly — a constant nothing reads is a constant nothing verifies, and by the time PR 2 landed those
+  numbers had been retuned anyway. Each PR added the fields it used. The timings also split by what they
+  belong to: `DONUT_ANIMATION` (the arcs), `TOTAL_ANIMATION` (the number), `LEGEND_ANIMATION` (the rows),
+  with `countMs: DONUT_ANIMATION.sweepMs` so the number and the ring finish together by construction.
+- **Motion is a `useDriver` option, not a hardcoded line in `session.ts`.** Every e2e session still asks for
+  reduced motion by default, but `useDriver(seed, 'no-preference')` opts back in, which is what let
+  `donut-sweep.visual.ts` cover the animated path. The query it uses reads each arc's computed
+  `animation-name` — `none` under reduced motion, the keyframe otherwise — so nothing has to be caught mid-draw.
+- **`entrance()` in `src/theme/motion.ts`.** Three components declare a load animation; the five `animation-*`
+  lines and the reduced-motion guard live in one helper instead of being copied three times.
+- **`use-count-up.ts` became `use-animated-wallet-total.ts`.** `useAnimatedWalletTotal(walletTotal)` animates
+  *progress* and multiplies, which is what makes "animate on mount, snap afterwards" fall out with no second
+  effect. `jest.setup.ts` now defaults the jsdom `matchMedia` stub to **motion**, so the animated path is
+  reachable from unit tests and a test wanting the settled card asks for reduced motion out loud.
+
+**The one coupling to remember:** nothing flashes the final total before hydration only because the amount's
+fade holds it at opacity 0 through its 80ms delay. Remove the fade, or set `startDelayMs: 0`, and the
+server-rendered total becomes visible for a few frames before the count resets it to zero.
 
 ## Out of scope
 
