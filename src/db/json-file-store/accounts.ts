@@ -1,9 +1,10 @@
 import type { Account, AccountEdits } from '@/lib/types';
+import { DuplicateAccountError } from '@/lib/errors';
 import type { ThemeId } from '@/theme/registry';
 import type { AccountRepository, StoreData } from '../data-store';
 import type { FileSession } from './file-session';
 
-function findAccount(data: StoreData, id: string): Account | undefined {
+export function findAccount(data: StoreData, id: string): Account | undefined {
   return data.accounts.find((account) => account.id === id);
 }
 
@@ -12,6 +13,10 @@ export class JsonAccounts implements AccountRepository {
 
   insert(account: Account): Promise<void> {
     return this.session.write(async (data, save): Promise<void> => {
+      if (findAccount(data, account.id)) {
+        throw new DuplicateAccountError(account.id);
+      }
+
       data.accounts.push(account);
       await save();
     });

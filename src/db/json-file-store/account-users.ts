@@ -1,10 +1,13 @@
 import type { Account, AccountUser } from '@/lib/types';
+import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
 import type { AccountOwner, AccountUserRepository } from '../data-store';
 import {
   accountsForUser,
   findAccountUser,
   ownerAccountUser,
 } from '../account-users';
+import { isKnownUser } from '../user-identity';
+import { findAccount } from './accounts';
 import type { FileSession } from './file-session';
 
 export class JsonAccountUsers implements AccountUserRepository {
@@ -24,6 +27,18 @@ export class JsonAccountUsers implements AccountUserRepository {
 
   insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void> {
     return this.session.write(async (data, save): Promise<void> => {
+      const accountExists = Boolean(findAccount(data, account.id));
+
+      if (accountExists) {
+        throw new DuplicateAccountError(account.id);
+      }
+
+      const ownerIsKnownUser = isKnownUser(data.users, owner.userId);
+
+      if (!ownerIsKnownUser) {
+        throw new UnknownOwnerError(owner.userId);
+      }
+
       data.accounts.push(account);
       data.accountUsers.push(ownerAccountUser(account.id, owner));
       await save();

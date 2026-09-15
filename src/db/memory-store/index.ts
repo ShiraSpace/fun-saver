@@ -7,12 +7,13 @@ import { MemoryUsers } from './users';
 export class InMemoryStore extends BaseStore {
   constructor() {
     const accounts = new MemoryAccounts();
+    const users = new MemoryUsers();
 
     super(
       accounts,
       new MemoryTransactions(),
-      new MemoryUsers(),
-      new MemoryAccountUsers(accounts)
+      users,
+      new MemoryAccountUsers(accounts, users)
     );
   }
 }

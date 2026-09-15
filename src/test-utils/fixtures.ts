@@ -109,6 +109,13 @@ export const mockSecondAccount: Account = createMockAccount({
 
 export const mockUser: User = createMockUser();
 
+export const mockSecondUser: User = createMockUser({
+  id: 'u2',
+  providerAccountId: 'google-sub-2',
+  email: 'mushit@example.com',
+  name: 'מושית',
+});
+
 export const mockAccountUser: AccountUser = createMockAccountUser();
 
 export const mockCreateAccountInput = {

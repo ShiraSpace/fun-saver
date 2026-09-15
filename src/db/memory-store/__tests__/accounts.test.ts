@@ -1,4 +1,5 @@
 import { InMemoryStore } from '../index';
+import { DuplicateAccountError } from '@/lib/errors';
 import {
   createMockAccount,
   mockAccount,
@@ -9,17 +10,27 @@ import {
 const pristine = createMockAccount();
 
 describe('InMemoryStore accounts', () => {
-  it('lists inserted accounts', async () => {
-    const store = new InMemoryStore();
+  let store: InMemoryStore;
 
+  beforeEach(() => {
+    store = new InMemoryStore();
+  });
+
+  it('lists inserted accounts', async () => {
     await store.insertAccount(mockAccount);
 
     expect(await store.listAccounts()).toEqual([mockAccount]);
   });
 
-  it('returns each account with its own embedded wallets', async () => {
-    const store = new InMemoryStore();
+  it('rejects a second insert of the same account', async () => {
+    await store.insertAccount(mockAccount);
 
+    await expect(store.insertAccount(mockAccount)).rejects.toThrow(
+      DuplicateAccountError
+    );
+  });
+
+  it('returns each account with its own embedded wallets', async () => {
     await store.insertAccount(mockAccount);
     await store.insertAccount(mockSecondAccount);
 
@@ -31,7 +42,6 @@ describe('InMemoryStore accounts', () => {
   });
 
   it('changes an account theme and ignores unknown ids', async () => {
-    const store = new InMemoryStore();
     await store.insertAccount(createMockAccount());
 
     await store.setAccountTheme('a1', 'midnight-blue');
@@ -41,10 +51,7 @@ describe('InMemoryStore accounts', () => {
   });
 
   describe('edit account', () => {
-    let store: InMemoryStore;
-
     beforeEach(async () => {
-      store = new InMemoryStore();
       await store.insertAccount(createMockAccount());
     });
 
