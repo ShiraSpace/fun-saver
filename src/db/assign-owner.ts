@@ -13,11 +13,11 @@ export function assignOwners({
   accountUsers,
   owner,
 }: AssignOwnersParams): AccountUser[] {
-  const claimed = new Set(
+  const claimedAccountIds = new Set(
     accountUsers.map((accountUser) => accountUser.accountId)
   );
 
   return accounts
-    .filter((account) => !claimed.has(account.id))
+    .filter((account) => !claimedAccountIds.has(account.id))
     .map((account) => ownerAccountUser(account.id, owner));
 }
