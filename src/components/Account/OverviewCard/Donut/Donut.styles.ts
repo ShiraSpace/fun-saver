@@ -19,10 +19,12 @@ const drawArc = keyframes`
   }
 `;
 
-export const ArcCircle = styled.circle<{
+interface ArcTiming {
   durationMs: number;
   delayMs: number;
-}>`
+}
+
+export const ArcCircle = styled.circle<ArcTiming>`
   animation-name: ${drawArc};
   animation-duration: ${({ durationMs }): number => durationMs}ms;
   animation-timing-function: linear;

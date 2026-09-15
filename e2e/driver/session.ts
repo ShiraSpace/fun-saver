@@ -24,7 +24,6 @@ export class Session {
   async open(baseUrl: string, motion: queries.MotionPreference): Promise<void> {
     this.activePage = await this.requireBrowser().newPage();
     await this.activePage.emulateMediaFeatures(queries.motionFeatures(motion));
-    await queries.captureFirstFrameAnimations(this.activePage);
     await this.activePage.goto(baseUrl, { waitUntil: 'networkidle0' });
   }
 
@@ -54,8 +53,8 @@ export class Session {
     return queries.count(this.page, testId);
   }
 
-  animationsOnLoad(testId: string): Promise<queries.FirstFrame> {
-    return queries.animationsOnLoad(this.page, testId);
+  styleValues(testId: string, property: string): Promise<string[]> {
+    return queries.styleValues(this.page, testId, property);
   }
 
   text(testId: string): Promise<string> {

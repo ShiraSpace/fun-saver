@@ -1,36 +1,10 @@
 import { type BoundingBox, type MediaFeature, type Page } from 'puppeteer';
 import { findByTest, queryAllByTest, queryByTest } from './page-element';
 
-declare global {
-  interface Window {
-    animationsOnFirstFrame?: Record<string, number>;
-  }
-}
-
 export type MotionPreference = 'reduce' | 'no-preference';
-
-export interface FirstFrame {
-  elements: number;
-  animations: number;
-}
 
 export function motionFeatures(motion: MotionPreference): MediaFeature[] {
   return [{ name: 'prefers-reduced-motion', value: motion }];
-}
-
-export async function captureFirstFrameAnimations(page: Page): Promise<void> {
-  await page.evaluateOnNewDocument(() => {
-    requestAnimationFrame(() => {
-      const running: Record<string, number> = {};
-
-      for (const node of document.querySelectorAll('[data-testid]')) {
-        const testId = node.getAttribute('data-testid') ?? '';
-
-        running[testId] = (running[testId] ?? 0) + node.getAnimations().length;
-      }
-      window.animationsOnFirstFrame = running;
-    });
-  });
 }
 
 export async function exists(page: Page, testId: string): Promise<boolean> {
@@ -121,14 +95,19 @@ export function computedStyle({
   return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
 }
 
-export async function animationsOnLoad(
+export async function styleValues(
   page: Page,
-  testId: string
-): Promise<FirstFrame> {
-  const animations = await page.evaluate(
-    (id: string) => window.animationsOnFirstFrame?.[id] ?? 0,
-    testId
-  );
+  testId: string,
+  property: string
+): Promise<string[]> {
+  const elements = await queryAllByTest(page, testId);
 
-  return { elements: (await queryAllByTest(page, testId)).length, animations };
+  return Promise.all(
+    elements.map((element) =>
+      element.evaluate(
+        (node, name) => getComputedStyle(node).getPropertyValue(name),
+        property
+      )
+    )
+  );
 }

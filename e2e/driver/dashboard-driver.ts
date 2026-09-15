@@ -8,7 +8,6 @@ import { MODE_TOGGLE_TEST_IDS } from '@/components/Account/TransactionDrawer/Mod
 import { WALLET_PICKER_TEST_IDS } from '@/components/Account/TransactionDrawer/WalletPicker/constants';
 import { AMOUNT_PAD_TEST_IDS } from '@/components/Account/TransactionDrawer/AmountPad/constants';
 import { Session } from './session';
-import type { FirstFrame } from './page-queries';
 
 export class DashboardDriver {
   constructor(private readonly session: Session) {}
@@ -29,8 +28,11 @@ export class DashboardDriver {
     return this.session.count(WALLET_CARD_TEST_IDS.card);
   }
 
-  arcsOnLoad(): Promise<FirstFrame> {
-    return this.session.animationsOnLoad(OVERVIEW_CARD_TEST_IDS.arc);
+  arcAnimations(): Promise<string[]> {
+    return this.session.styleValues(
+      OVERVIEW_CARD_TEST_IDS.arc,
+      'animation-name'
+    );
   }
 
   walletSubLines(): Promise<string[]> {

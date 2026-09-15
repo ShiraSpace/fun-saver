@@ -5,16 +5,18 @@ import { useDriver } from './driver/use-driver';
 
 const seed = { accounts: [mockAccount], transactions: mockTransactions };
 const ARCS_PER_RING = 3;
-const NOTHING_MOVES = 0;
+const STILL = 'none';
 
 describe('donut sweep', () => {
   const { dashboard } = useDriver(seed, 'no-preference');
 
   it('draws every arc of the ring', async () => {
-    assert.deepEqual(await dashboard.arcsOnLoad(), {
-      elements: ARCS_PER_RING,
-      animations: ARCS_PER_RING,
-    });
+    const animations = await dashboard.arcAnimations();
+
+    assert.equal(
+      animations.filter((animation) => animation !== STILL).length,
+      ARCS_PER_RING
+    );
   });
 });
 
@@ -22,9 +24,11 @@ describe('donut sweep under reduced motion', () => {
   const { dashboard } = useDriver(seed);
 
   it('leaves every arc of the ring still', async () => {
-    assert.deepEqual(await dashboard.arcsOnLoad(), {
-      elements: ARCS_PER_RING,
-      animations: NOTHING_MOVES,
-    });
+    const animations = await dashboard.arcAnimations();
+
+    assert.equal(
+      animations.filter((animation) => animation === STILL).length,
+      ARCS_PER_RING
+    );
   });
 });

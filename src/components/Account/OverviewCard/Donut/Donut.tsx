@@ -29,26 +29,23 @@ interface Arc extends DonutSegment {
   delayMs: number;
 }
 
+function sum(values: number[]): number {
+  return values.reduce((total, value) => total + value, 0);
+}
+
 function toArcs(segments: DonutSegment[]): Arc[] {
-  let consumed = 0;
-  let elapsedMs = 0;
+  const portions = segments.map((segment) => segment.share / PERCENT_TOTAL);
 
-  return segments.map((segment) => {
-    const portion = segment.share / PERCENT_TOTAL;
-    const length = portion * DONUT_CIRCUMFERENCE;
-    const durationMs = portion * DONUT_ANIMATION.sweepMs;
-    const arc = {
+  return segments.map((segment, index) => {
+    const portionBefore = sum(portions.slice(0, index));
+
+    return {
       ...segment,
-      length,
-      offset: -consumed,
-      durationMs,
-      delayMs: elapsedMs,
+      length: portions[index] * DONUT_CIRCUMFERENCE,
+      offset: -portionBefore * DONUT_CIRCUMFERENCE,
+      durationMs: portions[index] * DONUT_ANIMATION.sweepMs,
+      delayMs: portionBefore * DONUT_ANIMATION.sweepMs,
     };
-
-    consumed += length;
-    elapsedMs += durationMs;
-
-    return arc;
   });
 }
 
