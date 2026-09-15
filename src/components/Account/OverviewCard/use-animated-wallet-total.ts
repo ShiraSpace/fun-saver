@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { REDUCED_MOTION } from '@/theme/motion';
+import { motionIsReduced } from '@/theme/motion';
 import { TOTAL_ANIMATION } from './constants';
 
 const NOT_STARTED = 0;
@@ -11,11 +11,20 @@ const NO_TIME_PASSED = 0;
 const useBeforePaint =
   typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
+export function progressAt(elapsedMs: number): number {
+  const countingMs = elapsedMs - TOTAL_ANIMATION.startDelayMs;
+
+  return Math.min(
+    Math.max(countingMs, NO_TIME_PASSED) / TOTAL_ANIMATION.countMs,
+    COMPLETE
+  );
+}
+
 function useAnimationProgress(): number {
   const [progress, setProgress] = useState(COMPLETE);
 
   useBeforePaint(() => {
-    if (window.matchMedia(REDUCED_MOTION).matches) {
+    if (motionIsReduced()) {
       return;
     }
 
@@ -25,11 +34,7 @@ function useAnimationProgress(): number {
     let frame = 0;
 
     const step = (now: number): void => {
-      const countingMs = now - startedAt - TOTAL_ANIMATION.startDelayMs;
-      const reached = Math.min(
-        Math.max(countingMs, NO_TIME_PASSED) / TOTAL_ANIMATION.countMs,
-        COMPLETE
-      );
+      const reached = progressAt(now - startedAt);
 
       setProgress(reached);
 

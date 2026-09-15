@@ -2,6 +2,10 @@ import { css, type Keyframes, type SerializedStyles } from '@emotion/react';
 
 export const REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
 
+export function motionIsReduced(): boolean {
+  return window.matchMedia(REDUCED_MOTION).matches;
+}
+
 export const EASING = {
   linear: 'linear',
   easeOut: 'ease-out',
