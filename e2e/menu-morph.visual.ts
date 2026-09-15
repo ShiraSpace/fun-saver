@@ -2,7 +2,6 @@ import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockAccount } from '@/test-utils/fixtures';
 import { COLORS } from '@/theme/palette';
-import { MENU_OVERLAY_CONTENT } from '@/components/Menu/MenuOverlay/constants';
 import { hexToRgb } from './test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
@@ -38,13 +37,18 @@ describe('menu morph', () => {
       assert.equal(await menu.middleBarOpacity(), HIDDEN);
     });
 
-    it('fades the header transparent and swaps in the menu title', async () => {
-      await header.waitForTransparentBar();
-
-      assert.equal(await header.background(), TRANSPARENT);
-      assert.equal(await header.shadow(), NO_TRANSFORM);
-      assert.equal(await header.name(), MENU_OVERLAY_CONTENT.title);
+    it('leaves the header card standing', async () => {
+      assert.notEqual(await header.background(), TRANSPARENT);
+      assert.notEqual(await header.shadow(), NO_TRANSFORM);
+      assert.equal(await header.name(), mockAccount.name);
       assert.equal(await header.titleColor(), ON_SHEET);
+    });
+
+    it('starts the panel below the header rather than over it', async () => {
+      const bar = await header.box();
+      const panel = await menu.panelBox();
+
+      assert.equal(panel.y, bar.y + bar.height);
     });
 
     it('opens onto a soft sheet rather than the screen gradient', async () => {

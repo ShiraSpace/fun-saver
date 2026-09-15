@@ -9,7 +9,7 @@ const onSheet = ({ theme }: { theme: Theme }): string =>
 
 export const Panel = styled.div`
   position: fixed;
-  inset: 0;
+  inset: ${MENU_OVERLAY_LAYOUT.top}px 0 0;
   z-index: ${MENU_OVERLAY_STYLE.zIndex};
   box-sizing: border-box;
   padding-bottom: ${MENU_OVERLAY_STYLE.paddingBottom}px;
