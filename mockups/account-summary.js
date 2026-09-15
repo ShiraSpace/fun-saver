@@ -97,7 +97,7 @@ const state = {
   showTotal: true,
   wallets: new Set(),
   interestMode: 'monthly',
-  iconStyle: 'split',
+  iconStyle: 'badge',
   pencilStyle: 'under',
   typeFilter: 'all',
   menuOpen: true,
@@ -563,7 +563,7 @@ function accountListHtml() {
     <button class="acctOpt add" data-act="noop"><span class="av">＋</span>חשבון חדש</button></div>`;
 }
 
-function menuPhoneHtml() {
+function menuPhoneHtml(variant) {
   const current = account();
   const theme = THEME_BY_ACCOUNT.get(current.id);
 
@@ -571,12 +571,21 @@ function menuPhoneHtml() {
     aria-pressed="${theme === swatch.id}" aria-label="${swatch.label}" title="${swatch.label}"
     style="background:${swatch.background}"></button>`).join('');
 
-  return `<div class="phone">
-    <div class="menuPanel" data-open="${state.menuOpen}">
-      <div class="menuBar">
+  const bar = variant === 'appHeader'
+    ? `<div class="header">
+        <button class="burgerBtn" data-act="menu" aria-label="סגירה"><i></i><i></i><i></i></button>
+        <span class="hname">תנועות בחשבון · ${current.name}</span>
+        <span class="avatar">${current.avatar}</span>
+      </div>`
+    : `<div class="menuBar">
         <button class="burgerBtn" data-act="menu" aria-label="סגירה"><i></i><i></i><i></i></button>
         <span class="t">תפריט</span>
-      </div>
+      </div>`;
+
+  return `<div class="phone">
+    <div class="menuPanel ${variant === 'gradient' ? 'onGradient' : ''} ${variant === 'appHeader' ? 'withAppHeader' : ''}"
+      data-open="${state.menuOpen}">
+      ${bar}
       <div class="menuContent">
 
         <div class="scopeBlock global">
@@ -631,7 +640,9 @@ function render() {
 
   document.documentElement.dataset.theme = THEME_BY_ACCOUNT.get(state.accountId);
   document.getElementById('summaryPhone').innerHTML = summaryPhoneHtml();
-  document.getElementById('menuPhone').innerHTML = menuPhoneHtml();
+  document.getElementById('menuPhone').innerHTML = menuPhoneHtml('surface');
+  document.getElementById('menuPhoneGradient').innerHTML = menuPhoneHtml('gradient');
+  document.getElementById('menuPhoneAppHeader').innerHTML = menuPhoneHtml('appHeader');
 
   const next = document.getElementById('txScroll');
   if (next) {
@@ -646,7 +657,9 @@ const ACTIONS = {
   /* מחליף רק את התכונה על הפאנל הקיים; בנייה מחדש של ה-DOM היא מה שגרם לקפיצה */
   menu: () => {
     state.menuOpen = !state.menuOpen;
-    document.querySelector('.menuPanel').dataset.open = String(state.menuOpen);
+    for (const panel of document.querySelectorAll('.menuPanel')) {
+      panel.dataset.open = String(state.menuOpen);
+    }
     return SKIP_RENDER;
   },
   axis: (target) => {

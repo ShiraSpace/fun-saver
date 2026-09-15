@@ -190,6 +190,39 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 .txEmpty { padding:28px 16px; text-align:center; color:var(--textMuted); font-size:13px; }
 
 /* ---------- menu ---------- */
+/* גוון עדין כדי שכרטיס הכותרת הלבן לא ייבלע בפאנל הלבן */
+.menuPanel.withAppHeader { background:var(--softBg); }
+.menuPanel.withAppHeader .header { margin:14px 14px 4px; }
+.menuPanel.withAppHeader .menuContent { padding-top:8px; }
+.menuPanel.withAppHeader .menuRow, .menuPanel.withAppHeader .acctBtn { background:var(--surface); }
+
+.menuPanel.onGradient { background:transparent; color:var(--textOnPrimary); }
+.menuPanel.onGradient .menuBar .t, .menuPanel.onGradient .scopeHead .ttl { color:var(--textOnPrimary); }
+.menuPanel.onGradient .burgerBtn i { background:var(--textOnPrimary); }
+.menuPanel.onGradient .scopeSub { color:rgba(255,255,255,.75); }
+.menuPanel.onGradient .menuLabel { color:rgba(255,255,255,.72);
+  text-transform:uppercase; letter-spacing:.4px; }
+.menuPanel.onGradient .scopeBlock.global { background:rgba(255,255,255,.16);
+  border-color:rgba(255,255,255,.4); }
+.menuPanel.onGradient .scopeBlock.perAccount { border-color:rgba(255,255,255,.4);
+  box-shadow:inset 4px 0 0 rgba(255,255,255,.55); }
+.menuPanel.onGradient .acctBtn { background:rgba(255,255,255,.22);
+  border-color:rgba(255,255,255,.45); color:var(--textOnPrimary); }
+.menuPanel.onGradient .acctBtn .nm span, .menuPanel.onGradient .acctBtn .car { color:rgba(255,255,255,.8); }
+.menuPanel.onGradient .menuRow { background:rgba(255,255,255,.14);
+  border-color:rgba(255,255,255,.34); color:var(--textOnPrimary); }
+.menuPanel.onGradient .menuRow[aria-current='page'] { background:rgba(255,255,255,.3);
+  border-color:rgba(255,255,255,.72); }
+.menuPanel.onGradient .menuRow .chev { color:rgba(255,255,255,.75); }
+.menuPanel.onGradient .editUnder { color:rgba(255,255,255,.88);
+  text-decoration-color:rgba(255,255,255,.5); }
+.menuPanel.onGradient .seg { border-color:rgba(255,255,255,.42); }
+.menuPanel.onGradient .seg button { color:rgba(255,255,255,.82); }
+.menuPanel.onGradient .seg button[aria-pressed='true'] { background:var(--textOnPrimary); color:var(--textStrong); }
+.menuPanel.onGradient .swatch[aria-pressed='true'] { border-color:var(--textOnPrimary); }
+/* הרשימה נשארת אטומה בשתי הגרסאות — היא שכבה צפה מעל הפאנל */
+.menuPanel.onGradient .acctList { border-color:rgba(0,0,0,.1); }
+
 .menuPanel { position:absolute; inset:0; background:var(--surface); color:var(--textStrong);
   display:flex; flex-direction:column; z-index:10; transition:transform .22s ease; }
 .menuPanel[data-open='false'] { transform:translateX(-100%); }
@@ -282,12 +315,28 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
     <div id="summaryPhone"></div>
   </div>
   <div class="slot">
-    <div class="slotTitle">תפריט — הפרדת היקף</div>
+    <div class="slotTitle">תפריט א׳ — על משטח בהיר (כמו במוקאפ)</div>
     <div class="slotNote">
       למעלה בלוק <b>גלובלי</b> עם בורר החשבון בלבד (נפתח, מציג את החשבון הנוכחי ואת היתרה של כל חשבון).
       מתחת בלוק <b>תלוי-חשבון</b> ממוסגר בקו מקווקו עם שם הילד — מסכים, עריכה, מראה, שפה.
     </div>
     <div id="menuPhone"></div>
+  </div>
+  <div class="slot">
+    <div class="slotTitle">תפריט ב׳ — עם צבעי הנושא הקיימים בקוד</div>
+    <div class="slotNote">
+      כך התפריט צבוע היום: <code>MenuOverlay.styles.ts</code> מצייר את הפאנל ב-<code>theme.gradients.screen</code>
+      עם <code>textOnPrimary</code>. הבלוקים הם שקיפויות לבנות, ורשימת החשבונות נשארת אטומה כי היא שכבה צפה.
+    </div>
+    <div id="menuPhoneGradient"></div>
+  </div>
+  <div class="slot">
+    <div class="slotTitle">תפריט ג׳ — כותרת זהה לאפליקציה (פחות ריצוד)</div>
+    <div class="slotNote">
+      אותו כרטיס כותרת כמו במסך עצמו — המבורגר, שם, אווטאר — באותו מקום, כך שבפתיחה רק התוכן שמתחת מתחלף.
+      הפאנל מקבל גוון <code>softBg</code> כדי שהכרטיסים הלבנים ימשיכו לצוף עליו.
+    </div>
+    <div id="menuPhoneAppHeader"></div>
   </div>
 </div>
 
