@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import { ActionButton } from '@/components/ActionButton';
-import { PIG_EMOJI } from '@/components/Pig';
+import { PIG_EMOJI } from '@/components/Pig/constants';
 import { Screen } from '@/components/Screen';
 import { useOinkThenRun } from './use-oink-then-run';
 import {

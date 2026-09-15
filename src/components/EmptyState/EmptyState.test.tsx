@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { PIG_EMOJI } from '@/components/Pig';
+import { PIG_EMOJI } from '@/components/Pig/constants';
 import { EmptyState } from './EmptyState';
 import { EMPTY_STATE_COPY, EMPTY_STATE_TEST_IDS } from './constants';
 

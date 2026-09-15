@@ -1,6 +1,6 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Pig as BarePig } from '@/components/Pig';
+import { Pig as BarePig } from '@/components/Pig/Pig';
 import { EMPTY_STATE_ANIMATION } from './constants';
 
 const oink = keyframes`
