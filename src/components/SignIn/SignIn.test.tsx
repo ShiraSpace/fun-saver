@@ -27,6 +27,12 @@ describe('SignIn', () => {
     );
   });
 
+  it('promises what we store before the user signs in', () => {
+    expect(screen.getByTestId(SIGN_IN_TEST_IDS.fineprint)).toHaveTextContent(
+      SIGN_IN_COPY.fineprint
+    );
+  });
+
   it('puts the Google button in the card', () => {
     expect(
       screen.getByTestId(SIGN_IN_TEST_IDS.continueWithGoogle)

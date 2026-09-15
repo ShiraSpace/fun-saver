@@ -32,7 +32,9 @@ export function SignIn(): JSX.Element {
         </CardBody>
         <ContinueWithGoogle />
       </Card>
-      <Fineprint>{SIGN_IN_COPY.fineprint}</Fineprint>
+      <Fineprint data-testid={SIGN_IN_TEST_IDS.fineprint}>
+        {SIGN_IN_COPY.fineprint}
+      </Fineprint>
     </Screen>
   );
 }

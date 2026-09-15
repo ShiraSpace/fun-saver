@@ -5,6 +5,7 @@ export const SIGN_IN_TEST_IDS = {
   cardBody: 'sign-in-card-body',
   continueWithGoogle: 'continue-with-google',
   error: 'sign-in-error',
+  fineprint: 'sign-in-fineprint',
 } as const;
 
 export const SIGN_IN_COPY = {
