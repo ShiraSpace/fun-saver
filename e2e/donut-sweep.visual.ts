@@ -12,11 +12,11 @@ describe('donut sweep', () => {
 
   it('draws every arc of the ring', async () => {
     const animations = await dashboard.arcAnimations();
+    const actualAnimationsLength = animations.filter(
+      (animation) => animation !== STILL
+    ).length;
 
-    assert.equal(
-      animations.filter((animation) => animation !== STILL).length,
-      ARCS_PER_RING
-    );
+    assert.equal(actualAnimationsLength, ARCS_PER_RING);
   });
 });
 
@@ -25,10 +25,10 @@ describe('donut sweep under reduced motion', () => {
 
   it('leaves every arc of the ring still', async () => {
     const animations = await dashboard.arcAnimations();
+    const actualNonAnimatedArcs = animations.filter(
+      (animation) => animation === STILL
+    ).length;
 
-    assert.equal(
-      animations.filter((animation) => animation === STILL).length,
-      ARCS_PER_RING
-    );
+    assert.equal(actualNonAnimatedArcs, ARCS_PER_RING);
   });
 });
