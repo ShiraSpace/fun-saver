@@ -25,8 +25,8 @@ src/db/data.json` then `FUNSAVER_NOW=2026-09-12 npm run dev`.
 
 ## Progress
 
-- [ ] PR 1 — the ring sweep
-- [ ] PR 2 — the count-up and the legend fade
+- [x] PR 1 — the ring sweep
+- [x] PR 2 — the count-up and the legend fade
 
 ## Goal
 
