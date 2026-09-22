@@ -11,10 +11,14 @@ split into three wallets, and what the parent has to do. Static and read-only.
 
 ## Where it stands (2026-09-22)
 
-PRs 1–6 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
+PRs 1–7 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
 (section shell, evidence quote, section 1), #73 (the three wallets, the block
-renderer, the talk bubble), #82 (the actions, sections 3 and 4). PR 7 is on
-`feat/method-page-scripts`. **PR 8 is what is left.**
+renderer, the talk bubble), #82 (the actions, sections 3 and 4), #84 (the
+scripts, section 5). **PR 8 is the last one, and the page is done after it.**
+
+`main` has moved under the page since: #79 gave `Method` `accounts` and
+`initialAccount` props, and #85 and #86 continued the menu and login work. PR 8
+branches off `main` as it stands, not off #84.
 
 Worktree `~/Projects/technotronic/fun-saver-method-page`. Each PR branches off
 `main` once the one before it has merged — the stack was rebased twice because
@@ -338,7 +342,7 @@ Four things PRs 7–8 inherit from it:
 - **Screenshots ship with the PR.** `pr-screenshots` (#80) landed while this was
   open, so PRs 7 and 8 carry shots of the sections they wire.
 
-## PR 7 — scripts (done)
+## PR 7 — scripts (done, #84)
 
 `ScriptsSection` + the `heading` block kind; wires section 5. `TalkBubble`
 shipped in PR 5 and took nothing. Outlined bubble with a tail, against
