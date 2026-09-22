@@ -1,6 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
+import { METHOD_INTRO_TEST_IDS } from './MethodIntro/constants';
 import { Method } from './Method';
 import { METHOD_COPY } from './copy';
 
@@ -19,5 +20,9 @@ describe('the method page', () => {
     expect(
       screen.queryByTestId(HEADER_TEST_IDS.avatar)
     ).not.toBeInTheDocument();
+  });
+
+  it('opens with the method itself, the one block that never collapses', () => {
+    expect(screen.getByTestId(METHOD_INTRO_TEST_IDS.intro)).toBeInTheDocument();
   });
 });

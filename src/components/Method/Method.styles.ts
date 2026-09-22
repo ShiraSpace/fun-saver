@@ -1,5 +1,3 @@
-'use client';
-
 import styled from '@emotion/styled';
 import { METHOD_LAYOUT } from './constants';
 
