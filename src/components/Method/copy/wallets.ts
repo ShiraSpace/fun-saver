@@ -1,5 +1,10 @@
 export const WALLETS_COPY = {
   title: 'שלוש הקופות',
+  pots: [
+    { wallet: 'spending', icon: '🛍️', name: 'הוצאות' },
+    { wallet: 'savings', icon: '🐷', name: 'חיסכון' },
+    { wallet: 'goodDeeds', icon: '💛', name: 'מעשים טובים' },
+  ],
   spending: {
     kind: 'text',
     body: '**🛍️ הוצאות — הכסף של עכשיו.** חטיף, מדבקות, משהו קטן בקיוסק. מותר לבזבז בלי לשאול, וזה הכסף שנגמר. **הלקח נמצא בדיוק ברגע שהוא נגמר** — ולכן לא ממלאים אותו מראש.',

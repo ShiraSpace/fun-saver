@@ -13,6 +13,7 @@ export type {
   ExampleTable,
   IconLine,
   MethodBlock,
+  MethodPot,
   Source,
   TalkLine,
   TalkTone,

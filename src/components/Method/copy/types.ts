@@ -1,3 +1,5 @@
+import type { WalletName } from '@/lib/types';
+
 export type TalkTone = 'spoken' | 'struck' | 'muted';
 
 export interface TalkLine {
@@ -36,4 +38,10 @@ export interface Source {
   claim: string;
   citation: string;
   url: string;
+}
+
+export interface MethodPot {
+  wallet: WalletName;
+  icon: string;
+  name: string;
 }
