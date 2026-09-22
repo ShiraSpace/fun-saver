@@ -26,7 +26,9 @@ export function ExampleWalletSplitTable({
   return (
     <Scroller>
       <Table data-testid={EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.table}>
-        <Caption>{emphasize(caption)}</Caption>
+        <Caption data-testid={EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.caption}>
+          {emphasize(caption)}
+        </Caption>
         <thead>
           <tr>{periods}</tr>
         </thead>
