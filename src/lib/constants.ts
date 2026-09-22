@@ -2,6 +2,8 @@ import type { AuthProvider, WalletName } from './types';
 
 export const GOOGLE_PROVIDER: AuthProvider = 'google';
 
+export const LOGIN_PATH = '/login';
+
 export const AGOROT_PER_SHEKEL = 100;
 
 export const PERCENT_TOTAL = 100;

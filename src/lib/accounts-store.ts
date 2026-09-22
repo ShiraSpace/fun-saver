@@ -1,5 +1,6 @@
 import type { DataStore } from '@/db/data-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
+import { now } from './clock';
 import { today } from './clock';
 import { newId } from './ids';
 import { DEFAULT_WALLETS } from './constants';
@@ -33,7 +34,7 @@ export class AccountsStore {
 
     await this.store.insertAccountWithOwner(account, {
       userId: ownerId,
-      addedAt: new Date().toISOString(),
+      addedAt: now(),
     });
 
     return account;
