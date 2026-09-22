@@ -1,0 +1,1 @@
+export { ExampleWalletSplitTable } from './ExampleWalletSplitTable';

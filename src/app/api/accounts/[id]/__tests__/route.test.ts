@@ -1,51 +1,36 @@
 /**
  * @jest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { getStore } from '@/db';
-import { AccountsStore } from '@/lib/accounts-store';
 import { mockCreateAccountInput, mockAccountEdit } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
+import { createOwnedAccount } from '@/test-utils/owned-account';
+import { withTempDataPath } from '@/test-utils/test-utils';
 import { PUT } from '../route';
 
-const ASOF = '2026-01-01';
+describe('PUT /api/accounts/[id]', () => {
+  withTempDataPath();
 
-let dir: string;
-let accountId: string;
+  let accountId: string;
 
-beforeEach(async () => {
-  dir = mkdtempSync(join(tmpdir(), 'funsaver-account-'));
-  process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
-  accountId = (
-    await new AccountsStore(getStore()).createAccount(
-      mockCreateAccountInput,
-      ASOF
-    )
-  ).id;
-});
-
-afterEach(() => {
-  delete process.env.FUNSAVER_DATA_PATH;
-  rmSync(dir, { recursive: true, force: true });
-});
-
-function putRawBody(id: string, body: string | undefined): Promise<Response> {
-  const request = new Request(`http://localhost/api/accounts/${id}`, {
-    method: 'PUT',
-    headers: { 'content-type': 'application/json' },
-    body,
+  beforeEach(async () => {
+    accountId = (await createOwnedAccount(getStore())).id;
   });
 
-  return PUT(request, { params: Promise.resolve({ id }) });
-}
+  function putRawBody(id: string, body: string | undefined): Promise<Response> {
+    const request = new Request(`http://localhost/api/accounts/${id}`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body,
+    });
 
-function putAccount(id: string, body: unknown): Promise<Response> {
-  return putRawBody(id, JSON.stringify(body));
-}
+    return PUT(request, { params: Promise.resolve({ id }) });
+  }
 
-describe('PUT /api/accounts/[id]', () => {
+  function putAccount(id: string, body: unknown): Promise<Response> {
+    return putRawBody(id, JSON.stringify(body));
+  }
+
   it('saves the new name and avatar on the account', async () => {
     const response = await putAccount(accountId, {
       name: `  ${mockAccountEdit.name}  `,

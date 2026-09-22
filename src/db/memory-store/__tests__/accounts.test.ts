@@ -16,10 +16,10 @@ describe('InMemoryStore accounts', () => {
     store = new InMemoryStore();
   });
 
-  it('lists inserted accounts', async () => {
+  it('stores an inserted account', async () => {
     await store.insertAccount(mockAccount);
 
-    expect(await store.listAccounts()).toEqual([mockAccount]);
+    expect(await store.getAccount(mockAccount.id)).toEqual(mockAccount);
   });
 
   it('rejects a second insert of the same account', async () => {

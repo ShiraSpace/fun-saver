@@ -7,7 +7,9 @@ import { Screen } from '@/components/Screen';
 import { AccountManagement } from '@/components/AccountManagement';
 import { AccountsProvider } from '@/components/Home/accounts-context';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
+import { ActionsSection } from './ActionsSection';
 import { MethodIntro } from './MethodIntro';
+import { PromiseSection } from './PromiseSection';
 import { WalletsSection } from './WalletsSection';
 import { WhySection } from './WhySection';
 import { METHOD_COPY } from './copy';
@@ -37,6 +39,8 @@ export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
             <MethodIntro />
             <WhySection />
             <WalletsSection />
+            <PromiseSection />
+            <ActionsSection />
           </Column>
         </Screen>
       </AccountsProvider>

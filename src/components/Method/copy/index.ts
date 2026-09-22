@@ -10,6 +10,7 @@ import { WHY_COPY } from './why';
 export type {
   ActionGroup,
   ActionItem,
+  ExampleRow,
   ExampleTable,
   IconLine,
   MethodBlock,

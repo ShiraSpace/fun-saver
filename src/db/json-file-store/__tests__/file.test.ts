@@ -13,12 +13,12 @@ describe('JsonFileStore file handling', () => {
       store = new JsonFileStore(file.path);
     });
 
-    it('lists no accounts', async () => {
-      expect(await store.listAccounts()).toEqual([]);
+    it('has no accounts', async () => {
+      expect(await store.getAccount(mockAccount.id)).toBeUndefined();
     });
 
     it('bootstraps the store file on the first read', async () => {
-      await store.listAccounts();
+      await store.getAccount(mockAccount.id);
 
       expect(existsSync(file.path)).toBe(true);
     });
@@ -30,7 +30,7 @@ describe('JsonFileStore file handling', () => {
 
     writeFileSync(file.path, '{ "accounts": [partial', 'utf8');
 
-    await expect(store.listAccounts()).rejects.toThrow();
+    await expect(store.getAccount(mockAccount.id)).rejects.toThrow();
     expect(readFileSync(file.path, 'utf8')).toContain('partial');
   });
 
@@ -47,7 +47,7 @@ describe('JsonFileStore file handling', () => {
     });
 
     it('reads the accounts it does have', async () => {
-      expect(await store.listAccounts()).toEqual([mockAccount]);
+      expect(await store.getAccount(mockAccount.id)).toEqual(mockAccount);
     });
 
     it('defaults the missing transactions', async () => {

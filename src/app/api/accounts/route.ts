@@ -1,10 +1,19 @@
 import { StatusCodes } from 'http-status-codes';
+import { signedInUserId } from '@/auth';
 import { getStore } from '@/db';
 import { validNewAccount } from '@/lib/account-input';
 import { AccountsStore } from '@/lib/accounts-store';
-import { today } from '@/lib/clock';
 
 export async function POST(request: Request): Promise<Response> {
+  const userId = await signedInUserId();
+
+  if (!userId) {
+    return Response.json(
+      { error: 'not signed in' },
+      { status: StatusCodes.UNAUTHORIZED }
+    );
+  }
+
   const input = validNewAccount(await request.json().catch(() => null));
 
   if (!input) {
@@ -14,10 +23,10 @@ export async function POST(request: Request): Promise<Response> {
     );
   }
 
-  const account = await new AccountsStore(getStore()).createAccount(
+  const account = await new AccountsStore(getStore()).createAccount({
     input,
-    today()
-  );
+    ownerId: userId,
+  });
 
   return Response.json(account, { status: StatusCodes.CREATED });
 }

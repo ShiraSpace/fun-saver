@@ -1,25 +1,21 @@
 import { InMemoryStore } from '@/db/memory-store';
-import { AccountsStore } from '../accounts-store';
+import { today } from '../clock';
 import { addDeposit, addWithdrawal, splitDeposit } from '../transactions';
 import { balance } from '../derivations';
 import { DEPOSIT_SPLIT } from '../constants';
 import { OverdraftError, ValidationError } from '../errors';
-import { mockCreateAccountInput } from '@/test-utils/fixtures';
+import { createOwnedAccount } from '@/test-utils/owned-account';
 import type { Account, WalletName } from '../types';
 
-const ASOF = '2026-01-01';
+const ASOF = today();
 
 async function seedAccount(): Promise<{
   store: InMemoryStore;
   account: Account;
 }> {
   const store = new InMemoryStore();
-  const account = await new AccountsStore(store).createAccount(
-    mockCreateAccountInput,
-    ASOF
-  );
 
-  return { store, account };
+  return { store, account: await createOwnedAccount(store) };
 }
 
 describe('addDeposit', () => {

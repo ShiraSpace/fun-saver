@@ -5,12 +5,27 @@ import {
 } from '@/test-utils/fixtures';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
+import { ACTIONS_SECTION } from './ActionsSection/constants';
 import { METHOD_SECTION_TEST_IDS } from './MethodSection/constants';
+import { PROMISE_SECTION } from './PromiseSection/constants';
 import { WALLETS_SECTION } from './WalletsSection/constants';
 import { WHY_SECTION } from './WhySection/constants';
 import { METHOD_INTRO_TEST_IDS } from './MethodIntro/constants';
 import { Method } from './Method';
 import { METHOD_COPY } from './copy';
+
+const SECTION_NUMBERS = [
+  WHY_SECTION.number,
+  WALLETS_SECTION.number,
+  PROMISE_SECTION.number,
+  ACTIONS_SECTION.number,
+];
+
+function renderedSectionIds(): (string | undefined)[] {
+  return screen
+    .getAllByTestId(/^method-section-\d+$/)
+    .map((section) => section.dataset.testid);
+}
 
 describe('the method page', () => {
   beforeEach(() => {
@@ -44,14 +59,9 @@ describe('the method page', () => {
     ).toBeInTheDocument();
   });
 
-  it('lists the sections in the order the copy numbers them', () => {
-    const numbered = screen
-      .getAllByTestId(/^method-section-\d+$/)
-      .map((section) => section.dataset.testid);
-
-    expect(numbered).toEqual([
-      METHOD_SECTION_TEST_IDS.section(WHY_SECTION.number),
-      METHOD_SECTION_TEST_IDS.section(WALLETS_SECTION.number),
-    ]);
+  it('lists them in the order the copy numbers them', () => {
+    expect(renderedSectionIds()).toEqual(
+      SECTION_NUMBERS.map(METHOD_SECTION_TEST_IDS.section)
+    );
   });
 });

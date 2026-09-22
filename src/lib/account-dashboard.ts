@@ -14,25 +14,36 @@ const WALLET_ORDER: Record<WalletName, number> = {
   goodDeeds: 2,
 };
 
-export async function listAccountsWithWallets(
-  store: DataStore,
-  asOf: string
-): Promise<AccountWithDerivedWallets[]> {
-  const accounts = await store.listAccounts();
+interface AccountsQuery {
+  store: DataStore;
+  accounts: Account[];
+  asOf: string;
+}
 
+interface AccountQuery {
+  store: DataStore;
+  account: Account;
+  asOf: string;
+}
+
+export async function withDerivedWallets({
+  store,
+  accounts,
+  asOf,
+}: AccountsQuery): Promise<AccountWithDerivedWallets[]> {
   return Promise.all(
     accounts.map(async (account) => ({
       ...account,
-      wallets: await getWalletsForAccount(store, account, asOf),
+      wallets: await getWalletsForAccount({ store, account, asOf }),
     }))
   );
 }
 
-export async function getWalletsForAccount(
-  store: DataStore,
-  account: Account,
-  asOf: string
-): Promise<WalletWithDerived[]> {
+export async function getWalletsForAccount({
+  store,
+  account,
+  asOf,
+}: AccountQuery): Promise<WalletWithDerived[]> {
   const derived = await Promise.all(
     account.wallets.map(async (wallet) => {
       const transactions = await store.listTransactionsByWallet(

@@ -26,7 +26,6 @@ describe('PostgresAccounts', () => {
     await store.insertAccount(account);
 
     expect(await store.getAccount(account.id)).toEqual(account);
-    expect(await store.listAccounts()).toContainEqual(account);
   });
 
   it('rejects a second insert of the same account', async () => {
