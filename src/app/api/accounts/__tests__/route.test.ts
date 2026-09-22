@@ -1,30 +1,21 @@
 /**
  * @jest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { mockCreateAccountInput, mockUser } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { getStore } from '@/db';
 import { signedInUserId } from '@/auth';
+import { withTempDataPath } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
 jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
 
 describe('POST /api/accounts', () => {
-  let dir: string;
+  withTempDataPath();
 
   beforeEach(async () => {
-    dir = mkdtempSync(join(tmpdir(), 'funsaver-route-'));
-    process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
     await getStore().insertUser(mockUser);
     jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
-  });
-
-  afterEach(() => {
-    delete process.env.FUNSAVER_DATA_PATH;
-    rmSync(dir, { recursive: true, force: true });
   });
 
   function postRequest(body: unknown): Request {

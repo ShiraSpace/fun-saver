@@ -1,25 +1,22 @@
 /**
  * @jest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { getStore } from '@/db';
 import { today } from '@/lib/clock';
 import { addDeposit } from '@/lib/transactions';
 import { balance } from '@/lib/derivations';
 import type { Account } from '@/lib/types';
 import { createOwnedAccount } from '@/test-utils/owned-account';
+import { withTempDataPath } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
 describe('POST /api/accounts/[id]/withdrawals', () => {
-  let dir: string;
+  withTempDataPath();
+
   let account: Account;
   let savingsId: string;
 
   beforeEach(async () => {
-    dir = mkdtempSync(join(tmpdir(), 'funsaver-withdraw-'));
-    process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
     account = await createOwnedAccount(getStore());
     savingsId = account.wallets.find((wallet) => wallet.name === 'savings')!.id;
     await addDeposit({
@@ -28,11 +25,6 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
       amountAgorot: 10000,
       asOf: today(),
     });
-  });
-
-  afterEach(() => {
-    delete process.env.FUNSAVER_DATA_PATH;
-    rmSync(dir, { recursive: true, force: true });
   });
 
   function postWithdraw(

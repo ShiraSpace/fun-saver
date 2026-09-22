@@ -1,26 +1,18 @@
 /**
  * @jest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { getStore } from '@/db';
 import { createOwnedAccount } from '@/test-utils/owned-account';
+import { withTempDataPath } from '@/test-utils/test-utils';
 import { PUT } from '../route';
 
 describe('PUT /api/accounts/[id]/theme', () => {
-  let dir: string;
+  withTempDataPath();
+
   let accountId: string;
 
   beforeEach(async () => {
-    dir = mkdtempSync(join(tmpdir(), 'funsaver-theme-'));
-    process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
     accountId = (await createOwnedAccount(getStore())).id;
-  });
-
-  afterEach(() => {
-    delete process.env.FUNSAVER_DATA_PATH;
-    rmSync(dir, { recursive: true, force: true });
   });
 
   function putTheme(themeId: string, id: string): Promise<Response> {

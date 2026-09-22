@@ -1,27 +1,19 @@
 /**
  * @jest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { getStore } from '@/db';
 import { splitDeposit } from '@/lib/transactions';
 import { createOwnedAccount } from '@/test-utils/owned-account';
+import { withTempDataPath } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
 describe('POST /api/accounts/[id]/deposits', () => {
-  let dir: string;
+  withTempDataPath();
+
   let accountId: string;
 
   beforeEach(async () => {
-    dir = mkdtempSync(join(tmpdir(), 'funsaver-deposit-'));
-    process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
     accountId = (await createOwnedAccount(getStore())).id;
-  });
-
-  afterEach(() => {
-    delete process.env.FUNSAVER_DATA_PATH;
-    rmSync(dir, { recursive: true, force: true });
   });
 
   function postDeposit(amount: number, id: string): Promise<Response> {

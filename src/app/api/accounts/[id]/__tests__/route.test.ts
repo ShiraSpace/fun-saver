@@ -1,28 +1,20 @@
 /**
  * @jest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { getStore } from '@/db';
 import { mockCreateAccountInput, mockAccountEdit } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { createOwnedAccount } from '@/test-utils/owned-account';
+import { withTempDataPath } from '@/test-utils/test-utils';
 import { PUT } from '../route';
 
 describe('PUT /api/accounts/[id]', () => {
-  let dir: string;
+  withTempDataPath();
+
   let accountId: string;
 
   beforeEach(async () => {
-    dir = mkdtempSync(join(tmpdir(), 'funsaver-account-'));
-    process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
     accountId = (await createOwnedAccount(getStore())).id;
-  });
-
-  afterEach(() => {
-    delete process.env.FUNSAVER_DATA_PATH;
-    rmSync(dir, { recursive: true, force: true });
   });
 
   function putRawBody(id: string, body: string | undefined): Promise<Response> {

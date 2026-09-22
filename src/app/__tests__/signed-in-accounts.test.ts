@@ -1,9 +1,6 @@
 /**
  * @jest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { redirect } from 'next/navigation';
 import { signedInUserId } from '@/auth';
 import { byAccountName } from '@/db/account-users';
@@ -12,6 +9,7 @@ import { LOGIN_PATH } from '@/lib/constants';
 import type { Account } from '@/lib/types';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
+import { withTempDataPath } from '@/test-utils/test-utils';
 import { signedInAccounts } from '../signed-in-accounts';
 
 interface SelectedAccountCookie {
@@ -33,12 +31,11 @@ jest.mock('next/headers', () => ({
 }));
 
 describe('signedInAccounts', () => {
-  let dir: string;
+  withTempDataPath();
+
   let owned: Account[];
 
   beforeEach(async () => {
-    dir = mkdtempSync(join(tmpdir(), 'funsaver-scope-'));
-    process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
     mockSelectedAccountCookie = undefined;
     jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
 
@@ -50,11 +47,6 @@ describe('signedInAccounts', () => {
         input: { name: 'מתן', avatarId: 'kid-08' },
       }),
     ]);
-  });
-
-  afterEach(() => {
-    delete process.env.FUNSAVER_DATA_PATH;
-    rmSync(dir, { recursive: true, force: true });
   });
 
   it('sends a visitor with no session to the login page', async () => {
