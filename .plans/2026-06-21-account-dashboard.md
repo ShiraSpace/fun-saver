@@ -126,7 +126,8 @@ star is decorative + presence-tested), tsc + eslint clean.
   competing `next dev` (Next allows one dev instance per dir; a second just fails on the lock). For
   screenshots, build once and run your OWN `next start` on a **dedicated port (3030)**, shoot, then stop
   only that server. The visual E2E harness already uses its own port **3987**.
-- **Screenshot loop:** `e2e/shot.mjs` (puppeteer, 402×874) — `SHOT_URL=... SHOT_OUT=... node e2e/shot.mjs`.
+- **Screenshot loop:** `withShots` in `e2e/shot.ts` — see the `pr-screenshots` skill. It boots and
+  stops its own server, so none of the port etiquette above applies to it.
 - **Local seed:** `src/db/data.json` (gitignored) seeds one account (נועה) + 3 wallets + txns; its interest
   is dated **today** so the coin row shows on a plain `npm run dev`. For mock-accurate dates run
   `FUNSAVER_NOW=2026-01-01 npm run dev` (then date the interest 2026-01-01 to keep coins).

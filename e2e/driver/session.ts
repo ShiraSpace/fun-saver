@@ -14,6 +14,12 @@ interface OpenOptions {
   cookie: CookieData;
 }
 
+interface ViewportOptions {
+  width: number;
+  height: number;
+  deviceScaleFactor?: number;
+}
+
 export class Session {
   private browser?: Browser;
   private activePage?: Page;
@@ -40,8 +46,16 @@ export class Session {
     await this.page.reload({ waitUntil: 'networkidle0' });
   }
 
-  async resize(width: number, height: number): Promise<void> {
-    await this.page.setViewport({ width, height });
+  async resize({
+    width,
+    height,
+    deviceScaleFactor = 1,
+  }: ViewportOptions): Promise<void> {
+    await this.page.setViewport({ width, height, deviceScaleFactor });
+  }
+
+  async screenshot(path: `${string}.png`): Promise<void> {
+    await this.page.screenshot({ path });
   }
 
   async closePage(): Promise<void> {
