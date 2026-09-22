@@ -2,22 +2,40 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { ACCOUNTS_SECTION_STYLE } from './constants';
 
-const chipFill = ({ theme }: { theme: Theme }): string => theme.colors.surface;
+const mutedText = ({ theme }: { theme: Theme }): string =>
+  theme.colors.textMuted;
 
-const chipBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.divider;
+const underlineColor = ({ theme }: { theme: Theme }): string =>
+  theme.colors.accountScopeBorder;
 
-export const ActionChip = styled.button`
-  width: ${ACCOUNTS_SECTION_STYLE.actionChipSize}px;
-  height: ${ACCOUNTS_SECTION_STYLE.actionChipSize}px;
-  border: 1px solid ${chipBorder};
-  border-radius: 50%;
-  background: ${chipFill};
-  color: currentColor;
-  font-size: ${ACCOUNTS_SECTION_STYLE.actionFontSize}px;
+const labelSize = ({ theme }: { theme: Theme }): number =>
+  theme.typography.label;
+
+export const EditButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: ${ACCOUNTS_SECTION_STYLE.gap}px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: ${ACCOUNTS_SECTION_STYLE.marginTop}px;
+  padding: ${ACCOUNTS_SECTION_STYLE.paddingY}px
+    ${ACCOUNTS_SECTION_STYLE.paddingX}px;
+  border: none;
+  background: transparent;
+  color: ${mutedText};
+  font: inherit;
+  font-size: ${labelSize}px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: ${ACCOUNTS_SECTION_STYLE.underlineOffset}px;
+  text-decoration-color: ${underlineColor};
   cursor: pointer;
-  flex-shrink: 0;
+`;
+
+export const EditLabel = styled.span`
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;

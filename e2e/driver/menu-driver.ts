@@ -44,8 +44,8 @@ export class MenuDriver {
     return this.session.click(ACCOUNT_LIST_TEST_IDS.addRow);
   }
 
-  clickEditAccountChip(): Promise<void> {
-    return this.session.click(ACCOUNTS_SECTION_TEST_IDS.editChip);
+  clickEditAccountButton(): Promise<void> {
+    return this.session.click(ACCOUNTS_SECTION_TEST_IDS.editButton);
   }
 
   async openMethodPage(): Promise<string> {
@@ -82,8 +82,8 @@ export class MenuDriver {
     });
   }
 
-  editAccountChipBox(): Promise<BoundingBox> {
-    return this.session.box(ACCOUNTS_SECTION_TEST_IDS.editChip);
+  editAccountButtonBox(): Promise<BoundingBox> {
+    return this.session.box(ACCOUNTS_SECTION_TEST_IDS.editButton);
   }
 
   iconTransform(): Promise<string> {
