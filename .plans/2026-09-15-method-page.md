@@ -66,7 +66,7 @@ branches were cut from each other instead.
    mid — a token in `theme-tokens.ts` plus the three theme files. Raise it once,
    not every PR.
 8. **Latin runs inside RTL carry `dir="ltr"` with `text-align: end`.**
-   `EvidenceQuote`'s citation does; section 7 and the sources list will.
+   `EvidenceQuote`'s citation does; section 6 and the sources list will.
 
 ## Decisions (settled 2026-09-22, during PR 5)
 
@@ -89,23 +89,6 @@ branches were cut from each other instead.
     theme — jungle `#2B1800`, sunshine `#2B1235`, midnight `#ECF1F8` — and it
     goes in with the `actionButton` surface in one pass.
 
-## Decisions (settled 2026-09-22, before PR 6)
-
-11. **Section 4 splits in two: «מה להחליט» and «הדוגמה שלנו».** Expanded it ran
-    six paragraphs, a quote, two checklists and a table — long enough that the
-    checklist, the thing the parent actually has to act on, sat below a table
-    they had to scroll past. The page goes to **seven sections**, and «מה אומרים
-    לילד» and the limits section renumber to 6 and 7.
-
-    The split follows the copy as it already stands. `intro`, `amount`,
-    `frequency`, `split`, `chores`, `choresEvidence` and `rescue` stay with the
-    `decide` and `communicate` checklists in «מה להחליט»; `example` — title,
-    table and note — becomes «הדוגמה שלנו» on its own. No copy is rewritten.
-
-    Two cross-references move with it: `ACTIONS_COPY.communicate` points at
-    «הנוסח בסעיף 5», which becomes **סעיף 6**, and `docs/copy/method-page.he.md`
-    carries the same line plus its own numbered headings.
-
 ## Component rule
 
 A component that does anything — composes, branches, or maps over data — gets
@@ -121,7 +104,7 @@ of its own — testing a styled `div` tests Emotion, not us.
 | --- | --- | --- |
 | `MethodIntro` | Composes goal, outcome list, divider, brief | 1× |
 | `GoalOutcome` | Icon + text + **conditional** note | 3× |
-| `MethodSection` | `<details>`; summary with number, title, optional hint, chevron | 7× |
+| `MethodSection` | `<details>`; summary with number, title, optional hint, chevron | 6× |
 | `EvidenceQuote` | Body + citation line | 4× |
 | `TalkBubble` | Lines with **variants** — spoken / struck-through / muted | 5× · built PR 5 |
 | `ActionList` | Group label + items mapped over ticked/unticked state | 3× |
@@ -197,7 +180,7 @@ Every section **closed by default**, including ההבטחה — it carries a
 
 Three things PRs 5–8 inherit from it:
 
-- **Sections get a component each** (`WhySection` is the first). Seven inlined in
+- **Sections get a component each** (`WhySection` is the first). Six inlined in
   `Method.tsx` passes the 40-line function cap by PR 6; `Method.tsx` stays a
   list of what the page is made of.
 - **`MethodSection` styles body paragraphs through `> p`**, direct children
@@ -207,10 +190,10 @@ Three things PRs 5–8 inherit from it:
   `wallets.ts`, `actions.ts` and `scripts.ts` all carry the flag.
 - **The chevron is scoped `details[open] > summary &`.** A plain
   `details[open] &` is a descendant combinator, and PR 8 nests an accordion
-  inside section 7.
+  inside section 6.
 
 Test ids take the section number — `section(2)`, `summary(2)`, `hint(2)` —
-because seven sections sharing one id leaves nothing able to target one.
+because six sections sharing one id leaves nothing able to target one.
 
 ## PR 5 — the three wallets (done, #73)
 
@@ -229,10 +212,10 @@ Four things PRs 6–8 inherit from it:
   block in a `Fragment`, never a `<div>`, so `MethodSection`'s `> p` rule still
   reaches the paragraphs; the test pins that.
 - **`TalkBubble` already exists**, all three tones. Section 2 carries a `talk`
-  block, so it could not wait for PR 7. PR 7 wires section 6 and adds nothing.
+  block, so it could not wait for PR 7. PR 7 wires section 5 and adds nothing.
 - **A wallet's name, icon and share come from `src/lib/constants.ts`**
   (`WALLET_NAME`, `WALLET_ICON`, `DEPOSIT_SPLIT`), and its gradient from
-  `src/theme/wallet-gradient.ts`. Section 5's example table repeats all three —
+  `src/theme/wallet-gradient.ts`. Section 4's example table repeats all three —
   read them, do not retype the deck's numbers.
 - **Muted is a colour, not a size.** Every paragraph in a section body is
   `typography.body`; `data-muted` only changes the colour. The opener's small
@@ -242,9 +225,8 @@ Four things PRs 6–8 inherit from it:
 
 ## PR 6 — actions (next)
 
-`ActionList` + `ExampleTable`; wires sections 3, 4 and 5 — section 4 splits in
-two (decision 11). Every section body goes through `MethodBlocks`; only the
-checklists and the table are hand-wired.
+`ActionList` + `ExampleTable`; wires sections 3 and 4. Both section bodies go
+through `MethodBlocks`; only the checklist and the table are hand-wired.
 
 Values and tick states are **hardcoded** from the deck — none of the underlying
 settings exist yet (backlog §6b). The rescue rule is body text, not a checkbox:
@@ -253,16 +235,16 @@ exactly when it must not be negotiable.
 
 ## PR 7 — scripts
 
-Wires section 6; `TalkBubble` shipped in PR 5. Outlined bubble with a tail, against
+Wires section 5; `TalkBubble` shipped in PR 5. Outlined bubble with a tail, against
 `EvidenceQuote`'s filled treatment — same rounded language, opposite fill, so
 neither is mistaken for the other while scanning. The "don't say this" line is
 struck through **inside the same bubble**, so both halves read as one exchange.
 
 ## PR 8 — limits and sources
 
-`SourceList`; wires section 7 and the sources accordion.
+`SourceList`; wires section 6 and the sources accordion.
 
-Do not soften section 7. It says the effect sizes are modest, that allowance
+Do not soften section 6. It says the effect sizes are modest, that allowance
 alone teaches nothing, and that the parent should hand over physical cash at
 this age — which partly argues against the product. That is deliberate.
 
@@ -271,7 +253,7 @@ this age — which partly argues against the product. That is deliberate.
 - **No new theme tokens needed.** `theme-tokens.ts` already has `accentSoft`,
   `softBg`/`softBorder`/`softText`, `depositBg`, `alert`/`alertSoftBg`,
   `divider`, and `gradients.actionButton`.
-- **First table in the app.** Section 5's example table needs its own
+- **First table in the app.** Section 4's example table needs its own
   `overflow-x` container so the page body never scrolls sideways on a phone.
 - **LTR inside RTL.** Author names and URLs in the sources list are LTR runs in
   RTL paragraphs; wrap them so punctuation doesn't jump.
@@ -279,8 +261,13 @@ this age — which partly argues against the product. That is deliberate.
 - **Section 3 closed by default** is a real risk: it's the rule the method rests
   on and a skimming parent may never open it. Mitigated by the chip; revisit if
   it goes unread.
-- **Sections 4 and 5 both start closed**, like the rest. Splitting the old
-  section 4 (decision 11) already took the length risk off it.
+- **Section 4 is long expanded** — six paragraphs, a quote, two checklists, a
+  table. Splitting it into "מה להחליט" and "הדוגמה שלנו" was drawn and rejected
+  (mockup variant F, not kept): the example is one table and one line, which is
+  a closing illustration rather than a section of its own, and an eighth summary
+  row costs more scanning than the length it saves. The page stays at **six
+  sections**. If it still reads long once built, move the table above the
+  checklists rather than splitting.
 - **e2e visual snapshots** — a new route adds a baseline, it doesn't change
   existing ones. Still not taken: every PR from 5 to 8 adds content to the same
   page, so one recording after PR 8 replaces five that would be re-recorded. It
