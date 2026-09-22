@@ -15,6 +15,12 @@ export const MENU_ROW_STYLE = {
   pressMs: 120,
 } as const;
 
+export const SCOPE_BLOCK_STYLE = {
+  radius: 20,
+  padding: 12,
+  marginBottom: 14,
+} as const;
+
 export const MENU_ICON = {
   buttonSize: 44,
   iconSize: 26,

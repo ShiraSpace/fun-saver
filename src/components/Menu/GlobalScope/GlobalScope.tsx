@@ -1,51 +1,47 @@
 'use client';
 
 import { JSX } from 'react';
-import { MenuLabel } from '../MenuLabel';
 import { AccountPicker } from '../AccountPicker';
-import {
-  ACCOUNTS_SECTION_CONTENT,
-  ACCOUNTS_SECTION_TEST_IDS,
-} from './constants';
-import { EditAccountButton } from '@/components/Menu/AccountsSection/EditAccountButton';
+import { EditAccountButton } from '../EditAccountButton';
+import { GLOBAL_SCOPE_TEST_IDS } from './constants';
+import { GlobalBlock } from './GlobalScope.styles';
 import { useAccounts } from '@/components/Home/accounts-context';
 import {
   APP_MODE,
   useAppMode,
 } from '@/components/AccountManagement/app-mode-context';
 
-interface AccountsSectionProps {
-  onAccountSelect: () => void;
+interface GlobalScopeProps {
+  onLeaveMenu: () => void;
   isAccountListOpen: boolean;
   onAccountListToggle: (isOpen: boolean) => void;
 }
 
-export function AccountsSection({
-  onAccountSelect,
+export function GlobalScope({
+  onLeaveMenu,
   isAccountListOpen,
   onAccountListToggle,
-}: AccountsSectionProps): JSX.Element {
+}: GlobalScopeProps): JSX.Element {
   const { accounts, currentAccount, selectAccount } = useAccounts();
   const { setMode } = useAppMode();
 
   const handleSelectAccount = (id: string): void => {
     selectAccount(id);
-    onAccountSelect();
+    onLeaveMenu();
   };
 
   const handleAddAccount = (): void => {
-    onAccountSelect();
+    onLeaveMenu();
     setMode(APP_MODE.creatingAccount);
   };
 
   const handleEditAccount = (): void => {
-    onAccountSelect();
+    onLeaveMenu();
     setMode(APP_MODE.editingAccount);
   };
 
   return (
-    <section data-testid={ACCOUNTS_SECTION_TEST_IDS.section}>
-      <MenuLabel>{ACCOUNTS_SECTION_CONTENT.label}</MenuLabel>
+    <GlobalBlock data-testid={GLOBAL_SCOPE_TEST_IDS.block}>
       <AccountPicker
         accounts={accounts}
         currentAccount={currentAccount}
@@ -58,6 +54,6 @@ export function AccountsSection({
         accountName={currentAccount.name}
         onEditAccount={handleEditAccount}
       />
-    </section>
+    </GlobalBlock>
   );
 }

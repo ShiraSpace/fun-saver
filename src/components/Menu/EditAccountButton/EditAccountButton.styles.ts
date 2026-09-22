@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
-import { ACCOUNTS_SECTION_STYLE } from './constants';
+import { EDIT_ACCOUNT_BUTTON_STYLE } from './constants';
 
 const mutedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textMuted;
@@ -15,12 +15,12 @@ export const EditButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${ACCOUNTS_SECTION_STYLE.gap}px;
+  gap: ${EDIT_ACCOUNT_BUTTON_STYLE.gap}px;
   width: 100%;
   box-sizing: border-box;
-  margin-top: ${ACCOUNTS_SECTION_STYLE.marginTop}px;
-  padding: ${ACCOUNTS_SECTION_STYLE.paddingY}px
-    ${ACCOUNTS_SECTION_STYLE.paddingX}px;
+  margin-top: ${EDIT_ACCOUNT_BUTTON_STYLE.marginTop}px;
+  padding: ${EDIT_ACCOUNT_BUTTON_STYLE.paddingY}px
+    ${EDIT_ACCOUNT_BUTTON_STYLE.paddingX}px;
   border: none;
   background: transparent;
   color: ${mutedText};
@@ -36,6 +36,6 @@ export const EditLabel = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
   text-decoration: underline;
-  text-underline-offset: ${ACCOUNTS_SECTION_STYLE.underlineOffset}px;
+  text-underline-offset: ${EDIT_ACCOUNT_BUTTON_STYLE.underlineOffset}px;
   text-decoration-color: ${underlineColor};
 `;

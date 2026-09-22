@@ -18,6 +18,7 @@ export const LANGUAGE_SECTION_CONTENT = {
 } as const;
 
 export const LANGUAGE_SECTION_STYLE = {
-  radius: 14,
-  paddingY: 12,
+  radius: 999,
+  paddingY: 5,
+  paddingX: 12,
 } as const;

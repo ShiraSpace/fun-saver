@@ -35,9 +35,9 @@ export const APPEARANCE_SECTION_CONTENT = {
 } as const;
 
 export const APPEARANCE_SECTION_STYLE = {
-  swatchSize: 48,
-  swatchRadius: 14,
-  rowGap: 12,
+  swatchSize: 38,
+  swatchRadius: 12,
+  rowGap: 9,
   ringColor: '#FFFFFF',
   ringWidth: 3,
   ringOffset: 2,
