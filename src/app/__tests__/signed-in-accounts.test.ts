@@ -23,7 +23,11 @@ interface CookieStore {
 let mockSelectedAccountCookie: SelectedAccountCookie | undefined;
 
 jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
-jest.mock('next/navigation', () => ({ redirect: jest.fn() }));
+jest.mock('next/navigation', () => ({
+  redirect: jest.fn(() => {
+    throw new Error('NEXT_REDIRECT');
+  }),
+}));
 jest.mock('next/headers', () => ({
   cookies: async (): Promise<CookieStore> => ({
     get: (): SelectedAccountCookie | undefined => mockSelectedAccountCookie,
@@ -51,10 +55,12 @@ describe('signedInAccounts', () => {
 
   it('sends a visitor with no session to the login page', async () => {
     jest.mocked(signedInUserId).mockResolvedValue(undefined);
+    const listAccountsForUser = jest.spyOn(getStore(), 'listAccountsForUser');
 
-    await signedInAccounts();
+    await expect(signedInAccounts()).rejects.toThrow();
 
     expect(redirect).toHaveBeenCalledWith(LOGIN_PATH);
+    expect(listAccountsForUser).not.toHaveBeenCalled();
   });
 
   it('selects the account the cookie names', async () => {
