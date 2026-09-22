@@ -17,6 +17,12 @@ One file per PR, in `e2e/shots/` (gitignored, so it never reaches the branch).
 It **must** be `.mts` — `withShots` is called with top-level `await` and tsx
 loads `.ts` as CommonJS.
 
+The scripts are deliberately not committed: they are throwaway, and a stale one
+left behind reddens `tsc` on every later branch. The cost is that a reviewer
+cannot re-shoot your screens, so paste the script into the PR body under the
+images when the states are anything but obvious, and delete the file once the
+PR is up.
+
 ```ts
 // e2e/shots/<topic>.shot.mts
 import { mockAccount, mockSecondAccount, mockTransactions } from '@/test-utils/fixtures';
@@ -59,18 +65,32 @@ screen, a half-finished animation, or a `₪0` total is worse than no shot.
 
 ## 3. Before/after
 
-Worth it when the PR changes existing UI rather than adding new UI. Get the
-"before" by shooting the same script on the base commit, then renaming the
-output:
+Worth it when the PR changes existing UI rather than adding new UI.
+
+For a single-property change, revert just that property, shoot, and put it
+back — far faster than any branch dance, and there is nothing to forget:
 
 ```bash
-git stash push -u -m before-shot   # or check out origin/main in a worktree
+# edit the one line back to its old value
 npx next build && npx tsx e2e/shots/<topic>.shot.mts
 mv e2e/shots/out/<name>.png e2e/shots/out/before-<name>.png
+git checkout -- <the file you edited>
+npx next build   # rebuild, or every later shot is the "before"
 ```
 
-For a single-property change, reverting just that property is enough and much
-faster than a branch dance.
+For a wider change, shoot the base in a second worktree so this one is never
+disturbed:
+
+```bash
+git worktree add ../shot-base origin/main
+cp e2e/shots/<topic>.shot.mts ../shot-base/e2e/shots/
+# in ../shot-base: npx next build && npx tsx e2e/shots/<topic>.shot.mts
+git worktree remove ../shot-base
+```
+
+Never `git stash` for this. The stash stack is shared with every other
+worktree and session on the machine, and a recipe that stashes is a recipe
+someone forgets to unstash.
 
 ## 4. Attach
 
