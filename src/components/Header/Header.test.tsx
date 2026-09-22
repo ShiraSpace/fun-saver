@@ -4,6 +4,9 @@ import { HEADER_TEST_IDS } from './constants';
 import { TITLE_TEST_IDS } from './CrossfadeTitle/constants';
 import { MENU_TEST_IDS } from '../Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '../Menu/MenuOverlay/constants';
+import { MENU_HEADER_SHEET_TEST_IDS } from '../Menu/MenuHeaderSheet/constants';
+import { ACCOUNT_LIST_TEST_IDS } from '../Menu/AccountList/constants';
+import { openAccountPicker } from '@/test-utils/account-picker';
 
 describe('Header', () => {
   const ACCOUNT_NAME = 'יעל';
@@ -59,12 +62,58 @@ describe('Header', () => {
   });
 
   describe('the bar under an open menu', () => {
-    it('keeps the account name rather than swapping in a menu title', () => {
+    beforeEach(() => {
       fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+    });
 
+    it('keeps the account name rather than swapping in a menu title', () => {
       expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
         ACCOUNT_NAME
       );
+    });
+
+    it('takes the avatar away, the picker below already showing it', () => {
+      expect(screen.getByTestId(HEADER_TEST_IDS.avatar)).not.toBeVisible();
+    });
+  });
+
+  describe('the sheet behind the bar', () => {
+    it('leaves the screen gradient alone while the menu is shut', () => {
+      expect(
+        screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
+      ).toHaveAttribute('data-open', 'false');
+    });
+
+    it('covers the gradient once the menu is open', () => {
+      fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+
+      expect(
+        screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
+      ).toHaveAttribute('data-open', 'true');
+    });
+
+    it('sits outside the bar, which would otherwise paint over it', () => {
+      expect(screen.getByTestId(HEADER_TEST_IDS.bar)).not.toContainElement(
+        screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
+      );
+    });
+  });
+
+  describe('reopening after the account list was left open', () => {
+    beforeEach(() => {
+      const openMenu = (): void =>
+        fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+
+      openMenu();
+      openAccountPicker();
+      openMenu();
+      openMenu();
+    });
+
+    it('shows the account it is on rather than the whole list', () => {
+      expect(
+        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).not.toBeInTheDocument();
     });
   });
 });
