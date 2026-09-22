@@ -21,5 +21,5 @@ export const Note = styled.span`
   display: block;
   margin-top: 3px;
   font-size: 12.5px;
-  color: ${({ theme }): string => theme.colors.textMuted};
+  opacity: 0.82;
 `;
