@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+import { DuplicateAccountError } from '@/lib/errors';
 import { createMockAccount, mockAccountEdit } from '@/test-utils/fixtures';
 import { withLiveStore } from './live-store';
 
@@ -26,6 +27,16 @@ describe('PostgresAccounts', () => {
 
     expect(await store.getAccount(account.id)).toEqual(account);
     expect(await store.listAccounts()).toContainEqual(account);
+  });
+
+  it('rejects a second insert of the same account', async () => {
+    const account = createMockAccount({ id: accountId('duplicate') });
+
+    await store.insertAccount(account);
+
+    await expect(store.insertAccount(account)).rejects.toThrow(
+      DuplicateAccountError
+    );
   });
 
   it('updates the theme and returns the updated account', async () => {
