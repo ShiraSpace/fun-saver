@@ -9,3 +9,7 @@ export function emphasize(body: string): ReactNode[] {
       index % 2 === 0 ? run : <strong key={index}>{run}</strong>
     );
 }
+
+export function paragraphs(body: string): string[] {
+  return body.split('\n\n');
+}

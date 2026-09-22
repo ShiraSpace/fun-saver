@@ -1,0 +1,1 @@
+export { EvidenceQuote } from './EvidenceQuote';
