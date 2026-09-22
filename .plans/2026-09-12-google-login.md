@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-22 (plan PR 9 is open as #81; PR 6 is next)
+## Progress — updated 2026-09-22 (plan PR 9 merged as #81; PR 6 is next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -23,10 +23,10 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 5            | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
 | PR 8            | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                               |
 | PR 8b           | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff |
-| PR 9            | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **in review**                                        |
+| PR 9            | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **merged** — `f947725`                               |
 | PR 6, 7, 10, 11 | —                                                      | —                                  | not started                                          |
 
-### PR 9 is open as #81, and PR 6 is next
+### PR 9 is merged, and PR 6 is next
 
 PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
 read through `listAccountsForUser` with the id from the session. A stranger who
@@ -352,8 +352,9 @@ differs.
   JSON store is a separate cleanup, not this feature.
 - **No data migration.** `data.json` is not imported into Neon. Existing Neon
   rows are adopted in place by PR 8's backfill, which is the only data step.
-- **e2e uses `FUNSAVER_SKIP_AUTH=true`**, the bypass the neon plan already
-  specified — but it hard-throws if `NODE_ENV === 'production'`.
+- ~~**e2e uses `FUNSAVER_SKIP_AUTH=true`**~~ — overtaken by PR 8b, which gave
+  every browser suite a real signed session cookie. PR 6 should try middleware
+  with no bypass at all.
 - **Tests ride with their PR.** There is no trailing test phase. A PR that adds
   logic adds its tests before it merges, because merging means deploying. The
   repo workflow (production code → approval → commit → tests one at a time →
@@ -696,17 +697,26 @@ off `main` normally. Ships: a new route.
 
 ### PR 6 — `feat/auth-middleware`
 
-**PR 9 closed the public hole; this one keeps anonymous visitors off the app
-at all.** Before it, a signed-out visitor still reaches `/` — they simply see the
-empty state, because they own nothing.
+**Smaller than this plan assumed — PR 9 took a bite out of it.**
+`signedInAccounts()` already redirects a signed-out visitor to `/login`, so `/`
+and `/method` are covered at the page level. What is left is doing it in one
+place instead of per page, and covering routes nobody has written yet.
 
-- `src/middleware.ts` — unauthenticated → `/login`; honours
-  `FUNSAVER_SKIP_AUTH` and **throws at startup if `NODE_ENV === 'production'`**.
-- `e2e/server.ts` — `FUNSAVER_SKIP_AUTH=true` in the spawned env, so the
-  existing e2e suite stays green.
+- `src/middleware.ts` — unauthenticated → `/login`. The page-level redirect can
+  then come out of `signedInAccounts()`, or stay as defence in depth; decide
+  when writing it, but do not leave both undocumented.
+- Leave `/login` and `/api/auth/*` reachable, or sign-in cannot complete.
 
-Tests: the existing e2e suite passing with the bypass is the test. Add a unit
-test that the production guard throws.
+**`FUNSAVER_SKIP_AUTH` is probably not needed at all.** This plan assumed it
+because the e2e suites opened the app with no session — **PR 8b changed that**,
+and every suite now arrives with a real signed cookie. Try middleware with no
+bypass first and run `npm run test:e2e`; only add the env var if something
+actually goes red. That also settles the _Shipping loose on purpose_ row which
+says to delete it once e2e can seed a session.
+
+Tests: the browser suites passing unchanged is the test — they are signed in and
+must stay reachable. Add one asserting a signed-out request to `/` is sent to
+`/login`, unless the bypass is skipped and the e2e proves it end to end.
 
 Depends on: PR 5 and PR 9, **both done**. That ordering was the point: a session
 gate over an unscoped `listAccounts()` would have shown every signed-in stranger
@@ -832,7 +842,7 @@ alongside `AUTH_SECRET`.
 
 Depends on: PR 3, PR 8. Ships: nothing user-visible.
 
-### PR 9 — `feat/scope-accounts-to-user` — OPEN AS [#81](https://github.com/ShiraSpace/fun-saver/pull/81)
+### PR 9 — `feat/scope-accounts-to-user` — MERGED (#81, `f947725`)
 
 **The switch.** Shipped as four commits, each green on its own.
 
@@ -875,6 +885,36 @@ but not inside a `jest.mock()` string, which is why every other mock in this rep
 is relative. PR 10 needs `jest.mock('@/auth')` in four more files.
 
 **No `src/lib/account-access.ts`** — see _Authorization seam_ above.
+
+**What review added, after the four commits above.** Two rounds, five
+comments, all acted on; each had a premise worth checking first.
+
+- **A signed-out visitor hit a dead end**, so `signedInAccounts()` now
+  `redirect`s to `/login`. Scoping the read left an anonymous visitor on the
+  empty state, invited to create an account the new 401 refuses. **This is a
+  bite out of PR 6** — see that section.
+- **`clock.ts` gained `now()`**, and `today()` is defined through it, so one
+  `FUNSAVER_NOW` freezes every timestamp in an account write rather than only
+  the wallet dates. It rejects an override that is not a date: routing
+  `addedAt` through parsing turned a typo into `RangeError` on every render,
+  naming neither the variable nor its value.
+- **`getStore()` refuses `src/db/data.json` under `NODE_ENV=test`.** A suite
+  that forgot `FUNSAVER_DATA_PATH` did not fail — it wrote real accounts into
+  the developer's local store. Removing the helper from a suite passed 19 of 19
+  and changed the file; it now fails naming both the env var and the helper.
+- **`withTempDataPath()`** in `src/test-utils/test-utils.ts` replaced six copies
+  of the temp-directory dance, and `createOwnedAccount` takes an `owner` and
+  tolerates repeat calls.
+- **The `next/navigation` mock throws**, as the real `redirect` does. Returning
+  `undefined` let the signed-out test walk past the guard into
+  `listAccountsForUser(undefined)`, proving `redirect` was _called_ rather than
+  that it _stopped_ anything.
+
+Two review premises were wrong and worth not repeating: `CreateAccount`'s
+submit is **not** uncaught — `useAccountForm` catches it and `SaveAccount`
+renders the message — and deleting the `!userId` guard does **not** go
+unnoticed, since `tsc` rejects it. The defects behind both were real; only the
+reasoning needed correcting.
 
 Tests: `createAccount` writes an owner row the user can read back
 (`getAccountUser` **and** `listAccountsForUser`); unauthenticated
@@ -939,8 +979,7 @@ Depends on: nothing. Independent of 6, 7 and 10; can land any time.
 | `src/app/api/auth/[...nextauth]/route.ts`           | **new** — handler re-export                                               | 4       |
 | `.env.example`                                      | `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`                     | 4       |
 | `src/app/login/page.tsx` + `src/components/SignIn/` | **new** — one Google button, RTL, themed                                  | 5       |
-| `src/middleware.ts`                                 | **new** — unauthenticated → `/login`; honours `FUNSAVER_SKIP_AUTH`        | 6       |
-| `e2e/server.ts`                                     | `FUNSAVER_SKIP_AUTH=true` in the spawned env                              | 6       |
+| `src/middleware.ts`                                 | **new** — unauthenticated → `/login`, `/login` and `/api/auth/*` exempt   | 6       |
 | `src/components/Menu/ProfileSection/`               | **new** — name + sign out                                                 | 7       |
 | `src/db/migration-target.ts`                        | **new** — shared `--dev` / `--test` target resolution                     | 8       |
 | `src/db/assign-owner.ts`                            | **new** — adopt orphan accounts as `owner`; deleted again in 9            | 8       |
@@ -948,6 +987,9 @@ Depends on: nothing. Independent of 6, 7 and 10; can land any time.
 | `src/app/page.tsx` + `src/app/method/page.tsx`      | `listAccounts()` → `signedInAccounts()`                                   | 9       |
 | `src/app/api/accounts/route.ts`                     | session `userId` + `insertAccountWithOwner`; 401 when signed out          | 9       |
 | `src/db/{run-backfill,assign-owner}.ts`             | **deleted** — every account is owned at birth from here on                | 9       |
+| `src/lib/clock.ts`                                  | add `now()`; `today()` runs through it; a bad `FUNSAVER_NOW` throws       | 9       |
+| `src/db/index.ts`                                   | refuse the default `data.json` under `NODE_ENV=test`                      | 9       |
+| `src/test-utils/{owned-account,test-utils}.ts`      | `createOwnedAccount`, `withTempDataPath`                                  | 9       |
 | `src/lib/account-access.ts`                         | **new** — `requireAccountUser` + `assertCanEdit`                          | 10      |
 | `src/app/api/accounts/[id]/**/route.ts`             | `requireAccountUser` + `assertCanEdit`, edit PUT included                 | 10      |
 
@@ -973,7 +1015,7 @@ None requires new architecture.
 | JWT sessions, 30d rolling, no server-side revocation — a lost phone can only be cut off by rotating `AUTH_SECRET`, which signs everyone out | Auth.js DB adapter + `users`-backed sessions, then revoke one session. App code unchanged; sign-out already works. |
 | Google only                                                                                                                                 | Add a provider to `src/auth.ts`. `users.provider` is already a column, not an enum in the DB.                      |
 | No child login                                                                                                                              | Credentials provider + `provider='pin'` user + member row. **No schema change.**                                   |
-| `FUNSAVER_SKIP_AUTH` exists                                                                                                                 | Delete the env var once e2e can seed a real session cookie. Production already refuses it.                         |
+| `FUNSAVER_SKIP_AUTH` may never exist                                                                                                        | Delete the env var once e2e can seed a real session cookie. Production already refuses it.                         |
 | No rate limiting on sign-in                                                                                                                 | Vercel/Neon edge config; no app change.                                                                            |
 | No audit trail                                                                                                                              | `account_users.added_at` is the start; add `added_by` when sharing ships.                                          |
 

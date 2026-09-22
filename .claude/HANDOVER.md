@@ -2,54 +2,69 @@
 
 ## Start here
 
-**Plan PRs 1–5, 8 and 8b are merged** (`#28`, `#32`, `#41`, `#49`, `#53`, `#55`,
-`#61`, `#74`), along with **`#67`** (`1cbb01c`), which settled the two store
-divergences the plan once assigned to PR 9. **Plan PR 9 is open as
-[#81](https://github.com/ShiraSpace/fun-saver/pull/81)** on `feat/scope-accounts-to-user`; everything below describes the
-app with it merged. Verify by content on `main`, never by PR pages.
+**Plan PRs 1–5, 8, 8b and 9 are all merged** (`#28`, `#32`, `#41`, `#49`, `#53`,
+`#55`, `#61`, `#74`, `#81` — PR 9 as `f947725`), along with **`#67`**
+(`1cbb01c`), which settled the two store divergences the plan once assigned to
+PR 9. Verify by content on `main`, never by PR pages.
 
-**The public hole is closed.** `DataStore.listAccounts()` no longer exists. Both
-pages read through `src/app/signed-in-accounts.ts`, which resolves the session
-user, the selected-account cookie, that user's accounts and the theme. A visitor
-with no session sees the empty state; a stranger who signs in owns nothing and
-sees the same. `POST /api/accounts` refuses an unauthenticated caller and writes
-the account and its owner row in one transaction.
+**The public hole is closed and the app is no longer readable signed out.**
+`DataStore.listAccounts()` does not exist. Both pages go through
+`src/app/signed-in-accounts.ts`, which resolves the session user, the
+selected-account cookie, that user's accounts and the theme — and **redirects to
+`/login` when there is no session**. `POST /api/accounts` refuses an
+unauthenticated caller and writes the account with its owner row in one
+transaction.
 
-**Next is plan PR 6 — `feat/auth-middleware`**, branched off updated
-`origin/main`. It is now a plain session gate: because PR 9 landed first, it does
-**not** need the `AUTH_ALLOWED_EMAILS` allowlist earlier handovers insisted on.
-PR 7 and PR 11 are independent and can land any time. PR 10 depends on PR 9 and
-is the one that guards the `[id]` mutation routes.
+**Next is plan PR 6 — `feat/auth-middleware`**, off updated `origin/main`. Read
+its section in the plan before starting: **it is smaller than the plan
+originally assumed**, because PR 9's redirect already covers `/` and `/method`,
+and **`FUNSAVER_SKIP_AUTH` is probably unnecessary** now that PR 8b gives every
+browser suite a real signed cookie. Try middleware with no bypass and run
+`npm run test:e2e` before adding the env var.
+
+PR 7 and PR 11 are independent. PR 10 guards the `[id]` mutation routes — still
+the only cross-user path left, and the highest-value thing outstanding.
+
+## New on main that this repo did not have before
+
+- **`.claude/skills/pr-screenshots`, and CLAUDE.md now requires it** (#80): every
+  pull request whose diff changes something visible carries screenshots of what
+  it changed. PR 6 changes visible behaviour — a signed-out visitor lands on the
+  login page — so it needs them.
 
 ## What PR 9 changed that you need to know
 
 - **The account list is sorted by name now, not insertion order.**
   `listAccountsForUser` runs `byAccountName`; `listAccounts` did not. With no
   `selectedAccountId` cookie the app opens on the alphabetically first account
-  rather than the oldest. Accepted deliberately. `account-switch.visual.ts`
-  asserts through `byAccountName` so it does not re-encode either order.
+  rather than the oldest. Accepted deliberately.
 - **The backfill is deleted** — `run-backfill.ts`, `assign-owner.ts`, its test
   and the three `db:backfill*` scripts. **`src/db/migration-target.ts` stays**;
   `run-migration.ts` uses it, and `npm run db:migrate-dev` is the check that it
-  survived. If an orphan account ever appears again there is no script to adopt
-  it — write the `INSERT` by hand. It should not be possible any more.
-- **An orphan did appear mid-PR, on dev.** Measured 3 accounts / 0 orphans, and
-  an hour later a fourth, `פווו`, with no member row — created through another
-  worktree still running the old unowned `insertAccount` path. Deleted rather
-  than adopted. **The lesson for any future work against a live branch: other
-  worktrees write to the same dev database.** Production was never affected.
+  survived. If an orphan account ever appears there is no script to adopt it —
+  write the `INSERT` by hand. It should not be possible any more.
+- **An orphan did appear mid-PR, on dev**, created through another worktree still
+  running the old unowned `insertAccount` path. Deleted rather than adopted.
+  **Other worktrees write to the same dev database** — remember it before
+  trusting a measurement taken an hour ago.
+- **`getStore()` refuses `src/db/data.json` under `NODE_ENV=test`.** Before this,
+  a suite that forgot `FUNSAVER_DATA_PATH` silently wrote real accounts into the
+  local store file and still passed. Use **`withTempDataPath()`** from
+  `src/test-utils/test-utils.ts` in any suite that touches the store.
+- **`createOwnedAccount(store, { input, owner })`** seeds the owner and creates an
+  account; it tolerates repeat calls and takes a different owner.
 - **`src/auth.ts` exports `signedInUserId()`**, a narrow accessor over the
-  overloaded `auth()`. Use it rather than `auth()` directly — `jest.mocked()`
-  types against it cleanly, where `auth()`'s overloads force a cast.
-- **`jest.config.ts` maps `^@/(.*)$`.** SWC rewrites `@/` in import specifiers
-  but not inside a `jest.mock()` string, which is why every older mock in this
-  repo is relative. `jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }))`
-  works now — PR 10 will want it in four route tests. Use a factory, not an
-  automock: automocking loads the real module, and `next-auth` is ESM, so jest
-  dies with a `require(esm)` error before any test runs.
-- **`createOwnedAccount(store)`** in `src/test-utils/owned-account.ts` seeds the
-  owner user and creates an account owned by them. Seeding the user first is not
-  optional — since #67 every store raises `UnknownOwnerError`, not just postgres.
+  overloaded `auth()`. Use it rather than `auth()` — `jest.mocked()` types
+  against it cleanly, where `auth()`'s overloads force a cast.
+- **`clock.ts` has `now()`**, and `today()` is defined through it, so one
+  `FUNSAVER_NOW` freezes every timestamp. An override that is not a date throws
+  `ValidationError` naming the variable.
+- **Mocking under jest**: `jest.config.ts` maps `^@/(.*)$` because SWC rewrites
+  `@/` in import specifiers but not inside a `jest.mock()` string. Mock `@/auth`
+  with a **factory**, never an automock — an automock loads the real module and
+  `next-auth` is ESM, so jest dies with `require(esm)` before any test runs. A
+  mock of `next/navigation` must **throw**, because the real `redirect` is typed
+  `never`.
 
 ## Database state — measured 2026-09-22
 
