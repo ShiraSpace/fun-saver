@@ -19,9 +19,9 @@ export const EditAccountButton = ({
     data-testid={ACCOUNTS_SECTION_TEST_IDS.editButton}
     onClick={onEditAccount}
   >
+    <span aria-hidden="true">{ACCOUNTS_SECTION_CONTENT.editIcon}</span>
     <EditLabel>
       {ACCOUNTS_SECTION_CONTENT.editLabel} {accountName}
     </EditLabel>
-    <span aria-hidden="true">{ACCOUNTS_SECTION_CONTENT.editIcon}</span>
   </EditButton>
 );

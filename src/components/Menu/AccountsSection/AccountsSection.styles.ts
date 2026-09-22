@@ -27,9 +27,6 @@ export const EditButton = styled.button`
   font: inherit;
   font-size: ${labelSize}px;
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: ${ACCOUNTS_SECTION_STYLE.underlineOffset}px;
-  text-decoration-color: ${underlineColor};
   cursor: pointer;
 `;
 
@@ -38,4 +35,7 @@ export const EditLabel = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: ${ACCOUNTS_SECTION_STYLE.underlineOffset}px;
+  text-decoration-color: ${underlineColor};
 `;
