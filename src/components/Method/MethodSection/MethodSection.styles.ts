@@ -83,7 +83,6 @@ export const Body = styled.div`
   }
 
   > p[data-muted='true'] {
-    font-size: ${({ theme }): number => theme.typography.label}px;
     color: ${({ theme }): string => theme.colors.textMuted};
   }
 `;
