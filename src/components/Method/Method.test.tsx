@@ -1,4 +1,8 @@
-import { renderWithAccounts, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-utils/render';
+import {
+  mockDerivedAccount,
+  mockSecondDerivedAccount,
+} from '@/test-utils/fixtures';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { METHOD_SECTION_TEST_IDS } from './MethodSection/constants';
@@ -10,7 +14,12 @@ import { METHOD_COPY } from './copy';
 
 describe('the method page', () => {
   beforeEach(() => {
-    renderWithAccounts(<Method />);
+    render(
+      <Method
+        accounts={[mockDerivedAccount, mockSecondDerivedAccount]}
+        initialAccount={mockDerivedAccount}
+      />
+    );
   });
 
   it('names itself in the header, so the parent knows what they opened', () => {

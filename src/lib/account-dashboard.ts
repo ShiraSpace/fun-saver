@@ -1,5 +1,10 @@
 import type { DataStore } from '@/db/data-store';
-import type { Account, WalletName, WalletWithDerived } from './types';
+import type {
+  Account,
+  AccountWithDerivedWallets,
+  WalletName,
+  WalletWithDerived,
+} from './types';
 import { deriveWallet } from './derive-wallet';
 import { addDailyInterest } from './interest';
 
@@ -8,6 +13,20 @@ const WALLET_ORDER: Record<WalletName, number> = {
   spending: 1,
   goodDeeds: 2,
 };
+
+export async function listAccountsWithWallets(
+  store: DataStore,
+  asOf: string
+): Promise<AccountWithDerivedWallets[]> {
+  const accounts = await store.listAccounts();
+
+  return Promise.all(
+    accounts.map(async (account) => ({
+      ...account,
+      wallets: await getWalletsForAccount(store, account, asOf),
+    }))
+  );
+}
 
 export async function getWalletsForAccount(
   store: DataStore,

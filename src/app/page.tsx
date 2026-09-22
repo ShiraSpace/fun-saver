@@ -1,10 +1,9 @@
 import { JSX } from 'react';
 import { cookies } from 'next/headers';
 import { Home } from '@/components/Home';
-import type { AccountWithDerivedWallets } from '@/lib/types';
 import { SELECTED_ACCOUNT_COOKIE } from '@/components/Home/selected-account-cookie';
 import { getStore } from '@/db';
-import { getWalletsForAccount } from '@/lib/account-dashboard';
+import { listAccountsWithWallets } from '@/lib/account-dashboard';
 import { today } from '@/lib/clock';
 import { selectedAccount } from '@/lib/selected-account';
 import { resolveThemeId } from '@/theme/registry';
@@ -13,29 +12,18 @@ import { ThemeController } from '@/theme/ThemeController';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage(): Promise<JSX.Element> {
-  const store = getStore();
-  const [storedAccounts, cookieStore] = await Promise.all([
-    store.listAccounts(),
+  const [accounts, cookieStore] = await Promise.all([
+    listAccountsWithWallets(getStore(), today()),
     cookies(),
   ]);
 
-  const asOf = today();
-  const accounts: AccountWithDerivedWallets[] = await Promise.all(
-    storedAccounts.map(async (account) => ({
-      ...account,
-      wallets: await getWalletsForAccount(store, account, asOf),
-    }))
-  );
-
-  const storedAccountId = cookieStore.get(SELECTED_ACCOUNT_COOKIE)?.value;
-  const initialAccount = selectedAccount(accounts, storedAccountId ?? '');
-  const initialAccountId = initialAccount?.id ?? '';
-  const initialThemeId = resolveThemeId(initialAccount?.themeId);
+  const storedAccountId = cookieStore.get(SELECTED_ACCOUNT_COOKIE)?.value ?? '';
+  const initialAccount = selectedAccount(accounts, storedAccountId);
 
   return (
     <main>
-      <ThemeController initialThemeId={initialThemeId}>
-        <Home accounts={accounts} initialAccountId={initialAccountId} />
+      <ThemeController initialThemeId={resolveThemeId(initialAccount?.themeId)}>
+        <Home accounts={accounts} initialAccountId={initialAccount?.id ?? ''} />
       </ThemeController>
     </main>
   );
