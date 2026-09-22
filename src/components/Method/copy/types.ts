@@ -31,7 +31,7 @@ export interface ActionGroup {
 
 export interface ExampleRow {
   wallet: WalletName;
-  figures: readonly string[];
+  amounts: readonly string[];
 }
 
 export interface MoneyTable {

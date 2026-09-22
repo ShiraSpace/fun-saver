@@ -9,7 +9,7 @@ import { ACTIONS_SECTION } from './constants';
 
 const { actions } = METHOD_COPY;
 
-const MONEY_BLOCKS: readonly MethodBlock[] = [
+const ALLOWANCE_BLOCKS: readonly MethodBlock[] = [
   actions.intro,
   actions.amount,
   actions.frequency,
@@ -25,7 +25,7 @@ const RULE_BLOCKS: readonly MethodBlock[] = [
 export function ActionsSection(): JSX.Element {
   return (
     <MethodSection number={ACTIONS_SECTION.number} title={actions.title}>
-      <MethodBlocks blocks={MONEY_BLOCKS} />
+      <MethodBlocks blocks={ALLOWANCE_BLOCKS} />
       <ExampleWalletSplitTable
         caption={actions.example.title}
         {...actions.example.table}

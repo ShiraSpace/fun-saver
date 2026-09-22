@@ -7,16 +7,18 @@ import {
 
 export function ExampleWalletSplitRow({
   wallet,
-  figures,
+  amounts,
 }: ExampleRow): JSX.Element {
-  const cells = figures.map((figure, index) => <td key={index}>{figure}</td>);
+  const perPeriod = amounts.map((amount, period) => (
+    <td key={period}>{amount}</td>
+  ));
 
   return (
     <tr data-testid={EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS.row}>
       <td data-testid={EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS.wallet}>
-        {EXAMPLE_WALLET_SPLIT_ROW_COPY.wallet(wallet)}
+        {EXAMPLE_WALLET_SPLIT_ROW_COPY.walletShare(wallet)}
       </td>
-      {cells}
+      {perPeriod}
     </tr>
   );
 }

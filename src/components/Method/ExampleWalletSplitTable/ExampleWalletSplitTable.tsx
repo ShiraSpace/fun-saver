@@ -14,12 +14,12 @@ export function ExampleWalletSplitTable({
   headers,
   rows,
 }: ExampleWalletSplitTableProps): JSX.Element {
-  const columns = headers.map((header) => (
+  const periods = headers.map((header) => (
     <th key={header} scope="col">
       {header}
     </th>
   ));
-  const lines = rows.map((row) => (
+  const walletRows = rows.map((row) => (
     <ExampleWalletSplitRow key={row.wallet} {...row} />
   ));
 
@@ -28,9 +28,9 @@ export function ExampleWalletSplitTable({
       <Table data-testid={EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.table}>
         <Caption>{emphasize(caption)}</Caption>
         <thead>
-          <tr>{columns}</tr>
+          <tr>{periods}</tr>
         </thead>
-        <tbody>{lines}</tbody>
+        <tbody>{walletRows}</tbody>
       </Table>
     </Scroller>
   );

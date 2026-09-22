@@ -4,38 +4,40 @@ import { emphasize } from '../rich-text';
 import { ACTION_LIST_COPY, ACTION_LIST_TEST_IDS } from './constants';
 import {
   Answer,
-  Box,
   Group,
   Item,
   Items,
   Label,
   Question,
+  Status,
 } from './ActionList.styles';
 
-function tick(item: ActionItem): JSX.Element {
+function actionRow(action: ActionItem): JSX.Element {
+  const status = action.done ? ACTION_LIST_COPY.settled : ACTION_LIST_COPY.open;
+
   return (
-    <Item key={item.question} data-testid={ACTION_LIST_TEST_IDS.item}>
-      <Box
+    <Item key={action.question} data-testid={ACTION_LIST_TEST_IDS.item}>
+      <Status
         role="img"
-        data-done={item.done}
-        data-testid={ACTION_LIST_TEST_IDS.box}
-        aria-label={
-          item.done ? ACTION_LIST_COPY.done : ACTION_LIST_COPY.pending
-        }
+        aria-label={status}
+        data-done={action.done}
+        data-testid={ACTION_LIST_TEST_IDS.status}
       />
       <div>
-        <Question>{emphasize(item.question)}</Question>
-        <Answer>{emphasize(item.answer)}</Answer>
+        <Question>{emphasize(action.question)}</Question>
+        <Answer>{emphasize(action.answer)}</Answer>
       </div>
     </Item>
   );
 }
 
 export function ActionList({ label, items }: ActionGroup): JSX.Element {
+  const actions = items.map(actionRow);
+
   return (
     <Group data-testid={ACTION_LIST_TEST_IDS.group}>
       <Label>{emphasize(label)}</Label>
-      <Items>{items.map(tick)}</Items>
+      <Items>{actions}</Items>
     </Group>
   );
 }

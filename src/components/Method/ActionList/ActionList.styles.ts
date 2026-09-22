@@ -33,7 +33,7 @@ export const Item = styled.li`
   }
 `;
 
-export const Box = styled.span`
+export const Status = styled.span`
   position: relative;
   flex: none;
   width: 19px;

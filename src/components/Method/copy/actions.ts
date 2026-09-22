@@ -63,9 +63,9 @@ export const ACTIONS_COPY = {
     table: {
       headers: ['קופה', 'לשבוע', 'לחודש', 'לשנה'],
       rows: [
-        { wallet: 'spending', figures: ['₪15', '₪65', '₪780'] },
-        { wallet: 'savings', figures: ['₪12', '₪52', '₪624'] },
-        { wallet: 'goodDeeds', figures: ['₪3', '₪13', '₪156'] },
+        { wallet: 'spending', amounts: ['₪15', '₪65', '₪780'] },
+        { wallet: 'savings', amounts: ['₪12', '₪52', '₪624'] },
+        { wallet: 'goodDeeds', amounts: ['₪3', '₪13', '₪156'] },
       ],
     },
     note: '₪15 לשבוע זה בערך גלידה אחת. מספיק כדי לבחור, לא מספיק כדי שהבחירה תהיה קלה.',

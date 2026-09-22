@@ -8,7 +8,7 @@ export const EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS = {
 } as const;
 
 export const EXAMPLE_WALLET_SPLIT_ROW_COPY = {
-  wallet: (wallet: WalletName): string =>
+  walletShare: (wallet: WalletName): string =>
     `${WALLET_ICON[wallet]} ${WALLET_NAME[wallet]} ${WALLET_TRIO_COPY.share(
       DEPOSIT_SPLIT[wallet]
     )}`,
