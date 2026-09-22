@@ -50,10 +50,6 @@ describe('the method page', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders one section per number the copy carries, with none dropped', () => {
-    expect(renderedSectionIds()).toHaveLength(SECTION_NUMBERS.length);
-  });
-
   it('lists them in the order the copy numbers them', () => {
     expect(renderedSectionIds()).toEqual(
       SECTION_NUMBERS.map(METHOD_SECTION_TEST_IDS.section)

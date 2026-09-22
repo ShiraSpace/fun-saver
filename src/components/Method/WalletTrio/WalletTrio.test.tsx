@@ -2,7 +2,8 @@ import { render, screen } from '@/test-utils/render';
 import { DEPOSIT_SPLIT } from '@/lib/constants';
 import { METHOD_COPY } from '../copy';
 import { WalletTrio } from './WalletTrio';
-import { WALLET_TRIO_COPY, WALLET_TRIO_TEST_IDS } from './constants';
+import { share } from '../constants';
+import { WALLET_TRIO_TEST_IDS } from './constants';
 
 describe('the three wallets drawn as pots', () => {
   const { pots } = METHOD_COPY.wallets;
@@ -22,8 +23,6 @@ describe('the three wallets drawn as pots', () => {
       .getAllByTestId(WALLET_TRIO_TEST_IDS.share)
       .map((share) => share.textContent);
 
-    expect(shown).toEqual(
-      pots.map((wallet) => WALLET_TRIO_COPY.share(DEPOSIT_SPLIT[wallet]))
-    );
+    expect(shown).toEqual(pots.map((wallet) => share(DEPOSIT_SPLIT[wallet])));
   });
 });

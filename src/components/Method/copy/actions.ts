@@ -1,3 +1,11 @@
+import { DEPOSIT_SPLIT } from '@/lib/constants';
+import { share } from '../constants';
+import { WALLETS_COPY } from './wallets';
+
+const APP_SPLIT = WALLETS_COPY.pots
+  .map((wallet) => share(DEPOSIT_SPLIT[wallet]))
+  .join(' / ');
+
 export const ACTIONS_COPY = {
   title: 'מה צריך לעשות',
   intro: {
@@ -38,7 +46,7 @@ export const ACTIONS_COPY = {
       {
         done: true,
         question: 'איך מחלקים?',
-        answer: 'באפליקציה: **50 / 40 / 10**',
+        answer: `באפליקציה: **${APP_SPLIT}**`,
       },
       { done: true, question: 'קשור למטלות?', answer: 'שלכם: **לא**' },
       {

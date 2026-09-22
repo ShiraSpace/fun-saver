@@ -1,5 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { METHOD_COPY } from '../copy';
+import { ACTION_LIST_TEST_IDS } from '../ActionList/constants';
 import { GOAL_OUTCOME_TEST_IDS } from '../GoalOutcome/constants';
 import { METHOD_SECTION_TEST_IDS } from '../MethodSection/constants';
 import { PromiseSection } from './PromiseSection';
@@ -20,5 +21,9 @@ describe('the section on the promise the parent has to keep', () => {
     expect(screen.getAllByTestId(GOAL_OUTCOME_TEST_IDS.outcome)).toHaveLength(
       Object.keys(METHOD_COPY.promise.rule).length
     );
+  });
+
+  it('closes on the one decision it needs — which day the money arrives', () => {
+    expect(screen.getByTestId(ACTION_LIST_TEST_IDS.group)).toBeInTheDocument();
   });
 });

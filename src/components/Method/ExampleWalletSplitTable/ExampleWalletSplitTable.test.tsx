@@ -5,10 +5,10 @@ import { ExampleWalletSplitTable } from './ExampleWalletSplitTable';
 import { EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS } from './constants';
 
 describe('the worked example of a week of allowance', () => {
-  const { title, table } = METHOD_COPY.actions.example;
+  const { example } = METHOD_COPY.actions;
 
   beforeEach(() => {
-    render(<ExampleWalletSplitTable caption={title} {...table} />);
+    render(<ExampleWalletSplitTable {...example} />);
   });
 
   it('accounts for every pot the page splits the money into, leaving no share unexplained', () => {
@@ -20,6 +20,6 @@ describe('the worked example of a week of allowance', () => {
   it('states the weekly sum and the age it assumes, so ₪15 is not read as a recommendation', () => {
     expect(
       screen.getByTestId(EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.caption)
-    ).toHaveTextContent(title);
+    ).toHaveTextContent(example.title);
   });
 });

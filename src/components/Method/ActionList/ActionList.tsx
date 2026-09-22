@@ -14,6 +14,8 @@ import {
 
 function actionRow(action: ActionItem): JSX.Element {
   const status = action.done ? ACTION_LIST_COPY.settled : ACTION_LIST_COPY.open;
+  const question = emphasize(action.question);
+  const answer = emphasize(action.answer);
 
   return (
     <Item key={action.question} data-testid={ACTION_LIST_TEST_IDS.item}>
@@ -24,8 +26,8 @@ function actionRow(action: ActionItem): JSX.Element {
         data-testid={ACTION_LIST_TEST_IDS.status}
       />
       <div>
-        <Question>{emphasize(action.question)}</Question>
-        <Answer>{emphasize(action.answer)}</Answer>
+        <Question>{question}</Question>
+        <Answer>{answer}</Answer>
       </div>
     </Item>
   );

@@ -23,4 +23,12 @@ describe('the checklist of what the parent has to do', () => {
       settled.length
     );
   });
+
+  it('says which are still open, so the parent can see what is left of them', () => {
+    const settled = decide.items.filter((item) => item.done);
+
+    expect(screen.getAllByLabelText(ACTION_LIST_COPY.open)).toHaveLength(
+      decide.items.length - settled.length
+    );
+  });
 });

@@ -1,6 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { ACTION_LIST_TEST_IDS } from '../ActionList/constants';
 import { METHOD_COPY } from '../copy';
+import { EVIDENCE_QUOTE_TEST_IDS } from '../EvidenceQuote/constants';
 import { EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS } from '../ExampleWalletSplitTable/constants';
 import { METHOD_SECTION_TEST_IDS } from '../MethodSection/constants';
 import { ActionsSection } from './ActionsSection';
@@ -8,6 +9,7 @@ import { ACTIONS_SECTION } from './constants';
 
 const LANDMARKS = [
   EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.table,
+  EVIDENCE_QUOTE_TEST_IDS.quote,
   ACTION_LIST_TEST_IDS.group,
 ];
 
@@ -32,6 +34,7 @@ describe('the section on what the parent has to do', () => {
   it('shows what the split comes to before asking the parent to decide anything', () => {
     expect(inReadingOrder()).toEqual([
       EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.table,
+      EVIDENCE_QUOTE_TEST_IDS.quote,
       ACTION_LIST_TEST_IDS.group,
       ACTION_LIST_TEST_IDS.group,
     ]);

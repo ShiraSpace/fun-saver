@@ -15,8 +15,6 @@ const ALLOWANCE_BLOCKS: readonly MethodBlock[] = [
   actions.split,
 ];
 
-const EXAMPLE_NOTE_BLOCKS: readonly MethodBlock[] = [actions.example.note];
-
 const RULE_BLOCKS: readonly MethodBlock[] = [
   actions.chores,
   actions.choresEvidence,
@@ -27,11 +25,7 @@ export function ActionsSection(): JSX.Element {
   return (
     <MethodSection number={ACTIONS_SECTION.number} title={actions.title}>
       <MethodBlocks blocks={ALLOWANCE_BLOCKS} />
-      <ExampleWalletSplitTable
-        caption={actions.example.title}
-        {...actions.example.table}
-      />
-      <MethodBlocks blocks={EXAMPLE_NOTE_BLOCKS} />
+      <ExampleWalletSplitTable {...actions.example} />
       <MethodBlocks blocks={RULE_BLOCKS} />
       <ActionList {...actions.decide} />
       <ActionList {...actions.communicate} />
