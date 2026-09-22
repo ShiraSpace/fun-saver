@@ -1,8 +1,10 @@
 import type { DataStore } from '@/db/data-store';
 import { EDITING_ROLES } from '@/lib/constants';
 
+export type AccountUserReader = Pick<DataStore, 'getAccountUser'>;
+
 export async function canEditAccount(
-  store: DataStore,
+  store: AccountUserReader,
   userId: string,
   accountId: string
 ): Promise<boolean> {

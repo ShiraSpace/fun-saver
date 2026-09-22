@@ -1,14 +1,18 @@
 /**
  * @jest-environment node
  */
+import { signedInUserId } from '@/auth';
 import { getStore } from '@/db';
 import { today } from '@/lib/clock';
 import { addDeposit } from '@/lib/transactions';
 import { balance } from '@/lib/derivations';
 import type { Account } from '@/lib/types';
+import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempDataPath } from '@/test-utils/test-utils';
 import { POST } from '../route';
+
+jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
 
 describe('POST /api/accounts/[id]/withdrawals', () => {
   withTempDataPath();
@@ -25,6 +29,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
       amountAgorot: 10000,
       asOf: today(),
     });
+    jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
   });
 
   function postWithdraw(
@@ -41,18 +46,19 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
     return POST(request, { params: Promise.resolve({ id }) });
   }
 
-  it('withdraws from the chosen pot and persists it', async () => {
-    const before = balance(
+  async function savingsBalance(): Promise<number> {
+    return balance(
       await getStore().listTransactionsByWallet(account.id, savingsId)
     );
+  }
+
+  it('withdraws from the chosen pot and persists it', async () => {
+    const before = await savingsBalance();
 
     const response = await postWithdraw(savingsId, 20, account.id);
 
     expect(response.status).toBe(200);
-    const after = balance(
-      await getStore().listTransactionsByWallet(account.id, savingsId)
-    );
-    expect(after).toBe(before - 2000);
+    expect(await savingsBalance()).toBe(before - 2000);
   });
 
   it('rejects an overdraft with 400', async () => {
@@ -68,9 +74,19 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
     expect(response.status).toBe(400);
   });
 
-  it('returns 404 for an unknown account', async () => {
+  it('refuses an unknown account with 403 rather than admitting it is gone', async () => {
     const response = await postWithdraw(savingsId, 20, 'does-not-exist');
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(403);
+  });
+
+  it('refuses a stranger with 403 and leaves the savings untouched', async () => {
+    jest.mocked(signedInUserId).mockResolvedValue(mockSecondUser.id);
+    const before = await savingsBalance();
+
+    const response = await postWithdraw(savingsId, 20, account.id);
+
+    expect(response.status).toBe(403);
+    expect(await savingsBalance()).toBe(before);
   });
 });

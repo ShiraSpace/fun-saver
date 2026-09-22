@@ -1,12 +1,20 @@
 /**
  * @jest-environment node
  */
+import { signedInUserId } from '@/auth';
 import { getStore } from '@/db';
-import { mockCreateAccountInput, mockAccountEdit } from '@/test-utils/fixtures';
+import {
+  mockAccountEdit,
+  mockCreateAccountInput,
+  mockSecondUser,
+  mockUser,
+} from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempDataPath } from '@/test-utils/test-utils';
 import { PUT } from '../route';
+
+jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
 
 describe('PUT /api/accounts/[id]', () => {
   withTempDataPath();
@@ -15,6 +23,7 @@ describe('PUT /api/accounts/[id]', () => {
 
   beforeEach(async () => {
     accountId = (await createOwnedAccount(getStore())).id;
+    jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
   });
 
   function putRawBody(id: string, body: string | undefined): Promise<Response> {
@@ -114,11 +123,22 @@ describe('PUT /api/accounts/[id]', () => {
     expect(await getStore().getAccount(accountId)).toMatchObject({ name });
   });
 
-  it('returns 404 for an unknown account', async () => {
+  it('refuses an unknown account with 403 rather than admitting it is gone', async () => {
     const response = await putAccount('does-not-exist', {
       name: mockAccountEdit.name,
     });
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(403);
+  });
+
+  it('refuses a stranger with 403 and leaves the name and avatar alone', async () => {
+    jest.mocked(signedInUserId).mockResolvedValue(mockSecondUser.id);
+
+    const response = await putAccount(accountId, mockAccountEdit);
+
+    expect(response.status).toBe(403);
+    expect(await getStore().getAccount(accountId)).toMatchObject(
+      mockCreateAccountInput
+    );
   });
 });
