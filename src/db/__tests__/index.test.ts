@@ -1,6 +1,7 @@
 import { mkdtempSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { ValidationError } from '@/lib/errors';
 import { getStore } from '../index';
 import { JsonFileStore } from '../json-file-store';
 import { PostgresStore } from '../postgres-store';
@@ -73,6 +74,12 @@ describe('getStore', () => {
 
     it('falls back to a file-backed store when nothing is configured', () => {
       expect(getStore()).toBeInstanceOf(JsonFileStore);
+    });
+
+    it('refuses that fallback under NODE_ENV=test', () => {
+      mutableEnv.NODE_ENV = 'test';
+
+      expect(() => getStore()).toThrow(ValidationError);
     });
 
     describe('in development', () => {
