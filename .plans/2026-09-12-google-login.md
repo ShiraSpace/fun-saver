@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-15 (plan PR 8 merged; PR 9 is next)
+## Progress — updated 2026-09-22 (plan PR 8 merged; PR 8b then PR 9 are next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -22,7 +22,8 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 4    | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                               |
 | PR 5    | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
 | PR 8    | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                               |
-| PR 9    | —                                                      | `feat/scope-accounts-to-user`      | **next**                                             |
+| PR 8b   | —                                                      | `chore/e2e-signed-in-driver`       | **next** — test infrastructure, no production diff   |
+| PR 9    | —                                                      | `feat/scope-accounts-to-user`      | after 8b                                             |
 | PR 6, 7, 10 | —                                                  | —                                  | not started                                          |
 
 ### Next is PR 9, and PR 6 is still not next
@@ -766,6 +767,45 @@ post-PR 4). Both are satisfied.
 > only exist after a Google sign-in. Seeding a placeholder user at migration time
 > would work, but only if provisioning then claimed it by matching on email — a
 > permanent account-linking path added for a one-time bootstrap. Not worth it.
+
+### PR 8b — `chore/e2e-signed-in-driver`
+
+**Test infrastructure, no production diff. Lands before PR 9 and is green on its
+own, because `page.tsx` still calls `listAccounts()` until PR 9 switches it.**
+
+Why it is its own PR: 10 of the 13 browser suites seed accounts through
+`store.insertAccount()` — no owner row — and open the page with no session. The
+moment PR 9 scopes the read to the signed-in user, every one of them renders the
+empty state, and `create-account.e2e.ts`'s menu group takes a 401 from
+`POST /api/accounts`. Repairing that inside PR 9 buries the switch in a test
+refactor.
+
+- `e2e/server.ts` — the spawned `next start` gets a fixed test `AUTH_SECRET`,
+  returned alongside `baseUrl` and `dataPath` so the driver signs its cookie with
+  the same value. Deliberately not read from `.env.local`: `test:visual` does not
+  load it, and a hermetic secret keeps the suites independent of a local file.
+- `e2e/driver/use-driver.ts` — `seedStore` inserts the owner user **first**, then
+  each seeded account through `insertAccountWithOwner`. Accounts before users
+  raises `UnknownOwnerError`.
+- `e2e/driver/session.ts` — `open()` sets an `authjs.session-token` cookie before
+  navigating, via `encode({ token, secret, salt })` from `next-auth/jwt` with the
+  cookie name as the salt.
+- A default owner-user fixture, so **no suite changes**: `useDriver()` and
+  `useDriver({ accounts: [mockAccount] })` keep their signatures and every seeded
+  account belongs to the signed-in user.
+
+No test-only branch reaches production code. The session is a real signed JWT
+that `auth()` reads the same way it reads a browser's.
+
+Tests: the 13 existing browser suites are the test — green before and after.
+`page-routing.visual.ts`'s "with no accounts" group still gets the empty state,
+now as a signed-in user who owns nothing.
+
+Watch out: next-auth v5 refuses an untrusted host. If `auth()` raises
+`UntrustedHost` under `next start`, the spawned server needs `AUTH_TRUST_HOST`
+alongside `AUTH_SECRET`.
+
+Depends on: PR 3, PR 8. Ships: nothing user-visible.
 
 ### PR 9 — `feat/scope-accounts-to-user`
 
