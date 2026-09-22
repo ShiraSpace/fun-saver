@@ -1,31 +1,36 @@
-# Handover — 2026-09-14
+# Handover — 2026-09-22
 
 ## Start here
 
-**Plan PR 4 is merged (`5d02045`, [#53](https://github.com/ShiraSpace/fun-saver/pull/53)).**
-Verified by reading `main`'s tree, not the PR page. Google sign-in works end to
-end: signing in provisions a `users` row and the session carries our own user id
-rather than the provider's `sub`. The auth route is live on production and its
-callback URL matches the registered one.
+**Plan PRs 1–5 and 8 are merged** (`#28`, `#32`, `#41`, `#49`, `#53`, `#55`,
+`#61`), plus **`#67`** (`1cbb01c`), which settled the two store divergences the
+plan listed as PR 9's to decide. All verified by content on `main`, not by PR
+pages.
 
-**One follow-up is still outstanding: sign in once on production.** Neon
-`production` still has `users = 0`. That row is what plan PR 8 assigns the four
-existing accounts to. Open <https://fun-saver.vercel.app/api/auth/signin> and
-sign in with the Google account that should own them.
+Google sign-in works end to end, every account carries an owner row, and
+**nothing is gated**.
 
-**The public hole is still open.** `src/app/page.tsx` calls `listAccounts()` and
-renders every account to whoever opens the public URL. Production holds **4 real
-accounts and 216 transactions**, and an anonymous request renders them — so this
-is live exposure, not a theoretical one. Nothing in PR 4 gates anything.
+**The public hole is still open and live.** `src/app/page.tsx` calls
+`listAccounts()` and renders **4 real accounts and 263 transactions** to
+anonymous visitors on <https://fun-saver.vercel.app>. Plan PR 9 is what closes
+it.
 
-**Next is plan PR 5 — `feat/login-page`**, branched off `main`. `next-auth` is
-on `main` now, so it needs no stacking. One trap: import `signIn` from
-`next-auth/react` for the client button — `src/auth.ts` exports a server-side
-`signIn` for server actions, and only one of them works in a `"use client"`
-component.
+**Next is plan PR 9 — `feat/scope-accounts-to-user`**, branched off updated
+`origin/main`. Not PR 6. PR 7 is independent and can land any time.
 
-Then PR 6, which is the one that actually closes the hole. PR 7 can land in
-parallel.
+Two parts of PR 9 are easy to miss, both spelled out in its plan section:
+
+- It **opens** by re-running the backfill on both targets and re-checking the
+  orphan query — `npm run db:backfill-dev -- --email=<owner address>` is
+  idempotent and should report `0 account(s) assigned`. **Never run it against
+  `production` without the user's explicit go-ahead.**
+- It **closes** by deleting the backfill: `src/db/run-backfill.ts`,
+  `src/db/assign-owner.ts`, `src/db/__tests__/assign-owner.test.ts` and the three
+  `db:backfill*` scripts. **`src/db/migration-target.ts` stays** —
+  `run-migration.ts` uses it.
+
+Deleting `DataStore.listAccounts()` breaks every test file that calls it. Those
+edits have to ride in the same commit or nothing compiles.
 
 > **PR 6 must not ship a session-only gate.** Sign-in is open to any Google
 > account by design — #53 has no allowlist. A stranger who signs in gets a
@@ -37,20 +42,23 @@ parallel.
 > add the allowlist in it — `AUTH_ALLOWED_EMAILS` checked in `signIn`, plus
 > `profile.email_verified`, since it keys on email.
 
-After #53 merges, **sign in once on production** — that creates the `users` row
-plan PR 8 assigns those four accounts to.
+**Do not trust `#68`'s title** ("PRs 1 to 4 merged, PR 5 is next"). The plan
+content on `main` is correct and current: PR 8 merged, PR 9 next.
 
-## What landed
+## Database state — measured 2026-09-22
 
-Plan PRs 1, 2, 3 and 4 (`#28`, `#32`, `#41`, `#49`, `#53`), plus `#29`, `#30`
-and `#33`. **`#52` ("show what each wallet has already spent") also landed on
-`main` while PR 4 was open** — unrelated to this plan, and the reason the suite
-jumped to 426 tests.
+| branch       | `users` | `accounts` | `account_users` | orphan accounts | transactions |
+| ------------ | ------- | ---------- | --------------- | --------------- | ------------ |
+| `production` | 1       | 4          | 4               | **0**           | 263          |
+| `dev`        | 1       | 3          | 3               | **0**           | 200          |
 
-`main` also moved a long way underneath this work: #36, #42, #43, #44, #45
-(styled-components extracted to `<Component>.styles.ts`), #48 (wallet hero and
-coin row removed) and **#46, which caps files at 200 lines and functions at 40**.
-#46 is the one that will bite — PR 4 onward is linted against it.
+Re-measure rather than trusting this table; PR 9's opening step exists to catch
+what was created since.
+
+**The dev and test TTLs were extended to 2026-10-10** (they were 09-19 and
+09-27). Neon caps an extension at roughly 30 days out, so they will need
+extending again. Prefer extending over recreating: recreating `dev` from
+`production` destroys dev's own data, which has diverged.
 
 ## Verifying anything
 
@@ -69,11 +77,9 @@ For any future stacked PR: retarget the child to `main` before merging it.
 
 ## Watch-outs
 
-- **The Neon default branch is named `production`, not `main`.** It was migrated
-  on 2026-09-14; `users` and `account_users` now exist there with the `role`
-  CHECK, both foreign keys and `account_users_user_idx`. `DATABASE_URL` points at
-  endpoint `ep-jolly-truth-a21toeir`, which is that branch — confirm it before
-  any future `npm run db:migrate`. `schema.sql` is idempotent, so a replay is
+- **The Neon default branch is named `production`, not `main`.** `DATABASE_URL`
+  points at endpoint `ep-jolly-truth-a21toeir`, which is that branch — confirm it
+  before any `npm run db:migrate`. `schema.sql` is idempotent, so a replay is
   safe.
 - **`~/.npmrc` sets `package-lock=false` and a Nexus registry.** An `npm install`
   here updates `node_modules` but leaves `package-lock.json` untouched, so the
@@ -87,19 +93,25 @@ For any future stacked PR: retarget the child to `main` before merging it.
   as `ok` on a dirty tree, a jest count of 364 where the truth was 368, and
   swallowed an `eslint --fix`. Use `rtk proxy <cmd>` for anything you will report
   as a number, and capture to a file rather than piping.
+- **zsh does not word-split unquoted variables.** `npx jest $FILES` with two
+  paths passes them as a single pattern and prints `No tests found, exiting with
+  code 1` — an exit status that reads like a real failure and is not one. Pass
+  test paths literally.
 - **Verify `HEAD`, not the working tree.** A commit here moved a file while
   leaving every importer on the old path, because one bad pathspec silently
   aborted the whole `git add`; `tsc` passed only because the working tree was
   right.
-- **A test that has never failed proves nothing.** Three tests in plan PR 3
-  passed against deliberately broken implementations. Two were rewritten and one
-  was deleted — it could not fail in any world. Break the code and watch the test
-  fail, and read *which* test failed, not just the count.
+- **A test that has never failed proves nothing.** Break the implementation on
+  purpose, watch the test fail, and read *which* test failed, not just the count.
+  Three tests in plan PR 3 passed against deliberately broken implementations,
+  and one of #67's tests asserted on the wrong promise in a `Promise.allSettled`
+  pair and passed for it.
 - **`npx jest` intermittently reports one suite failed with zero failing tests.**
-  A `SIGSEGV` in a jest worker, hit three times here on three different component
-  suites, always passing on rerun. Environmental. Re-run before believing it.
+  A `SIGSEGV` in a jest worker. Environmental. Re-run before believing it.
 - **`e2e/*.e2e.ts` depends on the `next build` that `test:visual` performs.** Run
   it alone and `next start` fails with "server did not start".
+- **A fresh worktree has no `node_modules` and no `.env.local`.** Both need
+  installing or copying before any `db:*` script or jest will run.
 - **Other sessions may be editing this repo.** One wrote four commits' worth of
   code into the working tree mid-task here. Check `ListAgents` and file mtimes
   before assuming uncommitted changes are yours.
@@ -107,24 +119,28 @@ For any future stacked PR: retarget the child to `main` before merging it.
   CLAUDE.md.
 - Never force-push. Correct a published branch with a commit on top.
 
-## Known divergences PR 9 has to decide
+## The store divergences are settled
 
-Both are recorded in full in the plan under _Known divergences to settle before
-PR 9_. Both have the same root cause — the memory and json `insert` methods
-accept anything — and want one PR between them:
+`#67` closed both of the plan's _Known divergences to settle before PR 9_, so
+**PR 9 no longer has that decision to make**:
 
-- A **repeat** `insertAccountWithOwner` duplicates the account in memory/json and
-  is rejected by postgres; `listAccountsForUser` then returns it twice.
-- An owner that **does not exist** is accepted by memory/json and rejected by
-  postgres, leaving an account nothing can reach. PR 4's signup path makes this
-  reachable: dev-on-json passes where production-on-postgres throws.
+- A repeat `insertAccountWithOwner` and an owner with no `users` row are now
+  rejected by memory and json as well as postgres, before either write.
+- Postgres translates `23505` and `23503` into the same `DuplicateAccountError`
+  and `UnknownOwnerError` the other two raise, so a caller can branch on the type
+  the way `user-provisioning.ts` already does for `DuplicateUserError`.
+- All three stores check the duplicate before the owner, so a create that is both
+  a repeat and an orphan fails identically everywhere.
+
+**The plan's own divergences section is now stale** — it still describes both as
+open. Correcting it belongs in PR 9.
 
 ## Housekeeping, all left alone deliberately
 
-- Stale branches on origin: `feat/user-store-methods`, `feat/account-user-reads`,
-  `feat/account-user-create`, `feat/account-user-writes`,
-  `feat/account-user-store-methods`. All merged or abandoned; safe to delete now
-  that #49 has landed.
+- Stale branches on origin, all merged or abandoned and safe to delete:
+  `feat/user-store-methods`, `feat/account-user-reads`, `feat/account-user-create`,
+  `feat/account-user-writes`, `feat/account-user-store-methods`,
+  `fix/store-write-parity`.
 - `stash@{1}` "PR2 user store methods" is obsolete. Drop it.
 - `.plans/2026-07-25-neon-integration.md` still says `account_members`. Historical
   record of a past decision — correct to leave.
