@@ -116,5 +116,9 @@ Without a reference in the body, attachments are appended at the end instead.
 Text after `#` is the alt text. Write it as what the reviewer should notice,
 not as a filename. Up to 50 files per command, 10 MB per image.
 
+`.github/pull_request_template.md` carries the Screenshots section that every
+PR is expected to fill. Passing `--body-file` replaces the template wholesale,
+so keep the section yourself when you write a body.
+
 Run `gh` through `rtk proxy` — the RTK hook otherwise returns invented output
 for `gh` commands.
