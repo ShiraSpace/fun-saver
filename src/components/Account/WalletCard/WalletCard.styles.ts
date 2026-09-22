@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import type { WalletName } from '@/lib/types';
-import { WALLET_CARD_STYLE, WALLET_GRADIENT } from './constants';
+import { WALLET_GRADIENT } from '@/theme/wallet-gradient';
+import { WALLET_CARD_STYLE } from './constants';
 
 export const Card = styled.div`
   padding: ${WALLET_CARD_STYLE.paddingY}px ${WALLET_CARD_STYLE.paddingX}px;

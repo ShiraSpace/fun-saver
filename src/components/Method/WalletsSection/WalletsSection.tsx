@@ -1,9 +1,8 @@
 import { JSX } from 'react';
-import type { MethodBlock } from '../copy';
 import { MethodBlocks } from '../MethodBlocks';
 import { MethodSection } from '../MethodSection';
 import { WalletTrio } from '../WalletTrio';
-import { METHOD_COPY } from '../copy';
+import { METHOD_COPY, type MethodBlock } from '../copy';
 import { WALLETS_SECTION } from './constants';
 
 const { wallets } = METHOD_COPY;

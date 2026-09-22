@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { WalletName } from '@/lib/types';
-import { WALLET_GRADIENT } from '@/components/Account/WalletCard/constants';
+import { WALLET_GRADIENT } from '@/theme/wallet-gradient';
 
 export const Trio = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ export const Pot = styled.div<{ walletName: WalletName }>`
 
 export const Icon = styled.span`
   display: block;
-  font-size: 21px;
+  font-size: ${({ theme }): number => theme.typography.title}px;
 `;
 
 export const Name = styled.span`

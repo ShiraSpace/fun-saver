@@ -23,7 +23,7 @@ describe('the three wallets drawn as pots', () => {
       .map((share) => share.textContent);
 
     expect(shown).toEqual(
-      pots.map((pot) => WALLET_TRIO_COPY.share(DEPOSIT_SPLIT[pot.wallet]))
+      pots.map((wallet) => WALLET_TRIO_COPY.share(DEPOSIT_SPLIT[wallet]))
     );
   });
 });

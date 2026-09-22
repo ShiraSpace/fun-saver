@@ -67,6 +67,27 @@ branches were cut from each other instead.
 8. **Latin runs inside RTL carry `dir="ltr"` with `text-align: end`.**
    `EvidenceQuote`'s citation does; section 6 and the sources list will.
 
+## Decisions (settled 2026-09-22, during PR 5)
+
+9. **The page calls a wallet what the app calls it.** The deck said «הוצאות»
+   where the app says «בזבוזים», and shipping both would have left the parent
+   reading one word on the method page and another on the account screen. The
+   page moved to the app's word, in the pot and in the prose.
+
+   With the wording aligned, a pot label stopped being copy: `WALLET_NAME`,
+   `WALLET_ICON` and `DEPOSIT_SPLIT` all live in `src/lib/constants.ts`, and
+   `wallets.ts` carries only the order the three are drawn in. `WALLET_GRADIENT`
+   moved to `src/theme/` for the same reason — `Method/` was reaching into
+   `Account/` for it.
+
+10. **Pot text ships under AA, and is raised with decision 7.** `textStrong` on
+    the pot gradients measures 3.33:1 on jungle `potSavings`, 3.58 on jungle
+    `potGood` and 3.88 on sunshine `potGood`; the pots' 12px and 18px text needs
+    4.5. The mockup's own `#4A2A00` clears neither (3.89 jungle, 3.65 sunshine),
+    so drawing it exactly does not fix it. What does is a `textOnPot` token per
+    theme — jungle `#2B1800`, sunshine `#2B1235`, midnight `#ECF1F8` — and it
+    goes in with the `actionButton` surface in one pass.
+
 ## Component rule
 
 A component that does anything — composes, branches, or maps over data — gets

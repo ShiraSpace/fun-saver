@@ -10,6 +10,7 @@ interface TalkBubbleProps {
 }
 
 export function TalkBubble({ label, lines }: TalkBubbleProps): JSX.Element {
+  const heading = emphasize(label);
   const spoken = lines.map((line, index) => (
     <Line
       key={index}
@@ -22,7 +23,7 @@ export function TalkBubble({ label, lines }: TalkBubbleProps): JSX.Element {
 
   return (
     <Bubble data-testid={TALK_BUBBLE_TEST_IDS.bubble}>
-      <Label data-testid={TALK_BUBBLE_TEST_IDS.label}>{emphasize(label)}</Label>
+      <Label data-testid={TALK_BUBBLE_TEST_IDS.label}>{heading}</Label>
       {spoken}
     </Bubble>
   );

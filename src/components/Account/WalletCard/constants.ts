@@ -1,5 +1,5 @@
-import type { WalletName, WalletWithDerived } from '@/lib/types';
-import { PERCENT_TOTAL } from '@/lib/constants';
+import type { WalletWithDerived } from '@/lib/types';
+import { PERCENT_TOTAL, WALLET_NAME } from '@/lib/constants';
 import { dayMonth } from '@/lib/dates';
 import { agorotToWholeShekels } from '@/lib/money';
 
@@ -9,21 +9,8 @@ export const WALLET_CARD_TEST_IDS = {
   subLine: 'wallet-sub-line',
 } as const;
 
-export const WALLET_GRADIENT: Record<
-  WalletName,
-  'potSavings' | 'potSpending' | 'potGood'
-> = {
-  savings: 'potSavings',
-  spending: 'potSpending',
-  goodDeeds: 'potGood',
-};
-
 export const WALLET_CARD_COPY = {
-  name: {
-    savings: 'חיסכון',
-    spending: 'בזבוזים',
-    goodDeeds: 'מעשים טובים',
-  },
+  name: WALLET_NAME,
   savingsSubLine: (
     wallet: Pick<WalletWithDerived, 'monthlyInterestRate' | 'openedAt'>
   ): string =>

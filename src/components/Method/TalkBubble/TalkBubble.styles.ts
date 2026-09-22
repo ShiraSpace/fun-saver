@@ -8,6 +8,10 @@ export const Bubble = styled.div`
   border-radius: 16px;
   background: ${({ theme }): string => theme.colors.surface};
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   &::after {
     content: '';
     position: absolute;
@@ -16,8 +20,7 @@ export const Bubble = styled.div`
     width: 14px;
     height: 14px;
     background: ${({ theme }): string => theme.colors.surface};
-    border-inline-start: 2px solid
-      ${({ theme }): string => theme.colors.primary};
+    border-left: 2px solid ${({ theme }): string => theme.colors.primary};
     border-bottom: 2px solid ${({ theme }): string => theme.colors.primary};
     transform: rotate(-45deg);
   }
@@ -49,7 +52,6 @@ export const Line = styled.p`
   }
 
   &[data-tone='muted'] {
-    font-size: ${({ theme }): number => theme.typography.label}px;
     color: ${({ theme }): string => theme.colors.textMuted};
   }
 `;
