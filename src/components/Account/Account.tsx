@@ -8,6 +8,7 @@ import { ActionButton } from '@/components/ActionButton';
 import { OverviewCard } from './OverviewCard';
 import { WalletList } from './WalletList/WalletList';
 import { TransactionDrawer } from './TransactionDrawer';
+import { CurrentAccountProvider } from './current-account-context';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
 import { Column } from './Account.styles';
 
@@ -23,25 +24,27 @@ export function Account({ account }: AccountProps): JSX.Element {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
-    <Screen align="top">
-      <Column>
-        <Header title={name} avatarId={avatarId} />
-        <OverviewCard key={account.id} wallets={ordered} />
-        <WalletList wallets={ordered} />
-        <ActionButton
-          type="button"
-          data-testid={ACCOUNT_TEST_IDS.actionCta}
-          onClick={() => setIsDrawerOpen(true)}
-        >
-          {ACCOUNT_COPY.actionCta}
-        </ActionButton>
-      </Column>
-      {isDrawerOpen && (
-        <TransactionDrawer
-          account={account}
-          onClose={() => setIsDrawerOpen(false)}
-        />
-      )}
-    </Screen>
+    <CurrentAccountProvider value={account}>
+      <Screen align="top">
+        <Column>
+          <Header title={name} avatarId={avatarId} />
+          <OverviewCard key={account.id} wallets={ordered} />
+          <WalletList wallets={ordered} />
+          <ActionButton
+            type="button"
+            data-testid={ACCOUNT_TEST_IDS.actionCta}
+            onClick={() => setIsDrawerOpen(true)}
+          >
+            {ACCOUNT_COPY.actionCta}
+          </ActionButton>
+        </Column>
+        {isDrawerOpen && (
+          <TransactionDrawer
+            account={account}
+            onClose={() => setIsDrawerOpen(false)}
+          />
+        )}
+      </Screen>
+    </CurrentAccountProvider>
   );
 }

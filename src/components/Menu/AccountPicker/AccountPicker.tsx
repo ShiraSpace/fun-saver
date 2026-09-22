@@ -2,7 +2,7 @@
 
 import { JSX, useRef } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
-import { selectedAccount } from '@/lib/selected-account';
+import { useCurrentAccount } from '@/components/Account/current-account-context';
 import { AccountList } from '../AccountList';
 import { AccountTrigger } from './AccountTrigger';
 import { useCloseOnOutsideClick } from './use-close-on-outside-click';
@@ -11,7 +11,6 @@ import { Picker } from './AccountPicker.styles';
 
 interface AccountPickerProps {
   accounts: AccountWithDerivedWallets[];
-  selectedAccountId: string;
   isOpen: boolean;
   onToggle: () => void;
   onSelect: (id: string) => void;
@@ -20,20 +19,15 @@ interface AccountPickerProps {
 
 export function AccountPicker({
   accounts,
-  selectedAccountId,
   isOpen,
   onToggle,
   onSelect,
   onAdd,
 }: AccountPickerProps): JSX.Element {
   const pickerRef = useRef<HTMLDivElement>(null);
-  const currentAccount = selectedAccount(accounts, selectedAccountId);
+  const currentAccount = useCurrentAccount();
 
   useCloseOnOutsideClick(pickerRef, isOpen, onToggle);
-
-  if (!currentAccount) {
-    return <></>;
-  }
 
   return (
     <Picker ref={pickerRef} data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>
@@ -45,7 +39,7 @@ export function AccountPicker({
       {isOpen && (
         <AccountList
           accounts={accounts}
-          selectedAccountId={selectedAccountId}
+          selectedAccountId={currentAccount.id}
           onSelect={onSelect}
           onAdd={onAdd}
         />

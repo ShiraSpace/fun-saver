@@ -11,6 +11,7 @@ import {
   AppModeProvider,
   type AppMode,
 } from '@/components/Home/app-mode-context';
+import { CurrentAccountProvider } from '@/components/Account/current-account-context';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
@@ -41,11 +42,13 @@ function renderSection({
       value={{ mode: APP_MODE.viewing, setMode: setMode ?? ((): void => {}) }}
     >
       <AccountsProvider value={value}>
-        <AccountsSection
-          onAccountSelect={onAccountSelect ?? ((): void => {})}
-          isAccountListOpen
-          onAccountListToggle={(): void => {}}
-        />
+        <CurrentAccountProvider value={mockDerivedAccount}>
+          <AccountsSection
+            onAccountSelect={onAccountSelect ?? ((): void => {})}
+            isAccountListOpen
+            onAccountListToggle={(): void => {}}
+          />
+        </CurrentAccountProvider>
       </AccountsProvider>
     </AppModeProvider>
   );

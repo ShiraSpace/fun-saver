@@ -22,7 +22,7 @@ export function AccountsSection({
   isAccountListOpen,
   onAccountListToggle,
 }: AccountsSectionProps): JSX.Element {
-  const { accounts, selectedAccountId, selectAccount } = useAccounts();
+  const { accounts, selectAccount } = useAccounts();
   const { setMode } = useAppMode();
 
   const handleSelectAccount = (id: string): void => {
@@ -45,7 +45,6 @@ export function AccountsSection({
       <MenuLabel>{ACCOUNTS_SECTION_CONTENT.label}</MenuLabel>
       <AccountPicker
         accounts={accounts}
-        selectedAccountId={selectedAccountId}
         isOpen={isAccountListOpen}
         onToggle={onAccountListToggle}
         onSelect={handleSelectAccount}
