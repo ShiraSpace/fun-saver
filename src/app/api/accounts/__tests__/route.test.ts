@@ -50,6 +50,15 @@ describe('POST /api/accounts', () => {
     expect(stored.map((a) => a.name)).toEqual([mockCreateAccountInput.name]);
   });
 
+  it('refuses an unauthenticated request with 401 and stores nothing', async () => {
+    jest.mocked(signedInUserId).mockResolvedValue(undefined);
+
+    const response = await POST(postRequest(mockCreateAccountInput));
+
+    expect(response.status).toBe(401);
+    expect(await getStore().listAccounts()).toEqual([]);
+  });
+
   it.each([
     ['no body at all', {}],
     ['a missing avatar', { name: 'נועה' }],

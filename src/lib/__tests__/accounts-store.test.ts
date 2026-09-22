@@ -69,6 +69,23 @@ describe('AccountsStore', () => {
     expect(openedToday).toEqual(account.wallets);
   });
 
+  it('makes the given user the owner of the new account', async () => {
+    const store = new InMemoryStore();
+    await store.insertUser(mockUser);
+
+    const account = await new AccountsStore(store).createAccount({
+      input: mockCreateAccountInput,
+      ownerId: mockUser.id,
+    });
+
+    expect(await store.getAccountUser(account.id, mockUser.id)).toMatchObject({
+      accountId: account.id,
+      userId: mockUser.id,
+      role: 'owner',
+    });
+    expect(await store.listAccountsForUser(mockUser.id)).toEqual([account]);
+  });
+
   it('gives a new account the default theme', async () => {
     const accountsStore = await ownedAccountsStore();
 
