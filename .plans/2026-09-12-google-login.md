@@ -739,6 +739,22 @@ HTML login page; `POST /api/accounts` already returns 401, and the `[id]` routes
 need per-user authorization, which is PR 10 — gating them here would look like
 PR 10 was done.
 
+**The matcher is the security boundary, so it is tested.** Its alternatives are
+anchored to whole path segments — an unanchored `login|api` left `/loginx` and
+`/apikeys` public, which is the very failure this PR exists to close. Static
+files are gated too: nothing on the login page loads from `public/`, and its own
+JS is under `_next/static`, which stays excluded. The matcher cannot reference
+`LOGIN_PATH` — Next statically analyses it at build time and silently ignores a
+variable — so a test ties the two together instead.
+
+Known ceiling: **a chunked session cookie would read as signed out.** Auth.js
+splits the cookie into `authjs.session-token.0`, `.1`, … above 3936 bytes, and
+then no cookie carries the bare name, which is what `cookies.has()` matches. The
+JWT adds only `userId` to a default Google token, so this is nowhere near real
+today. It becomes real the day the token carries an access or refresh token, and
+the upgrade is one line: match `name === sessionName ||
+name.startsWith(`${sessionName}.`)`.
+
 Not built, deliberately: no `callbackUrl`. `useGoogleSignIn` always lands on
 `SIGNED_IN_DESTINATION`, so a signed-out visitor to `/method` returns to `/`.
 
