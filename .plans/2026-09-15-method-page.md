@@ -9,10 +9,14 @@ split into three wallets, and what the parent has to do. Static and read-only.
 - Copy: `docs/copy/method-page.he.md` (shipping) · `.en.md` (parked, §2 backlog)
 - Evidence behind every claim: `docs/research/jar-method.md`
 
-## Phase 0 — branch (done)
+## Where it stands (2026-09-22)
 
-Worktree `~/Projects/technotronic/fun-saver-method-page` on `feat/method-page`
-off `origin/main`. Each PR below branches from the previous one.
+PRs 1–4 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
+(section shell, evidence quote, section 1). **PR 5 is next.**
+
+Worktree `~/Projects/technotronic/fun-saver-method-page`. Each PR branches off
+`main` once the one before it has merged — the stack was rebased twice because
+branches were cut from each other instead.
 
 ## Decisions (settled 2026-09-15)
 
@@ -29,6 +33,39 @@ off `origin/main`. Each PR below branches from the previous one.
    become optional). One header component means the burger cannot drift
    between pages. A second header would have been zero-risk to `/` but leaves
    two things rendering a burger.
+
+## Decisions (settled 2026-09-22, during PRs 3 and 4)
+
+4. **Copy rendering lives in `Method/rich-text.tsx`.** `emphasize(body)` splits
+   a string on `**` into `<strong>` runs; `paragraphs(body)` splits on `\n\n`.
+   Not `src/lib` — that is framework-agnostic and `emphasize` returns JSX. Not a
+   component folder — neither is a component. **Every string the page renders
+   goes through `emphasize`**, titles and eyebrows included; three review rounds
+   were spent on strings that skipped it. `MethodIntro.test.tsx` guards it with
+   one assertion that no `**` survives into the rendered text.
+5. **The client boundary is `Method.tsx`, not the styles files.** `/method`'s
+   chain is `app/method/page.tsx` → `Method.tsx`, neither a client component, so
+   the styled modules were the first thing a server module graph imported and
+   each had to open the boundary itself. Marking the component opens it once and
+   every `.styles.ts` under `Method/` stays plain. The page still server-renders.
+6. **Style values are written inline in the `.styles.ts`**, not collected into a
+   `*_STYLE` object — a single-use value named and re-imported one file over
+   buys indirection and no reuse. **But anything the theme owns comes from the
+   theme**: every colour from `theme.colors` / `theme.gradients`, every
+   `font-size` from `theme.typography` (`label` 12 · `body` 15 · `heading` 18),
+   and no `opacity` on a themed colour — that is a second, invisible colour
+   decision on top of the token's. Spacing, radii and shadows stay literals; no
+   scale exists for them.
+7. **The opener keeps `gradients.actionButton` knowingly under AA.** White on it
+   is 6.37:1 on sunshine but 2.57:1 on jungle and 2.54:1 on midnight, where
+   12–15px prose needs 4.5:1. The mockup renders the purple block and the purple
+   numbered pill in all three themes and that is the approved design, so it
+   ships as drawn. The fix that keeps the design is a darker stop **per theme**
+   for this surface — sunshine unchanged, jungle and midnight deep instead of
+   mid — a token in `theme-tokens.ts` plus the three theme files. Raise it once,
+   not every PR.
+8. **Latin runs inside RTL carry `dir="ltr"` with `text-align: end`.**
+   `EvidenceQuote`'s citation does; section 6 and the sources list will.
 
 ## Component rule
 
@@ -101,22 +138,51 @@ No UI in this PR.
   and appearance sections of the menu render inert there.
 - e2e: menu link navigates to `/method`.
 
-## PR 3 — the opener
+## PR 3 — the opener (done, #66 and #71)
 
 `MethodIntro` + `GoalOutcome`. One `gradients.actionButton` block: eyebrow,
 title, lead, three outcomes, divider, בקצרה. Always visible, never collapsed.
 
-## PR 4 — section shell + evidence
+The goal title takes the page's `h1`; `Header` renders its title as a span, so
+the page had none. Sections are `h2` under it.
+
+`Intro` sets `text-align: start` — `Screen` centres text app-wide, so without it
+every paragraph in the opener centres.
+
+## PR 4 — section shell + evidence (done, #69)
 
 `MethodSection` + `EvidenceQuote`; wires section 1 (למה לא קופה אחת).
 
 Every section **closed by default**, including ההבטחה — it carries a
 `הכי חשוב` chip on its summary row instead.
 
-## PR 5 — the three wallets
+Three things PRs 5–8 inherit from it:
+
+- **Sections get a component each** (`WhySection` is the first). Six inlined in
+  `Method.tsx` passes the 40-line function cap by PR 6; `Method.tsx` stays a
+  list of what the page is made of.
+- **`MethodSection` styles body paragraphs through `> p`**, direct children
+  only. Section components write plain `<p>` and `<p data-muted={block.muted}>`
+  rather than importing styled parts, and the rule cannot reach into
+  `EvidenceQuote`'s own paragraph and resize it. Read `muted` from the block —
+  `wallets.ts`, `actions.ts` and `scripts.ts` all carry the flag.
+- **The chevron is scoped `details[open] > summary &`.** A plain
+  `details[open] &` is a descendant combinator, and PR 8 nests an accordion
+  inside section 6.
+
+Test ids take the section number — `section(2)`, `summary(2)`, `hint(2)` —
+because six sections sharing one id leaves nothing able to target one.
+
+## PR 5 — the three wallets (next)
 
 `WalletTrio`; wires section 2. First check whether `OverviewCard`'s `Donut` /
 `Legend` take static props — reuse beats a new component.
+
+**Section 2 is where the block renderer earns its keep.** `wallets.ts` mixes
+`text`, `quote` and `talk` in one section, and sections 4 and 6 repeat the
+pattern. A renderer that takes a `MethodBlock` and dispatches on `kind` —
+honouring `muted` — stops PRs 5–8 hand-wiring the same three cases. Deferred out
+of PR 4 deliberately: one consumer is not enough to generalise from, three is.
 
 ## PR 6 — actions
 
@@ -158,4 +224,10 @@ this age — which partly argues against the product. That is deliberate.
 - **Section 4 is long expanded** — six paragraphs, a quote, two checklists, a
   table. Fallback is splitting it into "מה להחליט" and "הדוגמה שלנו".
 - **e2e visual snapshots** — a new route adds a baseline, it doesn't change
-  existing ones.
+  existing ones. Still not taken: every PR from 5 to 8 adds content to the same
+  page, so one recording after PR 8 replaces five that would be re-recorded. It
+  is also the only thing that can cover the chevron flip, which is CSS state and
+  invisible to jsdom.
+- **`/method` mounts no accounts or app-mode provider**, so the accounts and
+  appearance sections of the burger menu render inert there. Own PR, unrelated
+  to section content.
