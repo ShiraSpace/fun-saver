@@ -1,3 +1,4 @@
+import { NeonDbError } from '@neondatabase/serverless';
 import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
 
 const UNIQUE_VIOLATION = '23505';
@@ -12,13 +13,15 @@ export function toAccountWriteError(
   error: unknown,
   { accountId, ownerId }: AttemptedAccountWrite
 ): unknown {
-  const { code } = error as { code?: string };
+  if (!(error instanceof NeonDbError)) {
+    return error;
+  }
 
-  if (code === UNIQUE_VIOLATION) {
+  if (error.code === UNIQUE_VIOLATION) {
     return new DuplicateAccountError(accountId);
   }
 
-  if (code === FOREIGN_KEY_VIOLATION && ownerId) {
+  if (error.code === FOREIGN_KEY_VIOLATION && ownerId) {
     return new UnknownOwnerError(ownerId);
   }
 
