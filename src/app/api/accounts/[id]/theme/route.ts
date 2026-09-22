@@ -1,20 +1,13 @@
 import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
 import { THEMES, type ThemeId } from '@/theme/registry';
+import { withAccountEditor } from '../with-account-editor';
 
 interface ThemeBody {
   themeId: string;
 }
 
-interface RouteContext {
-  params: Promise<{ id: string }>;
-}
-
-export async function PUT(
-  request: Request,
-  context: RouteContext
-): Promise<Response> {
-  const { id } = await context.params;
+export const PUT = withAccountEditor(async (request, id) => {
   const { themeId } = (await request.json()) as ThemeBody;
 
   if (!(themeId in THEMES)) {
@@ -34,4 +27,4 @@ export async function PUT(
   }
 
   return Response.json(updated);
-}
+});

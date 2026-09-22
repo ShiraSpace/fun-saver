@@ -4,22 +4,14 @@ import { addDeposit } from '@/lib/transactions';
 import { shekelsToAgorot } from '@/lib/money';
 import { ValidationError } from '@/lib/errors';
 import { today } from '@/lib/clock';
+import { withAccountEditor } from '../with-account-editor';
 
 interface DepositBody {
   amount: number;
 }
 
-interface RouteContext {
-  params: Promise<{ id: string }>;
-}
-
-export async function POST(
-  request: Request,
-  context: RouteContext
-): Promise<Response> {
-  const { id } = await context.params;
+export const POST = withAccountEditor(async (request, id) => {
   const store = getStore();
-
   const account = await store.getAccount(id);
 
   if (!account) {
@@ -50,4 +42,4 @@ export async function POST(
 
     throw error;
   }
-}
+});

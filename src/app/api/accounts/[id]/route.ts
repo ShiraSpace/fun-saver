@@ -2,16 +2,9 @@ import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
 import { validAccountEdits } from '@/lib/account-input';
 import { AccountsStore } from '@/lib/accounts-store';
+import { withAccountEditor } from './with-account-editor';
 
-interface RouteContext {
-  params: Promise<{ id: string }>;
-}
-
-export async function PUT(
-  editAccountRequest: Request,
-  context: RouteContext
-): Promise<Response> {
-  const { id } = await context.params;
+export const PUT = withAccountEditor(async (editAccountRequest, id) => {
   const editAccount = await editAccountRequest.json().catch(() => null);
   const edits = validAccountEdits(editAccount);
 
@@ -32,4 +25,4 @@ export async function PUT(
   }
 
   return Response.json(updated);
-}
+});
