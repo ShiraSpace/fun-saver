@@ -1,7 +1,7 @@
 import { JSX, useState } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { openAccountPicker } from '@/test-utils/account-picker';
-import { CurrentAccountProvider } from '@/components/Account/current-account-context';
+import { AccountsProvider } from '@/components/Home/accounts-context';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
@@ -16,15 +16,20 @@ function StatefulPicker(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <CurrentAccountProvider value={mockSecondDerivedAccount}>
+    <AccountsProvider
+      value={{
+        accounts,
+        currentAccount: mockSecondDerivedAccount,
+        selectAccount: () => {},
+      }}
+    >
       <AccountPicker
-        accounts={accounts}
         isOpen={isOpen}
         onToggle={(): void => setIsOpen((wasOpen) => !wasOpen)}
         onSelect={(): void => {}}
         onAdd={(): void => {}}
       />
-    </CurrentAccountProvider>
+    </AccountsProvider>
   );
 }
 

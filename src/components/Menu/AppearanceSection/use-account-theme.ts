@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAccounts } from '@/components/AccountSwitcher/accounts-context';
+import { useAccounts } from '@/components/Home/accounts-context';
 import { useSetThemeId, useThemeId } from '@/theme/ThemeController';
 import type { ThemeId } from '@/theme/registry';
 import { fetchJson } from '@/lib/fetch-json';
@@ -18,7 +18,7 @@ function accountThemeEndpoint(accountId: string): string {
 export function useAccountTheme(): AccountTheme {
   const activeThemeId = useThemeId();
   const applyTheme = useSetThemeId();
-  const { selectedAccountId } = useAccounts();
+  const { currentAccount } = useAccounts();
   const router = useRouter();
   const [saveFailed, setSaveFailed] = useState(false);
 
@@ -33,7 +33,7 @@ export function useAccountTheme(): AccountTheme {
     async function rememberOnAccount(): Promise<void> {
       try {
         await fetchJson({
-          url: accountThemeEndpoint(selectedAccountId),
+          url: accountThemeEndpoint(currentAccount.id),
           method: 'PUT',
           body: { themeId },
         });

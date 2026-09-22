@@ -5,13 +5,12 @@ import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import {
   AccountsProvider,
   type AccountsContextValue,
-} from '@/components/AccountSwitcher/accounts-context';
+} from '@/components/Home/accounts-context';
 import {
   APP_MODE,
   AppModeProvider,
   type AppMode,
 } from '@/components/Home/app-mode-context';
-import { CurrentAccountProvider } from '@/components/Account/current-account-context';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
@@ -32,7 +31,7 @@ function renderSection({
 }: RenderSectionParams = {}): void {
   const value: AccountsContextValue = {
     accounts,
-    selectedAccountId: mockDerivedAccount.id,
+    currentAccount: mockDerivedAccount,
     selectAccount: () => {},
     ...contextOverrides,
   };
@@ -42,13 +41,11 @@ function renderSection({
       value={{ mode: APP_MODE.viewing, setMode: setMode ?? ((): void => {}) }}
     >
       <AccountsProvider value={value}>
-        <CurrentAccountProvider value={mockDerivedAccount}>
-          <AccountsSection
-            onAccountSelect={onAccountSelect ?? ((): void => {})}
-            isAccountListOpen
-            onAccountListToggle={(): void => {}}
-          />
-        </CurrentAccountProvider>
+        <AccountsSection
+          onAccountSelect={onAccountSelect ?? ((): void => {})}
+          isAccountListOpen
+          onAccountListToggle={(): void => {}}
+        />
       </AccountsProvider>
     </AppModeProvider>
   );

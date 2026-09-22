@@ -8,7 +8,7 @@ import {
   ACCOUNTS_SECTION_TEST_IDS,
 } from './constants';
 import { EditAccountChip } from '@/components/Menu/AccountsSection/EditAccountChip';
-import { useAccounts } from '@/components/AccountSwitcher/accounts-context';
+import { useAccounts } from '@/components/Home/accounts-context';
 import { APP_MODE, useAppMode } from '@/components/Home/app-mode-context';
 
 interface AccountsSectionProps {
@@ -22,7 +22,7 @@ export function AccountsSection({
   isAccountListOpen,
   onAccountListToggle,
 }: AccountsSectionProps): JSX.Element {
-  const { accounts, selectAccount } = useAccounts();
+  const { selectAccount } = useAccounts();
   const { setMode } = useAppMode();
 
   const handleSelectAccount = (id: string): void => {
@@ -44,7 +44,6 @@ export function AccountsSection({
     <section data-testid={ACCOUNTS_SECTION_TEST_IDS.section}>
       <MenuLabel>{ACCOUNTS_SECTION_CONTENT.label}</MenuLabel>
       <AccountPicker
-        accounts={accounts}
         isOpen={isAccountListOpen}
         onToggle={onAccountListToggle}
         onSelect={handleSelectAccount}

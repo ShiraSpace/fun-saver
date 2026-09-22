@@ -10,12 +10,11 @@ import { persistSelectedAccount } from './selected-account-cookie';
 interface HomeNavigation {
   mode: AppMode;
   setMode: Dispatch<SetStateAction<AppMode>>;
-  selectedAccountId: string;
+  currentAccount?: AccountWithDerivedWallets;
   selectAccount: (id: string) => void;
   showNewAccount: (account: Account) => void;
   finishEditing: () => void;
   cancel: () => void;
-  hasAccounts: boolean;
   isCreating: boolean;
   editingAccount?: AccountWithDerivedWallets;
 }
@@ -45,13 +44,13 @@ export function useHomeNavigation(
     router.refresh();
   };
 
-  const hasAccounts = accounts.length > 0;
+  const currentAccount = selectedAccount(accounts, selectedAccountId);
   const isEditing = mode === APP_MODE.editingAccount;
 
   return {
     mode,
     setMode,
-    selectedAccountId,
+    currentAccount,
     selectAccount,
     showNewAccount: (account): void => {
       selectAccount(account.id);
@@ -59,11 +58,7 @@ export function useHomeNavigation(
     },
     finishEditing,
     cancel: returnToViewing,
-    hasAccounts,
     isCreating: mode === APP_MODE.creatingAccount,
-    editingAccount:
-      isEditing && hasAccounts
-        ? selectedAccount(accounts, selectedAccountId)
-        : undefined,
+    editingAccount: isEditing ? currentAccount : undefined,
   };
 }

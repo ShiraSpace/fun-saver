@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { render } from '@/test-utils/render';
-import { AccountsProvider } from '@/components/AccountSwitcher/accounts-context';
+import { AccountsProvider } from '@/components/Home/accounts-context';
 import { mockAccount, mockDerivedAccount } from '@/test-utils/fixtures';
 import { AppearanceSection } from './AppearanceSection';
 import {
@@ -14,14 +14,12 @@ jest.mock('next/navigation', () => ({
   useRouter: (): { refresh: jest.Mock } => ({ refresh: mockRefresh }),
 }));
 
-const selectedAccountId = mockAccount.id;
-
 function renderSection(): void {
   render(
     <AccountsProvider
       value={{
         accounts: [mockDerivedAccount],
-        selectedAccountId,
+        currentAccount: mockDerivedAccount,
         selectAccount: jest.fn(),
       }}
     >
@@ -71,9 +69,10 @@ describe('AppearanceSection', () => {
     });
 
     it('saves it on the selected account', () => {
+      const accountThemeUrl = `/api/accounts/${mockDerivedAccount.id}/theme`;
       const [url, options] = (global.fetch as jest.Mock).mock.calls[0];
 
-      expect(url).toBe(`/api/accounts/${selectedAccountId}/theme`);
+      expect(url).toBe(accountThemeUrl);
       expect(options.method).toBe('PUT');
       expect(JSON.parse(options.body)).toEqual({ themeId: chosenTheme.id });
     });
