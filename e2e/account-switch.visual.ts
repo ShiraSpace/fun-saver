@@ -10,6 +10,7 @@ describe('account switching', () => {
 
   it('shows a row for each account', async () => {
     await menu.open();
+    await menu.openAccountPicker();
     assert.equal(await menu.accountRowCount(), 2);
   });
 
@@ -17,6 +18,7 @@ describe('account switching', () => {
     assert.equal(await header.name(), mockAccount.name);
 
     await menu.open();
+    await menu.openAccountPicker();
     await menu.selectAccount(1);
     await menu.waitForClosed();
 

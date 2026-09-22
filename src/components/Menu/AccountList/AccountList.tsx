@@ -2,7 +2,11 @@
 
 import { JSX } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
-import { ACCOUNT_LIST_CONTENT, ACCOUNT_LIST_TEST_IDS } from './constants';
+import {
+  ACCOUNT_LIST_CONTENT,
+  ACCOUNT_LIST_DOM_ID,
+  ACCOUNT_LIST_TEST_IDS,
+} from './constants';
 import { AccountRow } from './AccountRow';
 import { List, AddRow } from './AccountList.styles';
 
@@ -20,7 +24,7 @@ export function AccountList({
   onAdd,
 }: AccountListProps): JSX.Element {
   return (
-    <List data-testid={ACCOUNT_LIST_TEST_IDS.list}>
+    <List id={ACCOUNT_LIST_DOM_ID} data-testid={ACCOUNT_LIST_TEST_IDS.list}>
       {accounts.map((account) => (
         <AccountRow
           key={account.id}

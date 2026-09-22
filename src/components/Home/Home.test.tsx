@@ -13,6 +13,7 @@ import {
   mockSecondAccount,
 } from '@/test-utils/fixtures';
 import type { AccountWithDerivedWallets } from '@/lib/types';
+import { openAccountPicker } from '@/test-utils/account-picker';
 import { openMenu, renderHome } from './home-test-helpers';
 
 const mockRefresh = jest.fn();
@@ -53,10 +54,27 @@ describe('Home', () => {
     });
   });
 
+  describe('reopening the menu after picking an account', () => {
+    beforeEach(() => {
+      renderHome();
+      openMenu();
+      openAccountPicker();
+      fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
+      openMenu();
+    });
+
+    it('opens on the account it is showing rather than the whole list', () => {
+      expect(
+        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe('selecting an account', () => {
     beforeEach(() => {
       renderHome();
       openMenu();
+      openAccountPicker();
     });
 
     it('switches to and persists the tapped account, then closes the menu', () => {
@@ -101,6 +119,7 @@ describe('Home', () => {
         </>
       );
       openMenu();
+      openAccountPicker();
 
       expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(
         'sunshine-quest'

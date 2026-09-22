@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { ACCOUNT_LIST_STYLE } from './constants';
+import { MENU_ROW_STYLE } from '../constants';
 
 const surface = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 
@@ -39,16 +40,16 @@ const row = `
   border-radius: ${ACCOUNT_LIST_STYLE.rowRadius}px;
   text-align: start;
   cursor: pointer;
-  transition: transform ${ACCOUNT_LIST_STYLE.pressMs}ms ease;
+  transition: transform ${MENU_ROW_STYLE.pressMs}ms ease;
 
   &:active {
-    transform: scale(${ACCOUNT_LIST_STYLE.pressScale});
+    transform: scale(${MENU_ROW_STYLE.pressScale});
   }
 `;
 
 export const Row = styled.button`
   ${row}
-  border: ${ACCOUNT_LIST_STYLE.borderWidth}px solid transparent;
+  border: ${MENU_ROW_STYLE.borderWidth}px solid transparent;
   background: ${surface};
   color: ${strongText};
   font: inherit;
@@ -64,7 +65,7 @@ export const Row = styled.button`
 export const AddRow = styled.button`
   ${row}
   justify-content: center;
-  border: ${ACCOUNT_LIST_STYLE.borderWidth}px dashed ${divider};
+  border: ${MENU_ROW_STYLE.borderWidth}px dashed ${divider};
   background: transparent;
   color: ${mutedText};
   font: inherit;
@@ -73,10 +74,11 @@ export const AddRow = styled.button`
 `;
 
 export const Name = styled.span`
-  flex: 1;
+  min-width: ${ACCOUNT_LIST_STYLE.nameColumnWidth}px;
 `;
 
 export const Total = styled.span`
   font-size: ${totalSize}px;
+  font-weight: 700;
   color: ${mutedText};
 `;

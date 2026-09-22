@@ -33,6 +33,15 @@ describe('Money', () => {
     });
   });
 
+  it('gives the currency mark the size of its digits when asked', () => {
+    render(<Money amountAgorot={8500} testId="amount" fullSizeCurrency />);
+
+    expect(screen.getByText(MONEY_COPY.currency)).toHaveAttribute(
+      'data-full-size',
+      'true'
+    );
+  });
+
   it('shows half shekels when allowHalf is set', () => {
     render(<Money amountAgorot={140} testId="amount" allowHalf />);
 

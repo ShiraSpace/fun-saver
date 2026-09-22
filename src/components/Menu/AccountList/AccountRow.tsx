@@ -19,12 +19,16 @@ export function AccountRow({
   isSelected,
   onSelect,
 }: AccountRowProps): JSX.Element {
+  const totalBalanceAgorot = totalBalance(account.wallets);
+
+  const handleSelect = (): void => onSelect(account.id);
+
   return (
     <Row
       type="button"
       data-testid={ACCOUNT_LIST_TEST_IDS.row}
       aria-current={isSelected}
-      onClick={(): void => onSelect(account.id)}
+      onClick={handleSelect}
     >
       <Avatar
         avatarId={account.avatarId}
@@ -34,7 +38,8 @@ export function AccountRow({
       <Name>{account.name}</Name>
       <Total>
         <Money
-          amountAgorot={totalBalance(account.wallets)}
+          amountAgorot={totalBalanceAgorot}
+          fullSizeCurrency
           testId={ACCOUNT_LIST_TEST_IDS.total}
         />
       </Total>
