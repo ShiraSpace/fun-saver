@@ -22,6 +22,7 @@ export function AccountPicker({
   onAdd,
 }: AccountPickerProps): JSX.Element {
   const [isAccountListOpen, setIsAccountListOpen] = useState(false);
+
   const currentAccount = selectedAccount(accounts, selectedAccountId);
   const showsAccountList = isAccountListOpen || !currentAccount;
 
