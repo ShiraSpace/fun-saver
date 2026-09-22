@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, JSX, useCallback } from 'react';
+import { Fragment, JSX, useCallback, useState } from 'react';
 import { BurgerIcon } from './BurgerIcon';
 import { MenuOverlay } from './MenuOverlay';
 import { MENU_TEST_IDS } from './constants';
@@ -12,8 +12,22 @@ export interface MenuProps {
 }
 
 export function Menu({ isOpen, onToggle }: MenuProps): JSX.Element {
-  const toggle = useCallback((): void => onToggle(!isOpen), [isOpen, onToggle]);
-  const close = useCallback((): void => onToggle(false), [onToggle]);
+  const [isAccountListOpen, setIsAccountListOpen] = useState(false);
+
+  const toggleAccountList = useCallback(
+    (): void => setIsAccountListOpen((wasOpen) => !wasOpen),
+    []
+  );
+
+  const toggle = useCallback((): void => {
+    setIsAccountListOpen(false);
+    onToggle(!isOpen);
+  }, [isOpen, onToggle]);
+
+  const close = useCallback((): void => {
+    setIsAccountListOpen(false);
+    onToggle(false);
+  }, [onToggle]);
 
   return (
     <Fragment>
@@ -26,7 +40,12 @@ export function Menu({ isOpen, onToggle }: MenuProps): JSX.Element {
       >
         <BurgerIcon isOpen={isOpen} testId={MENU_TEST_IDS.menuIcon} />
       </ToggleButton>
-      <MenuOverlay isOpen={isOpen} onClose={close} />
+      <MenuOverlay
+        isOpen={isOpen}
+        onClose={close}
+        isAccountListOpen={isAccountListOpen}
+        onAccountListToggle={toggleAccountList}
+      />
     </Fragment>
   );
 }

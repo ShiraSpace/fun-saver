@@ -1,3 +1,4 @@
+import { JSX, useState } from 'react';
 import { render, screen } from '@/test-utils/render';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import {
@@ -11,17 +12,31 @@ import { ACCOUNT_PICKER_TEST_IDS } from './constants';
 
 const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
 
-function renderPicker(
-  pickableAccounts: AccountWithDerivedWallets[] = []
-): void {
-  render(
+interface StatefulPickerProps {
+  pickableAccounts: AccountWithDerivedWallets[];
+}
+
+function StatefulPicker({
+  pickableAccounts,
+}: StatefulPickerProps): JSX.Element {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
     <AccountPicker
       accounts={pickableAccounts}
       selectedAccountId={mockSecondDerivedAccount.id}
+      isOpen={isOpen}
+      onToggle={(): void => setIsOpen((wasOpen) => !wasOpen)}
       onSelect={(): void => {}}
       onAdd={(): void => {}}
     />
   );
+}
+
+function renderPicker(
+  pickableAccounts: AccountWithDerivedWallets[] = []
+): void {
+  render(<StatefulPicker pickableAccounts={pickableAccounts} />);
 }
 
 describe('AccountPicker', () => {

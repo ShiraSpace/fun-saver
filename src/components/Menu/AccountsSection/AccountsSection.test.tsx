@@ -15,7 +15,6 @@ import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
-import { openAccountPicker } from '@/test-utils/account-picker';
 
 interface RenderSectionParams {
   contextOverrides?: Partial<AccountsContextValue>;
@@ -44,6 +43,8 @@ function renderSection({
       <AccountsProvider value={value}>
         <AccountsSection
           onAccountSelect={onAccountSelect ?? ((): void => {})}
+          isAccountListOpen
+          onAccountListToggle={(): void => {}}
         />
       </AccountsProvider>
     </AppModeProvider>
@@ -62,7 +63,6 @@ describe('AccountsSection', () => {
       onAccountSelect: mockOnAccountSelect,
       setMode: mockSetMode,
     });
-    openAccountPicker();
   });
 
   it('lists the accounts', () => {

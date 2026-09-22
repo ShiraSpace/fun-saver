@@ -8,10 +8,19 @@ import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
 
 describe('MenuOverlay', () => {
   const onClose = jest.fn();
+  const onAccountListToggle = jest.fn();
 
   beforeEach(() => {
     onClose.mockClear();
-    render(<MenuOverlay isOpen onClose={onClose} />);
+    onAccountListToggle.mockClear();
+    render(
+      <MenuOverlay
+        isOpen
+        onClose={onClose}
+        isAccountListOpen={false}
+        onAccountListToggle={onAccountListToggle}
+      />
+    );
   });
 
   it('exposes the overlay as a labelled dialog', () => {

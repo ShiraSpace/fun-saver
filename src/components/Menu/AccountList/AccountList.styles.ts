@@ -13,7 +13,7 @@ const mutedText = ({ theme }: { theme: Theme }): string =>
 
 const divider = ({ theme }: { theme: Theme }): string => theme.colors.divider;
 
-const selectedBorder = ({ theme }: { theme: Theme }): string =>
+const scopeBorder = ({ theme }: { theme: Theme }): string =>
   theme.colors.accountScopeBorder;
 
 const selectedFill = ({ theme }: { theme: Theme }): string =>
@@ -25,9 +25,19 @@ const totalSize = ({ theme }: { theme: Theme }): number =>
   theme.typography.label;
 
 export const List = styled.div`
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + ${ACCOUNT_LIST_STYLE.popoverOffset}px);
+  z-index: ${ACCOUNT_LIST_STYLE.popoverZIndex};
   display: flex;
   flex-direction: column;
   gap: ${ACCOUNT_LIST_STYLE.gap}px;
+  box-sizing: border-box;
+  padding: ${ACCOUNT_LIST_STYLE.popoverPadding}px;
+  border: ${MENU_ROW_STYLE.borderWidth}px solid ${scopeBorder};
+  border-radius: ${ACCOUNT_LIST_STYLE.popoverRadius}px;
+  background: ${surface};
+  box-shadow: ${ACCOUNT_LIST_STYLE.popoverShadow};
 `;
 
 const row = `
@@ -57,7 +67,7 @@ export const Row = styled.button`
   font-weight: 600;
 
   &[aria-current='true'] {
-    border-color: ${selectedBorder};
+    border-color: ${scopeBorder};
     background: ${selectedFill};
   }
 `;

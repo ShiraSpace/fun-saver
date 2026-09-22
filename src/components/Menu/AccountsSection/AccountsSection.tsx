@@ -13,10 +13,14 @@ import { APP_MODE, useAppMode } from '@/components/Home/app-mode-context';
 
 interface AccountsSectionProps {
   onAccountSelect: () => void;
+  isAccountListOpen: boolean;
+  onAccountListToggle: () => void;
 }
 
 export function AccountsSection({
   onAccountSelect,
+  isAccountListOpen,
+  onAccountListToggle,
 }: AccountsSectionProps): JSX.Element {
   const { accounts, selectedAccountId, selectAccount } = useAccounts();
   const { setMode } = useAppMode();
@@ -42,6 +46,8 @@ export function AccountsSection({
       <AccountPicker
         accounts={accounts}
         selectedAccountId={selectedAccountId}
+        isOpen={isAccountListOpen}
+        onToggle={onAccountListToggle}
         onSelect={handleSelectAccount}
         onAdd={handleAddAccount}
       />

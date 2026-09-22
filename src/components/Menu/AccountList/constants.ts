@@ -20,4 +20,9 @@ export const ACCOUNT_LIST_STYLE = {
   rowPaddingX: 11,
   rowRadius: 14,
   nameColumnWidth: 56,
+  popoverOffset: 5,
+  popoverPadding: 7,
+  popoverRadius: 16,
+  popoverZIndex: 1,
+  popoverShadow: '0 14px 30px rgba(0, 0, 0, 0.22)',
 } as const;

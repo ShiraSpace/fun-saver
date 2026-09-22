@@ -1,16 +1,19 @@
 'use client';
 
-import { JSX, useState } from 'react';
+import { JSX, useRef } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { selectedAccount } from '@/lib/selected-account';
 import { AccountList } from '../AccountList';
 import { AccountTrigger } from './AccountTrigger';
+import { useCloseOnOutsideClick } from './use-close-on-outside-click';
 import { ACCOUNT_PICKER_TEST_IDS } from './constants';
 import { Picker } from './AccountPicker.styles';
 
 interface AccountPickerProps {
   accounts: AccountWithDerivedWallets[];
   selectedAccountId: string;
+  isOpen: boolean;
+  onToggle: () => void;
   onSelect: (id: string) => void;
   onAdd: () => void;
 }
@@ -18,24 +21,24 @@ interface AccountPickerProps {
 export function AccountPicker({
   accounts,
   selectedAccountId,
+  isOpen,
+  onToggle,
   onSelect,
   onAdd,
 }: AccountPickerProps): JSX.Element {
-  const [isAccountListOpen, setIsAccountListOpen] = useState(false);
-
+  const pickerRef = useRef<HTMLDivElement>(null);
   const currentAccount = selectedAccount(accounts, selectedAccountId);
-  const showsAccountList = isAccountListOpen || !currentAccount;
+  const showsAccountList = isOpen || !currentAccount;
 
-  const handleToggleAccountList = (): void =>
-    setIsAccountListOpen((isOpen) => !isOpen);
+  useCloseOnOutsideClick(pickerRef, isOpen, onToggle);
 
   return (
-    <Picker data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>
+    <Picker ref={pickerRef} data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>
       {currentAccount && (
         <AccountTrigger
           account={currentAccount}
-          isOpen={isAccountListOpen}
-          onToggle={handleToggleAccountList}
+          isOpen={isOpen}
+          onToggle={onToggle}
         />
       )}
       {showsAccountList && (
