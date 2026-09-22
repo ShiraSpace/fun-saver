@@ -58,6 +58,15 @@ describe('PostgresAccountUsers creating an account with an owner', () => {
     ).rejects.toThrow(DuplicateAccountError);
   });
 
+  it('reports the duplicate account when the owner is also unknown', async () => {
+    await expect(
+      store.insertAccountWithOwner(mockNewAccount, {
+        userId: userId('never-inserted'),
+        addedAt: mockAccountUser.addedAt,
+      })
+    ).rejects.toThrow(DuplicateAccountError);
+  });
+
   describe('when the owner row cannot be written', () => {
     let mockOrphanAccount: Account;
 
