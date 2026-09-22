@@ -1,10 +1,10 @@
 import { render, screen } from '@/test-utils/render';
+import { SECTION_NUMBER } from '../constants';
 import { METHOD_COPY } from '../copy';
 import { ACTION_LIST_TEST_IDS } from '../ActionList/constants';
 import { GOAL_OUTCOME_TEST_IDS } from '../GoalOutcome/constants';
 import { METHOD_SECTION_TEST_IDS } from '../MethodSection/constants';
 import { PromiseSection } from './PromiseSection';
-import { PROMISE_SECTION } from './constants';
 
 describe('the section on the promise the parent has to keep', () => {
   beforeEach(() => {
@@ -13,7 +13,7 @@ describe('the section on the promise the parent has to keep', () => {
 
   it('flags itself as the one that matters most, all a skimming parent sees while it is shut', () => {
     expect(
-      screen.getByTestId(METHOD_SECTION_TEST_IDS.hint(PROMISE_SECTION.number))
+      screen.getByTestId(METHOD_SECTION_TEST_IDS.hint(SECTION_NUMBER.promise))
     ).toHaveTextContent(METHOD_COPY.promise.hint);
   });
 

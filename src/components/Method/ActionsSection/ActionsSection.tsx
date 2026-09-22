@@ -3,8 +3,8 @@ import { ActionList } from '../ActionList';
 import { ExampleWalletSplitTable } from '../ExampleWalletSplitTable';
 import { MethodBlocks } from '../MethodBlocks';
 import { MethodSection } from '../MethodSection';
+import { SECTION_NUMBER } from '../constants';
 import { METHOD_COPY, type MethodBlock } from '../copy';
-import { ACTIONS_SECTION } from './constants';
 
 const { actions } = METHOD_COPY;
 
@@ -23,7 +23,7 @@ const RULE_BLOCKS: readonly MethodBlock[] = [
 
 export function ActionsSection(): JSX.Element {
   return (
-    <MethodSection number={ACTIONS_SECTION.number} title={actions.title}>
+    <MethodSection number={SECTION_NUMBER.actions} title={actions.title}>
       <MethodBlocks blocks={ALLOWANCE_BLOCKS} />
       <ExampleWalletSplitTable {...actions.example} />
       <MethodBlocks blocks={RULE_BLOCKS} />

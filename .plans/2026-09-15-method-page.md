@@ -11,9 +11,10 @@ split into three wallets, and what the parent has to do. Static and read-only.
 
 ## Where it stands (2026-09-22)
 
-PRs 1–5 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
+PRs 1–6 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
 (section shell, evidence quote, section 1), #73 (the three wallets, the block
-renderer, the talk bubble). PR 6 is open as **#82**. **PR 7 is next.**
+renderer, the talk bubble), #82 (the actions, sections 3 and 4). PR 7 is on
+`feat/method-page-scripts`. **PR 8 is what is left.**
 
 Worktree `~/Projects/technotronic/fun-saver-method-page`. Each PR branches off
 `main` once the one before it has merged — the stack was rebased twice because
@@ -127,6 +128,52 @@ branches were cut from each other instead.
     disagreeing with a percentage that moved. Both halves move together when
     custom split lands; do not part-fix it by hardcoding the share back.
 
+## Decisions (settled 2026-09-22, during PR 7)
+
+14. **A heading inside a section body is a `MethodBlock`.** Section 5 needed
+    four `{ heading, talk }` pairs on the page, and the three shapes it could
+    have taken were a component per script, a `<h3>` written by the section, or
+    a fourth block kind. The first two both lose: `MethodSection` styles body
+    prose through `> p` — direct children — so any wrapper element puts the
+    heading and its bubble out of that rule's reach, and a component that only
+    returns a Fragment is a component that does nothing. So the heading goes
+    the way decision 12 already sends a muted note: `{ kind: 'heading'; body }`
+    through `MethodBlocks`, rendered as a plain `<h3>`, styled once by
+    `MethodSection`'s `Body > h3`. A section body stays one `MethodBlocks` over
+    an ordered list, in every section.
+
+    It is an `<h3>` and not the mockup's `<p><b>` because the page runs `h1`
+    for the goal and `h2` per section, and these four are labels inside one of
+    them. Same pixels, real outline.
+
+15. **Section numbers live in one map.** `SECTION_NUMBER` in
+    `Method/constants.ts` replaces the five per-section `constants.ts` files,
+    each of which held a single number that meant nothing without the other
+    four open beside it. `Method.test.tsx` asserts the rendered order against
+    `Object.values(SECTION_NUMBER)` rather than importing five constants to
+    retype the same list, and PR 8 adds `limits: 6` to the map instead of a
+    sixth file.
+
+16. **`MethodSection`'s body carries a test id.** A test that checks what a
+    section renders has to hold the element the `> p` and `> h3` rules hang
+    off. Reaching it structurally (`:scope > div`) pins `MethodSection`'s
+    internals and returns `null` — not a clear failure — once they move.
+
+17. **Section 5's bubbles carry no label, and `TalkBubble`'s label is
+    optional.** Mockup E draws «🗣️ מה אומרים לילד» on all four, but in a section
+    whose `h2` is «מה אומרים לילד», between an `h3` that names the moment and
+    the words themselves, it says what the two lines around it just said. The
+    label still earns its place in section 2, where it marks a script inside a
+    section about something else — so it stays a prop, and section 5 simply
+    does not pass one. Knowingly drawn differently from the mockup.
+
+18. **Section 5's copy is an ordered `moments` array**, not four named keys.
+    Each entry is `{ heading, talk }` and the section renders
+    `moments.flatMap((moment) => [moment.heading, moment.talk])`, so "one
+    heading and one bubble per moment" holds by construction rather than by a
+    list kept in step by hand. Its test asserts the alternation and the count,
+    not a restatement of the array.
+
 ## Component rule
 
 A component that does anything — composes, branches, or maps over data — gets
@@ -195,8 +242,12 @@ No UI in this PR.
 - `Method.styles.ts` carries `'use client'`: emotion's `styled` evaluates
   `createContext`, which a server component's module graph cannot, so the build
   fails collecting `/method` without it.
-- Known gap: `/method` mounts no accounts or app-mode provider, so the accounts
-  and appearance sections of the menu render inert there.
+- The gap this left — `/method` mounting no accounts or app-mode provider, so
+  the accounts and appearance sections of the menu rendered inert there — was
+  closed by the menu redesign's #79, which gave `Method` `accounts` and
+  `initialAccount` props and wrapped it in `AccountManagement` and
+  `AccountsProvider`. `/method` now redirects home when the signed-in user has
+  no account at all.
 - e2e: menu link navigates to `/method`.
 
 ## PR 3 — the opener (done, #66 and #71)
@@ -287,12 +338,25 @@ Four things PRs 7–8 inherit from it:
 - **Screenshots ship with the PR.** `pr-screenshots` (#80) landed while this was
   open, so PRs 7 and 8 carry shots of the sections they wire.
 
-## PR 7 — scripts
+## PR 7 — scripts (done)
 
-Wires section 5; `TalkBubble` shipped in PR 5. Outlined bubble with a tail, against
+`ScriptsSection` + the `heading` block kind; wires section 5. `TalkBubble`
+shipped in PR 5 and took nothing. Outlined bubble with a tail, against
 `EvidenceQuote`'s filled treatment — same rounded language, opposite fill, so
 neither is mistaken for the other while scanning. The "don't say this" line is
 struck through **inside the same bubble**, so both halves read as one exchange.
+
+No component was added for a script: decision 14 carries the heading as a
+block, so the section is one `MethodBlocks` over nine of them — the intro, then
+a heading and a bubble per moment.
+
+Two things PR 8 inherits from it:
+
+- **`MethodBlocks` has a fourth kind**, and section 6's sub-headings — if it
+  wants any — reach the page the same way. Anything else a body needs is a
+  block before it is markup.
+- **A section's number comes from `SECTION_NUMBER`** (decision 15), not from a
+  `constants.ts` of its own; `limits: 6` is already the next key in the map.
 
 ## PR 8 — limits and sources
 
@@ -329,6 +393,7 @@ this age — which partly argues against the product. That is deliberate.
   page, so one recording after PR 8 replaces five that would be re-recorded. It
   is also the only thing that can cover the chevron flip, which is CSS state and
   invisible to jsdom.
-- **`/method` mounts no accounts or app-mode provider**, so the accounts and
-  appearance sections of the burger menu render inert there. Own PR, unrelated
-  to section content.
+- **The page is no longer static.** #79 wired `/method` to the signed-in
+  user's accounts, so PR 8 branches off a `main` where `Method` takes props and
+  a section can reach the selected account if it needs to — which is the shape
+  decision 13's custom split will want.

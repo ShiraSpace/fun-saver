@@ -42,6 +42,19 @@ describe('the block renderer', () => {
     });
   });
 
+  describe('given a heading block', () => {
+    const BLOCK: MethodBlock = { kind: 'heading', body: 'השיחה הראשונה' };
+    let container: HTMLElement;
+
+    beforeEach(() => {
+      container = render(<MethodBlocks blocks={[BLOCK]} />).container;
+    });
+
+    it('raises it to a direct h3, so the section keeps an outline and the body rule reaches it', () => {
+      expect(container.querySelectorAll(':scope > h3')).toHaveLength(1);
+    });
+  });
+
   describe('given the mix section 2 actually carries', () => {
     const BLOCKS: readonly MethodBlock[] = [
       { kind: 'text', body: 'גוף' },

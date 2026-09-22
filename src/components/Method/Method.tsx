@@ -10,6 +10,7 @@ import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { ActionsSection } from './ActionsSection';
 import { MethodIntro } from './MethodIntro';
 import { PromiseSection } from './PromiseSection';
+import { ScriptsSection } from './ScriptsSection';
 import { WalletsSection } from './WalletsSection';
 import { WhySection } from './WhySection';
 import { METHOD_COPY } from './copy';
@@ -41,6 +42,7 @@ export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
             <WalletsSection />
             <PromiseSection />
             <ActionsSection />
+            <ScriptsSection />
           </Column>
         </Screen>
       </AccountsProvider>

@@ -11,3 +11,11 @@ export const METHOD_LAYOUT = {
   paddingX: 14,
   paddingY: 16,
 } as const;
+
+export const SECTION_NUMBER = {
+  why: 1,
+  wallets: 2,
+  promise: 3,
+  actions: 4,
+  scripts: 5,
+} as const;

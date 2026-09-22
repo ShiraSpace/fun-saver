@@ -1,11 +1,11 @@
 import { render, screen } from '@/test-utils/render';
 import { ACTION_LIST_TEST_IDS } from '../ActionList/constants';
+import { SECTION_NUMBER } from '../constants';
 import { METHOD_COPY } from '../copy';
 import { EVIDENCE_QUOTE_TEST_IDS } from '../EvidenceQuote/constants';
 import { EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS } from '../ExampleWalletSplitTable/constants';
 import { METHOD_SECTION_TEST_IDS } from '../MethodSection/constants';
 import { ActionsSection } from './ActionsSection';
-import { ACTIONS_SECTION } from './constants';
 
 const LANDMARKS = [
   EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.table,
@@ -15,7 +15,7 @@ const LANDMARKS = [
 
 function inReadingOrder(): (string | null)[] {
   const section = screen.getByTestId(
-    METHOD_SECTION_TEST_IDS.section(ACTIONS_SECTION.number)
+    METHOD_SECTION_TEST_IDS.section(SECTION_NUMBER.actions)
   );
   const selector = LANDMARKS.map((id) => `[data-testid="${id}"]`).join(',');
 
@@ -43,7 +43,7 @@ describe('the section on what the parent has to do', () => {
   it('asks for the first conversation too, the one thing no setting in the app can do', () => {
     expect(
       screen.getByTestId(
-        METHOD_SECTION_TEST_IDS.section(ACTIONS_SECTION.number)
+        METHOD_SECTION_TEST_IDS.section(SECTION_NUMBER.actions)
       )
     ).toHaveTextContent(communicate.items[0].question);
   });

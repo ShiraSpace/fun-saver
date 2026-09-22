@@ -39,7 +39,7 @@ export function MethodSection({
         {hintChip}
         <Chevron aria-hidden="true">{METHOD_SECTION_COPY.chevron}</Chevron>
       </Summary>
-      <Body>{children}</Body>
+      <Body data-testid={METHOD_SECTION_TEST_IDS.body(number)}>{children}</Body>
     </Section>
   );
 }
