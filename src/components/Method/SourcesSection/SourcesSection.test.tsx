@@ -23,12 +23,12 @@ describe('the sources a parent can go and check', () => {
     ).toHaveTextContent(String(sources.list.length));
   });
 
-  it('sets the studies between the line that introduces them and the note that points further', () => {
+  it('opens on the line that introduces the studies, and then gives them', () => {
     const body = screen.getByTestId(
       METHOD_SECTION_TEST_IDS.body(SOURCES_SECTION_ID)
     );
     const shape = Array.from(body.children).map((child) => child.tagName);
 
-    expect(shape).toEqual(['P', 'OL', 'P']);
+    expect(shape).toEqual(['P', 'OL']);
   });
 });

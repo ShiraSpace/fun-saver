@@ -350,9 +350,6 @@
 16. **גיל 6–12 הוא החלון שבו נבנים הרגלים ונורמות** — CFPB, *Money as You Grow*.
     https://www.consumerfinance.gov/consumer-tools/money-as-you-grow/
 
-`key: method.sources.more`
-הרחבה מלאה, כולל מה **לא** הצלחנו לבסס: `docs/research/jar-method.md`.
-
 ---
 
 ## פורמטים

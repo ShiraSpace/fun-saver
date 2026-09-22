@@ -9,8 +9,6 @@ const { sources } = METHOD_COPY;
 
 const INTRO_BLOCKS: readonly MethodBlock[] = [sources.intro];
 
-const MORE_BLOCKS: readonly MethodBlock[] = [sources.more];
-
 const SOURCE_COUNT = String(sources.list.length);
 
 export function SourcesSection(): JSX.Element {
@@ -22,7 +20,6 @@ export function SourcesSection(): JSX.Element {
     >
       <MethodBlocks blocks={INTRO_BLOCKS} />
       <SourceList sources={sources.list} />
-      <MethodBlocks blocks={MORE_BLOCKS} />
     </MethodSection>
   );
 }

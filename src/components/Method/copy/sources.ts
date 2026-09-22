@@ -4,11 +4,6 @@ export const SOURCES_COPY = {
     kind: 'text',
     body: 'כל מספר בעמוד הזה מגיע ממקום. הנה מאיפה.',
   },
-  more: {
-    kind: 'text',
-    muted: true,
-    body: 'הרחבה מלאה, כולל מה **לא** הצלחנו לבסס: docs/research/jar-method.md',
-  },
   list: [
     {
       id: 'partitioning',
