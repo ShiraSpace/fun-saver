@@ -4,6 +4,7 @@ import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from '@/components/Menu/AccountPicker/constants';
+import { APPEARANCE_SECTION_TEST_IDS } from '@/components/Menu/AppearanceSection/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { Session } from './session';
@@ -59,6 +60,10 @@ export class MenuDriver {
 
   accountsSectionBox(): Promise<BoundingBox> {
     return this.session.box(ACCOUNTS_SECTION_TEST_IDS.section);
+  }
+
+  appearanceSectionBox(): Promise<BoundingBox> {
+    return this.session.box(APPEARANCE_SECTION_TEST_IDS.section);
   }
 
   editAccountChipBox(): Promise<BoundingBox> {

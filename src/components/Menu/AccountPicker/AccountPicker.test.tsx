@@ -1,5 +1,5 @@
 import { JSX, useState } from 'react';
-import { render, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import {
   mockDerivedAccount,
@@ -40,50 +40,78 @@ function renderPicker(
 }
 
 describe('AccountPicker', () => {
-  beforeEach(() => {
-    renderPicker(accounts);
+  describe('with accounts to pick from', () => {
+    beforeEach(() => {
+      renderPicker(accounts);
+    });
+
+    it('keeps the accounts out of sight until the trigger is tapped', () => {
+      expect(
+        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the accounts when the trigger is tapped', () => {
+      openAccountPicker();
+
+      expect(
+        screen.getByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).toBeInTheDocument();
+    });
+
+    it('names the selected account on the trigger', () => {
+      expect(
+        screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)
+      ).toHaveTextContent(mockSecondDerivedAccount.name);
+    });
+
+    it('puts the accounts away again when the trigger is tapped twice', () => {
+      openAccountPicker();
+      openAccountPicker();
+
+      expect(
+        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).not.toBeInTheDocument();
+    });
+
+    describe('with the accounts on show', () => {
+      beforeEach(() => {
+        openAccountPicker();
+      });
+
+      it('puts them away when something outside the picker is tapped', () => {
+        fireEvent.mouseDown(document.body);
+
+        expect(
+          screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+        ).not.toBeInTheDocument();
+      });
+
+      it('leaves them on show when the tap lands inside the picker', () => {
+        fireEvent.mouseDown(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.list));
+
+        expect(
+          screen.getByTestId(ACCOUNT_LIST_TEST_IDS.list)
+        ).toBeInTheDocument();
+      });
+    });
   });
 
-  it('keeps the accounts out of sight until the trigger is tapped', () => {
-    expect(
-      screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
-    ).not.toBeInTheDocument();
-  });
+  describe('with no account to show', () => {
+    beforeEach(() => {
+      renderPicker();
+    });
 
-  it('shows the accounts when the trigger is tapped', () => {
-    openAccountPicker();
+    it('leaves the accounts on show, since no trigger can reach them', () => {
+      expect(
+        screen.getByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).toBeInTheDocument();
+    });
 
-    expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.list)).toBeInTheDocument();
-  });
-
-  it('names the selected account on the trigger', () => {
-    expect(
-      screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)
-    ).toHaveTextContent(mockSecondDerivedAccount.name);
-  });
-
-  it('puts the accounts away again when the trigger is tapped twice', () => {
-    openAccountPicker();
-    openAccountPicker();
-
-    expect(
-      screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
-    ).not.toBeInTheDocument();
-  });
-});
-
-describe('AccountPicker with no account to show', () => {
-  beforeEach(() => {
-    renderPicker();
-  });
-
-  it('leaves the accounts on show, since no trigger can reach them', () => {
-    expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.list)).toBeInTheDocument();
-  });
-
-  it('offers no trigger', () => {
-    expect(
-      screen.queryByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)
-    ).not.toBeInTheDocument();
+    it('offers no trigger', () => {
+      expect(
+        screen.queryByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)
+      ).not.toBeInTheDocument();
+    });
   });
 });

@@ -54,5 +54,13 @@ describe('menu morph', () => {
     it('opens onto a soft sheet rather than the screen gradient', async () => {
       assert.equal(await menu.panelBackground(), SHEET);
     });
+
+    it('floats the account list over the sections below rather than pushing them down', async () => {
+      const settled = await menu.appearanceSectionBox();
+
+      await menu.openAccountPicker();
+
+      assert.equal((await menu.appearanceSectionBox()).y, settled.y);
+    });
   });
 });
