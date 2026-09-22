@@ -7,7 +7,7 @@ import {
   ACCOUNTS_SECTION_CONTENT,
   ACCOUNTS_SECTION_TEST_IDS,
 } from './constants';
-import { EditAccountButton } from './EditAccountButton';
+import { EditAccountButton } from '@/components/Menu/AccountsSection/EditAccountButton';
 import { useAccounts } from '@/components/Home/accounts-context';
 import {
   APP_MODE,
