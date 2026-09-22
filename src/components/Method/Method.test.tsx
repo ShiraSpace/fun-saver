@@ -1,6 +1,8 @@
 import { render, screen } from '@/test-utils/render';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
+import { METHOD_SECTION_TEST_IDS } from './MethodSection/constants';
+import { WHY_SECTION } from './WhySection/constants';
 import { METHOD_INTRO_TEST_IDS } from './MethodIntro/constants';
 import { Method } from './Method';
 import { METHOD_COPY } from './copy';
@@ -24,5 +26,11 @@ describe('the method page', () => {
 
   it('opens with the method itself, the one block that never collapses', () => {
     expect(screen.getByTestId(METHOD_INTRO_TEST_IDS.intro)).toBeInTheDocument();
+  });
+
+  it('follows the opener with the first section, closed like the rest', () => {
+    expect(
+      screen.getByTestId(METHOD_SECTION_TEST_IDS.section(WHY_SECTION.number))
+    ).toBeInTheDocument();
   });
 });
