@@ -10,9 +10,10 @@ import { WHY_COPY } from './why';
 export type {
   ActionGroup,
   ActionItem,
-  ExampleTable,
+  ExampleRow,
   IconLine,
   MethodBlock,
+  MoneyTable,
   Source,
   TalkLine,
   TalkTone,

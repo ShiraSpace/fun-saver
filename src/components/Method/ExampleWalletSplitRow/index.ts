@@ -1,0 +1,1 @@
+export { ExampleWalletSplitRow } from './ExampleWalletSplitRow';

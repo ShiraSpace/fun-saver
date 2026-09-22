@@ -1,3 +1,5 @@
+import type { WalletName } from '@/lib/types';
+
 export type TalkTone = 'spoken' | 'struck' | 'muted';
 
 export interface TalkLine {
@@ -27,9 +29,14 @@ export interface ActionGroup {
   items: readonly ActionItem[];
 }
 
-export interface ExampleTable {
+export interface ExampleRow {
+  wallet: WalletName;
+  figures: readonly string[];
+}
+
+export interface MoneyTable {
   headers: readonly string[];
-  rows: readonly (readonly string[])[];
+  rows: readonly ExampleRow[];
 }
 
 export interface Source {
