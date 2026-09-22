@@ -2,7 +2,6 @@ import { rm } from 'node:fs/promises';
 import { after, afterEach, before, beforeEach } from 'node:test';
 import type { StoreData } from '@/db/data-store';
 import { JsonFileStore } from '@/db/json-file-store';
-import type { User } from '@/lib/types';
 import { mockOwner, mockUser } from '@/test-utils/fixtures';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
@@ -47,15 +46,6 @@ function createDrivers(session: Session): AppDriver {
   };
 }
 
-function usersToSeed(state: Partial<StoreData>): User[] {
-  const requested = state.users ?? [];
-  const ownerIsRequested = requested.some(
-    (user) => user.id === mockOwner.userId
-  );
-
-  return ownerIsRequested ? requested : [mockUser, ...requested];
-}
-
 async function seedStore(
   dataPath: string,
   state: Partial<StoreData>
@@ -63,7 +53,7 @@ async function seedStore(
   await rm(dataPath, { force: true });
   const store = new JsonFileStore(dataPath);
 
-  for (const user of usersToSeed(state)) {
+  for (const user of [mockUser, ...(state.users ?? [])]) {
     await store.insertUser(user);
   }
   for (const account of state.accounts ?? []) {
