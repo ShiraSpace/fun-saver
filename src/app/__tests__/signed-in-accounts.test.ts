@@ -8,10 +8,10 @@ import { redirect } from 'next/navigation';
 import { signedInUserId } from '@/auth';
 import { byAccountName } from '@/db/account-users';
 import { getStore } from '@/db';
-import { AccountsStore } from '@/lib/accounts-store';
 import { LOGIN_PATH } from '@/lib/constants';
 import type { Account } from '@/lib/types';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
+import { createOwnedAccount } from '@/test-utils/owned-account';
 import { signedInAccounts } from '../signed-in-accounts';
 
 interface SelectedAccountCookie {
@@ -42,17 +42,12 @@ describe('signedInAccounts', () => {
     mockSelectedAccountCookie = undefined;
     jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
 
-    const store = getStore();
-    await store.insertUser(mockUser);
-    const accountsStore = new AccountsStore(store);
     owned = byAccountName([
-      await accountsStore.createAccount({
+      await createOwnedAccount(getStore(), {
         input: { name: 'נועה', avatarId: 'kid-01' },
-        ownerId: mockUser.id,
       }),
-      await accountsStore.createAccount({
+      await createOwnedAccount(getStore(), {
         input: { name: 'מתן', avatarId: 'kid-08' },
-        ownerId: mockUser.id,
       }),
     ]);
   });
@@ -86,11 +81,9 @@ describe('signedInAccounts', () => {
   });
 
   it('leaves out an account belonging to somebody else', async () => {
-    const store = getStore();
-    await store.insertUser(mockSecondUser);
-    const theirs = await new AccountsStore(store).createAccount({
+    const theirs = await createOwnedAccount(getStore(), {
       input: { name: 'שירי', avatarId: 'kid-03' },
-      ownerId: mockSecondUser.id,
+      owner: mockSecondUser,
     });
 
     const { accounts } = await signedInAccounts();
