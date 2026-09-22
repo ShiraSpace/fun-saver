@@ -1,21 +1,13 @@
 import { render, screen } from '@/test-utils/render';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
-import { ACTIONS_SECTION } from './ActionsSection/constants';
 import { METHOD_SECTION_TEST_IDS } from './MethodSection/constants';
-import { PROMISE_SECTION } from './PromiseSection/constants';
-import { WALLETS_SECTION } from './WalletsSection/constants';
-import { WHY_SECTION } from './WhySection/constants';
 import { METHOD_INTRO_TEST_IDS } from './MethodIntro/constants';
+import { SECTION_NUMBER } from './constants';
 import { Method } from './Method';
 import { METHOD_COPY } from './copy';
 
-const SECTION_NUMBERS = [
-  WHY_SECTION.number,
-  WALLETS_SECTION.number,
-  PROMISE_SECTION.number,
-  ACTIONS_SECTION.number,
-];
+const SECTION_NUMBERS = Object.values(SECTION_NUMBER);
 
 function renderedSectionIds(): (string | undefined)[] {
   return screen
@@ -46,7 +38,7 @@ describe('the method page', () => {
 
   it('follows the opener with the first section, closed like the rest', () => {
     expect(
-      screen.getByTestId(METHOD_SECTION_TEST_IDS.section(WHY_SECTION.number))
+      screen.getByTestId(METHOD_SECTION_TEST_IDS.section(SECTION_NUMBER.why))
     ).toBeInTheDocument();
   });
 

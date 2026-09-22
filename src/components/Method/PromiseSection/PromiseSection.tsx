@@ -3,8 +3,8 @@ import { ActionList } from '../ActionList';
 import { GoalOutcome } from '../GoalOutcome';
 import { MethodBlocks } from '../MethodBlocks';
 import { MethodSection } from '../MethodSection';
+import { SECTION_NUMBER } from '../constants';
 import { METHOD_COPY, type MethodBlock } from '../copy';
-import { PROMISE_SECTION } from './constants';
 import { Rules } from './PromiseSection.styles';
 
 const { promise } = METHOD_COPY;
@@ -18,7 +18,7 @@ export function PromiseSection(): JSX.Element {
 
   return (
     <MethodSection
-      number={PROMISE_SECTION.number}
+      number={SECTION_NUMBER.promise}
       title={promise.title}
       hint={promise.hint}
     >

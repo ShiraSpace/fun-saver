@@ -72,6 +72,12 @@ export const Chevron = styled.span`
 export const Body = styled.div`
   padding: 0 16px 16px;
 
+  > h3 {
+    margin: 14px 0 0;
+    font-size: ${({ theme }): number => theme.typography.body}px;
+    font-weight: 600;
+  }
+
   > p {
     margin: 0 0 10px;
     font-size: ${({ theme }): number => theme.typography.body}px;

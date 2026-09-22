@@ -9,6 +9,10 @@ interface MethodBlocksProps {
 }
 
 function blockContent(block: MethodBlock): JSX.Element {
+  if (block.kind === 'heading') {
+    return <h3>{emphasize(block.body)}</h3>;
+  }
+
   if (block.kind === 'quote') {
     return <EvidenceQuote body={block.body} citation={block.citation} />;
   }

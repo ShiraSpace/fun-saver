@@ -1,8 +1,8 @@
 import { render, screen } from '@/test-utils/render';
 import { EVIDENCE_QUOTE_TEST_IDS } from '../EvidenceQuote/constants';
 import { METHOD_SECTION_TEST_IDS } from '../MethodSection/constants';
+import { SECTION_NUMBER } from '../constants';
 import { WhySection } from './WhySection';
-import { WHY_SECTION } from './constants';
 
 describe('the section on why the money is split', () => {
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe('the section on why the money is split', () => {
 
   it('takes the muted caveat from the copy rather than restating it here', () => {
     const section = screen.getByTestId(
-      METHOD_SECTION_TEST_IDS.section(WHY_SECTION.number)
+      METHOD_SECTION_TEST_IDS.section(SECTION_NUMBER.why)
     );
 
     expect(section.querySelectorAll('[data-muted="true"]')).toHaveLength(1);

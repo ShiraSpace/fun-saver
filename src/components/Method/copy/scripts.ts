@@ -8,7 +8,7 @@ export const SCRIPTS_COPY = {
     body: 'משפטים מוכנים, לרגעים שקורים.',
   },
   first: {
-    heading: 'השיחה הראשונה',
+    heading: { kind: 'heading', body: 'השיחה הראשונה' },
     talk: {
       kind: 'talk',
       label: TALK_LABEL,
@@ -22,7 +22,7 @@ export const SCRIPTS_COPY = {
     },
   },
   ranOut: {
-    heading: 'כשנגמר הכסף באמצע השבוע',
+    heading: { kind: 'heading', body: 'כשנגמר הכסף באמצע השבוע' },
     talk: {
       kind: 'talk',
       label: TALK_LABEL,
@@ -40,7 +40,7 @@ export const SCRIPTS_COPY = {
     },
   },
   wantsSavings: {
-    heading: 'כשהוא רוצה לקחת מהחיסכון',
+    heading: { kind: 'heading', body: 'כשהוא רוצה לקחת מהחיסכון' },
     talk: {
       kind: 'talk',
       label: TALK_LABEL,
@@ -57,7 +57,7 @@ export const SCRIPTS_COPY = {
     },
   },
   interest: {
-    heading: 'כשהוא שואל למה נוספים מטבעות',
+    heading: { kind: 'heading', body: 'כשהוא שואל למה נוספים מטבעות' },
     talk: {
       kind: 'talk',
       label: TALK_LABEL,
