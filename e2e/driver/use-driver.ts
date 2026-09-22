@@ -52,13 +52,16 @@ async function seedStore(
 ): Promise<void> {
   await rm(dataPath, { force: true });
   const store = new JsonFileStore(dataPath);
+  const users = [mockUser, ...(state.users ?? [])];
 
-  for (const user of [mockUser, ...(state.users ?? [])]) {
+  for (const user of users) {
     await store.insertUser(user);
   }
+
   for (const account of state.accounts ?? []) {
     await store.insertAccountWithOwner(account, mockOwner);
   }
+
   if (state.transactions?.length) {
     await store.insertTransactions(state.transactions);
   }
@@ -77,11 +80,6 @@ export function useDriver(
     server = running;
   });
 
-  after(async () => {
-    await session.stop();
-    await server.stop();
-  });
-
   beforeEach(async () => {
     await seedStore(server.dataPath, state);
     await session.open({
@@ -93,6 +91,11 @@ export function useDriver(
 
   afterEach(async () => {
     await session.closePage();
+  });
+
+  after(async () => {
+    await session.stop();
+    await server.stop();
   });
 
   return drivers;
