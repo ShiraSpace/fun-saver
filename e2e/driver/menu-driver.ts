@@ -75,10 +75,10 @@ export class MenuDriver {
     return this.session.box(ACCOUNT_LIST_TEST_IDS.list);
   }
 
-  accountListCovers(point: Point): Promise<boolean> {
-    return this.session.pointHitsTestId({
-      ...point,
+  accountListReceivesTapAt(point: Point): Promise<boolean> {
+    return this.session.receivesTapAt({
       testId: ACCOUNT_LIST_TEST_IDS.list,
+      ...point,
     });
   }
 

@@ -108,29 +108,27 @@ export function computedStyle({
   return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
 }
 
-export interface PointHitQuery {
+export interface TapQuery {
   page: Page;
+  testId: string;
   x: number;
   y: number;
-  testId: string;
 }
 
-export function pointHitsTestId({
+export function receivesTapAt({
   page,
+  testId,
   x,
   y,
-  testId,
-}: PointHitQuery): Promise<boolean> {
+}: TapQuery): Promise<boolean> {
   return page.evaluate(
-    (pointX, pointY, id) => {
-      const topmost = document.elementFromPoint(pointX, pointY);
-      const container = document.querySelector(`[data-testid="${id}"]`);
+    (tap) => {
+      const tapped = document.elementFromPoint(tap.x, tap.y);
+      const target = document.querySelector(`[data-testid="${tap.testId}"]`);
 
-      return Boolean(topmost && container?.contains(topmost));
+      return target?.contains(tapped) ?? false;
     },
-    x,
-    y,
-    testId
+    { testId, x, y }
   );
 }
 

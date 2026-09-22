@@ -1,9 +1,12 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { type BoundingBox } from 'puppeteer';
 import { mockAccount } from '@/test-utils/fixtures';
 import { COLORS } from '@/theme/palette';
 import { hexToRgb } from './test-utils/css-color';
 import { useDriver } from './driver/use-driver';
+
+const bottomOf = (box: BoundingBox): number => box.y + box.height;
 
 const NO_TRANSFORM = 'none';
 const VISIBLE = '1';
@@ -55,29 +58,39 @@ describe('menu morph', () => {
       assert.equal(await menu.panelBackground(), SHEET);
     });
 
-    it('floats the account list over the sections below rather than pushing them down', async () => {
-      const settled = await menu.appearanceSectionBox();
+    describe('with the account list open', () => {
+      let appearanceBefore: BoundingBox;
+      let appearance: BoundingBox;
+      let list: BoundingBox;
 
-      await menu.openAccountPicker();
+      beforeEach(async () => {
+        appearanceBefore = await menu.appearanceSectionBox();
 
-      const appearance = await menu.appearanceSectionBox();
-      const list = await menu.accountListBox();
-      const overlapsAppearance =
-        list.y < appearance.y + appearance.height &&
-        list.y + list.height > appearance.y;
+        await menu.openAccountPicker();
 
-      assert.equal(appearance.y, settled.y);
-      assert.ok(
-        overlapsAppearance,
-        `list spans ${list.y}-${list.y + list.height}, appearance ${appearance.y}-${appearance.y + appearance.height}`
-      );
-      assert.ok(
-        await menu.accountListCovers({
+        appearance = await menu.appearanceSectionBox();
+        list = await menu.accountListBox();
+      });
+
+      it('leaves the appearance section where it was', () => {
+        assert.equal(appearance.y, appearanceBefore.y);
+      });
+
+      it('reaches down over the appearance section', () => {
+        assert.ok(
+          list.y < bottomOf(appearance) && bottomOf(list) > appearance.y,
+          `list spans ${list.y}-${bottomOf(list)}, appearance ${appearance.y}-${bottomOf(appearance)}`
+        );
+      });
+
+      it('takes a tap meant for the appearance section underneath', async () => {
+        const whereTheyOverlap = {
           x: appearance.x + appearance.width / 2,
           y: appearance.y + 1,
-        }),
-        'the appearance section is painted over the list where they overlap'
-      );
+        };
+
+        assert.ok(await menu.accountListReceivesTapAt(whereTheyOverlap));
+      });
     });
   });
 });

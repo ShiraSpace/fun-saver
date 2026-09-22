@@ -20,10 +20,10 @@ interface ViewportOptions {
   deviceScaleFactor?: number;
 }
 
-interface PointHitOptions {
+interface TapOptions {
+  testId: string;
   x: number;
   y: number;
-  testId: string;
 }
 
 export class Session {
@@ -114,8 +114,8 @@ export class Session {
     return queries.box(this.page, testId);
   }
 
-  pointHitsTestId({ x, y, testId }: PointHitOptions): Promise<boolean> {
-    return queries.pointHitsTestId({ page: this.page, x, y, testId });
+  receivesTapAt({ testId, x, y }: TapOptions): Promise<boolean> {
+    return queries.receivesTapAt({ page: this.page, testId, x, y });
   }
 
   hasVerticalScroll(): Promise<boolean> {
