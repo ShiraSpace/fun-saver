@@ -7,6 +7,12 @@ import { hexToRgb } from './test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
 const bottomOf = (box: BoundingBox): number => box.y + box.height;
+const centreX = (box: BoundingBox): number => box.x + box.width / 2;
+const justInsideTop = (box: BoundingBox): number => box.y + 1;
+const spanOf = (box: BoundingBox): string => `${box.y}-${bottomOf(box)}`;
+
+const overlapVertically = (a: BoundingBox, b: BoundingBox): boolean =>
+  a.y < bottomOf(b) && bottomOf(a) > b.y;
 
 const NO_TRANSFORM = 'none';
 const VISIBLE = '1';
@@ -58,38 +64,48 @@ describe('menu morph', () => {
       assert.equal(await menu.panelBackground(), SHEET);
     });
 
+    it('leaves the appearance section where it was when the list opens', async () => {
+      const before = await menu.appearanceSectionBox();
+
+      await menu.openAccountPicker();
+
+      const after = await menu.appearanceSectionBox();
+
+      assert.equal(after.y, before.y);
+    });
+
     describe('with the account list open', () => {
-      let appearanceBefore: BoundingBox;
       let appearance: BoundingBox;
       let list: BoundingBox;
 
       beforeEach(async () => {
-        appearanceBefore = await menu.appearanceSectionBox();
-
         await menu.openAccountPicker();
 
         appearance = await menu.appearanceSectionBox();
         list = await menu.accountListBox();
       });
 
-      it('leaves the appearance section where it was', () => {
-        assert.equal(appearance.y, appearanceBefore.y);
-      });
-
       it('reaches down over the appearance section', () => {
+        const listReachesOverIt = overlapVertically(list, appearance);
+
         assert.ok(
-          list.y < bottomOf(appearance) && bottomOf(list) > appearance.y,
-          `list spans ${list.y}-${bottomOf(list)}, appearance ${appearance.y}-${bottomOf(appearance)}`
+          listReachesOverIt,
+          `list spans ${spanOf(list)}, appearance spans ${spanOf(appearance)}`
         );
       });
 
       it('takes a tap meant for the appearance section underneath', async () => {
         const whereTheyOverlap = {
-          x: appearance.x + appearance.width / 2,
-          y: appearance.y + 1,
+          x: centreX(appearance),
+          y: justInsideTop(appearance),
         };
+        const listTakesTheTap =
+          await menu.accountListReceivesTapAt(whereTheyOverlap);
 
-        assert.ok(await menu.accountListReceivesTapAt(whereTheyOverlap));
+        assert.ok(
+          listTakesTheTap,
+          `the appearance section takes the tap at ${whereTheyOverlap.x},${whereTheyOverlap.y}`
+        );
       });
     });
   });

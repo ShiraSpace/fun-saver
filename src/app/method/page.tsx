@@ -26,9 +26,11 @@ export default async function MethodPage(): Promise<JSX.Element> {
     redirect(HOME_ROUTE);
   }
 
+  const initialThemeId = resolveThemeId(initialAccount.themeId);
+
   return (
     <main>
-      <ThemeController initialThemeId={resolveThemeId(initialAccount.themeId)}>
+      <ThemeController initialThemeId={initialThemeId}>
         <Method accounts={accounts} initialAccount={initialAccount} />
       </ThemeController>
     </main>

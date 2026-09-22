@@ -19,10 +19,11 @@ export default async function HomePage(): Promise<JSX.Element> {
 
   const storedAccountId = cookieStore.get(SELECTED_ACCOUNT_COOKIE)?.value ?? '';
   const initialAccount = selectedAccount(accounts, storedAccountId);
+  const initialThemeId = resolveThemeId(initialAccount?.themeId);
 
   return (
     <main>
-      <ThemeController initialThemeId={resolveThemeId(initialAccount?.themeId)}>
+      <ThemeController initialThemeId={initialThemeId}>
         <Home accounts={accounts} initialAccountId={initialAccount?.id ?? ''} />
       </ThemeController>
     </main>
