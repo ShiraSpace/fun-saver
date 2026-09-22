@@ -21,6 +21,8 @@ export const midnightBlue: ThemeTokens = {
     softBg: '#121E36',
     softBorder: '#3B82F6',
     softText: '#93C5FD',
+    accountScopeBg: '#101A2C',
+    accountScopeBorder: '#2F4470',
     depositBg: '#111B30',
     gainText: '#34D399',
     gainSoftBg: '#0E2E2A',

@@ -18,6 +18,8 @@ export const COLORS = {
   softBg: '#FFF8E0',
   softBorder: '#FFD23F',
   softText: '#7A5A0A',
+  accountScopeBg: '#F4EEFA',
+  accountScopeBorder: '#C9B6E4',
   depositBg: '#FFF6E0',
   gainText: '#2E7D32',
   gainSoftBg: '#E1F4E5',

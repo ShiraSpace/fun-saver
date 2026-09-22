@@ -27,6 +27,8 @@ describe('theme registry', () => {
       'softBg',
       'softBorder',
       'softText',
+      'accountScopeBg',
+      'accountScopeBorder',
       'depositBg',
       'gainText',
       'gainSoftBg',

@@ -14,10 +14,10 @@ const mutedText = ({ theme }: { theme: Theme }): string =>
 const divider = ({ theme }: { theme: Theme }): string => theme.colors.divider;
 
 const selectedBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.softBorder;
+  theme.colors.accountScopeBorder;
 
 const selectedFill = ({ theme }: { theme: Theme }): string =>
-  theme.colors.softBg;
+  theme.colors.accountScopeBg;
 
 const rowSize = ({ theme }: { theme: Theme }): number => theme.typography.body;
 
