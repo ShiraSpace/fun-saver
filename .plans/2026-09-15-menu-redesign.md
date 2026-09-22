@@ -14,7 +14,7 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-22 (PRs 1–6 merged; PR 7 is next)
+## Progress — updated 2026-09-22 (PRs 1–7 merged; PR 8 is next)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
@@ -36,13 +36,14 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 4    | [#65](https://github.com/ShiraSpace/fun-saver/pull/65) | `feat/menu-account-list`       | **merged** — `8036baa` |
 | PR 5    | [#70](https://github.com/ShiraSpace/fun-saver/pull/70) | `feat/menu-account-picker`     | **merged** — `d162cde` |
 | PR 6    | [#79](https://github.com/ShiraSpace/fun-saver/pull/79) | `feat/menu-account-popover`    | **merged** — `f9d6573` |
-| PR 7    | —                                                      | `feat/menu-edit-under-trigger` | **next**               |
-| PR 8, 9 | —                                                      | —                              | not started            |
+| PR 7    | [#85](https://github.com/ShiraSpace/fun-saver/pull/85) | `feat/menu-edit-under-trigger` | **merged** — `2e49d4e` |
+| PR 8    | —                                                      | —                              | **next**               |
+| PR 9    | —                                                      | —                              | not started            |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
-the accounts sit behind an `AccountTrigger`, and tapping it floats the list over the
-sections below instead of pushing them down. What is left is moving edit under the
-trigger (PR 7), grouping by scope (PR 8) and the nav section (PR 9).
+the accounts sit behind an `AccountTrigger`, tapping it floats the list over the
+sections below instead of pushing them down, and edit is a named button under the
+trigger. What is left is grouping by scope (PR 8) and the nav section (PR 9).
 
 ### What the merged PRs changed that this plan did not predict
 
@@ -128,6 +129,23 @@ trigger (PR 7), grouping by scope (PR 8) and the nav section (PR 9).
 - **The trigger's total sat below the `מוצג כרגע` beside it.** `Current` is a flex
   row and `Money` sets `line-height: 1`, so the default `stretch` dropped the amount.
   `align-items: baseline` fixes it — visible in the before/after on #79.
+- **PR 7's underline belongs to the label, not the button.** `EditButton` is a flex
+  row with a `gap`, so `text-decoration: underline` on it drew two stubs with the gap
+  cut out between them. The underline sits on `EditLabel`; the pencil is not
+  underlined, which is what the mockup's single run reads as anyway.
+- **The pencil has to come first in the DOM.** It followed the label, and an RTL flex
+  row puts the last item on the left — the pencil ended up on the far side of the
+  text it belongs to. Leading it is a JSX reorder, invisible to the accessible name
+  because the icon is `aria-hidden`.
+- **The label needed `min-width: 0` and an ellipsis, and that is all.** At
+  `MAX_ACCOUNT_NAME_LENGTH` 60 the label is wider than a phone. With the label
+  explicitly at `min-width: 0` and the icon left at `min-width: auto`, the icon
+  cannot shrink below its own glyph and the label absorbs every pixel of the shrink —
+  so no `flex-shrink: 0` on the icon, unlike the `flex: 1` pairings in `WalletCard`
+  and `Legend`. Confirmed by shooting the 60-character name, not by reading the rule.
+- **`header-layout.visual.ts` never touched the edit chip.** The plan said it asserts
+  the chip fits at the longest name; that assertion is `edit-account.e2e.ts`'s fourth
+  `it`, and it only ever checks the button's outer box, never the icon inside it.
 
 ### Still open from the merged work
 
@@ -136,12 +154,16 @@ trigger (PR 7), grouping by scope (PR 8) and the nav section (PR 9).
   reader today. There is no darker red in the palette, so fixing it means a new token
   across `ThemeColors` and all three themes — a theme PR, not a repaint. Deliberately
   not done in PR 2.
-- **The edit pencil floats alone** under the account list since PR 4 deleted the chip
-  row that held it. PR 7 is what resolves this.
 - **`AccountsSection` is no longer empty.** It forwards the picker's open state and
-  reads `accounts`, `currentAccount` and `selectAccount` from context. PR 8 still
-  deletes the folder, but `MenuOverlay` has to take those props over — it already
-  holds them, so it is a move rather than new plumbing.
+  reads `accounts`, `currentAccount` and `selectAccount` from context, and since PR 7
+  it also passes `currentAccount.name` to the edit button. PR 8 still deletes the
+  folder, but `MenuOverlay` has to take those props over — it already holds them, so
+  it is a move rather than new plumbing.
+- **`ACCOUNTS_SECTION_*` outlive their folder.** `EditAccountButton`, its styles and
+  the `editButton` test id live in `src/components/Menu/AccountsSection/` and are
+  reached by `menu-driver.ts`, `home-test-helpers.tsx` and two e2e describes. PR 8
+  deletes the folder, so the button and its constants need a home of their own before
+  those imports break.
 - **The method page's picker can switch account but its language and appearance rows
   are the account's, on a page that is not about an account.** Nothing is broken —
   they write to the account in view — but whether `/method` should carry the whole
@@ -279,13 +301,13 @@ Replace `EditAccountChip` with a centred text-and-pencil button directly under t
 trigger, labelled `עריכת <name>` so the accessible name says which account. Keeps
 `APP_MODE.editingAccount`.
 
-`menu-driver.ts`: `clickEditAccountChip`, `editAccountChipBox`. Suites:
-`edit-account.e2e.ts`, `header-layout.visual.ts`.
-
-As of PR 6 the name is already to hand: `useAccounts().currentAccount` inside
-`AccountsSection`, which is where `EditAccountChip` is rendered and where
-`handleEditAccount` lives. `edit-account.e2e.ts` also covers the chip on `/method`
-now, so a rename of its test id lands in two describes, not one.
+Shipped as `EditAccountButton` beside `AccountsSection`, taking `accountName` and
+`onEditAccount`. The visible text is the accessible name — the pencil is
+`aria-hidden` and the `aria-label` the chip carried is gone. `menu-driver.ts` now
+says `clickEditAccountButton` / `editAccountButtonBox`, and the callers that followed
+were `edit-account.e2e.ts` (two describes), `home-test-helpers.tsx`,
+`Home.managing-accounts.test.tsx` and `AccountsSection.test.tsx`. The test id value
+`menu-account-edit` did not change; only its constant did.
 
 ## PR 8 — scope grouping
 
@@ -297,6 +319,12 @@ Delete the `AccountsSection` folder and let `MenuOverlay` compose the blocks dir
 and owns `handleSelectAccount`, `handleAddAccount` and `handleEditAccount`, each of
 which closes the menu. `MenuOverlay` already receives the picker props and `onClose`,
 so those handlers move up with the markup.
+
+The folder also holds PR 7's `EditAccountButton`, its `.styles.ts` and the
+`ACCOUNTS_SECTION_*` constants, which `menu-driver.ts`, `home-test-helpers.tsx` and
+two e2e describes import by path. They need somewhere to land — a folder of the
+button's own next to `AccountPicker` is the shape the rest of `src/components/Menu/`
+already uses — and the constants rename with it.
 
 Tint the blocks with `accountScopeBg` / `accountScopeBorder`, which #76 added for
 exactly this after the `softBg` / `softBorder` stand-in was rejected. The caveat this
@@ -330,11 +358,20 @@ transactions epic and ships inert.
 - **Visual baselines** changed in PRs 2 and 3 (`menu-morph.visual.ts`), PR 4 moved
   `account-switch.visual.ts` onto the new row test ids, and PR 6 added the popover
   assertions to `menu-morph.visual.ts` plus the signed-out `/method` case to
-  `page-routing.visual.ts`. Still expected in PRs 7 and 8.
+  `page-routing.visual.ts`. PR 7 needed none — nothing in the visual suites looks at
+  the edit control. Still expected in PR 8.
 - **Every PR from #80 on carries screenshots** when it changes something visible.
   Write a `.mts` script in the gitignored `e2e/shots/`, shoot with
   `npx next build && npx tsx e2e/shots/<topic>.shot.mts`, attach with
   `gh pr edit <n> --attach`. The `pr-screenshots` skill has the whole route.
+- **A `before` shot may have to be faked in place.** The classifier blocks
+  `git checkout` / `git show` inside a worktree-isolated session, so PR 7's before
+  shot came from temporarily rewriting the styles file to the old chip and putting it
+  straight back. Also: the shot script writes to the same filename every run, so
+  rename the `after` PNG before shooting the `before` or it is overwritten.
+- **Seed the shot with an account that has money.** Accounts sort by name, so the
+  first account alphabetically is the selected one — with the stock fixtures that is
+  wallet-less `mockSecondAccount` and every total shoots as `₪0`.
 - **Assert through the helper, never restate its output.** A component test checks
   that the component uses the method we chose; `totalBalance` and
   `agorotToWholeShekels` have their own tests in `derivations.test.ts` and
