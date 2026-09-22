@@ -16,6 +16,11 @@ at) follows in its own plan.
 
 ## Progress — updated 2026-09-22 (PRs 1–5 merged; PR 6 is next)
 
+Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
+(`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
+do without. They are in all three themes, and the trigger and selected row already
+read from them.
+
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
 | Plan PR    | GitHub                                                 | Branch                       | Status                 |
@@ -72,6 +77,14 @@ edit under the trigger (PR 7), grouping by scope (PR 8) and the nav section (PR 
 - **PR 5's e2e seam needed a wait, not just a click.** Rows are reached with
   `clickNth`, which does not wait, so `openAccountPicker()` waits on the list through
   a new `session.waitForTestId`.
+- **The account scope needed colours of its own, sooner than PR 8.** The mockup paints
+  the trigger border and the selected row from `--globalBg` / `--globalBorder`, a tint
+  it varies per theme; `softBg` / `softBorder` stood in for them and read lime in
+  jungle-quest and yellow in sunshine-quest. Rejected on sight once PR 5 shipped, so
+  #76 took the mockup's own values into `accountScopeBg` / `accountScopeBorder`:
+  `#F4EEFA` / `#C9B6E4` in sunshine-quest, `#EDF4E6` / `#A9C77E` in jungle-quest,
+  `#101A2C` / `#2F4470` in midnight-blue. The panel keeps `softBg`, which the mockup
+  paints the same way.
 
 ### Still open from the merged work
 
@@ -83,12 +96,6 @@ edit under the trigger (PR 7), grouping by scope (PR 8) and the nav section (PR 
 - **The edit pencil floats alone** under the account list since PR 4 deleted the chip
   row that held it. PR 7 is what resolves this, which is an argument for not leaving
   PR 5 and 6 sitting in review for long.
-- **The mockup's account colours are a token pair we do not have.** It paints the
-  trigger border and the selected row from `--globalBg` `#EDF4E6` and `--globalBorder`
-  `#A9C77E`, a muted sage; we substituted `softBg` / `softBorder`, which in
-  jungle-quest are `#F3F7E4` / `#B5D94C` (lime) and in sunshine-quest are yellow. The
-  difference was rejected on sight, so PR 8's caveat resolves the way it feared: real
-  tokens across `ThemeColors` and all three themes, as its own theme PR before PR 8.
 - **`HEADER_LAYOUT.foregroundZIndex` and `MENU_TOGGLE.zIndex` are vestigial.** They
   existed so the title, avatar and burger could float above a panel that covered them;
   since PR 3 nothing covers them. Left in place because the panel still animates under
@@ -233,11 +240,10 @@ one-line `נשמר על החשבון הזה בלבד.` under it. Drops the old `
 `AccountsSection` is empty by now — delete the folder and let `MenuOverlay` compose
 the blocks directly.
 
-Reuse `softBg` / `softBorder` for the block tint rather than adding theme tokens.
-Caveat: in `sunshine-quest` those are yellow (`#FFF8E0` / `#FFD23F`) where the
-mockup used a neutral purple, so that theme will read warmer than the mockup.
-Jungle and midnight are near-identical either way. Add real tokens only if the
-sunshine difference is rejected.
+Tint the blocks with `accountScopeBg` / `accountScopeBorder`, which #76 added for
+exactly this after the `softBg` / `softBorder` stand-in was rejected. The caveat this
+section carried — sunshine-quest reading yellow where the mockup is purple — is what
+that PR resolved.
 
 Watch `MenuOverlay.tsx` against the 40-line function cap — extract the blocks as
 components rather than inlining them.
