@@ -4,6 +4,8 @@ import { METHOD_COPY } from '../copy';
 import { MethodIntro } from './MethodIntro';
 import { METHOD_INTRO_COPY, METHOD_INTRO_TEST_IDS } from './constants';
 
+const EMPHASIS_MARKER = '**';
+
 describe('the opener', () => {
   beforeEach(() => {
     render(<MethodIntro />);
@@ -17,7 +19,16 @@ describe('the opener', () => {
 
   it('leads the brief with its eyebrow, so בקצרה introduces the line instead of floating above it', () => {
     expect(screen.getByTestId(METHOD_INTRO_TEST_IDS.brief)).toHaveTextContent(
-      `${METHOD_COPY.brief.eyebrow}${METHOD_INTRO_COPY.briefSeparator}${METHOD_COPY.brief.body}`
+      `${METHOD_COPY.brief.eyebrow}${METHOD_INTRO_COPY.briefSeparator}${METHOD_COPY.brief.body}`.replaceAll(
+        EMPHASIS_MARKER,
+        ''
+      )
     );
+  });
+
+  it('lets no emphasis marker reach the page, whichever string the copy marks up next', () => {
+    expect(
+      screen.getByTestId(METHOD_INTRO_TEST_IDS.intro)
+    ).not.toHaveTextContent(EMPHASIS_MARKER);
   });
 });
