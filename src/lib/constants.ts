@@ -4,6 +4,11 @@ export const GOOGLE_PROVIDER: AuthProvider = 'google';
 
 export const LOGIN_PATH = '/login';
 
+export const SESSION_COOKIE_NAMES = [
+  'authjs.session-token',
+  '__Secure-authjs.session-token',
+] as const;
+
 export const AGOROT_PER_SHEKEL = 100;
 
 export const PERCENT_TOTAL = 100;
