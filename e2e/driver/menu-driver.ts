@@ -66,6 +66,14 @@ export class MenuDriver {
     return this.session.box(APPEARANCE_SECTION_TEST_IDS.section);
   }
 
+  accountListBox(): Promise<BoundingBox> {
+    return this.session.box(ACCOUNT_LIST_TEST_IDS.list);
+  }
+
+  accountListCovers(x: number, y: number): Promise<boolean> {
+    return this.session.pointHitsTestId(x, y, ACCOUNT_LIST_TEST_IDS.list);
+  }
+
   editAccountChipBox(): Promise<BoundingBox> {
     return this.session.box(ACCOUNTS_SECTION_TEST_IDS.editChip);
   }

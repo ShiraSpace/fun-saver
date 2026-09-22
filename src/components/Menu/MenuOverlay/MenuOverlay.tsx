@@ -13,7 +13,7 @@ export interface MenuOverlayProps {
   isOpen: boolean;
   onClose: () => void;
   isAccountListOpen: boolean;
-  onAccountListToggle: () => void;
+  onAccountListToggle: (isOpen: boolean) => void;
 }
 
 export function MenuOverlay({
@@ -24,7 +24,7 @@ export function MenuOverlay({
 }: MenuOverlayProps): JSX.Element {
   const closePickerThenMenu = useCallback((): void => {
     if (isAccountListOpen) {
-      onAccountListToggle();
+      onAccountListToggle(false);
       return;
     }
 

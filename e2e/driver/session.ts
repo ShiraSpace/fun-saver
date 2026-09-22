@@ -94,6 +94,10 @@ export class Session {
     return queries.box(this.page, testId);
   }
 
+  pointHitsTestId(x: number, y: number, testId: string): Promise<boolean> {
+    return queries.pointHitsTestId({ page: this.page, x, y, testId });
+  }
+
   hasVerticalScroll(): Promise<boolean> {
     return queries.hasVerticalScroll(this.page);
   }

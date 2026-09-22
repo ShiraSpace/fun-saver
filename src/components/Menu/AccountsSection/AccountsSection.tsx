@@ -14,7 +14,7 @@ import { APP_MODE, useAppMode } from '@/components/Home/app-mode-context';
 interface AccountsSectionProps {
   onAccountSelect: () => void;
   isAccountListOpen: boolean;
-  onAccountListToggle: () => void;
+  onAccountListToggle: (isOpen: boolean) => void;
 }
 
 export function AccountsSection({
@@ -22,7 +22,7 @@ export function AccountsSection({
   isAccountListOpen,
   onAccountListToggle,
 }: AccountsSectionProps): JSX.Element {
-  const { selectAccount } = useAccounts();
+  const { accounts, currentAccount, selectAccount } = useAccounts();
   const { setMode } = useAppMode();
 
   const handleSelectAccount = (id: string): void => {
@@ -44,6 +44,8 @@ export function AccountsSection({
     <section data-testid={ACCOUNTS_SECTION_TEST_IDS.section}>
       <MenuLabel>{ACCOUNTS_SECTION_CONTENT.label}</MenuLabel>
       <AccountPicker
+        accounts={accounts}
+        currentAccount={currentAccount}
         isOpen={isAccountListOpen}
         onToggle={onAccountListToggle}
         onSelect={handleSelectAccount}

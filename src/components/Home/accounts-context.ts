@@ -2,16 +2,8 @@
 
 import { createContext, useContext } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
-import { DEFAULT_THEME_ID } from '@/theme/registry';
 
-const NO_ACCOUNT: AccountWithDerivedWallets = {
-  id: '',
-  name: '',
-  avatarId: '',
-  isActive: false,
-  themeId: DEFAULT_THEME_ID,
-  wallets: [],
-};
+const NO_PROVIDER = 'useAccounts needs an AccountsProvider above it';
 
 export interface AccountsContextValue {
   accounts: AccountWithDerivedWallets[];
@@ -19,14 +11,16 @@ export interface AccountsContextValue {
   selectAccount: (id: string) => void;
 }
 
-const AccountsContext = createContext<AccountsContextValue>({
-  accounts: [],
-  currentAccount: NO_ACCOUNT,
-  selectAccount: () => {},
-});
+const AccountsContext = createContext<AccountsContextValue | null>(null);
 
 export const AccountsProvider = AccountsContext.Provider;
 
 export function useAccounts(): AccountsContextValue {
-  return useContext(AccountsContext);
+  const value = useContext(AccountsContext);
+
+  if (!value) {
+    throw new Error(NO_PROVIDER);
+  }
+
+  return value;
 }

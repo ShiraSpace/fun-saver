@@ -108,6 +108,32 @@ export function computedStyle({
   return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
 }
 
+export interface PointHitQuery {
+  page: Page;
+  x: number;
+  y: number;
+  testId: string;
+}
+
+export function pointHitsTestId({
+  page,
+  x,
+  y,
+  testId,
+}: PointHitQuery): Promise<boolean> {
+  return page.evaluate(
+    (pointX, pointY, id) => {
+      const topmost = document.elementFromPoint(pointX, pointY);
+      const container = document.querySelector(`[data-testid="${id}"]`);
+
+      return Boolean(topmost && container?.contains(topmost));
+    },
+    x,
+    y,
+    testId
+  );
+}
+
 export async function styleValues(
   page: Page,
   testId: string,

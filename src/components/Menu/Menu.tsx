@@ -14,11 +14,6 @@ export interface MenuProps {
 export function Menu({ isOpen, onToggle }: MenuProps): JSX.Element {
   const [isAccountListOpen, setIsAccountListOpen] = useState(false);
 
-  const toggleAccountList = useCallback(
-    (): void => setIsAccountListOpen((wasOpen) => !wasOpen),
-    []
-  );
-
   const toggle = useCallback((): void => {
     setIsAccountListOpen(false);
     onToggle(!isOpen);
@@ -44,7 +39,7 @@ export function Menu({ isOpen, onToggle }: MenuProps): JSX.Element {
         isOpen={isOpen}
         onClose={close}
         isAccountListOpen={isAccountListOpen}
-        onAccountListToggle={toggleAccountList}
+        onAccountListToggle={setIsAccountListOpen}
       />
     </Fragment>
   );

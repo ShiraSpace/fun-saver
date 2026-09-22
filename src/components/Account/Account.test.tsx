@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
 import { Account } from './Account';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { OVERVIEW_CARD_TEST_IDS } from './OverviewCard/constants';
@@ -24,7 +24,7 @@ describe('Account', () => {
   };
 
   beforeEach(() => {
-    render(<Account account={account} />);
+    renderWithAccounts(<Account account={account} />);
   });
 
   it('shows the account header with the account name', () => {

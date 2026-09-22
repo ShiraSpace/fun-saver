@@ -60,7 +60,24 @@ describe('menu morph', () => {
 
       await menu.openAccountPicker();
 
-      assert.equal((await menu.appearanceSectionBox()).y, settled.y);
+      const appearance = await menu.appearanceSectionBox();
+      const list = await menu.accountListBox();
+      const overlapsAppearance =
+        list.y < appearance.y + appearance.height &&
+        list.y + list.height > appearance.y;
+
+      assert.equal(appearance.y, settled.y);
+      assert.ok(
+        overlapsAppearance,
+        `list spans ${list.y}-${list.y + list.height}, appearance ${appearance.y}-${appearance.y + appearance.height}`
+      );
+      assert.ok(
+        await menu.accountListCovers(
+          appearance.x + appearance.width / 2,
+          appearance.y + 1
+        ),
+        'the appearance section is painted over the list where they overlap'
+      );
     });
   });
 });

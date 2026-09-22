@@ -28,7 +28,6 @@ export const List = styled.div`
   position: absolute;
   inset-inline: 0;
   top: calc(100% + ${ACCOUNT_LIST_STYLE.popoverOffset}px);
-  z-index: ${ACCOUNT_LIST_STYLE.popoverZIndex};
   display: flex;
   flex-direction: column;
   gap: ${ACCOUNT_LIST_STYLE.gap}px;

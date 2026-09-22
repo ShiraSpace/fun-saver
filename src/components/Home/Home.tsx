@@ -20,6 +20,7 @@ export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
   const navigation = useHomeNavigation(accounts, initialAccountId);
   const { mode, setMode, currentAccount, selectAccount, cancel } = navigation;
   const startCreating = (): void => setMode(APP_MODE.creatingAccount);
+  const showsEmptyState = !currentAccount && !navigation.isCreating;
 
   return (
     <AppModeProvider value={{ mode, setMode }}>
@@ -28,9 +29,7 @@ export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
           <Account account={currentAccount} />
         </AccountsProvider>
       )}
-      {!currentAccount && !navigation.isCreating && (
-        <EmptyState onCreate={startCreating} />
-      )}
+      {showsEmptyState && <EmptyState onCreate={startCreating} />}
       {navigation.isCreating && (
         <Overlay>
           <CreateAccount

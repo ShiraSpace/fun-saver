@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
 import { MenuOverlay } from './MenuOverlay';
 import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
@@ -12,7 +12,7 @@ const onAccountListToggle = jest.fn();
 function renderOverlay(isAccountListOpen = false): void {
   onClose.mockClear();
   onAccountListToggle.mockClear();
-  render(
+  renderWithAccounts(
     <MenuOverlay
       isOpen
       onClose={onClose}
@@ -73,7 +73,7 @@ describe('MenuOverlay', () => {
     it('lets Escape shut the picker and leaves the menu standing', () => {
       fireEvent.keyDown(document, { key: 'Escape' });
 
-      expect(onAccountListToggle).toHaveBeenCalled();
+      expect(onAccountListToggle).toHaveBeenCalledWith(false);
       expect(onClose).not.toHaveBeenCalled();
     });
   });
