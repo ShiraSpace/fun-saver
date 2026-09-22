@@ -15,7 +15,7 @@ export const Eyebrow = styled.span`
   padding: 3px 9px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.2);
-  font-size: 10.5px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 700;
   letter-spacing: 0.07em;
 `;
@@ -40,7 +40,7 @@ export const Outcomes = styled.div`
 
 export const Derived = styled.p`
   margin: 13px 0 0;
-  font-size: 12.5px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   line-height: 1.65;
   opacity: 0.82;
 `;
@@ -59,7 +59,7 @@ export const Brief = styled.p`
 
 export const BriefNote = styled.p`
   margin: 0;
-  font-size: 13px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   line-height: 1.65;
   opacity: 0.88;
 `;
