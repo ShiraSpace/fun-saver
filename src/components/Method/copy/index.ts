@@ -15,6 +15,7 @@ export type {
   IconLine,
   MethodBlock,
   Source,
+  SourceId,
   TalkLine,
   TalkTone,
 } from './types';

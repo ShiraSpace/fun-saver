@@ -7,6 +7,7 @@ export const PROMISE_COPY = {
   },
   evidence: {
     kind: 'quote',
+    sources: ['adultReliability'],
     body: 'בניסוי ידוע, לפני מבחן ההמתנה המפורסם, ילדים פגשו מבוגר שהבטיח להם משהו — וקיים, או לא קיים. הילדים שפגשו מבוגר שלא קיים את ההבטחה **ויתרו על ההמתנה כמעט מיד**. מה שנמדד שם לא היה הסבלנות של הילד — אלא האמינות של המבוגר.',
     citation: 'Kidd, Palmeri & Aslin, Cognition, 2013',
   },

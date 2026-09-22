@@ -8,9 +8,11 @@ import { AccountManagement } from '@/components/AccountManagement';
 import { AccountsProvider } from '@/components/Home/accounts-context';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { ActionsSection } from './ActionsSection';
+import { LimitsSection } from './LimitsSection';
 import { MethodIntro } from './MethodIntro';
 import { PromiseSection } from './PromiseSection';
 import { ScriptsSection } from './ScriptsSection';
+import { SourcesSection } from './SourcesSection';
 import { WalletsSection } from './WalletsSection';
 import { WhySection } from './WhySection';
 import { METHOD_COPY } from './copy';
@@ -43,6 +45,8 @@ export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
             <PromiseSection />
             <ActionsSection />
             <ScriptsSection />
+            <LimitsSection />
+            <SourcesSection />
           </Column>
         </Screen>
       </AccountsProvider>

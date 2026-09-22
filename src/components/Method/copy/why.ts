@@ -6,11 +6,13 @@ export const WHY_COPY = {
   },
   evidence: {
     kind: 'quote',
+    sources: ['partitioning'],
     body: 'במחקר שדה בהודו חילקו לעובדי יומיום את אותו סכום חיסכון — לחלקם במעטפה אחת, לחלקם בשתי מעטפות סגורות. אלה שקיבלו שתי מעטפות **חסכו 72% יותר**. אותו כסף, אותם אנשים. רק החלוקה השתנתה.',
     citation: 'Soman & Cheema, Journal of Marketing Research, 2011',
   },
   noTransfers: {
     kind: 'text',
+    sources: ['mentalAccounting'],
     body: 'זה לא דימוי. זו הסיבה שבאפליקציה **אי אפשר להעביר כסף בין הקופות** — קופה שאפשר לפתוח בקלות מפסיקה להיות קופה.',
   },
   honest: {

@@ -13,7 +13,11 @@ const SCRIPT_BLOCKS: readonly MethodBlock[] = [
 
 export function ScriptsSection(): JSX.Element {
   return (
-    <MethodSection number={SECTION_NUMBER.scripts} title={scripts.title}>
+    <MethodSection
+      id={SECTION_NUMBER.scripts}
+      number={SECTION_NUMBER.scripts}
+      title={scripts.title}
+    >
       <MethodBlocks blocks={SCRIPT_BLOCKS} />
     </MethodSection>
   );

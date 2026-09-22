@@ -10,7 +10,7 @@ describe('a method section', () => {
   describe('as the page first renders it', () => {
     beforeEach(() => {
       render(
-        <MethodSection number={NUMBER} title={TITLE}>
+        <MethodSection id={NUMBER} number={NUMBER} title={TITLE}>
           {BODY}
         </MethodSection>
       );
@@ -40,7 +40,7 @@ describe('a method section', () => {
 
     beforeEach(() => {
       render(
-        <MethodSection number={NUMBER} title={TITLE} hint={HINT}>
+        <MethodSection id={NUMBER} number={NUMBER} title={TITLE} hint={HINT}>
           {BODY}
         </MethodSection>
       );
