@@ -40,7 +40,7 @@ export const Outcomes = styled.div`
 
 export const Derived = styled.p`
   margin: 13px 0 0;
-  font-size: ${({ theme }): number => theme.typography.label}px;
+  font-size: ${({ theme }): number => theme.typography.body}px;
   line-height: 1.65;
   opacity: 0.82;
 `;
@@ -59,7 +59,7 @@ export const Brief = styled.p`
 
 export const BriefNote = styled.p`
   margin: 0;
-  font-size: ${({ theme }): number => theme.typography.label}px;
+  font-size: ${({ theme }): number => theme.typography.body}px;
   line-height: 1.65;
   opacity: 0.88;
 `;

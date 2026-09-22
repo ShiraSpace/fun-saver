@@ -1,0 +1,1 @@
+export { TalkBubble } from './TalkBubble';

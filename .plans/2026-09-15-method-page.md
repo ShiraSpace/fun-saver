@@ -11,8 +11,9 @@ split into three wallets, and what the parent has to do. Static and read-only.
 
 ## Where it stands (2026-09-22)
 
-PRs 1–4 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
-(section shell, evidence quote, section 1). **PR 5 is next.**
+PRs 1–5 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
+(section shell, evidence quote, section 1), #73 (the three wallets, the block
+renderer, the talk bubble). **PR 6 is next.**
 
 Worktree `~/Projects/technotronic/fun-saver-method-page`. Each PR branches off
 `main` once the one before it has merged — the stack was rebased twice because
@@ -65,7 +66,45 @@ branches were cut from each other instead.
    mid — a token in `theme-tokens.ts` plus the three theme files. Raise it once,
    not every PR.
 8. **Latin runs inside RTL carry `dir="ltr"` with `text-align: end`.**
-   `EvidenceQuote`'s citation does; section 6 and the sources list will.
+   `EvidenceQuote`'s citation does; section 7 and the sources list will.
+
+## Decisions (settled 2026-09-22, during PR 5)
+
+9. **The page calls a wallet what the app calls it.** The deck said «הוצאות»
+   where the app says «בזבוזים», and shipping both would have left the parent
+   reading one word on the method page and another on the account screen. The
+   page moved to the app's word, in the pot and in the prose.
+
+   With the wording aligned, a pot label stopped being copy: `WALLET_NAME`,
+   `WALLET_ICON` and `DEPOSIT_SPLIT` all live in `src/lib/constants.ts`, and
+   `wallets.ts` carries only the order the three are drawn in. `WALLET_GRADIENT`
+   moved to `src/theme/` for the same reason — `Method/` was reaching into
+   `Account/` for it.
+
+10. **Pot text ships under AA, and is raised with decision 7.** `textStrong` on
+    the pot gradients measures 3.33:1 on jungle `potSavings`, 3.58 on jungle
+    `potGood` and 3.88 on sunshine `potGood`; the pots' 12px and 18px text needs
+    4.5. The mockup's own `#4A2A00` clears neither (3.89 jungle, 3.65 sunshine),
+    so drawing it exactly does not fix it. What does is a `textOnPot` token per
+    theme — jungle `#2B1800`, sunshine `#2B1235`, midnight `#ECF1F8` — and it
+    goes in with the `actionButton` surface in one pass.
+
+## Decisions (settled 2026-09-22, before PR 6)
+
+11. **Section 4 splits in two: «מה להחליט» and «הדוגמה שלנו».** Expanded it ran
+    six paragraphs, a quote, two checklists and a table — long enough that the
+    checklist, the thing the parent actually has to act on, sat below a table
+    they had to scroll past. The page goes to **seven sections**, and «מה אומרים
+    לילד» and the limits section renumber to 6 and 7.
+
+    The split follows the copy as it already stands. `intro`, `amount`,
+    `frequency`, `split`, `chores`, `choresEvidence` and `rescue` stay with the
+    `decide` and `communicate` checklists in «מה להחליט»; `example` — title,
+    table and note — becomes «הדוגמה שלנו» on its own. No copy is rewritten.
+
+    Two cross-references move with it: `ACTIONS_COPY.communicate` points at
+    «הנוסח בסעיף 5», which becomes **סעיף 6**, and `docs/copy/method-page.he.md`
+    carries the same line plus its own numbered headings.
 
 ## Component rule
 
@@ -82,12 +121,12 @@ of its own — testing a styled `div` tests Emotion, not us.
 | --- | --- | --- |
 | `MethodIntro` | Composes goal, outcome list, divider, brief | 1× |
 | `GoalOutcome` | Icon + text + **conditional** note | 3× |
-| `MethodSection` | `<details>`; summary with number, title, optional hint, chevron | 6× |
+| `MethodSection` | `<details>`; summary with number, title, optional hint, chevron | 7× |
 | `EvidenceQuote` | Body + citation line | 4× |
-| `TalkBubble` | Lines with **variants** — spoken / struck-through / muted | 5× |
+| `TalkBubble` | Lines with **variants** — spoken / struck-through / muted | 5× · built PR 5 |
 | `ActionList` | Group label + items mapped over ticked/unticked state | 3× |
 | `ExampleTable` | Rows from data, scroll container, tabular figures | 1× |
-| `WalletTrio` | Three pots from data, or reuse `Donut`/`Legend` (decided in PR 5) | 1× |
+| `WalletTrio` | Three pots — name, icon and share per wallet | 1× · built PR 5 |
 | `SourceList` | 16 entries from an array, LTR runs inside RTL | 1× |
 
 ### Styles only, no test
@@ -158,7 +197,7 @@ Every section **closed by default**, including ההבטחה — it carries a
 
 Three things PRs 5–8 inherit from it:
 
-- **Sections get a component each** (`WhySection` is the first). Six inlined in
+- **Sections get a component each** (`WhySection` is the first). Seven inlined in
   `Method.tsx` passes the 40-line function cap by PR 6; `Method.tsx` stays a
   list of what the page is made of.
 - **`MethodSection` styles body paragraphs through `> p`**, direct children
@@ -168,25 +207,44 @@ Three things PRs 5–8 inherit from it:
   `wallets.ts`, `actions.ts` and `scripts.ts` all carry the flag.
 - **The chevron is scoped `details[open] > summary &`.** A plain
   `details[open] &` is a descendant combinator, and PR 8 nests an accordion
-  inside section 6.
+  inside section 7.
 
 Test ids take the section number — `section(2)`, `summary(2)`, `hint(2)` —
-because six sections sharing one id leaves nothing able to target one.
+because seven sections sharing one id leaves nothing able to target one.
 
-## PR 5 — the three wallets (next)
+## PR 5 — the three wallets (done, #73)
 
-`WalletTrio`; wires section 2. First check whether `OverviewCard`'s `Donut` /
-`Legend` take static props — reuse beats a new component.
+`WalletTrio` + `MethodBlocks` + `TalkBubble`; wires section 2.
 
-**Section 2 is where the block renderer earns its keep.** `wallets.ts` mixes
-`text`, `quote` and `talk` in one section, and sections 4 and 6 repeat the
-pattern. A renderer that takes a `MethodBlock` and dispatches on `kind` —
-honouring `muted` — stops PRs 5–8 hand-wiring the same three cases. Deferred out
-of PR 4 deliberately: one consumer is not enough to generalise from, three is.
+`Donut` and `Legend` were checked and not reused. `Donut` takes static props but
+is an unlabelled ring on its own, and `Legend` renders per-wallet balances the
+page does not have. Variant E draws three flat pots, not a ring.
 
-## PR 6 — actions
+Four things PRs 6–8 inherit from it:
 
-`ActionList` + `ExampleTable`; wires sections 3 and 4.
+- **`MethodBlocks` renders a section's body.** It takes `readonly MethodBlock[]`
+  and dispatches on `kind` — `text` through `paragraphs` + `emphasize`, `quote`
+  to `EvidenceQuote`, `talk` to `TalkBubble` — honouring `muted`. A section
+  component lists its blocks in order and renders nothing itself. It wraps each
+  block in a `Fragment`, never a `<div>`, so `MethodSection`'s `> p` rule still
+  reaches the paragraphs; the test pins that.
+- **`TalkBubble` already exists**, all three tones. Section 2 carries a `talk`
+  block, so it could not wait for PR 7. PR 7 wires section 6 and adds nothing.
+- **A wallet's name, icon and share come from `src/lib/constants.ts`**
+  (`WALLET_NAME`, `WALLET_ICON`, `DEPOSIT_SPLIT`), and its gradient from
+  `src/theme/wallet-gradient.ts`. Section 5's example table repeats all three —
+  read them, do not retype the deck's numbers.
+- **Muted is a colour, not a size.** Every paragraph in a section body is
+  `typography.body`; `data-muted` only changes the colour. The opener's small
+  prose moved to prose size with it. What stays at `typography.label` is chrome:
+  eyebrow pill, section numeral, hint chip, chevron, pot label, bubble label,
+  citation.
+
+## PR 6 — actions (next)
+
+`ActionList` + `ExampleTable`; wires sections 3, 4 and 5 — section 4 splits in
+two (decision 11). Every section body goes through `MethodBlocks`; only the
+checklists and the table are hand-wired.
 
 Values and tick states are **hardcoded** from the deck — none of the underlying
 settings exist yet (backlog §6b). The rescue rule is body text, not a checkbox:
@@ -195,16 +253,16 @@ exactly when it must not be negotiable.
 
 ## PR 7 — scripts
 
-`TalkBubble`; wires section 5. Outlined bubble with a tail, against
+Wires section 6; `TalkBubble` shipped in PR 5. Outlined bubble with a tail, against
 `EvidenceQuote`'s filled treatment — same rounded language, opposite fill, so
 neither is mistaken for the other while scanning. The "don't say this" line is
 struck through **inside the same bubble**, so both halves read as one exchange.
 
 ## PR 8 — limits and sources
 
-`SourceList`; wires section 6 and the sources accordion.
+`SourceList`; wires section 7 and the sources accordion.
 
-Do not soften section 6. It says the effect sizes are modest, that allowance
+Do not soften section 7. It says the effect sizes are modest, that allowance
 alone teaches nothing, and that the parent should hand over physical cash at
 this age — which partly argues against the product. That is deliberate.
 
@@ -213,7 +271,7 @@ this age — which partly argues against the product. That is deliberate.
 - **No new theme tokens needed.** `theme-tokens.ts` already has `accentSoft`,
   `softBg`/`softBorder`/`softText`, `depositBg`, `alert`/`alertSoftBg`,
   `divider`, and `gradients.actionButton`.
-- **First table in the app.** Section 4's example table needs its own
+- **First table in the app.** Section 5's example table needs its own
   `overflow-x` container so the page body never scrolls sideways on a phone.
 - **LTR inside RTL.** Author names and URLs in the sources list are LTR runs in
   RTL paragraphs; wrap them so punctuation doesn't jump.
@@ -221,8 +279,8 @@ this age — which partly argues against the product. That is deliberate.
 - **Section 3 closed by default** is a real risk: it's the rule the method rests
   on and a skimming parent may never open it. Mitigated by the chip; revisit if
   it goes unread.
-- **Section 4 is long expanded** — six paragraphs, a quote, two checklists, a
-  table. Fallback is splitting it into "מה להחליט" and "הדוגמה שלנו".
+- **Sections 4 and 5 both start closed**, like the rest. Splitting the old
+  section 4 (decision 11) already took the length risk off it.
 - **e2e visual snapshots** — a new route adds a baseline, it doesn't change
   existing ones. Still not taken: every PR from 5 to 8 adds content to the same
   page, so one recording after PR 8 replaces five that would be re-recorded. It

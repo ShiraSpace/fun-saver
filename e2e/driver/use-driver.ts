@@ -16,6 +16,13 @@ import { AvatarPickerDriver } from './avatar-picker-driver';
 import { DashboardDriver } from './dashboard-driver';
 import { startServer, type RunningServer } from '../server';
 
+interface OpenAppOptions {
+  session: Session;
+  server: RunningServer;
+  state: Partial<StoreData>;
+  motion: MotionPreference;
+}
+
 export interface AppDriver {
   session: Session;
   menu: MenuDriver;
@@ -27,7 +34,7 @@ export interface AppDriver {
   dashboard: DashboardDriver;
 }
 
-function createDrivers(session: Session): AppDriver {
+export function createDrivers(session: Session): AppDriver {
   return {
     session,
     menu: new MenuDriver(session),
@@ -44,6 +51,26 @@ function createDrivers(session: Session): AppDriver {
     avatarPicker: new AvatarPickerDriver(session),
     dashboard: new DashboardDriver(session),
   };
+}
+
+export async function startApp(session: Session): Promise<RunningServer> {
+  const [server] = await Promise.all([startServer(), session.start()]);
+
+  return server;
+}
+
+export async function openApp({
+  session,
+  server,
+  state,
+  motion,
+}: OpenAppOptions): Promise<void> {
+  await seedStore(server.dataPath, state);
+  await session.open({
+    baseUrl: server.baseUrl,
+    motion,
+    cookie: await sessionCookie(mockUser, server.authSecret),
+  });
 }
 
 async function seedStore(
@@ -76,17 +103,11 @@ export function useDriver(
   let server: RunningServer;
 
   before(async () => {
-    const [running] = await Promise.all([startServer(), session.start()]);
-    server = running;
+    server = await startApp(session);
   });
 
   beforeEach(async () => {
-    await seedStore(server.dataPath, state);
-    await session.open({
-      baseUrl: server.baseUrl,
-      motion,
-      cookie: await sessionCookie(mockUser, server.authSecret),
-    });
+    await openApp({ session, server, state, motion });
   });
 
   afterEach(async () => {

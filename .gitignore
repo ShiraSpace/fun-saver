@@ -51,3 +51,6 @@ next-env.d.ts
 
 # e2e harness scratch output
 /.e2e-data
+
+# PR screenshot scripts and their output
+/e2e/shots
