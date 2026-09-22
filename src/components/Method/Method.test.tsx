@@ -7,7 +7,7 @@ import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { METHOD_SECTION_TEST_IDS } from './MethodSection/constants';
 import { METHOD_INTRO_TEST_IDS } from './MethodIntro/constants';
-import { SECTION_NUMBER } from './constants';
+import { SECTION_NUMBER, SOURCES_SECTION_ID } from './constants';
 import { Method } from './Method';
 import { METHOD_COPY } from './copy';
 
@@ -54,6 +54,16 @@ describe('the method page', () => {
   it('lists them in the order the copy numbers them', () => {
     expect(renderedSectionIds()).toEqual(
       SECTION_NUMBERS.map(METHOD_SECTION_TEST_IDS.section)
+    );
+  });
+
+  it('closes with the sources, after every section whose numbers they carry', () => {
+    const accordions = screen
+      .getAllByTestId(/^method-section-(\d+|sources)$/)
+      .map((accordion) => accordion.dataset.testid);
+
+    expect(accordions[accordions.length - 1]).toBe(
+      METHOD_SECTION_TEST_IDS.section(SOURCES_SECTION_ID)
     );
   });
 });

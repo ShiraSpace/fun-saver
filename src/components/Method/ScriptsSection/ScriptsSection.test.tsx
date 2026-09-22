@@ -31,13 +31,13 @@ describe('the section on what to say to the child', () => {
     render(<ScriptsSection />);
   });
 
-  it('gives every moment a heading and then its bubble, and nothing on its own', () => {
+  it('names every moment and then gives the words for it, and adds nothing between', () => {
     expect(headingsAndBubbles()).toEqual(
       scripts.moments.flatMap(() => [HEADING, BUBBLE])
     );
   });
 
-  it('opens on the muted line from the copy and writes no prose of its own', () => {
+  it('opens on the line the copy gives it, and says nothing of its own', () => {
     const paragraphs = sectionBody().querySelectorAll(':scope > p');
 
     expect(
@@ -47,7 +47,7 @@ describe('the section on what to say to the child', () => {
     ).toEqual(['true']);
   });
 
-  it('leaves every heading a direct child, the only place the body rule reaches', () => {
+  it('keeps every moment named like a heading, which a wrapper around it would quietly undo', () => {
     expect(sectionBody().querySelectorAll(':scope > h3')).toHaveLength(
       scripts.moments.length
     );

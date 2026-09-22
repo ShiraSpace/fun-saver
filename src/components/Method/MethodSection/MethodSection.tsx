@@ -31,7 +31,11 @@ export function MethodSection({
   children,
 }: MethodSectionProps): JSX.Element {
   const heading = emphasize(title);
-  const numeral = number !== undefined && <Numeral>{number}</Numeral>;
+  const numeral = number !== undefined && (
+    <Numeral data-testid={METHOD_SECTION_TEST_IDS.numeral(id)}>
+      {number}
+    </Numeral>
+  );
   const hintChip = hint && (
     <Hint data-testid={METHOD_SECTION_TEST_IDS.hint(id)}>
       {emphasize(hint)}

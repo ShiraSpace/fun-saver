@@ -9,7 +9,7 @@ describe('emphasis in the method copy', () => {
     ({ container } = render(<p>{emphasize(MARKED)}</p>));
   });
 
-  it('lifts the marked run into its own strong, so a claim can carry weight mid-sentence', () => {
+  it('gives a marked run real weight, so a claim can stand out mid-sentence', () => {
     expect(container.querySelector('strong')).toHaveTextContent('תרגול שבועי');
   });
 
