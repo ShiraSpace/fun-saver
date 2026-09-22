@@ -14,29 +14,35 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-22 (PRs 1–5 merged; PR 6 is next)
+## Progress — updated 2026-09-22 (PRs 1–6 merged; PR 7 is next)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
 do without. They are in all three themes, and the trigger and selected row already
 read from them.
 
+Also outside the numbering, [#80](https://github.com/ShiraSpace/fun-saver/pull/80)
+(`1ce3581`) added `withShots` in `e2e/shot.ts`, the `pr-screenshots` skill and
+`.github/pull_request_template.md`. Every PR from here on that changes something
+visible carries screenshots; `gh --attach` uploads them and needs `gh` ≥ 2.99.
+
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
-| Plan PR    | GitHub                                                 | Branch                       | Status                 |
-| ---------- | ------------------------------------------------------ | ---------------------------- | ---------------------- |
-| PR 1       | [#58](https://github.com/ShiraSpace/fun-saver/pull/58) | `feat/menu-derived-accounts` | **merged** — `0085222` |
-| PR 2       | [#59](https://github.com/ShiraSpace/fun-saver/pull/59) | `feat/menu-light-sheet`      | **merged** — `6288806` |
-| PR 3       | [#62](https://github.com/ShiraSpace/fun-saver/pull/62) | `feat/menu-below-header`     | **merged** — `80d0b67` |
-| PR 4       | [#65](https://github.com/ShiraSpace/fun-saver/pull/65) | `feat/menu-account-list`     | **merged** — `8036baa` |
-| PR 5       | [#70](https://github.com/ShiraSpace/fun-saver/pull/70) | `feat/menu-account-picker`   | **merged** — `d162cde` |
-| PR 6       | —                                                      | `feat/menu-account-popover`  | **next**               |
-| PR 7, 8, 9 | —                                                      | —                            | not started            |
+| Plan PR | GitHub                                                 | Branch                         | Status                 |
+| ------- | ------------------------------------------------------ | ------------------------------ | ---------------------- |
+| PR 1    | [#58](https://github.com/ShiraSpace/fun-saver/pull/58) | `feat/menu-derived-accounts`   | **merged** — `0085222` |
+| PR 2    | [#59](https://github.com/ShiraSpace/fun-saver/pull/59) | `feat/menu-light-sheet`        | **merged** — `6288806` |
+| PR 3    | [#62](https://github.com/ShiraSpace/fun-saver/pull/62) | `feat/menu-below-header`       | **merged** — `80d0b67` |
+| PR 4    | [#65](https://github.com/ShiraSpace/fun-saver/pull/65) | `feat/menu-account-list`       | **merged** — `8036baa` |
+| PR 5    | [#70](https://github.com/ShiraSpace/fun-saver/pull/70) | `feat/menu-account-picker`     | **merged** — `d162cde` |
+| PR 6    | [#79](https://github.com/ShiraSpace/fun-saver/pull/79) | `feat/menu-account-popover`    | **merged** — `f9d6573` |
+| PR 7    | —                                                      | `feat/menu-edit-under-trigger` | **next**               |
+| PR 8, 9 | —                                                      | —                              | not started            |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
-and the accounts sit behind an `AccountTrigger` showing the current account, its
-total and a caret. What is left is making that expansion a popover (PR 6), moving
-edit under the trigger (PR 7), grouping by scope (PR 8) and the nav section (PR 9).
+the accounts sit behind an `AccountTrigger`, and tapping it floats the list over the
+sections below instead of pushing them down. What is left is moving edit under the
+trigger (PR 7), grouping by scope (PR 8) and the nav section (PR 9).
 
 ### What the merged PRs changed that this plan did not predict
 
@@ -85,6 +91,43 @@ edit under the trigger (PR 7), grouping by scope (PR 8) and the nav section (PR 
   `#F4EEFA` / `#C9B6E4` in sunshine-quest, `#EDF4E6` / `#A9C77E` in jungle-quest,
   `#101A2C` / `#2F4470` in midnight-blue. The panel keeps `softBg`, which the mockup
   paints the same way.
+- **PR 6 put the picker state in `Menu`, not `Header`.** `Header` only holds the
+  `useState`; `Menu` owns the `toggle` and `close` handlers that have to reset the
+  picker, so the state went beside them and `Header` was not touched. One prop
+  travels down — `isAccountListOpen` plus `onAccountListToggle(isOpen: boolean)`,
+  the same shape `Menu` already takes from `Header`, so the outside-click hook and
+  the Escape branch both say `false` rather than passing a toggle where a close is
+  meant.
+- **PR 6 rewrote `AccountsContextValue` and deleted `AccountSwitcher`.** The context
+  handed out `accounts` plus `selectedAccountId` without saying the id named one of
+  them, so every reader re-resolved the pair and re-checked an `undefined` none of
+  them could reach. It now carries `currentAccount` (required), `Home` resolves it
+  once and provides it **inside** the `hasAccounts` gate, and `AccountSwitcher` —
+  which existed only to do that resolving — is gone. The file moved to
+  `src/components/Home/accounts-context.ts`, and `useAccounts()` **throws** outside a
+  provider rather than serving a blank sentinel.
+- **That throw found a 500 on the method page.** `/method` renders `Header` → `Menu`
+  → `AccountsSection` → `useAccounts()` with no provider, and had been living off the
+  old empty default: its picker showed a lone `＋ חשבון חדש` row and no trigger. It
+  now loads accounts like the home screen through `withDerivedWallets` in
+  `src/lib/account-dashboard.ts`, composed onto #81's `signedInAccounts()`. `/method`
+  with no account to show redirects to `HOME_ROUTE`.
+- **The menu's create and edit rows were inert on `/method` too.** The app mode and
+  both overlays lived inside `Home`. They are now `AccountManagement`
+  (`src/components/AccountManagement/`), which both pages wrap their content in, and
+  the navigation hook moved to `src/hooks/use-account-navigation.ts` since neither
+  page owns it any more.
+- **`popoverZIndex` was a no-op and is not in `LAYERS`.** A positioned element already
+  paints over static siblings and the list has no positioned ones, so the line went
+  rather than moving into the registry.
+- **Box overlap does not catch a paint-order regression.** `menu-morph` asserts the
+  list _takes the tap_ where it overlaps the appearance section, through
+  `document.elementFromPoint` behind `session.receivesTapAt`. Comparing boxes passes
+  either way round; this was verified by giving the appearance section a `z-index`
+  and watching only that assertion fail.
+- **The trigger's total sat below the `מוצג כרגע` beside it.** `Current` is a flex
+  row and `Money` sets `line-height: 1`, so the default `stretch` dropped the amount.
+  `align-items: baseline` fixes it — visible in the before/after on #79.
 
 ### Still open from the merged work
 
@@ -94,8 +137,15 @@ edit under the trigger (PR 7), grouping by scope (PR 8) and the nav section (PR 
   across `ThemeColors` and all three themes — a theme PR, not a repaint. Deliberately
   not done in PR 2.
 - **The edit pencil floats alone** under the account list since PR 4 deleted the chip
-  row that held it. PR 7 is what resolves this, which is an argument for not leaving
-  PR 5 and 6 sitting in review for long.
+  row that held it. PR 7 is what resolves this.
+- **`AccountsSection` is no longer empty.** It forwards the picker's open state and
+  reads `accounts`, `currentAccount` and `selectAccount` from context. PR 8 still
+  deletes the folder, but `MenuOverlay` has to take those props over — it already
+  holds them, so it is a move rather than new plumbing.
+- **The method page's picker can switch account but its language and appearance rows
+  are the account's, on a page that is not about an account.** Nothing is broken —
+  they write to the account in view — but whether `/method` should carry the whole
+  menu is a question PR 9's nav section will raise.
 - **`HEADER_LAYOUT.foregroundZIndex` and `MENU_TOGGLE.zIndex` are vestigial.** They
   existed so the title, avatar and burger could float above a panel that covered them;
   since PR 3 nothing covers them. Left in place because the panel still animates under
@@ -232,13 +282,21 @@ trigger, labelled `עריכת <name>` so the accessible name says which account.
 `menu-driver.ts`: `clickEditAccountChip`, `editAccountChipBox`. Suites:
 `edit-account.e2e.ts`, `header-layout.visual.ts`.
 
+As of PR 6 the name is already to hand: `useAccounts().currentAccount` inside
+`AccountsSection`, which is where `EditAccountChip` is rendered and where
+`handleEditAccount` lives. `edit-account.e2e.ts` also covers the chip on `/method`
+now, so a rename of its test id lands in two describes, not one.
+
 ## PR 8 — scope grouping
 
 Wrap the two groups so the split is visible: the account picker and its edit button
 in one block, and a per-account block headed `הגדרות של <name> <avatar>` with a
 one-line `נשמר על החשבון הזה בלבד.` under it. Drops the old `החשבונות` label.
-`AccountsSection` is empty by now — delete the folder and let `MenuOverlay` compose
-the blocks directly.
+Delete the `AccountsSection` folder and let `MenuOverlay` compose the blocks directly
+— but note it is not empty: it forwards `isAccountListOpen` / `onAccountListToggle`
+and owns `handleSelectAccount`, `handleAddAccount` and `handleEditAccount`, each of
+which closes the menu. `MenuOverlay` already receives the picker props and `onClose`,
+so those handlers move up with the markup.
 
 Tint the blocks with `accountScopeBg` / `accountScopeBorder`, which #76 added for
 exactly this after the `softBg` / `softBorder` stand-in was rejected. The caveat this
@@ -253,10 +311,15 @@ components rather than inlining them.
 `מסכים` with `🏠 בית` and `📈 תנועות בחשבון`, current screen marked via
 `aria-current="page"`.
 
-Navigation today is `APP_MODE` state in `use-home-navigation.ts`, not a router, so
-this either adds a mode or introduces the first real route. Decide when the
-transactions epic is planned — until then `תנועות בחשבון` has nowhere to go and
-ships inert.
+Real routes already exist: `/method` is one, reached from the menu through a
+`next/link` `NavLink`, and `HOME_ROUTE` / `METHOD_ROUTE` live in their components'
+`constants.ts`. So `🏠 בית` is a link, not a mode. What is still `APP_MODE` state is
+creating and editing an account, and that hook is now
+`src/hooks/use-account-navigation.ts`. `תנועות בחשבון` has nowhere to go until the
+transactions epic and ships inert.
+
+`/method` shows this section too, so `aria-current="page"` needs the real path —
+`usePathname()` rather than anything the menu knows on its own.
 
 ## Notes / risks
 
@@ -264,9 +327,14 @@ ships inert.
   `ACCOUNTS_SECTION_TEST_IDS`, consumed by four suites. Because it is one file,
   each PR updates the driver plus only the suites whose flow it changed. Without
   it this epic would touch every suite in every PR.
-- **Visual baselines** changed in PRs 2 and 3 only so far (`menu-morph.visual.ts`),
-  and PR 4 moved `account-switch.visual.ts` onto the new row test ids. Still expected
-  in PRs 5, 7 and 8.
+- **Visual baselines** changed in PRs 2 and 3 (`menu-morph.visual.ts`), PR 4 moved
+  `account-switch.visual.ts` onto the new row test ids, and PR 6 added the popover
+  assertions to `menu-morph.visual.ts` plus the signed-out `/method` case to
+  `page-routing.visual.ts`. Still expected in PRs 7 and 8.
+- **Every PR from #80 on carries screenshots** when it changes something visible.
+  Write a `.mts` script in the gitignored `e2e/shots/`, shoot with
+  `npx next build && npx tsx e2e/shots/<topic>.shot.mts`, attach with
+  `gh pr edit <n> --attach`. The `pr-screenshots` skill has the whole route.
 - **Assert through the helper, never restate its output.** A component test checks
   that the component uses the method we chose; `totalBalance` and
   `agorotToWholeShekels` have their own tests in `derivations.test.ts` and
@@ -279,7 +347,9 @@ ships inert.
   with no wallets, to prove wallets stay attached to their own account. The plain
   fixture is the store layer's empty case, the derived one the menu's funded case.
 - **Whole epic is front-end.** No API, no store, no migration. Language was the
-  only part that needed a data layer and it is out.
-- **README is stale** on the deposit split: it says 60/20/20 where
-  `DEPOSIT_SPLIT` is savings 40 / spending 50 / goodDeeds 10. Unrelated to this
-  epic, worth a one-line fix in passing.
+  only part that needed a data layer and it is out. PR 6 is the exception that
+  proves it: nothing about the menu changed the data layer, but making `/method`
+  carry the same menu meant giving that page the same accounts the home screen has.
+- **README's deposit split is no longer stale** — it reads 50% spending / 40%
+  savings / 10% good deeds, which is `DEPOSIT_SPLIT`. The note that said otherwise
+  is gone.
