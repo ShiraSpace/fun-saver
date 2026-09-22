@@ -1,9 +1,17 @@
 'use client';
 
 import { useEffect } from 'react';
-import { ESCAPE_KEY } from './constants';
+import { ESCAPE_KEY, KEY_DOWN_EVENT } from './constants';
 
-export function useEscapeKey(isListening: boolean, onEscape: () => void): void {
+interface EscapeKeyOptions {
+  isListening: boolean;
+  onEscape: () => void;
+}
+
+export function useEscapeKey({
+  isListening,
+  onEscape,
+}: EscapeKeyOptions): void {
   useEffect(() => {
     if (!isListening) {
       return;
@@ -15,8 +23,8 @@ export function useEscapeKey(isListening: boolean, onEscape: () => void): void {
       }
     };
 
-    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener(KEY_DOWN_EVENT, onKeyDown);
 
-    return (): void => document.removeEventListener('keydown', onKeyDown);
+    return (): void => document.removeEventListener(KEY_DOWN_EVENT, onKeyDown);
   }, [isListening, onEscape]);
 }

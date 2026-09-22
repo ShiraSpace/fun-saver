@@ -1,7 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { render } from '@/test-utils/render';
-import { AccountsProvider } from '@/components/Home/accounts-context';
-import { mockAccount, mockDerivedAccount } from '@/test-utils/fixtures';
+import { renderWithAccounts } from '@/test-utils/render';
+import { mockDerivedAccount } from '@/test-utils/fixtures';
 import { AppearanceSection } from './AppearanceSection';
 import {
   APPEARANCE_SECTION_CONTENT,
@@ -15,17 +14,11 @@ jest.mock('next/navigation', () => ({
 }));
 
 function renderSection(): void {
-  render(
-    <AccountsProvider
-      value={{
-        accounts: [mockDerivedAccount],
-        currentAccount: mockDerivedAccount,
-        selectAccount: jest.fn(),
-      }}
-    >
-      <AppearanceSection />
-    </AccountsProvider>
-  );
+  renderWithAccounts(<AppearanceSection />, {
+    accounts: [mockDerivedAccount],
+    currentAccount: mockDerivedAccount,
+    selectAccount: jest.fn(),
+  });
 }
 
 function swatches(): HTMLElement[] {
@@ -37,7 +30,7 @@ describe('AppearanceSection', () => {
     jest.clearAllMocks();
     global.fetch = jest
       .fn()
-      .mockResolvedValue({ ok: true, json: async () => mockAccount });
+      .mockResolvedValue({ ok: true, json: async () => mockDerivedAccount });
   });
 
   it('renders a swatch per theme', () => {

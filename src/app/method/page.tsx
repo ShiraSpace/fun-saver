@@ -6,7 +6,7 @@ import { SELECTED_ACCOUNT_COOKIE } from '@/components/Home/selected-account-cook
 import { getStore } from '@/db';
 import { listAccountsWithWallets } from '@/lib/account-dashboard';
 import { today } from '@/lib/clock';
-import { HOME_ROUTE } from '@/lib/routes';
+import { HOME_ROUTE } from '@/components/Home/constants';
 import { selectedAccount } from '@/lib/selected-account';
 import { resolveThemeId } from '@/theme/registry';
 import { ThemeController } from '@/theme/ThemeController';

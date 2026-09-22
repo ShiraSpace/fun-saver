@@ -31,7 +31,7 @@ export function MenuOverlay({
     onClose();
   }, [isAccountListOpen, onAccountListToggle, onClose]);
 
-  useEscapeKey(isOpen, closePickerThenMenu);
+  useEscapeKey({ isListening: isOpen, onEscape: closePickerThenMenu });
 
   return (
     <Panel

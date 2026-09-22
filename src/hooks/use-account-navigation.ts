@@ -5,7 +5,10 @@ import {
   APP_MODE,
   AppMode,
 } from '@/components/AccountManagement/app-mode-context';
-import { useAccountSelection } from './use-account-selection';
+import { persistSelectedAccount } from '@/components/Home/selected-account-cookie';
+import { selectedAccount } from '@/lib/selected-account';
+import { resolveThemeId } from '@/theme/registry';
+import { useSetThemeId } from '@/theme/ThemeController';
 
 export interface AccountNavigation {
   mode: AppMode;
@@ -24,12 +27,18 @@ export function useAccountNavigation(
   initialAccountId: string
 ): AccountNavigation {
   const router = useRouter();
-  const { currentAccount, selectAccount } = useAccountSelection(
-    accounts,
-    initialAccountId
-  );
+  const setThemeId = useSetThemeId();
 
   const [mode, setMode] = useState<AppMode>(APP_MODE.viewing);
+  const [selectedAccountId, setSelectedAccountId] = useState(initialAccountId);
+
+  const selectAccount = (id: string): void => {
+    setSelectedAccountId(id);
+    persistSelectedAccount(id);
+
+    const target = accounts.find((account) => account.id === id);
+    setThemeId(resolveThemeId(target?.themeId));
+  };
 
   const returnToViewing = (): void => setMode(APP_MODE.viewing);
 
@@ -38,6 +47,7 @@ export function useAccountNavigation(
     router.refresh();
   };
 
+  const currentAccount = selectedAccount(accounts, selectedAccountId);
   const isEditing = mode === APP_MODE.editingAccount;
 
   return {

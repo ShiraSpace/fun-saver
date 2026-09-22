@@ -1,11 +1,8 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
 import { AccountsSection } from './AccountsSection';
 import { ACCOUNTS_SECTION_TEST_IDS } from './constants';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
-import {
-  AccountsProvider,
-  type AccountsContextValue,
-} from '@/components/Home/accounts-context';
+import { type AccountsContextValue } from '@/components/Home/accounts-context';
 import {
   APP_MODE,
   AppModeProvider,
@@ -36,18 +33,17 @@ function renderSection({
     ...contextOverrides,
   };
 
-  render(
+  renderWithAccounts(
     <AppModeProvider
       value={{ mode: APP_MODE.viewing, setMode: setMode ?? ((): void => {}) }}
     >
-      <AccountsProvider value={value}>
-        <AccountsSection
-          onAccountSelect={onAccountSelect ?? ((): void => {})}
-          isAccountListOpen
-          onAccountListToggle={(): void => {}}
-        />
-      </AccountsProvider>
-    </AppModeProvider>
+      <AccountsSection
+        onAccountSelect={onAccountSelect ?? ((): void => {})}
+        isAccountListOpen
+        onAccountListToggle={(): void => {}}
+      />
+    </AppModeProvider>,
+    value
   );
 }
 

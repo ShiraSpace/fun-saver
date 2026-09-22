@@ -20,7 +20,7 @@ export function useCloseOnOutsideClick({
     }
 
     const onOutsideClick = (event: MouseEvent): void => {
-      if (ref.current?.contains(event.target as Node)) {
+      if (event.target instanceof Node && ref.current?.contains(event.target)) {
         return;
       }
 
