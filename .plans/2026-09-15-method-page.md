@@ -11,8 +11,9 @@ split into three wallets, and what the parent has to do. Static and read-only.
 
 ## Where it stands (2026-09-22)
 
-PRs 1–4 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
-(section shell, evidence quote, section 1). **PR 5 is next.**
+PRs 1–5 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
+(section shell, evidence quote, section 1), #73 (the three wallets, the block
+renderer, the talk bubble). **PR 6 is next.**
 
 Worktree `~/Projects/technotronic/fun-saver-method-page`. Each PR branches off
 `main` once the one before it has merged — the stack was rebased twice because
@@ -105,10 +106,10 @@ of its own — testing a styled `div` tests Emotion, not us.
 | `GoalOutcome` | Icon + text + **conditional** note | 3× |
 | `MethodSection` | `<details>`; summary with number, title, optional hint, chevron | 6× |
 | `EvidenceQuote` | Body + citation line | 4× |
-| `TalkBubble` | Lines with **variants** — spoken / struck-through / muted | 5× |
+| `TalkBubble` | Lines with **variants** — spoken / struck-through / muted | 5× · built PR 5 |
 | `ActionList` | Group label + items mapped over ticked/unticked state | 3× |
 | `ExampleTable` | Rows from data, scroll container, tabular figures | 1× |
-| `WalletTrio` | Three pots from data, or reuse `Donut`/`Legend` (decided in PR 5) | 1× |
+| `WalletTrio` | Three pots — name, icon and share per wallet | 1× · built PR 5 |
 | `SourceList` | 16 entries from an array, LTR runs inside RTL | 1× |
 
 ### Styles only, no test
@@ -194,20 +195,38 @@ Three things PRs 5–8 inherit from it:
 Test ids take the section number — `section(2)`, `summary(2)`, `hint(2)` —
 because six sections sharing one id leaves nothing able to target one.
 
-## PR 5 — the three wallets (next)
+## PR 5 — the three wallets (done, #73)
 
-`WalletTrio`; wires section 2. First check whether `OverviewCard`'s `Donut` /
-`Legend` take static props — reuse beats a new component.
+`WalletTrio` + `MethodBlocks` + `TalkBubble`; wires section 2.
 
-**Section 2 is where the block renderer earns its keep.** `wallets.ts` mixes
-`text`, `quote` and `talk` in one section, and sections 4 and 6 repeat the
-pattern. A renderer that takes a `MethodBlock` and dispatches on `kind` —
-honouring `muted` — stops PRs 5–8 hand-wiring the same three cases. Deferred out
-of PR 4 deliberately: one consumer is not enough to generalise from, three is.
+`Donut` and `Legend` were checked and not reused. `Donut` takes static props but
+is an unlabelled ring on its own, and `Legend` renders per-wallet balances the
+page does not have. Variant E draws three flat pots, not a ring.
 
-## PR 6 — actions
+Four things PRs 6–8 inherit from it:
 
-`ActionList` + `ExampleTable`; wires sections 3 and 4.
+- **`MethodBlocks` renders a section's body.** It takes `readonly MethodBlock[]`
+  and dispatches on `kind` — `text` through `paragraphs` + `emphasize`, `quote`
+  to `EvidenceQuote`, `talk` to `TalkBubble` — honouring `muted`. A section
+  component lists its blocks in order and renders nothing itself. It wraps each
+  block in a `Fragment`, never a `<div>`, so `MethodSection`'s `> p` rule still
+  reaches the paragraphs; the test pins that.
+- **`TalkBubble` already exists**, all three tones. Section 2 carries a `talk`
+  block, so it could not wait for PR 7. PR 7 wires section 5 and adds nothing.
+- **A wallet's name, icon and share come from `src/lib/constants.ts`**
+  (`WALLET_NAME`, `WALLET_ICON`, `DEPOSIT_SPLIT`), and its gradient from
+  `src/theme/wallet-gradient.ts`. Section 4's example table repeats all three —
+  read them, do not retype the deck's numbers.
+- **Muted is a colour, not a size.** Every paragraph in a section body is
+  `typography.body`; `data-muted` only changes the colour. The opener's small
+  prose moved to prose size with it. What stays at `typography.label` is chrome:
+  eyebrow pill, section numeral, hint chip, chevron, pot label, bubble label,
+  citation.
+
+## PR 6 — actions (next)
+
+`ActionList` + `ExampleTable`; wires sections 3 and 4. Both section bodies go
+through `MethodBlocks`; only the checklist and the table are hand-wired.
 
 Values and tick states are **hardcoded** from the deck — none of the underlying
 settings exist yet (backlog §6b). The rescue rule is body text, not a checkbox:
@@ -216,7 +235,7 @@ exactly when it must not be negotiable.
 
 ## PR 7 — scripts
 
-`TalkBubble`; wires section 5. Outlined bubble with a tail, against
+Wires section 5; `TalkBubble` shipped in PR 5. Outlined bubble with a tail, against
 `EvidenceQuote`'s filled treatment — same rounded language, opposite fill, so
 neither is mistaken for the other while scanning. The "don't say this" line is
 struck through **inside the same bubble**, so both halves read as one exchange.
