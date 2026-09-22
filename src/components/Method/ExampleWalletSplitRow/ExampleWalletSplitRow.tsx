@@ -9,6 +9,7 @@ export function ExampleWalletSplitRow({
   wallet,
   amounts,
 }: ExampleRow): JSX.Element {
+  const walletShare = EXAMPLE_WALLET_SPLIT_ROW_COPY.walletShare(wallet);
   const perPeriod = amounts.map((amount, period) => (
     <td key={period}>{amount}</td>
   ));
@@ -16,7 +17,7 @@ export function ExampleWalletSplitRow({
   return (
     <tr data-testid={EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS.row}>
       <td data-testid={EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS.wallet}>
-        {EXAMPLE_WALLET_SPLIT_ROW_COPY.walletShare(wallet)}
+        {walletShare}
       </td>
       {perPeriod}
     </tr>

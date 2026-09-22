@@ -4,7 +4,6 @@ import { ExampleWalletSplitTable } from '../ExampleWalletSplitTable';
 import { MethodBlocks } from '../MethodBlocks';
 import { MethodSection } from '../MethodSection';
 import { METHOD_COPY, type MethodBlock } from '../copy';
-import { emphasize } from '../rich-text';
 import { ACTIONS_SECTION } from './constants';
 
 const { actions } = METHOD_COPY;
@@ -16,6 +15,8 @@ const ALLOWANCE_BLOCKS: readonly MethodBlock[] = [
   actions.split,
 ];
 
+const EXAMPLE_NOTE_BLOCKS: readonly MethodBlock[] = [actions.example.note];
+
 const RULE_BLOCKS: readonly MethodBlock[] = [
   actions.chores,
   actions.choresEvidence,
@@ -23,8 +24,6 @@ const RULE_BLOCKS: readonly MethodBlock[] = [
 ];
 
 export function ActionsSection(): JSX.Element {
-  const exampleNote = emphasize(actions.example.note);
-
   return (
     <MethodSection number={ACTIONS_SECTION.number} title={actions.title}>
       <MethodBlocks blocks={ALLOWANCE_BLOCKS} />
@@ -32,7 +31,7 @@ export function ActionsSection(): JSX.Element {
         caption={actions.example.title}
         {...actions.example.table}
       />
-      <p data-muted="true">{exampleNote}</p>
+      <MethodBlocks blocks={EXAMPLE_NOTE_BLOCKS} />
       <MethodBlocks blocks={RULE_BLOCKS} />
       <ActionList {...actions.decide} />
       <ActionList {...actions.communicate} />
