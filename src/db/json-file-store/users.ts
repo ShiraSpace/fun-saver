@@ -1,7 +1,7 @@
 import type { AuthProvider, User } from '@/lib/types';
 import { DuplicateUserError } from '@/lib/errors';
 import type { UserRepository } from '../data-store';
-import { findUserByIdentity } from '../user-identity';
+import { findUserByIdentity, isDuplicateUser } from '../user-identity';
 import type { FileSession } from './file-session';
 
 export class JsonUsers implements UserRepository {
@@ -18,9 +18,7 @@ export class JsonUsers implements UserRepository {
 
   insert(user: User): Promise<void> {
     return this.session.write(async (data, save): Promise<void> => {
-      if (
-        findUserByIdentity(data.users, user.provider, user.providerAccountId)
-      ) {
+      if (isDuplicateUser(data.users, user)) {
         throw new DuplicateUserError(user);
       }
       data.users.push(user);

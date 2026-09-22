@@ -30,7 +30,7 @@ export class PostgresUsers implements UserRepository {
         ${user.name},
         ${user.createdAt}
       )
-      ON CONFLICT (provider, provider_account_id) DO NOTHING
+      ON CONFLICT DO NOTHING
       RETURNING id
     `;
 
