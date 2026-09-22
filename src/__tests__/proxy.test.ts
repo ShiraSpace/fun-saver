@@ -24,6 +24,7 @@ const REACHABLE_PATHS = [
   `${LOGIN_PATH}/`,
   '/api/auth/callback/google',
   '/_next/static/chunk.js',
+  '/_next/image',
 ];
 
 function isGated(path: string): boolean {

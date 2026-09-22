@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { LOGIN_PATH, SESSION_COOKIE_NAMES } from '@/lib/constants';
 
 export const config = {
-  matcher: ['/((?!login(?:/|$)|api(?:/|$)|_next/static/|_next/image/).*)'],
+  matcher: ['/((?!login(?:/|$)|api(?:/|$)|_next(?:/|$)).*)'],
 };
 
 export function proxy(request: NextRequest): NextResponse {
