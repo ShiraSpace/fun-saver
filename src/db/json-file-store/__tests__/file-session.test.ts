@@ -1,8 +1,10 @@
 import { JsonFileStore } from '../index';
+import { UnknownOwnerError } from '@/lib/errors';
 import {
   createMockTransaction,
   mockAccount,
   mockAccountUser,
+  mockOwner,
   mockUser,
 } from '@/test-utils/fixtures';
 import { withTempStoreFile } from '@/test-utils/test-utils';
@@ -45,5 +47,25 @@ describe('FileSession write queue', () => {
     expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(
       mockAccountUser
     );
+  });
+
+  it('writes the owner when its user is queued first', async () => {
+    await Promise.all([
+      store.insertUser(mockUser),
+      store.insertAccountWithOwner(mockAccount, mockOwner),
+    ]);
+
+    expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(
+      mockAccountUser
+    );
+  });
+
+  it('rejects the account when its user is queued second', async () => {
+    await expect(
+      Promise.all([
+        store.insertAccountWithOwner(mockAccount, mockOwner),
+        store.insertUser(mockUser),
+      ])
+    ).rejects.toThrow(UnknownOwnerError);
   });
 });

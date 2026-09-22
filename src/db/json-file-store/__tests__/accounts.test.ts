@@ -1,4 +1,5 @@
 import { JsonFileStore } from '../index';
+import { DuplicateAccountError } from '@/lib/errors';
 import {
   mockAccount,
   mockAccountEdit,
@@ -8,6 +9,19 @@ import { withTempStoreFile } from '@/test-utils/test-utils';
 
 describe('JsonFileStore accounts', () => {
   const file = withTempStoreFile();
+  let store: JsonFileStore;
+
+  beforeEach(() => {
+    store = new JsonFileStore(file.path);
+  });
+
+  it('rejects a second insert of the same account', async () => {
+    await store.insertAccount(mockAccount);
+
+    await expect(store.insertAccount(mockAccount)).rejects.toThrow(
+      DuplicateAccountError
+    );
+  });
 
   it('persists accounts with embedded wallets across instances', async () => {
     await new JsonFileStore(file.path).insertAccount(mockAccount);
@@ -30,10 +44,7 @@ describe('JsonFileStore accounts', () => {
   });
 
   describe('edit account', () => {
-    let store: JsonFileStore;
-
     beforeEach(async () => {
-      store = new JsonFileStore(file.path);
       await store.insertAccount(mockAccount);
       await store.insertAccount(mockSecondAccount);
     });

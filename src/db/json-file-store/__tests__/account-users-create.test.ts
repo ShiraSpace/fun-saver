@@ -3,13 +3,12 @@ import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
 import {
   mockAccount,
   mockAccountUser,
+  mockOwner,
   mockSecondAccount,
+  mockUnknownOwner,
   mockUser,
 } from '@/test-utils/fixtures';
 import { withTempStoreFile } from '@/test-utils/test-utils';
-
-const mockOwner = { userId: mockUser.id, addedAt: mockAccountUser.addedAt };
-const mockUnknownOwner = { userId: 'ghost', addedAt: mockAccountUser.addedAt };
 
 describe('JsonFileStore creating an account with an owner', () => {
   const file = withTempStoreFile();

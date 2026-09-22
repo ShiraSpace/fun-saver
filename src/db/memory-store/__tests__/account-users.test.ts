@@ -3,13 +3,12 @@ import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
 import {
   mockAccount,
   mockAccountUser,
+  mockOwner,
   mockSecondAccount,
   mockSecondUser,
+  mockUnknownOwner,
   mockUser,
 } from '@/test-utils/fixtures';
-
-const mockOwner = { userId: mockUser.id, addedAt: mockAccountUser.addedAt };
-const mockUnknownOwner = { userId: 'ghost', addedAt: mockAccountUser.addedAt };
 
 describe('InMemoryStore account users', () => {
   let store: InMemoryStore;
@@ -37,6 +36,12 @@ describe('InMemoryStore account users', () => {
 
   it('does not list the account for anyone else', async () => {
     expect(await store.listAccountsForUser(mockSecondUser.id)).toEqual([]);
+  });
+
+  it('rejects a second account with the same id', async () => {
+    await expect(
+      store.insertAccountWithOwner(mockAccount, mockOwner)
+    ).rejects.toThrow(DuplicateAccountError);
   });
 
   it('rejects an owner that has no user row', async () => {
