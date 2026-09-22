@@ -28,7 +28,7 @@ export function AccountPicker({
   const pickerRef = useRef<HTMLDivElement>(null);
   const close = useCallback((): void => onToggle(false), [onToggle]);
 
-  useCloseOnOutsideClick(pickerRef, isOpen, close);
+  useCloseOnOutsideClick({ ref: pickerRef, isOpen, onClose: close });
 
   return (
     <Picker ref={pickerRef} data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>

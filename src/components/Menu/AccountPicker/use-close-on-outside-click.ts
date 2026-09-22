@@ -3,11 +3,17 @@
 import { RefObject, useEffect } from 'react';
 import { OUTSIDE_CLICK_EVENT } from './constants';
 
-export function useCloseOnOutsideClick(
-  ref: RefObject<HTMLElement | null>,
-  isOpen: boolean,
-  onClose: () => void
-): void {
+interface OutsideClickOptions {
+  ref: RefObject<HTMLElement | null>;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function useCloseOnOutsideClick({
+  ref,
+  isOpen,
+  onClose,
+}: OutsideClickOptions): void {
   useEffect(() => {
     if (!isOpen) {
       return;
