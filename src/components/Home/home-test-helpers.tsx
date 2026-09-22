@@ -50,8 +50,8 @@ export function tapAddRow(): void {
   fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
 }
 
-export function tapEditChip(): void {
-  fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip));
+export function tapEditButton(): void {
+  fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editButton));
 }
 
 export function submitEditForm(): void {

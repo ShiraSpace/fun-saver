@@ -13,7 +13,7 @@ import {
   submitCreateForm,
   submitEditForm,
   tapAddRow,
-  tapEditChip,
+  tapEditButton,
 } from './home-test-helpers';
 
 const mockRefresh = jest.fn();
@@ -95,7 +95,7 @@ describe('Home — managing accounts', () => {
     beforeEach(() => {
       renderHome();
       openMenu();
-      tapEditChip();
+      tapEditButton();
     });
 
     it('opens the edit overlay', () => {
@@ -158,7 +158,7 @@ describe('Home — managing accounts', () => {
     beforeEach(() => {
       renderHome({ initialAccountId: 'gone-from-this-list' });
       openMenu();
-      tapEditChip();
+      tapEditButton();
     });
 
     it('edits the account the header is showing rather than nothing', () => {

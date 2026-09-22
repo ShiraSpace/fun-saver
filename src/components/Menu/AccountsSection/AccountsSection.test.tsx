@@ -67,9 +67,9 @@ describe('AccountsSection', () => {
     );
   });
 
-  it('renders the edit chip', () => {
+  it('renders the edit button', () => {
     expect(
-      screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip)
+      screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editButton)
     ).toBeInTheDocument();
   });
 
@@ -97,14 +97,14 @@ describe('AccountsSection', () => {
     expect(mockOnAccountSelect).toHaveBeenCalled();
   });
 
-  it('enters edit mode when the edit chip is tapped', () => {
-    fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip));
+  it('enters edit mode when the edit button is tapped', () => {
+    fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editButton));
 
     expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.editingAccount);
   });
 
-  it('closes the menu when the edit chip is tapped', () => {
-    fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editChip));
+  it('closes the menu when the edit button is tapped', () => {
+    fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editButton));
 
     expect(mockOnAccountSelect).toHaveBeenCalled();
   });

@@ -15,7 +15,7 @@ describe('edit account from the menu', () => {
 
   beforeEach(async () => {
     await menu.open();
-    await menu.clickEditAccountChip();
+    await menu.clickEditAccountButton();
   });
 
   it('opens the edit form pre-filled with the current account', async () => {
@@ -44,7 +44,7 @@ describe('edit account from the menu', () => {
     assert.equal(await header.name(), mockAccount.name);
   });
 
-  it('keeps the edit chip inside the menu for the longest name', async () => {
+  it('keeps the edit button inside the menu for the longest name', async () => {
     await editAccount.replaceName(LONGEST_NAME);
     await editAccount.submit();
 
@@ -53,15 +53,15 @@ describe('edit account from the menu', () => {
     await menu.open();
 
     const section = await menu.accountsSectionBox();
-    const chip = await menu.editAccountChipBox();
+    const editButton = await menu.editAccountButtonBox();
 
     assert.ok(
-      chip.width <= section.width,
-      `edit chip is ${chip.width}px wide inside a ${section.width}px menu`
+      editButton.width <= section.width,
+      `edit button is ${editButton.width}px wide inside a ${section.width}px menu`
     );
     assert.ok(
-      chip.x >= section.x,
-      `edit chip starts at ${chip.x}px, left of the ${section.x}px menu`
+      editButton.x >= section.x,
+      `edit button starts at ${editButton.x}px, left of the ${section.x}px menu`
     );
   });
 
@@ -90,7 +90,7 @@ describe('edit account from the menu on the method page', () => {
     await menu.openMethodPage();
 
     await menu.open();
-    await menu.clickEditAccountChip();
+    await menu.clickEditAccountButton();
 
     assert.equal(await editAccount.isOpen(), true);
     assert.equal(await editAccount.nameValue(), mockAccount.name);
