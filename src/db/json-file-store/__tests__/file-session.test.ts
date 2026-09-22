@@ -61,11 +61,11 @@ describe('FileSession write queue', () => {
   });
 
   it('rejects the account when its user is queued second', async () => {
-    await expect(
-      Promise.all([
-        store.insertAccountWithOwner(mockAccount, mockOwner),
-        store.insertUser(mockUser),
-      ])
-    ).rejects.toThrow(UnknownOwnerError);
+    const [account] = await Promise.allSettled([
+      store.insertAccountWithOwner(mockAccount, mockOwner),
+      store.insertUser(mockUser),
+    ]);
+
+    expect(account).toMatchObject({ reason: expect.any(UnknownOwnerError) });
   });
 });
