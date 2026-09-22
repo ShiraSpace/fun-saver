@@ -38,7 +38,5 @@ export const APPEARANCE_SECTION_STYLE = {
   swatchSize: 38,
   swatchRadius: 12,
   rowGap: 9,
-  ringColor: '#FFFFFF',
-  ringWidth: 3,
-  ringOffset: 2,
+  ringWidth: 2.5,
 } as const;
