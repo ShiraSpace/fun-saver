@@ -227,8 +227,12 @@ No UI in this PR.
 - `Method.styles.ts` carries `'use client'`: emotion's `styled` evaluates
   `createContext`, which a server component's module graph cannot, so the build
   fails collecting `/method` without it.
-- Known gap: `/method` mounts no accounts or app-mode provider, so the accounts
-  and appearance sections of the menu render inert there.
+- The gap this left — `/method` mounting no accounts or app-mode provider, so
+  the accounts and appearance sections of the menu rendered inert there — was
+  closed by the menu redesign's #79, which gave `Method` `accounts` and
+  `initialAccount` props and wrapped it in `AccountManagement` and
+  `AccountsProvider`. `/method` now redirects home when the signed-in user has
+  no account at all.
 - e2e: menu link navigates to `/method`.
 
 ## PR 3 — the opener (done, #66 and #71)
@@ -374,6 +378,7 @@ this age — which partly argues against the product. That is deliberate.
   page, so one recording after PR 8 replaces five that would be re-recorded. It
   is also the only thing that can cover the chevron flip, which is CSS state and
   invisible to jsdom.
-- **`/method` mounts no accounts or app-mode provider**, so the accounts and
-  appearance sections of the burger menu render inert there. Own PR, unrelated
-  to section content.
+- **The page is no longer static.** #79 wired `/method` to the signed-in
+  user's accounts, so PR 8 branches off a `main` where `Method` takes props and
+  a section can reach the selected account if it needs to — which is the shape
+  decision 13's custom split will want.
