@@ -8,6 +8,7 @@ import {
   type AccountUserRow,
 } from '../row-mappers';
 import { PostgresAccounts } from './accounts';
+import { toAccountWriteError } from './errors';
 import { selectRows, type Sql } from './query';
 
 export class PostgresAccountUsers implements AccountUserRepository {
@@ -48,12 +49,19 @@ export class PostgresAccountUsers implements AccountUserRepository {
   ): Promise<void> {
     const accountUser = ownerAccountUser(account.id, owner);
 
-    await this.sql.transaction([
-      this.accounts.insertStatement(account),
-      this.sql`
-        INSERT INTO account_users (account_id, user_id, role, added_at)
-        VALUES (${accountUser.accountId}, ${accountUser.userId}, ${accountUser.role}, ${accountUser.addedAt})
-      `,
-    ]);
+    try {
+      await this.sql.transaction([
+        this.accounts.insertStatement(account),
+        this.sql`
+          INSERT INTO account_users (account_id, user_id, role, added_at)
+          VALUES (${accountUser.accountId}, ${accountUser.userId}, ${accountUser.role}, ${accountUser.addedAt})
+        `,
+      ]);
+    } catch (error) {
+      throw toAccountWriteError(error, {
+        accountId: account.id,
+        ownerId: owner.userId,
+      });
+    }
   }
 }

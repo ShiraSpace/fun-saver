@@ -27,4 +27,10 @@ describe('InMemoryStore users', () => {
       store.insertUser(createMockUser({ id: 'u2' }))
     ).rejects.toThrow(DuplicateUserError);
   });
+
+  it('rejects a second insert of the same id', async () => {
+    await expect(
+      store.insertUser(createMockUser({ providerAccountId: 'google-sub-2' }))
+    ).rejects.toThrow(DuplicateUserError);
+  });
 });

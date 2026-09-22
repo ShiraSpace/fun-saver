@@ -10,3 +10,14 @@ export function findUserByIdentity(
       user.provider === provider && user.providerAccountId === providerAccountId
   );
 }
+
+export function isKnownUser(users: User[], userId: string): boolean {
+  return users.some((user) => user.id === userId);
+}
+
+export function isDuplicateUser(users: User[], user: User): boolean {
+  return (
+    isKnownUser(users, user.id) ||
+    Boolean(findUserByIdentity(users, user.provider, user.providerAccountId))
+  );
+}

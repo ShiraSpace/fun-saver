@@ -2,6 +2,7 @@
  * @jest-environment node
  */
 import type { Account, User } from '@/lib/types';
+import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
 import {
   createMockAccount,
   createMockUser,
@@ -48,6 +49,24 @@ describe('PostgresAccountUsers creating an account with an owner', () => {
     ]);
   });
 
+  it('rejects a second account with the same id', async () => {
+    await expect(
+      store.insertAccountWithOwner(mockNewAccount, {
+        userId: mockOwner.id,
+        addedAt: mockAccountUser.addedAt,
+      })
+    ).rejects.toThrow(DuplicateAccountError);
+  });
+
+  it('reports the duplicate account when the owner is also unknown', async () => {
+    await expect(
+      store.insertAccountWithOwner(mockNewAccount, {
+        userId: userId('never-inserted'),
+        addedAt: mockAccountUser.addedAt,
+      })
+    ).rejects.toThrow(DuplicateAccountError);
+  });
+
   describe('when the owner row cannot be written', () => {
     let mockOrphanAccount: Account;
 
@@ -59,7 +78,7 @@ describe('PostgresAccountUsers creating an account with an owner', () => {
           userId: userId('never-inserted'),
           addedAt: mockAccountUser.addedAt,
         })
-      ).rejects.toThrow();
+      ).rejects.toThrow(UnknownOwnerError);
     });
 
     it('leaves no account behind', async () => {

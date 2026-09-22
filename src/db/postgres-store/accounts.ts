@@ -2,6 +2,7 @@ import type { Account, AccountEdits } from '@/lib/types';
 import type { ThemeId } from '@/theme/registry';
 import type { AccountRepository } from '../data-store';
 import { toAccount, type AccountRow } from '../row-mappers';
+import { toAccountWriteError } from './errors';
 import { selectRows, type QueryParam, type Sql } from './query';
 
 interface EditedColumns {
@@ -49,7 +50,11 @@ export class PostgresAccounts implements AccountRepository {
   }
 
   async insert(account: Account): Promise<void> {
-    await this.insertStatement(account);
+    try {
+      await this.insertStatement(account);
+    } catch (error) {
+      throw toAccountWriteError(error, { accountId: account.id });
+    }
   }
 
   async list(): Promise<Account[]> {

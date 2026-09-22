@@ -40,4 +40,12 @@ describe('PostgresUsers', () => {
       )
     ).rejects.toThrow(DuplicateUserError);
   });
+
+  it('rejects a second insert of the same id', async () => {
+    await expect(
+      store.insertUser(
+        createMockUser({ id: mockUser.id, providerAccountId: userId('sub-2') })
+      )
+    ).rejects.toThrow(DuplicateUserError);
+  });
 });

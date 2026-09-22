@@ -1,17 +1,42 @@
 import { JsonFileStore } from '../index';
-import { mockAccount, mockAccountUser, mockUser } from '@/test-utils/fixtures';
+import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
+import {
+  mockAccount,
+  mockAccountUser,
+  mockOwner,
+  mockSecondAccount,
+  mockUnknownOwner,
+  mockUser,
+} from '@/test-utils/fixtures';
 import { withTempStoreFile } from '@/test-utils/test-utils';
-
-const mockOwner = { userId: mockUser.id, addedAt: mockAccountUser.addedAt };
 
 describe('JsonFileStore creating an account with an owner', () => {
   const file = withTempStoreFile();
+  let store: JsonFileStore;
 
   beforeEach(async () => {
-    await new JsonFileStore(file.path).insertAccountWithOwner(
-      mockAccount,
-      mockOwner
-    );
+    store = new JsonFileStore(file.path);
+
+    await store.insertUser(mockUser);
+    await store.insertAccountWithOwner(mockAccount, mockOwner);
+  });
+
+  it('rejects a second account with the same id', async () => {
+    await expect(
+      store.insertAccountWithOwner(mockAccount, mockOwner)
+    ).rejects.toThrow(DuplicateAccountError);
+  });
+
+  it('rejects an owner that has no user row', async () => {
+    await expect(
+      store.insertAccountWithOwner(mockSecondAccount, mockUnknownOwner)
+    ).rejects.toThrow(UnknownOwnerError);
+  });
+
+  it('reports the duplicate account when the owner is also unknown', async () => {
+    await expect(
+      store.insertAccountWithOwner(mockAccount, mockUnknownOwner)
+    ).rejects.toThrow(DuplicateAccountError);
   });
 
   it('persists the account across instances', async () => {

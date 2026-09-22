@@ -7,6 +7,7 @@ import type {
   Wallet,
   WalletWithDerived,
 } from '@/lib/types';
+import type { AccountOwner } from '@/db/data-store';
 import { DEFAULT_WALLETS } from '@/lib/constants';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 
@@ -109,7 +110,24 @@ export const mockSecondAccount: Account = createMockAccount({
 
 export const mockUser: User = createMockUser();
 
+export const mockSecondUser: User = createMockUser({
+  id: 'u2',
+  providerAccountId: 'google-sub-2',
+  email: 'mushit@example.com',
+  name: 'מושית',
+});
+
 export const mockAccountUser: AccountUser = createMockAccountUser();
+
+export const mockOwner: AccountOwner = {
+  userId: mockUser.id,
+  addedAt: mockAccountUser.addedAt,
+};
+
+export const mockUnknownOwner: AccountOwner = {
+  userId: 'ghost',
+  addedAt: mockAccountUser.addedAt,
+};
 
 export const mockCreateAccountInput = {
   name: mockAccount.name,

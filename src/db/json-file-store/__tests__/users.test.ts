@@ -25,4 +25,13 @@ describe('JsonFileStore users', () => {
       store.insertUser(createMockUser({ id: 'u2' }))
     ).rejects.toThrow(DuplicateUserError);
   });
+
+  it('rejects a second insert of the same id', async () => {
+    const store = new JsonFileStore(file.path);
+    await store.insertUser(mockUser);
+
+    await expect(
+      store.insertUser(createMockUser({ providerAccountId: 'google-sub-2' }))
+    ).rejects.toThrow(DuplicateUserError);
+  });
 });
