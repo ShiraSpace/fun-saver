@@ -1,11 +1,18 @@
 import puppeteer, {
   type BoundingBox,
   type Browser,
+  type CookieData,
   type Page,
 } from 'puppeteer';
 import * as actions from './page-actions';
 import * as queries from './page-queries';
 import * as waits from './page-waits';
+
+interface OpenOptions {
+  baseUrl: string;
+  motion: queries.MotionPreference;
+  cookie: CookieData;
+}
 
 export class Session {
   private browser?: Browser;
@@ -21,8 +28,10 @@ export class Session {
     this.browser = await puppeteer.launch({ headless: true });
   }
 
-  async open(baseUrl: string, motion: queries.MotionPreference): Promise<void> {
-    this.activePage = await this.requireBrowser().newPage();
+  async open({ baseUrl, motion, cookie }: OpenOptions): Promise<void> {
+    const browser = this.requireBrowser();
+    this.activePage = await browser.newPage();
+    await browser.setCookie(cookie);
     await this.activePage.emulateMediaFeatures(queries.motionFeatures(motion));
     await this.activePage.goto(baseUrl, { waitUntil: 'networkidle0' });
   }
@@ -47,6 +56,10 @@ export class Session {
 
   currentPath(): string {
     return queries.currentPath(this.page);
+  }
+
+  signedInUserId(): Promise<string> {
+    return queries.signedInUserId(this.page);
   }
 
   exists(testId: string): Promise<boolean> {
