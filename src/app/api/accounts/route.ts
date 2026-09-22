@@ -3,8 +3,8 @@ import { signedInUserId } from '@/auth';
 import { getStore } from '@/db';
 import { validNewAccount } from '@/lib/account-input';
 import { AccountsStore } from '@/lib/accounts-store';
-import { jsonBody } from '../json-body';
-import { badRequest, notSignedIn } from '../responses';
+import { jsonBody } from '@/app/api/json-body';
+import { badRequest, notSignedIn } from '@/app/api/responses';
 
 export async function POST(request: Request): Promise<Response> {
   const userId = await signedInUserId();

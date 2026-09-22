@@ -1,21 +1,22 @@
 import { getStore } from '@/db';
-import { THEMES, type ThemeId } from '@/theme/registry';
-import { jsonBody } from '../../../json-body';
-import { accountNotFound, badRequest } from '../../../responses';
+import { asObject } from '@/lib/json-object';
+import { isThemeId } from '@/theme/registry';
+import { jsonBody } from '@/app/api/json-body';
+import { accountNotFound, badRequest } from '@/app/api/responses';
 import { withAccountEditor } from '../with-account-editor';
 
-interface ThemeBody {
-  themeId: string;
-}
-
 export const PUT = withAccountEditor(async (request, id) => {
-  const body = await jsonBody<ThemeBody>(request);
+  const body = asObject(await jsonBody(request));
 
-  if (!body || !(body.themeId in THEMES)) {
+  if (!body) {
+    return badRequest('invalid theme request');
+  }
+
+  if (!isThemeId(body.themeId)) {
     return badRequest('unknown theme');
   }
 
-  const updated = await getStore().setAccountTheme(id, body.themeId as ThemeId);
+  const updated = await getStore().setAccountTheme(id, body.themeId);
 
   if (!updated) {
     return accountNotFound();

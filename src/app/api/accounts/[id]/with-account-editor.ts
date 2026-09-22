@@ -1,7 +1,7 @@
 import { signedInUserId } from '@/auth';
 import { getStore } from '@/db';
 import { canEditAccount } from '@/lib/account-access';
-import { notSignedIn, notYourAccount } from '../../responses';
+import { notSignedIn, notYourAccount } from '@/app/api/responses';
 
 interface RouteContext {
   params: Promise<{ id: string }>;

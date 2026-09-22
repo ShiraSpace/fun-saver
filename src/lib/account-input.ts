@@ -2,16 +2,9 @@ import type { AccountEdits } from './types';
 import type { CreateAccountInput } from './accounts-store';
 import { AVATARS } from './avatars';
 import { MAX_ACCOUNT_NAME_LENGTH } from './constants';
+import { asObject } from './json-object';
 
 const ACCOUNT_FIELDS = ['name', 'avatarId'] as const;
-
-function asAccountObject(body: unknown): Record<string, unknown> | undefined {
-  if (typeof body !== 'object' || body === null || Array.isArray(body)) {
-    return;
-  }
-
-  return body as Record<string, unknown>;
-}
 
 function hasOnlyAccountFields(body: Record<string, unknown>): boolean {
   return Object.keys(body).every((field) =>
@@ -45,7 +38,7 @@ function collectEdits(body: Record<string, unknown>): AccountEdits {
 }
 
 function validFields(body: unknown): AccountEdits | undefined {
-  const requested = asAccountObject(body);
+  const requested = asObject(body);
 
   if (
     !requested ||

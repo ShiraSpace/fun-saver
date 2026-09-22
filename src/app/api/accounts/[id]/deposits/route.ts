@@ -3,13 +3,10 @@ import { addDeposit } from '@/lib/transactions';
 import { shekelsToAgorot } from '@/lib/money';
 import { ValidationError } from '@/lib/errors';
 import { today } from '@/lib/clock';
-import { jsonBody } from '../../../json-body';
-import { accountNotFound, badRequest } from '../../../responses';
+import { validDeposit } from '@/lib/transaction-input';
+import { jsonBody } from '@/app/api/json-body';
+import { accountNotFound, badRequest } from '@/app/api/responses';
 import { withAccountEditor } from '../with-account-editor';
-
-interface DepositBody {
-  amount: number;
-}
 
 export const POST = withAccountEditor(async (request, id) => {
   const store = getStore();
@@ -19,9 +16,9 @@ export const POST = withAccountEditor(async (request, id) => {
     return accountNotFound();
   }
 
-  const body = await jsonBody<DepositBody>(request);
+  const amount = validDeposit(await jsonBody(request));
 
-  if (!body) {
+  if (amount === undefined) {
     return badRequest('invalid deposit');
   }
 
@@ -29,7 +26,7 @@ export const POST = withAccountEditor(async (request, id) => {
     const transactions = await addDeposit({
       store,
       account,
-      amountAgorot: shekelsToAgorot(body.amount),
+      amountAgorot: shekelsToAgorot(amount),
       asOf: today(),
     });
 

@@ -1,8 +1,8 @@
 import { getStore } from '@/db';
 import { validAccountEdits } from '@/lib/account-input';
 import { AccountsStore } from '@/lib/accounts-store';
-import { jsonBody } from '../../json-body';
-import { accountNotFound, badRequest } from '../../responses';
+import { jsonBody } from '@/app/api/json-body';
+import { accountNotFound, badRequest } from '@/app/api/responses';
 import { withAccountEditor } from './with-account-editor';
 
 export const PUT = withAccountEditor(async (editAccountRequest, id) => {

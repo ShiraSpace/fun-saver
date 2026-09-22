@@ -3,14 +3,10 @@ import { addWithdrawal } from '@/lib/transactions';
 import { shekelsToAgorot } from '@/lib/money';
 import { OverdraftError, ValidationError } from '@/lib/errors';
 import { today } from '@/lib/clock';
-import { jsonBody } from '../../../json-body';
-import { accountNotFound, badRequest } from '../../../responses';
+import { validWithdrawal } from '@/lib/transaction-input';
+import { jsonBody } from '@/app/api/json-body';
+import { accountNotFound, badRequest } from '@/app/api/responses';
 import { withAccountEditor } from '../with-account-editor';
-
-interface WithdrawalBody {
-  walletId: string;
-  amount: number;
-}
 
 export const POST = withAccountEditor(async (request, id) => {
   const store = getStore();
@@ -20,9 +16,9 @@ export const POST = withAccountEditor(async (request, id) => {
     return accountNotFound();
   }
 
-  const body = await jsonBody<WithdrawalBody>(request);
+  const withdrawal = validWithdrawal(await jsonBody(request));
 
-  if (!body) {
+  if (!withdrawal) {
     return badRequest('invalid withdrawal');
   }
 
@@ -30,8 +26,8 @@ export const POST = withAccountEditor(async (request, id) => {
     const transaction = await addWithdrawal({
       store,
       account,
-      walletId: body.walletId,
-      amountAgorot: shekelsToAgorot(body.amount),
+      walletId: withdrawal.walletId,
+      amountAgorot: shekelsToAgorot(withdrawal.amount),
       asOf: today(),
     });
 
