@@ -25,13 +25,16 @@ export function AccountPicker({
   const currentAccount = selectedAccount(accounts, selectedAccountId);
   const showsAccountList = isAccountListOpen || !currentAccount;
 
+  const handleToggleAccountList = (): void =>
+    setIsAccountListOpen(!isAccountListOpen);
+
   return (
     <Picker data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>
       {currentAccount && (
         <AccountTrigger
           account={currentAccount}
           isOpen={isAccountListOpen}
-          onToggle={(): void => setIsAccountListOpen(!isAccountListOpen)}
+          onToggle={handleToggleAccountList}
         />
       )}
       {showsAccountList && (

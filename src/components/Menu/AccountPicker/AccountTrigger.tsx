@@ -23,6 +23,7 @@ export function AccountTrigger({
   isOpen,
   onToggle,
 }: AccountTriggerProps): JSX.Element {
+  const totalBalanceAgorot = totalBalance(account.wallets);
   const caret = isOpen
     ? ACCOUNT_PICKER_CONTENT.openCaret
     : ACCOUNT_PICKER_CONTENT.closedCaret;
@@ -43,7 +44,7 @@ export function AccountTrigger({
         <Name>{account.name}</Name>
         <Current>
           <Money
-            amountAgorot={totalBalance(account.wallets)}
+            amountAgorot={totalBalanceAgorot}
             testId={ACCOUNT_PICKER_TEST_IDS.triggerTotal}
           />
           {ACCOUNT_PICKER_CONTENT.currentSuffix}
