@@ -1,4 +1,5 @@
 import { JSX, ReactNode } from 'react';
+import { emphasize } from '../rich-text';
 import { METHOD_SECTION_COPY, METHOD_SECTION_TEST_IDS } from './constants';
 import {
   Body,
@@ -23,15 +24,18 @@ export function MethodSection({
   hint,
   children,
 }: MethodSectionProps): JSX.Element {
+  const heading = emphasize(title);
   const hintChip = hint && (
-    <Hint data-testid={METHOD_SECTION_TEST_IDS.hint}>{hint}</Hint>
+    <Hint data-testid={METHOD_SECTION_TEST_IDS.hint(number)}>
+      {emphasize(hint)}
+    </Hint>
   );
 
   return (
-    <Section data-testid={METHOD_SECTION_TEST_IDS.section}>
-      <Summary data-testid={METHOD_SECTION_TEST_IDS.summary}>
+    <Section data-testid={METHOD_SECTION_TEST_IDS.section(number)}>
+      <Summary data-testid={METHOD_SECTION_TEST_IDS.summary(number)}>
         <Numeral>{number}</Numeral>
-        <Title>{title}</Title>
+        <Title>{heading}</Title>
         {hintChip}
         <Chevron aria-hidden="true">{METHOD_SECTION_COPY.chevron}</Chevron>
       </Summary>

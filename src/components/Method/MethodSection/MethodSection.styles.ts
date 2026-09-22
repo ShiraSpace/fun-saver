@@ -60,7 +60,7 @@ export const Chevron = styled.span`
   color: ${({ theme }): string => theme.colors.textMuted};
   transition: transform 180ms ease;
 
-  details[open] & {
+  details[open] > summary & {
     transform: rotate(180deg);
   }
 

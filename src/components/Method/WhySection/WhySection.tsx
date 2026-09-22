@@ -12,6 +12,9 @@ export function WhySection(): JSX.Element {
     <p key={index}>{emphasize(line)}</p>
   ));
 
+  const noTransfers = emphasize(why.noTransfers.body);
+  const honest = emphasize(why.honest.body);
+
   return (
     <MethodSection number={WHY_SECTION.number} title={why.title}>
       {lead}
@@ -19,8 +22,8 @@ export function WhySection(): JSX.Element {
         body={why.evidence.body}
         citation={why.evidence.citation}
       />
-      <p>{emphasize(why.noTransfers.body)}</p>
-      <p data-muted="true">{emphasize(why.honest.body)}</p>
+      <p>{noTransfers}</p>
+      <p data-muted={why.honest.muted}>{honest}</p>
     </MethodSection>
   );
 }
