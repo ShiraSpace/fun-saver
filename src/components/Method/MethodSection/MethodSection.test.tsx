@@ -1,4 +1,5 @@
 import { render, screen } from '@/test-utils/render';
+import { SOURCES_SECTION_ID } from '../constants';
 import { MethodSection } from './MethodSection';
 import { METHOD_SECTION_TEST_IDS } from './constants';
 
@@ -54,11 +55,9 @@ describe('a method section', () => {
   });
 
   describe('when the section is not one of the numbered steps', () => {
-    const ID = 'sources';
-
     beforeEach(() => {
       render(
-        <MethodSection id={ID} title={TITLE}>
+        <MethodSection id={SOURCES_SECTION_ID} title={TITLE}>
           {BODY}
         </MethodSection>
       );
@@ -66,13 +65,15 @@ describe('a method section', () => {
 
     it('shows no number, so the six steps a parent has to follow stay six', () => {
       expect(
-        screen.queryByTestId(METHOD_SECTION_TEST_IDS.numeral(ID))
+        screen.queryByTestId(
+          METHOD_SECTION_TEST_IDS.numeral(SOURCES_SECTION_ID)
+        )
       ).not.toBeInTheDocument();
     });
 
     it('still shows what it holds, so it is not a heading with nothing under it', () => {
       expect(
-        screen.getByTestId(METHOD_SECTION_TEST_IDS.body(ID))
+        screen.getByTestId(METHOD_SECTION_TEST_IDS.body(SOURCES_SECTION_ID))
       ).toHaveTextContent(BODY);
     });
   });

@@ -21,14 +21,17 @@ function spokenLabel(numbers: readonly number[]): string {
 export function SourceMarker({ sources }: SourceMarkerProps): JSX.Element {
   const numbers = sources.map(sourceNumber);
 
+  const label = spokenLabel(numbers);
+  const written = numbers.join(SOURCE_MARKER_COPY.separator);
+
   return (
     <Marker
       dir="ltr"
       role="img"
-      aria-label={spokenLabel(numbers)}
+      aria-label={label}
       data-testid={SOURCE_MARKER_TEST_IDS.marker}
     >
-      {numbers.join(SOURCE_MARKER_COPY.separator)}
+      {written}
     </Marker>
   );
 }

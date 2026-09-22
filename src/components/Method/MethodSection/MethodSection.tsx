@@ -26,6 +26,7 @@ type MethodSectionProps = {
 
 export function MethodSection(props: MethodSectionProps): JSX.Element {
   const { number, title, hint, children } = props;
+
   const id: MethodSectionId = props.id === undefined ? props.number : props.id;
   const heading = emphasize(title);
   const numeral = number !== undefined && (
