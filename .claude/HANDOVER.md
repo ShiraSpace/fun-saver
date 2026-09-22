@@ -2,10 +2,11 @@
 
 ## Start here
 
-**Plan PRs 1–5, 8, 8b and 9 are done** (`#28`, `#32`, `#41`, `#49`, `#53`,
-`#55`, `#61`, `#74`, plus PR 9 on `feat/scope-accounts-to-user`), along with
-**`#67`** (`1cbb01c`), which settled the two store divergences the plan once
-assigned to PR 9. Verify by content on `main`, never by PR pages.
+**Plan PRs 1–5, 8 and 8b are merged** (`#28`, `#32`, `#41`, `#49`, `#53`, `#55`,
+`#61`, `#74`), along with **`#67`** (`1cbb01c`), which settled the two store
+divergences the plan once assigned to PR 9. **Plan PR 9 is open as
+[#81](https://github.com/ShiraSpace/fun-saver/pull/81)** on `feat/scope-accounts-to-user`; everything below describes the
+app with it merged. Verify by content on `main`, never by PR pages.
 
 **The public hole is closed.** `DataStore.listAccounts()` no longer exists. Both
 pages read through `src/app/signed-in-accounts.ts`, which resolves the session

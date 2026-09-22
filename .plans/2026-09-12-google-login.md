@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-22 (plan PR 9 is in review; PR 6 is next)
+## Progress — updated 2026-09-22 (plan PR 9 is open as #81; PR 6 is next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -23,10 +23,10 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 5            | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
 | PR 8            | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                               |
 | PR 8b           | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff |
-| PR 9            | —                                                      | `feat/scope-accounts-to-user`      | **in review**                                        |
+| PR 9            | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **in review**                                        |
 | PR 6, 7, 10, 11 | —                                                      | —                                  | not started                                          |
 
-### PR 9 is in review, and PR 6 is next
+### PR 9 is open as #81, and PR 6 is next
 
 PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
 read through `listAccountsForUser` with the id from the session. A stranger who
@@ -832,7 +832,7 @@ alongside `AUTH_SECRET`.
 
 Depends on: PR 3, PR 8. Ships: nothing user-visible.
 
-### PR 9 — `feat/scope-accounts-to-user` — IN REVIEW
+### PR 9 — `feat/scope-accounts-to-user` — OPEN AS [#81](https://github.com/ShiraSpace/fun-saver/pull/81)
 
 **The switch.** Shipped as four commits, each green on its own.
 
