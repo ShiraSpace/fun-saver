@@ -82,6 +82,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
 
   it('refuses a stranger with 403 and leaves the savings untouched', async () => {
     jest.mocked(signedInUserId).mockResolvedValue(mockSecondUser.id);
+
     const before = await savingsBalance();
 
     const response = await postWithdraw(savingsId, 20, account.id);
