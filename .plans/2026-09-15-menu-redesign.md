@@ -14,24 +14,24 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-15 (PRs 1–4 merged; PR 5 is next)
+## Progress — updated 2026-09-22 (PRs 1–5 merged; PR 6 is next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
-| Plan PR       | GitHub                                                 | Branch                       | Status                 |
-| ------------- | ------------------------------------------------------ | ---------------------------- | ---------------------- |
-| PR 1          | [#58](https://github.com/ShiraSpace/fun-saver/pull/58) | `feat/menu-derived-accounts` | **merged** — `0085222` |
-| PR 2          | [#59](https://github.com/ShiraSpace/fun-saver/pull/59) | `feat/menu-light-sheet`      | **merged** — `6288806` |
-| PR 3          | [#62](https://github.com/ShiraSpace/fun-saver/pull/62) | `feat/menu-below-header`     | **merged** — `80d0b67` |
-| PR 4          | [#65](https://github.com/ShiraSpace/fun-saver/pull/65) | `feat/menu-account-list`     | **merged** — `8036baa` |
-| PR 5          | —                                                      | `feat/menu-account-picker`   | **next**               |
-| PR 6, 7, 8, 9 | —                                                      | —                            | not started            |
+| Plan PR    | GitHub                                                 | Branch                       | Status                 |
+| ---------- | ------------------------------------------------------ | ---------------------------- | ---------------------- |
+| PR 1       | [#58](https://github.com/ShiraSpace/fun-saver/pull/58) | `feat/menu-derived-accounts` | **merged** — `0085222` |
+| PR 2       | [#59](https://github.com/ShiraSpace/fun-saver/pull/59) | `feat/menu-light-sheet`      | **merged** — `6288806` |
+| PR 3       | [#62](https://github.com/ShiraSpace/fun-saver/pull/62) | `feat/menu-below-header`     | **merged** — `80d0b67` |
+| PR 4       | [#65](https://github.com/ShiraSpace/fun-saver/pull/65) | `feat/menu-account-list`     | **merged** — `8036baa` |
+| PR 5       | [#70](https://github.com/ShiraSpace/fun-saver/pull/70) | `feat/menu-account-picker`   | **merged** — `d162cde` |
+| PR 6       | —                                                      | `feat/menu-account-popover`  | **next**               |
+| PR 7, 8, 9 | —                                                      | —                            | not started            |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
-and the chip row is a list of `AccountRow`s carrying each account's total. What is
-left is collapsing that list behind a trigger (PR 5), making the expansion a popover
-(PR 6), moving edit under it (PR 7), grouping by scope (PR 8) and the nav section
-(PR 9).
+and the accounts sit behind an `AccountTrigger` showing the current account, its
+total and a caret. What is left is making that expansion a popover (PR 6), moving
+edit under the trigger (PR 7), grouping by scope (PR 8) and the nav section (PR 9).
 
 ### What the merged PRs changed that this plan did not predict
 
@@ -53,6 +53,25 @@ left is collapsing that list behind a trigger (PR 5), making the expansion a pop
   left `AccountList` at 41 lines against the 40-line `max-lines-per-function` cap.
 - **`AccountChip`'s `Badge` never needed a light-panel equivalent.** It is a
   `primary`-filled pill on the avatar, independent of the panel colour. PR 4 deleted it.
+- **PR 5 had to reset the picker when the menu opens.** `MenuOverlay` renders
+  `<Panel data-open>` always — closing is a CSS toggle, never an unmount — so an
+  expanded list stayed expanded and every later opening showed the full list. Fixed
+  with `<AccountsSection key={String(isOpen)}>`. An effect resetting the state is what
+  React documents and what `react-hooks/set-state-in-effect` rejects; the state lives
+  in the picker, and the reset belongs to whoever owns `isOpen`. PR 6 lifts it anyway
+  for the Escape ordering, which is where this stops being a `key`.
+- **PR 5 gave `Money` a `fullSizeCurrency` variant.** `MONEY_STYLE` shrinks the mark
+  to `0.4em` at `0.65` opacity — right for the hero's 38px, a ~5px speck at the row's
+  12px label. The variant restores `1em`, full opacity and no gap, matching the
+  mockup's single `₪1165` text run.
+- **PR 5 put the totals in a column.** The mockup gives `.tot` an auto inline-start
+  margin resolved against its own `direction: ltr`, so each total sits next to its
+  name and shifts with the name's width — measured in a browser, not read off the
+  picture. A real column was wanted instead, so `Name` reserves `nameColumnWidth: 56`.
+  Names wider than that push their total out of the column.
+- **PR 5's e2e seam needed a wait, not just a click.** Rows are reached with
+  `clickNth`, which does not wait, so `openAccountPicker()` waits on the list through
+  a new `session.waitForTestId`.
 
 ### Still open from the merged work
 
@@ -64,6 +83,12 @@ left is collapsing that list behind a trigger (PR 5), making the expansion a pop
 - **The edit pencil floats alone** under the account list since PR 4 deleted the chip
   row that held it. PR 7 is what resolves this, which is an argument for not leaving
   PR 5 and 6 sitting in review for long.
+- **The mockup's account colours are a token pair we do not have.** It paints the
+  trigger border and the selected row from `--globalBg` `#EDF4E6` and `--globalBorder`
+  `#A9C77E`, a muted sage; we substituted `softBg` / `softBorder`, which in
+  jungle-quest are `#F3F7E4` / `#B5D94C` (lime) and in sunshine-quest are yellow. The
+  difference was rejected on sight, so PR 8's caveat resolves the way it feared: real
+  tokens across `ThemeColors` and all three themes, as its own theme PR before PR 8.
 - **`HEADER_LAYOUT.foregroundZIndex` and `MENU_TOGGLE.zIndex` are vestigial.** They
   existed so the title, avatar and burger could float above a panel that covered them;
   since PR 3 nothing covers them. Left in place because the panel still animates under
@@ -181,6 +206,15 @@ close-on-outside-click.
 `MenuOverlay` already closes the whole menu on `Escape`. Escape must close the
 picker first and only close the menu when the picker is shut, so the handlers need
 ordering rather than two independent listeners.
+
+As of PR 5 the open state is `useState` inside `AccountPicker`, which `MenuOverlay`
+cannot see. Escape ordering is what forces the lift — put it where `isMenuOpen`
+already lives (`Header`) and reset it in the toggle handler, which also retires the
+`key={String(isOpen)}` remount PR 5 leaned on. `AccountList` carries
+`ACCOUNT_LIST_DOM_ID` and the trigger points at it with `aria-controls`, so the
+popover keeps that pair. The mockup's `.acctList` is the shape to match: absolutely
+positioned, `inset-inline: 11px`, `surface` fill, a `softBorder` edge and a drop
+shadow.
 
 ## PR 7 — edit moves under the trigger
 
