@@ -1,20 +1,30 @@
 import { InMemoryStore } from '@/db/memory-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { AccountsStore } from '../accounts-store';
+import { today } from '../clock';
 import { SAVINGS_MONTHLY_RATE } from '../constants';
-import { mockCreateAccountInput, mockAccountEdit } from '@/test-utils/fixtures';
+import {
+  mockCreateAccountInput,
+  mockAccountEdit,
+  mockUser,
+} from '@/test-utils/fixtures';
 import type { Account } from '@/lib/types';
 
-const ASOF = '2026-01-01';
+async function ownedAccountsStore(): Promise<AccountsStore> {
+  const store = new InMemoryStore();
+  await store.insertUser(mockUser);
+
+  return new AccountsStore(store);
+}
 
 describe('AccountsStore', () => {
   it('creates an active account with the given name and avatar', async () => {
-    const accountsStore = new AccountsStore(new InMemoryStore());
+    const accountsStore = await ownedAccountsStore();
 
-    const account = await accountsStore.createAccount(
-      mockCreateAccountInput,
-      ASOF
-    );
+    const account = await accountsStore.createAccount({
+      input: mockCreateAccountInput,
+      ownerId: mockUser.id,
+    });
 
     expect(typeof account.id).toBe('string');
     expect(account.id.length).toBeGreaterThan(0);
@@ -25,35 +35,47 @@ describe('AccountsStore', () => {
     });
   });
 
-  it('seeds the three default wallets opened on the given day', async () => {
-    const accountsStore = new AccountsStore(new InMemoryStore());
+  it('seeds the three default wallets at their configured rate', async () => {
+    const accountsStore = await ownedAccountsStore();
 
-    const account = await accountsStore.createAccount(
-      mockCreateAccountInput,
-      ASOF
-    );
+    const account = await accountsStore.createAccount({
+      input: mockCreateAccountInput,
+      ownerId: mockUser.id,
+    });
 
     expect(account.wallets.map((wallet) => wallet.name).sort()).toEqual([
       'goodDeeds',
       'savings',
       'spending',
     ]);
+    expect(
+      account.wallets.find((wallet) => wallet.name === 'savings')
+    ).toMatchObject({ monthlyInterestRate: SAVINGS_MONTHLY_RATE });
+  });
 
-    const savings = account.wallets.find((wallet) => wallet.name === 'savings');
-    expect(savings).toMatchObject({
-      monthlyInterestRate: SAVINGS_MONTHLY_RATE,
-      openedAt: ASOF,
-      lastInterestDate: ASOF,
+  it('opens every wallet today', async () => {
+    const accountsStore = await ownedAccountsStore();
+
+    const account = await accountsStore.createAccount({
+      input: mockCreateAccountInput,
+      ownerId: mockUser.id,
     });
+
+    const openedToday = account.wallets.filter(
+      (wallet) =>
+        wallet.openedAt === today() && wallet.lastInterestDate === today()
+    );
+
+    expect(openedToday).toEqual(account.wallets);
   });
 
   it('gives a new account the default theme', async () => {
-    const accountsStore = new AccountsStore(new InMemoryStore());
+    const accountsStore = await ownedAccountsStore();
 
-    const account = await accountsStore.createAccount(
-      mockCreateAccountInput,
-      ASOF
-    );
+    const account = await accountsStore.createAccount({
+      input: mockCreateAccountInput,
+      ownerId: mockUser.id,
+    });
 
     expect(account.themeId).toBe(DEFAULT_THEME_ID);
   });
@@ -63,8 +85,11 @@ describe('AccountsStore', () => {
     let account: Account;
 
     beforeEach(async () => {
-      accountsStore = new AccountsStore(new InMemoryStore());
-      account = await accountsStore.createAccount(mockCreateAccountInput, ASOF);
+      accountsStore = await ownedAccountsStore();
+      account = await accountsStore.createAccount({
+        input: mockCreateAccountInput,
+        ownerId: mockUser.id,
+      });
     });
 
     it('updates the name and avatar of an existing account', async () => {
