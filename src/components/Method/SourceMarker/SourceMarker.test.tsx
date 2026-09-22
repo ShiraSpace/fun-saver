@@ -17,6 +17,12 @@ describe('the number that points a claim at its source', () => {
       ).toHaveTextContent('3');
     });
 
+    it('says out loud that it is a source, so a listener does not hear it as part of the sentence', () => {
+      expect(
+        screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)
+      ).toHaveAccessibleName('מקור 3');
+    });
+
     it('reads left to right, so a Hebrew sentence does not reverse it', () => {
       expect(screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)).toHaveAttribute(
         'dir',

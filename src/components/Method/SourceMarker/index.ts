@@ -1,1 +1,1 @@
-export { SourceMarker, sourceNumber } from './SourceMarker';
+export { SourceMarker } from './SourceMarker';

@@ -4,4 +4,7 @@ export const SOURCE_MARKER_TEST_IDS = {
 
 export const SOURCE_MARKER_COPY = {
   separator: ',',
+  labelSeparator: ' ו-',
+  one: 'מקור',
+  several: 'מקורות',
 } as const;
