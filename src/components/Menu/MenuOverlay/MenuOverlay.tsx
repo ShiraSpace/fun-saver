@@ -1,8 +1,8 @@
 'use client';
 
 import { JSX } from 'react';
-import { GlobalScope } from '../GlobalScope';
-import { AccountScope } from '../AccountScope';
+import { MenuGlobalScope } from '../MenuGlobalScope';
+import { MenuAccountScope } from '../MenuAccountScope';
 import { AppearanceSection } from '../AppearanceSection';
 import { LanguageSection } from '../LanguageSection';
 import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
@@ -38,15 +38,15 @@ export function MenuOverlay({
       data-open={isOpen}
     >
       <Content>
-        <GlobalScope
+        <MenuGlobalScope
           onLeaveMenu={onClose}
           isAccountListOpen={isAccountListOpen}
           onAccountListToggle={onAccountListToggle}
         />
-        <AccountScope>
+        <MenuAccountScope>
           <AppearanceSection />
           <LanguageSection />
-        </AccountScope>
+        </MenuAccountScope>
         <NavLink
           href={METHOD_ROUTE}
           data-testid={MENU_OVERLAY_TEST_IDS.methodLink}

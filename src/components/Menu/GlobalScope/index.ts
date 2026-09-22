@@ -1,1 +1,0 @@
-export { GlobalScope } from './GlobalScope';

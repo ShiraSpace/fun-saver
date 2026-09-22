@@ -2,7 +2,7 @@ import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
 import { MenuOverlay } from './MenuOverlay';
 import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
-import { GLOBAL_SCOPE_TEST_IDS } from '../GlobalScope/constants';
+import { MENU_GLOBAL_SCOPE_TEST_IDS } from '../MenuGlobalScope/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
 
@@ -42,7 +42,7 @@ describe('MenuOverlay', () => {
 
     it('renders the accounts, appearance and language sections', () => {
       expect(
-        screen.getByTestId(GLOBAL_SCOPE_TEST_IDS.block)
+        screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block)
       ).toBeInTheDocument();
       expect(
         screen.getByTestId(APPEARANCE_SECTION_TEST_IDS.section)

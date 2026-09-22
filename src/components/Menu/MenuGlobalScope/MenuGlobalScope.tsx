@@ -3,25 +3,25 @@
 import { JSX } from 'react';
 import { AccountPicker } from '../AccountPicker';
 import { EditAccountButton } from '../EditAccountButton';
-import { GLOBAL_SCOPE_TEST_IDS } from './constants';
-import { GlobalBlock } from './GlobalScope.styles';
+import { MENU_GLOBAL_SCOPE_TEST_IDS } from './constants';
+import { GlobalBlock } from './MenuGlobalScope.styles';
 import { useAccounts } from '@/components/Home/accounts-context';
 import {
   APP_MODE,
   useAppMode,
 } from '@/components/AccountManagement/app-mode-context';
 
-interface GlobalScopeProps {
+interface MenuGlobalScopeProps {
   onLeaveMenu: () => void;
   isAccountListOpen: boolean;
   onAccountListToggle: (isOpen: boolean) => void;
 }
 
-export function GlobalScope({
+export function MenuGlobalScope({
   onLeaveMenu,
   isAccountListOpen,
   onAccountListToggle,
-}: GlobalScopeProps): JSX.Element {
+}: MenuGlobalScopeProps): JSX.Element {
   const { accounts, currentAccount, selectAccount } = useAccounts();
   const { setMode } = useAppMode();
 
@@ -41,7 +41,7 @@ export function GlobalScope({
   };
 
   return (
-    <GlobalBlock data-testid={GLOBAL_SCOPE_TEST_IDS.block}>
+    <GlobalBlock data-testid={MENU_GLOBAL_SCOPE_TEST_IDS.block}>
       <AccountPicker
         accounts={accounts}
         currentAccount={currentAccount}

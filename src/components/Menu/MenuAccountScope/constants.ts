@@ -1,14 +1,14 @@
-export const ACCOUNT_SCOPE_TEST_IDS = {
+export const MENU_ACCOUNT_SCOPE_TEST_IDS = {
   block: 'menu-account-scope',
   heading: 'menu-account-scope-heading',
 } as const;
 
-export const ACCOUNT_SCOPE_CONTENT = {
+export const MENU_ACCOUNT_SCOPE_CONTENT = {
   headingPrefix: 'הגדרות של',
   note: 'נשמר על החשבון הזה בלבד.',
 } as const;
 
-export const ACCOUNT_SCOPE_STYLE = {
+export const MENU_ACCOUNT_SCOPE_STYLE = {
   avatarSize: 20,
   headGap: 7,
   headMarginBottom: 3,
