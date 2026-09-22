@@ -3,6 +3,7 @@ import { MenuOverlay } from './MenuOverlay';
 import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from '../MenuGlobalScope/constants';
+import { MENU_ACCOUNT_SCOPE_TEST_IDS } from '../MenuAccountScope/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
 
@@ -40,16 +41,23 @@ describe('MenuOverlay', () => {
       expect(onClose).toHaveBeenCalled();
     });
 
-    it('renders the accounts, appearance and language sections', () => {
+    it('keeps the account picker in the block that is not about one account', () => {
       expect(
         screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block)
       ).toBeInTheDocument();
-      expect(
+    });
+
+    it('puts what is saved on the account inside the per-account block', () => {
+      const accountScope = screen.getByTestId(
+        MENU_ACCOUNT_SCOPE_TEST_IDS.block
+      );
+
+      expect(accountScope).toContainElement(
         screen.getByTestId(APPEARANCE_SECTION_TEST_IDS.section)
-      ).toBeInTheDocument();
-      expect(
+      );
+      expect(accountScope).toContainElement(
         screen.getByTestId(LANGUAGE_SECTION_TEST_IDS.section)
-      ).toBeInTheDocument();
+      );
     });
 
     it('offers a way out to the method page', () => {
