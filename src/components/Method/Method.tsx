@@ -4,8 +4,9 @@ import { JSX } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { Header } from '@/components/Header';
 import { Screen } from '@/components/Screen';
+import { AccountManagement } from '@/components/AccountManagement';
 import { AccountsProvider } from '@/components/Home/accounts-context';
-import { useAccountSelection } from '@/hooks/use-account-selection';
+import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { MethodIntro } from './MethodIntro';
 import { WalletsSection } from './WalletsSection';
 import { WhySection } from './WhySection';
@@ -18,27 +19,27 @@ interface MethodProps {
 }
 
 export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
-  const { currentAccount, selectAccount } = useAccountSelection(
-    accounts,
-    initialAccount.id
-  );
+  const navigation = useAccountNavigation(accounts, initialAccount.id);
+  const { currentAccount, selectAccount } = navigation;
 
   return (
-    <AccountsProvider
-      value={{
-        accounts,
-        currentAccount: currentAccount ?? initialAccount,
-        selectAccount,
-      }}
-    >
-      <Screen align="top">
-        <Column>
-          <Header title={METHOD_COPY.title} />
-          <MethodIntro />
-          <WhySection />
-          <WalletsSection />
-        </Column>
-      </Screen>
-    </AccountsProvider>
+    <AccountManagement navigation={navigation}>
+      <AccountsProvider
+        value={{
+          accounts,
+          currentAccount: currentAccount ?? initialAccount,
+          selectAccount,
+        }}
+      >
+        <Screen align="top">
+          <Column>
+            <Header title={METHOD_COPY.title} />
+            <MethodIntro />
+            <WhySection />
+            <WalletsSection />
+          </Column>
+        </Screen>
+      </AccountsProvider>
+    </AccountManagement>
   );
 }

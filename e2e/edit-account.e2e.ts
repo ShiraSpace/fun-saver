@@ -81,3 +81,18 @@ describe('edit account from the menu', () => {
     assert.equal(await header.name(), mockAccount.name);
   });
 });
+
+describe('edit account from the menu on the method page', () => {
+  const { menu, editAccount } = useDriver({ accounts: [mockAccount] });
+
+  it('opens the edit form there too, on the account in view', async () => {
+    await menu.open();
+    await menu.openMethodPage();
+
+    await menu.open();
+    await menu.clickEditAccountChip();
+
+    assert.equal(await editAccount.isOpen(), true);
+    assert.equal(await editAccount.nameValue(), mockAccount.name);
+  });
+});

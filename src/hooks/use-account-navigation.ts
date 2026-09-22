@@ -1,10 +1,13 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Account, AccountWithDerivedWallets } from '@/lib/types';
-import { useAccountSelection } from '@/hooks/use-account-selection';
-import { APP_MODE, AppMode } from './app-mode-context';
+import {
+  APP_MODE,
+  AppMode,
+} from '@/components/AccountManagement/app-mode-context';
+import { useAccountSelection } from './use-account-selection';
 
-interface HomeNavigation {
+export interface AccountNavigation {
   mode: AppMode;
   setMode: Dispatch<SetStateAction<AppMode>>;
   currentAccount?: AccountWithDerivedWallets;
@@ -16,10 +19,10 @@ interface HomeNavigation {
   editingAccount?: AccountWithDerivedWallets;
 }
 
-export function useHomeNavigation(
+export function useAccountNavigation(
   accounts: AccountWithDerivedWallets[],
   initialAccountId: string
-): HomeNavigation {
+): AccountNavigation {
   const router = useRouter();
   const { currentAccount, selectAccount } = useAccountSelection(
     accounts,

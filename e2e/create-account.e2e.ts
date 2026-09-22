@@ -67,3 +67,18 @@ describe('add account from the menu', () => {
     assert.equal(await header.name(), mockAccount.name);
   });
 });
+
+describe('add account from the menu on the method page', () => {
+  const { menu, createAccount } = useDriver({ accounts: [mockAccount] });
+
+  it('opens the create form there too', async () => {
+    await menu.open();
+    await menu.openMethodPage();
+
+    await menu.open();
+    await menu.openAccountPicker();
+    await menu.clickAddAccountRow();
+
+    assert.equal(await createAccount.isOpen(), true);
+  });
+});

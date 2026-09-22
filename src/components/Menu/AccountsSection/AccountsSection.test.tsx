@@ -10,7 +10,7 @@ import {
   APP_MODE,
   AppModeProvider,
   type AppMode,
-} from '@/components/Home/app-mode-context';
+} from '@/components/AccountManagement/app-mode-context';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
