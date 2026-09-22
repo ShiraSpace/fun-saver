@@ -29,12 +29,12 @@ function blockContent(block: MethodBlock): JSX.Element {
   }
 
   const lines = paragraphs(block.body);
+  const lastLine = lines.length - 1;
+  const marker = block.sources && <SourceMarker sources={block.sources} />;
   const rendered = lines.map((line, index) => (
     <p key={index} data-muted={block.muted}>
       {emphasize(line)}
-      {index === lines.length - 1 && block.sources && (
-        <SourceMarker sources={block.sources} />
-      )}
+      {index === lastLine && marker}
     </p>
   ));
 

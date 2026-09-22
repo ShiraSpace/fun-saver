@@ -8,11 +8,13 @@ import { METHOD_COPY } from '../copy';
 const { sources } = METHOD_COPY;
 
 export function SourcesSection(): JSX.Element {
+  const sourceCount = String(sources.list.length);
+
   return (
     <MethodSection
       id={SOURCES_SECTION_ID}
       title={sources.title}
-      hint={String(sources.list.length)}
+      hint={sourceCount}
     >
       <MethodBlocks blocks={[sources.intro]} />
       <SourceList sources={sources.list} />
