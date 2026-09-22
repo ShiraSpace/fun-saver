@@ -1,11 +1,11 @@
 import { JSX } from 'react';
-import type { MoneyTable } from '../copy';
+import type { ExampleTable } from '../copy';
 import { ExampleWalletSplitRow } from '../ExampleWalletSplitRow';
 import { emphasize } from '../rich-text';
 import { EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS } from './constants';
 import { Caption, Scroller, Table } from './ExampleWalletSplitTable.styles';
 
-interface ExampleWalletSplitTableProps extends MoneyTable {
+interface ExampleWalletSplitTableProps extends ExampleTable {
   caption: string;
 }
 
@@ -14,6 +14,7 @@ export function ExampleWalletSplitTable({
   headers,
   rows,
 }: ExampleWalletSplitTableProps): JSX.Element {
+  const heading = emphasize(caption);
   const periods = headers.map((header) => (
     <th key={header} scope="col">
       {header}
@@ -27,7 +28,7 @@ export function ExampleWalletSplitTable({
     <Scroller>
       <Table data-testid={EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.table}>
         <Caption data-testid={EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.caption}>
-          {emphasize(caption)}
+          {heading}
         </Caption>
         <thead>
           <tr>{periods}</tr>

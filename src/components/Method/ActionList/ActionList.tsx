@@ -32,11 +32,12 @@ function actionRow(action: ActionItem): JSX.Element {
 }
 
 export function ActionList({ label, items }: ActionGroup): JSX.Element {
+  const heading = emphasize(label);
   const actions = items.map(actionRow);
 
   return (
     <Group data-testid={ACTION_LIST_TEST_IDS.group}>
-      <Label>{emphasize(label)}</Label>
+      <Label>{heading}</Label>
       <Items>{actions}</Items>
     </Group>
   );

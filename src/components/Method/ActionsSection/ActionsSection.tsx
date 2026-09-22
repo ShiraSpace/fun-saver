@@ -23,6 +23,8 @@ const RULE_BLOCKS: readonly MethodBlock[] = [
 ];
 
 export function ActionsSection(): JSX.Element {
+  const exampleNote = emphasize(actions.example.note);
+
   return (
     <MethodSection number={ACTIONS_SECTION.number} title={actions.title}>
       <MethodBlocks blocks={ALLOWANCE_BLOCKS} />
@@ -30,7 +32,7 @@ export function ActionsSection(): JSX.Element {
         caption={actions.example.title}
         {...actions.example.table}
       />
-      <p data-muted="true">{emphasize(actions.example.note)}</p>
+      <p data-muted="true">{exampleNote}</p>
       <MethodBlocks blocks={RULE_BLOCKS} />
       <ActionList {...actions.decide} />
       <ActionList {...actions.communicate} />

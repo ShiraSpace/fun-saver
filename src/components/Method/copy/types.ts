@@ -34,7 +34,7 @@ export interface ExampleRow {
   amounts: readonly string[];
 }
 
-export interface MoneyTable {
+export interface ExampleTable {
   headers: readonly string[];
   rows: readonly ExampleRow[];
 }
