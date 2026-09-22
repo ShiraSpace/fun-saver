@@ -1,7 +1,7 @@
-import { StatusCodes } from 'http-status-codes';
 import { signedInUserId } from '@/auth';
 import { getStore } from '@/db';
 import { canEditAccount } from '@/lib/account-access';
+import { notSignedIn, notYourAccount } from '../../responses';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -25,19 +25,13 @@ export function withAccountEditor(handle: AccountEditorHandler): RouteHandler {
     ]);
 
     if (!userId) {
-      return Response.json(
-        { error: 'not signed in' },
-        { status: StatusCodes.UNAUTHORIZED }
-      );
+      return notSignedIn();
     }
 
     const canEdit = await canEditAccount(getStore(), userId, id);
 
     if (!canEdit) {
-      return Response.json(
-        { error: 'not your account' },
-        { status: StatusCodes.FORBIDDEN }
-      );
+      return notYourAccount();
     }
 
     return handle(request, id);

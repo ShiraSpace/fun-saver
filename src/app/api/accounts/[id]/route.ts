@@ -1,27 +1,21 @@
-import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
 import { validAccountEdits } from '@/lib/account-input';
 import { AccountsStore } from '@/lib/accounts-store';
+import { jsonBody } from '../../json-body';
+import { accountNotFound, badRequest } from '../../responses';
 import { withAccountEditor } from './with-account-editor';
 
 export const PUT = withAccountEditor(async (editAccountRequest, id) => {
-  const editAccount = await editAccountRequest.json().catch(() => null);
-  const edits = validAccountEdits(editAccount);
+  const edits = validAccountEdits(await jsonBody(editAccountRequest));
 
   if (!edits) {
-    return Response.json(
-      { error: 'invalid account edits' },
-      { status: StatusCodes.BAD_REQUEST }
-    );
+    return badRequest('invalid account edits');
   }
 
   const updated = await new AccountsStore(getStore()).updateAccount(id, edits);
 
   if (!updated) {
-    return Response.json(
-      { error: 'account not found' },
-      { status: StatusCodes.NOT_FOUND }
-    );
+    return accountNotFound();
   }
 
   return Response.json(updated);
