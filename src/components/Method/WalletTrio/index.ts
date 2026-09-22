@@ -1,0 +1,1 @@
+export { WalletTrio } from './WalletTrio';

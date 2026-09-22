@@ -20,6 +20,5 @@ export const Text = styled.span`
 export const Note = styled.span`
   display: block;
   margin-top: 3px;
-  font-size: ${({ theme }): number => theme.typography.label}px;
   opacity: 0.82;
 `;

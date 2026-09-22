@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { WalletName } from '@/lib/types';
-import { WALLET_GRADIENT } from '../../WalletCard/constants';
+import { WALLET_GRADIENT } from '@/theme/wallet-gradient';
 import { WALLET_TILE_STYLE } from './constants';
 
 export const Tile = styled.button<{ selected: boolean }>`
