@@ -74,10 +74,11 @@ export const AddRow = styled.button`
 `;
 
 export const Name = styled.span`
-  flex: 1;
+  min-width: ${ACCOUNT_LIST_STYLE.nameColumnWidth}px;
 `;
 
 export const Total = styled.span`
   font-size: ${totalSize}px;
+  font-weight: 700;
   color: ${mutedText};
 `;

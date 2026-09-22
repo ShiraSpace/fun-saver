@@ -47,6 +47,7 @@ export function AccountTrigger({
         <Current>
           <Money
             amountAgorot={totalBalanceAgorot}
+            fullSizeCurrency
             testId={ACCOUNT_PICKER_TEST_IDS.triggerTotal}
           />
           {ACCOUNT_PICKER_CONTENT.currentSuffix}

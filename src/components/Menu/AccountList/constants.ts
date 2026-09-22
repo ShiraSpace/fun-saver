@@ -19,4 +19,5 @@ export const ACCOUNT_LIST_STYLE = {
   rowPaddingY: 8,
   rowPaddingX: 11,
   rowRadius: 14,
+  nameColumnWidth: 56,
 } as const;

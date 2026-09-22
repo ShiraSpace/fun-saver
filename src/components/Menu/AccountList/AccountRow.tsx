@@ -39,6 +39,7 @@ export function AccountRow({
       <Total>
         <Money
           amountAgorot={totalBalanceAgorot}
+          fullSizeCurrency
           testId={ACCOUNT_LIST_TEST_IDS.total}
         />
       </Total>
