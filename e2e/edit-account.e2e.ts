@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import { mockAccount, mockAccountEdit } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { useDriver } from './driver/use-driver';
+import { PHONE } from './driver/viewports';
 
 const EDITED_NAME = 'רוני';
 const LONGEST_NAME = 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH);
-const PHONE = { width: 402, height: 874 };
 
 describe('edit account from the menu', () => {
   const { menu, editAccount, avatarPicker, header, session } = useDriver({
@@ -49,7 +49,7 @@ describe('edit account from the menu', () => {
     await editAccount.submit();
 
     await header.waitForName(LONGEST_NAME);
-    await session.resize(PHONE.width, PHONE.height);
+    await session.resize(PHONE);
     await menu.open();
 
     const section = await menu.accountsSectionBox();
