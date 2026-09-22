@@ -1016,7 +1016,7 @@ docs.
   predicate and a wrapper rather than the two functions this plan named.
 - All four routes became `export const PUT/POST = withAccountEditor(async
 (request, id) => …)` and **lost** their own `RouteContext` and `await
-context.params`: −43/+15 across the four. **`[id]/route.ts` is the one this
+context.params`: −42/+12 across the four. **`[id]/route.ts` is the one this
   plan kept leaving out** — the PUT that renames an account and changes its
   avatar, omitted by every earlier draft of this list.
 

@@ -31,7 +31,9 @@ export function withAccountEditor(handle: AccountEditorHandler): RouteHandler {
       );
     }
 
-    if (!(await canEditAccount(getStore(), userId, id))) {
+    const canEdit = await canEditAccount(getStore(), userId, id);
+
+    if (!canEdit) {
       return Response.json(
         { error: 'not your account' },
         { status: StatusCodes.FORBIDDEN }
