@@ -1,3 +1,11 @@
+import { DEPOSIT_SPLIT } from '@/lib/constants';
+import { share } from '../constants';
+import { WALLETS_COPY } from './wallets';
+
+const APP_SPLIT = WALLETS_COPY.pots
+  .map((wallet) => share(DEPOSIT_SPLIT[wallet]))
+  .join(' / ');
+
 export const ACTIONS_COPY = {
   title: 'מה צריך לעשות',
   intro: {
@@ -38,7 +46,7 @@ export const ACTIONS_COPY = {
       {
         done: true,
         question: 'איך מחלקים?',
-        answer: 'באפליקציה: **50 / 40 / 10**',
+        answer: `באפליקציה: **${APP_SPLIT}**`,
       },
       { done: true, question: 'קשור למטלות?', answer: 'שלכם: **לא**' },
       {
@@ -63,11 +71,15 @@ export const ACTIONS_COPY = {
     table: {
       headers: ['קופה', 'לשבוע', 'לחודש', 'לשנה'],
       rows: [
-        ['🛍️ בזבוזים 50%', '₪15', '₪65', '₪780'],
-        ['🐷 חיסכון 40%', '₪12', '₪52', '₪624'],
-        ['💛 מעשים טובים 10%', '₪3', '₪13', '₪156'],
+        { wallet: 'spending', amounts: ['₪15', '₪65', '₪780'] },
+        { wallet: 'savings', amounts: ['₪12', '₪52', '₪624'] },
+        { wallet: 'goodDeeds', amounts: ['₪3', '₪13', '₪156'] },
       ],
     },
-    note: '₪15 לשבוע זה בערך גלידה אחת. מספיק כדי לבחור, לא מספיק כדי שהבחירה תהיה קלה.',
+    note: {
+      kind: 'text',
+      muted: true,
+      body: '₪15 לשבוע זה בערך גלידה אחת. מספיק כדי לבחור, לא מספיק כדי שהבחירה תהיה קלה.',
+    },
   },
 } as const;
