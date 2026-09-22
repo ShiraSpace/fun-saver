@@ -1,9 +1,18 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { type BoundingBox } from 'puppeteer';
 import { mockAccount } from '@/test-utils/fixtures';
 import { COLORS } from '@/theme/palette';
 import { hexToRgb } from './test-utils/css-color';
 import { useDriver } from './driver/use-driver';
+
+const bottomOf = (box: BoundingBox): number => box.y + box.height;
+const centreX = (box: BoundingBox): number => box.x + box.width / 2;
+const justInsideTop = (box: BoundingBox): number => box.y + 1;
+const spanOf = (box: BoundingBox): string => `${box.y}-${bottomOf(box)}`;
+
+const overlapVertically = (a: BoundingBox, b: BoundingBox): boolean =>
+  a.y < bottomOf(b) && bottomOf(a) > b.y;
 
 const NO_TRANSFORM = 'none';
 const VISIBLE = '1';
@@ -53,6 +62,51 @@ describe('menu morph', () => {
 
     it('opens onto a soft sheet rather than the screen gradient', async () => {
       assert.equal(await menu.panelBackground(), SHEET);
+    });
+
+    it('leaves the appearance section where it was when the list opens', async () => {
+      const before = await menu.appearanceSectionBox();
+
+      await menu.openAccountPicker();
+
+      const after = await menu.appearanceSectionBox();
+
+      assert.equal(after.y, before.y);
+    });
+
+    describe('with the account list open', () => {
+      let appearance: BoundingBox;
+      let list: BoundingBox;
+
+      beforeEach(async () => {
+        await menu.openAccountPicker();
+
+        appearance = await menu.appearanceSectionBox();
+        list = await menu.accountListBox();
+      });
+
+      it('reaches down over the appearance section', () => {
+        const listReachesOverIt = overlapVertically(list, appearance);
+
+        assert.ok(
+          listReachesOverIt,
+          `list spans ${spanOf(list)}, appearance spans ${spanOf(appearance)}`
+        );
+      });
+
+      it('takes a tap meant for the appearance section underneath', async () => {
+        const whereTheyOverlap = {
+          x: centreX(appearance),
+          y: justInsideTop(appearance),
+        };
+        const listTakesTheTap =
+          await menu.accountListReceivesTapAt(whereTheyOverlap);
+
+        assert.ok(
+          listTakesTheTap,
+          `the appearance section takes the tap at ${whereTheyOverlap.x},${whereTheyOverlap.y}`
+        );
+      });
     });
   });
 });

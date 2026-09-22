@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
 import { TITLE_TEST_IDS } from './CrossfadeTitle/constants';
@@ -10,7 +10,7 @@ describe('Header', () => {
   const AVATAR_ID = 'kid-01';
 
   beforeEach(() => {
-    render(<Header title={ACCOUNT_NAME} avatarId={AVATAR_ID} />);
+    renderWithAccounts(<Header title={ACCOUNT_NAME} avatarId={AVATAR_ID} />);
   });
 
   it('shows the account name', () => {

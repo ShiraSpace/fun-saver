@@ -1,29 +1,31 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Account, AccountWithDerivedWallets } from '@/lib/types';
+import {
+  APP_MODE,
+  AppMode,
+} from '@/components/AccountManagement/app-mode-context';
+import { persistSelectedAccount } from '@/components/Home/selected-account-cookie';
+import { selectedAccount } from '@/lib/selected-account';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/ThemeController';
-import { selectedAccount } from '@/lib/selected-account';
-import { APP_MODE, AppMode } from './app-mode-context';
-import { persistSelectedAccount } from './selected-account-cookie';
 
-interface HomeNavigation {
+export interface AccountNavigation {
   mode: AppMode;
   setMode: Dispatch<SetStateAction<AppMode>>;
-  selectedAccountId: string;
+  currentAccount?: AccountWithDerivedWallets;
   selectAccount: (id: string) => void;
   showNewAccount: (account: Account) => void;
   finishEditing: () => void;
   cancel: () => void;
-  hasAccounts: boolean;
   isCreating: boolean;
   editingAccount?: AccountWithDerivedWallets;
 }
 
-export function useHomeNavigation(
+export function useAccountNavigation(
   accounts: AccountWithDerivedWallets[],
   initialAccountId: string
-): HomeNavigation {
+): AccountNavigation {
   const router = useRouter();
   const setThemeId = useSetThemeId();
 
@@ -45,13 +47,13 @@ export function useHomeNavigation(
     router.refresh();
   };
 
-  const hasAccounts = accounts.length > 0;
+  const currentAccount = selectedAccount(accounts, selectedAccountId);
   const isEditing = mode === APP_MODE.editingAccount;
 
   return {
     mode,
     setMode,
-    selectedAccountId,
+    currentAccount,
     selectAccount,
     showNewAccount: (account): void => {
       selectAccount(account.id);
@@ -59,11 +61,7 @@ export function useHomeNavigation(
     },
     finishEditing,
     cancel: returnToViewing,
-    hasAccounts,
     isCreating: mode === APP_MODE.creatingAccount,
-    editingAccount:
-      isEditing && hasAccounts
-        ? selectedAccount(accounts, selectedAccountId)
-        : undefined,
+    editingAccount: isEditing ? currentAccount : undefined,
   };
 }

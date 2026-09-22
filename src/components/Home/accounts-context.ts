@@ -3,20 +3,24 @@
 import { createContext, useContext } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 
+const NO_PROVIDER = 'useAccounts needs an AccountsProvider above it';
+
 export interface AccountsContextValue {
   accounts: AccountWithDerivedWallets[];
-  selectedAccountId: string;
+  currentAccount: AccountWithDerivedWallets;
   selectAccount: (id: string) => void;
 }
 
-const AccountsContext = createContext<AccountsContextValue>({
-  accounts: [],
-  selectedAccountId: '',
-  selectAccount: () => {},
-});
+const AccountsContext = createContext<AccountsContextValue | null>(null);
 
 export const AccountsProvider = AccountsContext.Provider;
 
 export function useAccounts(): AccountsContextValue {
-  return useContext(AccountsContext);
+  const value = useContext(AccountsContext);
+
+  if (!value) {
+    throw new Error(NO_PROVIDER);
+  }
+
+  return value;
 }

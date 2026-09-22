@@ -1,41 +1,37 @@
 'use client';
 
-import { JSX, useEffect } from 'react';
+import { JSX, useCallback } from 'react';
 import { AccountsSection } from '../AccountsSection';
 import { AppearanceSection } from '../AppearanceSection';
 import { LanguageSection } from '../LanguageSection';
-import {
-  ESCAPE_KEY,
-  MENU_OVERLAY_CONTENT,
-  MENU_OVERLAY_TEST_IDS,
-} from './constants';
+import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
+import { useEscapeKey } from './use-escape-key';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Panel, Content, NavLink } from './MenuOverlay.styles';
 
 export interface MenuOverlayProps {
   isOpen: boolean;
   onClose: () => void;
+  isAccountListOpen: boolean;
+  onAccountListToggle: (isOpen: boolean) => void;
 }
 
 export function MenuOverlay({
   isOpen,
   onClose,
+  isAccountListOpen,
+  onAccountListToggle,
 }: MenuOverlayProps): JSX.Element {
-  useEffect(() => {
-    if (!isOpen) {
+  const closePickerThenMenu = useCallback((): void => {
+    if (isAccountListOpen) {
+      onAccountListToggle(false);
       return;
     }
 
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === ESCAPE_KEY) {
-        onClose();
-      }
-    };
+    onClose();
+  }, [isAccountListOpen, onAccountListToggle, onClose]);
 
-    document.addEventListener('keydown', onKeyDown);
-
-    return (): void => document.removeEventListener('keydown', onKeyDown);
-  }, [isOpen, onClose]);
+  useEscapeKey({ isListening: isOpen, onEscape: closePickerThenMenu });
 
   return (
     <Panel
@@ -45,7 +41,11 @@ export function MenuOverlay({
       data-open={isOpen}
     >
       <Content>
-        <AccountsSection key={String(isOpen)} onAccountSelect={onClose} />
+        <AccountsSection
+          onAccountSelect={onClose}
+          isAccountListOpen={isAccountListOpen}
+          onAccountListToggle={onAccountListToggle}
+        />
         <AppearanceSection />
         <LanguageSection />
         <NavLink

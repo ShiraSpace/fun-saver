@@ -19,9 +19,7 @@ const nameSize = ({ theme }: { theme: Theme }): number => theme.typography.body;
 const subSize = ({ theme }: { theme: Theme }): number => theme.typography.label;
 
 export const Picker = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${ACCOUNT_PICKER_STYLE.listGap}px;
+  position: relative;
 `;
 
 export const Trigger = styled.button`
@@ -59,6 +57,7 @@ export const Name = styled.b`
 
 export const Current = styled.span`
   display: flex;
+  align-items: baseline;
   font-size: ${subSize}px;
   color: ${mutedText};
 `;
