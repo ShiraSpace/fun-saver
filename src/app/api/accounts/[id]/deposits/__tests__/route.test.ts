@@ -32,6 +32,19 @@ describe('POST /api/accounts/[id]/deposits', () => {
     return POST(request, { params: Promise.resolve({ id }) });
   }
 
+  function postRawBody(
+    id: string,
+    body: string | undefined
+  ): Promise<Response> {
+    const request = new Request('http://localhost/api/accounts/x/deposits', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body,
+    });
+
+    return POST(request, { params: Promise.resolve({ id }) });
+  }
+
   async function savingsTransactions(id: string): Promise<Transaction[]> {
     const account = await getStore().getAccount(id);
     const savings = account!.wallets.find(
@@ -72,6 +85,16 @@ describe('POST /api/accounts/[id]/deposits', () => {
     const response = await postDeposit(20, accountId);
 
     expect(response.status).toBe(403);
+    expect(await savingsTransactions(accountId)).toEqual([]);
+  });
+
+  it.each([
+    ['malformed json', '{ "amount": '],
+    ['no body at all', undefined],
+  ])('rejects %s with 400 and banks nothing', async (_label, body) => {
+    const response = await postRawBody(accountId, body);
+
+    expect(response.status).toBe(400);
     expect(await savingsTransactions(accountId)).toEqual([]);
   });
 });

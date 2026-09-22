@@ -30,6 +30,16 @@ describe('PUT /api/accounts/[id]/theme', () => {
     return PUT(request, { params: Promise.resolve({ id }) });
   }
 
+  function putRawBody(id: string, body: string | undefined): Promise<Response> {
+    const request = new Request('http://localhost/api/accounts/x/theme', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body,
+    });
+
+    return PUT(request, { params: Promise.resolve({ id }) });
+  }
+
   it('saves the theme on the account', async () => {
     const response = await putTheme('midnight-blue', accountId);
 
@@ -64,5 +74,17 @@ describe('PUT /api/accounts/[id]/theme', () => {
     expect((await getStore().getAccount(accountId))?.themeId).not.toBe(
       'midnight-blue'
     );
+  });
+
+  it.each([
+    ['malformed json', '{ "themeId": '],
+    ['no body at all', undefined],
+  ])('rejects %s with 400 and keeps the stored theme', async (_label, body) => {
+    const before = (await getStore().getAccount(accountId))?.themeId;
+
+    const response = await putRawBody(accountId, body);
+
+    expect(response.status).toBe(400);
+    expect((await getStore().getAccount(accountId))?.themeId).toBe(before);
   });
 });

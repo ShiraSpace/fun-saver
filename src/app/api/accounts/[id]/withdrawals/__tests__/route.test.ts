@@ -46,6 +46,19 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
     return POST(request, { params: Promise.resolve({ id }) });
   }
 
+  function postRawBody(
+    id: string,
+    body: string | undefined
+  ): Promise<Response> {
+    const request = new Request('http://localhost/api/accounts/x/withdrawals', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body,
+    });
+
+    return POST(request, { params: Promise.resolve({ id }) });
+  }
+
   async function savingsBalance(): Promise<number> {
     return balance(
       await getStore().listTransactionsByWallet(account.id, savingsId)
@@ -88,6 +101,18 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
     const response = await postWithdraw(savingsId, 20, account.id);
 
     expect(response.status).toBe(403);
+    expect(await savingsBalance()).toBe(before);
+  });
+
+  it.each([
+    ['malformed json', '{ "amount": '],
+    ['no body at all', undefined],
+  ])('rejects %s with 400 and moves no money', async (_label, body) => {
+    const before = await savingsBalance();
+
+    const response = await postRawBody(account.id, body);
+
+    expect(response.status).toBe(400);
     expect(await savingsBalance()).toBe(before);
   });
 });
