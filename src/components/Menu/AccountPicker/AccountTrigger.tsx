@@ -5,6 +5,7 @@ import type { AccountWithDerivedWallets } from '@/lib/types';
 import { Avatar } from '@/components/Avatar/Avatar';
 import { Money } from '@/components/Money';
 import { totalBalance } from '@/lib/derivations';
+import { ACCOUNT_LIST_DOM_ID } from '../AccountList/constants';
 import {
   ACCOUNT_PICKER_CONTENT,
   ACCOUNT_PICKER_STYLE,
@@ -33,6 +34,7 @@ export function AccountTrigger({
       type="button"
       data-testid={ACCOUNT_PICKER_TEST_IDS.trigger}
       aria-expanded={isOpen}
+      aria-controls={ACCOUNT_LIST_DOM_ID}
       onClick={onToggle}
     >
       <Avatar
@@ -50,7 +52,9 @@ export function AccountTrigger({
           {ACCOUNT_PICKER_CONTENT.currentSuffix}
         </Current>
       </Naming>
-      <Caret data-testid={ACCOUNT_PICKER_TEST_IDS.caret}>{caret}</Caret>
+      <Caret aria-hidden="true" data-testid={ACCOUNT_PICKER_TEST_IDS.caret}>
+        {caret}
+      </Caret>
     </Trigger>
   );
 }

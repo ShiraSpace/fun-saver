@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { ACCOUNT_PICKER_STYLE } from './constants';
+import { MENU_ROW_STYLE } from '../constants';
 
 const surface = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 
@@ -30,17 +31,17 @@ export const Trigger = styled.button`
   width: 100%;
   box-sizing: border-box;
   padding: ${ACCOUNT_PICKER_STYLE.paddingY}px ${ACCOUNT_PICKER_STYLE.paddingX}px;
-  border: ${ACCOUNT_PICKER_STYLE.borderWidth}px solid ${triggerBorder};
+  border: ${MENU_ROW_STYLE.borderWidth}px solid ${triggerBorder};
   border-radius: ${ACCOUNT_PICKER_STYLE.radius}px;
   background: ${surface};
   color: ${strongText};
   font: inherit;
   text-align: start;
   cursor: pointer;
-  transition: transform ${ACCOUNT_PICKER_STYLE.pressMs}ms ease;
+  transition: transform ${MENU_ROW_STYLE.pressMs}ms ease;
 
   &:active {
-    transform: scale(${ACCOUNT_PICKER_STYLE.pressScale});
+    transform: scale(${MENU_ROW_STYLE.pressScale});
   }
 `;
 

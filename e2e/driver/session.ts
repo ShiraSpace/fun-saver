@@ -122,7 +122,7 @@ export class Session {
   }
 
   waitForTestId(testId: string): Promise<void> {
-    return waits.waitForTestId(this.page, testId);
+    return waits.waitForTestId({ page: this.page, testId });
   }
 
   waitForStyle(

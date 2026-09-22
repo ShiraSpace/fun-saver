@@ -54,6 +54,22 @@ describe('Home', () => {
     });
   });
 
+  describe('reopening the menu after picking an account', () => {
+    beforeEach(() => {
+      renderHome();
+      openMenu();
+      openAccountPicker();
+      fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
+      openMenu();
+    });
+
+    it('opens on the account it is showing rather than the whole list', () => {
+      expect(
+        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe('selecting an account', () => {
     beforeEach(() => {
       renderHome();

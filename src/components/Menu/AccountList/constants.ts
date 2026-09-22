@@ -1,3 +1,5 @@
+export const ACCOUNT_LIST_DOM_ID = 'menu-accounts';
+
 export const ACCOUNT_LIST_TEST_IDS = {
   list: 'menu-account-list',
   row: 'menu-account-row',
@@ -17,7 +19,4 @@ export const ACCOUNT_LIST_STYLE = {
   rowPaddingY: 8,
   rowPaddingX: 11,
   rowRadius: 14,
-  borderWidth: 1.5,
-  pressScale: 0.98,
-  pressMs: 120,
 } as const;

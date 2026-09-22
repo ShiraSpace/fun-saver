@@ -8,7 +8,6 @@ import { ACCOUNT_PICKER_CONTENT, ACCOUNT_PICKER_TEST_IDS } from './constants';
 const mockOnToggle = jest.fn();
 
 function renderTrigger(isOpen: boolean): void {
-  jest.clearAllMocks();
   render(
     <AccountTrigger
       account={mockDerivedAccount}
@@ -19,6 +18,10 @@ function renderTrigger(isOpen: boolean): void {
 }
 
 describe('AccountTrigger', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('while the account list is closed', () => {
     beforeEach(() => {
       renderTrigger(false);

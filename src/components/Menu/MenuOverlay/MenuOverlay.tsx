@@ -45,7 +45,7 @@ export function MenuOverlay({
       data-open={isOpen}
     >
       <Content>
-        <AccountsSection onAccountSelect={onClose} />
+        <AccountsSection key={String(isOpen)} onAccountSelect={onClose} />
         <AppearanceSection />
         <LanguageSection />
         <NavLink

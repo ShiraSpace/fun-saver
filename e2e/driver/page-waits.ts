@@ -8,13 +8,21 @@ interface StyleWait {
   value: string;
 }
 
+interface ElementWait {
+  page: Page;
+  testId: string;
+}
+
 interface ContentWait {
   page: Page;
   testId: string;
   expected: string;
 }
 
-export async function waitForTestId(page: Page, testId: string): Promise<void> {
+export async function waitForTestId({
+  page,
+  testId,
+}: ElementWait): Promise<void> {
   await findByTest(page, testId);
 }
 

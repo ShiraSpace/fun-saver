@@ -17,9 +17,6 @@ export const ACCOUNT_PICKER_STYLE = {
   paddingY: 10,
   paddingX: 12,
   radius: 16,
-  borderWidth: 1.5,
   listGap: 5,
   subGap: 1,
-  pressScale: 0.98,
-  pressMs: 120,
 } as const;

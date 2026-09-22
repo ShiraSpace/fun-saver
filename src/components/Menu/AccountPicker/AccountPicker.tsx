@@ -27,7 +27,7 @@ export function AccountPicker({
   const showsAccountList = isAccountListOpen || !currentAccount;
 
   const handleToggleAccountList = (): void =>
-    setIsAccountListOpen(!isAccountListOpen);
+    setIsAccountListOpen((isOpen) => !isOpen);
 
   return (
     <Picker data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>
