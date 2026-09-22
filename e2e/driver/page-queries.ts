@@ -11,6 +11,15 @@ export function currentPath(page: Page): string {
   return new URL(page.url()).pathname;
 }
 
+export function signedInUserId(page: Page): Promise<string> {
+  return page.evaluate(async (): Promise<string> => {
+    const response = await fetch('/api/auth/session');
+    const session = await response.json();
+
+    return session?.user?.id ?? '';
+  });
+}
+
 export async function exists(page: Page, testId: string): Promise<boolean> {
   return (await queryByTest(page, testId)) !== null;
 }

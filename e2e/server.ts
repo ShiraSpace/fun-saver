@@ -3,10 +3,12 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { TEST_AUTH_SECRET } from './driver/auth-session';
 
 export interface RunningServer {
   baseUrl: string;
   dataPath: string;
+  authSecret: string;
   stop: () => Promise<void>;
 }
 
@@ -20,6 +22,8 @@ export async function startServer(): Promise<RunningServer> {
     PORT: String(port),
     FUNSAVER_DATA_PATH: dataPath,
     FUNSAVER_NOW: '2026-01-01',
+    AUTH_SECRET: TEST_AUTH_SECRET,
+    AUTH_TRUST_HOST: 'true',
   };
   const baseUrl = `http://localhost:${port}`;
   const server = spawn('npx', ['next', 'start', '-p', String(port)], {
@@ -32,6 +36,7 @@ export async function startServer(): Promise<RunningServer> {
   return {
     baseUrl,
     dataPath,
+    authSecret: TEST_AUTH_SECRET,
     stop: async (): Promise<void> => {
       server.kill('SIGTERM');
       await rm(dataDir, { recursive: true, force: true });
