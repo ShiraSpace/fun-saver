@@ -16,11 +16,7 @@ const LIMIT_BLOCKS: readonly MethodBlock[] = [
 
 export function LimitsSection(): JSX.Element {
   return (
-    <MethodSection
-      id={SECTION_NUMBER.limits}
-      number={SECTION_NUMBER.limits}
-      title={limits.title}
-    >
+    <MethodSection number={SECTION_NUMBER.limits} title={limits.title}>
       <MethodBlocks blocks={LIMIT_BLOCKS} />
     </MethodSection>
   );

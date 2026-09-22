@@ -1,4 +1,6 @@
-export type MethodSectionId = number | string;
+import { SOURCES_SECTION_ID } from '../constants';
+
+export type MethodSectionId = number | typeof SOURCES_SECTION_ID;
 
 export const METHOD_SECTION_TEST_IDS = {
   section: (id: MethodSectionId): string => `method-section-${id}`,

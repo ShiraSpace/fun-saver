@@ -111,4 +111,18 @@ describe('what a section says, written out from the copy', () => {
       );
     });
   });
+
+  describe('given a claim whose last source was taken away', () => {
+    const BLOCK: MethodBlock = { kind: 'text', sources: [], body: 'הטענה' };
+
+    beforeEach(() => {
+      render(<MethodBlocks blocks={[BLOCK]} />);
+    });
+
+    it('shows no number, so the sentence does not end on a mark pointing nowhere', () => {
+      expect(
+        screen.queryByTestId(SOURCE_MARKER_TEST_IDS.marker)
+      ).not.toBeInTheDocument();
+    });
+  });
 });

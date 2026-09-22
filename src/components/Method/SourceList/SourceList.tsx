@@ -10,7 +10,7 @@ interface SourceListProps {
 
 export function SourceList({ sources }: SourceListProps): JSX.Element {
   const entries = sources.map((source) => (
-    <Entry key={source.url} data-testid={SOURCE_LIST_TEST_IDS.entry}>
+    <Entry key={source.id} data-testid={SOURCE_LIST_TEST_IDS.entry}>
       {emphasize(source.claim)}
       <Citation
         dir="ltr"

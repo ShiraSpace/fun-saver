@@ -15,21 +15,18 @@ import {
   Title,
 } from './MethodSection.styles';
 
-interface MethodSectionProps {
-  id: MethodSectionId;
-  number?: number;
+type MethodSectionProps = {
   title: string;
   hint?: string;
   children: ReactNode;
-}
+} & (
+  | { number: number; id?: undefined }
+  | { number?: undefined; id: MethodSectionId }
+);
 
-export function MethodSection({
-  id,
-  number,
-  title,
-  hint,
-  children,
-}: MethodSectionProps): JSX.Element {
+export function MethodSection(props: MethodSectionProps): JSX.Element {
+  const { number, title, hint, children } = props;
+  const id: MethodSectionId = props.id === undefined ? props.number : props.id;
   const heading = emphasize(title);
   const numeral = number !== undefined && (
     <Numeral data-testid={METHOD_SECTION_TEST_IDS.numeral(id)}>

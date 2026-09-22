@@ -58,12 +58,10 @@ describe('the method page', () => {
   });
 
   it('closes with the sources, after every section whose numbers they carry', () => {
-    const accordions = screen
-      .getAllByTestId(/^method-section-(\d+|sources)$/)
-      .map((accordion) => accordion.dataset.testid);
-
-    expect(accordions[accordions.length - 1]).toBe(
+    const sources = screen.getByTestId(
       METHOD_SECTION_TEST_IDS.section(SOURCES_SECTION_ID)
     );
+
+    expect(sources.parentElement?.lastElementChild).toBe(sources);
   });
 });

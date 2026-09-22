@@ -30,7 +30,9 @@ function blockContent(block: MethodBlock): JSX.Element {
 
   const lines = paragraphs(block.body);
   const lastLine = lines.length - 1;
-  const marker = block.sources && <SourceMarker sources={block.sources} />;
+  const marker = block.sources?.length ? (
+    <SourceMarker sources={block.sources} />
+  ) : null;
   const rendered = lines.map((line, index) => (
     <p key={index} data-muted={block.muted}>
       {emphasize(line)}
