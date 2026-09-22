@@ -1,12 +1,12 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { byAccountName } from '@/db/account-users';
 import { mockAccount, mockSecondAccount } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
 describe('account switching', () => {
-  const { menu, header } = useDriver({
-    accounts: [mockAccount, mockSecondAccount],
-  });
+  const accounts = [mockAccount, mockSecondAccount];
+  const { menu, header } = useDriver({ accounts });
 
   it('shows a row for each account', async () => {
     await menu.open();
@@ -15,13 +15,15 @@ describe('account switching', () => {
   });
 
   it('switches the active account and closes the menu when a row is tapped', async () => {
-    assert.equal(await header.name(), mockAccount.name);
+    const [firstListed, secondListed] = byAccountName(accounts);
+
+    assert.equal(await header.name(), firstListed.name);
 
     await menu.open();
     await menu.openAccountPicker();
     await menu.selectAccount(1);
     await menu.waitForClosed();
 
-    assert.equal(await header.name(), mockSecondAccount.name);
+    assert.equal(await header.name(), secondListed.name);
   });
 });

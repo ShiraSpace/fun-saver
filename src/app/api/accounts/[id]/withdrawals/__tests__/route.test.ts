@@ -13,8 +13,6 @@ import { createOwnedAccount } from '@/test-utils/owned-account';
 import { POST } from '../route';
 
 describe('POST /api/accounts/[id]/withdrawals', () => {
-  const ASOF = today();
-
   let dir: string;
   let account: Account;
   let savingsId: string;
@@ -28,7 +26,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
       store: getStore(),
       account,
       amountAgorot: 10000,
-      asOf: ASOF,
+      asOf: today(),
     });
   });
 

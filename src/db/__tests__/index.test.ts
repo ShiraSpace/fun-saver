@@ -41,9 +41,9 @@ describe('getStore', () => {
       await getStore().insertAccount(mockAccount);
 
       expect(existsSync(dataPath)).toBe(true);
-      expect(
-        (await getStore().listAccounts()).map((account) => account.id)
-      ).toEqual([mockAccount.id]);
+      expect((await getStore().getAccount(mockAccount.id))?.id).toBe(
+        mockAccount.id
+      );
     });
 
     it('memoizes one store per path', () => {

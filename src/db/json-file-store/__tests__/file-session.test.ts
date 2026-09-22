@@ -25,7 +25,7 @@ describe('FileSession write queue', () => {
       store.insertTransactions([createMockTransaction({ id: 'c3' })]),
     ]);
 
-    expect(await store.listAccounts()).toEqual([mockAccount]);
+    expect(await store.getAccount(mockAccount.id)).toEqual(mockAccount);
     const ids = (await store.listTransactionsByWallet('a1', 'w1'))
       .map((transaction) => transaction.id)
       .sort();

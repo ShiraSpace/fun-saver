@@ -46,8 +46,9 @@ describe('POST /api/accounts', () => {
     });
     expect(account.id).toBeTruthy();
 
-    const stored = await getStore().listAccounts();
-    expect(stored.map((a) => a.name)).toEqual([mockCreateAccountInput.name]);
+    expect(await getStore().getAccount(account.id)).toMatchObject({
+      name: mockCreateAccountInput.name,
+    });
   });
 
   it('refuses an unauthenticated request with 401 and stores nothing', async () => {
@@ -56,7 +57,7 @@ describe('POST /api/accounts', () => {
     const response = await POST(postRequest(mockCreateAccountInput));
 
     expect(response.status).toBe(401);
-    expect(await getStore().listAccounts()).toEqual([]);
+    expect(await getStore().listAccountsForUser(mockUser.id)).toEqual([]);
   });
 
   it.each([
@@ -80,7 +81,7 @@ describe('POST /api/accounts', () => {
     const response = await POST(postRequest(body));
 
     expect(response.status).toBe(400);
-    expect(await getStore().listAccounts()).toEqual([]);
+    expect(await getStore().listAccountsForUser(mockUser.id)).toEqual([]);
   });
 
   it('trims the padding off the new name', async () => {

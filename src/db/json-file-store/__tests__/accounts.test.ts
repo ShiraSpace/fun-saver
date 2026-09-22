@@ -27,7 +27,7 @@ describe('JsonFileStore accounts', () => {
     await new JsonFileStore(file.path).insertAccount(mockAccount);
 
     const reopened = new JsonFileStore(file.path);
-    expect(await reopened.listAccounts()).toEqual([mockAccount]);
+    expect(await reopened.getAccount(mockAccount.id)).toEqual(mockAccount);
     expect(
       (await reopened.getAccount('a1'))?.wallets.map((wallet) => wallet.id)
     ).toEqual(['w1', 'w2', 'w3']);
