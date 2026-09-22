@@ -1,4 +1,4 @@
-# Handover — 2026-09-22
+# Handover — 2026-09-22 (PR 6 built)
 
 ## Start here
 
@@ -15,15 +15,36 @@ selected-account cookie, that user's accounts and the theme — and **redirects 
 unauthenticated caller and writes the account with its owner row in one
 transaction.
 
-**Next is plan PR 6 — `feat/auth-middleware`**, off updated `origin/main`. Read
-its section in the plan before starting: **it is smaller than the plan
-originally assumed**, because PR 9's redirect already covers `/` and `/method`,
-and **`FUNSAVER_SKIP_AUTH` is probably unnecessary** now that PR 8b gives every
-browser suite a real signed cookie. Try middleware with no bypass and run
-`npm run test:e2e` before adding the env var.
+**Plan PR 6 is built on `feat/auth-proxy`** (off `f9d6573`), not yet pushed.
+`src/proxy.ts` sends a request with no session cookie to `/login`. Three things
+about it that the plan got wrong or left open, all now settled — the plan's PR 6
+section has the detail:
 
-PR 7 and PR 11 are independent. PR 10 guards the `[id]` mutation routes — still
-the only cross-user path left, and the highest-value thing outstanding.
+- **Next 16 renamed the file convention: it is `proxy.ts` exporting `proxy`, not
+  `middleware.ts`.** Deprecated and renamed in v16.0.0. `config.matcher` and the
+  redirect API are unchanged, and the runtime now defaults to Node.js. This is
+  precisely the AGENTS.md trap — read `node_modules/next/dist/docs/` first.
+- **Both session cookie names are read**, because Auth.js prefixes the cookie
+  `__Secure-` on https and production is the only https target. Keying on one
+  name passes all 81 e2e checks and breaks production. `SESSION_COOKIE_NAMES`.
+- **`FUNSAVER_SKIP_AUTH` never existed.** `test:e2e` was identical to baseline
+  with no bypass at all.
+
+**The page-level redirect in `signed-in-accounts.ts` stays, deliberately.** The
+proxy makes the optimistic cookie check only; `signedInAccounts()` is what
+verifies the session and is the only source of a `userId` for the pages. A forged
+cookie passes the proxy and is caught there.
+
+**No screenshots on this PR**, against what CLAUDE.md asks for on a visible
+change — called off explicitly to save the time. `withShots` still cannot shoot a
+signed-out browser: `openApp` always installs a session cookie. Making `cookie`
+optional through `Session.open`/`openApp`/`withShots` is about 8 lines if a later
+PR needs it.
+
+PR 7 and PR 11 are independent. **PR 10 is next** — it guards the `[id]` mutation
+routes, still the only cross-user path left and the highest-value thing
+outstanding. PR 6 did not narrow it: `/api` is deliberately outside the proxy's
+matcher, because a redirect answers a `fetch()` with an HTML login page.
 
 ## New on main that this repo did not have before
 

@@ -6,27 +6,28 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-22 (plan PR 9 merged as #81; PR 6 is next)
+## Progress — updated 2026-09-22 (plan PR 6 built on `feat/auth-proxy`; PR 10 is next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
-| Plan            | GitHub                                                 | Branch                             | Status                                               |
-| --------------- | ------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------- |
-| PR 1            | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                           |
-| —               | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                        |
-| —               | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                        |
-| PR 2            | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged**                                           |
-| —               | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                        |
-| PR 3a           | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                               |
-| PR 3b           | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
-| PR 4            | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                               |
-| PR 5            | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
-| PR 8            | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                               |
-| PR 8b           | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff |
-| PR 9            | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **merged** — `f947725`                               |
-| PR 6, 7, 10, 11 | —                                                      | —                                  | not started                                          |
+| Plan         | GitHub                                                 | Branch                             | Status                                               |
+| ------------ | ------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------- |
+| PR 1         | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                           |
+| —            | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                        |
+| —            | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                        |
+| PR 2         | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged**                                           |
+| —            | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                        |
+| PR 3a        | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                               |
+| PR 3b        | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
+| PR 4         | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                               |
+| PR 5         | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
+| PR 8         | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                               |
+| PR 8b        | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff |
+| PR 9         | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **merged** — `f947725`                               |
+| PR 6         | —                                                      | `feat/auth-proxy`                  | **built, not yet opened** — the file is `proxy.ts`   |
+| PR 7, 10, 11 | —                                                      | —                                  | not started                                          |
 
-### PR 9 is merged, and PR 6 is next
+### PR 6 is built, and PR 10 is next
 
 PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
 read through `listAccountsForUser` with the id from the session. A stranger who
@@ -34,7 +35,15 @@ signs in now has no `account_users` rows and therefore an empty app, which is
 what makes **PR 6 safe to write as a plain session gate** — the allowlist it
 would otherwise have had to carry is no longer needed.
 
-PR 7 and PR 11 are independent and can land at any time. PR 10 depends on PR 9.
+PR 6 is built on `feat/auth-proxy` and the app now goes private at the edge as
+well as at the page. **The gate is `src/proxy.ts`, not `src/middleware.ts` —
+Next 16 renamed the convention**, and the PR 6 section below records the rest of
+what changed against what this plan assumed.
+
+PR 10 is next and is the highest-value thing left: the `[id]` mutation routes are
+still the only cross-user path in the app, and `/api` is deliberately outside the
+proxy's matcher, so PR 6 did not narrow that hole by a line. PR 7 and PR 11 are
+independent and can land at any time.
 
 ### PR 8's backfill ran on both targets, and PR 9 deleted it
 
@@ -695,33 +704,60 @@ the react one. Both exist and only one works in a client component.
 Depends on: PR 4 — `next-auth` reached `main` with `5d02045`, so this branches
 off `main` normally. Ships: a new route.
 
-### PR 6 — `feat/auth-middleware`
+### PR 6 — `feat/auth-proxy` — BUILT, branch `feat/auth-proxy`
 
-**Smaller than this plan assumed — PR 9 took a bite out of it.**
-`signedInAccounts()` already redirects a signed-out visitor to `/login`, so `/`
-and `/method` are covered at the page level. What is left is doing it in one
-place instead of per page, and covering routes nobody has written yet.
+**Next 16 renamed the file convention.** It is `src/proxy.ts` exporting `proxy`,
+not `src/middleware.ts` exporting `middleware` — deprecated and renamed in
+v16.0.0, see `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/proxy.md`.
+Behaviour, `config.matcher` and the redirect API are unchanged; the runtime now
+defaults to Node.js and setting `runtime` throws. The branch was named for the
+file, not for the plan.
 
-- `src/middleware.ts` — unauthenticated → `/login`. The page-level redirect can
-  then come out of `signedInAccounts()`, or stay as defence in depth; decide
-  when writing it, but do not leave both undocumented.
-- Leave `/login` and `/api/auth/*` reachable, or sign-in cannot complete.
+**The page-level redirect stays, as defence in depth — decided, not forgotten.**
+The proxy runs on every request including prefetches, so it makes the optimistic
+check Next's own auth guide prescribes: is a session cookie present. It does not
+verify the signature and imports no `next-auth`. `signedInAccounts()` keeps its
+own `redirect()`, which is what actually verifies the session and is the only
+source of a `userId` for the pages — removing it would hand
+`listAccountsForUser(undefined)` to the store. A forged cookie therefore passes
+the proxy and is caught one layer down.
 
-**`FUNSAVER_SKIP_AUTH` is probably not needed at all.** This plan assumed it
-because the e2e suites opened the app with no session — **PR 8b changed that**,
-and every suite now arrives with a real signed cookie. Try middleware with no
-bypass first and run `npm run test:e2e`; only add the env var if something
-actually goes red. That also settles the _Shipping loose on purpose_ row which
-says to delete it once e2e can seed a session.
+**Both cookie names are read.** Auth.js prefixes the cookie `__Secure-` on
+https. Production is https; dev and every e2e suite are http. A check keyed on
+one name passes all 81 e2e checks and then redirects every signed-in user on
+`fun-saver.vercel.app` to `/login` for ever. `SESSION_COOKIE_NAMES` in
+`src/lib/constants.ts` carries both, and the unit tests pin the two literals
+rather than looping over the constant.
 
-Tests: the browser suites passing unchanged is the test — they are signed in and
-must stay reachable. Add one asserting a signed-out request to `/` is sent to
-`/login`, unless the bypass is skipped and the e2e proves it end to end.
+**`FUNSAVER_SKIP_AUTH` was never needed, and does not exist.** The plan's hunch
+was right: PR 8b gives every suite a real signed cookie, and `test:e2e` was
+identical to baseline with no bypass at all. The _Shipping loose on purpose_ row
+is closed.
 
-Depends on: PR 5 and PR 9, **both done**. That ordering was the point: a session
-gate over an unscoped `listAccounts()` would have shown every signed-in stranger
-all four real accounts, and PR 4 ships no allowlist. Because PR 9 landed first,
-this PR is a plain session gate and needs no `AUTH_ALLOWED_EMAILS`.
+**`/api` is left out of the matcher.** A redirect answers a `fetch()` with an
+HTML login page; `POST /api/accounts` already returns 401, and the `[id]` routes
+need per-user authorization, which is PR 10 — gating them here would look like
+PR 10 was done.
+
+Not built, deliberately: no `callbackUrl`. `useGoogleSignIn` always lands on
+`SIGNED_IN_DESTINATION`, so a signed-out visitor to `/method` returns to `/`.
+
+Verified on a built server rather than by a green suite — `/nope`, a route with
+no page to redirect, still lands on `/login` signed out and 404s with a cookie,
+which is the proof the proxy covers routes nobody has written yet:
+
+| request               | signed out     | cookie present |
+| --------------------- | -------------- | -------------- |
+| `/`, `/method`        | 307 → `/login` | —              |
+| `/nope`               | 307 → `/login` | 404            |
+| `/login`              | 200            | —              |
+| `/api/*`              | untouched      | —              |
+| `/avatars/kid-01.svg` | 200            | 200            |
+
+Tests: four in `src/__tests__/proxy.test.ts` — the redirect, its destination,
+and each cookie name. Each was watched failing against a deliberately broken
+implementation. The browser suites passing unchanged is the other half.
+
 Ships: the app goes private.
 
 ### PR 7 — `feat/profile-section`
@@ -964,34 +1000,34 @@ Depends on: nothing. Independent of 6, 7 and 10; can land any time.
 
 ## Architecture touch points
 
-| Layer                                               | Change                                                                    | PR      |
-| --------------------------------------------------- | ------------------------------------------------------------------------- | ------- |
-| `src/db/schema.sql`                                 | append `users`, `account_users`                                           | 1       |
-| `src/lib/types.ts`                                  | add `User`, `AccountUserRole`, `AccountUser`                              | 1       |
-| `src/db/row-mappers.ts`                             | add `UserRow`/`toUser`, `AccountUserRow`/`toAccountUser`                  | 1       |
-| `src/db/data-store.ts`                              | add user methods, then membership methods, then **remove** `listAccounts` | 2, 3, 9 |
-| `src/db/base-store.ts`                              | delegate each new `DataStore` method once                                 | 2, 3, 9 |
-| `src/db/postgres-store/{users,members}.ts`          | implement — JOIN, `sql.transaction([...])`                                | 2, 3, 9 |
-| `src/db/json-file-store/{users,members}.ts`         | implement — `StoreData` gains `users`, `members`                          | 2, 3, 9 |
-| `src/db/memory-store/{users,members}.ts`            | implement — two arrays                                                    | 2, 3, 9 |
-| `src/lib/user-provisioning.ts`                      | **new** — Google `sub` → user, else create                                | 4       |
-| `src/auth.ts`                                       | **new** — Auth.js config                                                  | 4       |
-| `src/app/api/auth/[...nextauth]/route.ts`           | **new** — handler re-export                                               | 4       |
-| `.env.example`                                      | `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`                     | 4       |
-| `src/app/login/page.tsx` + `src/components/SignIn/` | **new** — one Google button, RTL, themed                                  | 5       |
-| `src/middleware.ts`                                 | **new** — unauthenticated → `/login`, `/login` and `/api/auth/*` exempt   | 6       |
-| `src/components/Menu/ProfileSection/`               | **new** — name + sign out                                                 | 7       |
-| `src/db/migration-target.ts`                        | **new** — shared `--dev` / `--test` target resolution                     | 8       |
-| `src/db/assign-owner.ts`                            | **new** — adopt orphan accounts as `owner`; deleted again in 9            | 8       |
-| `src/app/signed-in-accounts.ts`                     | **new** — session + cookie + scoped list + theme, shared by both pages    | 9       |
-| `src/app/page.tsx` + `src/app/method/page.tsx`      | `listAccounts()` → `signedInAccounts()`                                   | 9       |
-| `src/app/api/accounts/route.ts`                     | session `userId` + `insertAccountWithOwner`; 401 when signed out          | 9       |
-| `src/db/{run-backfill,assign-owner}.ts`             | **deleted** — every account is owned at birth from here on                | 9       |
-| `src/lib/clock.ts`                                  | add `now()`; `today()` runs through it; a bad `FUNSAVER_NOW` throws       | 9       |
-| `src/db/index.ts`                                   | refuse the default `data.json` under `NODE_ENV=test`                      | 9       |
-| `src/test-utils/{owned-account,test-utils}.ts`      | `createOwnedAccount`, `withTempDataPath`                                  | 9       |
-| `src/lib/account-access.ts`                         | **new** — `requireAccountUser` + `assertCanEdit`                          | 10      |
-| `src/app/api/accounts/[id]/**/route.ts`             | `requireAccountUser` + `assertCanEdit`, edit PUT included                 | 10      |
+| Layer                                               | Change                                                                      | PR      |
+| --------------------------------------------------- | --------------------------------------------------------------------------- | ------- |
+| `src/db/schema.sql`                                 | append `users`, `account_users`                                             | 1       |
+| `src/lib/types.ts`                                  | add `User`, `AccountUserRole`, `AccountUser`                                | 1       |
+| `src/db/row-mappers.ts`                             | add `UserRow`/`toUser`, `AccountUserRow`/`toAccountUser`                    | 1       |
+| `src/db/data-store.ts`                              | add user methods, then membership methods, then **remove** `listAccounts`   | 2, 3, 9 |
+| `src/db/base-store.ts`                              | delegate each new `DataStore` method once                                   | 2, 3, 9 |
+| `src/db/postgres-store/{users,members}.ts`          | implement — JOIN, `sql.transaction([...])`                                  | 2, 3, 9 |
+| `src/db/json-file-store/{users,members}.ts`         | implement — `StoreData` gains `users`, `members`                            | 2, 3, 9 |
+| `src/db/memory-store/{users,members}.ts`            | implement — two arrays                                                      | 2, 3, 9 |
+| `src/lib/user-provisioning.ts`                      | **new** — Google `sub` → user, else create                                  | 4       |
+| `src/auth.ts`                                       | **new** — Auth.js config                                                    | 4       |
+| `src/app/api/auth/[...nextauth]/route.ts`           | **new** — handler re-export                                                 | 4       |
+| `.env.example`                                      | `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`                       | 4       |
+| `src/app/login/page.tsx` + `src/components/SignIn/` | **new** — one Google button, RTL, themed                                    | 5       |
+| `src/proxy.ts`                                      | **new** — no session cookie → `/login`; `/login` and `/api` off the matcher | 6       |
+| `src/components/Menu/ProfileSection/`               | **new** — name + sign out                                                   | 7       |
+| `src/db/migration-target.ts`                        | **new** — shared `--dev` / `--test` target resolution                       | 8       |
+| `src/db/assign-owner.ts`                            | **new** — adopt orphan accounts as `owner`; deleted again in 9              | 8       |
+| `src/app/signed-in-accounts.ts`                     | **new** — session + cookie + scoped list + theme, shared by both pages      | 9       |
+| `src/app/page.tsx` + `src/app/method/page.tsx`      | `listAccounts()` → `signedInAccounts()`                                     | 9       |
+| `src/app/api/accounts/route.ts`                     | session `userId` + `insertAccountWithOwner`; 401 when signed out            | 9       |
+| `src/db/{run-backfill,assign-owner}.ts`             | **deleted** — every account is owned at birth from here on                  | 9       |
+| `src/lib/clock.ts`                                  | add `now()`; `today()` runs through it; a bad `FUNSAVER_NOW` throws         | 9       |
+| `src/db/index.ts`                                   | refuse the default `data.json` under `NODE_ENV=test`                        | 9       |
+| `src/test-utils/{owned-account,test-utils}.ts`      | `createOwnedAccount`, `withTempDataPath`                                    | 9       |
+| `src/lib/account-access.ts`                         | **new** — `requireAccountUser` + `assertCanEdit`                            | 10      |
+| `src/app/api/accounts/[id]/**/route.ts`             | `requireAccountUser` + `assertCanEdit`, edit PUT included                   | 10      |
 
 Unchanged throughout: `AccountSwitcher`, `Account`, `AccountForm`, wallets,
 drawer, transactions, theme, `EmptyState`, `use-create-account`.
@@ -1015,7 +1051,7 @@ None requires new architecture.
 | JWT sessions, 30d rolling, no server-side revocation — a lost phone can only be cut off by rotating `AUTH_SECRET`, which signs everyone out | Auth.js DB adapter + `users`-backed sessions, then revoke one session. App code unchanged; sign-out already works. |
 | Google only                                                                                                                                 | Add a provider to `src/auth.ts`. `users.provider` is already a column, not an enum in the DB.                      |
 | No child login                                                                                                                              | Credentials provider + `provider='pin'` user + member row. **No schema change.**                                   |
-| `FUNSAVER_SKIP_AUTH` may never exist                                                                                                        | Delete the env var once e2e can seed a real session cookie. Production already refuses it.                         |
+| ~~`FUNSAVER_SKIP_AUTH` may never exist~~ — **closed in PR 6**                                                                               | It never existed. PR 8b gave the suites a real cookie, and PR 6 shipped with no bypass.                            |
 | No rate limiting on sign-in                                                                                                                 | Vercel/Neon edge config; no app change.                                                                            |
 | No audit trail                                                                                                                              | `account_users.added_at` is the start; add `added_by` when sharing ships.                                          |
 
