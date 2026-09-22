@@ -1,4 +1,5 @@
 import type { DataStore } from '@/db/data-store';
+import { now } from './clock';
 import { GOOGLE_PROVIDER } from './constants';
 import { DuplicateUserError } from './errors';
 import { newId } from './ids';
@@ -92,6 +93,6 @@ function newGoogleUser(identity: GoogleIdentity): User {
     providerAccountId: identity.providerAccountId,
     email: identity.email,
     name: identity.name,
-    createdAt: new Date().toISOString(),
+    createdAt: now(),
   };
 }

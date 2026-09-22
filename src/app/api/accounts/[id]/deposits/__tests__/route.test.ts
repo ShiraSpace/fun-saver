@@ -1,47 +1,31 @@
 /**
  * @jest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { getStore } from '@/db';
-import { AccountsStore } from '@/lib/accounts-store';
 import { splitDeposit } from '@/lib/transactions';
-import { mockCreateAccountInput } from '@/test-utils/fixtures';
+import { createOwnedAccount } from '@/test-utils/owned-account';
+import { withTempDataPath } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
-const ASOF = '2026-01-01';
+describe('POST /api/accounts/[id]/deposits', () => {
+  withTempDataPath();
 
-let dir: string;
-let accountId: string;
+  let accountId: string;
 
-beforeEach(async () => {
-  dir = mkdtempSync(join(tmpdir(), 'funsaver-deposit-'));
-  process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
-  accountId = (
-    await new AccountsStore(getStore()).createAccount(
-      mockCreateAccountInput,
-      ASOF
-    )
-  ).id;
-});
-
-afterEach(() => {
-  delete process.env.FUNSAVER_DATA_PATH;
-  rmSync(dir, { recursive: true, force: true });
-});
-
-function postDeposit(amount: number, id: string): Promise<Response> {
-  const request = new Request('http://localhost/api/accounts/x/deposits', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ amount }),
+  beforeEach(async () => {
+    accountId = (await createOwnedAccount(getStore())).id;
   });
 
-  return POST(request, { params: Promise.resolve({ id }) });
-}
+  function postDeposit(amount: number, id: string): Promise<Response> {
+    const request = new Request('http://localhost/api/accounts/x/deposits', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ amount }),
+    });
 
-describe('POST /api/accounts/[id]/deposits', () => {
+    return POST(request, { params: Promise.resolve({ id }) });
+  }
+
   it('splits a deposit across the pots and persists it', async () => {
     const response = await postDeposit(20, accountId);
 

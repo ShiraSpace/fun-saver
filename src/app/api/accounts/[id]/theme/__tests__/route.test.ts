@@ -1,46 +1,30 @@
 /**
  * @jest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { getStore } from '@/db';
-import { AccountsStore } from '@/lib/accounts-store';
-import { mockCreateAccountInput } from '@/test-utils/fixtures';
+import { createOwnedAccount } from '@/test-utils/owned-account';
+import { withTempDataPath } from '@/test-utils/test-utils';
 import { PUT } from '../route';
 
-const ASOF = '2026-01-01';
+describe('PUT /api/accounts/[id]/theme', () => {
+  withTempDataPath();
 
-let dir: string;
-let accountId: string;
+  let accountId: string;
 
-beforeEach(async () => {
-  dir = mkdtempSync(join(tmpdir(), 'funsaver-theme-'));
-  process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
-  accountId = (
-    await new AccountsStore(getStore()).createAccount(
-      mockCreateAccountInput,
-      ASOF
-    )
-  ).id;
-});
-
-afterEach(() => {
-  delete process.env.FUNSAVER_DATA_PATH;
-  rmSync(dir, { recursive: true, force: true });
-});
-
-function putTheme(themeId: string, id: string): Promise<Response> {
-  const request = new Request('http://localhost/api/accounts/x/theme', {
-    method: 'PUT',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ themeId }),
+  beforeEach(async () => {
+    accountId = (await createOwnedAccount(getStore())).id;
   });
 
-  return PUT(request, { params: Promise.resolve({ id }) });
-}
+  function putTheme(themeId: string, id: string): Promise<Response> {
+    const request = new Request('http://localhost/api/accounts/x/theme', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ themeId }),
+    });
 
-describe('PUT /api/accounts/[id]/theme', () => {
+    return PUT(request, { params: Promise.resolve({ id }) });
+  }
+
   it('saves the theme on the account', async () => {
     const response = await putTheme('midnight-blue', accountId);
 

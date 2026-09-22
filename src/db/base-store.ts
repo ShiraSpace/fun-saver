@@ -28,10 +28,6 @@ export class BaseStore implements DataStore {
     return this.accounts.insert(account);
   }
 
-  listAccounts(): Promise<Account[]> {
-    return this.accounts.list();
-  }
-
   getAccount(id: string): Promise<Account | undefined> {
     return this.accounts.get(id);
   }
