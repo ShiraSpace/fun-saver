@@ -1,7 +1,13 @@
 'use client';
 
-import { JSX, useState } from 'react';
-import { Menu } from '../Menu';
+import { Fragment, JSX } from 'react';
+import {
+  MenuHeaderSheet,
+  MenuOverlay,
+  MenuToggle,
+  useMenuState,
+} from '../Menu';
+import { MENU_HEADER_SHEET_TEST_IDS } from '../Menu/MenuHeaderSheet/constants';
 import { Title } from './CrossfadeTitle';
 import { HEADER_AVATAR_PROPS, HEADER_TEST_IDS } from './constants';
 import { Bar, HeaderAvatar } from './Header.styles';
@@ -12,21 +18,34 @@ export interface HeaderProps {
 }
 
 export function Header({ title, avatarId }: HeaderProps): JSX.Element {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menu = useMenuState();
   const avatar = avatarId && (
     <HeaderAvatar
       avatarId={avatarId}
       alt={title}
       size={HEADER_AVATAR_PROPS.size}
       testId={HEADER_TEST_IDS.avatar}
+      isHidden={menu.isOpen}
     />
   );
 
   return (
-    <Bar data-testid={HEADER_TEST_IDS.bar}>
-      <Menu isOpen={isMenuOpen} onToggle={setIsMenuOpen} />
-      <Title text={title} />
-      {avatar}
-    </Bar>
+    <Fragment>
+      <MenuHeaderSheet
+        data-open={menu.isOpen}
+        data-testid={MENU_HEADER_SHEET_TEST_IDS.sheet}
+      />
+      <Bar data-testid={HEADER_TEST_IDS.bar}>
+        <MenuToggle isOpen={menu.isOpen} onToggle={menu.toggle} />
+        <Title text={title} />
+        {avatar}
+      </Bar>
+      <MenuOverlay
+        isOpen={menu.isOpen}
+        onClose={menu.close}
+        isAccountListOpen={menu.isAccountListOpen}
+        onAccountListToggle={menu.setAccountListOpen}
+      />
+    </Fragment>
   );
 }
