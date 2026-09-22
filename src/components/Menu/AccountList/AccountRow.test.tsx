@@ -8,7 +8,6 @@ import { ACCOUNT_LIST_TEST_IDS } from './constants';
 const mockOnSelect = jest.fn();
 
 function renderRow(isSelected: boolean): void {
-  jest.clearAllMocks();
   render(
     <AccountRow
       account={mockDerivedAccount}
@@ -19,6 +18,10 @@ function renderRow(isSelected: boolean): void {
 }
 
 describe('AccountRow', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('when another account is selected', () => {
     beforeEach(() => {
       renderRow(false);

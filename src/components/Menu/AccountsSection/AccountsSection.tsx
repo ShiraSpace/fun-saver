@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import { MenuLabel } from '../MenuLabel';
-import { AccountList } from '../AccountList';
+import { AccountPicker } from '../AccountPicker';
 import {
   ACCOUNTS_SECTION_CONTENT,
   ACCOUNTS_SECTION_TEST_IDS,
@@ -39,7 +39,7 @@ export function AccountsSection({
   return (
     <section data-testid={ACCOUNTS_SECTION_TEST_IDS.section}>
       <MenuLabel>{ACCOUNTS_SECTION_CONTENT.label}</MenuLabel>
-      <AccountList
+      <AccountPicker
         accounts={accounts}
         selectedAccountId={selectedAccountId}
         onSelect={handleSelectAccount}

@@ -9,6 +9,12 @@ export const MENU_TOGGLE = {
   zIndex: LAYERS.overlayForeground,
 } as const;
 
+export const MENU_ROW_STYLE = {
+  borderWidth: 1.5,
+  pressScale: 0.98,
+  pressMs: 120,
+} as const;
+
 export const MENU_ICON = {
   buttonSize: 44,
   iconSize: 26,

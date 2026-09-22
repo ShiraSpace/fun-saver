@@ -43,6 +43,7 @@ describe('add account from the menu', () => {
 
   beforeEach(async () => {
     await menu.open();
+    await menu.openAccountPicker();
     await menu.clickAddAccountRow();
   });
 
