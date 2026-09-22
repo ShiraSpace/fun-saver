@@ -113,11 +113,19 @@ branches were cut from each other instead.
 
 13. **The example table's rows name a wallet, not a label.** `example.table.rows`
     carry `{ wallet, amounts }`, and `ExampleWalletSplitRow` composes
-    «🛍️ בזבוזים 50%» from `WALLET_ICON`, `WALLET_NAME` and `DEPOSIT_SPLIT`. Only
-    the shekel amounts are the deck's. Known gap: changing `DEPOSIT_SPLIT` moves
-    the percentage and leaves the money behind, because the weekly total the
-    amounts rest on exists only inside the caption text. Lift that total to a
-    constant if the split is ever tuned.
+    «🛍️ בזבוזים 50%» from `WALLET_ICON`, `WALLET_NAME` and `DEPOSIT_SPLIT`.
+    «באפליקציה: 50% / 40% / 10%» in the `decide` checklist reads the same split
+    rather than repeating it — it says *באפליקציה*, so it has to be the app's
+    number and not a typed one.
+
+    **The split is the app's default, and that is temporary.** Once a family can
+    set its own, both of those read the selected account's split — the same
+    cookie-scoped account the theme already comes from (decision 2) — and the
+    page stops being static in that one respect. The shekel amounts go with it:
+    they are a fixed illustration of ₪30 a week today, and the weekly total they
+    rest on exists only inside the caption text, so nothing catches them
+    disagreeing with a percentage that moved. Both halves move together when
+    custom split lands; do not part-fix it by hardcoding the share back.
 
 ## Component rule
 
@@ -311,6 +319,11 @@ this age — which partly argues against the product. That is deliberate.
   checklists. Splitting it was drawn and rejected (decision 11); the table moved
   under «איך מחלקים?» instead. If it still reads long, the next lever is moving
   the Gneezy quote out, not an eighth summary row.
+- **Custom split will reach this page.** The table and the «באפליקציה» line
+  both read `DEPOSIT_SPLIT`, which is the default every account gets today. The
+  work is in the custom-split feature, not here — but it lands on section 4
+  first, because section 4 is the only place the page quotes a number the
+  parent can change.
 - **e2e visual snapshots** — a new route adds a baseline, it doesn't change
   existing ones. Still not taken: every PR from 5 to 8 adds content to the same
   page, so one recording after PR 8 replaces five that would be re-recorded. It
