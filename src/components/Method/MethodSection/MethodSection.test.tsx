@@ -22,6 +22,12 @@ describe('a method section', () => {
       ).not.toHaveAttribute('open');
     });
 
+    it('holds its children in the body its own prose rules hang off', () => {
+      expect(
+        screen.getByTestId(METHOD_SECTION_TEST_IDS.body(NUMBER))
+      ).toHaveTextContent(BODY);
+    });
+
     it('shows no hint chip when the section was given none', () => {
       expect(
         screen.queryByTestId(METHOD_SECTION_TEST_IDS.hint(NUMBER))

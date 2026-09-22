@@ -11,7 +11,7 @@ export type MethodBlock =
   | { kind: 'heading'; body: string }
   | { kind: 'text'; body: string; muted?: boolean }
   | { kind: 'quote'; body: string; citation: string }
-  | { kind: 'talk'; label: string; lines: readonly TalkLine[] };
+  | { kind: 'talk'; label?: string; lines: readonly TalkLine[] };
 
 export interface IconLine {
   icon: string;

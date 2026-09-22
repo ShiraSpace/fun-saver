@@ -8,14 +8,7 @@ const { scripts } = METHOD_COPY;
 
 const SCRIPT_BLOCKS: readonly MethodBlock[] = [
   scripts.intro,
-  scripts.first.heading,
-  scripts.first.talk,
-  scripts.ranOut.heading,
-  scripts.ranOut.talk,
-  scripts.wantsSavings.heading,
-  scripts.wantsSavings.talk,
-  scripts.interest.heading,
-  scripts.interest.talk,
+  ...scripts.moments.flatMap((moment) => [moment.heading, moment.talk]),
 ];
 
 export function ScriptsSection(): JSX.Element {

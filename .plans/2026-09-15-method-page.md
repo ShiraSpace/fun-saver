@@ -159,6 +159,21 @@ branches were cut from each other instead.
     off. Reaching it structurally (`:scope > div`) pins `MethodSection`'s
     internals and returns `null` — not a clear failure — once they move.
 
+17. **Section 5's bubbles carry no label, and `TalkBubble`'s label is
+    optional.** Mockup E draws «🗣️ מה אומרים לילד» on all four, but in a section
+    whose `h2` is «מה אומרים לילד», between an `h3` that names the moment and
+    the words themselves, it says what the two lines around it just said. The
+    label still earns its place in section 2, where it marks a script inside a
+    section about something else — so it stays a prop, and section 5 simply
+    does not pass one. Knowingly drawn differently from the mockup.
+
+18. **Section 5's copy is an ordered `moments` array**, not four named keys.
+    Each entry is `{ heading, talk }` and the section renders
+    `moments.flatMap((moment) => [moment.heading, moment.talk])`, so "one
+    heading and one bubble per moment" holds by construction rather than by a
+    list kept in step by hand. Its test asserts the alternation and the count,
+    not a restatement of the array.
+
 ## Component rule
 
 A component that does anything — composes, branches, or maps over data — gets

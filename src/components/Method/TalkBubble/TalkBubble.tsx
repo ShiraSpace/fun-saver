@@ -5,12 +5,14 @@ import { TALK_BUBBLE_TEST_IDS } from './constants';
 import { Bubble, Label, Line } from './TalkBubble.styles';
 
 interface TalkBubbleProps {
-  label: string;
+  label?: string;
   lines: readonly TalkLine[];
 }
 
 export function TalkBubble({ label, lines }: TalkBubbleProps): JSX.Element {
-  const heading = emphasize(label);
+  const heading = label && (
+    <Label data-testid={TALK_BUBBLE_TEST_IDS.label}>{emphasize(label)}</Label>
+  );
   const spoken = lines.map((line, index) => (
     <Line
       key={index}
@@ -23,7 +25,7 @@ export function TalkBubble({ label, lines }: TalkBubbleProps): JSX.Element {
 
   return (
     <Bubble data-testid={TALK_BUBBLE_TEST_IDS.bubble}>
-      <Label data-testid={TALK_BUBBLE_TEST_IDS.label}>{heading}</Label>
+      {heading}
       {spoken}
     </Bubble>
   );

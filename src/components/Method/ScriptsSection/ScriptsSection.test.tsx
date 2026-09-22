@@ -7,13 +7,7 @@ import { ScriptsSection } from './ScriptsSection';
 
 const { scripts } = METHOD_COPY;
 
-const IN_ORDER = [
-  scripts.first,
-  scripts.ranOut,
-  scripts.wantsSavings,
-  scripts.interest,
-];
-
+const HEADING = 'heading';
 const BUBBLE = 'bubble';
 
 function sectionBody(): HTMLElement {
@@ -28,7 +22,7 @@ function headingsAndBubbles(): string[] {
   );
 
   return Array.from(nodes).map((node) =>
-    node.tagName === 'H3' ? (node.textContent ?? '') : BUBBLE
+    node.tagName === 'H3' ? HEADING : BUBBLE
   );
 }
 
@@ -37,9 +31,9 @@ describe('the section on what to say to the child', () => {
     render(<ScriptsSection />);
   });
 
-  it('heads every bubble with the moment it is for, so a parent mid-argument finds theirs', () => {
+  it('gives every moment a heading and then its bubble, and nothing on its own', () => {
     expect(headingsAndBubbles()).toEqual(
-      IN_ORDER.flatMap((script) => [script.heading.body, BUBBLE])
+      scripts.moments.flatMap(() => [HEADING, BUBBLE])
     );
   });
 
@@ -55,7 +49,7 @@ describe('the section on what to say to the child', () => {
 
   it('leaves every heading a direct child, the only place the body rule reaches', () => {
     expect(sectionBody().querySelectorAll(':scope > h3')).toHaveLength(
-      IN_ORDER.length
+      scripts.moments.length
     );
   });
 });
