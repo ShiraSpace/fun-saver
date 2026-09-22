@@ -6,45 +6,37 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-22 (plan PRs 8 and 8b merged; PR 9 is next)
+## Progress — updated 2026-09-22 (plan PR 9 is in review; PR 6 is next)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
-| Plan    | GitHub                                                 | Branch                             | Status                                               |
-| ------- | ------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------- |
-| PR 1    | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                           |
-| —       | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                        |
-| —       | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                        |
-| PR 2    | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged**                                           |
-| —       | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                        |
-| PR 3a   | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                               |
-| PR 3b   | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
-| PR 4    | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                               |
-| PR 5    | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
-| PR 8    | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                               |
-| PR 8b   | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff |
-| PR 9    | —                                                      | `feat/scope-accounts-to-user`      | **next**                                             |
-| PR 6, 7, 10 | —                                                  | —                                  | not started                                          |
+| Plan            | GitHub                                                 | Branch                             | Status                                               |
+| --------------- | ------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------- |
+| PR 1            | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                           |
+| —               | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                        |
+| —               | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                        |
+| PR 2            | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged**                                           |
+| —               | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                        |
+| PR 3a           | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                               |
+| PR 3b           | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
+| PR 4            | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                               |
+| PR 5            | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
+| PR 8            | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                               |
+| PR 8b           | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff |
+| PR 9            | —                                                      | `feat/scope-accounts-to-user`      | **in review**                                        |
+| PR 6, 7, 10, 11 | —                                                      | —                                  | not started                                          |
 
-### Next is PR 9, and PR 6 is still not next
+### PR 9 is in review, and PR 6 is next
 
-**PR 9 is the one that closes the public hole**, not PR 6. PR 4 ships no
-allowlist, so any Google account can sign in. A PR 6 that gates on "has a
-session" while `page.tsx` still calls `listAccounts()` hands every signed-in
-stranger all four real accounts — it would look like the hole was closed while
-making it reachable by anyone with a Google account. See _Authentication is open
-by design_ below.
+PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
+read through `listAccountsForUser` with the id from the session. A stranger who
+signs in now has no `account_users` rows and therefore an empty app, which is
+what makes **PR 6 safe to write as a plain session gate** — the allowlist it
+would otherwise have had to carry is no longer needed.
 
-The remaining order is **PR 9 → PR 6**: scope reads to the signed-in user, then
-enforce the session. PR 8 has already given the existing accounts their owners.
-PR 7 is independent and can land at any time.
+PR 7 and PR 11 are independent and can land at any time. PR 10 depends on PR 9.
 
-**PR 9 opens by re-running the backfill and closes by deleting it** — both are
-spelled out in its section below. Do not skip the re-run: it is what catches any
-account created between 2026-09-15 and the switch, and such an account goes
-invisible the moment `listAccounts()` is deleted.
-
-### PR 8's backfill has run on both targets
+### PR 8's backfill ran on both targets, and PR 9 deleted it
 
 The manual step that blocked it — signing in on production — happened on
 2026-09-15, and both backfills ran the same evening. Measured after, and
@@ -59,14 +51,19 @@ All four production accounts — אמא, יעל, רוני, שירי — carry an
 the one user, written in a single transaction. The plan's verification query
 returns 0 on both, which is the condition PR 9 depends on.
 
-**Re-running it is safe and PR 9 asks for one more run.** `assignOwners` skips
-any account that already has a member row, so a repeat reports `0 account(s)
-assigned` and writes nothing. That last run closes the window for accounts
-created between now and the switch.
+**The backfill is deleted — PR 9 removed it.** Its last dev run reported
+`0 account(s) assigned`.
 
-**Nothing is gated yet.** `page.tsx` still calls `listAccounts()`, so the 4
-accounts and their transactions still render to anonymous visitors. Ownership
-rows make PR 9 possible; they close nothing on their own.
+**An orphan really did appear mid-PR, which is why the re-check mattered.** Dev
+was measured at 3 accounts / 0 orphans, and an hour later carried a fourth,
+`פווו`, with no member row — created through a worktree still running the old
+unowned `insertAccount` path. It had no transactions and was deleted rather than
+adopted. Production stayed at 4 / 4 / 0 throughout.
+
+**The window is now closed by construction**, not by a script: `POST
+/api/accounts` refuses an unauthenticated caller and writes the account and its
+owner in one transaction, so an account with no member row can no longer be
+created. Nothing is left that could adopt one if it were.
 
 ### How to confirm work actually landed
 
@@ -152,7 +149,7 @@ account-plus-owner case fails if `JsonAccountUsers` is handed its own session.
 **Two repositories reach a second entity**, because one operation spans two
 tables: `MemoryAccountUsers` takes the `AccountRepository`, and
 `PostgresAccountUsers` takes the concrete `PostgresAccounts` — not the
-interface, because it needs `insertQuery()`, an *unexecuted* statement, which is
+interface, because it needs `insertQuery()`, an _unexecuted_ statement, which is
 a notion only SQL has. `JsonAccountUsers` needs nothing extra; the shared
 session already reaches every array.
 
@@ -160,11 +157,11 @@ Tests mirror the source, one test file per module, under each folder's `__tests_
 
 ### Database state
 
-| Branch                           | `users` / `account_users` | `role` CHECK |
-| -------------------------------- | ------------------------- | ------------ |
-| Neon **dev**                     | created                   | yes          |
-| Neon **test**                    | created                   | yes          |
-| Neon **production** (default)    | created                   | yes          |
+| Branch                        | `users` / `account_users` | `role` CHECK |
+| ----------------------------- | ------------------------- | ------------ |
+| Neon **dev**                  | created                   | yes          |
+| Neon **test**                 | created                   | yes          |
+| Neon **production** (default) | created                   | yes          |
 
 The default branch is named **`production`**, not `main`. It was migrated on
 2026-09-14 for plan PR 4, the first code that needs those tables. Unlike dev and
@@ -224,7 +221,7 @@ written fresh against the split folders. Drop it.
   forever and no-ops once the old name is gone. Do not leave a rename as a
   manual step recorded in a PR description — a database still holding the old
   name would silently gain a second, empty table from `CREATE TABLE IF NOT
-  EXISTS` and report success.
+EXISTS` and report success.
 - **Parameters of the same type do not sit next to each other on a write.**
   `insertAccountWithOwner(account, ownerId, addedAt)` let a transposition
   compile and write a timestamp into the user column; it takes
@@ -433,17 +430,17 @@ Run `db:migrate`, `db:migrate-dev`, `db:migrate-test`.
 > `ALTER INDEX IF EXISTS ... RENAME TO` replay safely forever — they no-op once
 > the old name is gone. The `account_users` rename is carried in `schema.sql`
 > itself for exactly this reason, rather than being a manual step recorded in a
-> PR description. A column *type* change would still want a versioned
+> PR description. A column _type_ change would still want a versioned
 > migrations table; a rename does not.
 
 ## Authentication is open by design — and what that costs
 
 Plan PR 4 (#53) ships **no allowlist**: any Google account completes sign-in and
 gets a `users` row. That is safe only because such a user has no `account_users`
-rows, so once PR 9 deletes `listAccounts()` they see an empty app.
+rows, so — since PR 9 deleted `listAccounts()` — they see an empty app.
 
-**It therefore constrains the merge order: PR 9's read path lands before or with
-PR 6.** A PR 6 that gates on "has a session" while `page.tsx` still calls
+**It constrained the merge order: PR 9's read path had to land before or with
+PR 6, and it did.** A PR 6 that gates on "has a session" while `page.tsx` still calls
 `listAccounts()` hands every signed-in stranger all four real accounts. If PR 6
 must ship first, it carries the allowlist itself — `AUTH_ALLOWED_EMAILS` checked
 in `signIn`, alongside `profile.email_verified` because it keys on email.
@@ -456,20 +453,32 @@ identical to a refusal. Provisioning lives in `jwt`.
 email stays as first seen. `UserRepository` has no `update`; adding one across
 the three stores is its own PR.
 
-## Authorization seam — the one file that tightens later
+## Authorization seam — where the decisions live
 
-`src/lib/account-access.ts` (PR 9), framework-agnostic, unit-tested, the only
-place that decides who may do what:
+**This section predicted `src/lib/account-access.ts`. PR 9 did not build it**,
+and the reason is worth keeping: of the four functions it listed, the only one
+PR 9 needed was `listAccountsForUser(store, userId)`, a one-line delegation to
+the `DataStore` method of the same name. The other three had no caller until
+PR 10. A file of functions nobody calls is not a seam.
+
+What makes the read path safe is the interface, not a wrapper:
+`DataStore.listAccounts()` is **deleted**, not kept-and-guarded, so
+`listAccountsForUser(userId)` is the only way to read accounts at all and no
+future caller can leak someone else's child by accident.
+
+`src/app/signed-in-accounts.ts` (PR 9) is where the session meets the store —
+session id, the selected-account cookie, the scoped list and the resolved theme,
+shared by `page.tsx` and `method/page.tsx`. It sits under `src/app` rather than
+`src/lib` because it reaches for `next/headers`.
+
+**PR 10 creates `src/lib/account-access.ts`** when it has something to put in it:
 
 ```ts
-listAccountsForUser(store, userId): Promise<Account[]>   // replaces listAccounts()
 requireAccountUser(store, userId, accountId): Promise<AccountUser>  // else Forbidden
 assertCanEdit(role): void    // owner | editor
-assertCanShare(role): void   // owner — defined, unused today
 ```
 
-`DataStore.listAccounts()` is **deleted**, not kept-and-guarded, so no future
-caller can leak someone else's child by accident.
+`assertCanShare` waits for sharing to exist.
 
 ---
 
@@ -568,16 +577,16 @@ Each claim below was mutation-checked — the implementation was broken
 deliberately and the suite re-run. **Two tests passed against a broken
 implementation on the first attempt** and had to be rewritten:
 
-| claim | mutation | result |
-| ----- | -------- | ------ |
-| postgres writes both rows **or neither** | `sql.transaction` → two sequential `await`s | **caught** |
-| the three stores order accounts identically | restore `ORDER BY accounts.name` | **caught** |
-| `JsonAccountUsers` shares one `FileSession` | give it its own session | **caught** |
-| json writes both rows in **one** `save()` | split into two `session.write` calls | **not caught** |
+| claim                                       | mutation                                    | result         |
+| ------------------------------------------- | ------------------------------------------- | -------------- |
+| postgres writes both rows **or neither**    | `sql.transaction` → two sequential `await`s | **caught**     |
+| the three stores order accounts identically | restore `ORDER BY accounts.name`            | **caught**     |
+| `JsonAccountUsers` shares one `FileSession` | give it its own session                     | **caught**     |
+| json writes both rows in **one** `save()`   | split into two `session.write` calls        | **not caught** |
 
-- The rollback test first failed the *accounts* insert. That is the first
+- The rollback test first failed the _accounts_ insert. That is the first
   statement, so it throws before the second runs and two sequential inserts pass
-  too. It now fails the *second* statement, via a foreign key to a user that was
+  too. It now fails the _second_ statement, via a foreign key to a user that was
   never inserted.
 - The ordering test first used נועה and מתן, which agree under every collation.
   It now uses `Noa` and `eitan`.
@@ -589,14 +598,20 @@ implementation on the first attempt** and had to be rewritten:
 
 Depends on: PR 1, PR 2. Ships: unused interface methods.
 
-### Known divergences to settle before PR 9
+### Store divergences — the first two are settled, the third stands
 
-Raised in #47's review, and carried into #49. Neither blocks that PR; both are decisions PR 9 has to
-make rather than defects in the store layer.
+Raised in #47's review and carried into #49. **#67 (`1cbb01c`) closed both of the
+first two**, so PR 9 never had the decision this section once assigned it. All
+three stores now reject a repeat account and an unknown owner _before_ either
+write, postgres translating `23505` and `23503` into the same
+`DuplicateAccountError` and `UnknownOwnerError` the other two raise, and all
+three check the duplicate before the owner, so a create that is both fails
+identically everywhere. The two entries below are kept as the record of what was
+wrong and why it was fixed there rather than here.
 
 - **A repeat `insertAccountWithOwner` diverges by store.** Postgres rejects it —
   `accounts.id` is a primary key and `account_users` is PK `(account_id,
-  user_id)`. The memory and json stores push unconditionally, so calling it twice
+user_id)`. The memory and json stores push unconditionally, so calling it twice
   with the same account leaves two entries in `data.accounts`, and because
   `accountsForUser` filters by an id `Set`, **both survive and
   `listAccountsForUser` returns the same account twice** — a duplicated card
@@ -606,8 +621,7 @@ make rather than defects in the store layer.
   The root cause is `AccountRepository.insert`, not `insertAccountWithOwner`, so
   the fix is a `DuplicateAccountError` in the memory and json `insert` methods —
   the same shape as PR 2's `DuplicateUserError` — and it belongs in its own PR
-  rather than widening #47. **PR 9 has to decide whether account creation is
-  retryable**; if it is, that PR is a prerequisite.
+  rather than widening #47. **Done in #67**, in exactly that shape.
 
 - **An owner who does not exist is accepted by memory and json, rejected by
   postgres.** `account_users.user_id REFERENCES users(id)`, so postgres throws
@@ -616,17 +630,19 @@ make rather than defects in the store layer.
   an account whose only member row points at a user that does not exist. That
   account is then unreachable: no `listAccountsForUser` will ever return it.
 
-  This matters for PR 9's signup flow, which inserts the user and then calls
-  `insertAccountWithOwner`. If the user insert did not land, dev on the json
-  store passes and production on postgres throws — a failure that only appears
-  after deploy. Same decision as the repeat-insert divergence above, and it wants
-  deciding at the same time.
+  This mattered for PR 9's create path, which inserts the user and then calls
+  `insertAccountWithOwner`: if the user insert did not land, dev on the json
+  store would pass and production on postgres throw — a failure that only appears
+  after deploy. **Done in #67**, at the same time as the repeat-insert case.
+  PR 9's `createOwnedAccount` test helper relies on it: seeding the owner first
+  is not optional, and forgetting it raises `UnknownOwnerError` on every store
+  rather than only on postgres.
 
 - **`insertAccountWithOwner` assumes one accounts repository instance.** It
   routes an account write through the account-users repository, which holds its
   own `AccountRepository`. Nothing in the types requires it to be the same object
   `BaseStore` reads through: `new BaseStore(accountsA, tx, users, new
-  MemoryAccountUsers(accountsB))` compiles, and then the account is written to
+MemoryAccountUsers(accountsB))` compiles, and then the account is written to
   one and read from the other — a silent disappearing write. Before this PR a
   mismatch only degraded `listAccountsForUser`.
 
@@ -636,12 +652,11 @@ make rather than defects in the store layer.
   repository is stateless, so the second instance costs nothing.
 
   **The memory store still carries the assumption**, and cannot shed it the same
-  way: `MemoryAccounts` owns an actual array, so `MemoryAccountUsers` needs *that
-  instance*, not an equivalent one. It stays unenforced deliberately — the
+  way: `MemoryAccounts` owns an actual array, so `MemoryAccountUsers` needs _that
+  instance_, not an equivalent one. It stays unenforced deliberately — the
   alternative is `BaseStore` orchestrating the two writes itself, which gives up
   the atomicity the whole operation exists for. **A new store must not get this
   wrong.**
-
 
 ### PR 4 — `feat/google-auth`
 
@@ -681,7 +696,9 @@ off `main` normally. Ships: a new route.
 
 ### PR 6 — `feat/auth-middleware`
 
-**This is the PR that closes the public hole. Nothing real is protected before it.**
+**PR 9 closed the public hole; this one keeps anonymous visitors off the app
+at all.** Before it, a signed-out visitor still reaches `/` — they simply see the
+empty state, because they own nothing.
 
 - `src/middleware.ts` — unauthenticated → `/login`; honours
   `FUNSAVER_SKIP_AUTH` and **throws at startup if `NODE_ENV === 'production'`**.
@@ -691,10 +708,11 @@ off `main` normally. Ships: a new route.
 Tests: the existing e2e suite passing with the bypass is the test. Add a unit
 test that the production guard throws.
 
-Depends on: PR 5 **and PR 9**. PR 5 alone is not enough: with no allowlist in
-PR 4, a session gate over an unscoped `listAccounts()` shows every signed-in
-stranger all four real accounts. Either PR 9 lands first, or this PR carries
-`AUTH_ALLOWED_EMAILS` itself. Ships: the app goes private.
+Depends on: PR 5 and PR 9, **both done**. That ordering was the point: a session
+gate over an unscoped `listAccounts()` would have shown every signed-in stranger
+all four real accounts, and PR 4 ships no allowlist. Because PR 9 landed first,
+this PR is a plain session gate and needs no `AUTH_ALLOWED_EMAILS`.
+Ships: the app goes private.
 
 ### PR 7 — `feat/profile-section`
 
@@ -715,7 +733,7 @@ and go invisible the moment PR 9 lands.**
   targeting.
 - `src/db/assign-owner.ts` — `assignOwners`, pure: every account with no member
   row gets an `owner` row for a given owner. Idempotent, and it keys on
-  `account_id` alone, so an account owned by *anyone* is skipped rather than
+  `account_id` alone, so an account owned by _anyone_ is skipped rather than
   colliding with the `(account_id, user_id)` primary key.
 - `src/db/run-backfill.ts` — the script around it, mirroring `run-migration.ts`.
   **Split from the logic deliberately:** a module with a top-level `main()`
@@ -814,79 +832,124 @@ alongside `AUTH_SECRET`.
 
 Depends on: PR 3, PR 8. Ships: nothing user-visible.
 
-### PR 9 — `feat/scope-accounts-to-user`
+### PR 9 — `feat/scope-accounts-to-user` — IN REVIEW
 
-**The switch. Atomic by necessity — deleting the interface method moves every
-caller in one commit. Measured 2026-09-22: two production callers,
-`src/app/page.tsx` and `src/app/method/page.tsx`, plus seven test files.** The
-method page reads only a `themeId` out of the list, so it leaks a gradient rather
-than account data, but it still moves when the method goes.
+**The switch.** Shipped as four commits, each green on its own.
 
-- **Re-run the backfill and re-check the orphan query first** (Claude runs both;
-  production still needs your go-ahead). It is idempotent, and this closes the
-  window for any account created during PRs 1–8.
-- **Then delete the backfill**, in this same PR and after that final run. Once
-  `POST /api/accounts` uses `insertAccountWithOwner`, every account is owned at
-  birth and the orphan set is empty by construction — the backfill can never
-  find anything again. It is one-time bootstrap code and its one time is over:
-  - `src/db/run-backfill.ts`
-  - `src/db/assign-owner.ts`
-  - `src/db/__tests__/assign-owner.test.ts`
-  - the three `db:backfill*` scripts in `package.json`
+**1 — creation is owned.** `POST /api/accounts` takes the owner from the session
+and returns 401 before parsing a body when there is none.
+`AccountsStore.createAccount` writes through `insertAccountWithOwner`, so account
+and member row land in one transaction. It takes a `CreateAccountParams` object,
+and **`asOf` is gone**: every caller passed "now", and `today()` already honours
+`FUNSAVER_NOW`, so a second clock seam bought nothing. `src/auth.ts` gained
+`signedInUserId()`, a narrow accessor over the overloaded `auth()` — this plan's
+first caller of `auth()` anywhere.
 
-  `src/db/migration-target.ts` **stays** — `run-migration.ts` uses it.
-- `src/lib/account-access.ts` — the seam above.
-- `src/app/page.tsx` — `listAccounts()` → `listAccountsForUser(store, session.userId)`.
-- **Delete `listAccounts`** from `DataStore` and all three stores; the compiler
-  finds every caller.
-- `POST /api/accounts` — `userId` from the session, **never** the body;
-  `insertAccountWithOwner`, so every account created from here on is owned at
-  birth. Request body stays `{name, avatarId}`.
+**2 — the read path.** Both pages read through `src/app/signed-in-accounts.ts`;
+`listAccounts` deleted from `DataStore` and `BaseStore`.
+**`AccountRepository.list()` stays** — `MemoryAccountUsers.listAccountsForUser`
+builds its answer from it.
 
-Tests: `account-access` unit tests — owner and editor pass `assertCanEdit`,
-viewer throws, `requireAccountUser` throws for a non-member of the account. Route test:
-unauthenticated `POST /api/accounts` → 401.
+**3 — the backfill deleted**, with `src/db/migration-target.ts` kept for
+`run-migration.ts`. Verified by running `db:migrate-dev`, not by grep.
+
+**4 — this file and `.claude/HANDOVER.md`.**
+
+**Thirteen test files moved, not seven.** The seven were right for
+`listAccounts`; six more used `AccountsStore.createAccount` as fixture setup and
+had to seed an owner user first, since #67 made `UnknownOwnerError` uniform
+across stores. Five of those share `createOwnedAccount` from
+`src/test-utils/owned-account.ts`. Every deleted `listAccounts` assertion became
+`getAccount` — no test actually needed "all accounts", only "the insert landed".
+
+**The account list is now sorted by name, not insertion order.**
+`listAccountsForUser` runs `byAccountName` where `listAccounts` returned
+insertion order, so with no `selectedAccountId` cookie the app opens on the
+alphabetically first account rather than the oldest. `account-switch.visual.ts`
+caught it and now asserts through `byAccountName` rather than encoding either
+order. Accepted deliberately: the old order was whatever the store happened to
+return, and the cookie decides every visit after the first.
+
+**`jest.config.ts` maps the `@/` alias.** SWC rewrites `@/` in import specifiers
+but not inside a `jest.mock()` string, which is why every other mock in this repo
+is relative. PR 10 needs `jest.mock('@/auth')` in four more files.
+
+**No `src/lib/account-access.ts`** — see _Authorization seam_ above.
+
+Tests: `createAccount` writes an owner row the user can read back
+(`getAccountUser` **and** `listAccountsForUser`); unauthenticated
+`POST /api/accounts` → 401 with nothing written. Both were written after
+confirming the suite stayed green with the behaviour deliberately broken — the
+owner write reverted to `insertAccount`, the role flipped to `viewer`, the guard
+deleted, the status changed to 403.
 
 Depends on: PR 3, PR 8. Ships: users see only their own accounts, and it is
 the prerequisite of PR 6 rather than a sequel to it.
 
 ### PR 10 — `feat/guard-transaction-routes`
 
-- `src/app/api/accounts/[id]/{deposits,withdrawals,theme}/route.ts` —
+- `src/app/api/accounts/[id]/route.ts` **and**
+  `src/app/api/accounts/[id]/{deposits,withdrawals,theme}/route.ts` —
   `requireAccountUser` + `assertCanEdit` before the existing `getAccount`.
+  **`[id]/route.ts` is the one this plan kept leaving out**: it is the PUT that
+  renames an account and changes its avatar, it mutates like the other three,
+  and every earlier draft of this list omitted it.
+- `src/lib/account-access.ts` — **new**, created here rather than in PR 9. See
+  _Authorization seam_ above.
 
 Tests: per route — unauthenticated → 401, non-member of the account `accountId` → 403.
 
 Depends on: PR 9. Ships: writes are authorized.
 
+### PR 11 — `refactor/themed-page-shell`
+
+`<main><ThemeController initialThemeId={...}>{children}</ThemeController></main>`
+is written out in full in all three pages — `src/app/page.tsx`,
+`src/app/method/page.tsx` and `src/app/login/page.tsx`. One `ThemedPage`
+taking `themeId` and `children` replaces the three copies.
+
+**Raised during PR 9 and deliberately left out of it.** The duplication
+predates that PR, and the third copy lives in `login/page.tsx`, which a PR
+about the read path has no other reason to open. PR 9 did fold the two
+_data_ duplications into `src/app/signed-in-accounts.ts` — the session read,
+the cookie, the scoped account list and the resolved theme — because both of
+its own callers shared them. The shell is what is left.
+
+Tests: the three pages are covered by the browser suites, which assert the
+themed render already. No new test.
+
+Depends on: nothing. Independent of 6, 7 and 10; can land any time.
+
 ---
 
 ## Architecture touch points
 
-| Layer                                                             | Change                                                                    | PR      |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------- | ------- |
-| `src/db/schema.sql`                                               | append `users`, `account_users`                                         | 1       |
-| `src/lib/types.ts`                                                | add `User`, `AccountUserRole`, `AccountUser`                             | 1       |
-| `src/db/row-mappers.ts`                                           | add `UserRow`/`toUser`, `AccountUserRow`/`toAccountUser`              | 1       |
-| `src/db/data-store.ts`                                            | add user methods, then membership methods, then **remove** `listAccounts` | 2, 3, 9 |
-| `src/db/base-store.ts`                                            | delegate each new `DataStore` method once                                 | 2, 3, 9 |
-| `src/db/postgres-store/{users,members}.ts`                        | implement — JOIN, `sql.transaction([...])`                                | 2, 3, 9 |
-| `src/db/json-file-store/{users,members}.ts`                       | implement — `StoreData` gains `users`, `members`                          | 2, 3, 9 |
-| `src/db/memory-store/{users,members}.ts`                          | implement — two arrays                                                    | 2, 3, 9 |
-| `src/lib/user-provisioning.ts`                                    | **new** — Google `sub` → user, else create                                | 4       |
-| `src/auth.ts`                                                     | **new** — Auth.js config                                                  | 4       |
-| `src/app/api/auth/[...nextauth]/route.ts`                         | **new** — handler re-export                                               | 4       |
-| `.env.example`                                                    | `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`                     | 4       |
-| `src/app/login/page.tsx` + `src/components/SignIn/`               | **new** — one Google button, RTL, themed                                  | 5       |
-| `src/middleware.ts`                                               | **new** — unauthenticated → `/login`; honours `FUNSAVER_SKIP_AUTH`        | 6       |
-| `e2e/server.ts`                                                   | `FUNSAVER_SKIP_AUTH=true` in the spawned env                              | 6       |
-| `src/components/Menu/ProfileSection/`                             | **new** — name + sign out                                                 | 7       |
-| `src/db/migration-target.ts`                                      | **new** — shared `--dev` / `--test` target resolution                     | 8       |
-| `src/db/assign-owner.ts`                                          | **new** — adopt orphan accounts as `owner`                                | 8       |
-| `src/lib/account-access.ts`                                       | **new** — the authorization seam                                          | 9       |
-| `src/app/page.tsx`                                                | `listAccounts()` → `listAccountsForUser(store, session.userId)`           | 9       |
-| `src/app/api/accounts/route.ts`                                   | session `userId` + `insertAccountWithOwner`                               | 9       |
-| `src/app/api/accounts/[id]/{deposits,withdrawals,theme}/route.ts` | `requireAccountUser` + `assertCanEdit`                                     | 10      |
+| Layer                                               | Change                                                                    | PR      |
+| --------------------------------------------------- | ------------------------------------------------------------------------- | ------- |
+| `src/db/schema.sql`                                 | append `users`, `account_users`                                           | 1       |
+| `src/lib/types.ts`                                  | add `User`, `AccountUserRole`, `AccountUser`                              | 1       |
+| `src/db/row-mappers.ts`                             | add `UserRow`/`toUser`, `AccountUserRow`/`toAccountUser`                  | 1       |
+| `src/db/data-store.ts`                              | add user methods, then membership methods, then **remove** `listAccounts` | 2, 3, 9 |
+| `src/db/base-store.ts`                              | delegate each new `DataStore` method once                                 | 2, 3, 9 |
+| `src/db/postgres-store/{users,members}.ts`          | implement — JOIN, `sql.transaction([...])`                                | 2, 3, 9 |
+| `src/db/json-file-store/{users,members}.ts`         | implement — `StoreData` gains `users`, `members`                          | 2, 3, 9 |
+| `src/db/memory-store/{users,members}.ts`            | implement — two arrays                                                    | 2, 3, 9 |
+| `src/lib/user-provisioning.ts`                      | **new** — Google `sub` → user, else create                                | 4       |
+| `src/auth.ts`                                       | **new** — Auth.js config                                                  | 4       |
+| `src/app/api/auth/[...nextauth]/route.ts`           | **new** — handler re-export                                               | 4       |
+| `.env.example`                                      | `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`                     | 4       |
+| `src/app/login/page.tsx` + `src/components/SignIn/` | **new** — one Google button, RTL, themed                                  | 5       |
+| `src/middleware.ts`                                 | **new** — unauthenticated → `/login`; honours `FUNSAVER_SKIP_AUTH`        | 6       |
+| `e2e/server.ts`                                     | `FUNSAVER_SKIP_AUTH=true` in the spawned env                              | 6       |
+| `src/components/Menu/ProfileSection/`               | **new** — name + sign out                                                 | 7       |
+| `src/db/migration-target.ts`                        | **new** — shared `--dev` / `--test` target resolution                     | 8       |
+| `src/db/assign-owner.ts`                            | **new** — adopt orphan accounts as `owner`; deleted again in 9            | 8       |
+| `src/app/signed-in-accounts.ts`                     | **new** — session + cookie + scoped list + theme, shared by both pages    | 9       |
+| `src/app/page.tsx` + `src/app/method/page.tsx`      | `listAccounts()` → `signedInAccounts()`                                   | 9       |
+| `src/app/api/accounts/route.ts`                     | session `userId` + `insertAccountWithOwner`; 401 when signed out          | 9       |
+| `src/db/{run-backfill,assign-owner}.ts`             | **deleted** — every account is owned at birth from here on                | 9       |
+| `src/lib/account-access.ts`                         | **new** — `requireAccountUser` + `assertCanEdit`                          | 10      |
+| `src/app/api/accounts/[id]/**/route.ts`             | `requireAccountUser` + `assertCanEdit`, edit PUT included                 | 10      |
 
 Unchanged throughout: `AccountSwitcher`, `Account`, `AccountForm`, wallets,
 drawer, transactions, theme, `EmptyState`, `use-create-account`.
@@ -912,7 +975,7 @@ None requires new architecture.
 | No child login                                                                                                                              | Credentials provider + `provider='pin'` user + member row. **No schema change.**                                   |
 | `FUNSAVER_SKIP_AUTH` exists                                                                                                                 | Delete the env var once e2e can seed a real session cookie. Production already refuses it.                         |
 | No rate limiting on sign-in                                                                                                                 | Vercel/Neon edge config; no app change.                                                                            |
-| No audit trail                                                                                                                              | `account_users.added_at` is the start; add `added_by` when sharing ships.                                        |
+| No audit trail                                                                                                                              | `account_users.added_at` is the start; add `added_by` when sharing ships.                                          |
 
 ## Out of scope
 
@@ -950,7 +1013,7 @@ migrating `data.json` into Neon.
    a broken implementation. Confirm the tree is clean before quoting a result,
    and break the code on purpose to see the test fail.
 7. **`rtk` output is not trustworthy for facts.** It has reported `git status
-   --short` as `ok` on a dirty tree, a jest count of 364 where the real number
+--short` as `ok` on a dirty tree, a jest count of 364 where the real number
    was 368, and swallowed an `eslint --fix`. Use `rtk proxy <cmd>` for anything
    you intend to report as a number, and capture to a file rather than piping.
 8. **Confirm work landed by content, not by commit ancestry.** This repo
@@ -958,9 +1021,15 @@ migrating `data.json` into Neon.
    for a merged branch. Use `git diff origin/main origin/<branch> --stat` or
    `git grep` for a symbol the PR added. A PR page saying "merged" is not proof
    either — see #47.
-9. **Start with PR 9** — PRs 1–5 and 8 have merged and the Google Cloud step is
-   long done. Nothing in this plan is open; PR 9 branches off `main`. Its first
-   act is re-running the backfill and its last is deleting it.
+9. **Start with PR 6** — PRs 1–5, 8, 8b and 9 are done, and the Google Cloud step
+   is long done. PR 6 is now a plain session gate: PR 9 deleted
+   `DataStore.listAccounts()`, so a signed-in stranger with no `account_users`
+   rows sees an empty app and the `AUTH_ALLOWED_EMAILS` allowlist PR 6 would
+   otherwise have needed is unnecessary. PR 7 and PR 11 are independent.
+10. **The backfill is gone.** If an orphan account ever appears again, there is
+    no script to adopt it — write the `INSERT` by hand or re-create the account
+    through the app. It should not be possible: `POST /api/accounts` is the only
+    way in and it writes the owner in the same transaction.
 
 ### Still undecided
 
