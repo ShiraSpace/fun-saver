@@ -23,6 +23,10 @@ export function AccountTrigger({
   isOpen,
   onToggle,
 }: AccountTriggerProps): JSX.Element {
+  const caret = isOpen
+    ? ACCOUNT_PICKER_CONTENT.openCaret
+    : ACCOUNT_PICKER_CONTENT.closedCaret;
+
   return (
     <Trigger
       type="button"
@@ -45,11 +49,7 @@ export function AccountTrigger({
           {ACCOUNT_PICKER_CONTENT.currentSuffix}
         </Current>
       </Naming>
-      <Caret data-testid={ACCOUNT_PICKER_TEST_IDS.caret}>
-        {isOpen
-          ? ACCOUNT_PICKER_CONTENT.openCaret
-          : ACCOUNT_PICKER_CONTENT.closedCaret}
-      </Caret>
+      <Caret data-testid={ACCOUNT_PICKER_TEST_IDS.caret}>{caret}</Caret>
     </Trigger>
   );
 }

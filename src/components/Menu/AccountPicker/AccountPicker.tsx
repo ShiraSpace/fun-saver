@@ -21,19 +21,20 @@ export function AccountPicker({
   onSelect,
   onAdd,
 }: AccountPickerProps): JSX.Element {
-  const [isOpen, setIsOpen] = useState(false);
-  const current = selectedAccount(accounts, selectedAccountId);
+  const [isAccountListOpen, setIsAccountListOpen] = useState(false);
+  const currentAccount = selectedAccount(accounts, selectedAccountId);
+  const showsAccountList = isAccountListOpen || !currentAccount;
 
   return (
     <Picker data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>
-      {current && (
+      {currentAccount && (
         <AccountTrigger
-          account={current}
-          isOpen={isOpen}
-          onToggle={(): void => setIsOpen(!isOpen)}
+          account={currentAccount}
+          isOpen={isAccountListOpen}
+          onToggle={(): void => setIsAccountListOpen(!isAccountListOpen)}
         />
       )}
-      {(isOpen || !current) && (
+      {showsAccountList && (
         <AccountList
           accounts={accounts}
           selectedAccountId={selectedAccountId}
