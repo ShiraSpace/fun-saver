@@ -14,6 +14,12 @@ interface OpenOptions {
   cookie: CookieData;
 }
 
+interface PointHitOptions {
+  x: number;
+  y: number;
+  testId: string;
+}
+
 export class Session {
   private browser?: Browser;
   private activePage?: Page;
@@ -94,7 +100,7 @@ export class Session {
     return queries.box(this.page, testId);
   }
 
-  pointHitsTestId(x: number, y: number, testId: string): Promise<boolean> {
+  pointHitsTestId({ x, y, testId }: PointHitOptions): Promise<boolean> {
     return queries.pointHitsTestId({ page: this.page, x, y, testId });
   }
 

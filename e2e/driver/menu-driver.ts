@@ -13,6 +13,11 @@ const MIDDLE_BAR = `[data-testid="${MENU_TEST_IDS.menuIcon}"] > span:nth-of-type
 const OVERLAY = `[data-testid="${MENU_OVERLAY_TEST_IDS.overlay}"]`;
 const ACCOUNT_ROW = `[data-testid="${ACCOUNT_LIST_TEST_IDS.row}"]`;
 
+interface Point {
+  x: number;
+  y: number;
+}
+
 export class MenuDriver {
   constructor(private readonly session: Session) {}
 
@@ -70,8 +75,11 @@ export class MenuDriver {
     return this.session.box(ACCOUNT_LIST_TEST_IDS.list);
   }
 
-  accountListCovers(x: number, y: number): Promise<boolean> {
-    return this.session.pointHitsTestId(x, y, ACCOUNT_LIST_TEST_IDS.list);
+  accountListCovers(point: Point): Promise<boolean> {
+    return this.session.pointHitsTestId({
+      ...point,
+      testId: ACCOUNT_LIST_TEST_IDS.list,
+    });
   }
 
   editAccountChipBox(): Promise<BoundingBox> {

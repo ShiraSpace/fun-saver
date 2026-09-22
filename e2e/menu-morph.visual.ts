@@ -72,10 +72,10 @@ describe('menu morph', () => {
         `list spans ${list.y}-${list.y + list.height}, appearance ${appearance.y}-${appearance.y + appearance.height}`
       );
       assert.ok(
-        await menu.accountListCovers(
-          appearance.x + appearance.width / 2,
-          appearance.y + 1
-        ),
+        await menu.accountListCovers({
+          x: appearance.x + appearance.width / 2,
+          y: appearance.y + 1,
+        }),
         'the appearance section is painted over the list where they overlap'
       );
     });
