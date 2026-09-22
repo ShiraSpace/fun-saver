@@ -27,7 +27,7 @@ export interface AppDriver {
   dashboard: DashboardDriver;
 }
 
-function createDrivers(session: Session): AppDriver {
+export function createDrivers(session: Session): AppDriver {
   return {
     session,
     menu: new MenuDriver(session),
@@ -46,7 +46,7 @@ function createDrivers(session: Session): AppDriver {
   };
 }
 
-async function seedStore(
+export async function seedStore(
   dataPath: string,
   state: Partial<StoreData>
 ): Promise<void> {

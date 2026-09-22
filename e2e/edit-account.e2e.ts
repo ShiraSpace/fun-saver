@@ -49,7 +49,7 @@ describe('edit account from the menu', () => {
     await editAccount.submit();
 
     await header.waitForName(LONGEST_NAME);
-    await session.resize(PHONE.width, PHONE.height);
+    await session.resize(PHONE);
     await menu.open();
 
     const section = await menu.accountsSectionBox();

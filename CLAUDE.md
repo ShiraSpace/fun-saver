@@ -4,6 +4,8 @@
 
 Before invoking any superpowers skill, ask the user for approval first. Do not auto-trigger skills.
 
+The project's own skills in `.claude/skills/` are exempt — invoke them when they apply. `pr-screenshots` is one of those: every pull request whose diff changes something visible carries screenshots of the state it changed.
+
 # CLAUDE.md
 
 This file provides **critical workflow and coding guidelines** for Claude Code when working in this repository.
@@ -71,7 +73,7 @@ For technical details (commands, architecture, dependencies), see [DEVELOPMENT.m
 22. **STOP** - Wait for approval: "push" or "next phase"
 
 ### Phase 4: Continue
-23. Push to remote only if user explicitly requests
+23. Push to remote only if user explicitly requests. A pull request that changes anything visible gets screenshots — see the `pr-screenshots` skill
 24. **STOP** - Wait for approval before moving to next phase/step
 25. Go back to step 5 for next phase/step
 
