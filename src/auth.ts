@@ -37,3 +37,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+
+export async function signedInUserId(): Promise<string | undefined> {
+  return (await auth())?.user?.id;
+}

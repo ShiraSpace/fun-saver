@@ -1,21 +1,17 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
 import { AccountsSection } from './AccountsSection';
 import { ACCOUNTS_SECTION_TEST_IDS } from './constants';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
-import {
-  AccountsProvider,
-  type AccountsContextValue,
-} from '@/components/AccountSwitcher/accounts-context';
+import { type AccountsContextValue } from '@/components/Home/accounts-context';
 import {
   APP_MODE,
   AppModeProvider,
   type AppMode,
-} from '@/components/Home/app-mode-context';
+} from '@/components/AccountManagement/app-mode-context';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
-import { openAccountPicker } from '@/test-utils/account-picker';
 
 interface RenderSectionParams {
   contextOverrides?: Partial<AccountsContextValue>;
@@ -32,21 +28,22 @@ function renderSection({
 }: RenderSectionParams = {}): void {
   const value: AccountsContextValue = {
     accounts,
-    selectedAccountId: mockDerivedAccount.id,
+    currentAccount: mockDerivedAccount,
     selectAccount: () => {},
     ...contextOverrides,
   };
 
-  render(
+  renderWithAccounts(
     <AppModeProvider
       value={{ mode: APP_MODE.viewing, setMode: setMode ?? ((): void => {}) }}
     >
-      <AccountsProvider value={value}>
-        <AccountsSection
-          onAccountSelect={onAccountSelect ?? ((): void => {})}
-        />
-      </AccountsProvider>
-    </AppModeProvider>
+      <AccountsSection
+        onAccountSelect={onAccountSelect ?? ((): void => {})}
+        isAccountListOpen
+        onAccountListToggle={(): void => {}}
+      />
+    </AppModeProvider>,
+    value
   );
 }
 
@@ -62,7 +59,6 @@ describe('AccountsSection', () => {
       onAccountSelect: mockOnAccountSelect,
       setMode: mockSetMode,
     });
-    openAccountPicker();
   });
 
   it('lists the accounts', () => {

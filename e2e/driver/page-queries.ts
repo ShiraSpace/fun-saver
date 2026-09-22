@@ -108,6 +108,30 @@ export function computedStyle({
   return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
 }
 
+export interface TapQuery {
+  page: Page;
+  testId: string;
+  x: number;
+  y: number;
+}
+
+export function receivesTapAt({
+  page,
+  testId,
+  x,
+  y,
+}: TapQuery): Promise<boolean> {
+  return page.evaluate(
+    (tap) => {
+      const tapped = document.elementFromPoint(tap.x, tap.y);
+      const target = document.querySelector(`[data-testid="${tap.testId}"]`);
+
+      return target?.contains(tapped) ?? false;
+    },
+    { testId, x, y }
+  );
+}
+
 export async function styleValues(
   page: Page,
   testId: string,

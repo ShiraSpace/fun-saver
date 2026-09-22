@@ -1,35 +1,31 @@
 /**
  * @jest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { mockCreateAccountInput } from '@/test-utils/fixtures';
+import { mockCreateAccountInput, mockUser } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { getStore } from '@/db';
+import { signedInUserId } from '@/auth';
+import { withTempDataPath } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
-let dir: string;
-
-beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'funsaver-route-'));
-  process.env.FUNSAVER_DATA_PATH = join(dir, 'data.json');
-});
-
-afterEach(() => {
-  delete process.env.FUNSAVER_DATA_PATH;
-  rmSync(dir, { recursive: true, force: true });
-});
-
-function postRequest(body: unknown): Request {
-  return new Request('http://localhost/api/accounts', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-}
+jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
 
 describe('POST /api/accounts', () => {
+  withTempDataPath();
+
+  beforeEach(async () => {
+    await getStore().insertUser(mockUser);
+    jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
+  });
+
+  function postRequest(body: unknown): Request {
+    return new Request('http://localhost/api/accounts', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  }
+
   it('creates an account and returns it with 201', async () => {
     const response = await POST(postRequest(mockCreateAccountInput));
 
@@ -41,8 +37,18 @@ describe('POST /api/accounts', () => {
     });
     expect(account.id).toBeTruthy();
 
-    const stored = await getStore().listAccounts();
-    expect(stored.map((a) => a.name)).toEqual([mockCreateAccountInput.name]);
+    expect(await getStore().getAccount(account.id)).toMatchObject({
+      name: mockCreateAccountInput.name,
+    });
+  });
+
+  it('refuses an unauthenticated request with 401 and stores nothing', async () => {
+    jest.mocked(signedInUserId).mockResolvedValue(undefined);
+
+    const response = await POST(postRequest(mockCreateAccountInput));
+
+    expect(response.status).toBe(401);
+    expect(await getStore().listAccountsForUser(mockUser.id)).toEqual([]);
   });
 
   it.each([
@@ -66,7 +72,7 @@ describe('POST /api/accounts', () => {
     const response = await POST(postRequest(body));
 
     expect(response.status).toBe(400);
-    expect(await getStore().listAccounts()).toEqual([]);
+    expect(await getStore().listAccountsForUser(mockUser.id)).toEqual([]);
   });
 
   it('trims the padding off the new name', async () => {

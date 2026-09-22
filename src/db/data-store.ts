@@ -49,7 +49,6 @@ export interface AccountUserRepository {
 
 export interface DataStore {
   insertAccount(account: Account): Promise<void>;
-  listAccounts(): Promise<Account[]>;
   getAccount(id: string): Promise<Account | undefined>;
   setAccountTheme(id: string, themeId: ThemeId): Promise<Account | undefined>;
   updateAccount(id: string, edits: AccountEdits): Promise<Account | undefined>;

@@ -1,5 +1,5 @@
 import { InMemoryStore } from '@/db/memory-store';
-import { getWalletsForAccount } from '../account-dashboard';
+import { getWalletsForAccount, withDerivedWallets } from '../account-dashboard';
 import {
   createMockAccount,
   createMockTransaction,
@@ -40,7 +40,11 @@ describe('getWalletsForAccount', () => {
   it('returns derived wallets ordered savings-first', async () => {
     await store.insertTransactions(transactions);
 
-    const wallets = await getWalletsForAccount(store, account, '2026-01-03');
+    const wallets = await getWalletsForAccount({
+      store,
+      account,
+      asOf: '2026-01-03',
+    });
 
     expect(wallets.map((wallet) => wallet.name)).toEqual([
       'savings',
@@ -67,11 +71,11 @@ describe('getWalletsForAccount', () => {
         }),
       ]);
 
-      const wallets = await getWalletsForAccount(
+      const wallets = await getWalletsForAccount({
         store,
-        accountWithUnsettledInterest,
-        '2026-01-03'
-      );
+        account: accountWithUnsettledInterest,
+        asOf: '2026-01-03',
+      });
 
       savingsWallet = wallets[0];
     });
@@ -89,11 +93,11 @@ describe('getWalletsForAccount', () => {
     });
 
     it('does not re-accrue interest on a second read', async () => {
-      const reread = await getWalletsForAccount(
+      const reread = await getWalletsForAccount({
         store,
-        accountWithUnsettledInterest,
-        '2026-01-03'
-      );
+        account: accountWithUnsettledInterest,
+        asOf: '2026-01-03',
+      });
 
       expect(reread[0].balance).toBe(8080);
       expect(
@@ -103,5 +107,63 @@ describe('getWalletsForAccount', () => {
         )
       ).toHaveLength(3);
     });
+  });
+});
+
+describe('withDerivedWallets', () => {
+  const secondAccount = createMockAccount({
+    id: 'a2',
+    name: 'מתן',
+    wallets: [createMockWallet({ id: 'w9', monthlyInterestRate: 0 })],
+  });
+
+  let store: InMemoryStore;
+
+  beforeEach(async () => {
+    store = new InMemoryStore();
+    await store.insertTransactions([
+      ...transactions,
+      createMockTransaction({
+        id: 'd3',
+        accountId: secondAccount.id,
+        walletId: 'w9',
+        amount: 2500,
+      }),
+    ]);
+  });
+
+  it('keeps every account it was handed', async () => {
+    const derived = await withDerivedWallets({
+      store,
+      accounts: [account, secondAccount],
+      asOf: '2026-01-03',
+    });
+
+    expect(derived.map((each) => each.id)).toEqual([
+      account.id,
+      secondAccount.id,
+    ]);
+  });
+
+  it('gives each account the balances of its own wallets', async () => {
+    const [first, second] = await withDerivedWallets({
+      store,
+      accounts: [account, secondAccount],
+      asOf: '2026-01-03',
+    });
+
+    expect(first.wallets.map((wallet) => wallet.name)).toEqual([
+      'savings',
+      'spending',
+    ]);
+    expect(first.wallets[0].balance).toBe(8500);
+    expect(second.wallets.map((wallet) => wallet.id)).toEqual(['w9']);
+    expect(second.wallets[0].balance).toBe(2500);
+  });
+
+  it('has nothing to derive for nobody', async () => {
+    expect(
+      await withDerivedWallets({ store, accounts: [], asOf: '2026-01-03' })
+    ).toEqual([]);
   });
 });

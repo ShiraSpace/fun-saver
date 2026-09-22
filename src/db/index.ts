@@ -1,3 +1,4 @@
+import { ValidationError } from '@/lib/errors';
 import { JsonFileStore } from './json-file-store';
 import { PostgresStore } from './postgres-store';
 import type { DataStore } from './data-store';
@@ -42,6 +43,12 @@ function postgresTarget(): Target | undefined {
 }
 
 function defaultJsonTarget(): Target {
+  if (process.env.NODE_ENV === 'test') {
+    throw new ValidationError(
+      `no store configured: set FUNSAVER_DATA_PATH, or call withTempDataPath(), rather than writing to ${DEFAULT_PATH}`
+    );
+  }
+
   return { kind: 'json', path: DEFAULT_PATH };
 }
 

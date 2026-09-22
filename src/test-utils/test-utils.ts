@@ -22,6 +22,20 @@ export function withCleanEnv(keys: readonly string[]): void {
   });
 }
 
+export function withTempDataPath(): void {
+  let directory: string;
+
+  beforeEach(() => {
+    directory = mkdtempSync(join(tmpdir(), 'funsaver-'));
+    mutableEnv.FUNSAVER_DATA_PATH = join(directory, 'data.json');
+  });
+
+  afterEach(() => {
+    delete mutableEnv.FUNSAVER_DATA_PATH;
+    rmSync(directory, { recursive: true, force: true });
+  });
+}
+
 export interface TempStoreFile {
   path: string;
 }

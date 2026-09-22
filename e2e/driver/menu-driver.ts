@@ -4,6 +4,7 @@ import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from '@/components/Menu/AccountPicker/constants';
+import { APPEARANCE_SECTION_TEST_IDS } from '@/components/Menu/AppearanceSection/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { Session } from './session';
@@ -11,6 +12,11 @@ import { Session } from './session';
 const MIDDLE_BAR = `[data-testid="${MENU_TEST_IDS.menuIcon}"] > span:nth-of-type(2)`;
 const OVERLAY = `[data-testid="${MENU_OVERLAY_TEST_IDS.overlay}"]`;
 const ACCOUNT_ROW = `[data-testid="${ACCOUNT_LIST_TEST_IDS.row}"]`;
+
+interface Point {
+  x: number;
+  y: number;
+}
 
 export class MenuDriver {
   constructor(private readonly session: Session) {}
@@ -59,6 +65,21 @@ export class MenuDriver {
 
   accountsSectionBox(): Promise<BoundingBox> {
     return this.session.box(ACCOUNTS_SECTION_TEST_IDS.section);
+  }
+
+  appearanceSectionBox(): Promise<BoundingBox> {
+    return this.session.box(APPEARANCE_SECTION_TEST_IDS.section);
+  }
+
+  accountListBox(): Promise<BoundingBox> {
+    return this.session.box(ACCOUNT_LIST_TEST_IDS.list);
+  }
+
+  accountListReceivesTapAt(point: Point): Promise<boolean> {
+    return this.session.receivesTapAt({
+      testId: ACCOUNT_LIST_TEST_IDS.list,
+      ...point,
+    });
   }
 
   editAccountChipBox(): Promise<BoundingBox> {

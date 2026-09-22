@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockAccount } from '@/test-utils/fixtures';
 import { METHOD_ROUTE } from '@/components/Method/constants';
+import { HOME_ROUTE } from '@/components/Home/constants';
 import { useDriver } from './driver/use-driver';
 
 describe('page routing', () => {
@@ -30,6 +31,16 @@ describe('page routing', () => {
       await menu.open();
 
       assert.equal(await menu.openMethodPage(), METHOD_ROUTE);
+    });
+  });
+
+  describe('the method page with no account to show', () => {
+    const { session } = useDriver();
+
+    it('sends the parent home, where the empty state asks for one', async () => {
+      await session.visit(METHOD_ROUTE);
+
+      assert.equal(session.currentPath(), HOME_ROUTE);
     });
   });
 });

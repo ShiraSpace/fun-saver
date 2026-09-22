@@ -2,14 +2,12 @@
 
 import { JSX } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
-import { AccountSwitcher } from '@/components/AccountSwitcher';
-import { CreateAccount } from '@/components/CreateAccount';
-import { EditAccount } from '@/components/EditAccount';
+import { Account } from '@/components/Account';
+import { AccountManagement } from '@/components/AccountManagement';
+import { APP_MODE } from '@/components/AccountManagement/app-mode-context';
 import { EmptyState } from '@/components/EmptyState';
-import { AccountsProvider } from '@/components/AccountSwitcher/accounts-context';
-import { APP_MODE, AppModeProvider } from './app-mode-context';
-import { useHomeNavigation } from './use-home-navigation';
-import { Overlay } from './Home.styles';
+import { useAccountNavigation } from '@/hooks/use-account-navigation';
+import { AccountsProvider } from './accounts-context';
 
 interface HomeProps {
   accounts: AccountWithDerivedWallets[];
@@ -17,37 +15,19 @@ interface HomeProps {
 }
 
 export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
-  const navigation = useHomeNavigation(accounts, initialAccountId);
-  const { mode, setMode, selectedAccountId, selectAccount, cancel } =
-    navigation;
+  const navigation = useAccountNavigation(accounts, initialAccountId);
+  const { currentAccount, selectAccount, setMode } = navigation;
   const startCreating = (): void => setMode(APP_MODE.creatingAccount);
+  const showsEmptyState = !currentAccount && !navigation.isCreating;
 
   return (
-    <AppModeProvider value={{ mode, setMode }}>
-      <AccountsProvider value={{ accounts, selectedAccountId, selectAccount }}>
-        {navigation.hasAccounts && <AccountSwitcher accounts={accounts} />}
-        {!navigation.hasAccounts && !navigation.isCreating && (
-          <EmptyState onCreate={startCreating} />
-        )}
-        {navigation.isCreating && (
-          <Overlay>
-            <CreateAccount
-              onCreated={navigation.showNewAccount}
-              onCancel={cancel}
-            />
-          </Overlay>
-        )}
-        {navigation.editingAccount && (
-          <Overlay>
-            <EditAccount
-              key={navigation.editingAccount.id}
-              account={navigation.editingAccount}
-              onUpdated={navigation.finishEditing}
-              onCancel={cancel}
-            />
-          </Overlay>
-        )}
-      </AccountsProvider>
-    </AppModeProvider>
+    <AccountManagement navigation={navigation}>
+      {currentAccount && (
+        <AccountsProvider value={{ accounts, currentAccount, selectAccount }}>
+          <Account account={currentAccount} />
+        </AccountsProvider>
+      )}
+      {showsEmptyState && <EmptyState onCreate={startCreating} />}
+    </AccountManagement>
   );
 }

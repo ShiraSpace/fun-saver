@@ -16,7 +16,7 @@ import { Trigger, Naming, Name, Current, Caret } from './AccountPicker.styles';
 interface AccountTriggerProps {
   account: AccountWithDerivedWallets;
   isOpen: boolean;
-  onToggle: () => void;
+  onToggle: (isOpen: boolean) => void;
 }
 
 export function AccountTrigger({
@@ -35,7 +35,7 @@ export function AccountTrigger({
       data-testid={ACCOUNT_PICKER_TEST_IDS.trigger}
       aria-expanded={isOpen}
       aria-controls={ACCOUNT_LIST_DOM_ID}
-      onClick={onToggle}
+      onClick={(): void => onToggle(!isOpen)}
     >
       <Avatar
         avatarId={account.avatarId}

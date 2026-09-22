@@ -1,18 +1,21 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { JSX, useState } from 'react';
+import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
+import { openAccountPicker } from '@/test-utils/account-picker';
 import { Menu } from './Menu';
 import { MENU_TEST_IDS } from './constants';
 import { MENU_OVERLAY_TEST_IDS } from './MenuOverlay/constants';
+import { ACCOUNT_LIST_TEST_IDS } from './AccountList/constants';
 
 describe('Menu', () => {
-  const onOpenChange = jest.fn();
+  const onToggle = jest.fn();
 
   beforeEach(() => {
-    onOpenChange.mockClear();
+    onToggle.mockClear();
   });
 
   describe('when closed', () => {
     beforeEach(() => {
-      render(<Menu isOpen={false} onToggle={onOpenChange} />);
+      renderWithAccounts(<Menu isOpen={false} onToggle={onToggle} />);
     });
 
     it('renders the menu button', () => {
@@ -41,13 +44,13 @@ describe('Menu', () => {
 
     it('requests opening when clicked', () => {
       fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
-      expect(onOpenChange).toHaveBeenCalledWith(true);
+      expect(onToggle).toHaveBeenCalledWith(true);
     });
   });
 
   describe('when open', () => {
     beforeEach(() => {
-      render(<Menu isOpen onToggle={onOpenChange} />);
+      renderWithAccounts(<Menu isOpen onToggle={onToggle} />);
     });
 
     it('marks the button as expanded', () => {
@@ -72,7 +75,33 @@ describe('Menu', () => {
 
     it('requests closing when clicked', () => {
       fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
-      expect(onOpenChange).toHaveBeenCalledWith(false);
+      expect(onToggle).toHaveBeenCalledWith(false);
+    });
+  });
+
+  describe('reopening after the account list was left open', () => {
+    function StatefulMenu(): JSX.Element {
+      const [isOpen, setIsOpen] = useState(false);
+
+      return <Menu isOpen={isOpen} onToggle={setIsOpen} />;
+    }
+
+    function clickBurger(): void {
+      fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+    }
+
+    beforeEach(() => {
+      renderWithAccounts(<StatefulMenu />);
+      clickBurger();
+      openAccountPicker();
+      clickBurger();
+      clickBurger();
+    });
+
+    it('shows the account it is on rather than the whole list', () => {
+      expect(
+        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).not.toBeInTheDocument();
     });
   });
 });

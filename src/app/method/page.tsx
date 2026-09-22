@@ -1,29 +1,33 @@
 import { JSX } from 'react';
-import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { Method } from '@/components/Method';
-import { SELECTED_ACCOUNT_COOKIE } from '@/components/Home/selected-account-cookie';
+import { HOME_ROUTE } from '@/components/Home/constants';
 import { getStore } from '@/db';
+import { withDerivedWallets } from '@/lib/account-dashboard';
+import { today } from '@/lib/clock';
 import { selectedAccount } from '@/lib/selected-account';
-import { resolveThemeId } from '@/theme/registry';
 import { ThemeController } from '@/theme/ThemeController';
+import { signedInAccounts } from '../signed-in-accounts';
 
 export const dynamic = 'force-dynamic';
 
 export default async function MethodPage(): Promise<JSX.Element> {
-  const [accounts, cookieStore] = await Promise.all([
-    getStore().listAccounts(),
-    cookies(),
-  ]);
+  const { accounts, selectedAccountId, themeId } = await signedInAccounts();
+  const derived = await withDerivedWallets({
+    store: getStore(),
+    accounts,
+    asOf: today(),
+  });
+  const initialAccount = selectedAccount(derived, selectedAccountId);
 
-  const storedAccountId = cookieStore.get(SELECTED_ACCOUNT_COOKIE)?.value ?? '';
-  const themeId = resolveThemeId(
-    selectedAccount(accounts, storedAccountId)?.themeId
-  );
+  if (!initialAccount) {
+    redirect(HOME_ROUTE);
+  }
 
   return (
     <main>
       <ThemeController initialThemeId={themeId}>
-        <Method />
+        <Method accounts={derived} initialAccount={initialAccount} />
       </ThemeController>
     </main>
   );

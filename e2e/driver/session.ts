@@ -20,9 +20,16 @@ interface ViewportOptions {
   deviceScaleFactor?: number;
 }
 
+interface TapOptions {
+  testId: string;
+  x: number;
+  y: number;
+}
+
 export class Session {
   private browser?: Browser;
   private activePage?: Page;
+  private baseUrl = '';
 
   private constructor() {}
 
@@ -36,10 +43,17 @@ export class Session {
 
   async open({ baseUrl, motion, cookie }: OpenOptions): Promise<void> {
     const browser = this.requireBrowser();
+    this.baseUrl = baseUrl;
     this.activePage = await browser.newPage();
     await browser.setCookie(cookie);
     await this.activePage.emulateMediaFeatures(queries.motionFeatures(motion));
     await this.activePage.goto(baseUrl, { waitUntil: 'networkidle0' });
+  }
+
+  async visit(path: string): Promise<void> {
+    await this.page.goto(`${this.baseUrl}${path}`, {
+      waitUntil: 'networkidle0',
+    });
   }
 
   async reload(): Promise<void> {
@@ -106,6 +120,10 @@ export class Session {
 
   box(testId: string): Promise<BoundingBox> {
     return queries.box(this.page, testId);
+  }
+
+  receivesTapAt({ testId, x, y }: TapOptions): Promise<boolean> {
+    return queries.receivesTapAt({ page: this.page, testId, x, y });
   }
 
   hasVerticalScroll(): Promise<boolean> {
