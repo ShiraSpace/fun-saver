@@ -21,6 +21,8 @@ export const jungleQuest: ThemeTokens = {
     softBg: '#F3F7E4',
     softBorder: '#B5D94C',
     softText: '#4A6A1E',
+    accountScopeBg: '#EDF4E6',
+    accountScopeBorder: '#A9C77E',
     depositBg: '#F3F7E4',
     gainText: '#3A7D2E',
     gainSoftBg: '#E4F2D9',
