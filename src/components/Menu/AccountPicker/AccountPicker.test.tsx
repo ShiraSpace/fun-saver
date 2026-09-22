@@ -102,15 +102,9 @@ describe('AccountPicker', () => {
       renderPicker();
     });
 
-    it('leaves the accounts on show, since no trigger can reach them', () => {
+    it('renders nothing at all', () => {
       expect(
-        screen.getByTestId(ACCOUNT_LIST_TEST_IDS.list)
-      ).toBeInTheDocument();
-    });
-
-    it('offers no trigger', () => {
-      expect(
-        screen.queryByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)
+        screen.queryByTestId(ACCOUNT_PICKER_TEST_IDS.picker)
       ).not.toBeInTheDocument();
     });
   });

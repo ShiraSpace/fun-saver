@@ -28,20 +28,21 @@ export function AccountPicker({
 }: AccountPickerProps): JSX.Element {
   const pickerRef = useRef<HTMLDivElement>(null);
   const currentAccount = selectedAccount(accounts, selectedAccountId);
-  const showsAccountList = isOpen || !currentAccount;
 
   useCloseOnOutsideClick(pickerRef, isOpen, onToggle);
 
+  if (!currentAccount) {
+    return <></>;
+  }
+
   return (
     <Picker ref={pickerRef} data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>
-      {currentAccount && (
-        <AccountTrigger
-          account={currentAccount}
-          isOpen={isOpen}
-          onToggle={onToggle}
-        />
-      )}
-      {showsAccountList && (
+      <AccountTrigger
+        account={currentAccount}
+        isOpen={isOpen}
+        onToggle={onToggle}
+      />
+      {isOpen && (
         <AccountList
           accounts={accounts}
           selectedAccountId={selectedAccountId}
