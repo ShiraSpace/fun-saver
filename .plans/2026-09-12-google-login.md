@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-22 (plan PR 10 built on `feat/guard-transaction-routes`; PR 7 and PR 11 are what is left)
+## Progress — updated 2026-09-22 (plan PR 10 open as #87; PR 7 and PR 11 are what is left)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -25,10 +25,10 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 8b    | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff    |
 | PR 9     | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **merged** — `f947725`                                  |
 | PR 6     | [#86](https://github.com/ShiraSpace/fun-saver/pull/86) | `feat/auth-proxy`                  | **merged** — `7312359`, plus `63cc6cc` straight to main |
-| PR 10    | —                                                      | `feat/guard-transaction-routes`    | **built, not yet opened** — `62ed29e`, `a43e4c0`        |
+| PR 10    | [#87](https://github.com/ShiraSpace/fun-saver/pull/87) | `feat/guard-transaction-routes`    | **open** — `62ed29e`, `a43e4c0`, `804fbfc`, `e20b20e`   |
 | PR 7, 11 | —                                                      | —                                  | not started                                             |
 
-### PR 10 is built, and PR 7 and PR 11 are all that is left
+### PR 10 is open, and PR 7 and PR 11 are all that is left
 
 PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
 read through `listAccountsForUser` with the id from the session. A stranger who
@@ -1005,9 +1005,10 @@ deleted, the status changed to 403.
 Depends on: PR 3, PR 8. Ships: users see only their own accounts, and it is
 the prerequisite of PR 6 rather than a sequel to it.
 
-### PR 10 — `feat/guard-transaction-routes` — BUILT, not yet opened
+### PR 10 — `feat/guard-transaction-routes` — OPEN (#87)
 
-Branched off `5ffc400`. Two commits: `62ed29e` production, `a43e4c0` tests.
+Branched off `5ffc400`. `62ed29e` production, `a43e4c0` tests, `804fbfc` these
+docs.
 
 - `src/app/api/accounts/[id]/with-account-editor.ts` — **new**, the whole guard.
 - `src/lib/account-access.ts` — **new**, `canEditAccount`, and `EDITING_ROLES` in
@@ -1188,7 +1189,7 @@ migrating `data.json` into Neon.
   Settled by default: it was kept, so PR 8's backfill adopted it. Dev only, and
   a `DELETE` undoes it.
 - When "go-live" is — the moment production gets real data, PR 10 must already
-  have merged. It is built but not yet opened, so this still blocks.
+  have merged. #87 is open and unmerged, so this still blocks.
 - Whether `data.json` and `JsonFileStore` retire once Neon is the real store.
   Out of scope here, but it is the cleanup that would collapse three store
   implementations into two.

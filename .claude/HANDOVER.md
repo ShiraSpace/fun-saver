@@ -1,4 +1,4 @@
-# Handover — 2026-09-22 (PR 6 merged, PR 10 built)
+# Handover — 2026-09-22 (PR 6 merged, PR 10 open as #87)
 
 ## Start here
 
@@ -53,8 +53,8 @@ browser: `openApp` always installs a session cookie. Making `cookie` optional
 through `Session.open`/`openApp`/`withShots` is about 8 lines if a later PR needs
 it.
 
-**Plan PR 10 is built on `feat/guard-transaction-routes`, off `5ffc400`, not yet
-pushed.** Two commits: `62ed29e` production, `a43e4c0` tests. It closes the last
+**Plan PR 10 is open as #87** on `feat/guard-transaction-routes`, off `5ffc400`:
+`62ed29e` production, `a43e4c0` tests, `804fbfc` docs. It closes the last
 cross-user path — the four `[id]` mutation routes ran with no authorization at
 all, and PR 6 never narrowed them, because `/api` is deliberately outside the
 proxy's matcher. **PR 7 and PR 11 are what is left**, both independent of
