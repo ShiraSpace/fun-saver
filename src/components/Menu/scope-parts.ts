@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
-import { SCOPE_BLOCK_STYLE } from './constants';
 
-export const ScopeBlock = styled.section`
+export const ScopeBlock = styled.div`
   box-sizing: border-box;
-  margin-bottom: ${SCOPE_BLOCK_STYLE.marginBottom}px;
-  padding: ${SCOPE_BLOCK_STYLE.padding}px;
-  border-radius: ${SCOPE_BLOCK_STYLE.radius}px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 20px;
 `;

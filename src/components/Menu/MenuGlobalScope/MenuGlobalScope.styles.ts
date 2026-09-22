@@ -10,6 +10,8 @@ const scopeBorder = ({ theme }: { theme: Theme }): string =>
   theme.colors.accountScopeBorder;
 
 export const GlobalBlock = styled(ScopeBlock)`
+  position: relative;
+  z-index: 1;
   border: ${MENU_ROW_STYLE.borderWidth}px solid ${scopeBorder};
   background: ${scopeFill};
 `;
