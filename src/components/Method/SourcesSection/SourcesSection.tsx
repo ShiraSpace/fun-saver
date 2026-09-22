@@ -3,22 +3,26 @@ import { MethodBlocks } from '../MethodBlocks';
 import { MethodSection } from '../MethodSection';
 import { SourceList } from '../SourceList';
 import { SOURCES_SECTION_ID } from '../constants';
-import { METHOD_COPY } from '../copy';
+import { METHOD_COPY, type MethodBlock } from '../copy';
 
 const { sources } = METHOD_COPY;
 
-export function SourcesSection(): JSX.Element {
-  const sourceCount = String(sources.list.length);
+const INTRO_BLOCKS: readonly MethodBlock[] = [sources.intro];
 
+const MORE_BLOCKS: readonly MethodBlock[] = [sources.more];
+
+const SOURCE_COUNT = String(sources.list.length);
+
+export function SourcesSection(): JSX.Element {
   return (
     <MethodSection
       id={SOURCES_SECTION_ID}
       title={sources.title}
-      hint={sourceCount}
+      hint={SOURCE_COUNT}
     >
-      <MethodBlocks blocks={[sources.intro]} />
+      <MethodBlocks blocks={INTRO_BLOCKS} />
       <SourceList sources={sources.list} />
-      <MethodBlocks blocks={[sources.more]} />
+      <MethodBlocks blocks={MORE_BLOCKS} />
     </MethodSection>
   );
 }
