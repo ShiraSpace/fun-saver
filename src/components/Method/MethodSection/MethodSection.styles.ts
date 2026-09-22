@@ -38,25 +38,25 @@ export const Numeral = styled.span`
   border-radius: 999px;
   background: ${({ theme }): string => theme.gradients.actionButton};
   color: ${({ theme }): string => theme.colors.textOnPrimary};
-  font-size: 13px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
 `;
 
 export const Title = styled.h2`
   margin: 0;
-  font-size: 16px;
+  font-size: ${({ theme }): number => theme.typography.heading}px;
   font-weight: 600;
 `;
 
 export const Hint = styled.span`
-  font-size: 11.5px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 500;
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
 
 export const Chevron = styled.span`
   margin-inline-start: auto;
-  font-size: 13px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   color: ${({ theme }): string => theme.colors.textMuted};
   transition: transform 180ms ease;
 
@@ -83,7 +83,7 @@ export const Body = styled.div`
   }
 
   > p[data-muted='true'] {
-    font-size: 13.5px;
+    font-size: ${({ theme }): number => theme.typography.label}px;
     color: ${({ theme }): string => theme.colors.textMuted};
   }
 `;

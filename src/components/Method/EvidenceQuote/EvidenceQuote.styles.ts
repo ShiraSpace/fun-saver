@@ -12,16 +12,15 @@ export const Quote = styled.blockquote`
 
 export const Finding = styled.p`
   margin: 0;
-  font-size: 13.5px;
+  font-size: ${({ theme }): number => theme.typography.body}px;
   line-height: 1.7;
 `;
 
 export const Citation = styled.cite`
   display: block;
   margin-top: 7px;
-  font-size: 11px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-style: normal;
   font-weight: 600;
   text-align: end;
-  opacity: 0.75;
 `;
