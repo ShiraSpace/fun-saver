@@ -3,6 +3,7 @@ import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import { cancelForm, nameInput } from '@/test-utils/account-form';
+import { openAccountPicker } from '@/test-utils/account-picker';
 import { mockAccount } from '@/test-utils/fixtures';
 import {
   createdAccount,
@@ -55,6 +56,7 @@ describe('Home — managing accounts', () => {
     beforeEach(() => {
       renderHome();
       openMenu();
+      openAccountPicker();
       tapAddRow();
     });
 

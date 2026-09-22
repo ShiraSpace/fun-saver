@@ -13,6 +13,7 @@ import {
   mockSecondAccount,
 } from '@/test-utils/fixtures';
 import type { AccountWithDerivedWallets } from '@/lib/types';
+import { openAccountPicker } from '@/test-utils/account-picker';
 import { openMenu, renderHome } from './home-test-helpers';
 
 const mockRefresh = jest.fn();
@@ -57,6 +58,7 @@ describe('Home', () => {
     beforeEach(() => {
       renderHome();
       openMenu();
+      openAccountPicker();
     });
 
     it('switches to and persists the tapped account, then closes the menu', () => {
@@ -101,6 +103,7 @@ describe('Home', () => {
         </>
       );
       openMenu();
+      openAccountPicker();
 
       expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(
         'sunshine-quest'

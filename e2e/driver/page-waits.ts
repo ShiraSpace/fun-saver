@@ -1,4 +1,5 @@
 import { type Page } from 'puppeteer';
+import { findByTest } from './page-element';
 
 interface StyleWait {
   page: Page;
@@ -11,6 +12,10 @@ interface ContentWait {
   page: Page;
   testId: string;
   expected: string;
+}
+
+export async function waitForTestId(page: Page, testId: string): Promise<void> {
+  await findByTest(page, testId);
 }
 
 export async function waitForStyle({

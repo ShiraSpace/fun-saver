@@ -3,6 +3,7 @@ import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
+import { ACCOUNT_PICKER_TEST_IDS } from '@/components/Menu/AccountPicker/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { Session } from './session';
@@ -18,6 +19,11 @@ export class MenuDriver {
     await this.session.click(MENU_TEST_IDS.menuButton);
     await this.session.waitForStyle(MIDDLE_BAR, 'opacity', '0');
     await this.session.waitForStyle(OVERLAY, 'opacity', '1');
+  }
+
+  async openAccountPicker(): Promise<void> {
+    await this.session.click(ACCOUNT_PICKER_TEST_IDS.trigger);
+    await this.session.waitForTestId(ACCOUNT_LIST_TEST_IDS.list);
   }
 
   accountRowCount(): Promise<number> {

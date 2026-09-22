@@ -121,6 +121,10 @@ export class Session {
     return actions.clickNth({ page: this.page, selector, index });
   }
 
+  waitForTestId(testId: string): Promise<void> {
+    return waits.waitForTestId(this.page, testId);
+  }
+
   waitForStyle(
     selector: string,
     property: string,

@@ -15,6 +15,7 @@ import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
+import { openAccountPicker } from '@/test-utils/account-picker';
 
 interface RenderSectionParams {
   contextOverrides?: Partial<AccountsContextValue>;
@@ -64,6 +65,8 @@ describe('AccountsSection', () => {
   });
 
   it('lists the accounts', () => {
+    openAccountPicker();
+
     expect(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)).toHaveLength(
       accounts.length
     );
@@ -76,24 +79,28 @@ describe('AccountsSection', () => {
   });
 
   it('selects the tapped account', () => {
+    openAccountPicker();
     fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 
     expect(mockSelectAccount).toHaveBeenCalledWith(mockSecondDerivedAccount.id);
   });
 
   it('closes the menu when an account is tapped', () => {
+    openAccountPicker();
     fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 
     expect(mockOnAccountSelect).toHaveBeenCalled();
   });
 
   it('enters create mode when the add row is tapped', () => {
+    openAccountPicker();
     fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
 
     expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.creatingAccount);
   });
 
   it('closes the menu when the add row is tapped', () => {
+    openAccountPicker();
     fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
 
     expect(mockOnAccountSelect).toHaveBeenCalled();

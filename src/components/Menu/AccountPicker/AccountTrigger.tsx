@@ -1,0 +1,55 @@
+'use client';
+
+import { JSX } from 'react';
+import type { AccountWithDerivedWallets } from '@/lib/types';
+import { Avatar } from '@/components/Avatar/Avatar';
+import { Money } from '@/components/Money';
+import { totalBalance } from '@/lib/derivations';
+import {
+  ACCOUNT_PICKER_CONTENT,
+  ACCOUNT_PICKER_STYLE,
+  ACCOUNT_PICKER_TEST_IDS,
+} from './constants';
+import { Trigger, Naming, Name, Current, Caret } from './AccountPicker.styles';
+
+interface AccountTriggerProps {
+  account: AccountWithDerivedWallets;
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+export function AccountTrigger({
+  account,
+  isOpen,
+  onToggle,
+}: AccountTriggerProps): JSX.Element {
+  return (
+    <Trigger
+      type="button"
+      data-testid={ACCOUNT_PICKER_TEST_IDS.trigger}
+      aria-expanded={isOpen}
+      onClick={onToggle}
+    >
+      <Avatar
+        avatarId={account.avatarId}
+        alt={account.name}
+        size={ACCOUNT_PICKER_STYLE.avatarSize}
+      />
+      <Naming>
+        <Name>{account.name}</Name>
+        <Current>
+          <Money
+            amountAgorot={totalBalance(account.wallets)}
+            testId={ACCOUNT_PICKER_TEST_IDS.triggerTotal}
+          />
+          {ACCOUNT_PICKER_CONTENT.currentSuffix}
+        </Current>
+      </Naming>
+      <Caret data-testid={ACCOUNT_PICKER_TEST_IDS.caret}>
+        {isOpen
+          ? ACCOUNT_PICKER_CONTENT.openCaret
+          : ACCOUNT_PICKER_CONTENT.closedCaret}
+      </Caret>
+    </Trigger>
+  );
+}
