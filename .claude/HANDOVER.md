@@ -1,4 +1,4 @@
-# Handover — 2026-09-22 (PR 6 merged, PR 10 open as #87)
+# Handover — 2026-09-23 (PR 10 merged; PR 7 and PR 11 are what is left)
 
 ## Start here
 
@@ -53,12 +53,12 @@ browser: `openApp` always installs a session cookie. Making `cookie` optional
 through `Session.open`/`openApp`/`withShots` is about 8 lines if a later PR needs
 it.
 
-**Plan PR 10 is open as #87** on `feat/guard-transaction-routes`, off `5ffc400`:
-`62ed29e` production, `a43e4c0` tests, `804fbfc` docs. It closes the last
-cross-user path — the four `[id]` mutation routes ran with no authorization at
-all, and PR 6 never narrowed them, because `/api` is deliberately outside the
-proxy's matcher. **PR 7 and PR 11 are what is left**, both independent of
-everything else.
+**Plan PR 10 merged as #87 (`f1a283d`).** It closed the last cross-user path —
+the four `[id]` mutation routes ran with no authorization at all, and PR 6 never
+narrowed them, because `/api` is deliberately outside the proxy's matcher.
+**Production may now take real data.** **PR 7 (`feat/profile-section`) and PR 11
+(`refactor/themed-page-shell`) are what is left**, both independent of
+everything else and of each other.
 
 ## What PR 10 changed that you need to know
 
@@ -80,6 +80,18 @@ everything else.
   `require(esm)` before the first test runs. `src/__mocks__/auth.ts` is that
   mock; a bare `jest.mock('@/auth')` finds it. **Bare with no manual mock is
   what automocks and crashes** — that is what the older note against it meant.
+- **A request body is narrowed where it is read.** `jsonBody` returns `unknown`;
+  `account-input.ts` and `transaction-input.ts` hold the validators, `asObject`
+  is shared through `json-object.ts`, and `isThemeId` narrows a theme id in the
+  registry. A route that casts its body is the bug this replaced.
+- **Refusal messages live in `API_ERRORS`** (`src/app/api/constants.ts`), read by
+  the routes and by the tests that assert them, so neither can drift.
+- **A 401 from any mutation sends the browser to `/login`**, through `goTo` in
+  `src/lib/navigate.ts`. The seam exists because jsdom will not let a test
+  observe `window.location.assign` — read-only, not redefinable, and a real call
+  prints "Not implemented: navigation". Everything else in the app navigates with
+  the Next router and should keep doing so; `goTo` is for throwing the page away
+  when the session is gone.
 - **The browser suites needed no change**: `openApp` seeds through
   `insertAccountWithOwner(account, mockOwner)` and signs in as `mockUser`, so
   every e2e request already carries an owner membership.
@@ -130,11 +142,12 @@ everything else.
   mock of `next/navigation` must **throw**, because the real `redirect` is typed
   `never`.
 
-## Test suites — measured 2026-09-22 on `feat/guard-transaction-routes`
+## Test suites — measured 2026-09-23 on PR 10 merged with `main`
 
-`jest` 582 across 115 suites · `test:db` 22 across 5 · `test:visual` 45 ·
+`jest` 598 across 116 suites · `test:db` 22 across 5 · `test:visual` 45 ·
 browser `e2e` 14 · `tsc --noEmit` and `eslint .` clean · `next build` accepts the
-wrapped route exports. Baseline on `main` before PR 10 was 572 across 113.
+wrapped route exports. The count moved with #88, which deleted the
+`AccountsSection` suite and added two of its own; PR 10 itself added 29 tests.
 
 ## Database state — measured 2026-09-22, **not** re-measured during PR 10
 

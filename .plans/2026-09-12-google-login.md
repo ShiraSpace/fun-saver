@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-22 (plan PR 10 open as #87; PR 7 and PR 11 are what is left)
+## Progress — updated 2026-09-23 (plan PR 10 merged as #87; PR 7 and PR 11 are what is left)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -25,10 +25,10 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 8b    | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff    |
 | PR 9     | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **merged** — `f947725`                                  |
 | PR 6     | [#86](https://github.com/ShiraSpace/fun-saver/pull/86) | `feat/auth-proxy`                  | **merged** — `7312359`, plus `63cc6cc` straight to main |
-| PR 10    | [#87](https://github.com/ShiraSpace/fun-saver/pull/87) | `feat/guard-transaction-routes`    | **open** — `62ed29e`, `a43e4c0`, `804fbfc`, `e20b20e`   |
+| PR 10    | [#87](https://github.com/ShiraSpace/fun-saver/pull/87) | `feat/guard-transaction-routes`    | **merged** — `f1a283d`                                  |
 | PR 7, 11 | —                                                      | —                                  | not started                                             |
 
-### PR 10 is open, and PR 7 and PR 11 are all that is left
+### PR 10 is merged, and PR 7 and PR 11 are all that is left
 
 PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
 read through `listAccountsForUser` with the id from the session. A stranger who
@@ -961,7 +961,8 @@ return, and the cookie decides every visit after the first.
 
 **`jest.config.ts` maps the `@/` alias.** SWC rewrites `@/` in import specifiers
 but not inside a `jest.mock()` string, which is why every other mock in this repo
-is relative. PR 10 needs `jest.mock('@/auth')` in four more files.
+is relative. PR 10 added `src/__mocks__/auth.ts`, so a suite needs only a bare
+`jest.mock('@/auth')`.
 
 **No `src/lib/account-access.ts`** — see _Authorization seam_ above.
 
@@ -1005,10 +1006,7 @@ deleted, the status changed to 403.
 Depends on: PR 3, PR 8. Ships: users see only their own accounts, and it is
 the prerequisite of PR 6 rather than a sequel to it.
 
-### PR 10 — `feat/guard-transaction-routes` — OPEN (#87)
-
-Branched off `5ffc400`. `62ed29e` production, `a43e4c0` tests, `804fbfc` these
-docs.
+### PR 10 — `feat/guard-transaction-routes` — MERGED (#87, `f1a283d`)
 
 - `src/app/api/accounts/[id]/with-account-editor.ts` — **new**, the whole guard.
 - `src/lib/account-access.ts` — **new**, `canEditAccount`, and `EDITING_ROLES` in
@@ -1026,9 +1024,11 @@ missing, and account ids stop being probeable. The three `404` tests became
 `403`; the routes' own 404 branches stay as defence, unreachable while a
 membership row can only exist for an account that exists.
 
-**Every `[id]` route suite now mocks `@/auth` with a factory.** Without it the
-suite does not merely fail, it cannot load: the route imports `signedInUserId`,
-`next-auth` is ESM, and jest dies with `require(esm)` before the first test.
+**Every `[id]` route suite mocks `@/auth`, or it cannot load at all** — the
+route imports `signedInUserId`, `next-auth` is ESM, and jest dies with
+`require(esm)` before the first test. The mock is **`src/__mocks__/auth.ts`**,
+found by a bare `jest.mock('@/auth')`. A bare one with no manual mock behind it
+is what automocks and crashes; that is what the older warning against it meant.
 
 **The browser suites needed no change.** `openApp` seeds through
 `insertAccountWithOwner(account, mockOwner)` and signs the browser in as
@@ -1042,8 +1042,35 @@ alone. Each was watched failing against a deliberate break — the role list, a
 forced `true`, each wrapper branch, a wrong id handed to the handler, and each
 route unwrapped in turn.
 
-Measured after: jest 582 across 115 suites, up from 572 across 113; `tsc` and
-`eslint` clean; `next build` accepts the wrapped `export const` handlers.
+**What review added, and it doubled the PR.** Five inline comments and three
+notes, every premise checked before it was acted on:
+
+- **`jsonBody` returned `Body | null` for a type argument the caller chose**,
+  asserting a shape nothing had verified. It returns `unknown`, and
+  `src/lib/transaction-input.ts` validates a deposit and a withdrawal the way
+  `account-input.ts` already validated an account. It had survived only because
+  `shekelsToAgorot(undefined)` makes `NaN` and `addDeposit` rejects it.
+- **`isThemeId` in `src/theme/registry.ts`** replaced the route's `as ThemeId`
+  and the identical cast inside `resolveThemeId`. `asObject` moved out of
+  `account-input.ts` to `json-object.ts`, shared rather than copied.
+- **A malformed theme body answered `unknown theme`**, sending a reader to the
+  theme registry. The branches are separate, and both tests assert the message.
+- **`API_ERRORS` in `src/app/api/constants.ts`** holds the nine refusal
+  messages, read by the routes and the tests alike.
+- **Three routes answered 500 to a malformed body** — pre-existing, and cheap to
+  fix while all four signatures were open.
+- **An expired session failed the tab silently**: `fetchJson` turned every
+  non-`ok` into one generic error and nothing branched on 401, so a tab left open
+  past expiry failed every mutation until a reload. It sends the browser to
+  `/login` through `goTo` in `src/lib/navigate.ts` — a seam, because jsdom will
+  not let a test observe `window.location.assign`.
+- **`canEditAccount` takes `CanEditAccountParams`.** Two of its three arguments
+  were adjacent strings, one swap away from asking whether the account may edit
+  the user.
+
+Measured on the merge: jest 598 across 116 suites, `test:db` 22, visual 45,
+browser e2e 14, `tsc` and `eslint` clean, `next build` accepts the wrapped
+`export const` handlers.
 
 Depends on: PR 9. Ships: writes are authorized.
 
@@ -1188,8 +1215,8 @@ migrating `data.json` into Neon.
 - ~~Whether to delete the pre-existing Neon **dev** account before PR 8.~~
   Settled by default: it was kept, so PR 8's backfill adopted it. Dev only, and
   a `DELETE` undoes it.
-- When "go-live" is — the moment production gets real data, PR 10 must already
-  have merged. #87 is open and unmerged, so this still blocks.
+- ~~When "go-live" is — the moment production gets real data, PR 10 must already
+  have merged.~~ Settled: #87 merged, so production may take real data.
 - Whether `data.json` and `JsonFileStore` retire once Neon is the real store.
   Out of scope here, but it is the cleanup that would collapse three store
   implementations into two.
