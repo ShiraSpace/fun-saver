@@ -1487,9 +1487,21 @@ last. The account list is already collapsed by `close`.
 **`ProfilePhoto` needs nothing of its own.** It lives only in the menu, so a
 changed URL is picked up on the next open.
 
-**The menu context is no longer part of the fix.** Drilling `onLeaveMenu` six
-levels, two of them pure pass-throughs, is still worth removing, but as its own
-refactor rather than as this bug's mechanism.
+**The menu context lands here anyway, beside the fix rather than as it.**
+`use-menu-state.ts` exports `MenuProvider` and `useMenu`, built with
+`createRequiredContext`. `Header` wraps `MenuOverlay` in it; `MenuOverlay`,
+`AccountControls`, `AddAccountRow` and `MenuBody` read it, and `AccountPicker`
+and `AccountList` lose the `onLeaveMenu` they only passed on.
+
+**The account list's open state left the menu.** It lived in `useMenuState` for
+two reasons: `toggle` and `close` collapsed it, and Escape had to close the list
+before the menu. The key now does the first. For the second, `AccountPicker`
+owns `isOpen` and handles Escape on its own element while the list is open,
+stopping the event before it reaches the menu's `document` listener — React
+handles it at the root, which the event passes first. `MenuState` is back to
+`isOpen`, `toggle` and `close`, and `use-escape-dismissal.ts` is gone. One
+difference: Escape collapses the list only while focus is inside the picker,
+which it is whenever the list is open unless the user tabbed away from it.
 
 ### PR 15 — `refactor/one-render-helper` — **merged as #105 (`da842b1`)**
 
