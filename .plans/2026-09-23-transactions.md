@@ -28,7 +28,8 @@ before any PR.
 ## Where it stands (2026-09-23)
 
 Spec and plan merged as #119. **PR 1 merged as #122** — the chart-line colours
-are on `main`, so PR 7 now waits only on PR 6.
+are on `main`, so PR 7 now waits only on PR 6. **PR 2 merged as #125** — every
+store lists an account's whole ledger, oldest first; PR 3 is next in lane B.
 
 ### Lanes — who can run in parallel
 
@@ -39,7 +40,7 @@ stack was rebased twice because branches were cut from each other instead.
 
 | Wave | Lane A | Lane B | Lane C | Starts when |
 | --- | --- | --- | --- | --- |
-| 1 | PR 1 — theme tokens ✓ #122 | PR 2 → PR 3 — store, then `accountLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
+| 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 — store, then `accountLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
 | 2 | PR 6 — route, shell, headline | — | — | PRs 3 and 4 merged |
 | 3 | PR 7 — chart | PR 8 — list | — | PR 6 merged; PR 7 also needs PR 1, PR 8 needs PR 5 |
 | 4 | PR 9 — tab and browser suite | — | — | PRs 7 and 8 merged |
@@ -141,10 +142,10 @@ Each refines or corrects the spec. None re-opens an approved design call.
    that. `transaction-rows.ts` is the one that sorts.
 4. **Two real movements on one day order by `createdAt`, newest first.** The spec
    uses `createdAt` only to group deposits, and leaves the order of two
-   same-day movements to whatever order the store returned — which differs
-   between json-file and postgres. For a deposit or withdrawal `createdAt` *is*
-   the event time (`new Date()` at write); only interest's is settlement time,
-   and interest is ranked separately. This is the tiebreak.
+   same-day movements to whatever order the store returned. For a deposit or
+   withdrawal `createdAt` *is* the event time (`new Date()` at write); only
+   interest's is settlement time, and interest is ranked separately. This is the
+   tiebreak.
 5. **Single-select controls are native radio inputs** in a `fieldset` with a
    visually hidden `legend`, styled as chips. The spec asks for one group with
    one checked option; native radios are that, with arrow-key movement and
@@ -315,6 +316,11 @@ alone; midnight's donut `walletSavings` at 1.99 is out of scope.
 ## PR 2 — a store can list an account's whole ledger
 
 Branch `feat/list-by-account`. Spec: "Store contract".
+**Merged as #125 on 2026-09-23.** What shipped differs from the steps below:
+review made every store return oldest first, so the memory and json-file
+repositories sort through `byOccurrence` (`src/db/transactions.ts`) in both
+`listByAccount` and `listByWallet`, and the tests reuse `mockTransactions`. The
+code on `main` is the record.
 
 **Files:**
 - Modify: `src/db/data-store.ts:26-29` (`TransactionRepository`), `:55-59` (`DataStore`)
@@ -324,7 +330,8 @@ Branch `feat/list-by-account`. Spec: "Store contract".
 
 **Interfaces:**
 - Produces: `DataStore.listTransactionsByAccount(accountId: string): Promise<Transaction[]>`,
-  which PR 3 is the first caller of. Order is **not** part of the contract.
+  which PR 3 is the first caller of. Every store returns it oldest first
+  (`occurred_at, created_at, id`).
 
 - [ ] **Step 1: The contract.**
 

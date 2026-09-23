@@ -38,6 +38,7 @@ describe('JsonFileStore transactions', () => {
 
     expect(new Set(rows)).toEqual(new Set(mockTransactions));
   });
+
   it('returns a ledger oldest first, ties broken by write time', async () => {
     const evening = createMockTransaction({
       id: 'evening',
