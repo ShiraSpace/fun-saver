@@ -14,6 +14,8 @@ const spanOf = (box: BoundingBox): string => `${box.y}-${bottomOf(box)}`;
 const overlapVertically = (a: BoundingBox, b: BoundingBox): boolean =>
   a.y < bottomOf(b) && bottomOf(a) > b.y;
 
+const EDGE_TOLERANCE = 1;
+const DESKTOP = { width: 1280, height: 900 };
 const NO_TRANSFORM = 'none';
 const VISIBLE = '1';
 const HIDDEN = '0';
@@ -108,5 +110,25 @@ describe('menu morph', () => {
         );
       });
     });
+  });
+});
+
+describe('menu on a window wider than the page column', () => {
+  const { session, menu, header } = useDriver({ accounts: [mockAccount] });
+
+  beforeEach(async () => {
+    await session.resize(DESKTOP);
+    await menu.open();
+  });
+
+  it('keeps its column on the header card edges, not the window edges', async () => {
+    const bar = await header.box();
+    const block = await menu.globalScopeBox();
+
+    assert.ok(
+      Math.abs(block.x - bar.x) <= EDGE_TOLERANCE &&
+        Math.abs(block.width - bar.width) <= EDGE_TOLERANCE,
+      `menu column is ${block.width}px at ${block.x}, header is ${bar.width}px at ${bar.x}`
+    );
   });
 });
