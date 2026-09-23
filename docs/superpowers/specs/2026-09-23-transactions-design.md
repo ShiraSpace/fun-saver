@@ -3,7 +3,8 @@
 > Status: **design approved 2026-09-23**, revised after review 2026-09-23,
 > revised again after a second review the same day, and a third time after a
 > review that measured the colour table it had only asserted and re-did its
-> payload arithmetic.
+> payload arithmetic. `sunshine-quest`'s chart-line colours settled 2026-09-23
+> in PR 1 (the plan's decision A).
 > Not yet implemented.
 > Mockup: `mockups/account-summary/transactions.html` + `account-summary.js` —
 > one screen, no competing variants; the controls beneath it are details inside
@@ -307,14 +308,28 @@ So the port departs from what the mockup drew, twice:
   the wallet chips already carry. That retires the 4.5:1 bar by construction
   instead of chasing it through three palettes.
 - **The tokens still have to clear 3:1 as strokes, and `sunshine-quest`'s pair
-  does not.** Those two values are re-derived in the theme PR against the measured
-  bar rather than copied across from the mockup. `#B07D00` (3.63) and `#E2661F`
-  (3.41) are the shape of the answer; the theme PR settles it the way
+  does not.** Those two values were re-derived in the theme PR against the
+  measured bar rather than copied across from the mockup, and settled the way
   `contrast-pass-2` settled its three design calls — with a mockup drawn *during*
-  the decision, not before it. `jungle-quest`'s `#E76F51` at 3.04 is a pass, and
-  is recorded so the next audit knows it was measured and left alone.
+  the decision, `mockups/chart-contrast.html`. `sunshine-quest` draws savings
+  green, spending blue and good pink. The first proposal, `#B07D00` (3.63) ·
+  `#E2661F` (3.41), cleared the bar and was rejected with every orange spending:
+  spending read too close to good's pink. `softText`'s brown for savings was
+  rejected too. `jungle-quest`'s `#E76F51` at 3.04 is a pass, and is recorded so
+  the next audit knows it was measured and left alone.
 
-Nine values ship across three themes, five of them different from the wallet token
+What ships, measured against each theme's `surface`:
+
+| theme | `chartSavings` | `chartSpending` | `chartGood` |
+| --- | --- | --- | --- |
+| `sunshine-quest` | `#276E2C` 6.26 | `#2563EB` 5.17 | `#E94E89` 3.55 |
+| `jungle-quest` | `#2A9D8F` 3.26 | `#6E9B22` 3.23 | `#E76F51` 3.04 |
+| `midnight-blue` | `#60A5FA` 6.82 | `#38BDF8` 8.09 | `#A78BFA` 6.37 |
+
+`sunshine-quest`'s savings is the value of `gainText`, not a new colour; its
+spending blue is the one hue that palette did not already carry.
+
+Nine values ship across three themes, six of them different from the wallet token
 they sit beside. They ship together rather than one at a time: with `chartSavings`
 alone, `midnight-blue`'s new savings (`#60A5FA`) *is* the current
 `walletSpending`, so a chart mixing new chart tokens with old wallet ones would
@@ -615,7 +630,7 @@ Three orderings are load-bearing; the rest of the sequence is the implementation
 plan's to choose.
 
 1. **The chart-line theme tokens come first.** `chartSavings` · `chartSpending` ·
-   `chartGood` across all three themes — nine values, five of them different from
+   `chartGood` across all three themes — nine values, six of them different from
    the wallet token beside them, two of them re-derived against the 3:1 bar rather
    than copied from the mockup. The PR carries its measurements the way the two AA
    passes do: a ratio per token per surface in the body. The chart PR cannot ship a
