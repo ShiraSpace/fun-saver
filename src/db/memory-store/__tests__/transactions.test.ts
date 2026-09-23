@@ -32,4 +32,25 @@ describe('InMemoryStore transactions', () => {
 
     expect(new Set(rows)).toEqual(new Set(mockTransactions));
   });
+  it('returns a ledger oldest first, ties broken by write time', async () => {
+    const evening = createMockTransaction({
+      id: 'evening',
+      createdAt: '2026-01-01T09:00:00.000Z',
+    });
+    const morning = createMockTransaction({
+      id: 'morning',
+      createdAt: '2026-01-01T08:00:00.000Z',
+    });
+    const store = new InMemoryStore();
+    await store.insertTransactions([evening, morning]);
+
+    const byAccount = store.listTransactionsByAccount(mockAccount.id);
+    const byWallet = store.listTransactionsByWallet(
+      mockAccount.id,
+      evening.walletId
+    );
+
+    expect(await byAccount).toEqual([morning, evening]);
+    expect(await byWallet).toEqual([morning, evening]);
+  });
 });
