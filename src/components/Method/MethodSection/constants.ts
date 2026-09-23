@@ -1,8 +1,13 @@
+import { SOURCES_SECTION_ID } from '../constants';
+
+export type MethodSectionId = number | typeof SOURCES_SECTION_ID;
+
 export const METHOD_SECTION_TEST_IDS = {
-  section: (number: number): string => `method-section-${number}`,
-  summary: (number: number): string => `method-section-summary-${number}`,
-  hint: (number: number): string => `method-section-hint-${number}`,
-  body: (number: number): string => `method-section-body-${number}`,
+  section: (id: MethodSectionId): string => `method-section-${id}`,
+  summary: (id: MethodSectionId): string => `method-section-summary-${id}`,
+  numeral: (id: MethodSectionId): string => `method-section-numeral-${id}`,
+  hint: (id: MethodSectionId): string => `method-section-hint-${id}`,
+  body: (id: MethodSectionId): string => `method-section-body-${id}`,
 } as const;
 
 export const METHOD_SECTION_COPY = {

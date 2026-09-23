@@ -15,10 +15,12 @@ export const ACTIONS_COPY = {
   },
   amount: {
     kind: 'text',
+    sources: ['allowanceRanges'],
     body: '**כמה?** אין בישראל סכום רשמי. בגיל 5–7 מקובל ₪5–15 לשבוע, בגיל 8–10 מקובל ₪10–30. **הסכום פחות חשוב מהקביעוּת שלו** — זה הדבר היחיד שכל המקורות מסכימים עליו.',
   },
   frequency: {
     kind: 'text',
+    sources: ['planningHorizon'],
     body: '**כל כמה זמן?** עד גיל 9 — שבועי. שבוע הוא בערך כמה שילד בן 7 מסוגל לתכנן קדימה. כסף חודשי נגמר בשבוע הראשון ומשאיר שלושה שבועות ריקים בלי שום לקח.',
   },
   split: {
@@ -27,10 +29,12 @@ export const ACTIONS_COPY = {
   },
   chores: {
     kind: 'text',
+    sources: ['overjustification'],
     body: '**קשור למטלות?** לא, ומומלץ שלא.',
   },
   choresEvidence: {
     kind: 'quote',
+    sources: ['finePrice'],
     body: 'בעשרה גני ילדים בחיפה הכניסו קנס על איחור באיסוף הילדים — ומספר המאחרים **עלה**. כשמצמידים כסף למחויבות חברתית, הכסף מחליף אותה — וכשמסירים את הכסף, המחויבות לא חוזרת.',
     citation: 'Gneezy & Rustichini, A Fine is a Price, 2000',
   },

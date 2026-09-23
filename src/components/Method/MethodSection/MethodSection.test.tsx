@@ -1,4 +1,5 @@
 import { render, screen } from '@/test-utils/render';
+import { SOURCES_SECTION_ID } from '../constants';
 import { MethodSection } from './MethodSection';
 import { METHOD_SECTION_TEST_IDS } from './constants';
 
@@ -10,7 +11,7 @@ describe('a method section', () => {
   describe('as the page first renders it', () => {
     beforeEach(() => {
       render(
-        <MethodSection number={NUMBER} title={TITLE}>
+        <MethodSection id={NUMBER} title={TITLE}>
           {BODY}
         </MethodSection>
       );
@@ -22,13 +23,13 @@ describe('a method section', () => {
       ).not.toHaveAttribute('open');
     });
 
-    it('holds its children in the body its own prose rules hang off', () => {
+    it('shows what the section has to say once the parent opens it', () => {
       expect(
         screen.getByTestId(METHOD_SECTION_TEST_IDS.body(NUMBER))
       ).toHaveTextContent(BODY);
     });
 
-    it('shows no hint chip when the section was given none', () => {
+    it('says nothing extra on the row when there is nothing extra to say', () => {
       expect(
         screen.queryByTestId(METHOD_SECTION_TEST_IDS.hint(NUMBER))
       ).not.toBeInTheDocument();
@@ -40,16 +41,40 @@ describe('a method section', () => {
 
     beforeEach(() => {
       render(
-        <MethodSection number={NUMBER} title={TITLE} hint={HINT}>
+        <MethodSection id={NUMBER} title={TITLE} hint={HINT}>
           {BODY}
         </MethodSection>
       );
     });
 
-    it('puts it on the summary row, the only place a closed section can say it', () => {
+    it('puts it on the row itself, the only thing a shut section can tell the parent', () => {
       expect(
         screen.getByTestId(METHOD_SECTION_TEST_IDS.hint(NUMBER))
       ).toHaveTextContent(HINT);
+    });
+  });
+
+  describe('when the section is not one of the numbered steps', () => {
+    beforeEach(() => {
+      render(
+        <MethodSection id={SOURCES_SECTION_ID} title={TITLE}>
+          {BODY}
+        </MethodSection>
+      );
+    });
+
+    it('shows no number, so the six steps a parent has to follow stay six', () => {
+      expect(
+        screen.queryByTestId(
+          METHOD_SECTION_TEST_IDS.numeral(SOURCES_SECTION_ID)
+        )
+      ).not.toBeInTheDocument();
+    });
+
+    it('still shows what it holds, so it is not a heading with nothing under it', () => {
+      expect(
+        screen.getByTestId(METHOD_SECTION_TEST_IDS.body(SOURCES_SECTION_ID))
+      ).toHaveTextContent(BODY);
     });
   });
 });

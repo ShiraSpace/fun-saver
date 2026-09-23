@@ -1,4 +1,7 @@
 import type { WalletName } from '@/lib/types';
+import { SOURCES_COPY } from './sources';
+
+export type SourceId = (typeof SOURCES_COPY.list)[number]['id'];
 
 export type TalkTone = 'spoken' | 'struck' | 'muted';
 
@@ -9,8 +12,18 @@ export interface TalkLine {
 
 export type MethodBlock =
   | { kind: 'heading'; body: string }
-  | { kind: 'text'; body: string; muted?: boolean }
-  | { kind: 'quote'; body: string; citation: string }
+  | {
+      kind: 'text';
+      body: string;
+      muted?: boolean;
+      sources?: readonly SourceId[];
+    }
+  | {
+      kind: 'quote';
+      body: string;
+      citation: string;
+      sources?: readonly SourceId[];
+    }
   | { kind: 'talk'; label?: string; lines: readonly TalkLine[] };
 
 export interface IconLine {
@@ -41,6 +54,7 @@ export interface ExampleTable {
 }
 
 export interface Source {
+  id: SourceId;
   claim: string;
   citation: string;
   url: string;

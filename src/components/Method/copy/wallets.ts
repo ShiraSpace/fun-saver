@@ -20,6 +20,7 @@ export const WALLETS_COPY = {
   },
   goodDeedsEvidence: {
     kind: 'quote',
+    sources: ['givingToddlers'],
     body: 'נתינה עושה טוב, ומוקדם מהצפוי: פעוטות **מתחת לגיל שנתיים** הפגינו יותר שמחה כשנתנו ממתק לאחר מאשר כשקיבלו אחד בעצמם — והכי הרבה כשזה בא מהמנה שלהם.',
     citation: 'Aknin, Hamlin & Dunn, PLoS ONE, 2012',
   },

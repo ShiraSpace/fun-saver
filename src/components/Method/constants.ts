@@ -18,4 +18,7 @@ export const SECTION_NUMBER = {
   promise: 3,
   actions: 4,
   scripts: 5,
+  limits: 6,
 } as const;
+
+export const SOURCES_SECTION_ID = 'sources';

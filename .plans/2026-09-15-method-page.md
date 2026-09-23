@@ -9,16 +9,21 @@ split into three wallets, and what the parent has to do. Static and read-only.
 - Copy: `docs/copy/method-page.he.md` (shipping) · `.en.md` (parked, §2 backlog)
 - Evidence behind every claim: `docs/research/jar-method.md`
 
-## Where it stands (2026-09-22)
+## Where it stands (2026-09-23)
 
 PRs 1–7 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
 (section shell, evidence quote, section 1), #73 (the three wallets, the block
 renderer, the talk bubble), #82 (the actions, sections 3 and 4), #84 (the
-scripts, section 5). **PR 8 is the last one, and the page is done after it.**
+scripts, section 5). **PR 8 is open as #89 — the page is done when it lands.**
 
-`main` has moved under the page since: #79 gave `Method` `accounts` and
-`initialAccount` props, and #85 and #86 continued the menu and login work. PR 8
-branches off `main` as it stands, not off #84.
+`main` moved under the page while PRs 7 and 8 were open: #79 gave `Method`
+`accounts` and `initialAccount` props, and #85 and #86 continued the menu and
+login work. #89 branches off `main` as it stands, not off #84.
+
+Two follow-ups outlive the page and are **not** in #89: the e2e visual baseline
+(one recording now, rather than the five PRs 5–8 would each have re-recorded),
+and the AA contrast pass on `gradients.actionButton` and pot text — decisions 7
+and 10, raised together.
 
 Worktree `~/Projects/technotronic/fun-saver-method-page`. Each PR branches off
 `main` once the one before it has merged — the stack was rebased twice because
@@ -178,6 +183,67 @@ branches were cut from each other instead.
     list kept in step by hand. Its test asserts the alternation and the count,
     not a restatement of the array.
 
+## Decisions (settled 2026-09-22, during PR 8)
+
+19. **An accordion carries one identity, and shows it when it is a number.**
+    «המקורות» is a `<details>` with a summary, a hint chip and a chevron and no
+    number — it is not one of the six steps. A component of its own, sharing
+    the chrome through a `*-parts.ts`, was the obvious shape and loses: a
+    second component composing the same summary row is exactly the drift
+    decision 3 refused for `Header`.
+
+    `MethodSection` takes a single `id: MethodSectionId` and draws the pill
+    when `typeof id === 'number'`. Two shapes were built before it and thrown
+    away: an `id` beside a `number`, where the six numbered sections passed the
+    same value twice and a mismatch would have drawn one numeral while every
+    test id said another — with every test still green, because each queried by
+    the id it was handed; then a union of the two, which closed that hole but
+    bought a discriminated type, an undestructured `props` and a narrowing line
+    to describe one prop. **One value cannot disagree with itself**, which is
+    what both of those were paying to prevent.
+
+    `MethodSectionId` is `number | typeof SOURCES_SECTION_ID`. `number | string`
+    collapses to `string | number`, and `id="sorces"` then compiles and renders
+    an accordion no test can find.
+
+20. **A source's `url` is the citation link.** The mockup renders no links, but
+    it also elides twelve of the sixteen entries, and its own `.srcs a` rule is
+    the drawn intent. A list of studies a parent cannot open is decoration. The
+    citation carries the link, `dir="ltr"` and `target="_blank"`; the url is
+    never printed as text — sixteen of them is a wall of Latin in an RTL page.
+
+21. **A claim carries the number of the study behind it.** Every source has an
+    `id`, `SourceId` is derived from the list rather than retyped, and a `text`
+    or `quote` block names the sources behind it. The number is the entry's
+    position in `SOURCES_COPY.list`, which is the number the `<ol>` draws beside
+    it — one ordering, so the two cannot disagree. Eleven blocks carry one.
+
+    **Four sources are deliberately unmarked** — 4 (the marshmallow
+    replication), 13 (74% of Israeli parents), 14 (חיסכון לכל ילד) and 16 (the
+    CFPB age window). The page never states what they back; they came from the
+    research doc. «כל מספר בעמוד הזה מגיע ממקום» promises page → source, not
+    source → page, so the list being wider than the page keeps it true. Do not
+    close the gap by inventing copy for them.
+
+22. **The marker is a named symbol, not a link.** A linked marker with `id`s on
+    the entries was drawn and rejected: `<details>` auto-opening on fragment
+    navigation is not universal, and older browsers scroll to a shut accordion
+    and show nothing. What the plain superscript still owed was a name — a bare
+    digit merges into the sentence for a screen reader, indistinguishable from
+    the 72%, 37 and 85% the copy itself carries. It reads «מקור 8» / «מקורות 10
+    ו-12», through `role="img"` + `aria-label` the way `ActionList` names its
+    tick, because `superscript` is a naming-prohibited role and a bare label on
+    it may never be exposed.
+
+23. **The «הרחבה מלאה» pointer is gone.** `SOURCES_COPY.more` named
+    `docs/research/jar-method.md`, which Next never serves — `public/` holds
+    only `avatars/` and `inspiration/`. It had never reached a browser before
+    this PR, so nothing had caught it. Publishing the dossier was the
+    alternative and is a new route plus 945 lines of English engineering prose
+    in front of a Hebrew-reading parent. The line went, and
+    `docs/copy/method-page.he.md` lost `method.sources.more` with it so the
+    shipping copy and the page still say the same thing.
+
 ## Component rule
 
 A component that does anything — composes, branches, or maps over data — gets
@@ -193,14 +259,15 @@ of its own — testing a styled `div` tests Emotion, not us.
 | --- | --- | --- |
 | `MethodIntro` | Composes goal, outcome list, divider, brief | 1× |
 | `GoalOutcome` | Icon + text + **conditional** note | 3× |
-| `MethodSection` | `<details>`; summary with number, title, optional hint, chevron | 6× |
+| `MethodSection` | `<details>`; summary with title, optional number, optional hint, chevron | 7× |
 | `EvidenceQuote` | Body + citation line | 4× |
 | `TalkBubble` | Lines with **variants** — spoken / struck-through / muted | 5× · built PR 5 |
 | `ActionList` | Group label + items mapped over ticked/unticked state | 3× · built PR 6 |
 | `ExampleWalletSplitTable` | Caption, header row, scroll container, tabular figures | 1× · built PR 6 |
 | `ExampleWalletSplitRow` | One wallet's share and its amount per period | 3× · built PR 6 |
 | `WalletTrio` | Three pots — name, icon and share per wallet | 1× · built PR 5 |
-| `SourceList` | 16 entries from an array, LTR runs inside RTL | 1× |
+| `SourceList` | 16 entries from an array, LTR runs inside RTL | 1× · built PR 8 |
+| `SourceMarker` | Ids to the numbers the list draws, one symbol, named aloud | 11× · built PR 8 |
 
 ### Styles only, no test
 
@@ -362,13 +429,20 @@ Two things PR 8 inherits from it:
 - **A section's number comes from `SECTION_NUMBER`** (decision 15), not from a
   `constants.ts` of its own; `limits: 6` is already the next key in the map.
 
-## PR 8 — limits and sources
+## PR 8 — limits and sources (open, #89)
 
-`SourceList`; wires section 6 and the sources accordion.
+`LimitsSection` + `SourcesSection` + `SourceList` + `SourceMarker`; wires
+section 6 and the sources accordion, and connects the two with numbers.
 
-Do not soften section 6. It says the effect sizes are modest, that allowance
+Section 6 was not softened. It says the effect sizes are modest, that allowance
 alone teaches nothing, and that the parent should hand over physical cash at
-this age — which partly argues against the product. That is deliberate.
+this age — which partly argues against the product. That is deliberate, and it
+is the section that gained the most citations: three of its four claims now
+name the study under them.
+
+`limits: 6` went into `SECTION_NUMBER` as decision 15 said it would, and the
+section is one `MethodBlocks` over the five `limits.*` blocks and nothing else.
+`SOURCES_SECTION_ID` sits beside the map for the accordion that has no number.
 
 ## Notes / risks
 
@@ -379,6 +453,11 @@ this age — which partly argues against the product. That is deliberate.
   `overflow-x` container so the page body never scrolls sideways on a phone.
 - **LTR inside RTL.** Author names and URLs in the sources list are LTR runs in
   RTL paragraphs; wrap them so punctuation doesn't jump.
+- **Tailwind's preflight strips list markers app-wide** — `ol, ul, menu {
+  list-style: none }`, reached through `globals.css`. Any list that wants its
+  numbers has to ask for them back; `SourceList` sets `list-style: decimal`.
+  This is not a redundant line, and deleting it empties the numbering the
+  citation markers point at.
 - **`<details>` over a JS accordion** — native, accessible, works unhydrated.
 - **Section 3 closed by default** is a real risk: it's the rule the method rests
   on and a skimming parent may never open it. Mitigated by the chip; revisit if
