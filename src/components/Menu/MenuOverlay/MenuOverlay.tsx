@@ -4,7 +4,7 @@ import { JSX } from 'react';
 import { MenuBody } from '../MenuBody';
 import { useMenu } from '../use-menu-state';
 import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
-import { useEscapeKey } from './use-escape-key';
+import { useEscapeKey } from '../use-escape-key';
 import { Panel, Content } from './MenuOverlay.styles';
 
 export function MenuOverlay(): JSX.Element {
@@ -20,7 +20,7 @@ export function MenuOverlay(): JSX.Element {
       data-open={isOpen}
       inert={!isOpen}
     >
-      <Content key={String(isOpen)}>
+      <Content>
         <MenuBody />
       </Content>
     </Panel>

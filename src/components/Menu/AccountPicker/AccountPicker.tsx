@@ -1,11 +1,12 @@
 'use client';
 
-import { JSX, KeyboardEvent, useCallback, useRef, useState } from 'react';
+import { JSX, useCallback, useRef, useState } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { AccountList } from '../AccountList';
 import { AccountTrigger } from './AccountTrigger';
 import { useCloseOnOutsideClick } from './use-close-on-outside-click';
-import { ESCAPE_KEY } from '../MenuOverlay/constants';
+import { useEscapeKey } from '../use-escape-key';
+import { useOnMenuClose } from '../use-menu-state';
 import { ACCOUNT_PICKER_TEST_IDS } from './constants';
 import { Picker } from './AccountPicker.styles';
 
@@ -25,20 +26,11 @@ export function AccountPicker({
   const close = useCallback((): void => setIsOpen(false), []);
 
   useCloseOnOutsideClick({ ref: pickerRef, isOpen, onClose: close });
-
-  const closeOnEscape = (event: KeyboardEvent): void => {
-    if (isOpen && event.key === ESCAPE_KEY) {
-      event.stopPropagation();
-      close();
-    }
-  };
+  useEscapeKey({ isListening: isOpen, onEscape: close, takesPrecedence: true });
+  useOnMenuClose(close);
 
   return (
-    <Picker
-      ref={pickerRef}
-      data-testid={ACCOUNT_PICKER_TEST_IDS.picker}
-      onKeyDown={closeOnEscape}
-    >
+    <Picker ref={pickerRef} data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>
       <AccountTrigger
         account={currentAccount}
         isOpen={isOpen}

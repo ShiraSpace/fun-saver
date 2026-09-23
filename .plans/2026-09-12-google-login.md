@@ -1463,45 +1463,45 @@ the pieces, unmounting does not.
 
 Depends on: PR 7 and PR 13, both merged.
 
-#### Decided before building — neither option above
+#### Decided before building, then revised in review of #124
 
-**The menu's contents remount each time it opens or closes:
-`<Content key={String(isOpen)}>` in `MenuOverlay`.** The animation lives on
-`Panel`, which stays mounted; only what is inside it starts fresh. That is
-React's own way to reset a subtree, and it covers every stateful piece at once.
+**Each piece clears its own failure when the menu closes.** `use-menu-state.ts`
+exports `useOnMenuClose(callback)`, which runs the callback whenever `isOpen`
+turns false. `useSignOut` turns `failed` back into `idle`, `useAccountTheme`
+clears `saveFailed`, and `ProfilePhoto` clears `hasPhotoFailed`. There were
+three stale states, not two: the plan had missed the theme save.
 
-**There were three stale states, not two.** Besides the sign-out error and the
-failed photo, `useAccountTheme` holds `saveFailed`, so a failed theme save
-also survived the menu closing. Resetting each piece on close would have meant
-three effects, and every future piece remembering its own.
+**The first build used a key instead, and review showed why that was too
+blunt.** `<Content key={String(isOpen)}>` remounted everything inside the
+panel on open and close. That cleared the failures, but it also dropped a
+sign-out still in flight: tap sign out on a slow network, close and reopen the
+menu, and the button was live again, so a second tap sent a second sign-out,
+and a failure of the first landed on an unmounted component. The bug was
+failures outliving the menu, so only failures are cleared now. An in-flight
+sign-out survives.
 
 **Unmounting the panel was rejected for the animation**: it needs a delayed
-unmount after the fade-out and a closed mount before the fade-in. A key made
-fresh on every render was rejected too — the contents would remount whenever
-`Header` re-renders, including opening the account list.
+unmount after the fade-out and a closed mount before the fade-in.
 
-**The cost is at close, and small.** The contents reset as the fade-out starts,
-so a showing sign-out error leaves with the fade's first frame rather than its
-last. The account list is already collapsed by `close`.
-
-**`ProfilePhoto` needs nothing of its own.** It lives only in the menu, so a
-changed URL is picked up on the next open.
-
-**The menu context lands here anyway, beside the fix rather than as it.**
-`use-menu-state.ts` exports `MenuProvider` and `useMenu`, built with
-`createRequiredContext`. `Header` wraps `MenuOverlay` in it; `MenuOverlay`,
-`AccountControls`, `AddAccountRow` and `MenuBody` read it, and `AccountPicker`
-and `AccountList` lose the `onLeaveMenu` they only passed on.
+**The menu context lands here, beside the fix.** `use-menu-state.ts` exports
+`MenuProvider` and `useMenu`, built with `createRequiredContext`. `Header` wraps
+`MenuOverlay` in it; `MenuOverlay`, `AccountControls`, `AddAccountRow` and
+`MenuBody` read it, and `AccountPicker` and `AccountList` lose the
+`onLeaveMenu` they only passed on.
 
 **The account list's open state left the menu.** It lived in `useMenuState` for
 two reasons: `toggle` and `close` collapsed it, and Escape had to close the list
-before the menu. The key now does the first. For the second, `AccountPicker`
-owns `isOpen` and handles Escape on its own element while the list is open,
-stopping the event before it reaches the menu's `document` listener — React
-handles it at the root, which the event passes first. `MenuState` is back to
-`isOpen`, `toggle` and `close`, and `use-escape-dismissal.ts` is gone. One
-difference: Escape collapses the list only while focus is inside the picker,
-which it is whenever the list is open unless the user tabbed away from it.
+before the menu. `AccountPicker` now owns `isOpen` and collapses it through
+`useOnMenuClose`. For Escape, `useEscapeKey` (moved up to `src/components/Menu/`)
+takes `takesPrecedence`: the picker listens on `document` in the capture phase
+while the list is open and stops the event, so the menu's own `document`
+listener never sees that Escape. **The first build handled Escape on the
+picker's element instead, which review caught**: Safari and Firefox on macOS do
+not focus a button on click, so focus stayed on `body`, the picker's handler
+never ran, and one Escape closed the whole menu with the list open. The tests
+had fired the key on the trigger, assuming focus those browsers do not give.
+`MenuState` is back to `isOpen`, `toggle` and `close`, and
+`use-escape-dismissal.ts` is gone.
 
 ### PR 15 — `refactor/one-render-helper` — **merged as #105 (`da842b1`)**
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createRequiredContext } from '@/hooks/create-required-context';
 
 export interface MenuState {
@@ -24,4 +24,19 @@ export function useMenuState(): MenuState {
   }, []);
 
   return { isOpen, toggle, close };
+}
+
+export function useOnMenuClose(onMenuClose: () => void): void {
+  const { isOpen } = useMenu();
+  const onMenuCloseRef = useRef(onMenuClose);
+
+  useEffect(() => {
+    onMenuCloseRef.current = onMenuClose;
+  });
+
+  useEffect(() => {
+    if (!isOpen) {
+      onMenuCloseRef.current();
+    }
+  }, [isOpen]);
 }

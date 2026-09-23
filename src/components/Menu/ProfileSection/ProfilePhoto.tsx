@@ -7,6 +7,7 @@ import {
   PROFILE_SECTION_TEST_IDS,
 } from './constants';
 import { UserMark, UserPhoto } from './ProfileSection.styles';
+import { useOnMenuClose } from '../use-menu-state';
 
 interface ProfilePhotoProps {
   image?: string;
@@ -14,6 +15,8 @@ interface ProfilePhotoProps {
 
 export function ProfilePhoto({ image }: ProfilePhotoProps): JSX.Element {
   const [hasPhotoFailed, setHasPhotoFailed] = useState(false);
+
+  useOnMenuClose((): void => setHasPhotoFailed(false));
 
   if (!image || hasPhotoFailed) {
     return (
