@@ -8,7 +8,7 @@ import { signedInUserId } from '@/auth';
 import { withTempDataPath } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
-jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
+jest.mock('@/auth');
 
 describe('POST /api/accounts', () => {
   withTempDataPath();

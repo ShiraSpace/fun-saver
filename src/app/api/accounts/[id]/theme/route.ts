@@ -1,37 +1,27 @@
-import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
-import { THEMES, type ThemeId } from '@/theme/registry';
+import { asObject } from '@/lib/json-object';
+import { isThemeId } from '@/theme/registry';
+import { jsonBody } from '@/app/api/json-body';
+import { API_ERRORS } from '@/app/api/constants';
+import { accountNotFound, badRequest } from '@/app/api/responses';
+import { withAccountEditor } from '../with-account-editor';
 
-interface ThemeBody {
-  themeId: string;
-}
+export const PUT = withAccountEditor(async (request, id) => {
+  const body = asObject(await jsonBody(request));
 
-interface RouteContext {
-  params: Promise<{ id: string }>;
-}
-
-export async function PUT(
-  request: Request,
-  context: RouteContext
-): Promise<Response> {
-  const { id } = await context.params;
-  const { themeId } = (await request.json()) as ThemeBody;
-
-  if (!(themeId in THEMES)) {
-    return Response.json(
-      { error: 'unknown theme' },
-      { status: StatusCodes.BAD_REQUEST }
-    );
+  if (!body) {
+    return badRequest(API_ERRORS.invalidThemeRequest);
   }
 
-  const updated = await getStore().setAccountTheme(id, themeId as ThemeId);
+  if (!isThemeId(body.themeId)) {
+    return badRequest(API_ERRORS.unknownTheme);
+  }
+
+  const updated = await getStore().setAccountTheme(id, body.themeId);
 
   if (!updated) {
-    return Response.json(
-      { error: 'account not found' },
-      { status: StatusCodes.NOT_FOUND }
-    );
+    return accountNotFound();
   }
 
   return Response.json(updated);
-}
+});

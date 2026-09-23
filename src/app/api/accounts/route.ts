@@ -3,24 +3,21 @@ import { signedInUserId } from '@/auth';
 import { getStore } from '@/db';
 import { validNewAccount } from '@/lib/account-input';
 import { AccountsStore } from '@/lib/accounts-store';
+import { jsonBody } from '@/app/api/json-body';
+import { API_ERRORS } from '@/app/api/constants';
+import { badRequest, notSignedIn } from '@/app/api/responses';
 
 export async function POST(request: Request): Promise<Response> {
   const userId = await signedInUserId();
 
   if (!userId) {
-    return Response.json(
-      { error: 'not signed in' },
-      { status: StatusCodes.UNAUTHORIZED }
-    );
+    return notSignedIn();
   }
 
-  const input = validNewAccount(await request.json().catch(() => null));
+  const input = validNewAccount(await jsonBody(request));
 
   if (!input) {
-    return Response.json(
-      { error: 'invalid new account' },
-      { status: StatusCodes.BAD_REQUEST }
-    );
+    return badRequest(API_ERRORS.invalidNewAccount);
   }
 
   const account = await new AccountsStore(getStore()).createAccount({

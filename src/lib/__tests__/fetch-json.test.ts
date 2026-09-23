@@ -1,5 +1,10 @@
+import { API_ERRORS } from '@/app/api/constants';
 import { mockAccount } from '@/test-utils/fixtures';
+import { LOGIN_PATH } from '../constants';
+import { goTo } from '../navigate';
 import { fetchJson } from '../fetch-json';
+
+jest.mock('../navigate', () => ({ goTo: jest.fn() }));
 
 const connectionError = new Error('offline');
 
@@ -58,7 +63,7 @@ describe('fetchJson', () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: false,
         status: 404,
-        json: async () => ({ error: 'account not found' }),
+        json: async () => ({ error: API_ERRORS.accountNotFound }),
       }) as unknown as typeof fetch;
     });
 
@@ -70,6 +75,23 @@ describe('fetchJson', () => {
       await expect(fetchJson(mockRequest)).rejects.toThrow(
         `${mockRequest.method} ${mockRequest.url} failed with 404`
       );
+    });
+  });
+
+  describe('when the session has expired', () => {
+    beforeEach(() => {
+      jest.mocked(goTo).mockClear();
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 401,
+        json: async () => ({ error: API_ERRORS.notSignedIn }),
+      }) as unknown as typeof fetch;
+    });
+
+    it('sends the browser to the login page', async () => {
+      await expect(fetchJson(mockRequest)).rejects.toThrow();
+
+      expect(goTo).toHaveBeenCalledWith(LOGIN_PATH);
     });
   });
 

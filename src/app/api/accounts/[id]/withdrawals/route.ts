@@ -1,55 +1,43 @@
-import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
 import { addWithdrawal } from '@/lib/transactions';
 import { shekelsToAgorot } from '@/lib/money';
 import { OverdraftError, ValidationError } from '@/lib/errors';
 import { today } from '@/lib/clock';
+import { validWithdrawal } from '@/lib/transaction-input';
+import { jsonBody } from '@/app/api/json-body';
+import { API_ERRORS } from '@/app/api/constants';
+import { accountNotFound, badRequest } from '@/app/api/responses';
+import { withAccountEditor } from '../with-account-editor';
 
-interface WithdrawalBody {
-  walletId: string;
-  amount: number;
-}
-
-interface RouteContext {
-  params: Promise<{ id: string }>;
-}
-
-export async function POST(
-  request: Request,
-  context: RouteContext
-): Promise<Response> {
-  const { id } = await context.params;
+export const POST = withAccountEditor(async (request, id) => {
   const store = getStore();
-
   const account = await store.getAccount(id);
 
   if (!account) {
-    return Response.json(
-      { error: 'account not found' },
-      { status: StatusCodes.NOT_FOUND }
-    );
+    return accountNotFound();
   }
 
-  const { walletId, amount } = (await request.json()) as WithdrawalBody;
+  const withdrawal = validWithdrawal(await jsonBody(request));
+
+  if (!withdrawal) {
+    return badRequest(API_ERRORS.invalidWithdrawal);
+  }
 
   try {
     const transaction = await addWithdrawal({
       store,
       account,
-      walletId,
-      amountAgorot: shekelsToAgorot(amount),
+      walletId: withdrawal.walletId,
+      amountAgorot: shekelsToAgorot(withdrawal.amount),
       asOf: today(),
     });
 
     return Response.json(transaction);
   } catch (error) {
     if (error instanceof ValidationError || error instanceof OverdraftError) {
-      return Response.json(
-        { error: error.message },
-        { status: StatusCodes.BAD_REQUEST }
-      );
+      return badRequest(error.message);
     }
 
     throw error;
   }
-}
+});

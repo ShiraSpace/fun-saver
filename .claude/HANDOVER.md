@@ -1,4 +1,4 @@
-# Handover — 2026-09-22 (PR 6 built)
+# Handover — 2026-09-22 (PR 6 merged, PR 10 open as #87)
 
 ## Start here
 
@@ -15,10 +15,10 @@ selected-account cookie, that user's accounts and the theme — and **redirects 
 unauthenticated caller and writes the account with its owner row in one
 transaction.
 
-**Plan PR 6 is built on `feat/auth-proxy`** (off `f9d6573`), not yet pushed.
+**Plan PR 6 merged as #86 (`7312359`), with one correction after it.**
 `src/proxy.ts` sends a request with no session cookie to `/login`. Three things
-about it that the plan got wrong or left open, all now settled — the plan's PR 6
-section has the detail:
+the plan got wrong or left open, all now settled — the plan's PR 6 section has
+the detail:
 
 - **Next 16 renamed the file convention: it is `proxy.ts` exporting `proxy`, not
   `middleware.ts`.** Deprecated and renamed in v16.0.0. `config.matcher` and the
@@ -30,21 +30,64 @@ section has the detail:
 - **`FUNSAVER_SKIP_AUTH` never existed.** `test:e2e` was identical to baseline
   with no bypass at all.
 
+**`63cc6cc` went straight to main after the merge**, correcting the matcher to
+`_next(?:/|$)`. What #86 shipped, `_next/image/`, never matched the image
+optimizer — it is requested at `/_next/image?url=...` with nothing after
+`image`. The lesson is in the test, not the regex: the table asserted
+`/_next/static/chunk.js`, a path with a further segment, which is exactly the
+shape that hides an unanchored prefix. Assert the bare endpoint.
+
 **The page-level redirect in `signed-in-accounts.ts` stays, deliberately.** The
 proxy makes the optimistic cookie check only; `signedInAccounts()` is what
 verifies the session and is the only source of a `userId` for the pages. A forged
 cookie passes the proxy and is caught there.
 
-**No screenshots on this PR**, against what CLAUDE.md asks for on a visible
-change — called off explicitly to save the time. `withShots` still cannot shoot a
-signed-out browser: `openApp` always installs a session cookie. Making `cookie`
-optional through `Session.open`/`openApp`/`withShots` is about 8 lines if a later
-PR needs it.
+**Known ceiling, recorded not built: a chunked session cookie reads as signed
+out.** Auth.js splits the cookie above 3936 bytes and then no cookie carries the
+bare name that `cookies.has()` matches. The JWT holds only `userId` today; this
+becomes real the day it carries a provider access or refresh token.
 
-PR 7 and PR 11 are independent. **PR 10 is next** — it guards the `[id]` mutation
-routes, still the only cross-user path left and the highest-value thing
-outstanding. PR 6 did not narrow it: `/api` is deliberately outside the proxy's
-matcher, because a redirect answers a `fetch()` with an HTML login page.
+**No screenshots on PR 6**, against what CLAUDE.md asks for on a visible change —
+called off explicitly to save time. `withShots` still cannot shoot a signed-out
+browser: `openApp` always installs a session cookie. Making `cookie` optional
+through `Session.open`/`openApp`/`withShots` is about 8 lines if a later PR needs
+it.
+
+**Plan PR 10 is open as #87** on `feat/guard-transaction-routes`, off `5ffc400`:
+`62ed29e` production, `a43e4c0` tests, `804fbfc` docs. It closes the last
+cross-user path — the four `[id]` mutation routes ran with no authorization at
+all, and PR 6 never narrowed them, because `/api` is deliberately outside the
+proxy's matcher. **PR 7 and PR 11 are what is left**, both independent of
+everything else.
+
+## What PR 10 changed that you need to know
+
+- **`withAccountEditor` in `src/app/api/accounts/[id]/with-account-editor.ts` is
+  the only guard.** It wraps a handler — no session → 401, no editing membership
+  → 403, otherwise the handler runs with the resolved account id. A new route
+  under `[id]` that mutates gets wrapped; wrapping is what stops the next route
+  from forgetting, which calling a guard does not.
+- **`canEditAccount(store, userId, accountId)` in `src/lib/account-access.ts`**
+  holds the rule, with `EDITING_ROLES` in `src/lib/constants.ts`. It takes
+  `AccountUserReader = Pick<DataStore, 'getAccountUser'>` so the role rule can be
+  tested against a stub: nothing in the app writes a non-owner row, because
+  `insertAccountWithOwner` is the only membership write there is.
+- **An unknown account answers 403, not 404**, on all four routes. The guard runs
+  ahead of every existence check, so ids are not probeable. The routes' 404
+  branches are kept as defence and are unreachable in practice.
+- **A route suite under `[id]` must mock `@/auth` or it cannot load at all** —
+  the route imports `signedInUserId`, `next-auth` is ESM, and jest dies with
+  `require(esm)` before the first test runs. `src/__mocks__/auth.ts` is that
+  mock; a bare `jest.mock('@/auth')` finds it. **Bare with no manual mock is
+  what automocks and crashes** — that is what the older note against it meant.
+- **The browser suites needed no change**: `openApp` seeds through
+  `insertAccountWithOwner(account, mockOwner)` and signs in as `mockUser`, so
+  every e2e request already carries an owner membership.
+- **The guard tests assert the store, not only the status.** A 403 that arrives
+  after the deposit is split or the name is written passes a status-only
+  assertion. Each one was also watched failing against a deliberate break,
+  including unwrapping each route in turn — the wrapper's own suite cannot catch
+  a route that forgot to use it.
 
 ## New on main that this repo did not have before
 
@@ -82,12 +125,18 @@ matcher, because a redirect answers a `fetch()` with an HTML login page.
   `ValidationError` naming the variable.
 - **Mocking under jest**: `jest.config.ts` maps `^@/(.*)$` because SWC rewrites
   `@/` in import specifiers but not inside a `jest.mock()` string. Mock `@/auth`
-  with a **factory**, never an automock — an automock loads the real module and
+  through `src/__mocks__/auth.ts`, never an automock — an automock loads the real module and
   `next-auth` is ESM, so jest dies with `require(esm)` before any test runs. A
   mock of `next/navigation` must **throw**, because the real `redirect` is typed
   `never`.
 
-## Database state — measured 2026-09-22
+## Test suites — measured 2026-09-22 on `feat/guard-transaction-routes`
+
+`jest` 582 across 115 suites · `test:db` 22 across 5 · `test:visual` 45 ·
+browser `e2e` 14 · `tsc --noEmit` and `eslint .` clean · `next build` accepts the
+wrapped route exports. Baseline on `main` before PR 10 was 572 across 113.
+
+## Database state — measured 2026-09-22, **not** re-measured during PR 10
 
 | branch       | `users` | `accounts` | `account_users` | orphan accounts | transactions |
 | ------------ | ------- | ---------- | --------------- | --------------- | ------------ |

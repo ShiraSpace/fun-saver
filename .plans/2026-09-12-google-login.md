@@ -6,28 +6,29 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-22 (plan PR 6 built on `feat/auth-proxy`; PR 10 is next)
+## Progress — updated 2026-09-22 (plan PR 10 open as #87; PR 7 and PR 11 are what is left)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
-| Plan         | GitHub                                                 | Branch                             | Status                                               |
-| ------------ | ------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------- |
-| PR 1         | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                           |
-| —            | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                        |
-| —            | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                        |
-| PR 2         | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged**                                           |
-| —            | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                        |
-| PR 3a        | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                               |
-| PR 3b        | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                               |
-| PR 4         | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                               |
-| PR 5         | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                           |
-| PR 8         | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                               |
-| PR 8b        | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff |
-| PR 9         | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **merged** — `f947725`                               |
-| PR 6         | —                                                      | `feat/auth-proxy`                  | **built, not yet opened** — the file is `proxy.ts`   |
-| PR 7, 10, 11 | —                                                      | —                                  | not started                                          |
+| Plan     | GitHub                                                 | Branch                             | Status                                                  |
+| -------- | ------------------------------------------------------ | ---------------------------------- | ------------------------------------------------------- |
+| PR 1     | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                              |
+| —        | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                           |
+| —        | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                           |
+| PR 2     | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged**                                              |
+| —        | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                           |
+| PR 3a    | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                                  |
+| PR 3b    | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                                  |
+| PR 4     | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                                  |
+| PR 5     | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                              |
+| PR 8     | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                                  |
+| PR 8b    | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff    |
+| PR 9     | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **merged** — `f947725`                                  |
+| PR 6     | [#86](https://github.com/ShiraSpace/fun-saver/pull/86) | `feat/auth-proxy`                  | **merged** — `7312359`, plus `63cc6cc` straight to main |
+| PR 10    | [#87](https://github.com/ShiraSpace/fun-saver/pull/87) | `feat/guard-transaction-routes`    | **open** — `62ed29e`, `a43e4c0`, `804fbfc`, `e20b20e`   |
+| PR 7, 11 | —                                                      | —                                  | not started                                             |
 
-### PR 6 is built, and PR 10 is next
+### PR 10 is open, and PR 7 and PR 11 are all that is left
 
 PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
 read through `listAccountsForUser` with the id from the session. A stranger who
@@ -35,15 +36,17 @@ signs in now has no `account_users` rows and therefore an empty app, which is
 what makes **PR 6 safe to write as a plain session gate** — the allowlist it
 would otherwise have had to carry is no longer needed.
 
-PR 6 is built on `feat/auth-proxy` and the app now goes private at the edge as
-well as at the page. **The gate is `src/proxy.ts`, not `src/middleware.ts` —
+PR 6 merged as #86 (`7312359`) and the app now goes private at the edge as well
+as at the page. **One correction landed after it, `63cc6cc`, pushed straight to
+main** — see the matcher paragraph below. **The gate is `src/proxy.ts`, not `src/middleware.ts` —
 Next 16 renamed the convention**, and the PR 6 section below records the rest of
 what changed against what this plan assumed.
 
-PR 10 is next and is the highest-value thing left: the `[id]` mutation routes are
-still the only cross-user path in the app, and `/api` is deliberately outside the
-proxy's matcher, so PR 6 did not narrow that hole by a line. PR 7 and PR 11 are
-independent and can land at any time.
+**PR 10 closed the last cross-user path.** The four `[id]` mutation routes ran
+with no authorization at all until now — `/api` is deliberately outside the
+proxy's matcher, so PR 6 did not narrow that hole by a line. All four now pass
+through one wrapper that answers 401 without a session and 403 without an editing
+membership. PR 7 and PR 11 are independent and can land at any time.
 
 ### PR 8's backfill ran on both targets, and PR 9 deleted it
 
@@ -481,14 +484,30 @@ session id, the selected-account cookie, the scoped list and the resolved theme,
 shared by `page.tsx` and `method/page.tsx`. It sits under `src/app` rather than
 `src/lib` because it reaches for `next/headers`.
 
-**PR 10 creates `src/lib/account-access.ts`** when it has something to put in it:
+**PR 10 created `src/lib/account-access.ts`**, and not in the shape this section
+predicted. It holds the rule as one predicate rather than two functions:
 
 ```ts
-requireAccountUser(store, userId, accountId): Promise<AccountUser>  // else Forbidden
-assertCanEdit(role): void    // owner | editor
+canEditAccount(store, userId, accountId): Promise<boolean>   // owner | editor
 ```
 
-`assertCanShare` waits for sharing to exist.
+`requireAccountUser` throwing plus `assertCanEdit` would have put a `try`/`catch`
+in all four routes and given `assertCanEdit` exactly one caller. The split can
+come back when `assertCanShare` joins it, which waits for sharing to exist.
+
+**The HTTP half is `src/app/api/accounts/[id]/with-account-editor.ts`.** Session
+and status codes live there rather than in `src/lib`, for the reason
+`signed-in-accounts.ts` sits under `src/app`. It wraps a route handler: no
+session → 401, no editing membership → 403, otherwise the handler runs with the
+resolved account id. **Wrapping rather than calling is what makes it one place** —
+a route cannot reach its own body without passing the guard, where a guard the
+route calls is a guard the next route can forget.
+
+`canEditAccount` takes `AccountUserReader = Pick<DataStore, 'getAccountUser'>`,
+the single method it uses, so the role rule can be tested against a stub reader.
+Nothing in the app writes a non-owner row yet — `insertAccountWithOwner` is the
+only membership write there is — so `viewer` is unreachable through the store's
+own API.
 
 ---
 
@@ -704,7 +723,7 @@ the react one. Both exist and only one works in a client component.
 Depends on: PR 4 — `next-auth` reached `main` with `5d02045`, so this branches
 off `main` normally. Ships: a new route.
 
-### PR 6 — `feat/auth-proxy` — BUILT, branch `feat/auth-proxy`
+### PR 6 — `feat/auth-proxy` — MERGED (#86, `7312359`)
 
 **Next 16 renamed the file convention.** It is `src/proxy.ts` exporting `proxy`,
 not `src/middleware.ts` exporting `middleware` — deprecated and renamed in
@@ -741,7 +760,15 @@ PR 10 was done.
 
 **The matcher is the security boundary, so it is tested.** Its alternatives are
 anchored to whole path segments — an unanchored `login|api` left `/loginx` and
-`/apikeys` public, which is the very failure this PR exists to close. Static
+`/apikeys` public, which is the very failure this PR exists to close. The
+framework namespace is excluded as `_next(?:/|$)`, one alternative rather than a
+list: the first attempt wrote `_next/image/`, which **never matched the image
+optimizer** — it is requested at `/_next/image?url=...` with nothing after
+`image`, so the endpoint was gated, while `/_next/image/x`, a path nothing is
+served at, was not. `_next/static/` worked only because a real static request
+always carries a further segment. That shipped in #86 and was corrected on main
+in `63cc6cc`; the test table now covers the bare endpoint, which is the shape
+that hides it. Static
 files are gated too: nothing on the login page loads from `public/`, and its own
 JS is under `_next/static`, which stays excluded. The matcher cannot reference
 `LOGIN_PATH` — Next statically analyses it at build time and silently ignores a
@@ -978,18 +1005,45 @@ deleted, the status changed to 403.
 Depends on: PR 3, PR 8. Ships: users see only their own accounts, and it is
 the prerequisite of PR 6 rather than a sequel to it.
 
-### PR 10 — `feat/guard-transaction-routes`
+### PR 10 — `feat/guard-transaction-routes` — OPEN (#87)
 
-- `src/app/api/accounts/[id]/route.ts` **and**
-  `src/app/api/accounts/[id]/{deposits,withdrawals,theme}/route.ts` —
-  `requireAccountUser` + `assertCanEdit` before the existing `getAccount`.
-  **`[id]/route.ts` is the one this plan kept leaving out**: it is the PUT that
-  renames an account and changes its avatar, it mutates like the other three,
-  and every earlier draft of this list omitted it.
-- `src/lib/account-access.ts` — **new**, created here rather than in PR 9. See
-  _Authorization seam_ above.
+Branched off `5ffc400`. `62ed29e` production, `a43e4c0` tests, `804fbfc` these
+docs.
 
-Tests: per route — unauthenticated → 401, non-member of the account `accountId` → 403.
+- `src/app/api/accounts/[id]/with-account-editor.ts` — **new**, the whole guard.
+- `src/lib/account-access.ts` — **new**, `canEditAccount`, and `EDITING_ROLES` in
+  `src/lib/constants.ts`. See _Authorization seam_ above for why it is one
+  predicate and a wrapper rather than the two functions this plan named.
+- All four routes became `export const PUT/POST = withAccountEditor(async
+(request, id) => …)` and **lost** their own `RouteContext` and `await
+context.params`: −42/+12 across the four. **`[id]/route.ts` is the one this
+  plan kept leaving out** — the PUT that renames an account and changes its
+  avatar, omitted by every earlier draft of this list.
+
+**An unknown account now answers 403, not 404.** The guard runs ahead of every
+existence check, so an id nobody is a member of is refused rather than reported
+missing, and account ids stop being probeable. The three `404` tests became
+`403`; the routes' own 404 branches stay as defence, unreachable while a
+membership row can only exist for an account that exists.
+
+**Every `[id]` route suite now mocks `@/auth` with a factory.** Without it the
+suite does not merely fail, it cannot load: the route imports `signedInUserId`,
+`next-auth` is ESM, and jest dies with `require(esm)` before the first test.
+
+**The browser suites needed no change.** `openApp` seeds through
+`insertAccountWithOwner(account, mockOwner)` and signs the browser in as
+`mockUser`, so every e2e request already carries an owner membership.
+
+Tests, 10 of them: `canEditAccount` for an owner, a `viewer` and a stranger with
+no row; the wrapper for 401, 403 and pass-through, each asserting the handler did
+or did not run; one stranger case per route, asserting the **store** as well as
+the status, because a 403 that arrives after the write would pass on status
+alone. Each was watched failing against a deliberate break — the role list, a
+forced `true`, each wrapper branch, a wrong id handed to the handler, and each
+route unwrapped in turn.
+
+Measured after: jest 582 across 115 suites, up from 572 across 113; `tsc` and
+`eslint` clean; `next build` accepts the wrapped `export const` handlers.
 
 Depends on: PR 9. Ships: writes are authorized.
 
@@ -1042,8 +1096,9 @@ Depends on: nothing. Independent of 6, 7 and 10; can land any time.
 | `src/lib/clock.ts`                                  | add `now()`; `today()` runs through it; a bad `FUNSAVER_NOW` throws         | 9       |
 | `src/db/index.ts`                                   | refuse the default `data.json` under `NODE_ENV=test`                        | 9       |
 | `src/test-utils/{owned-account,test-utils}.ts`      | `createOwnedAccount`, `withTempDataPath`                                    | 9       |
-| `src/lib/account-access.ts`                         | **new** — `requireAccountUser` + `assertCanEdit`                            | 10      |
-| `src/app/api/accounts/[id]/**/route.ts`             | `requireAccountUser` + `assertCanEdit`, edit PUT included                   | 10      |
+| `src/lib/account-access.ts`                         | **new** — `canEditAccount`; `EDITING_ROLES` in `constants.ts`               | 10      |
+| `src/app/api/accounts/[id]/with-account-editor.ts`  | **new** — 401 without a session, 403 without an editing membership          | 10      |
+| `src/app/api/accounts/[id]/**/route.ts`             | wrapped in `withAccountEditor`, edit PUT included                           | 10      |
 
 Unchanged throughout: `AccountSwitcher`, `Account`, `AccountForm`, wallets,
 drawer, transactions, theme, `EmptyState`, `use-create-account`.
@@ -1134,7 +1189,7 @@ migrating `data.json` into Neon.
   Settled by default: it was kept, so PR 8's backfill adopted it. Dev only, and
   a `DELETE` undoes it.
 - When "go-live" is — the moment production gets real data, PR 10 must already
-  have merged.
+  have merged. #87 is open and unmerged, so this still blocks.
 - Whether `data.json` and `JsonFileStore` retire once Neon is the real store.
   Out of scope here, but it is the cleanup that would collapse three store
   implementations into two.

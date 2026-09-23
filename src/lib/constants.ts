@@ -1,4 +1,4 @@
-import type { AuthProvider, WalletName } from './types';
+import type { AccountUserRole, AuthProvider, WalletName } from './types';
 
 export const GOOGLE_PROVIDER: AuthProvider = 'google';
 
@@ -8,6 +8,8 @@ export const SESSION_COOKIE_NAMES = [
   'authjs.session-token',
   '__Secure-authjs.session-token',
 ] as const;
+
+export const EDITING_ROLES: readonly AccountUserRole[] = ['owner', 'editor'];
 
 export const AGOROT_PER_SHEKEL = 100;
 

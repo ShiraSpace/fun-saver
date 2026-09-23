@@ -1,35 +1,27 @@
-import { StatusCodes } from 'http-status-codes';
 import { getStore } from '@/db';
 import { addDeposit } from '@/lib/transactions';
 import { shekelsToAgorot } from '@/lib/money';
 import { ValidationError } from '@/lib/errors';
 import { today } from '@/lib/clock';
+import { validDeposit } from '@/lib/transaction-input';
+import { jsonBody } from '@/app/api/json-body';
+import { API_ERRORS } from '@/app/api/constants';
+import { accountNotFound, badRequest } from '@/app/api/responses';
+import { withAccountEditor } from '../with-account-editor';
 
-interface DepositBody {
-  amount: number;
-}
-
-interface RouteContext {
-  params: Promise<{ id: string }>;
-}
-
-export async function POST(
-  request: Request,
-  context: RouteContext
-): Promise<Response> {
-  const { id } = await context.params;
+export const POST = withAccountEditor(async (request, id) => {
   const store = getStore();
-
   const account = await store.getAccount(id);
 
   if (!account) {
-    return Response.json(
-      { error: 'account not found' },
-      { status: StatusCodes.NOT_FOUND }
-    );
+    return accountNotFound();
   }
 
-  const { amount } = (await request.json()) as DepositBody;
+  const amount = validDeposit(await jsonBody(request));
+
+  if (amount === undefined) {
+    return badRequest(API_ERRORS.invalidDeposit);
+  }
 
   try {
     const transactions = await addDeposit({
@@ -42,12 +34,9 @@ export async function POST(
     return Response.json(transactions);
   } catch (error) {
     if (error instanceof ValidationError) {
-      return Response.json(
-        { error: error.message },
-        { status: StatusCodes.BAD_REQUEST }
-      );
+      return badRequest(error.message);
     }
 
     throw error;
   }
-}
+});
