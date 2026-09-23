@@ -5,15 +5,17 @@ import { ThemeProvider } from '@emotion/react';
 import { createRequiredContext } from '@/hooks/create-required-context';
 import { getThemeTokens, type ThemeId } from './registry';
 
+const PROVIDER_NAME = 'AppThemeProvider';
+
 interface AppThemeProviderProps {
   initialThemeId: ThemeId;
   children: ReactNode;
 }
 
 const [ThemeIdProvider, useThemeId] =
-  createRequiredContext<ThemeId>('AppThemeProvider');
+  createRequiredContext<ThemeId>(PROVIDER_NAME);
 const [SetThemeIdProvider, useSetThemeId] =
-  createRequiredContext<(id: ThemeId) => void>('AppThemeProvider');
+  createRequiredContext<(id: ThemeId) => void>(PROVIDER_NAME);
 
 export { useSetThemeId, useThemeId };
 
