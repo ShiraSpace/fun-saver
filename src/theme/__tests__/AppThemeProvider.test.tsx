@@ -1,20 +1,21 @@
 import { JSX } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { ThemeDisplay, THEME_ID_TESTID } from '@/test-utils/theme-probe';
-import { ThemeController, useSetThemeId } from '../ThemeController';
+import { AppThemeProvider, useSetThemeId } from '../AppThemeProvider';
 import { THEME_ID, type ThemeId } from '../registry';
+import { missingProviderMessage } from '@/hooks/create-required-context';
 
 function ThemeSwitcher({ targetId }: { targetId: ThemeId }): JSX.Element {
   const set = useSetThemeId();
   return <button onClick={() => set(targetId)}>switch</button>;
 }
 
-describe('ThemeController', () => {
+describe('AppThemeProvider', () => {
   it('exposes the initial theme id', () => {
     render(
-      <ThemeController initialThemeId={THEME_ID.jungleQuest}>
+      <AppThemeProvider initialThemeId={THEME_ID.jungleQuest}>
         <ThemeDisplay />
-      </ThemeController>
+      </AppThemeProvider>
     );
     expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(
       THEME_ID.jungleQuest
@@ -23,10 +24,10 @@ describe('ThemeController', () => {
 
   it('updates the active theme id on set', () => {
     render(
-      <ThemeController initialThemeId={THEME_ID.jungleQuest}>
+      <AppThemeProvider initialThemeId={THEME_ID.jungleQuest}>
         <ThemeDisplay />
         <ThemeSwitcher targetId={THEME_ID.midnightBlue} />
-      </ThemeController>
+      </AppThemeProvider>
     );
     fireEvent.click(screen.getByRole('button', { name: 'switch' }));
     expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(
@@ -39,9 +40,9 @@ describe('ThemeController', () => {
       delete document.documentElement.dataset.theme;
 
       render(
-        <ThemeController initialThemeId={THEME_ID.jungleQuest}>
+        <AppThemeProvider initialThemeId={THEME_ID.jungleQuest}>
           <ThemeSwitcher targetId={THEME_ID.midnightBlue} />
-        </ThemeController>
+        </AppThemeProvider>
       );
     });
 
@@ -55,6 +56,20 @@ describe('ThemeController', () => {
       expect(document.documentElement.dataset.theme).toBe(
         THEME_ID.midnightBlue
       );
+    });
+  });
+
+  describe('with no AppThemeProvider above', () => {
+    it('refuses to name a theme', () => {
+      expect(() => render(<ThemeDisplay />)).toThrow(
+        missingProviderMessage('AppThemeProvider')
+      );
+    });
+
+    it('refuses to switch the theme', () => {
+      expect(() =>
+        render(<ThemeSwitcher targetId={THEME_ID.midnightBlue} />)
+      ).toThrow(missingProviderMessage('AppThemeProvider'));
     });
   });
 });

@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { useThemeId } from '@/theme/ThemeController';
+import { useThemeId } from '@/theme/AppThemeProvider';
 
 export const THEME_ID_TESTID = 'theme-id';
 

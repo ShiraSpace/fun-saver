@@ -1,9 +1,7 @@
 'use client';
 
-import { createContext, useContext } from 'react';
+import { createRequiredContext } from '@/hooks/create-required-context';
 import type { AccountWithDerivedWallets } from '@/lib/types';
-
-export const NO_PROVIDER = 'useAccounts needs an AccountsProvider above it';
 
 export interface AccountsContextValue {
   accounts: AccountWithDerivedWallets[];
@@ -11,20 +9,5 @@ export interface AccountsContextValue {
   selectAccount: (id: string) => void;
 }
 
-const AccountsContext = createContext<AccountsContextValue | null>(null);
-
-export const AccountsProvider = AccountsContext.Provider;
-
-export function useOptionalAccounts(): AccountsContextValue | null {
-  return useContext(AccountsContext);
-}
-
-export function useAccounts(): AccountsContextValue {
-  const value = useContext(AccountsContext);
-
-  if (!value) {
-    throw new Error(NO_PROVIDER);
-  }
-
-  return value;
-}
+export const [AccountsProvider, useAccounts, useOptionalAccounts] =
+  createRequiredContext<AccountsContextValue>('AccountsProvider');

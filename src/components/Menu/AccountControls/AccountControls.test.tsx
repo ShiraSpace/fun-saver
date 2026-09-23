@@ -2,25 +2,17 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import { AccountControls } from './AccountControls';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '../EditAccountButton/constants';
-import {
-  APP_MODE,
-  AppModeProvider,
-} from '@/components/AccountManagement/app-mode-context';
 import { mockAccountsContext, mockDerivedAccount } from '@/test-utils/fixtures';
 
 const mockOnLeaveMenu = jest.fn();
 
 function renderControls(): void {
   render(
-    <AppModeProvider
-      value={{ mode: APP_MODE.viewing, setMode: (): void => {} }}
-    >
-      <AccountControls
-        onLeaveMenu={mockOnLeaveMenu}
-        isAccountListOpen
-        onAccountListToggle={(): void => {}}
-      />
-    </AppModeProvider>,
+    <AccountControls
+      onLeaveMenu={mockOnLeaveMenu}
+      isAccountListOpen
+      onAccountListToggle={(): void => {}}
+    />,
     { accounts: mockAccountsContext }
   );
 }

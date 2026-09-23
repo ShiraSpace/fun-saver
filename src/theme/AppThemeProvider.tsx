@@ -1,0 +1,41 @@
+'use client';
+
+import { JSX, ReactNode, useEffect, useMemo, useState } from 'react';
+import { ThemeProvider } from '@emotion/react';
+import { createRequiredContext } from '@/hooks/create-required-context';
+import { getThemeTokens, type ThemeId } from './registry';
+
+const PROVIDER_NAME = 'AppThemeProvider';
+
+interface AppThemeProviderProps {
+  initialThemeId: ThemeId;
+  children: ReactNode;
+}
+
+const [ThemeIdProvider, useThemeId] =
+  createRequiredContext<ThemeId>(PROVIDER_NAME);
+const [SetThemeIdProvider, useSetThemeId] =
+  createRequiredContext<(id: ThemeId) => void>(PROVIDER_NAME);
+
+export { useSetThemeId, useThemeId };
+
+export function AppThemeProvider({
+  initialThemeId,
+  children,
+}: AppThemeProviderProps): JSX.Element {
+  const [themeId, setThemeId] = useState<ThemeId>(initialThemeId);
+
+  const theme = useMemo(() => getThemeTokens(themeId), [themeId]);
+
+  useEffect((): void => {
+    document.documentElement.dataset.theme = themeId;
+  }, [themeId]);
+
+  return (
+    <ThemeIdProvider value={themeId}>
+      <SetThemeIdProvider value={setThemeId}>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      </SetThemeIdProvider>
+    </ThemeIdProvider>
+  );
+}

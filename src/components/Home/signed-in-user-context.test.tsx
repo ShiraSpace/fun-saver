@@ -4,6 +4,7 @@ import { mockUser } from '@/test-utils/fixtures';
 import { captureCookies } from '@/test-utils/cookies';
 import { THEME_COOKIE } from '@/lib/cookies';
 import { THEME_ID } from '@/theme/registry';
+import { missingProviderMessage } from '@/hooks/create-required-context';
 import { useSignedInUser } from './signed-in-user-context';
 
 const NAME_TESTID = 'signed-in-name';
@@ -22,7 +23,7 @@ describe('useSignedInUser', () => {
 
   it('refuses to guess when no provider is above it', () => {
     expect(() => render(<SignedInName />)).toThrow(
-      'useSignedInUser needs a SignedInUserProvider above it'
+      missingProviderMessage('SignedInUserProvider')
     );
   });
 });

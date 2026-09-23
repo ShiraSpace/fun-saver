@@ -3,7 +3,7 @@ import {
   render as renderWithRtl,
   type RenderResult,
 } from '@testing-library/react';
-import { ThemeController } from '@/theme/ThemeController';
+import { AppThemeProvider } from '@/theme/AppThemeProvider';
 import { DEFAULT_THEME_ID, type ThemeId } from '@/theme/registry';
 import {
   AccountsProvider,
@@ -48,9 +48,9 @@ export function render(
   }
 
   return renderWithRtl(
-    <ThemeController initialThemeId={themeId}>
+    <AppThemeProvider initialThemeId={themeId}>
       {withUser(withAccounts(element, accounts), user)}
-    </ThemeController>
+    </AppThemeProvider>
   );
 }
 

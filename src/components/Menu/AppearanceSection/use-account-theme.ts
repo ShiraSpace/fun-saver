@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAccounts } from '@/components/Home/accounts-context';
-import { useSetThemeId, useThemeId } from '@/theme/ThemeController';
+import { useSetThemeId, useThemeId } from '@/theme/AppThemeProvider';
 import type { ThemeId } from '@/theme/registry';
 import { fetchJson } from '@/lib/fetch-json';
 
