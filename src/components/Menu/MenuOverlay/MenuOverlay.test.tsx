@@ -4,6 +4,7 @@ import { MENU_OVERLAY_CONTENT } from './constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from '../MenuGlobalScope/constants';
 import { MENU_ACCOUNT_SCOPE_TEST_IDS } from '../MenuAccountScope/constants';
+import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
 import { NAV_TABS_TEST_IDS } from '../NavTabs/constants';
@@ -59,6 +60,17 @@ describe('MenuOverlay', () => {
       expect(accountScope).toContainElement(
         screen.getByTestId(LANGUAGE_SECTION_TEST_IDS.section)
       );
+    });
+
+    it('puts the signed-in user in the block that is not about one account', () => {
+      const strip = screen.getByTestId(PROFILE_SECTION_TEST_IDS.strip);
+
+      expect(
+        screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block)
+      ).toContainElement(strip);
+      expect(
+        screen.getByTestId(MENU_ACCOUNT_SCOPE_TEST_IDS.block)
+      ).not.toContainElement(strip);
     });
 
     it('keeps navigation out of the settings that belong to one account', () => {

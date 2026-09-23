@@ -20,6 +20,23 @@ export function signedInUserId(page: Page): Promise<string> {
   });
 }
 
+export async function canTakeFocus(
+  page: Page,
+  testId: string
+): Promise<boolean> {
+  const element = await findByTest(page, testId);
+
+  return element.evaluate((node) => {
+    if (!(node instanceof HTMLElement)) {
+      return false;
+    }
+
+    node.focus();
+
+    return document.activeElement === node;
+  });
+}
+
 export async function exists(page: Page, testId: string): Promise<boolean> {
   return (await queryByTest(page, testId)) !== null;
 }

@@ -90,6 +90,10 @@ export class Session {
     return queries.signedInUserId(this.page);
   }
 
+  canTakeFocus(testId: string): Promise<boolean> {
+    return queries.canTakeFocus(this.page, testId);
+  }
+
   exists(testId: string): Promise<boolean> {
     return queries.exists(this.page, testId);
   }
