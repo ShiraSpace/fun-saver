@@ -8,12 +8,7 @@ import {
   APPEARANCE_SECTION_CONTENT,
   APPEARANCE_SECTION_TEST_IDS,
 } from './constants';
-
-const mockRefresh = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  useRouter: (): { refresh: jest.Mock } => ({ refresh: mockRefresh }),
-}));
+import { mockRouter } from '@mocks/next/navigation';
 
 function renderSection(): void {
   renderWithAccounts(<AppearanceSection />, {
@@ -73,7 +68,7 @@ describe('AppearanceSection', () => {
     });
 
     it('refreshes so the saved theme survives a later switch', () => {
-      expect(mockRefresh).toHaveBeenCalled();
+      expect(mockRouter.refresh).toHaveBeenCalled();
     });
   });
 
@@ -102,7 +97,7 @@ describe('AppearanceSection', () => {
     it('reverts to the theme that is still saved', () => {
       expect(swatches()[0]).toHaveAttribute('data-selected', 'true');
       expect(swatches()[1]).toHaveAttribute('data-selected', 'false');
-      expect(mockRefresh).not.toHaveBeenCalled();
+      expect(mockRouter.refresh).not.toHaveBeenCalled();
     });
   });
 });

@@ -15,21 +15,11 @@ import {
   tapAddRow,
   tapEditButton,
 } from './home-test-helpers';
-import { HOME_ROUTE } from './constants';
+import { mockRouter } from '@mocks/next/navigation';
 
-const mockRefresh = jest.fn();
-const mockPush = jest.fn();
 const mockPersist = jest.fn();
 const mockCreateAccount = jest.fn();
 const mockUpdateAccount = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  useRouter: (): { refresh: jest.Mock; push: jest.Mock } => ({
-    refresh: mockRefresh,
-    push: mockPush,
-  }),
-  usePathname: (): string => HOME_ROUTE,
-}));
 
 jest.mock('./selected-account-cookie', () => ({
   persistSelectedAccount: (accountId: string): void => mockPersist(accountId),
@@ -84,7 +74,7 @@ describe('Home — managing accounts', () => {
       await waitFor(() =>
         expect(mockPersist).toHaveBeenCalledWith(createdAccount.id)
       );
-      expect(mockRefresh).toHaveBeenCalled();
+      expect(mockRouter.refresh).toHaveBeenCalled();
       await waitFor(() =>
         expect(
           screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
@@ -142,7 +132,7 @@ describe('Home — managing accounts', () => {
     it('refreshes so the saved name reaches the server components', async () => {
       submitEditForm();
 
-      await waitFor(() => expect(mockRefresh).toHaveBeenCalled());
+      await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
     });
 
     it('closes the overlay once the save lands', async () => {
