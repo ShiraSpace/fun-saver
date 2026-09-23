@@ -5,56 +5,86 @@ import { NavTabs } from './NavTabs';
 import { MENU_SCREENS, NAV_TABS_TEST_IDS } from './constants';
 
 const mockOnNavigate = jest.fn();
+const mockPathname = jest.fn();
 
 jest.mock('next/navigation', () => ({
-  usePathname: (): string => METHOD_ROUTE,
+  usePathname: (): string => mockPathname(),
 }));
 
+function renderTabs(pathname: string): void {
+  jest.clearAllMocks();
+  mockPathname.mockReturnValue(pathname);
+  render(<NavTabs onNavigate={mockOnNavigate} />);
+}
+
 describe('NavTabs', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    render(<NavTabs onNavigate={mockOnNavigate} />);
+  describe('on the home screen', () => {
+    beforeEach(() => {
+      renderTabs(HOME_ROUTE);
+    });
+
+    it('offers a tab for every screen the app has', () => {
+      expect(screen.getByTestId(NAV_TABS_TEST_IDS.strip).children).toHaveLength(
+        MENU_SCREENS.length
+      );
+    });
+
+    it('marks the screen the reader is on', () => {
+      expect(screen.getByTestId(NAV_TABS_TEST_IDS.homeTab)).toHaveAttribute(
+        'aria-current',
+        'page'
+      );
+    });
+
+    it('offers no way to travel to the screen already on display', () => {
+      expect(screen.getByTestId(NAV_TABS_TEST_IDS.homeTab)).not.toHaveAttribute(
+        'href'
+      );
+    });
+
+    it('sends the other screen to its route', () => {
+      const methodTab = screen.getByTestId(NAV_TABS_TEST_IDS.methodTab);
+
+      expect(methodTab).toHaveAttribute('href', METHOD_ROUTE);
+      expect(methodTab).not.toHaveAttribute('aria-current');
+    });
+
+    it('closes the menu on the way out, so returning does not land on an open one', () => {
+      fireEvent.click(screen.getByTestId(NAV_TABS_TEST_IDS.methodTab));
+
+      expect(mockOnNavigate).toHaveBeenCalled();
+    });
+
+    it('shows the screen that does not exist yet as a tab that cannot be taken', () => {
+      expect(
+        screen.getByTestId(NAV_TABS_TEST_IDS.transactionsTab)
+      ).toBeDisabled();
+    });
   });
 
-  it('offers a tab for every screen the app has', () => {
-    expect(screen.getByTestId(NAV_TABS_TEST_IDS.strip).children).toHaveLength(
-      MENU_SCREENS.length
-    );
-  });
+  describe('on the method screen', () => {
+    beforeEach(() => {
+      renderTabs(METHOD_ROUTE);
+    });
 
-  it('marks the screen the reader is on, not the one the menu opened from', () => {
-    expect(screen.getByTestId(NAV_TABS_TEST_IDS.methodTab)).toHaveAttribute(
-      'aria-current',
-      'page'
-    );
-    expect(screen.getByTestId(NAV_TABS_TEST_IDS.homeTab)).not.toHaveAttribute(
-      'aria-current'
-    );
-  });
+    it('moves the mark to the screen the reader travelled to', () => {
+      expect(screen.getByTestId(NAV_TABS_TEST_IDS.methodTab)).toHaveAttribute(
+        'aria-current',
+        'page'
+      );
+    });
 
-  it('sends the home tab to the home route', () => {
-    expect(screen.getByTestId(NAV_TABS_TEST_IDS.homeTab)).toHaveAttribute(
-      'href',
-      HOME_ROUTE
-    );
-  });
+    it('stops offering the method route once the reader is on it', () => {
+      expect(
+        screen.getByTestId(NAV_TABS_TEST_IDS.methodTab)
+      ).not.toHaveAttribute('href');
+    });
 
-  it('sends the method tab to the method route', () => {
-    expect(screen.getByTestId(NAV_TABS_TEST_IDS.methodTab)).toHaveAttribute(
-      'href',
-      METHOD_ROUTE
-    );
-  });
-
-  it('closes the menu on the way out, so returning does not land on an open one', () => {
-    fireEvent.click(screen.getByTestId(NAV_TABS_TEST_IDS.homeTab));
-
-    expect(mockOnNavigate).toHaveBeenCalled();
-  });
-
-  it('shows the screen that does not exist yet as a tab that cannot be taken', () => {
-    expect(
-      screen.getByTestId(NAV_TABS_TEST_IDS.transactionsTab)
-    ).toBeDisabled();
+    it('offers the way back home', () => {
+      expect(screen.getByTestId(NAV_TABS_TEST_IDS.homeTab)).toHaveAttribute(
+        'href',
+        HOME_ROUTE
+      );
+    });
   });
 });

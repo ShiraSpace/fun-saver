@@ -41,12 +41,20 @@ export const Tab = styled(Link)`
   ${tabFace}
 `;
 
+export const CurrentTab = styled.span`
+  ${tabFace}
+`;
+
 export const InertTab = styled.button`
   ${tabFace}
+  border-style: dashed;
   cursor: default;
-  opacity: 0.55;
 `;
 
 export const TabIcon = styled.span`
-  font-size: 17px;
+  font-size: ${({ theme }): number => theme.typography.heading}px;
+
+  ${InertTab} & {
+    opacity: 0.45;
+  }
 `;
