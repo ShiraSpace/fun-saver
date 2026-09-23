@@ -412,6 +412,16 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
 - **The loading shell is a header card plus a bar delayed 150ms**, and it is the
   same shell for every route. Decided 2026-09-23 against a dimmed body, a centred
   donut and a bare header card, in `mockups/loading-states.html`.
+
+- **The bar is painted full width and the colour travels** — variant ג5. Decided
+  2026-09-23 against a solid chunk, a comet-tail gradient, and the three wallet
+  colours cycling either one per pass or all at once. The chunk variants all depend
+  on the wait lasting long enough to cross an empty track; at the measured 250ms
+  they show a fragment, and ג3 shows one arbitrarily-chosen jar colour. ג5 has no
+  empty track, so a short navigation still shows something whole. It reuses the
+  three wallet colours the donut already has, so no new token. In the `neutral`
+  theme every variant is grey on grey and effectively invisible — a property of
+  that theme, not of the bar.
 - **The arriving page fades, 240ms, and nothing moves.** Decided 2026-09-23 against
   a 6px rise, a 0.985 settle and a staggered rise, through the existing
   `entrance()` helper.

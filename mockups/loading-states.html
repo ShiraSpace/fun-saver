@@ -486,6 +486,54 @@
       .status code, .status a { font-size:11.5px; color:inherit; }
       .status.chosen { background:#12301c; color:#b7f0c8; border:1px solid #2f7a4a; }
       .status.chosen .badge { background:#2f7a4a; color:#eafff1; }
+
+      .progress.comet::after {
+        background: linear-gradient(to left, transparent, var(--primary));
+      }
+      .progress.cycle::after {
+        animation:
+          slide 0.9s ease-in-out 150ms infinite,
+          jars 2.7s steps(1) 150ms infinite;
+      }
+      @keyframes jars {
+        0% {
+          background: var(--arcA);
+        }
+        33.333% {
+          background: var(--arcB);
+        }
+        66.666% {
+          background: var(--arcC);
+        }
+      }
+      .progress.jars::after {
+        background: linear-gradient(
+          to left,
+          var(--arcC),
+          var(--arcB),
+          var(--arcA)
+        );
+      }
+      .progress.flow::after {
+        inset-inline-start: 0;
+        width: 300%;
+        background: repeating-linear-gradient(
+          to left,
+          var(--arcA) 0,
+          var(--arcB) 11.111%,
+          var(--arcC) 22.222%,
+          var(--arcA) 33.333%
+        );
+        animation: flow 2.2s linear 150ms infinite;
+      }
+      @keyframes flow {
+        from {
+          transform: translateX(33.333%);
+        }
+        to {
+          transform: translateX(0);
+        }
+      }
     </style>
   </head>
   <body>
@@ -729,6 +777,100 @@
             <div class="card wallet"><span class="pot"></span><span class="line" style="width: 48%"></span></div>
             <div class="card wallet"><span class="pot"></span><span class="line" style="width: 54%"></span></div>
             <div class="cta"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>ג׳ — הצבע של הפס</h2>
+    <p class="sub">
+      החלטה על הווריאנט שנבחר בסעיף א׳ (3 — פס דק, מושהה 150ms), לא חלופה לו.
+      חמשת הפסים זהים בגודל, במיקום ובהשהיה — ההבדל היחיד הוא איך הם צבועים.
+      כולם קוראים טוקנים שכבר קיימים: <code>primary</code>, ושלושת צבעי הקופות
+      שהדונאט כבר משתמש בהם, ולכן אף אחד מהם לא דורש טוקן חדש.
+      <b>ג5 נבחר ב־2026-09-23.</b> הוא היחיד שאינו תלוי באורך ההמתנה: אין מסלול
+      ריק שצריך להספיק לחצות אותו, ולכן גם מעבר של 250ms מראה משהו שלם.
+      ב<b>ניטרלי</b> אין צבע לשאול ממנו, ושם כל החמישה כמעט בלתי נראים — תכונה
+      של הערכה, לא של הפס.
+    </p>
+    <div class="row" id="barColours">
+      <div class="case">
+        <p class="caseName">ג1 — מקטע מלא בצבע הראשי (היום)<span class="verdict" data-state="rejected">נדחה</span></p>
+        <p class="caseNote">
+          הפס כפי שהוא עכשיו. ברור וזול, ולא אומר דבר מעבר ל״משהו קורה״.
+          זה קו הבסיס שכל השאר צריכים להצדיק את עצמם מולו.
+        </p>
+        <div class="phone">
+          <div class="bar">
+            <span class="burger"><span></span><span></span><span></span></span>
+            <span class="barTitle ghost">כותרת</span>
+            <span class="avatar"></span>
+            <span class="progress"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="case">
+        <p class="caseName">ג2 — ראש בוהק, זנב מתפוגג<span class="verdict" data-state="rejected">נדחה</span></p>
+        <p class="caseNote">
+          אותו מקטע, צבוע כמדרג שמתחזק לכיוון הנסיעה. כיוון התנועה נקרא מיד,
+          גם כשהפס נראה מאה מילישניות בלבד. שינוי של שורת CSS אחת.
+        </p>
+        <div class="phone">
+          <div class="bar">
+            <span class="burger"><span></span><span></span><span></span></span>
+            <span class="barTitle ghost">כותרת</span>
+            <span class="avatar"></span>
+            <span class="progress comet"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="case">
+        <p class="caseName">ג3 — שלוש הקופות, אחת בכל מעבר<span class="verdict" data-state="rejected">נדחה</span></p>
+        <p class="caseNote">
+          המקטע מחליף צבע בין חיסכון, בזבוזים ומעשים טובים — צבע אחד לכל מעבר.
+          קושר את ההמתנה לשפה של האפליקציה, אבל בהמתנה של 250ms רואים צבע
+          אחד בלבד, והוא נראה שרירותי.
+        </p>
+        <div class="phone">
+          <div class="bar">
+            <span class="burger"><span></span><span></span><span></span></span>
+            <span class="barTitle ghost">כותרת</span>
+            <span class="avatar"></span>
+            <span class="progress cycle"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="case">
+        <p class="caseName">ג4 — שלוש הקופות בבת אחת<span class="verdict" data-state="rejected">נדחה</span></p>
+        <p class="caseNote">
+          שלושת הצבעים חיים במקטע אחד. מעבר בודד כבר מראה את כל הפלטה, ולכן מה
+          שנראה לא תלוי באורך ההמתנה — מה שג3 לא פותר.
+        </p>
+        <div class="phone">
+          <div class="bar">
+            <span class="burger"><span></span><span></span><span></span></span>
+            <span class="barTitle ghost">כותרת</span>
+            <span class="avatar"></span>
+            <span class="progress jars"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="case">
+        <p class="caseName">ג5 — פס מלא, הצבע הוא שנע<span class="verdict" data-state="chosen">✓ נבחר</span></p>
+        <p class="caseNote">
+          אין מקטע ואין מסלול ריק: כל הפס צבוע, והדוגמה עצמה נעה. השקט מכולם,
+          ובו־זמנית זה שנראה הכי פחות כמו טעינה — יותר כמו קישוט של הכותרת.
+        </p>
+        <div class="phone">
+          <div class="bar">
+            <span class="burger"><span></span><span></span><span></span></span>
+            <span class="barTitle ghost">כותרת</span>
+            <span class="avatar"></span>
+            <span class="progress flow"></span>
           </div>
         </div>
       </div>
