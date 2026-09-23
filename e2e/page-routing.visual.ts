@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockAccount } from '@/test-utils/fixtures';
 import { COLORS } from '@/theme/palette';
-import { hexToRgb } from './test-utils/css-color';
+import { hexToRgb } from '@/test-utils/css-color';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { useDriver } from './driver/use-driver';
