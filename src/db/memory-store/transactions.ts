@@ -1,5 +1,6 @@
 import type { Transaction } from '@/lib/types';
 import type { TransactionRepository } from '../data-store';
+import { byOccurrence } from '../transactions';
 
 export class MemoryTransactions implements TransactionRepository {
   private readonly transactions: Transaction[] = [];
@@ -12,15 +13,20 @@ export class MemoryTransactions implements TransactionRepository {
     accountId: string,
     walletId: string
   ): Promise<Transaction[]> {
-    return this.transactions.filter(
-      (transaction) =>
-        transaction.accountId === accountId && transaction.walletId === walletId
+    return byOccurrence(
+      this.transactions.filter(
+        (transaction) =>
+          transaction.accountId === accountId &&
+          transaction.walletId === walletId
+      )
     );
   }
 
   async listByAccount(accountId: string): Promise<Transaction[]> {
-    return this.transactions.filter(
-      (transaction) => transaction.accountId === accountId
+    return byOccurrence(
+      this.transactions.filter(
+        (transaction) => transaction.accountId === accountId
+      )
     );
   }
 }

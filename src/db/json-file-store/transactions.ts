@@ -1,5 +1,6 @@
 import type { Transaction } from '@/lib/types';
 import type { TransactionRepository } from '../data-store';
+import { byOccurrence } from '../transactions';
 import type { FileSession } from './file-session';
 
 export class JsonTransactions implements TransactionRepository {
@@ -14,18 +15,22 @@ export class JsonTransactions implements TransactionRepository {
 
   listByWallet(accountId: string, walletId: string): Promise<Transaction[]> {
     return this.session.read((data): Transaction[] =>
-      data.transactions.filter(
-        (transaction) =>
-          transaction.accountId === accountId &&
-          transaction.walletId === walletId
+      byOccurrence(
+        data.transactions.filter(
+          (transaction) =>
+            transaction.accountId === accountId &&
+            transaction.walletId === walletId
+        )
       )
     );
   }
 
   listByAccount(accountId: string): Promise<Transaction[]> {
     return this.session.read((data): Transaction[] =>
-      data.transactions.filter(
-        (transaction) => transaction.accountId === accountId
+      byOccurrence(
+        data.transactions.filter(
+          (transaction) => transaction.accountId === accountId
+        )
       )
     );
   }
