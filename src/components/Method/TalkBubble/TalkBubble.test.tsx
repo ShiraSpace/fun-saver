@@ -1,6 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
-import { getThemeTokens } from '@/theme/registry';
+import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import type { TalkLine } from '../copy';
 import { TalkBubble } from './TalkBubble';
 import { TALK_BUBBLE_TEST_IDS } from './constants';
@@ -34,10 +34,12 @@ describe('a talk bubble', () => {
   });
 
   describe('on a theme whose text colour left its outline behind', () => {
-    const jungle = getThemeTokens('jungle-quest').colors;
+    const jungle = getThemeTokens(THEME_ID.jungleQuest).colors;
 
     beforeEach(() => {
-      render(<TalkBubble label={LABEL} lines={LINES} />, 'jungle-quest');
+      render(<TalkBubble label={LABEL} lines={LINES} />, {
+        themeId: THEME_ID.jungleQuest,
+      });
     });
 
     it('darkens the label to read on the surface and leaves the outline bright', () => {

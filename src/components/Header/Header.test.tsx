@@ -1,4 +1,5 @@
-import { fireEvent, renderWithAccountsAt, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
+import { mockAccountsContext, mockUser } from '@/test-utils/fixtures';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
@@ -15,9 +16,10 @@ const AVATAR_ID = 'kid-01';
 const headerAccount = { name: ACCOUNT_NAME, avatarId: AVATAR_ID };
 
 function renderHeader(route: string): void {
-  renderWithAccountsAt({
+  render(<Header title={ACCOUNT_NAME} account={headerAccount} />, {
     route,
-    ui: <Header title={ACCOUNT_NAME} account={headerAccount} />,
+    accounts: mockAccountsContext,
+    user: mockUser,
   });
 }
 

@@ -1,4 +1,4 @@
-import { renderWithAccounts, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-utils/render';
 import { MenuAccountScope } from './MenuAccountScope';
 import { MENU_ACCOUNT_SCOPE_TEST_IDS } from './constants';
 import { type AccountsContextValue } from '@/components/Home/accounts-context';
@@ -15,10 +15,9 @@ const accountsValue: AccountsContextValue = {
 
 describe('MenuAccountScope', () => {
   beforeEach(() => {
-    renderWithAccounts(
-      <MenuAccountScope>{null}</MenuAccountScope>,
-      accountsValue
-    );
+    render(<MenuAccountScope>{null}</MenuAccountScope>, {
+      accounts: accountsValue,
+    });
   });
 
   it('heads the block with the account the settings belong to', () => {

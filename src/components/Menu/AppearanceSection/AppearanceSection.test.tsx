@@ -1,5 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { renderWithAccounts } from '@/test-utils/render';
+import { render } from '@/test-utils/render';
+import { type AccountsContextValue } from '@/components/Home/accounts-context';
 import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
 import { mockDerivedAccount } from '@/test-utils/fixtures';
@@ -10,12 +11,14 @@ import {
 } from './constants';
 import { mockRouter } from '@mocks/next/navigation';
 
+const accountsValue: AccountsContextValue = {
+  accounts: [mockDerivedAccount],
+  currentAccount: mockDerivedAccount,
+  selectAccount: jest.fn(),
+};
+
 function renderSection(): void {
-  renderWithAccounts(<AppearanceSection />, {
-    accounts: [mockDerivedAccount],
-    currentAccount: mockDerivedAccount,
-    selectAccount: jest.fn(),
-  });
+  render(<AppearanceSection />, { accounts: accountsValue });
 }
 
 function swatches(): HTMLElement[] {

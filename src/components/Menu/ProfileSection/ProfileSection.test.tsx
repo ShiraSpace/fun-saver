@@ -1,10 +1,5 @@
 import { signOut } from 'next-auth/react';
-import {
-  fireEvent,
-  renderWithUser,
-  screen,
-  waitFor,
-} from '@/test-utils/render';
+import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
 import { LOGIN_PATH } from '@/lib/constants';
 import { goTo } from '@/lib/navigate';
@@ -27,7 +22,7 @@ describe('ProfileSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockedSignOut.mockResolvedValue({ url: `http://localhost${LOGIN_PATH}` });
-    renderWithUser(<ProfileSection />);
+    render(<ProfileSection />, { user: mockUser });
   });
 
   describe('before anything is tapped', () => {

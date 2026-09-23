@@ -10,6 +10,7 @@ import type {
 import type { AccountOwner } from '@/db/data-store';
 import { DEFAULT_WALLETS } from '@/lib/constants';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
+import type { AccountsContextValue } from '@/components/Home/accounts-context';
 
 export function createMockWallet(overrides: Partial<Wallet> = {}): Wallet {
   return {
@@ -200,4 +201,10 @@ export const mockDerivedAccount: AccountWithDerivedWallets = {
 export const mockSecondDerivedAccount: AccountWithDerivedWallets = {
   ...mockSecondAccount,
   wallets: [createMockDerivedWallet({ id: 'w4', balance: 4200 })],
+};
+
+export const mockAccountsContext: AccountsContextValue = {
+  accounts: [mockDerivedAccount, mockSecondDerivedAccount],
+  currentAccount: mockDerivedAccount,
+  selectAccount: () => {},
 };

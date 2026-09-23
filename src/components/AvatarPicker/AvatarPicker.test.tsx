@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { getThemeTokens } from '@/theme/registry';
+import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { AVATARS } from '@/lib/avatars';
 import { AvatarPicker } from './AvatarPicker';
 import { AVATAR_PICKER_TEST_IDS } from './constants';
@@ -18,7 +18,7 @@ describe('AvatarPicker', () => {
     );
   });
 
-  describe.each(['jungle-quest', 'midnight-blue'] as const)(
+  describe.each([THEME_ID.jungleQuest, THEME_ID.midnightBlue] as const)(
     'on %s, where the old ring vanished into a layer',
     (themeId) => {
       const { selectionRing } = getThemeTokens(themeId).colors;
@@ -26,7 +26,7 @@ describe('AvatarPicker', () => {
       beforeEach(() => {
         render(
           <AvatarPicker selectedId={AVATARS[0].id} onSelect={onSelect} />,
-          themeId
+          { themeId }
         );
       });
 

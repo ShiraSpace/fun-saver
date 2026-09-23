@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
-import { getThemeTokens } from '@/theme/registry';
+import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { ModeToggle } from './ModeToggle';
 import type { ThemeId } from '@/theme/registry';
 import type { TransactionMode } from '../constants';
@@ -9,7 +9,7 @@ import { MODE_TOGGLE_COPY, MODE_TOGGLE_TEST_IDS } from './constants';
 const onChange = jest.fn();
 
 function renderToggle(mode: TransactionMode, themeId?: ThemeId): void {
-  render(<ModeToggle mode={mode} onChange={onChange} />, themeId);
+  render(<ModeToggle mode={mode} onChange={onChange} />, { themeId });
 }
 
 describe('ModeToggle', () => {
@@ -39,10 +39,10 @@ describe('ModeToggle', () => {
   });
 
   describe('the arrows, which sit on the track and not on the surface', () => {
-    const { alertText, gainText } = getThemeTokens('jungle-quest').colors;
+    const { alertText, gainText } = getThemeTokens(THEME_ID.jungleQuest).colors;
 
     beforeEach(() => {
-      renderToggle('deposit', 'jungle-quest');
+      renderToggle('deposit', THEME_ID.jungleQuest);
     });
 
     it('paints the withdraw arrow in the alert red', () => {
