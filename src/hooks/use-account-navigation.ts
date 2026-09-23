@@ -5,7 +5,7 @@ import {
   APP_MODE,
   AppMode,
 } from '@/components/AccountManagement/app-mode-context';
-import { persistSelectedAccount } from '@/components/Home/selected-account-cookie';
+import { SELECTED_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
 import { selectedAccount } from '@/lib/selected-account';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/ThemeController';
@@ -34,7 +34,7 @@ export function useAccountNavigation(
 
   const selectAccount = (id: string): void => {
     setSelectedAccountId(id);
-    persistSelectedAccount(id);
+    writeCookie(SELECTED_ACCOUNT_COOKIE, id);
 
     const target = accounts.find((account) => account.id === id);
     setThemeId(resolveThemeId(target?.themeId));

@@ -4,12 +4,16 @@ import type { AccountNavigation } from '@/hooks/use-account-navigation';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
+import { DEFAULT_THEME_ID, type ThemeId } from '@/theme/registry';
 import { AccountManagement } from './AccountManagement';
 import { APP_MODE } from './app-mode-context';
 
 const CHILD_TEST_ID = 'managed-screen';
 
-function renderManagement(overrides: Partial<AccountNavigation> = {}): void {
+function renderManagement(
+  overrides: Partial<AccountNavigation> = {},
+  themeId: ThemeId = DEFAULT_THEME_ID
+): void {
   const navigation: AccountNavigation = {
     mode: APP_MODE.viewing,
     setMode: () => {},
@@ -25,7 +29,8 @@ function renderManagement(overrides: Partial<AccountNavigation> = {}): void {
   render(
     <AccountManagement navigation={navigation}>
       <span data-testid={CHILD_TEST_ID} />
-    </AccountManagement>
+    </AccountManagement>,
+    { themeId }
   );
 }
 

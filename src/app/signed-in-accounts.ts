@@ -1,9 +1,9 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { signedInUser } from '@/auth';
-import { SELECTED_ACCOUNT_COOKIE } from '@/components/Home/selected-account-cookie';
 import { getStore } from '@/db';
 import { LOGIN_PATH } from '@/lib/constants';
+import { SELECTED_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { selectedAccount } from '@/lib/selected-account';
 import type { Account, SignedInUser } from '@/lib/types';
 import { resolveThemeId, type ThemeId } from '@/theme/registry';

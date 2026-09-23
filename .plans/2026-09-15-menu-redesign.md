@@ -14,8 +14,8 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-23 (PRs 1–10 merged, plus #76, #90 and #109; PR 11
-is next and splits into 11a then 11)
+## Progress — updated 2026-09-23 (PRs 1–10 merged, plus #76, #90 and #109; PR 11a
+is built and open, PR 11 is next)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
@@ -720,27 +720,72 @@ theme cookie written client-side — the pattern `persistSelectedAccount` alread
 uses — plus a three-line inline script in `layout.tsx` applies it before first
 paint, with no dynamic API and so no deopt.
 
-What it takes:
-
-- `src/theme/theme-css.ts` renders every entry in `THEMES` to
-  `:root[data-theme='…']{--fs-…}`. Generated in a loop from the registry, so a new
-  theme or token cannot drift; emitting all of them is less code than curating the
-  subset the shell happens to need.
-- `layout.tsx` emits that `<style>` and the inline script.
-- `src/theme/theme-cookie.ts` — `persistTheme`, modelled on
-  `persistSelectedAccount`; `ThemeController` keeps its provider and additionally
-  syncs the attribute and the cookie when the theme changes.
-
 Decided 2026-09-23 to split this out rather than carry it inside PR 11: without it
 the shell is grey and every navigation flashes neutral between two coloured
 screens, and with it inside, PR 11 stops being about the loading boundary.
 
-**It overlaps `.plans/2026-09-23-theme-parity.md`, which is unimplemented.** That
-plan pulls the 18 literal gradient strings into structured stops and gives the nine
-unowned `rgba()` component colours a home — which is exactly the shape a generator
-walks. Landing theme parity first makes the generator simpler and means it is
-written once; landing 11a first means theme parity has to update it. Check that
-plan's state before starting, and prefer taking it first if it is still open.
+**Built 2026-09-23** on `feat/theme-css-vars` — `a9a5885` the code, `4269989`
+fourteen tests. Visually a no-op; nothing reads the variables until PR 11.
+
+What it took, where that differs from what this plan expected:
+
+- `src/theme/theme-at-first-paint.ts` — `everyThemeAsCss()` walks `THEMES` and, per
+  theme, the four colour-bearing groups (`colors`, `gradients`, `shadows`, `tints`;
+  `typography` is numbers), emitting `--fs-color-…`, `--fs-gradient-…`,
+  `--fs-shadow-…`, `--fs-tint-…`. `applyStoredThemeScript()` sits beside it rather
+  than in a file of its own, because the script **reads** the cookie the app
+  **writes** and splitting them is what lets a cookie name drift apart. Named for
+  the why: `theme-css.ts` and `theme-document.ts` were both written first and both
+  name the mechanism.
+- `src/lib/cookies.ts` — `writeCookie` plus both cookie names, and
+  `src/components/Home/selected-account-cookie.ts` is **deleted**. It already
+  carried its own copy of the `path` / `max-age` / `samesite` policy, so this plan's
+  "modelled on `persistSelectedAccount`" would have been a third copy of a policy
+  that should be decided once.
+- `ThemeController` syncs the attribute **only**; the cookie is written by
+  `AccountManagement`, for the reason below.
+
+### What PR 11a turned up
+
+- **`/login` mounts `ThemedPage` with a hardcoded `DEFAULT_THEME_ID`.** So writing
+  the cookie from `ThemeController`, as this plan called for, resets a returning
+  user's theme to sunshine every time they pass the login page — handing them a
+  wrong-coloured shell on the navigation right after signing in, which is the exact
+  flash 11a exists to remove. The writer has to sit where an account exists.
+  `AccountManagement` is rendered by `Home` and `Method` and not by `SignIn`, so the
+  tree already names that set: no flag, hook or null-rendering component is needed
+  to restate it. A `belongsToAccount` prop, a `RememberTheme` component and a
+  `useRememberTheme` hook were each built and each deleted on the way to that.
+- **React 19 takes string children on `<style>` and `<script>`** — no
+  `dangerouslySetInnerHTML`. Both are raw-text elements, so the script's `&&` and
+  `>=0` survive unescaped. Worth confirming in the served HTML rather than assuming:
+  entity-escaping either one would have broken the script silently.
+- **The CSS ships twice** — once as markup, once serialized into the RSC flight
+  payload, which is unavoidable for anything rendered in the React tree. Measured on
+  `/login` at **9,360 bytes raw, 1,058 gzipped**, and accepted. Curating the subset
+  the shell happens to need would cut it to ~120 bytes and reintroduce precisely the
+  drift the generated sweep exists to prevent.
+- **Theme parity landed first after all** (`ec76b64`, #110), so the generator was
+  written once against the final shape and the ordering question below answered
+  itself. `ThemeTokens` now carries five groups.
+- **`next build` is the cheap check that the layout stayed static.** `/login` still
+  reports `○ (Static)`; a `cookies()` call anywhere in the layout flips it and
+  silently costs PR 11 its prefetch, with nothing else to show for it.
+- **A shared `writeCookie` makes "was a cookie written" ambiguous.**
+  `Home.managing-accounts` asserted `not.toHaveBeenCalled()` as a proxy for "no
+  account was selected"; once the theme write went through the same function, that
+  had to name its cookie. Note also that jest never covered the real writer at all —
+  both `Home` suites mock the module wholesale — so the consolidation was checked
+  against the browser e2e and the emitted cookie string instead of the green suite.
+- **jsdom defines `document` non-configurably**, so the server guard cannot be
+  tested by stubbing it away. It needs its own file at `@jest-environment node`, and
+  that file has to assert `document` is undefined first, or it passes under jsdom
+  for the wrong reason and proves nothing.
+
+**It overlapped `.plans/2026-09-23-theme-parity.md`**, which was unimplemented when
+this section was written. That plan pulled the 18 literal gradient strings into
+structured stops and gave the nine unowned `rgba()` component colours a home — the
+shape a generator walks. It merged first, so the generator was written once.
 
 ## PR 11 — the screens the nav points at arrive in silence
 
@@ -821,6 +866,19 @@ from the menu; confining it to the two routed pages needs a wrapper. The lean is
 for, and it is also what keeps `loading.tsx` renderable with no `ThemeProvider`
 above it — worth a unit test of its own, because the failure mode is a production
 TypeError that no themed test would ever see.
+
+**Open against `/login`, and this PR has to answer it.** PR 11a's boot script is
+route-agnostic: it sets `data-theme` from the cookie on every route, and `/login`
+then renders `ThemedPage` with a hardcoded `DEFAULT_THEME_ID`, so `ThemeController`
+snaps the attribute back on hydration. Harmless while nothing reads the variables —
+which is the whole of 11a — but this shell reads them in exactly the pre-hydration
+window the script controls. A returning user landing on `/login` after signing out
+would see their old account's colours in the shell before it settles to the
+default. Raised in review of 11a and deliberately left there rather than fixed
+blind: `/login` is `○ (Static)`, so it is prerendered and may never show a shell at
+all. **Check whether it does before adding a route test to the script** — a
+`location.pathname` branch in a theme file is worth having only if the flash is
+real.
 
 **Two assertions carry this PR, and both are easy to write vacuously.**
 
