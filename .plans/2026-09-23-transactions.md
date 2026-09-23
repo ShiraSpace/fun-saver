@@ -29,7 +29,9 @@ before any PR.
 
 Spec and plan merged as #119. **PR 1 merged as #122** — the chart-line colours
 are on `main`, so PR 7 now waits only on PR 6. **PR 2 merged as #125** — every
-store lists an account's whole ledger, oldest first; PR 3 is next in lane B.
+store lists an account's whole ledger, oldest first. **PR 3 merged as #129** —
+one read settles interest and hands back each child's wallets and history, so
+lane B is done and PR 6 now waits only on PR 4.
 
 ### Lanes — who can run in parallel
 
@@ -40,7 +42,7 @@ stack was rebased twice because branches were cut from each other instead.
 
 | Wave | Lane A | Lane B | Lane C | Starts when |
 | --- | --- | --- | --- | --- |
-| 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 — store, then `settledLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
+| 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 ✓ #129 — store, then `settledLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
 | 2 | PR 6 — route, shell, headline | — | — | PRs 3 and 4 merged |
 | 3 | PR 7 — chart | PR 8 — list | — | PR 6 merged; PR 7 also needs PR 1, PR 8 needs PR 5 |
 | 4 | PR 9 — tab and browser suite | — | — | PRs 7 and 8 merged |
@@ -456,12 +458,14 @@ after confirming which Neon branch `DATABASE_URL` points at.
 ## PR 3 — one read serves both the wallets and the ledger
 
 Branch `refactor/account-ledgers`. Spec: "The shared read", delivery order 2.
+**Merged as #129 on 2026-09-23.**
 
-What ships differs from the steps below: each wallet is settled and derived in
+What shipped differs from the steps below: each wallet is settled and derived in
 one pass (`payWalletInterest`, gathered by `payOwedInterest`), so the per-wallet
 split happens once; the names say what the code does; and the tests reuse the
-shared fixtures under names in domain language. The code on the branch is the
-record.
+shared fixtures under names in domain language. The history comes back oldest
+first, the interest just paid sorted in, so the first visit reads like every
+later one. The code on `main` is the record.
 
 `/` and `/method` keep their behaviour; this PR changes nothing a parent sees.
 
