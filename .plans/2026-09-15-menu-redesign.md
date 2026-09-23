@@ -876,11 +876,18 @@ accessibility behaviour rather than restating it. A 6px rise, a 0.985 settle and
 50ms-per-card stagger were all mocked; the stagger lands its last card 250ms after
 its first, making the entrance as long as the wait that preceded it.
 
-Open when the code is written: `Screen` is rendered by `Account`, `Method`,
-`AccountForm`, `EmptyState` and `SignIn`. Putting the fade there is one line and
-gives every screen the same entrance, including the create and edit forms that open
-from the menu; confining it to the two routed pages needs a wrapper. The lean is
-`Screen`.
+**Where the fade sits — decided 2026-09-23, from `mockups/loading-open-questions.html`:
+on `Screen`'s children, header included (option ב).** Not on `Screen` itself: it
+carries the gradient and `body` has none, so fading `Screen` fades the background
+too and flashes white on every navigation. `& > *` keeps the gradient solid and
+matches `loading-states.html`, which fades `.bar` and `.body > *`. Accepted with it:
+the fade also runs on a cold document load and when the create and edit forms open —
+a CSS animation cannot tell a soft navigation from a first paint.
+
+**Under reduced motion the bar still slides (option ד), and the fade does not.** The
+fade goes through `entrance()` and so compiles to `animation: none`; the bar does
+**not** go through `entrance()`, and carries no reduced-motion rule of its own. A
+frozen 42% stub reads as stuck, and a card with nothing on it says nothing happened.
 
 **The shell reads `var(--fs-…)`, never `theme.colors`.** That is what PR 11a is
 for, and it is also what keeps `loading.tsx` renderable with no `ThemeProvider`
@@ -922,6 +929,32 @@ being invisible, and prefetching only fetches the static shell, not the data. Cu
 the ~250ms means collapsing the two sequential store calls or caching them — a
 data-layer change this epic has otherwise avoided, and the reason this is its own PR
 rather than a line in PR 9.
+
+### PR 11 — build
+
+- `src/app/loading.tsx` — the default export Next requires, rendering `<LoadingShell />`
+  and nothing else. Static: no `cookies()`, no data. `next build` must still report
+  `/login` as `○ (Static)`.
+- `src/components/LoadingShell/` — its own styled parts, **not** `Screen` or `Bar`.
+  Moving those two onto `var()` would repaint `/login` in the cookie's theme on a cold
+  load until `ThemeController` snaps it back — the flash the section above says cannot
+  reach the screen. It reuses what carries no theme: `Column`, `SCREEN_LAYOUT`,
+  `HEADER_LAYOUT` (padding, radius, `min-height`), and `MENU_ICON.buttonSize` for the
+  burger slot, the real 44px ceiling. Placeholders are `aria-hidden`; the shell is a
+  `role="status"` with a name.
+- `themeVar(group, name)` beside `everyThemeAsCss()` in `theme-at-first-paint.ts`,
+  sharing `TOKEN_GROUPS`, so a misspelt token is a `tsc` error rather than a
+  transparent card. The shell is the first reader of the custom properties.
+- `fadeIn` moves into `motion.ts`; `OverviewCard.styles.ts` and `Title.styles.ts` each
+  carry a copy today.
+- Tests — unit: the shell renders under plain `@testing-library/react` with no
+  provider; `themeVar` names what `everyThemeAsCss` emits. e2e: the prefetch is in
+  flight before the tap (watched failing against a build without `loading.tsx`); under
+  a held navigation `_rsc` response — prefetches pass, identified by
+  `next-router-prefetch` — the shell is visible, `receivesTapAt` its centre, and is
+  gone once the page lands, both ways; it paints midnight-blue, not the default; its
+  card's box equals the real header's; `Screen`'s children animate under full motion
+  and not under reduced, while the bar animates under both.
 
 ## Notes / risks
 
