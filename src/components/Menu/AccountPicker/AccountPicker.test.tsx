@@ -21,7 +21,7 @@ function StatefulPicker(): JSX.Element {
       isOpen={isOpen}
       onToggle={setIsOpen}
       onSelect={(): void => {}}
-      onAdd={(): void => {}}
+      onLeaveMenu={(): void => {}}
     />
   );
 }

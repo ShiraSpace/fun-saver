@@ -28,11 +28,6 @@ export function AccountControls({
     onLeaveMenu();
   };
 
-  const handleAddAccount = (): void => {
-    onLeaveMenu();
-    setMode(APP_MODE.creatingAccount);
-  };
-
   const handleEditAccount = (): void => {
     onLeaveMenu();
     setMode(APP_MODE.editingAccount);
@@ -46,7 +41,7 @@ export function AccountControls({
         isOpen={isAccountListOpen}
         onToggle={onAccountListToggle}
         onSelect={handleSelectAccount}
-        onAdd={handleAddAccount}
+        onLeaveMenu={onLeaveMenu}
       />
       <EditAccountButton
         accountName={currentAccount.name}

@@ -14,7 +14,7 @@ interface AccountPickerProps {
   isOpen: boolean;
   onToggle: (isOpen: boolean) => void;
   onSelect: (id: string) => void;
-  onAdd: () => void;
+  onLeaveMenu: () => void;
 }
 
 export function AccountPicker({
@@ -23,7 +23,7 @@ export function AccountPicker({
   isOpen,
   onToggle,
   onSelect,
-  onAdd,
+  onLeaveMenu,
 }: AccountPickerProps): JSX.Element {
   const pickerRef = useRef<HTMLDivElement>(null);
   const close = useCallback((): void => onToggle(false), [onToggle]);
@@ -42,7 +42,7 @@ export function AccountPicker({
           accounts={accounts}
           selectedAccountId={currentAccount.id}
           onSelect={onSelect}
-          onAdd={onAdd}
+          onLeaveMenu={onLeaveMenu}
         />
       )}
     </Picker>
