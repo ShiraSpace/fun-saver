@@ -6,32 +6,33 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-23 (plan PR 11 merged as #94; PR 7 next, then 12 and 13)
+## Progress — updated 2026-09-23 (PR 7 open as #100; then 12, 13 and 14)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
-| Plan  | GitHub                                                 | Branch                             | Status                                                  |
-| ----- | ------------------------------------------------------ | ---------------------------------- | ------------------------------------------------------- |
-| PR 1  | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                              |
-| —     | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                           |
-| —     | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                           |
-| PR 2  | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged**                                              |
-| —     | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                           |
-| PR 3a | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                                  |
-| PR 3b | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                                  |
-| PR 4  | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                                  |
-| PR 5  | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                              |
-| PR 8  | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                                  |
-| PR 8b | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff    |
-| PR 9  | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **merged** — `f947725`                                  |
-| PR 6  | [#86](https://github.com/ShiraSpace/fun-saver/pull/86) | `feat/auth-proxy`                  | **merged** — `7312359`, plus `63cc6cc` straight to main |
-| PR 10 | [#87](https://github.com/ShiraSpace/fun-saver/pull/87) | `feat/guard-transaction-routes`    | **merged** — `f1a283d`                                  |
-| PR 11 | [#94](https://github.com/ShiraSpace/fun-saver/pull/94) | `refactor/themed-page-shell`       | **merged** — `c36afa1`                                  |
-| PR 7  | —                                                      | `feat/profile-section`             | in progress                                             |
-| PR 12 | —                                                      | `fix/empty-state-sign-out`         | not started — found during PR 7                         |
-| PR 13 | —                                                      | `refactor/required-context`        | not started — found during PR 7                         |
+| Plan  | GitHub                                                   | Branch                             | Status                                                  |
+| ----- | -------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------- |
+| PR 1  | [#28](https://github.com/ShiraSpace/fun-saver/pull/28)   | `feat/members-schema`              | **merged**                                              |
+| —     | [#29](https://github.com/ShiraSpace/fun-saver/pull/29)   | test-utils rename                  | **merged** (not in this plan)                           |
+| —     | [#30](https://github.com/ShiraSpace/fun-saver/pull/30)   | `feat/split-stores-by-entity`      | **merged** (not in this plan)                           |
+| PR 2  | [#32](https://github.com/ShiraSpace/fun-saver/pull/32)   | `feat/user-store-methods`          | **merged**                                              |
+| —     | [#33](https://github.com/ShiraSpace/fun-saver/pull/33)   | `refactor/user-identity-predicate` | **merged** (not in this plan)                           |
+| PR 3a | [#41](https://github.com/ShiraSpace/fun-saver/pull/41)   | `feat/account-user-reads`          | **merged** — `ca1a505`                                  |
+| PR 3b | [#49](https://github.com/ShiraSpace/fun-saver/pull/49)   | `feat/account-user-writes`         | **merged** — `41319f8`                                  |
+| PR 4  | [#53](https://github.com/ShiraSpace/fun-saver/pull/53)   | `feat/google-auth`                 | **merged** — `5d02045`                                  |
+| PR 5  | [#55](https://github.com/ShiraSpace/fun-saver/pull/55)   | `feat/login-page`                  | **merged**                                              |
+| PR 8  | [#61](https://github.com/ShiraSpace/fun-saver/pull/61)   | `feat/assign-owner`                | **merged** — `b93e218`                                  |
+| PR 8b | [#74](https://github.com/ShiraSpace/fun-saver/pull/74)   | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff    |
+| PR 9  | [#81](https://github.com/ShiraSpace/fun-saver/pull/81)   | `feat/scope-accounts-to-user`      | **merged** — `f947725`                                  |
+| PR 6  | [#86](https://github.com/ShiraSpace/fun-saver/pull/86)   | `feat/auth-proxy`                  | **merged** — `7312359`, plus `63cc6cc` straight to main |
+| PR 10 | [#87](https://github.com/ShiraSpace/fun-saver/pull/87)   | `feat/guard-transaction-routes`    | **merged** — `f1a283d`                                  |
+| PR 11 | [#94](https://github.com/ShiraSpace/fun-saver/pull/94)   | `refactor/themed-page-shell`       | **merged** — `c36afa1`                                  |
+| PR 7  | [#100](https://github.com/ShiraSpace/fun-saver/pull/100) | `feat/profile-section`             | **open** — reviewed, fixes pushed                       |
+| PR 12 | —                                                        | `fix/empty-state-sign-out`         | not started — found during PR 7                         |
+| PR 13 | —                                                        | `refactor/required-context`        | not started — found during PR 7                         |
+| PR 14 | —                                                        | `fix/menu-state-on-close`          | not started — found reviewing PR 7                      |
 
-### PR 11 is merged; PR 7 is in flight, and it found two more
+### PR 7 is open as #100, and review turned up more than it fixed
 
 PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
 read through `listAccountsForUser` with the id from the session. A stranger who
@@ -51,9 +52,19 @@ proxy's matcher, so PR 6 did not narrow that hole by a line. All four now pass
 through one wrapper that answers 401 without a session and 403 without an editing
 membership. PR 7 is independent and can land at any time.
 
-**PR 7 turned up two follow-ups**, both recorded below: a signed-in stranger
-has no way to sign out (PR 12), and four contexts hand-roll the same
-required-context boilerplate (PR 13). Neither blocks PR 7.
+**PR 7 turned up three follow-ups**, all recorded below: a signed-in stranger
+has no way to sign out (PR 12), four contexts hand-roll the same
+required-context boilerplate (PR 13), and menu state survives the menu closing
+(PR 14). None blocks PR 7.
+
+**Review of #100 found a hole this plan did not anticipate: the closed menu was
+still reachable by keyboard.** The panel is always mounted and hidden with
+`opacity` and `pointer-events`, which stops the mouse and not the keyboard — so
+every control in it sat in the tab order of both pages. That was harmless while
+the menu held only a picker and an edit button. PR 7 put **sign out** behind it,
+which is what turned a latent oddity into a way to end the session by pressing
+Enter at nothing. Fixed with `inert` on the panel. Worth remembering the shape:
+a pre-existing structure became a defect because of what was added to it.
 
 **PR 11 merged as #94 (`c36afa1`).** One `ThemedPage` in `src/theme/` holds the
 shell the three pages were each writing out. It also corrected this plan: the
@@ -820,13 +831,35 @@ implementation. The browser suites passing unchanged is the other half.
 
 Ships: the app goes private.
 
-### PR 7 — `feat/profile-section`
+### PR 7 — `feat/profile-section` — OPEN (#100)
 
 - `src/components/Menu/ProfileSection/` — signed-in name + sign out.
 
-Tests: component test — renders the name, calls `signOut`.
-
 Depends on: PR 4. Independent of 5/6 — can land any time after 4.
+
+**The session already carried everything the strip shows.** `signedInUserId()`
+called `auth()` and discarded all but the id, so name, address and photo cost no
+extra query and no extra call. It is now `signedInUser()`, the only session
+accessor; the API routes take `.id` from it.
+
+**Two invisible things are load-bearing, and both were found by running the app
+rather than reading it:**
+
+- The address carries `dir="ltr"` as an **attribute**, not CSS. `stylis-plugin-rtl`
+  mirrors every stylesheet, so `direction: ltr` written in a styled component is
+  emitted as `rtl` — confirmed by reading the emitted rule. **Any `direction` in
+  any `.styles.ts` in this repo is reversed.** Without it a long address
+  truncated its local part and kept the domain.
+- `referrerPolicy="no-referrer"` on the photo: `lh3.googleusercontent.com`
+  answers 403 to a request carrying a `Referer`, which renders as a broken
+  image. No `images.remotePatterns` is needed — `unoptimized` bypasses the host
+  check, measured against a remote image that actually loads.
+
+**Tests: the plan said "renders the name, calls `signOut`". That was a third of
+it.** The browser suites can never reach the photo — the e2e session cookie
+carries no `picture` — so `ProfilePhoto`'s four cases are its only cover, and
+the `referrerPolicy` case is the only thing standing between a working avatar
+and a broken one.
 
 **This section predates #88 and #93 and its one placement instruction is now
 stale.** It said "mirroring `AppearanceSection`", but #88 regrouped the menu into
@@ -1174,6 +1207,22 @@ worse than the duplication it removes.
 
 Depends on: nothing.
 
+### PR 14 — `fix/menu-state-on-close`
+
+The menu panel never unmounts, so state inside it survives the menu closing.
+Found reviewing PR 7: fail a sign-out offline, close the menu, come back online
+and reopen it, and the red failure message is still there with nothing in
+flight. `ProfilePhoto` has the same shape — once a photo has failed to load, the
+neutral mark sticks even if the URL changes.
+
+Neither is reachable by accident and both need a failure first, which is why
+they were left out of PR 7 rather than bolted on at review time. The fix is one
+decision, not two: either the panel unmounts when closed — it does not today,
+because the open/close transition animates it — or the menu's open state reaches
+the pieces that hold state, and they reset on close.
+
+Depends on: PR 7.
+
 ## Architecture touch points
 
 | Layer                                               | Change                                                                      | PR      |
@@ -1193,6 +1242,8 @@ Depends on: nothing.
 | `src/app/login/page.tsx` + `src/components/SignIn/` | **new** — one Google button, RTL, themed                                    | 5       |
 | `src/proxy.ts`                                      | **new** — no session cookie → `/login`; `/login` and `/api` off the matcher | 6       |
 | `src/components/Menu/ProfileSection/`               | **new** — name + sign out                                                   | 7       |
+| `src/app/SignedInProviders.tsx`                     | **new** — the providers every signed-in page gets; add new ones here        | 7       |
+| `src/test-utils/render.tsx`                         | `renderWithUser` beside `renderWithAccounts`, both opt-in                   | 7       |
 | `src/db/migration-target.ts`                        | **new** — shared `--dev` / `--test` target resolution                       | 8       |
 | `src/db/assign-owner.ts`                            | **new** — adopt orphan accounts as `owner`; deleted again in 9              | 8       |
 | `src/app/signed-in-accounts.ts`                     | **new** — session + cookie + scoped list + theme, shared by both pages      | 9       |

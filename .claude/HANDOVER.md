@@ -91,7 +91,32 @@ plan and were wrong.
   `ThemeController` on `DEFAULT_THEME_ID`, which is the very thing these suites
   exist to tell apart.
 
-## PR 7 is in flight, and it found two follow-ups
+## PR 7 is open as #100, and three traps came out of it
+
+**`direction` in a styled component is reversed.** `EmotionStyleRegistry` runs
+`stylis-plugin-rtl`, which mirrors every stylesheet, so `direction: ltr` is
+emitted as `rtl`. Confirmed by reading the emitted rule against the source.
+Use the HTML `dir` attribute for content whose direction differs from the page;
+do not reach for the stylesheet.
+
+**A Google avatar needs `referrerPolicy="no-referrer"`.**
+`lh3.googleusercontent.com` answers 403 to a request carrying a `Referer`, and
+it renders as a broken image. It does **not** need `images.remotePatterns` —
+`unoptimized` bypasses the host check, measured against a remote image that
+actually loads, not inferred.
+
+**The closed menu was reachable by keyboard.** The panel is always mounted and
+hidden with `opacity` and `pointer-events`, which stops the mouse and not the
+keyboard, so every control in it sat in the tab order of both pages. Harmless
+while the menu held a picker and an edit button; not harmless once it held sign
+out. `inert` on the panel closes it. The lesson generalises: a pre-existing
+structure can become a defect because of what is added to it.
+
+**Follow-ups found, all in the plan:** a signed-in stranger cannot sign out
+(PR 12), four contexts hand-roll the same required-context boilerplate (PR 13),
+and menu state survives the menu closing (PR 14).
+
+## The earlier follow-ups, still open
 
 - **A signed-in stranger cannot sign out (plan PR 12).** No `account_users`
   rows → `EmptyState` → no `Header` → no menu → no sign-out. Only exit is
