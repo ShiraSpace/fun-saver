@@ -114,9 +114,11 @@ sanctioned place to put styles and nothing was watching them.
    the group to get one. That is the accepted trade, not an oversight.
 3. **Six steps, not seventeen values.** `.25`/`.28`/`.22` collapse to `deep`,
    `.06`/`.05` to `faint`, and the three white films to `film`. This is the only
-   thing in the pass that changes how anything looks — four surfaces move:
-   AmountPad keys `.05→.06`, popover `.22→.25`, close button film `.4→.25`,
-   Method eyebrow `.2→.25`.
+   thing in the pass that changes how anything looks — **five** surfaces move:
+   AmountPad keys `.05→.06`, popover `.22→.25`, house badge `.28→.25`, close
+   button film `.4→.25`, Method eyebrow `.2→.25`. The badge was missed on the
+   first count, which would have had a reviewer chasing a correct change as a
+   regression.
 4. **All four in one PR**, so the contract changes once.
 
 ## Files
@@ -148,7 +150,7 @@ sanctioned place to put styles and nothing was watching them.
 - **Parity is a compile error, not an assertion.** Every theme is an object
   literal typed `ThemeTokens`, so a missing stop or shadow fails `tsc`. Sunshine
   is held by `satisfies` since #104. No test needs to restate that.
-- **Nothing should look different** except the four surfaces decision 3 names,
+- **Nothing should look different** except the five surfaces decision 3 names,
   so any other visual diff in the screenshots is a bug in this pass. Two values
   invented mid-pass — a teal scrim for jungle, raised alphas for midnight —
   were reverted for exactly this reason: they would have made the screenshots
