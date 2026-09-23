@@ -1,12 +1,6 @@
-import { JSX } from 'react';
 import { render, screen } from '@testing-library/react';
+import { ThemeDisplay, THEME_ID_TESTID } from '@/test-utils/theme-probe';
 import { ThemedPage } from '../ThemedPage';
-import { useThemeId } from '../ThemeController';
-
-function ThemeDisplay(): JSX.Element {
-  const id = useThemeId();
-  return <span data-testid="theme-id">{id}</span>;
-}
 
 describe('ThemedPage', () => {
   beforeEach(() => {
@@ -19,11 +13,13 @@ describe('ThemedPage', () => {
 
   it('renders its children inside the page main landmark', () => {
     expect(screen.getByRole('main')).toContainElement(
-      screen.getByTestId('theme-id')
+      screen.getByTestId(THEME_ID_TESTID)
     );
   });
 
   it('hands the given theme id to the controller', () => {
-    expect(screen.getByTestId('theme-id')).toHaveTextContent('midnight-blue');
+    expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(
+      'midnight-blue'
+    );
   });
 });

@@ -1,12 +1,8 @@
 import { JSX } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { ThemeController, useThemeId, useSetThemeId } from '../ThemeController';
+import { ThemeDisplay, THEME_ID_TESTID } from '@/test-utils/theme-probe';
+import { ThemeController, useSetThemeId } from '../ThemeController';
 import type { ThemeId } from '../registry';
-
-function ThemeDisplay(): JSX.Element {
-  const id = useThemeId();
-  return <span data-testid="theme-id">{id}</span>;
-}
 
 function ThemeSwitcher({ targetId }: { targetId: ThemeId }): JSX.Element {
   const set = useSetThemeId();
@@ -20,7 +16,9 @@ describe('ThemeController', () => {
         <ThemeDisplay />
       </ThemeController>
     );
-    expect(screen.getByTestId('theme-id')).toHaveTextContent('jungle-quest');
+    expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(
+      'jungle-quest'
+    );
   });
 
   it('updates the active theme id on set', () => {
@@ -31,6 +29,8 @@ describe('ThemeController', () => {
       </ThemeController>
     );
     fireEvent.click(screen.getByRole('button', { name: 'switch' }));
-    expect(screen.getByTestId('theme-id')).toHaveTextContent('midnight-blue');
+    expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(
+      'midnight-blue'
+    );
   });
 });
