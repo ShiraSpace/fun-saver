@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { type BoundingBox } from 'puppeteer';
 import { mockAccount } from '@/test-utils/fixtures';
 import { COLORS } from '@/theme/palette';
-import { hexToRgb } from './test-utils/css-color';
+import { hexToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
 const bottomOf = (box: BoundingBox): number => box.y + box.height;

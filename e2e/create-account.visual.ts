@@ -4,7 +4,7 @@ import { GRADIENTS } from '@/theme/gradients';
 import { COLORS } from '@/theme/palette';
 import { TYPE_SCALE } from '@/theme/typography';
 import { SCREEN_LAYOUT } from '@/components/Screen/constants';
-import { gradientToRgb, hexToRgb } from './test-utils/css-color';
+import { gradientToRgb, hexToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
 describe('create account', () => {

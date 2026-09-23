@@ -16,7 +16,7 @@ export const Entry = styled.li`
 export const Citation = styled.a`
   display: block;
   font-size: ${({ theme }): number => theme.typography.label}px;
-  color: ${({ theme }): string => theme.colors.primary};
+  color: ${({ theme }): string => theme.colors.primaryText};
   font-weight: 600;
   text-align: end;
   word-break: break-word;

@@ -4,13 +4,16 @@ import type { ThemeTokens } from '../theme-tokens';
 export const midnightBlue: ThemeTokens = {
   colors: {
     primary: '#3B82F6',
+    primaryText: '#3B82F6',
     primaryGradientTop: '#60A5FA',
-    primaryShadow: '#1E40AF',
-    primaryGlow: 'rgba(59, 130, 246, 0.40)',
+    primaryShadow: '#152A63',
+    primaryGlow: 'rgba(29, 78, 216, 0.40)',
     textOnPrimary: '#FFFFFF',
     surface: '#141B24',
     textMuted: '#8A96A8',
     textStrong: '#ECF1F8',
+    textOnPot: '#ECF1F8',
+    labelScrim: 'transparent',
     screenGradientStart: '#0A0E14',
     screenGradientMid: '#0F1620',
     screenGradientEnd: '#122036',
@@ -36,7 +39,7 @@ export const midnightBlue: ThemeTokens = {
   },
   gradients: {
     screen: 'linear-gradient(160deg, #0A0E14, #0F1620, #122036)',
-    actionButton: 'linear-gradient(#60A5FA, #3B82F6)',
+    actionButton: 'linear-gradient(#1D4ED8, #1E3A8A)',
     sunnyTile: 'linear-gradient(135deg, #1E40AF, #172554)',
     potSavings: 'linear-gradient(135deg, #1E40AF, #172554)',
     potSpending: 'linear-gradient(135deg, #2563EB, #1E40AF)',

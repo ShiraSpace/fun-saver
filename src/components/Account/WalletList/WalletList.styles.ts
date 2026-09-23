@@ -8,10 +8,12 @@ export const List = styled.div`
 `;
 
 export const Label = styled.span`
+  align-self: flex-start;
   text-align: start;
-  padding-inline: ${WALLET_LIST_STYLE.labelPaddingX}px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: ${({ theme }): string => theme.colors.labelScrim};
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 700;
   color: ${({ theme }): string => theme.colors.textOnPrimary};
-  opacity: ${WALLET_LIST_STYLE.labelOpacity};
 `;

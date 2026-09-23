@@ -106,3 +106,44 @@ directly.
   drawer, the form and /method, per `pr-screenshots`.
 - **Not in scope:** the emoji on the pot tiles. WCAG scores text, and the wallet
   name sits beside the tile on `surface`, already passing.
+
+## What the review found (2026-09-23, PR #98)
+
+The pass shipped as specified. Review re-measured it and found the **sweep was
+not complete**: the table under «What fails today» reads as every failing pair
+in the app, and it is not. Three more fail, all outside the six:
+
+| surface | where | sunshine | jungle | midnight |
+| --- | --- | --- | --- | --- |
+| white on the screen gradient | `SignIn` — `Tagline`, `Fineprint`, `Wordmark` | **1.60** | n/a | n/a |
+| `alert` on `alertSoftBg` | `WithdrawMessage`, the overdraw chip | **3.43** | **3.43** | 5.84 |
+| `accent` on surface | `DrawerError`, every drawer submit failure | **3.55** | **3.04** | 4.71 |
+
+`SignIn` is the sharper miss: התחברות renders sunshine only, and its tagline is
+`textOnPrimary` on the screen gradient — the same pair the plan fixes with
+`labelScrim` on בית and the account form, on a third screen nobody listed.
+
+Two of the pass's own numbers also need correcting:
+
+- **`textMuted` was scored against `surface` alone.** `#786A92` reaches 4.91
+  there and 4.62 on `softBg`, but `EditAccountButton` puts it on
+  `accountScopeBg`, where it lands at **4.32**. Jungle's untouched `#5C7A6E` is
+  **4.19** on the same tint and **4.31** on `softBg`.
+- **The screen-gradient row reads 1.53/2.04; the mockup's own prose says
+  1.60/2.15.** 1.60 and 2.15 are correct — white on `#FFC34D` and on `#90BE6D`.
+  The scrim decision is unaffected; both are far under 4.5.
+
+And one caveat to decision 1. `primary` stays for "borders and rings, which need
+3:1" — true of `TalkBubble`'s outline on `surface`, not of `AvatarPicker`'s ring,
+which is a `box-shadow` landing on the **screen gradient**. Jungle's `#2A9D8F` is
+that gradient's own start colour: **1.00**. The white `selectedBorder` is what
+carries selection there, so nothing is unreadable — but the ring is decoration on
+jungle, not a 3:1 indicator.
+
+`StatStrip`'s gain label still carries `labelOpacity: 0.85` — the pattern
+decision 3 removes from `WalletList`. Composited, 4.46 becomes **3.44** on
+sunshine and 4.33 becomes **3.33** on jungle.
+
+**Not scoped here.** Every item above is a separate pass; this plan's six
+surfaces are done and merged as drawn. The follow-up carries them:
+`.plans/2026-09-23-aa-contrast-pass-2.md`.

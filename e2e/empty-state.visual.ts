@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { GRADIENTS } from '@/theme/gradients';
-import { gradientToRgb } from './test-utils/css-color';
+import { gradientToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
 describe('empty state', () => {

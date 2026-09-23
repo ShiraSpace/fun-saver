@@ -1,4 +1,9 @@
-import { DEFAULT_THEME_ID, getThemeTokens, resolveThemeId } from '../registry';
+import {
+  DEFAULT_THEME_ID,
+  THEMES,
+  getThemeTokens,
+  resolveThemeId,
+} from '../registry';
 
 describe('theme registry', () => {
   it('resolves the default theme when no id is given', () => {
@@ -38,6 +43,46 @@ describe('theme registry', () => {
     for (const key of ['potSavings', 'potSpending', 'potGood'] as const) {
       expect(gradients[key]).toContain('linear-gradient');
     }
+  });
+
+  it('gives every theme a colour for each contrast token', () => {
+    const contrastTokens = Object.values(THEMES).map(({ colors }) => [
+      colors.primaryText,
+      colors.textOnPot,
+      colors.labelScrim,
+    ]);
+
+    expect(contrastTokens).toEqual([
+      ['#6B2C8E', '#2B1235', 'rgba(0, 0, 0, 0.45)'],
+      ['#1B7A6B', '#2B1800', 'rgba(0, 0, 0, 0.35)'],
+      ['#3B82F6', '#ECF1F8', 'transparent'],
+    ]);
+  });
+
+  it('drops the button shadow below the button on every theme', () => {
+    const buttonTokens = Object.values(THEMES).map(({ colors, gradients }) => [
+      gradients.actionButton,
+      colors.primaryShadow,
+      colors.primaryGlow,
+    ]);
+
+    expect(buttonTokens).toEqual([
+      [
+        'linear-gradient(#8A3AAE, #6B2C8E)',
+        '#4A1A6E',
+        'rgba(107, 44, 142, 0.45)',
+      ],
+      [
+        'linear-gradient(#1B7A6B, #12564B)',
+        '#0B3A33',
+        'rgba(27, 122, 107, 0.45)',
+      ],
+      [
+        'linear-gradient(#1D4ED8, #1E3A8A)',
+        '#152A63',
+        'rgba(29, 78, 216, 0.40)',
+      ],
+    ]);
   });
 
   it('resolves jungle-quest with full tokens', () => {

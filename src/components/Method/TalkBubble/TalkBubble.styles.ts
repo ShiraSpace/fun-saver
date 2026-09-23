@@ -31,7 +31,7 @@ export const Label = styled.div`
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 700;
   letter-spacing: 0.07em;
-  color: ${({ theme }): string => theme.colors.primary};
+  color: ${({ theme }): string => theme.colors.primaryText};
 `;
 
 export const Line = styled.p`
