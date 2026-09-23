@@ -101,6 +101,14 @@ td .plan a { color:#78839a; font-weight:400; }
       </td>
     </tr>
     <tr>
+      <td class="what">צללי מידנייט</td>
+      <td class="files"><a href="midnight-shadows.html">midnight-shadows</a> <span class="badge chosen">✓ נבחר</span></td>
+      <td>
+        <span class="why">שלושה סולמות אלפא על צבעי מידנייט האמיתיים. <b>«היום»</b> — <code>.06 · .12 · .16 · .25</code> — נבחר: הערכה עם הטענה החזקה ביותר לצללים משלה נקראה הכי טוב דווקא על הערכים המשותפים, ולכן <code>SHADOW_SCALE</code> נשאר אחד לכל הערכות. שוחרר ב-#110.</span>
+        <span class="plan"><a href="../.plans/2026-09-23-theme-parity.md">.plans/2026-09-23-theme-parity.md</a></span>
+      </td>
+    </tr>
+    <tr>
       <td class="what">ניגודיות AA</td>
       <td class="files"><a href="contrast.html">contrast</a> <span class="badge chosen">✓ נבחר</span></td>
       <td>
@@ -162,8 +170,8 @@ td .plan a { color:#78839a; font-weight:400; }
       <td class="what">בורר הערכות</td>
       <td class="files"><a href="theme-swatches.html">theme-swatches</a></td>
       <td>
-        <span class="badge pending">טרם מומש</span>
-        <span class="why">שלושת הריבועים בשורת «מראה» כתובים היום ביד ב-<code>AppearanceSection/constants.ts</code> ולא נגזרים מהערכות. הוחלט, <b>עוד לא נכתב</b>.</span>
+        <span class="badge chosen">✓ נבנה</span>
+        <span class="why">שלושת הריבועים בשורת «מראה» נגזרים מהערכות עצמן במקום להיות גרדיאנטים כתובים ביד. מידנייט מציג את הגרדיאנט האמיתי שלו, גם כשהוא כמעט שחור — זה מה שהערכה באמת נראית. שוחרר ב-#110.</span>
         <span class="plan"><a href="../.plans/2026-09-23-theme-parity.md">.plans/2026-09-23-theme-parity.md</a></span>
       </td>
     </tr>
@@ -179,10 +187,10 @@ td .plan a { color:#78839a; font-weight:400; }
 </table>
 
 <p class="note">
-  <b>בדיקות.</b> שני קבצי בדיקה רצים בלי תלויות:
-  <code>node mockups/account-summary/check-slots.js</code> מוודא ששני עמודי סיכום החשבון ממלאים את כל המשבצות
-  שלהם ושה-JS המשותף שורד את החסרות, ו-<code>node mockups/check-contrast.js</code> מוודא ש-<code>contrast.html</code>
-  נפתח על מה שנבחר בפועל ולא על אפשרות שנדחתה.
+  <b>בדיקות.</b> <code>node mockups/check.js</code> — בלי תלויות, ובלי להתקין דבר. הוא מוודא שכל עמוד סגור
+  כראוי ושום CSS לא דלף מחוץ ל-<code>&lt;style&gt;</code>, שכל קישור מקומי מצביע על קובץ קיים, <b>שהטבלה למעלה
+  מזכירה כל מוקאפ בתיקייה</b>, ששני עמודי סיכום החשבון ממלאים את משבצותיהם וה-JS המשותף שורד את החסרות,
+  ו-<code>contrast.html</code> נפתח על מה שנבחר בפועל ולא על אפשרות שנדחתה.
 </p>
 
 </body>
