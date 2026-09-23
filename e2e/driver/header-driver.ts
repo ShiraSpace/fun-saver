@@ -58,6 +58,14 @@ export class HeaderDriver {
     return this.session.computedStyle(HEADER_TEST_IDS.bar, 'box-shadow');
   }
 
+  tapHomeLink(): Promise<void> {
+    return this.session.click(HEADER_TEST_IDS.homeLink);
+  }
+
+  hasProgressLine(): Promise<boolean> {
+    return this.session.exists(HEADER_TEST_IDS.progress);
+  }
+
   titleColor(): Promise<string> {
     return this.session.computedStyle(TITLE_TEST_IDS.title, 'color');
   }

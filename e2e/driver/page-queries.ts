@@ -165,3 +165,10 @@ export async function styleValues(
     )
   );
 }
+
+export function servedHtml(page: Page, path: string): Promise<string> {
+  return page.evaluate(
+    async (url: string): Promise<string> => (await fetch(url)).text(),
+    path
+  );
+}
