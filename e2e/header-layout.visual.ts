@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { type BoundingBox } from 'puppeteer';
 import { TYPE_SCALE } from '@/theme/typography';
-import { HEADER_LAYOUT } from '@/components/Header/constants';
+import { HEADER_LAYOUT, HEADER_TEST_IDS } from '@/components/Header/constants';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { createMockAccount, mockAccount } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
@@ -94,7 +94,9 @@ describe('header', () => {
   });
 
   describe('on a screen that is not home', () => {
-    const { header, method } = useDriver({ accounts: [mockAccount] });
+    const { header, menu, method, session } = useDriver({
+      accounts: [mockAccount],
+    });
 
     beforeEach(async () => {
       await method.open();
@@ -117,6 +119,20 @@ describe('header', () => {
       const distanceFromEndEdge = Math.abs(homeLink.x - bar.x);
 
       assert.ok(distanceFromEndEdge <= EDGE_TOLERANCE);
+    });
+
+    it('stops taking taps once the open menu has hidden it', async () => {
+      const homeLink = await header.homeLinkBox();
+
+      await menu.open();
+
+      const takesTap = await session.receivesTapAt({
+        testId: HEADER_TEST_IDS.homeLink,
+        x: homeLink.x + homeLink.width / 2,
+        y: homeLink.y + homeLink.height / 2,
+      });
+
+      assert.equal(takesTap, false);
     });
   });
 });

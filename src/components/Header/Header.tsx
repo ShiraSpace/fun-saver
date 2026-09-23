@@ -2,6 +2,7 @@
 
 import { Fragment, JSX } from 'react';
 import { usePathname } from 'next/navigation';
+import type { Account } from '@/lib/types';
 import {
   MenuHeaderSheet,
   MenuOverlay,
@@ -18,23 +19,32 @@ import { HeaderAvatar } from './header-parts';
 
 export interface HeaderProps {
   title: string;
-  avatarId?: string;
+  account?: Pick<Account, 'name' | 'avatarId'>;
 }
 
-export function Header({ title, avatarId }: HeaderProps): JSX.Element {
+export function Header({ title, account }: HeaderProps): JSX.Element {
   const menu = useMenuState();
   const isHome = usePathname() === HOME_ROUTE;
 
-  const avatar = avatarId && (
+  const avatar = account && (
     <HeaderAvatar
-      avatarId={avatarId}
-      alt={title}
+      avatarId={account.avatarId}
+      alt={account.name}
       size={HEADER_AVATAR_PROPS.size}
       testId={HEADER_TEST_IDS.avatar}
       isHidden={menu.isOpen}
     />
   );
-  const endSlot = isHome ? avatar : <HomeAvatarLink isHidden={menu.isOpen} />;
+
+  const homeLink = account && (
+    <HomeAvatarLink
+      avatarId={account.avatarId}
+      name={account.name}
+      isHidden={menu.isOpen}
+    />
+  );
+
+  const endSlot = isHome ? avatar : homeLink;
 
   return (
     <Fragment>

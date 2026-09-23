@@ -22,10 +22,11 @@ jest.mock('next/navigation', () => ({
 
 const ACCOUNT_NAME = 'יעל';
 const AVATAR_ID = 'kid-01';
+const headerAccount = { name: ACCOUNT_NAME, avatarId: AVATAR_ID };
 
 function renderHeader(pathname: string): void {
   mockPathname.mockReturnValue(pathname);
-  renderWithAccounts(<Header title={ACCOUNT_NAME} avatarId={AVATAR_ID} />);
+  renderWithAccounts(<Header title={ACCOUNT_NAME} account={headerAccount} />);
 }
 
 describe('Header', () => {

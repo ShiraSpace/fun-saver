@@ -2,7 +2,6 @@
 
 import { JSX } from 'react';
 import { HOME_ROUTE } from '../../Home/constants';
-import { useAccounts } from '../../Home/accounts-context';
 import {
   HEADER_AVATAR_PROPS,
   HEADER_CONTENT,
@@ -12,25 +11,29 @@ import { HeaderAvatar } from '../header-parts';
 import { HouseBadge, Ring } from './HomeAvatarLink.styles';
 
 interface HomeAvatarLinkProps {
+  avatarId: string;
+  name: string;
   isHidden: boolean;
 }
 
-export function HomeAvatarLink({ isHidden }: HomeAvatarLinkProps): JSX.Element {
-  const { currentAccount } = useAccounts();
-
+export function HomeAvatarLink({
+  avatarId,
+  name,
+  isHidden,
+}: HomeAvatarLinkProps): JSX.Element {
   return (
     <Ring
       href={HOME_ROUTE}
-      aria-label={HEADER_CONTENT.homeLabel}
+      aria-label={HEADER_CONTENT.homeLabel(name)}
       data-testid={HEADER_TEST_IDS.homeLink}
       data-hidden={isHidden}
     >
       <HeaderAvatar
-        avatarId={currentAccount.avatarId}
-        alt={currentAccount.name}
+        avatarId={avatarId}
+        alt={name}
         size={HEADER_AVATAR_PROPS.size}
         testId={HEADER_TEST_IDS.avatar}
-        isHidden={false}
+        isHidden={isHidden}
       />
       <HouseBadge aria-hidden>{HEADER_CONTENT.homeIcon}</HouseBadge>
     </Ring>

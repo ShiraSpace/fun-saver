@@ -29,6 +29,6 @@ export const HouseBadge = styled.span`
   border-radius: 50%;
   background: ${({ theme }): string => theme.colors.surface};
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
-  font-size: 11px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   line-height: 1;
 `;

@@ -8,7 +8,7 @@ export const HEADER_TEST_IDS = {
 } as const;
 
 export const HEADER_CONTENT = {
-  homeLabel: 'חזרה לבית',
+  homeLabel: (name: string): string => `חזרה לבית של ${name}`,
   homeIcon: '🏠',
 } as const;
 

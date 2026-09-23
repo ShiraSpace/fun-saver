@@ -9,9 +9,17 @@ import { METHOD_SECTION_TEST_IDS } from './MethodSection/constants';
 import { METHOD_INTRO_TEST_IDS } from './MethodIntro/constants';
 import { SOURCE_LIST_TEST_IDS } from './SourceList/constants';
 import { SOURCE_MARKER_TEST_IDS } from './SourceMarker/constants';
-import { SECTION_NUMBER, SOURCES_SECTION_ID } from './constants';
+import { METHOD_ROUTE, SECTION_NUMBER, SOURCES_SECTION_ID } from './constants';
 import { Method } from './Method';
 import { METHOD_COPY } from './copy';
+
+jest.mock('next/navigation', () => ({
+  usePathname: (): string => METHOD_ROUTE,
+  useRouter: (): { push: () => void; refresh: () => void } => ({
+    push: (): void => undefined,
+    refresh: (): void => undefined,
+  }),
+}));
 
 const SECTION_NUMBERS = Object.values(SECTION_NUMBER);
 
@@ -37,10 +45,15 @@ describe('the method page', () => {
     );
   });
 
-  it('carries no avatar, because the page belongs to no child', () => {
-    expect(
-      screen.queryByTestId(HEADER_TEST_IDS.avatar)
-    ).not.toBeInTheDocument();
+  it('names the child it is showing, the avatar being the way back to them', () => {
+    const homeLink = screen.getByTestId(HEADER_TEST_IDS.homeLink);
+
+    expect(homeLink).toContainElement(
+      screen.getByTestId(HEADER_TEST_IDS.avatar)
+    );
+    expect(homeLink).toHaveAccessibleName(
+      expect.stringContaining(mockDerivedAccount.name)
+    );
   });
 
   it('opens with the method itself, the one block that never collapses', () => {
