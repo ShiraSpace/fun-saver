@@ -28,7 +28,7 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 10 | [#87](https://github.com/ShiraSpace/fun-saver/pull/87)   | `feat/guard-transaction-routes`    | **merged** — `f1a283d`                                  |
 | PR 11 | [#94](https://github.com/ShiraSpace/fun-saver/pull/94)   | `refactor/themed-page-shell`       | **merged** — `c36afa1`                                  |
 | PR 7  | [#100](https://github.com/ShiraSpace/fun-saver/pull/100) | `feat/profile-section`             | **merged** — `06f2528`                                  |
-| PR 12 | —                                                        | `fix/empty-state-sign-out`         | not started — found during PR 7                         |
+| PR 12 | —                                                        | `fix/empty-state-sign-out`         | **design settled 2026-09-23** — found during PR 7       |
 | PR 13 | —                                                        | `refactor/required-context`        | not started — found during PR 7                         |
 | PR 14 | —                                                        | `fix/menu-state-on-close`          | not started — found reviewing PR 7                      |
 | PR 15 | [#105](https://github.com/ShiraSpace/fun-saver/pull/105) | `refactor/one-render-helper`       | **merged** — `da842b1`                                  |
@@ -1188,9 +1188,85 @@ plan's own authorization model makes reachable: signing in is open, so any
 stranger lands there.
 
 `SignedInUserProvider` wraps the page above `Home`, so the user is already in scope
-at the empty state. This is a placement decision, not new plumbing.
+at the empty state. No new plumbing is needed to reach the user.
 
-Depends on: PR 7.
+**Decided 2026-09-23 after a mockup round: the empty state gets the `Header`,
+and the menu behind it.** Mockup committed at
+`.plans/2026-09-23-pr12-empty-state-header.html` — open it in a browser; it is
+built from the real tokens, three frames at the `PHONE` viewport. The bar reads
+`שלום` where an account screen reads the account name.
+
+The burger then sits in the same place on every screen, and `ProfileSection`
+stays the single sign-out UI in the app rather than gaining a second
+presentation with its own disabled and failed states to keep in sync.
+
+**Three lighter placements were drawn first and rejected on contrast.**
+`ProfileSection`'s `textMuted` email line is chosen against the menu's
+`accountScopeBg`; on the screen gradient it measures 3.93:1 at the top stop,
+2.68:1 mid and 1.77:1 at the pink — against a 4.5:1 floor. Inside the menu card
+it is 5.51:1. The same measurement rules out copying the login screen's
+`Fineprint` treatment, which is white on the gradient at 1.60–3.55:1 and is a
+pre-existing AA failure on `/login` that this PR does not touch.
+
+**Google publishes nothing to copy for sign-out.** The branding guidelines cover
+the sign-in button only; `g_id_signout` is technical. Three of its stated don'ts
+rule out a Google-marked way out on the gradient: no `G` alone without button
+boundary and text, no `G` on a coloured background, no monochrome `G`. The
+existing login button is inside the rules because `GoogleMark` sets it on a
+white disc.
+
+**What has to change, and why it is not one file.** `MenuOverlay` hardcodes
+`MenuGlobalScope` and `MenuAccountScope`; both call `useAccounts()`, which
+throws with no provider. So:
+
+- `Header` — `account` becomes optional, `endSlot` renders nothing without one,
+  and `CrossfadeTitle` gains a non-account title. Today it only ever crossfades
+  between account names.
+- `MenuOverlay` — stops owning the account-scoped blocks; `ProfileSection` is
+  hoisted to be its own direct child.
+- `MenuGlobalScope` — loses `ProfileSection`, keeps the picker and edit button,
+  and renders the add row on its own when there is no picker to hold it.
+- `NavTabs` — per-screen liveness instead of the `MENU_SCREENS` constant.
+  `תנועות` has no `href` and is already inert; `השיטה` would bounce back, since
+  `method/page.tsx` redirects home without an account.
+- `useMenuState` — `isAccountListOpen` has no picker to describe.
+
+**The menu can start an account, with the affordance that already does it.**
+`AccountList`'s `AddRow` — dashed, `＋ חשבון חדש`, `aria-label` `הוספת חשבון` —
+moves into the slot the picker occupies when accounts exist, wired the way
+`MenuGlobalScope.handleAddAccount` wires it today: close the menu, then
+`APP_MODE.creatingAccount`. Same overlay and same copy the parent meets again
+when they add a second account.
+
+`AddRow` shares a `row` base with the selectable `Row` in
+`AccountList.styles.ts`. Both lift into a `src/components/Menu/*-parts.ts`
+sibling, the way `scope-parts.ts` already holds `ScopeBlock`.
+
+**This keeps `ProfileSection`'s divider where it is.** The rule under the strip
+separates it from whatever follows inside `GlobalBlock`; the add row follows it
+at the empty state exactly as the picker does elsewhere, so nothing moves.
+
+The empty state then offers account creation twice — the screen's `צור חשבון`
+and the menu's row. Deliberate: the account-present menu duplicates paths the
+same way, and dropping the screen CTA would make the burger mandatory for a
+stranger.
+
+**Still open: whether the empty state shows `NavTabs` at all.** Two of three
+tabs are inert there. Drop the strip, keep both inert as drawn, or make
+`/method` render without an account — the third is its own piece of work.
+
+**The browser setup this needs already exists.** `openApp` derives `accountUsers`
+from `state.accounts`, so `useDriver()` with no state is already a signed-in user
+with no membership rows; `empty-state.visual.ts` and `page-routing.visual.ts`
+both run in exactly that state. `page-routing.visual.ts` asserts *"shows the
+empty state and not the header"* — that assertion inverts in this PR.
+
+`menu.signOut()` moves off `MenuDriver`: the strip gains a second placement, and
+the method is a lie from a screen with no menu.
+
+Depends on: PR 7. **Land PR 13 first** — it rewrites `accounts-context`, which
+this PR changes the shape of the callers for. PR 14 touches `MenuOverlay` panel
+state and will conflict; order them deliberately.
 
 ### PR 13 — `refactor/required-context`
 
