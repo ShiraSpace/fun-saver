@@ -1,7 +1,13 @@
+import type { ThemeColors } from './theme-tokens';
+
+export const GRADIENT_STOPS = {
+  primaryTop: '#8A3AAE',
+  sunnyTileSoft: '#FFE6B0',
+} as const;
+
 export const COLORS = {
   primary: '#6B2C8E',
   primaryText: '#6B2C8E',
-  primaryGradientTop: '#8A3AAE',
   primaryShadow: '#4A1A6E',
   primaryGlow: 'rgba(107, 44, 142, 0.45)',
   textOnPrimary: '#FFFFFF',
@@ -14,7 +20,6 @@ export const COLORS = {
   screenGradientStart: '#FFC34D',
   screenGradientMid: '#FF8A4C',
   screenGradientEnd: '#E94E89',
-  sunnyTileSoft: '#FFE6B0',
   star: '#FFD23F',
   divider: '#F2D9D2',
   softBg: '#FFF8E0',
@@ -33,4 +38,4 @@ export const COLORS = {
   walletSpending: '#FF8A4C',
   walletGood: '#E94E89',
   walletTrack: '#F3ECE4',
-} as const;
+} as const satisfies ThemeColors;
