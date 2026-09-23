@@ -8,7 +8,7 @@ import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempDataPath } from '@/test-utils/test-utils';
 import { withAccountEditor } from '../with-account-editor';
 
-jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
+jest.mock('@/auth');
 
 describe('withAccountEditor', () => {
   withTempDataPath();

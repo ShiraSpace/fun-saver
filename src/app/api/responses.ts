@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+import { API_ERRORS } from './constants';
 
 function errorResponse(error: string, status: StatusCodes): Response {
   return Response.json({ error }, { status });
@@ -9,13 +10,13 @@ export function badRequest(error: string): Response {
 }
 
 export function notSignedIn(): Response {
-  return errorResponse('not signed in', StatusCodes.UNAUTHORIZED);
+  return errorResponse(API_ERRORS.notSignedIn, StatusCodes.UNAUTHORIZED);
 }
 
 export function notYourAccount(): Response {
-  return errorResponse('not your account', StatusCodes.FORBIDDEN);
+  return errorResponse(API_ERRORS.notYourAccount, StatusCodes.FORBIDDEN);
 }
 
 export function accountNotFound(): Response {
-  return errorResponse('account not found', StatusCodes.NOT_FOUND);
+  return errorResponse(API_ERRORS.accountNotFound, StatusCodes.NOT_FOUND);
 }

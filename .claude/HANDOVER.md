@@ -75,9 +75,11 @@ everything else.
 - **An unknown account answers 403, not 404**, on all four routes. The guard runs
   ahead of every existence check, so ids are not probeable. The routes' 404
   branches are kept as defence and are unreachable in practice.
-- **A route suite under `[id]` must mock `@/auth` with a factory or it cannot
-  load at all** — the route imports `signedInUserId`, `next-auth` is ESM, and
-  jest dies with `require(esm)` before the first test runs.
+- **A route suite under `[id]` must mock `@/auth` or it cannot load at all** —
+  the route imports `signedInUserId`, `next-auth` is ESM, and jest dies with
+  `require(esm)` before the first test runs. `src/__mocks__/auth.ts` is that
+  mock; a bare `jest.mock('@/auth')` finds it. **Bare with no manual mock is
+  what automocks and crashes** — that is what the older note against it meant.
 - **The browser suites needed no change**: `openApp` seeds through
   `insertAccountWithOwner(account, mockOwner)` and signs in as `mockUser`, so
   every e2e request already carries an owner membership.
@@ -123,7 +125,7 @@ everything else.
   `ValidationError` naming the variable.
 - **Mocking under jest**: `jest.config.ts` maps `^@/(.*)$` because SWC rewrites
   `@/` in import specifiers but not inside a `jest.mock()` string. Mock `@/auth`
-  with a **factory**, never an automock — an automock loads the real module and
+  through `src/__mocks__/auth.ts`, never an automock — an automock loads the real module and
   `next-auth` is ESM, so jest dies with `require(esm)` before any test runs. A
   mock of `next/navigation` must **throw**, because the real `redirect` is typed
   `never`.

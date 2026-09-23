@@ -5,6 +5,7 @@ import { ValidationError } from '@/lib/errors';
 import { today } from '@/lib/clock';
 import { validDeposit } from '@/lib/transaction-input';
 import { jsonBody } from '@/app/api/json-body';
+import { API_ERRORS } from '@/app/api/constants';
 import { accountNotFound, badRequest } from '@/app/api/responses';
 import { withAccountEditor } from '../with-account-editor';
 
@@ -19,7 +20,7 @@ export const POST = withAccountEditor(async (request, id) => {
   const amount = validDeposit(await jsonBody(request));
 
   if (amount === undefined) {
-    return badRequest('invalid deposit');
+    return badRequest(API_ERRORS.invalidDeposit);
   }
 
   try {

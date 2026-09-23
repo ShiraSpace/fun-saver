@@ -1,3 +1,4 @@
+import { API_ERRORS } from '@/app/api/constants';
 import { mockAccount } from '@/test-utils/fixtures';
 import { LOGIN_PATH } from '../constants';
 import { goTo } from '../navigate';
@@ -62,7 +63,7 @@ describe('fetchJson', () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: false,
         status: 404,
-        json: async () => ({ error: 'account not found' }),
+        json: async () => ({ error: API_ERRORS.accountNotFound }),
       }) as unknown as typeof fetch;
     });
 
@@ -83,7 +84,7 @@ describe('fetchJson', () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: false,
         status: 401,
-        json: async () => ({ error: 'not signed in' }),
+        json: async () => ({ error: API_ERRORS.notSignedIn }),
       }) as unknown as typeof fetch;
     });
 

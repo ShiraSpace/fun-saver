@@ -2,13 +2,14 @@
  * @jest-environment node
  */
 import { signedInUserId } from '@/auth';
+import { API_ERRORS } from '@/app/api/constants';
 import { getStore } from '@/db';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempDataPath } from '@/test-utils/test-utils';
 import { PUT } from '../route';
 
-jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
+jest.mock('@/auth');
 
 describe('PUT /api/accounts/[id]/theme', () => {
   withTempDataPath();
@@ -54,6 +55,7 @@ describe('PUT /api/accounts/[id]/theme', () => {
     const response = await putTheme('not-a-theme', accountId);
 
     expect(response.status).toBe(400);
+    expect((await response.json()).error).toBe(API_ERRORS.unknownTheme);
     expect((await getStore().getAccount(accountId))?.themeId).not.toBe(
       'not-a-theme'
     );
@@ -85,6 +87,7 @@ describe('PUT /api/accounts/[id]/theme', () => {
     const response = await putRawBody(accountId, body);
 
     expect(response.status).toBe(400);
+    expect((await response.json()).error).toBe(API_ERRORS.invalidThemeRequest);
     expect((await getStore().getAccount(accountId))?.themeId).toBe(before);
   });
 });

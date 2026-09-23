@@ -5,6 +5,7 @@ import { OverdraftError, ValidationError } from '@/lib/errors';
 import { today } from '@/lib/clock';
 import { validWithdrawal } from '@/lib/transaction-input';
 import { jsonBody } from '@/app/api/json-body';
+import { API_ERRORS } from '@/app/api/constants';
 import { accountNotFound, badRequest } from '@/app/api/responses';
 import { withAccountEditor } from '../with-account-editor';
 
@@ -19,7 +20,7 @@ export const POST = withAccountEditor(async (request, id) => {
   const withdrawal = validWithdrawal(await jsonBody(request));
 
   if (!withdrawal) {
-    return badRequest('invalid withdrawal');
+    return badRequest(API_ERRORS.invalidWithdrawal);
   }
 
   try {

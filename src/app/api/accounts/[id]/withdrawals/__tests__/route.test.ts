@@ -12,7 +12,7 @@ import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempDataPath } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
-jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
+jest.mock('@/auth');
 
 describe('POST /api/accounts/[id]/withdrawals', () => {
   withTempDataPath();

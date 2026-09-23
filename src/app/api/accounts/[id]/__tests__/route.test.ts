@@ -14,7 +14,7 @@ import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempDataPath } from '@/test-utils/test-utils';
 import { PUT } from '../route';
 
-jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
+jest.mock('@/auth');
 
 describe('PUT /api/accounts/[id]', () => {
   withTempDataPath();
