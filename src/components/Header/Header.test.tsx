@@ -15,10 +15,10 @@ const AVATAR_ID = 'kid-01';
 const headerAccount = { name: ACCOUNT_NAME, avatarId: AVATAR_ID };
 
 function renderHeader(route: string): void {
-  renderWithAccountsAt(
+  renderWithAccountsAt({
     route,
-    <Header title={ACCOUNT_NAME} account={headerAccount} />
-  );
+    ui: <Header title={ACCOUNT_NAME} account={headerAccount} />,
+  });
 }
 
 describe('Header', () => {

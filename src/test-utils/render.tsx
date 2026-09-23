@@ -42,11 +42,17 @@ export function renderAt(route: string, ui: ReactElement): RenderResult {
   return render(ui);
 }
 
-export function renderWithAccountsAt(
-  route: string,
-  ui: ReactElement,
-  value: AccountsContextValue = mockAccountsContext
-): RenderResult {
+export interface RenderWithAccountsAtOptions {
+  route: string;
+  ui: ReactElement;
+  value?: AccountsContextValue;
+}
+
+export function renderWithAccountsAt({
+  route,
+  ui,
+  value = mockAccountsContext,
+}: RenderWithAccountsAtOptions): RenderResult {
   setMockPathname(route);
 
   return renderWithAccounts(ui, value);
