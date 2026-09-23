@@ -29,14 +29,17 @@ export function useMenuState(): MenuState {
 export function useOnMenuClose(onMenuClose: () => void): void {
   const { isOpen } = useMenu();
   const onMenuCloseRef = useRef(onMenuClose);
+  const wasOpenRef = useRef(isOpen);
 
   useEffect(() => {
     onMenuCloseRef.current = onMenuClose;
   });
 
   useEffect(() => {
-    if (!isOpen) {
+    if (wasOpenRef.current && !isOpen) {
       onMenuCloseRef.current();
     }
+
+    wasOpenRef.current = isOpen;
   }, [isOpen]);
 }
