@@ -10,7 +10,7 @@ const sweep = keyframes`
     transform: translateX(120%);
   }
   to {
-    transform: translateX(-160%);
+    transform: translateX(-240%);
   }
 `;
 

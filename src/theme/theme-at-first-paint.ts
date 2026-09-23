@@ -2,31 +2,28 @@ import { THEME_COOKIE } from '@/lib/cookies';
 import { DEFAULT_THEME_ID, THEMES } from './registry';
 import type { ThemeTokens } from './theme-tokens';
 
-const TOKEN_GROUPS = [
-  ['colors', 'color'],
-  ['gradients', 'gradient'],
-  ['shadows', 'shadow'],
-  ['tints', 'tint'],
-] as const;
+const TOKEN_GROUPS = ['colors', 'gradients', 'shadows', 'tints'] as const;
 
-type ColourGroup = (typeof TOKEN_GROUPS)[number][0];
+type TokenGroup = (typeof TOKEN_GROUPS)[number];
 
-const PREFIX_OF = Object.fromEntries(TOKEN_GROUPS) as Record<
-  ColourGroup,
-  string
->;
+const PREFIX_OF = {
+  colors: 'color',
+  gradients: 'gradient',
+  shadows: 'shadow',
+  tints: 'tint',
+} satisfies Record<TokenGroup, string>;
 
 const customProperty = (prefix: string, name: string): string =>
   `--fs-${prefix}-${name}`;
 
 const tokensOf = (theme: ThemeTokens): string =>
-  TOKEN_GROUPS.flatMap(([group, prefix]) =>
+  TOKEN_GROUPS.flatMap((group) =>
     Object.entries(theme[group]).map(
-      ([name, value]) => `${customProperty(prefix, name)}:${value}`
+      ([name, value]) => `${customProperty(PREFIX_OF[group], name)}:${value}`
     )
   ).join(';');
 
-export function themeVar<Group extends ColourGroup>(
+export function themeVar<Group extends TokenGroup>(
   group: Group,
   name: keyof ThemeTokens[Group] & string
 ): string {

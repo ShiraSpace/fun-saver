@@ -4,7 +4,7 @@ import { toSignedInUser } from '@/lib/signed-in-user';
 import { LOGIN_PATH } from '@/lib/constants';
 
 export const config = {
-  matcher: ['/((?!login(?:/|$)|api(?:/|$)|_next(?:/|$)).*)'],
+  matcher: ['/((?!login(?:/|$)|api(?:/|$)|_next(?:/|$)|avatars/).*)'],
 };
 
 export const proxy = auth((request): NextResponse => {
