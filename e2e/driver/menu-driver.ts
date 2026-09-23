@@ -57,6 +57,10 @@ export class MenuDriver {
     return this.session.click(EDIT_ACCOUNT_BUTTON_TEST_IDS.button);
   }
 
+  tapHomeTab(): Promise<void> {
+    return this.session.click(NAV_TABS_TEST_IDS.homeTab);
+  }
+
   tapMethodTab(): Promise<void> {
     return this.session.click(NAV_TABS_TEST_IDS.methodTab);
   }

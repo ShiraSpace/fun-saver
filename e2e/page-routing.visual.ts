@@ -4,7 +4,6 @@ import { mockAccount } from '@/test-utils/fixtures';
 import { COLORS } from '@/theme/palette';
 import { hexToRgb } from '@/test-utils/css-color';
 import { METHOD_ROUTE } from '@/components/Method/constants';
-import { HOME_ROUTE } from '@/components/Home/constants';
 import { useDriver } from './driver/use-driver';
 
 describe('page routing', () => {
@@ -48,12 +47,13 @@ describe('page routing', () => {
   });
 
   describe('the method page with no account to show', () => {
-    const { session } = useDriver();
+    const { session, emptyState } = useDriver();
 
-    it('sends the parent home, where the empty state asks for one', async () => {
+    it('shows the empty state there, where it asks for one', async () => {
       await session.visit(METHOD_ROUTE);
 
-      assert.equal(session.currentPath(), HOME_ROUTE);
+      assert.equal(await emptyState.exists(), true);
+      assert.equal(session.currentPath(), METHOD_ROUTE);
     });
   });
 });

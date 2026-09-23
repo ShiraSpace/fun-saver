@@ -1,7 +1,9 @@
 import { beforeEach, describe, it } from 'node:test';
 import { type BoundingBox } from 'puppeteer';
 import assert from 'node:assert/strict';
+import { StatusCodes } from 'http-status-codes';
 import { HOME_ROUTE } from '@/components/Home/constants';
+import { LOGIN_PATH } from '@/lib/constants';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
@@ -10,6 +12,7 @@ import { mockAccount } from '@/test-utils/fixtures';
 import { hexToRgb } from '@/test-utils/css-color';
 import { THEMES, THEME_ID } from '@/theme/registry';
 import type { HeldPage } from './driver/hold-next-page';
+import { SESSION_COOKIE_NAME } from './driver/auth-session';
 import { useDriver } from './driver/use-driver';
 
 describe('waiting for a page', () => {
@@ -29,6 +32,16 @@ describe('waiting for a page', () => {
         positions.page > positions.shell,
         'the page markup arrives before the shell'
       );
+    });
+
+    it('turns a bad session away with a redirect, before any shell is sent', async () => {
+      const response = await session.rawResponse(
+        HOME_ROUTE,
+        `${SESSION_COOKIE_NAME}=not-a-session`
+      );
+
+      assert.equal(response.status, StatusCodes.TEMPORARY_REDIRECT);
+      assert.equal(response.redirectPath, LOGIN_PATH);
     });
   });
 
@@ -73,6 +86,23 @@ describe('waiting for a page', () => {
       leave: (): Promise<void> => header.tapHomeLink(),
     },
   ];
+
+  describe('tapping home twice before the page lands', () => {
+    beforeEach(async () => {
+      await session.visit(METHOD_ROUTE);
+      const nextPage = await session.holdNextPage();
+
+      await menu.open();
+      await menu.tapHomeTab();
+      await nextPage.waiting;
+      await header.tapHomeLink();
+      await nextPage.settle();
+    });
+
+    it('keeps the line on the header', async () => {
+      assert.equal(await header.hasProgressLine(), true);
+    });
+  });
 
   for (const journey of journeys) {
     describe(journey.name, () => {

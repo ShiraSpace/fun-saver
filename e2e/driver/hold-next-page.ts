@@ -6,6 +6,7 @@ const SETTLE_MS = 300;
 
 export interface HeldPage {
   waiting: Promise<void>;
+  settle: () => Promise<void>;
   release: () => void;
 }
 
@@ -33,9 +34,9 @@ export async function holdNextPage(page: Page): Promise<HeldPage> {
     void request.continue();
   });
 
-  const waiting = page
-    .waitForRequest(isNextPageRequest)
-    .then(() => pause(SETTLE_MS));
+  const settle = (): Promise<void> => pause(SETTLE_MS);
+
+  const waiting = page.waitForRequest(isNextPageRequest).then(settle);
 
   const release = (): void => {
     isHolding = false;
@@ -44,6 +45,7 @@ export async function holdNextPage(page: Page): Promise<HeldPage> {
 
   return {
     waiting,
+    settle,
     release,
   };
 }

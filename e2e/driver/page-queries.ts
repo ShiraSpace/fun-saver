@@ -172,3 +172,24 @@ export function servedHtml(page: Page, path: string): Promise<string> {
     path
   );
 }
+
+export interface RawResponse {
+  status: number;
+  redirectPath: string | null;
+}
+
+export async function rawResponse(
+  url: string,
+  cookie: string
+): Promise<RawResponse> {
+  const response = await fetch(url, {
+    redirect: 'manual',
+    headers: { cookie },
+  });
+  const location = response.headers.get('location');
+
+  return {
+    status: response.status,
+    redirectPath: location && new URL(location, url).pathname,
+  };
+}

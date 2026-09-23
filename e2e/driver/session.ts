@@ -95,6 +95,10 @@ export class Session {
     return holdNextPage(this.page);
   }
 
+  rawResponse(path: string, cookie: string): Promise<queries.RawResponse> {
+    return queries.rawResponse(`${this.baseUrl}${path}`, cookie);
+  }
+
   servedHtml(path: string): Promise<string> {
     return queries.servedHtml(this.page, path);
   }
