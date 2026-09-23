@@ -12,6 +12,12 @@ import {
 import { setMockPathname } from '@mocks/next/navigation';
 import { mockDerivedAccount, mockSecondDerivedAccount } from './fixtures';
 
+export interface RenderWithAccountsAtOptions {
+  route: string;
+  ui: ReactElement;
+  value?: AccountsContextValue;
+}
+
 function withProviders(ui: ReactElement, themeId: ThemeId): JSX.Element {
   return <ThemeController initialThemeId={themeId}>{ui}</ThemeController>;
 }
@@ -40,12 +46,6 @@ export function renderAt(route: string, ui: ReactElement): RenderResult {
   setMockPathname(route);
 
   return render(ui);
-}
-
-export interface RenderWithAccountsAtOptions {
-  route: string;
-  ui: ReactElement;
-  value?: AccountsContextValue;
 }
 
 export function renderWithAccountsAt({
