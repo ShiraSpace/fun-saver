@@ -61,9 +61,8 @@ stack was rebased twice because branches were cut from each other instead.
 - Only the driving session edits this plan and the spec. Each lane reports its
   merged PR numbers here through that session.
 
-**What blocks what:** only decision A is still open, and it blocks lane A
-only. PR 1's Step 1 settles it. Decisions B–E were settled on 2026-09-23, so no
-other PR waits on the user for a decision.
+**What blocks what:** nothing. Decisions A–E were all settled on 2026-09-23, so
+no PR waits on the user for a decision.
 
 ## Global Constraints
 
@@ -174,12 +173,12 @@ Each refines or corrects the spec. None re-opens an approved design call.
 
 ## Decisions owed, and settled
 
-B–E were settled on 2026-09-23 by taking the proposals below. A is still open;
-PR 1 settles it.
+All five were settled on 2026-09-23. B–E took the proposals below; A was
+settled against `mockups/chart-contrast.html`, drawn during the decision.
 
 | # | Question | Needed before | Answer |
 | --- | --- | --- | --- |
-| A | `sunshine-quest`'s savings and spending chart lines | PR 1 | **open** — proposal `#B07D00` (3.63) · `#E2661F` (3.41), settled against a mockup drawn during the decision |
+| A | `sunshine-quest`'s savings and spending chart lines | PR 1 | **settled** — green savings `#276E2C` (6.26, the value of `gainText`) · blue spending `#2563EB` (5.17) · pink good `#E94E89` (3.55). The proposal `#B07D00` · `#E2661F` and every orange spending were rejected: spending read too close to good. `softText`'s brown for savings was rejected too |
 | B | Type sizes the scale does not have: the 30px headline, the 9.5 / 9 SVG labels | PR 6 / PR 7 | **settled** — headline `amount` (38, the token named for it; 22 and 38 tie); SVG text stays in viewBox units, because the viewBox scales with the card and 12 crowds three y ticks into 112 units |
 | C | No-history copy, for the chart frame and for the list | PR 7 | **settled** — chart `עוד אין תנועות להציג`, list `כאן יופיעו ההפקדות, המשיכות והריבית` |
 | D | The savings withdrawal's name and badge | PR 8 | **settled** — `🏦 משיכה` |
@@ -221,10 +220,10 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
   reads through `WALLET_CHART_COLOR`. `contrastRatio(a, b): number` in
   `src/test-utils/css-color.ts`.
 
-- [ ] **Step 1: Settle decision A.** Draw the sunshine chart card three ways in
-      `mockups/chart-contrast.html` — the mockup's pair, `#B07D00`/`#E2661F`, and
-      one darker alternative — each over the same four lines. Show the user; **STOP**.
-      Replace the sunshine values below with what they pick.
+- [x] **Step 1: Settle decision A.** Settled 2026-09-23: green `#276E2C` · blue
+      `#2563EB` · pink `#E94E89`. `mockups/chart-contrast.html` draws the sunshine
+      chart card eight ways over the same four lines and records why each other
+      option was rejected.
 - [ ] **Step 2: Add the three keys to `ThemeColors`**, after `walletTrack`:
 
 ```ts
@@ -237,8 +236,8 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
 
 ```ts
 // src/theme/palette.ts (sunshine-quest), after walletTrack
-  chartSavings: '#B07D00',
-  chartSpending: '#E2661F',
+  chartSavings: '#276E2C',
+  chartSpending: '#2563EB',
   chartGood: '#E94E89',
 
 // src/theme/themes/jungle-quest.ts
