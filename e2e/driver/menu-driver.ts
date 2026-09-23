@@ -1,6 +1,7 @@
 import { type BoundingBox } from 'puppeteer';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
+import { NAV_TABS_TEST_IDS } from '@/components/Menu/NavTabs/constants';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from '@/components/Menu/MenuGlobalScope/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '@/components/Menu/EditAccountButton/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
@@ -51,7 +52,7 @@ export class MenuDriver {
   }
 
   async openMethodPage(): Promise<string> {
-    await this.session.click(MENU_OVERLAY_TEST_IDS.methodLink);
+    await this.session.click(NAV_TABS_TEST_IDS.methodTab);
     await this.session.waitForText(TITLE_TEST_IDS.title, METHOD_COPY.title);
 
     return this.session.currentPath();
@@ -86,6 +87,13 @@ export class MenuDriver {
       testId: ACCOUNT_LIST_TEST_IDS.list,
       ...point,
     });
+  }
+
+  methodTabBackground(): Promise<string> {
+    return this.session.computedStyle(
+      NAV_TABS_TEST_IDS.methodTab,
+      'background-color'
+    );
   }
 
   editAccountButtonBox(): Promise<BoundingBox> {

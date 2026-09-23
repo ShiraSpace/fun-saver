@@ -15,6 +15,7 @@ import {
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { openMenu, renderHome } from './home-test-helpers';
+import { HOME_ROUTE } from './constants';
 
 const mockRefresh = jest.fn();
 const mockPush = jest.fn();
@@ -25,6 +26,7 @@ jest.mock('next/navigation', () => ({
     refresh: mockRefresh,
     push: mockPush,
   }),
+  usePathname: (): string => HOME_ROUTE,
 }));
 
 jest.mock('./selected-account-cookie', () => ({
