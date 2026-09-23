@@ -14,7 +14,7 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-23 (PRs 1–8 merged, plus #90; PR 9 is last)
+## Progress — updated 2026-09-23 (PRs 1–8 merged, plus #90; PR 9 is in flight)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
@@ -55,15 +55,17 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 6    | [#79](https://github.com/ShiraSpace/fun-saver/pull/79) | `feat/menu-account-popover`    | **merged** — `f9d6573` |
 | PR 7    | [#85](https://github.com/ShiraSpace/fun-saver/pull/85) | `feat/menu-edit-under-trigger` | **merged** — `2e49d4e` |
 | PR 8    | [#88](https://github.com/ShiraSpace/fun-saver/pull/88) | `feat/menu-scope-blocks`       | **merged** — `0b12ebf` |
-| PR 9    | —                                                      | —                              | **next**               |
+| PR 9    | —                                                      | `feat/menu-nav-tabs`           | **in flight**          |
 | PR 10   | —                                                      | —                              | planned                |
+| PR 11   | —                                                      | —                              | planned                |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
 the accounts sit behind an `AccountTrigger`, tapping it floats the list over the
 sections below instead of pushing them down, edit is a named button under the
 trigger, and the two scopes are visible blocks. What is left is the nav section
-(PR 9), which 2026-09-23 moved **out** of the per-account block, and a way back to
-home from the screens the nav points at (PR 10).
+(PR 9), which 2026-09-23 moved **out** of the per-account block, a way back to
+home from the screens the nav points at (PR 10), and a loading boundary so those
+screens do not arrive in silence (PR 11, found while reviewing PR 9).
 
 ### What the merged PRs changed that this plan did not predict
 
@@ -525,11 +527,11 @@ in for `aria-current`. Home shows no back control.
 Three shapes in the mockup, on the summary phone's header, behind the `חזרה בכותרת`
 control group:
 
-| | Shape | Note |
-| - | ----- | ---- |
-| ח1 | Chevron at the start edge, burger after it | Four slots in a 68px bar; the title loses width |
-| ח2 | Chevron glued to the title, the whole run tappable | Bar stays at three slots; the target is large but reads as a title, not a button |
-| ח3 | Chevron in the avatar's slot at the end edge, avatar dropped off non-home pages | Keeps three slots, but the avatar is how you know which account you are looking at |
+|     | Shape                                                                           | Note                                                                               |
+| --- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| ח1  | Chevron at the start edge, burger after it                                      | Four slots in a 68px bar; the title loses width                                    |
+| ח2  | Chevron glued to the title, the whole run tappable                              | Bar stays at three slots; the target is large but reads as a title, not a button   |
+| ח3  | Chevron in the avatar's slot at the end edge, avatar dropped off non-home pages | Keeps three slots, but the avatar is how you know which account you are looking at |
 
 The glyph is `‹` in the source and paints as `›`: it is bidi-mirrored, the same way
 `.chev` already is in the menu rows. Writing `›` gets you an arrow pointing the wrong
@@ -540,6 +542,58 @@ the menu sheet's height and the panel's `top` derive from it (#90). A fourth con
 that makes the bar even a few pixels taller paints an opaque card over the open menu.
 ח1 is the shape most likely to do it — the 26px control has to fit inside the
 existing `40 + 12 × 2`, and `header-layout.visual.ts` is where that gets asserted.
+
+## PR 11 — the screens the nav points at arrive in silence
+
+Raised while reviewing PR 9: `השיטה` takes a long time to appear. It is not the tab
+strip — the same link behaved this way as `MenuOverlay`'s orphan `NavLink` — and it
+is not really rendering.
+
+Both `src/app/page.tsx` and `src/app/method/page.tsx` are
+`export const dynamic = 'force-dynamic'`, and `src/app/` has no `loading.tsx`.
+Next 16's own guide, `node_modules/next/dist/docs/01-app/02-guides/prefetching.md`,
+is explicit about what that pair costs:
+
+|                           | Static page     | Dynamic page            |
+| ------------------------- | --------------- | ----------------------- |
+| Prefetched                | Yes, full route | No, unless `loading.js` |
+| Server roundtrip on click | No              | Yes                     |
+
+and a section later, _automatic prefetching runs only in production_. So a tap on a
+nav tab buys a full server round trip, and with no loading boundary the router has
+nothing to put on screen — it holds the old page until the whole RSC payload lands.
+The menu closes and then nothing happens.
+
+Measured 2026-09-23 against the dev Neon branch:
+
+| Step                      | ms                                  |
+| ------------------------- | ----------------------------------- |
+| cold connect + `select 1` | 255                                 |
+| `listAccountsForUser`     | 71 — 3 accounts                     |
+| `withDerivedWallets`      | 302 — 9 wallets, 6 parallel queries |
+
+Each page awaits `signedInAccounts()` and then `withDerivedWallets`, sequential
+because the second needs the first's accounts, so ~370ms of database before React
+renders anything. In dev, add Turbopack compiling the Method tree — 1832 lines of
+components plus ~20K of copy — the first time you go there.
+
+**One file, at the root, not under `method/`.** `/` is `force-dynamic` too, so
+`🏠 בית` pays the same on the way back and a boundary under `method/` would fix one
+tab while leaving its neighbour broken. `src/app/loading.tsx` covers `/`, `/method`
+and `/login` together.
+
+**It invents the app's first loading state.** There is no spinner, skeleton or
+pending affordance anywhere in `src/` today, so the work here is a design decision
+rather than a wiring one. The cheap shape is the header card over a dimmed body, so
+the shell does not jump when the real page arrives.
+
+**What it does not fix.** The round trip still happens; a boundary only stops it
+being invisible. Cutting the ~370ms means collapsing the two sequential store calls
+or caching them — a data-layer change this epic has otherwise avoided, and the
+reason this is its own PR rather than a line in PR 9.
+
+Not measured: click-to-paint in a real browser. The figures above are the database
+leg; the rest is read off the routing docs.
 
 ## Notes / risks
 
