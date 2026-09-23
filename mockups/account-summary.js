@@ -99,7 +99,7 @@ const state = {
   interestMode: 'monthly',
   iconStyle: 'badge',
   pencilStyle: 'under',
-  backStyle: 'lead',
+  backStyle: 'homeSwap',
   navCount: 3,
   typeFilter: 'all',
   menuOpen: true,
@@ -341,6 +341,10 @@ const BACK_STYLES = [
   { id: 'lead', label: 'ח1 · חץ לפני ההמבורגר' },
   { id: 'title', label: 'ח2 · הכותרת היא החזרה' },
   { id: 'trail', label: 'ח3 · חץ במקום האווטאר' },
+  { id: 'homeSwap', label: 'ב1 · בית במקום האווטאר — נבחר' },
+  { id: 'homeBeside', label: 'ב2 · בית לצד האווטאר' },
+  { id: 'homeAvatar', label: 'ב3 · האווטאר הוא הבית' },
+  { id: 'homePill', label: 'ב4 · כפתור בית עם תווית' },
 ];
 
 const ICON_STYLES = [
@@ -542,6 +546,24 @@ function chartCardHtml() {
    הסימן ‹ מתהפך בבידי ומצויר כ-› בדיוק כמו ה-chev בשורות התפריט. */
 const BACK_GLYPH = '‹';
 
+/* בקצה (שמאל ב-RTL) יושב היום האווטאר. כל וריאציה בוחרת מה תופס את המקום הזה,
+   ומה המחיר: לוותר על האווטאר, לצמצם את רוחב הכותרת, או לטעון את האווטאר בתפקיד שני */
+function trailingSlotHtml(current) {
+  const avatar = `<span class="avatar">${current.avatar}</span>`;
+  const home = `<button class="homeBtn" data-act="noop" aria-label="חזרה לבית">🏠</button>`;
+
+  if (state.backStyle === 'trail') return `<button class="backBtn" data-act="noop" aria-label="חזרה לבית">${BACK_GLYPH}</button>`;
+  if (state.backStyle === 'homeSwap') return home;
+  if (state.backStyle === 'homeBeside') return `${avatar}${home}`;
+  if (state.backStyle === 'homeAvatar') {
+    return `<button class="avatar asHome" data-act="noop" aria-label="חזרה לבית של ${current.name}">
+      ${current.avatar}<span class="hb">🏠</span></button>`;
+  }
+  if (state.backStyle === 'homePill') return `<button class="homePill" data-act="noop">🏠 בית</button>`;
+
+  return avatar;
+}
+
 function appHeaderHtml(burgerLabel) {
   const current = account();
   const back = `<button class="backBtn" data-act="noop" aria-label="חזרה לבית">${BACK_GLYPH}</button>`;
@@ -553,7 +575,7 @@ function appHeaderHtml(burgerLabel) {
     ${state.backStyle === 'lead' ? back : ''}
     <button class="burgerBtn" data-act="menu" aria-label="${burgerLabel}"><i></i><i></i><i></i></button>
     ${title}
-    ${state.backStyle === 'trail' ? back : `<span class="avatar">${current.avatar}</span>`}
+    ${trailingSlotHtml(current)}
   </div>`;
 }
 

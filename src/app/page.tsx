@@ -3,7 +3,7 @@ import { Home } from '@/components/Home';
 import { getStore } from '@/db';
 import { withDerivedWallets } from '@/lib/account-dashboard';
 import { today } from '@/lib/clock';
-import { ThemeController } from '@/theme/ThemeController';
+import { ThemedPage } from '@/theme/ThemedPage';
 import { signedInAccounts } from './signed-in-accounts';
 
 export const dynamic = 'force-dynamic';
@@ -17,10 +17,8 @@ export default async function HomePage(): Promise<JSX.Element> {
   });
 
   return (
-    <main>
-      <ThemeController initialThemeId={themeId}>
-        <Home accounts={derived} initialAccountId={selectedAccountId} />
-      </ThemeController>
-    </main>
+    <ThemedPage themeId={themeId}>
+      <Home accounts={derived} initialAccountId={selectedAccountId} />
+    </ThemedPage>
   );
 }
