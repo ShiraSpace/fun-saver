@@ -7,6 +7,11 @@ import { MENU_SCREENS, NAV_TABS_CONTENT, NAV_TABS_TEST_IDS } from './constants';
 
 const mockOnNavigate = jest.fn();
 
+function renderTabsWithoutAccount(route: string): void {
+  jest.clearAllMocks();
+  render(<NavTabs onNavigate={mockOnNavigate} />, { route });
+}
+
 function renderTabs(route: string): void {
   jest.clearAllMocks();
   render(<NavTabs onNavigate={mockOnNavigate} />, {
@@ -89,6 +94,16 @@ describe('NavTabs', () => {
         'href',
         HOME_ROUTE
       );
+    });
+  });
+
+  describe('for a parent who has no account yet', () => {
+    beforeEach(() => {
+      renderTabsWithoutAccount(HOME_ROUTE);
+    });
+
+    it('cannot send them to the method, which needs an account to open', () => {
+      expect(screen.getByTestId(NAV_TABS_TEST_IDS.methodTab)).toBeDisabled();
     });
   });
 });
