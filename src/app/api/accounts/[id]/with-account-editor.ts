@@ -28,7 +28,11 @@ export function withAccountEditor(handle: AccountEditorHandler): RouteHandler {
       return notSignedIn();
     }
 
-    const canEdit = await canEditAccount(getStore(), userId, id);
+    const canEdit = await canEditAccount({
+      store: getStore(),
+      userId,
+      accountId: id,
+    });
 
     if (!canEdit) {
       return notYourAccount();

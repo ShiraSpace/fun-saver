@@ -18,7 +18,9 @@ describe('canEditAccount', () => {
   });
 
   it('lets the owner of the account edit it', async () => {
-    expect(await canEditAccount(store, mockUser.id, accountId)).toBe(true);
+    expect(
+      await canEditAccount({ store, userId: mockUser.id, accountId })
+    ).toBe(true);
   });
 
   it('refuses a viewer, who may look at the account but not edit it', async () => {
@@ -31,14 +33,22 @@ describe('canEditAccount', () => {
         }),
     };
 
-    expect(await canEditAccount(viewerReader, mockUser.id, accountId)).toBe(
-      false
-    );
+    expect(
+      await canEditAccount({
+        store: viewerReader,
+        userId: mockUser.id,
+        accountId,
+      })
+    ).toBe(false);
   });
 
   it('refuses a signed-in stranger with no membership row', async () => {
-    expect(await canEditAccount(store, mockSecondUser.id, accountId)).toBe(
-      false
-    );
+    expect(
+      await canEditAccount({
+        store,
+        userId: mockSecondUser.id,
+        accountId,
+      })
+    ).toBe(false);
   });
 });
