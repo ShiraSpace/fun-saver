@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PR 12 — Header at the empty state</title>
+<style>
+  :root {
+    --surface:#FFFFFF; --textStrong:#3A1F5A; --textMuted:#675A80; --textOnPot:#2B1235;
+    --softBg:#FFF8E0; --softBorder:#FFD23F; --divider:#F2D9D2;
+    --scopeBg:#F4EEFA; --scopeBorder:#C9B6E4;
+    --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+    --cta:linear-gradient(#8A3AAE,#6B2C8E);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#EFECE6;color:#2B1235;
+       font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI","Noto Sans Hebrew","Helvetica Neue",sans-serif}
+  .page{padding:32px 24px 64px}
+  h1{margin:0 0 4px;font-size:24px}
+  .sub{margin:0 0 28px;font-size:14px;color:#5B5347;max-width:80ch;line-height:1.6}
+  .row{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+  .cell{width:402px}
+  .cap{margin:0 0 10px;font-size:13px;font-weight:700}
+  .cap small{display:block;font-weight:400;color:#5B5347;margin-top:3px;line-height:1.5}
+
+  .frame{position:relative;width:402px;height:874px;overflow:hidden;border-radius:14px;
+         background:var(--screen);box-shadow:0 6px 24px rgba(0,0,0,.18)}
+
+  /* Screen align=top > Column */
+  .column{position:relative;display:flex;flex-direction:column;gap:18px;
+          width:100%;max-width:420px;padding:16px 14px;height:100%}
+  .centre{flex-grow:1;display:flex;flex-direction:column;align-items:center;
+          justify-content:center;gap:24px;text-align:center}
+
+  /* Header Bar */
+  .bar{position:relative;z-index:60;display:flex;align-items:center;gap:10px;width:100%;
+       min-height:68px;padding:12px 16px;border-radius:18px;background:var(--surface);
+       color:var(--textStrong);box-shadow:0 4px 0 rgba(0,0,0,.06)}
+  .burger{width:44px;height:44px;flex:none;border:none;background:none;color:inherit;
+          cursor:pointer;display:grid;place-items:center;padding:0}
+  .icon{position:relative;width:26px;height:26px}
+  .icon span{position:absolute;left:0;right:0;height:3px;border-radius:2px;background:currentColor}
+  .icon span:nth-of-type(1){top:20%}
+  .icon span:nth-of-type(2){top:50%;transform:translateY(-50%)}
+  .icon span:nth-of-type(3){bottom:20%}
+  .icon.x{transform:rotate(180deg)}
+  .icon.x span:nth-of-type(1){top:50%;transform:translateY(-50%) rotate(45deg)}
+  .icon.x span:nth-of-type(2){opacity:0}
+  .icon.x span:nth-of-type(3){bottom:50%;transform:translateY(50%) rotate(-45deg)}
+  .title{flex:1;min-width:0;font-size:22px;font-weight:700;text-align:start;
+         overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .headAvatar{width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;
+              background:#FFD8C7;font-size:22px}
+
+  /* menu sheet + panel */
+  .sheet{position:absolute;inset:0 0 auto;height:84px;z-index:50;background:var(--softBg)}
+  .panel{position:absolute;inset:84px 0 0;z-index:50;overflow:hidden;background:var(--softBg);
+         color:var(--textStrong);padding-bottom:22px}
+  .content{padding:14px 22px 0}
+
+  .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+  .tab{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:3px;
+       min-width:0;padding:9px 4px;border:1.5px solid var(--divider);border-radius:15px;
+       background:var(--surface);font-family:inherit;font-size:12px;font-weight:600;
+       color:var(--textMuted);text-decoration:none}
+  .tab .ic{font-size:18px}
+  .tab.current{border-color:var(--textStrong);background:var(--textStrong);color:var(--surface)}
+  .tab.inert{border-style:dashed;cursor:default}
+  .tab.inert .ic,.tab.inert .lb{opacity:.45}
+
+  .scope{box-sizing:border-box;margin-bottom:14px;padding:12px;border-radius:20px}
+  .global{border:1.5px solid var(--scopeBorder);background:var(--scopeBg)}
+  .acct{border:1.5px dashed var(--scopeBorder);background:transparent;box-shadow:inset 4px 0 0 var(--softBorder)}
+
+  .profile{display:flex;align-items:center;gap:9px}
+  .ruled{padding-bottom:9px;margin-bottom:9px;border-bottom:1px solid var(--scopeBorder)}
+  .mark{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:36px;height:36px;
+        border:1.5px solid var(--softBorder);border-radius:50%;background:var(--softBg);font-size:19px}
+  .naming{flex:1;min-width:0;text-align:start}
+  .pname{display:block;font-size:15px;font-weight:700;color:var(--textStrong);
+         overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pmail{display:inline-block;max-width:100%;margin-top:1px;font-size:12px;color:var(--textMuted);
+         overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .signout{flex-shrink:0;padding:5px 10px;border:1.5px solid var(--scopeBorder);border-radius:12px;
+           background:var(--surface);color:var(--textMuted);font:inherit;font-size:12px;
+           font-weight:600;cursor:pointer}
+
+  .trigger{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;
+           border:1.5px solid var(--scopeBorder);border-radius:16px;background:var(--surface);
+           color:var(--textStrong);font:inherit;text-align:start;cursor:pointer}
+  .tavatar{width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;
+           background:#FBC4DA;font-size:21px}
+  .tnaming{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}
+  .tname{font-size:15px;font-weight:700}
+  .tcur{font-size:12px;color:var(--textMuted)}
+  .caret{font-size:12px;color:var(--textMuted)}
+  .edit{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:7px;
+        padding:5px 2px;border:none;background:transparent;color:var(--textMuted);font:inherit;
+        font-size:12px;font-weight:600;cursor:pointer}
+  .edit .lbl{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--scopeBorder)}
+
+  .head2{display:flex;align-items:center;gap:7px;margin:0 0 3px;font-size:15px;font-weight:700}
+  .note{margin:0 0 10px;text-align:start;font-size:12px;line-height:1.5;color:var(--textMuted)}
+  .mlabel{display:block;margin:0 0 6px;font-size:12px;font-weight:700;color:#7A5A0A;text-align:start}
+  .swatches{display:flex;gap:10px;margin-bottom:12px}
+  .sw{width:52px;height:52px;border-radius:14px;border:1.5px solid var(--scopeBorder)}
+  .sw.sel{border:2.5px solid var(--textOnPot)}
+  .seg{display:inline-flex;border:1.5px solid var(--scopeBorder);border-radius:999px;overflow:hidden;background:var(--surface)}
+  .seg span{padding:7px 18px;font-size:13px;font-weight:600;color:var(--textMuted)}
+  .seg span.on{background:var(--textStrong);color:var(--surface)}
+
+  .pig{font-size:72px;line-height:1;display:inline-block}
+  .cta{font-family:inherit;font-size:18px;font-weight:700;padding:14px 32px;border:none;
+       border-radius:999px;background:var(--cta);color:#fff;cursor:pointer;
+       box-shadow:0 5px 0 #4A1A6E,0 10px 5px rgba(107,44,142,.45)}
+  .empty-note{position:absolute;inset:auto 22px 22px;font-size:12px;color:var(--textMuted);
+              text-align:center;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="page">
+<h1>PR 12 — the Header, made to stand up without an account</h1>
+<p class="sub">Real tokens throughout: <code>HEADER_LAYOUT</code>, <code>MENU_OVERLAY_LAYOUT.top</code> (16 + 68 = 84px), <code>GlobalBlock</code>, <code>NavTabs</code>, <code>ProfileSection</code>. Frames are 402×874, the app's own <code>PHONE</code> viewport.</p>
+
+<div class="row">
+
+  <div class="cell">
+    <p class="cap">1 · Empty state, menu closed
+      <small>The burger now exists here. Same bar, same place as every other screen.</small></p>
+    <div class="frame">
+      <div class="column">
+        <header class="bar">
+          <button class="burger" type="button" aria-label="פתיחת תפריט"><span class="icon"><span></span><span></span><span></span></span></button>
+          <span class="title">שלום</span>
+        </header>
+        <div class="centre">
+          <span class="pig">🐷</span>
+          <button class="cta" type="button">צור חשבון</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <p class="cap">2 · Empty state, menu open — CHOSEN
+      <small>Everything account-scoped is gone. What is left is the profile block — and two dead tabs.</small></p>
+    <div class="frame">
+      <div class="sheet"></div>
+      <div class="panel">
+        <div class="content">
+          <nav class="tabs">
+            <span class="tab current"><span class="ic">🏠</span><span class="lb">בית</span></span>
+            <button class="tab inert" type="button" disabled><span class="ic">📈</span><span class="lb">תנועות</span></button>
+            <button class="tab inert" type="button" disabled><span class="ic">📖</span><span class="lb">השיטה</span></button>
+          </nav>
+          <div class="scope global">
+            <div class="profile">
+              <span class="mark" aria-hidden="true">👤</span>
+              <span class="naming">
+                <b class="pname">אלי</b>
+                <span class="pmail" dir="ltr">eli@example.com</span>
+              </span>
+              <button class="signout" type="button" aria-label="יציאה מהחשבון">יציאה</button>
+            </div>
+          </div>
+        </div>
+        <p class="empty-note">אין עדיין חשבונות — צרו אחד כדי לראות כאן מראה, שפה והחלפת חשבון.</p>
+      </div>
+      <div class="column">
+        <header class="bar">
+          <button class="burger" type="button" aria-label="סגירת תפריט"><span class="icon x"><span></span><span></span><span></span></span></button>
+          <span class="title">שלום</span>
+        </header>
+      </div>
+    </div>
+  </div>
+
+  <div class="cell">
+    <p class="cap">3 · With an account, menu open — ships today
+      <small>For comparison. Panel 2 is this minus the picker, the edit button and the whole account scope.</small></p>
+    <div class="frame">
+      <div class="sheet"></div>
+      <div class="panel">
+        <div class="content">
+          <nav class="tabs">
+            <span class="tab current"><span class="ic">🏠</span><span class="lb">בית</span></span>
+            <button class="tab inert" type="button" disabled><span class="ic">📈</span><span class="lb">תנועות</span></button>
+            <a class="tab" href="#"><span class="ic">📖</span><span class="lb">השיטה</span></a>
+          </nav>
+          <div class="scope global">
+            <div class="profile ruled">
+              <span class="mark" aria-hidden="true">👤</span>
+              <span class="naming">
+                <b class="pname">אלי</b>
+                <span class="pmail" dir="ltr">eli@example.com</span>
+              </span>
+              <button class="signout" type="button" aria-label="יציאה מהחשבון">יציאה</button>
+            </div>
+            <button class="trigger" type="button">
+              <span class="tavatar" aria-hidden="true">🧒</span>
+              <span class="tnaming">
+                <span class="tname">נועה</span>
+                <span class="tcur">160₪ · מוצג כרגע</span>
+              </span>
+              <span class="caret">▼</span>
+            </button>
+            <button class="edit" type="button"><span aria-hidden="true">✏️</span><span class="lbl">עריכת נועה</span></button>
+          </div>
+          <div class="scope acct">
+            <h2 class="head2">הגדרות של נועה <span aria-hidden="true">🧒</span></h2>
+            <p class="note">נשמר על החשבון הזה בלבד.</p>
+            <span class="mlabel">מראה</span>
+            <div class="swatches">
+              <span class="sw sel" style="background:linear-gradient(135deg,#FFE6B0,#FFC34D)"></span>
+              <span class="sw" style="background:linear-gradient(135deg,#7BC47F,#2E7D5B)"></span>
+              <span class="sw" style="background:linear-gradient(135deg,#2F4470,#0E1B3A)"></span>
+            </div>
+            <span class="mlabel">שפה</span>
+            <span class="seg"><span class="on">עברית</span><span>EN</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <header class="bar">
+          <button class="burger" type="button" aria-label="סגירת תפריט"><span class="icon x"><span></span><span></span><span></span></span></button>
+          <span class="title">נועה</span>
+        </header>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>
