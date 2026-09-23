@@ -3,7 +3,7 @@
 import { createContext, useContext } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 
-const NO_PROVIDER = 'useAccounts needs an AccountsProvider above it';
+export const NO_PROVIDER = 'useAccounts needs an AccountsProvider above it';
 
 export interface AccountsContextValue {
   accounts: AccountWithDerivedWallets[];
