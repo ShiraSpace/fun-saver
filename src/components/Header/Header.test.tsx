@@ -148,15 +148,17 @@ describe('Header', () => {
       renderHeader(METHOD_ROUTE);
     });
 
-    it('offers a way home, which the avatar has given its slot to', () => {
+    it('offers a way home', () => {
       expect(screen.getByTestId(HEADER_TEST_IDS.homeLink)).toHaveAttribute(
         'href',
         HOME_ROUTE
       );
+    });
 
-      expect(
-        screen.queryByTestId(HEADER_TEST_IDS.avatar)
-      ).not.toBeInTheDocument();
+    it('keeps the avatar, which is itself the way home', () => {
+      expect(screen.getByTestId(HEADER_TEST_IDS.homeLink)).toContainElement(
+        screen.getByTestId(HEADER_TEST_IDS.avatar)
+      );
     });
   });
 });

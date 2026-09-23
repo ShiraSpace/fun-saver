@@ -11,27 +11,15 @@ import {
 import { MENU_HEADER_SHEET_TEST_IDS } from '../Menu/MenuHeaderSheet/constants';
 import { HOME_ROUTE } from '../Home/constants';
 import { Title } from './CrossfadeTitle';
-import {
-  HEADER_AVATAR_PROPS,
-  HEADER_CONTENT,
-  HEADER_TEST_IDS,
-} from './constants';
-import { Bar, HeaderAvatar, HomeLink } from './Header.styles';
+import { HomeAvatarLink } from './HomeAvatarLink';
+import { HEADER_AVATAR_PROPS, HEADER_TEST_IDS } from './constants';
+import { Bar } from './Header.styles';
+import { HeaderAvatar } from './header-parts';
 
 export interface HeaderProps {
   title: string;
   avatarId?: string;
 }
-
-const homeLink = (
-  <HomeLink
-    href={HOME_ROUTE}
-    aria-label={HEADER_CONTENT.homeLabel}
-    data-testid={HEADER_TEST_IDS.homeLink}
-  >
-    {HEADER_CONTENT.homeIcon}
-  </HomeLink>
-);
 
 export function Header({ title, avatarId }: HeaderProps): JSX.Element {
   const menu = useMenuState();
@@ -46,7 +34,7 @@ export function Header({ title, avatarId }: HeaderProps): JSX.Element {
       isHidden={menu.isOpen}
     />
   );
-  const endSlot = isHome ? avatar : homeLink;
+  const endSlot = isHome ? avatar : <HomeAvatarLink isHidden={menu.isOpen} />;
 
   return (
     <Fragment>

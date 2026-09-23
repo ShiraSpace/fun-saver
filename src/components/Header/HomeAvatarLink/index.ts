@@ -1,0 +1,1 @@
+export { HomeAvatarLink } from './HomeAvatarLink';
