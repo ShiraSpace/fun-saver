@@ -8,8 +8,8 @@ from hardcoded copies that have already drifted.
 
 ## Where it stands (2026-09-23)
 
-Shipped as `e1592fd` on `refactor/theme-parity`, rebased onto `4066c45`. Tests
-still to come.
+**Merged as `ec76b64` (#110).** Verified by content, not by the PR label — this
+repo squash-merges, so `git log` across the branch proves nothing.
 
 Three things below are what the plan said before the work; the sections marked
 **revised** are what it actually turned out to be. They are left in place rather
@@ -245,7 +245,19 @@ deliberately cut five of. Recorded as a decision, not an oversight.
    and was three shapes wearing seven names. The question that sorted them: does
    this catch a value being *wrong*, or only being *changed*? Only the two that
    catch a token going missing entirely survived.
-4. **A plan on `main` outlives the session that wrote it.** Three of its claims
+4. **A leak test is only as wide as its file list.** It swept `.styles.ts`,
+   `constants.ts` and `-parts.ts` and never `.tsx`, where five components keep
+   styled CSS because CLAUDE.md sanctions it for a component that *is* a styled
+   component. Widening the *pattern* to `rgba(` was the obvious half; widening
+   the *homes* was the half that took a reviewer. Worse, five per-component
+   tests had been cut on the premise that a colour literal in a style home is
+   impossible — which was false for exactly those five files. A guard's blind
+   spot silently becomes an argument for less testing elsewhere.
+5. **A group named after its first member misfiles the rest.** `film` and
+   `shade` went into `SHADOW_SCALE` because they arrived with the shadows, and
+   then a border tint lived at `theme.shadows.film` where nobody would look.
+   The name has to describe the set, not the reason the set was created.
+6. **A plan on `main` outlives the session that wrote it.** Three of its claims
    were false within a day — the count, decision 2, and five token names. A
    reviewer read the stale plan and filed the code as the defect. The plan is
    the artifact that drifts; correcting it is part of the work, not after it.

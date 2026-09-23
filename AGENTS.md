@@ -29,6 +29,18 @@ every importer on the old path: one bad pathspec silently aborted the whole
 purpose, watch the test fail, and read *which* test reddened, not just the count.
 Several tests here have passed against deliberately broken implementations.
 
+**`git diff --quiet` is not a cleanliness check once the tree is dirty.** A
+break-watch helper that guards on it works while the tree is committed and then
+refuses every valid break the moment there is uncommitted work beside it. Snapshot
+the file instead: `cp` it aside, apply the break, run, restore from the copy, and
+`cmp` to prove the restore.
+
+**An interrupted break-watch leaves the break applied.** A Ctrl-C between applying
+and restoring leaves the deliberate break in the tree, and the *next* break then
+reddens two tests — which reads as a real coupling between two unrelated things.
+Before trusting any break result, check the tree actually holds only the break you
+just made.
+
 **"The existing suites already cover it" is a claim to test, not a fact.** Two
 deliberate breaks once passed `test:db`, all visual shots and all browser checks —
 87 checks agreeing with an assumption that was wrong. Related: every seeded
