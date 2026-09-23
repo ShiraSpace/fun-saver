@@ -295,6 +295,19 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   shipped with only a `data-testid`. It carries `NAV_TABS_CONTENT.stripLabel`, and
   the test asserts through `getByRole('navigation', { name })` rather than the
   attribute, so it is the accessible name under test.
+- **A visual suite run on its own tests the last build, and says nothing.**
+  `e2e/server.ts` spawns `next start`, which serves whatever `.next` already holds;
+  the build lives in the npm script, where `test:visual` is
+  `next build && tsx --test`. So `npx tsx --test e2e/<one>.visual.ts` — the obvious
+  way to run a single suite — exercises stale code with no warning. In PR 10 it reported the header bar
+  unchanged at a 48px control and again at 80px, because the served bundle had no
+  such control in it at all. **Build before running a suite directly.**
+- **A geometry assertion passes on an element that is not there.** The same PR 10
+  run: `bar.height <= HEADER_LAYOUT.height` is satisfied by a header whose end slot
+  is empty, so it cannot tell "the control does not grow the bar" from "there is no
+  control". It now asserts the house exists before measuring. Same shape as the
+  box-overlap note above — an assertion that holds either way round is not an
+  assertion.
 
 ### Still open from the merged work
 
