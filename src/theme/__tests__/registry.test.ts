@@ -60,7 +60,7 @@ describe('theme registry', () => {
     ]);
   });
 
-  it('keeps the light themes off the muted and gain values that failed', () => {
+  it('pins the muted and gain values every theme reads', () => {
     const readableOnTints = Object.values(THEMES).map(({ colors }) => [
       colors.textMuted,
       colors.gainText,

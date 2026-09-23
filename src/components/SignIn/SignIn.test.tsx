@@ -1,4 +1,6 @@
 import { render, screen } from '@/test-utils/render';
+import { hexToRgb } from '@/test-utils/css-color';
+import { getThemeTokens } from '@/theme/registry';
 import { PIG_EMOJI } from '@/components/Pig/constants';
 import { SignIn } from './SignIn';
 import { SIGN_IN_COPY, SIGN_IN_TEST_IDS } from './constants';
@@ -33,15 +35,23 @@ describe('SignIn', () => {
     );
   });
 
-  it('leaves the fineprint unfaded, the way the wallet label was', () => {
-    const fineprint = screen.getByTestId(SIGN_IN_TEST_IDS.fineprint);
-
-    expect(getComputedStyle(fineprint).opacity).toBe('');
-  });
-
   it('puts the Google button in the card', () => {
     expect(
       screen.getByTestId(SIGN_IN_TEST_IDS.continueWithGoogle)
     ).toBeInTheDocument();
+  });
+
+  it('paints the fineprint in the on-primary white', () => {
+    const fineprint = screen.getByTestId(SIGN_IN_TEST_IDS.fineprint);
+
+    expect(getComputedStyle(fineprint).color).toBe(
+      hexToRgb(getThemeTokens().colors.textOnPrimary)
+    );
+  });
+
+  it('leaves the fineprint unfaded, the way the wallet label was', () => {
+    const fineprint = screen.getByTestId(SIGN_IN_TEST_IDS.fineprint);
+
+    expect(getComputedStyle(fineprint).opacity).toBe('');
   });
 });

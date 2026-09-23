@@ -45,33 +45,29 @@ describe('ContinueWithGoogle', () => {
     expect(loginButton()).toHaveTextContent(SIGN_IN_COPY.signingIn);
   });
 
-  it('surfaces a sign-in that fails before we reach Google', async () => {
-    mockedSignIn.mockRejectedValue(new Error('offline'));
+  describe('when the sign-in never reaches Google', () => {
+    let error: HTMLElement;
 
-    clickContinue();
+    beforeEach(async () => {
+      mockedSignIn.mockRejectedValue(new Error('offline'));
 
-    expect(await screen.findByTestId(SIGN_IN_TEST_IDS.error)).toHaveTextContent(
-      SIGN_IN_COPY.signInFailed
-    );
-  });
+      clickContinue();
 
-  it('speaks the failure in the alert red', async () => {
-    mockedSignIn.mockRejectedValue(new Error('offline'));
+      error = await screen.findByTestId(SIGN_IN_TEST_IDS.error);
+    });
 
-    clickContinue();
-    const error = await screen.findByTestId(SIGN_IN_TEST_IDS.error);
+    it('surfaces the failure', () => {
+      expect(error).toHaveTextContent(SIGN_IN_COPY.signInFailed);
+    });
 
-    expect(getComputedStyle(error).color).toBe(
-      hexToRgb(getThemeTokens().colors.alertText)
-    );
-  });
+    it('speaks it in the alert red', () => {
+      expect(getComputedStyle(error).color).toBe(
+        hexToRgb(getThemeTokens().colors.alertText)
+      );
+    });
 
-  it('lets the user try again after a failure to reach Google', async () => {
-    mockedSignIn.mockRejectedValue(new Error('offline'));
-
-    clickContinue();
-
-    await screen.findByTestId(SIGN_IN_TEST_IDS.error);
-    expect(loginButton()).toBeEnabled();
+    it('lets the user try again', () => {
+      expect(loginButton()).toBeEnabled();
+    });
   });
 });

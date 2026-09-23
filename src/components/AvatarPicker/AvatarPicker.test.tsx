@@ -17,21 +17,26 @@ describe('AvatarPicker', () => {
       AVATARS.length
     );
   });
-});
 
-describe('on the theme whose primary is the screen gradient it lands on', () => {
-  const jungle = getThemeTokens('jungle-quest').colors;
+  describe('on the theme whose primary is the gradient it lands on', () => {
+    const jungle = getThemeTokens('jungle-quest').colors;
 
-  beforeEach(() => {
-    render(
-      <AvatarPicker selectedId={AVATARS[0].id} onSelect={jest.fn()} />,
-      'jungle-quest'
-    );
-  });
+    beforeEach(() => {
+      render(
+        <AvatarPicker selectedId={AVATARS[0].id} onSelect={onSelect} />,
+        'jungle-quest'
+      );
+    });
 
-  it('rings the selected avatar in a colour the gradient does not hide', () => {
-    const [selected] = screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option);
+    it('rings the selected avatar in a colour the gradient does not hide', () => {
+      const selected = screen
+        .getAllByTestId(AVATAR_PICKER_TEST_IDS.option)
+        .filter((option) => option.dataset.selected === 'true');
 
-    expect(getComputedStyle(selected).boxShadow).toContain(jungle.textOnPot);
+      expect(selected).toHaveLength(1);
+      expect(getComputedStyle(selected[0]).boxShadow).toContain(
+        jungle.textOnPot
+      );
+    });
   });
 });
