@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { signOut } from 'next-auth/react';
 import { LOGIN_PATH } from '@/lib/constants';
+import { goTo } from '@/lib/navigate';
 
 export const SIGN_OUT_STATUS = {
   idle: 'idle',
@@ -25,7 +26,17 @@ export function useSignOut(): AccountSignOut {
     setStatus(SIGN_OUT_STATUS.signingOut);
 
     try {
-      await signOut({ redirectTo: LOGIN_PATH });
+      const ended = await signOut({
+        redirect: false,
+        redirectTo: LOGIN_PATH,
+      });
+
+      if (!ended?.url) {
+        setStatus(SIGN_OUT_STATUS.failed);
+        return;
+      }
+
+      goTo(ended.url);
     } catch {
       setStatus(SIGN_OUT_STATUS.failed);
     }

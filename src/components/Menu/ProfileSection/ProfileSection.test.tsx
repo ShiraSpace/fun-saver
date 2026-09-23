@@ -7,10 +7,15 @@ import {
 } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
 import { LOGIN_PATH } from '@/lib/constants';
+import { goTo } from '@/lib/navigate';
 import { ProfileSection } from './ProfileSection';
 import { PROFILE_SECTION_CONTENT, PROFILE_SECTION_TEST_IDS } from './constants';
 
-const mockedSignOut = signOut as unknown as jest.Mock<Promise<void>>;
+jest.mock('@/lib/navigate', () => ({ goTo: jest.fn() }));
+
+const mockedSignOut = signOut as unknown as jest.Mock<
+  Promise<{ url: string } | undefined>
+>;
 
 const signOutButton = (): HTMLElement =>
   screen.getByTestId(PROFILE_SECTION_TEST_IDS.signOut);
@@ -21,7 +26,7 @@ const signOutError = (): HTMLElement | null =>
 describe('ProfileSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedSignOut.mockResolvedValue(undefined);
+    mockedSignOut.mockResolvedValue({ url: LOGIN_PATH });
     renderWithUser(<ProfileSection />);
   });
 
@@ -49,8 +54,17 @@ describe('ProfileSection', () => {
       fireEvent.click(signOutButton());
     });
 
-    it('signs out to the login page', () => {
-      expect(mockedSignOut).toHaveBeenCalledWith({ redirectTo: LOGIN_PATH });
+    it('asks for the sign-out without letting it navigate on its own', () => {
+      expect(mockedSignOut).toHaveBeenCalledWith({
+        redirect: false,
+        redirectTo: LOGIN_PATH,
+      });
+    });
+
+    it('leaves for the login page only once the sign-out came back', async () => {
+      await waitFor(() => {
+        expect(goTo).toHaveBeenCalledWith(LOGIN_PATH);
+      });
     });
 
     it('goes dead while the sign-out is on its way', async () => {
@@ -67,6 +81,25 @@ describe('ProfileSection', () => {
       fireEvent.click(signOutButton());
 
       expect(mockedSignOut).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('when the server refuses the sign-out', () => {
+    beforeEach(async () => {
+      mockedSignOut.mockResolvedValue(undefined);
+
+      fireEvent.click(signOutButton());
+      await screen.findByTestId(PROFILE_SECTION_TEST_IDS.signOutError);
+    });
+
+    it('stays where it is rather than pretending it worked', () => {
+      expect(goTo).not.toHaveBeenCalled();
+    });
+
+    it('says so, so the session is not believed to be over', () => {
+      expect(signOutError()).toHaveTextContent(
+        PROFILE_SECTION_CONTENT.signOutFailed
+      );
     });
   });
 
