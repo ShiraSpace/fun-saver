@@ -14,8 +14,8 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-23 (PRs 1–10 merged, plus #76, #90 and #109; PR 11a
-is built and open, PR 11 is next)
+## Progress — updated 2026-09-23 (PRs 1–10 and 11a merged, plus #76, #90 and #109;
+PR 11 is next and is the last of this epic)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
@@ -71,6 +71,7 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 8    | [#88](https://github.com/ShiraSpace/fun-saver/pull/88) | `feat/menu-scope-blocks`       | **merged** — `0b12ebf` |
 | PR 9    | [#96](https://github.com/ShiraSpace/fun-saver/pull/96) | `feat/menu-nav-tabs`           | **merged** — `d625dd3` |
 | PR 10   | [#101](https://github.com/ShiraSpace/fun-saver/pull/101) | `feat/home-link-in-header`   | **merged** — `709d74d` |
+| PR 11a  | [#114](https://github.com/ShiraSpace/fun-saver/pull/114) | `feat/theme-css-vars`        | **merged** — `bb91cc9` |
 | PR 11   | —                                                      | —                              | **next**               |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
@@ -724,8 +725,12 @@ Decided 2026-09-23 to split this out rather than carry it inside PR 11: without 
 the shell is grey and every navigation flashes neutral between two coloured
 screens, and with it inside, PR 11 stops being about the loading boundary.
 
-**Built 2026-09-23** on `feat/theme-css-vars` — `a9a5885` the code, `4269989`
-fourteen tests. Visually a no-op; nothing reads the variables until PR 11.
+**Merged as `bb91cc9` ([#114](https://github.com/ShiraSpace/fun-saver/pull/114)).**
+Verified by content, not by the PR label — this repo squash-merges. Visually a
+no-op, and the screenshots proved it: four of five screens pixel-identical to
+`main`, the fifth differing only where the header title crossfades, which two runs
+of the same build reproduce. `motion.ts` sets `animation: none` and never touches
+`transition`, so that fade still runs under reduced motion.
 
 What it took, where that differs from what this plan expected:
 
@@ -742,8 +747,12 @@ What it took, where that differs from what this plan expected:
   carried its own copy of the `path` / `max-age` / `samesite` policy, so this plan's
   "modelled on `persistSelectedAccount`" would have been a third copy of a policy
   that should be decided once.
-- `ThemeController` syncs the attribute **only**; the cookie is written by
-  `AccountManagement`, for the reason below.
+- `ThemeController` syncs the attribute **only**. The cookie is written by
+  `SignedInUserProvider`, which both themed pages render and `/login` does not — so
+  the component that means "a signed-in user is here" is the one that remembers
+  their theme. It became a real component rather than a bare context `Provider` to
+  carry the effect; every call site is unchanged.
+- `layout.tsx` carries `suppressHydrationWarning` on `<html>`, for the reason below.
 
 ### What PR 11a turned up
 
@@ -751,11 +760,22 @@ What it took, where that differs from what this plan expected:
   the cookie from `ThemeController`, as this plan called for, resets a returning
   user's theme to sunshine every time they pass the login page — handing them a
   wrong-coloured shell on the navigation right after signing in, which is the exact
-  flash 11a exists to remove. The writer has to sit where an account exists.
-  `AccountManagement` is rendered by `Home` and `Method` and not by `SignIn`, so the
+  flash 11a exists to remove. The writer has to sit where a signed-in user exists.
+  `SignedInUserProvider` is rendered by `Home` and `Method` and not by `SignIn`, so the
   tree already names that set: no flag, hook or null-rendering component is needed
   to restate it. A `belongsToAccount` prop, a `RememberTheme` component and a
-  `useRememberTheme` hook were each built and each deleted on the way to that.
+  `useRememberTheme` hook were each built and each deleted on the way to that, and
+  review then moved it off `AccountManagement` — which is about the create and edit
+  overlays and held the write only because it happened to be mounted on both themed
+  routes. A third themed route not rendering it would have gone stale at first paint
+  with nothing failing. The guard is now a test: _stores nothing on a screen with no
+  signed-in user_, which reddens if the write migrates back into `ThemeController`.
+- **A pre-paint attribute is a hydration mismatch, and only development says so.**
+  The script stamps `data-theme` on `<html>` before React, so the live DOM carries
+  an attribute the server markup never rendered and React reports a mismatched tree.
+  Production strips the warning — which is why a browser check against `next start`
+  came back clean and this reached review. `suppressHydrationWarning` on `<html>`
+  settles it. **Verify warnings against `next dev`; `next start` cannot show them.**
 - **React 19 takes string children on `<style>` and `<script>`** — no
   `dangerouslySetInnerHTML`. Both are raw-text elements, so the script's `&&` and
   `>=0` survive unescaped. Worth confirming in the served HTML rather than assuming:
@@ -867,18 +887,24 @@ for, and it is also what keeps `loading.tsx` renderable with no `ThemeProvider`
 above it — worth a unit test of its own, because the failure mode is a production
 TypeError that no themed test would ever see.
 
-**Open against `/login`, and this PR has to answer it.** PR 11a's boot script is
-route-agnostic: it sets `data-theme` from the cookie on every route, and `/login`
-then renders `ThemedPage` with a hardcoded `DEFAULT_THEME_ID`, so `ThemeController`
-snaps the attribute back on hydration. Harmless while nothing reads the variables —
-which is the whole of 11a — but this shell reads them in exactly the pre-hydration
-window the script controls. A returning user landing on `/login` after signing out
-would see their old account's colours in the shell before it settles to the
-default. Raised in review of 11a and deliberately left there rather than fixed
-blind: `/login` is `○ (Static)`, so it is prerendered and may never show a shell at
-all. **Check whether it does before adding a route test to the script** — a
-`location.pathname` branch in a theme file is worth having only if the flash is
-real.
+**`/login` was raised against this and is answered — do not re-solve it.** PR 11a's
+boot script is route-agnostic: it stamps `data-theme` from the cookie on every
+route, and `/login` then renders `ThemedPage` with a hardcoded `DEFAULT_THEME_ID`,
+so `ThemeController` snaps the attribute back on hydration. Review of 11a called
+that a flash this shell would expose. **Measured instead of argued**, by building
+this boundary temporarily and driving it:
+
+- A cold load of `/login` paints **no shell**. The page is prerendered whole; the
+  fallback appears only inside the RSC flight payload, never as rendered markup.
+- **Nothing soft-navigates to `/login`.** Sign-out and the expired-fetch handler
+  both go through `goTo` → `window.location.assign`; `signed-in-accounts` uses the
+  server `redirect()`; `proxy.ts` uses `NextResponse.redirect`. All four are
+  document navigations, and a loading fallback only renders on a client transition.
+
+So the two writers do disagree and it cannot reach the screen. No
+`location.pathname` branch belongs in a theme file for it. **It becomes reachable
+the day something introduces a `<Link href="/login">` or a `router.push(LOGIN_PATH)`**
+— that is the trigger to revisit, not the disagreement itself.
 
 **Two assertions carry this PR, and both are easy to write vacuously.**
 
