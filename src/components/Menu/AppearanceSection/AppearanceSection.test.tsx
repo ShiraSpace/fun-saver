@@ -9,11 +9,20 @@ import {
   APPEARANCE_SECTION_TEST_IDS,
 } from './constants';
 import { mockRouter } from '@mocks/next/navigation';
+import {
+  closeAndReopenMenu,
+  toggleMenu,
+  WithToggleableMenu,
+} from '@/test-utils/menu';
 
 function renderSection(): void {
-  render(<AppearanceSection />, {
-    accounts: mockAccountsContext,
-  });
+  render(
+    <WithToggleableMenu>
+      <AppearanceSection />
+    </WithToggleableMenu>,
+    { accounts: mockAccountsContext }
+  );
+  toggleMenu();
 }
 
 function swatches(): HTMLElement[] {
@@ -100,6 +109,18 @@ describe('AppearanceSection', () => {
       expect(getComputedStyle(error).color).toBe(
         hexToRgb(getThemeTokens().colors.alertText)
       );
+    });
+
+    describe('and the menu is closed and reopened', () => {
+      beforeEach(() => {
+        closeAndReopenMenu();
+      });
+
+      it('no longer says it did not save', () => {
+        expect(
+          screen.queryByTestId(APPEARANCE_SECTION_TEST_IDS.saveError)
+        ).not.toBeInTheDocument();
+      });
     });
 
     it('reverts to the theme that is still saved', () => {
