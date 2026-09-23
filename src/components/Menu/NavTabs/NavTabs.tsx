@@ -12,6 +12,7 @@ interface NavTabsProps {
 
 export function NavTabs({ onNavigate }: NavTabsProps): JSX.Element {
   const currentPath = usePathname();
+  const columnCount = tabColumns(MENU_SCREENS.length);
 
   const tabComponents = MENU_SCREENS.map((screen: MenuScreen) => {
     const face = (
@@ -44,10 +45,7 @@ export function NavTabs({ onNavigate }: NavTabsProps): JSX.Element {
   });
 
   return (
-    <Strip
-      data-testid={NAV_TABS_TEST_IDS.strip}
-      columnCount={tabColumns(MENU_SCREENS.length)}
-    >
+    <Strip data-testid={NAV_TABS_TEST_IDS.strip} columnCount={columnCount}>
       {tabComponents}
     </Strip>
   );
