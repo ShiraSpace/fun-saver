@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { auth, toSignedInUser } from '@/auth';
+import { auth } from '@/auth';
+import { toSignedInUser } from '@/lib/signed-in-user';
 import { LOGIN_PATH } from '@/lib/constants';
 
 export const config = {

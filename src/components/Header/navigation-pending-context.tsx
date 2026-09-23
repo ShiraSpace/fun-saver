@@ -21,7 +21,7 @@ export function PendingNavigationReporter(): null {
 
   useEffect((): (() => void) | undefined => {
     if (!pending) {
-      return undefined;
+      return;
     }
 
     countPendingLinks((count) => count + 1);
