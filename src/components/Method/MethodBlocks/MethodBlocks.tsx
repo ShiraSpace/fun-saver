@@ -29,16 +29,18 @@ function blockContent(block: MethodBlock): JSX.Element {
   }
 
   const lines = paragraphs(block.body);
-  const lastLine = lines.length - 1;
-  const marker = block.sources?.length ? (
-    <SourceMarker sources={block.sources} />
-  ) : null;
-  const rendered = lines.map((line, index) => (
-    <p key={index} data-muted={block.muted}>
-      {emphasize(line)}
-      {index === lastLine && marker}
-    </p>
-  ));
+  const lastLineIndex = lines.length - 1;
+  const marker = <SourceMarker sources={block.sources} />;
+  const rendered = lines.map((line, index) => {
+    const trailingMarker = index === lastLineIndex ? marker : null;
+
+    return (
+      <p key={index} data-muted={block.muted}>
+        {emphasize(line)}
+        {trailingMarker}
+      </p>
+    );
+  });
 
   return <>{rendered}</>;
 }

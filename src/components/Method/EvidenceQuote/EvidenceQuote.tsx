@@ -17,7 +17,7 @@ export function EvidenceQuote({
   sources,
 }: EvidenceQuoteProps): JSX.Element {
   const finding = emphasize(body);
-  const marker = sources?.length ? <SourceMarker sources={sources} /> : null;
+  const marker = <SourceMarker sources={sources} />;
 
   return (
     <Quote data-testid={EVIDENCE_QUOTE_TEST_IDS.quote}>

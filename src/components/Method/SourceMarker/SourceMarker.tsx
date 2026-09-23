@@ -4,7 +4,7 @@ import { SOURCE_MARKER_COPY, SOURCE_MARKER_TEST_IDS } from './constants';
 import { Marker } from './SourceMarker.styles';
 
 interface SourceMarkerProps {
-  sources: readonly SourceId[];
+  sources?: readonly SourceId[];
 }
 
 function sourceNumber(id: SourceId): number {
@@ -18,7 +18,13 @@ function spokenLabel(numbers: readonly number[]): string {
   return `${noun} ${numbers.join(SOURCE_MARKER_COPY.labelSeparator)}`;
 }
 
-export function SourceMarker({ sources }: SourceMarkerProps): JSX.Element {
+export function SourceMarker({
+  sources,
+}: SourceMarkerProps): JSX.Element | null {
+  if (!sources?.length) {
+    return null;
+  }
+
   const numbers = sources.map(sourceNumber);
 
   const label = spokenLabel(numbers);
