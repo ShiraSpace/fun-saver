@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { ProfilePhoto } from './ProfilePhoto';
-import { PROFILE_SECTION_TEST_IDS } from './constants';
 import {
   closeAndReopenMenu,
   renderInOpenMenu,
   WithMenu,
 } from '@/test-utils/menu';
+import { ProfilePhoto } from './ProfilePhoto';
+import { PROFILE_SECTION_TEST_IDS } from './constants';
 
 const GOOGLE_PHOTO = 'https://lh3.googleusercontent.com/a/photo';
 

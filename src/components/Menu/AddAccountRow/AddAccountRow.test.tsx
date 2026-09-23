@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
+import { WithMenu } from '@/test-utils/menu';
 import {
   APP_MODE,
   AppModeProvider,
 } from '@/components/AccountManagement/app-mode-context';
 import { AddAccountRow } from './AddAccountRow';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
-import { WithMenu } from '@/test-utils/menu';
 
 const mockOnLeaveMenu = jest.fn();
 const mockSetMode = jest.fn();

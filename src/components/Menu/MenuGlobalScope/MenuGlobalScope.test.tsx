@@ -1,9 +1,9 @@
 import { render, screen } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
+import { WithMenu } from '@/test-utils/menu';
 import { MenuGlobalScope } from './MenuGlobalScope';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from './constants';
 import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
-import { WithMenu } from '@/test-utils/menu';
 
 const BELOW_THE_STRIP = 'below-the-profile-strip';
 
