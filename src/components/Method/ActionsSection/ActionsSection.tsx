@@ -23,7 +23,7 @@ const RULE_BLOCKS: readonly MethodBlock[] = [
 
 export function ActionsSection(): JSX.Element {
   return (
-    <MethodSection number={SECTION_NUMBER.actions} title={actions.title}>
+    <MethodSection id={SECTION_NUMBER.actions} title={actions.title}>
       <MethodBlocks blocks={ALLOWANCE_BLOCKS} />
       <ExampleWalletSplitTable {...actions.example} />
       <MethodBlocks blocks={RULE_BLOCKS} />

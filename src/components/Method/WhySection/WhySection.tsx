@@ -15,7 +15,7 @@ const WHY_BLOCKS: readonly MethodBlock[] = [
 
 export function WhySection(): JSX.Element {
   return (
-    <MethodSection number={SECTION_NUMBER.why} title={why.title}>
+    <MethodSection id={SECTION_NUMBER.why} title={why.title}>
       <MethodBlocks blocks={WHY_BLOCKS} />
     </MethodSection>
   );

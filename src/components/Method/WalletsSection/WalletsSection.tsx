@@ -18,7 +18,7 @@ const WALLET_BLOCKS: readonly MethodBlock[] = [
 
 export function WalletsSection(): JSX.Element {
   return (
-    <MethodSection number={SECTION_NUMBER.wallets} title={wallets.title}>
+    <MethodSection id={SECTION_NUMBER.wallets} title={wallets.title}>
       <WalletTrio pots={wallets.pots} />
       <MethodBlocks blocks={WALLET_BLOCKS} />
     </MethodSection>

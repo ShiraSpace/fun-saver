@@ -185,25 +185,26 @@ branches were cut from each other instead.
 
 ## Decisions (settled 2026-09-22, during PR 8)
 
-19. **An accordion's identity is not its numeral.** «המקורות» is a `<details>`
-    with a summary, a hint chip and a chevron and no number — it is not one of
-    the six steps. A component of its own, sharing the chrome through a
-    `*-parts.ts`, was the obvious shape and loses: a second component composing
-    the same summary row is exactly the drift decision 3 refused for `Header`.
+19. **An accordion carries one identity, and shows it when it is a number.**
+    «המקורות» is a `<details>` with a summary, a hint chip and a chevron and no
+    number — it is not one of the six steps. A component of its own, sharing
+    the chrome through a `*-parts.ts`, was the obvious shape and loses: a
+    second component composing the same summary row is exactly the drift
+    decision 3 refused for `Header`.
 
-    So `MethodSection` takes **either** a `number` **or** an `id`, never both —
-    `{ number: number; id?: undefined } | { number?: undefined; id:
-    MethodSectionId }`, with the test ids reading `props.id === undefined ?
-    props.number : props.id`. The first version took both and the six numbered
-    sections passed the same value twice, which let a numeral and its test ids
-    disagree while every test still passed, because each queried by the id it
-    was handed. The reviewer's `id ?? number` with both optional does not
-    type-check — TypeScript cannot see that one is always present — and closing
-    that needed a cast, so the union carries it instead.
+    `MethodSection` takes a single `id: MethodSectionId` and draws the pill
+    when `typeof id === 'number'`. Two shapes were built before it and thrown
+    away: an `id` beside a `number`, where the six numbered sections passed the
+    same value twice and a mismatch would have drawn one numeral while every
+    test id said another — with every test still green, because each queried by
+    the id it was handed; then a union of the two, which closed that hole but
+    bought a discriminated type, an undestructured `props` and a narrowing line
+    to describe one prop. **One value cannot disagree with itself**, which is
+    what both of those were paying to prevent.
 
     `MethodSectionId` is `number | typeof SOURCES_SECTION_ID`. `number | string`
-    collapses to `string | number`, and `body('sorces')` then compiles and
-    queries an id nothing renders.
+    collapses to `string | number`, and `id="sorces"` then compiles and renders
+    an accordion no test can find.
 
 20. **A source's `url` is the citation link.** The mockup renders no links, but
     it also elides twelve of the sixteen entries, and its own `.srcs a` rule is

@@ -18,7 +18,7 @@ export function PromiseSection(): JSX.Element {
 
   return (
     <MethodSection
-      number={SECTION_NUMBER.promise}
+      id={SECTION_NUMBER.promise}
       title={promise.title}
       hint={promise.hint}
     >
