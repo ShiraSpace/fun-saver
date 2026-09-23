@@ -6,13 +6,20 @@ import {
   APP_MODE,
   AppModeProvider,
 } from '@/components/AccountManagement/app-mode-context';
+import { type AccountsContextValue } from '@/components/Home/accounts-context';
 import {
-  mockAccountsContext,
   mockDerivedAccount,
+  mockSecondDerivedAccount,
   mockUser,
 } from '@/test-utils/fixtures';
 
 const mockOnLeaveMenu = jest.fn();
+
+const accountsValue: AccountsContextValue = {
+  accounts: [mockDerivedAccount, mockSecondDerivedAccount],
+  currentAccount: mockDerivedAccount,
+  selectAccount: () => {},
+};
 
 function renderScope(): void {
   render(
@@ -25,7 +32,7 @@ function renderScope(): void {
         onAccountListToggle={(): void => {}}
       />
     </AppModeProvider>,
-    { accounts: mockAccountsContext, user: mockUser }
+    { accounts: accountsValue, user: mockUser }
   );
 }
 

@@ -15,7 +15,7 @@ export const THEMES = {
   [THEME_ID.midnightBlue]: midnightBlue,
 } as const;
 
-export type ThemeId = (typeof THEME_ID)[keyof typeof THEME_ID];
+export type ThemeId = keyof typeof THEMES;
 
 export const DEFAULT_THEME_ID: ThemeId = THEME_ID.sunshineQuest;
 
