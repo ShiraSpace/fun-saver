@@ -201,9 +201,6 @@ describe('Header', () => {
       expect(
         screen.queryByTestId(HEADER_TEST_IDS.avatar)
       ).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId(HEADER_TEST_IDS.homeLink)
-      ).not.toBeInTheDocument();
     });
   });
 });

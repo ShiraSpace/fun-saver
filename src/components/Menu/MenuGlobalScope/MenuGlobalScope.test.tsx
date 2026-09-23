@@ -7,6 +7,8 @@ import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
 const BELOW_THE_STRIP = 'below-the-profile-strip';
 
 describe('MenuGlobalScope', () => {
+  let block: HTMLElement;
+
   beforeEach(() => {
     render(
       <MenuGlobalScope>
@@ -14,17 +16,17 @@ describe('MenuGlobalScope', () => {
       </MenuGlobalScope>,
       { user: mockUser }
     );
+
+    block = screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block);
   });
 
   it('names the signed-in parent, who belongs to no one account', () => {
-    expect(
-      screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block)
-    ).toContainElement(screen.getByTestId(PROFILE_SECTION_TEST_IDS.strip));
+    expect(block).toContainElement(
+      screen.getByTestId(PROFILE_SECTION_TEST_IDS.strip)
+    );
   });
 
   it('holds whatever the menu puts under them', () => {
-    expect(
-      screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block)
-    ).toContainElement(screen.getByTestId(BELOW_THE_STRIP));
+    expect(block).toContainElement(screen.getByTestId(BELOW_THE_STRIP));
   });
 });
