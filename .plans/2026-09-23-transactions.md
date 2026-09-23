@@ -9,7 +9,7 @@
 **Goal:** Ship `/transactions` — a per-account balance chart and a movement
 list — and turn the inert `תנועות` tab on.
 
-**Architecture:** One server read (`accountLedgers`) settles interest and
+**Architecture:** One server read (`settledLedgers`) settles interest and
 returns every visible account's wallets *and* ledger; the page ships a
 five-field projection to a client shell. Two pure derivations in `src/lib`
 (`balance-series.ts`, `transaction-rows.ts`) do all the arithmetic; the
@@ -40,7 +40,7 @@ stack was rebased twice because branches were cut from each other instead.
 
 | Wave | Lane A | Lane B | Lane C | Starts when |
 | --- | --- | --- | --- | --- |
-| 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 — store, then `accountLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
+| 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 — store, then `settledLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
 | 2 | PR 6 — route, shell, headline | — | — | PRs 3 and 4 merged |
 | 3 | PR 7 — chart | PR 8 — list | — | PR 6 merged; PR 7 also needs PR 1, PR 8 needs PR 5 |
 | 4 | PR 9 — tab and browser suite | — | — | PRs 7 and 8 merged |
@@ -318,7 +318,7 @@ alone; midnight's donut `walletSavings` at 1.99 is out of scope.
 Branch `feat/list-by-account`. Spec: "Store contract".
 **Merged as #125 on 2026-09-23.** What shipped differs from the steps below:
 review made every store return oldest first, so the memory and json-file
-repositories sort through `byOccurrence` (`src/db/transactions.ts`) in both
+repositories sort through `oldestFirst` (`src/db/transaction-order.ts`) in both
 `listByAccount` and `listByWallet`, and the tests reuse `mockTransactions`. The
 code on `main` is the record.
 
@@ -456,11 +456,16 @@ after confirming which Neon branch `DATABASE_URL` points at.
 ## PR 3 — one read serves both the wallets and the ledger
 
 Branch `refactor/account-ledgers`. Spec: "The shared read", delivery order 2.
+What ships differs from the steps below: each wallet is settled and derived in
+one pass (`payWalletInterest`, gathered by `payOwedInterest`), so the per-wallet
+split happens once; the names say what the code does; and the tests reuse the
+shared fixtures under names in domain language. The code on the branch is the
+record.
 `/` and `/method` keep their behaviour; this PR changes nothing a parent sees.
 
 **Files:**
-- Modify: `src/lib/account-dashboard.ts` (whole file)
-- Test: `src/lib/__tests__/account-dashboard.test.ts` (rewrite the
+- Modify: `src/lib/account-ledgers.ts` (whole file)
+- Test: `src/lib/__tests__/account-ledgers.test.ts` (rewrite the
   `getWalletsForAccount` describe; the `withDerivedWallets` describe stays)
 
 **Interfaces:**
@@ -468,11 +473,11 @@ Branch `refactor/account-ledgers`. Spec: "The shared read", delivery order 2.
 - Produces:
 
 ```ts
-export interface AccountLedger {
+export interface Ledger {
   account: AccountWithDerivedWallets;
   transactions: Transaction[];
 }
-export function accountLedgers(query: AccountsQuery): Promise<AccountLedger[]>;
+export function settledLedgers(query: AccountsQuery): Promise<Ledger[]>;
 export async function withDerivedWallets(query: AccountsQuery): Promise<AccountWithDerivedWallets[]>;
 ```
 
@@ -512,7 +517,7 @@ interface AccountQuery {
   asOf: string;
 }
 
-export interface AccountLedger {
+export interface Ledger {
   account: AccountWithDerivedWallets;
   transactions: Transaction[];
 }
@@ -542,7 +547,7 @@ function derivedWallets(
     .sort((a, b) => WALLET_ORDER[a.name] - WALLET_ORDER[b.name]);
 }
 
-async function accountLedger({ store, account, asOf }: AccountQuery): Promise<AccountLedger> {
+async function payOwedInterest({ store, account, asOf }: AccountQuery): Promise<Ledger> {
   const stored = await store.listTransactionsByAccount(account.id);
   const accrued = accruedInterest(account, stored, asOf);
 
@@ -558,14 +563,14 @@ async function accountLedger({ store, account, asOf }: AccountQuery): Promise<Ac
   };
 }
 
-export function accountLedgers({ store, accounts, asOf }: AccountsQuery): Promise<AccountLedger[]> {
-  return Promise.all(accounts.map((account) => accountLedger({ store, account, asOf })));
+export function settledLedgers({ store, accounts, asOf }: AccountsQuery): Promise<Ledger[]> {
+  return Promise.all(accounts.map((account) => payOwedInterest({ store, account, asOf })));
 }
 
 export async function withDerivedWallets(
   query: AccountsQuery
 ): Promise<AccountWithDerivedWallets[]> {
-  const ledgers = await accountLedgers(query);
+  const ledgers = await settledLedgers(query);
 
   return ledgers.map((ledger) => ledger.account);
 }
@@ -574,8 +579,8 @@ export async function withDerivedWallets(
 - [ ] **Step 2: tsc, eslint, STOP, commit** —
       `refactor(dashboard): one read serves both the wallets and the ledger`
 - [ ] **Step 3: First three tests.** Rename the `getWalletsForAccount` describe
-      to `accountLedgers` and move its three existing cases onto
-      `(await accountLedgers({ store, accounts: [account], asOf }))[0].account.wallets`.
+      to `settledLedgers` and move its three existing cases onto
+      `(await settledLedgers({ store, accounts: [account], asOf }))[0].account.wallets`.
       They count as the first three: ordering, compounded interest, no
       re-accrual. Breaks: drop the `.sort`; drop `...accrued` from `settled`;
       drop the `insertTransactions` call (the re-read test reddens).
@@ -583,7 +588,7 @@ export async function withDerivedWallets(
 
 ```ts
   it('derives a wallet nothing has happened to yet, as every new account has', async () => {
-    const [ledger] = await accountLedgers({ store, accounts: [account], asOf: '2026-01-03' });
+    const [ledger] = await settledLedgers({ store, accounts: [account], asOf: '2026-01-03' });
 
     expect(ledger.account.wallets.map((wallet) => wallet.balance)).toEqual([0, 0]);
   });
@@ -594,14 +599,14 @@ export async function withDerivedWallets(
     });
     await store.insertTransactions([createMockTransaction({ occurredAt: '2026-01-01' })]);
 
-    const [ledger] = await accountLedgers({ store, accounts: [unsettled], asOf: '2026-01-03' });
+    const [ledger] = await settledLedgers({ store, accounts: [unsettled], asOf: '2026-01-03' });
 
     expect(ledger.transactions.filter((row) => row.type === 'interest')).toHaveLength(2);
   });
 
   it('leaves the store untouched when no interest is owed', async () => {
     const insert = jest.spyOn(store, 'insertTransactions');
-    await accountLedgers({ store, accounts: [account], asOf: '2026-01-01' });
+    await settledLedgers({ store, accounts: [account], asOf: '2026-01-01' });
 
     expect(insert).not.toHaveBeenCalled();
   });
@@ -1182,7 +1187,7 @@ delta", "Why every account". The tab stays inert (delivery order 3). Uses
 decision B (headline size, settled).
 
 **Files:**
-- Modify: `src/lib/account-dashboard.ts` (`toLedgerEntry`, `ledgerEntriesByAccount`)
+- Modify: `src/lib/account-ledgers.ts` (`toLedgerEntry`, `ledgerEntriesByAccount`)
 - Modify: `src/lib/constants.ts` (`AGOROT_SHOWN_BELOW`), `src/lib/money.ts` (`shekelText`, `needsAgorot`)
 - Create: `src/app/transactions/page.tsx`
 - Create: `src/components/Transactions/{Transactions.tsx,Transactions.test.tsx,constants.ts,index.ts,use-transactions-view.ts,transactions-parts.ts}`
@@ -1190,14 +1195,14 @@ decision B (headline size, settled).
 - Create: `src/components/Transactions/SignedAmount/{SignedAmount.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
 - Create: `src/components/Transactions/ChartCard/{ChartCard.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
 - Create: `src/components/Transactions/ChartCard/TotalHeader/{TotalHeader.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
-- Test: `src/lib/__tests__/money.test.ts`, `src/lib/__tests__/account-dashboard.test.ts`
+- Test: `src/lib/__tests__/money.test.ts`, `src/lib/__tests__/account-ledgers.test.ts`
 
 **Interfaces:**
 
 ```ts
-// account-dashboard.ts
+// account-ledgers.ts
 export function toLedgerEntry(transaction: Transaction): LedgerEntry;
-export function ledgerEntriesByAccount(ledgers: AccountLedger[]): Record<string, LedgerEntry[]>;
+export function ledgerEntriesByAccount(ledgers: Ledger[]): Record<string, LedgerEntry[]>;
 
 // money.ts — the one precision rule the ticks and the change column share
 export function shekelText(agorot: number, withAgorot: boolean): string;
@@ -1231,7 +1236,7 @@ export interface SignedAmountProps { amountAgorot: number; withAgorot: boolean; 
 - [ ] **Step 1: The projection and the precision rule.**
 
 ```ts
-// account-dashboard.ts
+// account-ledgers.ts
 export function toLedgerEntry({
   walletId,
   type,
@@ -1242,7 +1247,7 @@ export function toLedgerEntry({
   return { walletId, type, amount, occurredAt, createdAt };
 }
 
-export function ledgerEntriesByAccount(ledgers: AccountLedger[]): Record<string, LedgerEntry[]> {
+export function ledgerEntriesByAccount(ledgers: Ledger[]): Record<string, LedgerEntry[]> {
   return Object.fromEntries(
     ledgers.map((ledger) => [ledger.account.id, ledger.transactions.map(toLedgerEntry)])
   );
@@ -1272,7 +1277,7 @@ import { Transactions } from '@/components/Transactions';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { getStore } from '@/db';
-import { accountLedgers, ledgerEntriesByAccount } from '@/lib/account-dashboard';
+import { settledLedgers, ledgerEntriesByAccount } from '@/lib/account-ledgers';
 import { today } from '@/lib/clock';
 import { selectedAccount } from '@/lib/selected-account';
 import { ThemedPage } from '@/theme/ThemedPage';
@@ -1283,7 +1288,7 @@ export const dynamic = 'force-dynamic';
 export default async function TransactionsPage(): Promise<JSX.Element> {
   const { user, accounts, selectedAccountId, themeId } = await signedInAccounts();
   const asOf = today();
-  const ledgers = await accountLedgers({ store: getStore(), accounts, asOf });
+  const ledgers = await settledLedgers({ store: getStore(), accounts, asOf });
   const derived = ledgers.map((ledger) => ledger.account);
   const initialAccount = selectedAccount(derived, selectedAccountId);
 
@@ -1490,7 +1495,7 @@ export function ChartCard({ series, view }: ChartCardProps): JSX.Element {
     — `needsAgorot` of 9, 999, 1000, 500 → `true, true, false, false`;
     `'writes shekels to two places, or rounds them'` — `shekelText(9, true)` is
     `'0.09'`, `shekelText(1260, false)` is `'13'`.
-  - `account-dashboard.test.ts`: `'keeps ids and the account off the wire'` —
+  - `account-ledgers.test.ts`: `'keeps ids and the account off the wire'` —
     `Object.keys(toLedgerEntry(createMockTransaction())).sort()` equals the five
     fields; `'keys each ledger by the account it belongs to'`.
   - `Transactions.test.tsx`: `'keeps the range when the parent switches child'` —
