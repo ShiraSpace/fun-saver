@@ -145,4 +145,5 @@ decision 3 removes from `WalletList`. Composited, 4.46 becomes **3.44** on
 sunshine and 4.33 becomes **3.33** on jungle.
 
 **Not scoped here.** Every item above is a separate pass; this plan's six
-surfaces are done and merged as drawn.
+surfaces are done and merged as drawn. The follow-up carries them:
+`.plans/2026-09-23-aa-contrast-pass-2.md`.
