@@ -9,12 +9,29 @@ const TOKEN_GROUPS = [
   ['tints', 'tint'],
 ] as const;
 
+type ColourGroup = (typeof TOKEN_GROUPS)[number][0];
+
+const PREFIX_OF = Object.fromEntries(TOKEN_GROUPS) as Record<
+  ColourGroup,
+  string
+>;
+
+const customProperty = (prefix: string, name: string): string =>
+  `--fs-${prefix}-${name}`;
+
 const tokensOf = (theme: ThemeTokens): string =>
   TOKEN_GROUPS.flatMap(([group, prefix]) =>
     Object.entries(theme[group]).map(
-      ([name, value]) => `--fs-${prefix}-${name}:${value}`
+      ([name, value]) => `${customProperty(prefix, name)}:${value}`
     )
   ).join(';');
+
+export function themeVar<Group extends ColourGroup>(
+  group: Group,
+  name: keyof ThemeTokens[Group] & string
+): string {
+  return `var(${customProperty(PREFIX_OF[group], name)})`;
+}
 
 const scopeFor = (id: string): string =>
   id === DEFAULT_THEME_ID

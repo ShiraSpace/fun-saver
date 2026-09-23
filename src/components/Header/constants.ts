@@ -5,6 +5,7 @@ export const HEADER_TEST_IDS = {
   bar: 'header',
   avatar: 'header-avatar',
   homeLink: 'header-home-link',
+  progress: 'header-progress',
 } as const;
 
 export const HEADER_CONTENT = {

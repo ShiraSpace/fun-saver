@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, JSX } from 'react';
+import { JSX, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import type { Account } from '@/lib/types';
 import {
@@ -15,6 +15,8 @@ import { Title } from './CrossfadeTitle';
 import { HeaderEndSlot } from './HeaderEndSlot';
 import { HEADER_TEST_IDS } from './constants';
 import { Bar } from './Header.styles';
+import { ProgressLine } from './ProgressLine';
+import { NavigationPendingProvider } from './navigation-pending-context';
 
 export interface HeaderProps {
   title: string;
@@ -24,9 +26,10 @@ export interface HeaderProps {
 export function Header({ title, account }: HeaderProps): JSX.Element {
   const menu = useMenuState();
   const isHome = usePathname() === HOME_ROUTE;
+  const [isNavigating, setNavigating] = useState(false);
 
   return (
-    <Fragment>
+    <NavigationPendingProvider value={setNavigating}>
       <MenuHeaderSheet
         data-open={menu.isOpen}
         data-testid={MENU_HEADER_SHEET_TEST_IDS.sheet}
@@ -41,6 +44,9 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
             isHidden={menu.isOpen}
           />
         )}
+        {isNavigating && (
+          <ProgressLine data-testid={HEADER_TEST_IDS.progress} />
+        )}
       </Bar>
       <MenuOverlay
         isOpen={menu.isOpen}
@@ -48,6 +54,6 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
         isAccountListOpen={menu.isAccountListOpen}
         onAccountListToggle={menu.setAccountListOpen}
       />
-    </Fragment>
+    </NavigationPendingProvider>
   );
 }

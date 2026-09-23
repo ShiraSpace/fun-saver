@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX } from 'react';
+import { JSX, memo } from 'react';
 import { MenuBody } from '../MenuBody';
 import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
 import { useEscapeDismissal } from './use-escape-dismissal';
@@ -13,7 +13,7 @@ export interface MenuOverlayProps {
   onAccountListToggle: (isOpen: boolean) => void;
 }
 
-export function MenuOverlay({
+export const MenuOverlay = memo(function MenuOverlay({
   isOpen,
   onClose,
   isAccountListOpen,
@@ -43,4 +43,4 @@ export function MenuOverlay({
       </Content>
     </Panel>
   );
-}
+});
