@@ -160,5 +160,11 @@ describe('Header', () => {
         screen.getByTestId(HEADER_TEST_IDS.avatar)
       );
     });
+
+    it('takes the way home away under an open menu, as home does its avatar', () => {
+      fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+
+      expect(screen.getByTestId(HEADER_TEST_IDS.homeLink)).not.toBeVisible();
+    });
   });
 });
