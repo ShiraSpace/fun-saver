@@ -27,8 +27,8 @@ before any PR.
 
 ## Where it stands (2026-09-23)
 
-Plan written, nothing built. Spec and plan both sit uncommitted on
-`docs/transactions-spec`.
+Spec and plan merged as #119. **PR 1 merged as #122** — the chart-line colours
+are on `main`, so PR 7 now waits only on PR 6.
 
 ### Lanes — who can run in parallel
 
@@ -39,7 +39,7 @@ stack was rebased twice because branches were cut from each other instead.
 
 | Wave | Lane A | Lane B | Lane C | Starts when |
 | --- | --- | --- | --- | --- |
-| 1 | PR 1 — theme tokens | PR 2 → PR 3 — store, then `accountLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
+| 1 | PR 1 — theme tokens ✓ #122 | PR 2 → PR 3 — store, then `accountLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
 | 2 | PR 6 — route, shell, headline | — | — | PRs 3 and 4 merged |
 | 3 | PR 7 — chart | PR 8 — list | — | PR 6 merged; PR 7 also needs PR 1, PR 8 needs PR 5 |
 | 4 | PR 9 — tab and browser suite | — | — | PRs 7 and 8 merged |
@@ -207,6 +207,7 @@ settled against `mockups/chart-contrast.html`, drawn during the decision.
 ## PR 1 — the chart lines get colours they can be seen in
 
 Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
+**Merged as #122 on 2026-09-23.**
 
 **Files:**
 - Modify: `src/theme/theme-tokens.ts` (`ThemeColors`)
@@ -224,7 +225,7 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
       `#2563EB` · pink `#E94E89`. `mockups/chart-contrast.html` draws the sunshine
       chart card eight ways over the same four lines and records why each other
       option was rejected.
-- [ ] **Step 2: Add the three keys to `ThemeColors`**, after `walletTrack`:
+- [x] **Step 2: Add the three keys to `ThemeColors`**, after `walletTrack`:
 
 ```ts
   readonly chartSavings: string;
@@ -232,7 +233,7 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
   readonly chartGood: string;
 ```
 
-- [ ] **Step 3: Add the nine values.**
+- [x] **Step 3: Add the nine values.**
 
 ```ts
 // src/theme/palette.ts (sunshine-quest), after walletTrack
@@ -251,7 +252,7 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
     chartGood: '#A78BFA',
 ```
 
-- [ ] **Step 4: Add the helper** to `src/test-utils/css-color.ts`:
+- [x] **Step 4: Add the helper** to `src/test-utils/css-color.ts`:
 
 ```ts
 function channel(value: number): number {
@@ -271,9 +272,10 @@ export function contrastRatio(first: string, second: string): number {
 }
 ```
 
-- [ ] **Step 5: tsc, eslint, STOP, commit** —
+- [x] **Step 5: tsc, eslint, STOP, commit** —
       `feat(theme): the chart lines get colours they can be seen in`
-- [ ] **Step 6: The tests** — all three are the first three; there are no more.
+- [x] **Step 6: The tests** — all three are the first three; there are no more.
+      As shipped, one `describe.each` per theme:
 
 ```ts
 import { THEMES } from '../registry';
@@ -281,23 +283,22 @@ import { contrastRatio } from '@/test-utils/css-color';
 
 const GRAPHIC_CONTRAST = 3;
 
-describe('the balance chart lines', () => {
-  const themes = Object.entries(THEMES);
+describe.each(Object.entries(THEMES))('the chart lines in %s', (_, { colors }) => {
+  const lines = [colors.chartSavings, colors.chartSpending, colors.chartGood];
 
-  it.each(themes)('stand out from the card they are drawn on, in %s', (_, { colors }) => {
-    for (const line of [colors.chartSavings, colors.chartSpending, colors.chartGood]) {
-      expect(contrastRatio(line, colors.surface)).toBeGreaterThanOrEqual(GRAPHIC_CONTRAST);
-    }
+  it('stand out from the card they are drawn on', () => {
+    const ratios = lines.map((line) => contrastRatio(line, colors.surface));
+    expect(Math.min(...ratios)).toBeGreaterThanOrEqual(GRAPHIC_CONTRAST);
   });
 
-  it.each(themes)('never draw two wallets in one colour, in %s', (_, { colors }) => {
-    const lines = [colors.chartSavings, colors.chartSpending, colors.chartGood, colors.textStrong];
-    expect(new Set(lines).size).toBe(lines.length);
+  it('never draw two lines in one colour', () => {
+    const drawn = [...lines, colors.textStrong];
+    expect(new Set(drawn).size).toBe(drawn.length);
   });
+});
 
-  it('measures a ratio the way the contrast passes did', () => {
-    expect(contrastRatio('#FFFFFF', '#000000')).toBeCloseTo(21);
-  });
+it('measures a contrast ratio the way the contrast passes did', () => {
+  expect(contrastRatio('#FFFFFF', '#000000')).toBeCloseTo(21);
 });
 ```
 
@@ -305,9 +306,9 @@ Breaks: set sunshine `chartSavings` back to the mockup's `#E0A020` (first test
 reddens for `sunshine-quest` only); set midnight `chartSpending` to `#60A5FA`
 (second test reddens); drop the `+ 0.05` from `contrastRatio` (third reddens).
 
-PR body carries the measured table: every token against its theme's `surface`,
-jungle `#E76F51` at 3.04 recorded as measured and left alone, and midnight's
-donut `walletSavings` at 1.99 recorded as out of scope.
+The measured table lives in the spec's "Colours" section, not the PR body,
+which stays in domain language. Jungle `#E76F51` at 3.04 is measured and left
+alone; midnight's donut `walletSavings` at 1.99 is out of scope.
 
 ---
 
