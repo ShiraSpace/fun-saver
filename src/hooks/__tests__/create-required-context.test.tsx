@@ -1,53 +1,41 @@
-import { JSX } from 'react';
-import { render, screen } from '@/test-utils/render';
+import { JSX, ReactNode } from 'react';
+import { renderHook } from '@testing-library/react';
 import { createRequiredContext } from '../create-required-context';
 
 const PROVIDER_NAME = 'NameProvider';
 const NAME = 'Noa';
-const NOTHING = 'nothing';
-const NAME_TESTID = 'name';
 
 const [NameProvider, useName, useOptionalName] =
   createRequiredContext<string>(PROVIDER_NAME);
 
-function RequiredName(): JSX.Element {
-  return <span data-testid={NAME_TESTID}>{useName()}</span>;
-}
-
-function OptionalName(): JSX.Element {
-  return <span data-testid={NAME_TESTID}>{useOptionalName() ?? NOTHING}</span>;
+function WithName({ children }: { children: ReactNode }): JSX.Element {
+  return <NameProvider value={NAME}>{children}</NameProvider>;
 }
 
 describe('a context that must have a provider', () => {
   it('hands the provided value to whoever asks', () => {
-    render(
-      <NameProvider value={NAME}>
-        <RequiredName />
-      </NameProvider>
-    );
+    const { result } = renderHook(() => useName(), { wrapper: WithName });
 
-    expect(screen.getByTestId(NAME_TESTID)).toHaveTextContent(NAME);
+    expect(result.current).toBe(NAME);
   });
 
   it('refuses to guess, naming the provider it needs, when no provider is above it', () => {
-    expect(() => render(<RequiredName />)).toThrow(
+    expect(() => renderHook(() => useName())).toThrow(
       'No NameProvider above this component'
     );
   });
 
-  it('answers that there is nothing rather than throwing, for callers that only ask', () => {
-    render(<OptionalName />);
+  it('answers null rather than throwing, for callers that only ask', () => {
+    const { result } = renderHook(() => useOptionalName());
 
-    expect(screen.getByTestId(NAME_TESTID)).toHaveTextContent(NOTHING);
+    expect(result.current).toBeNull();
   });
 
   it('hands the same value to callers that only ask, when a provider is above it', () => {
-    render(
-      <NameProvider value={NAME}>
-        <OptionalName />
-      </NameProvider>
-    );
+    const { result } = renderHook(() => useOptionalName(), {
+      wrapper: WithName,
+    });
 
-    expect(screen.getByTestId(NAME_TESTID)).toHaveTextContent(NAME);
+    expect(result.current).toBe(NAME);
   });
 });

@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  JSX,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { JSX, ReactNode, useEffect, useMemo, useState } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import { createRequiredContext } from '@/hooks/create-required-context';
 import { getThemeTokens, type ThemeId } from './registry';
@@ -30,10 +23,6 @@ export function AppThemeProvider({
 }: AppThemeProviderProps): JSX.Element {
   const [themeId, setThemeId] = useState<ThemeId>(initialThemeId);
 
-  const select = useCallback((id: ThemeId): void => {
-    setThemeId(id);
-  }, []);
-
   const theme = useMemo(() => getThemeTokens(themeId), [themeId]);
 
   useEffect((): void => {
@@ -42,7 +31,7 @@ export function AppThemeProvider({
 
   return (
     <ThemeIdProvider value={themeId}>
-      <SetThemeIdProvider value={select}>
+      <SetThemeIdProvider value={setThemeId}>
         <ThemeProvider theme={theme}>{children}</ThemeProvider>
       </SetThemeIdProvider>
     </ThemeIdProvider>
