@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { TRANSACTION_DRAWER_STYLE } from './constants';
 
 export const DrawerTitle = styled.span`
   text-align: center;
@@ -8,6 +9,7 @@ export const DrawerTitle = styled.span`
 `;
 
 export const DrawerError = styled.span`
+  margin-top: ${TRANSACTION_DRAWER_STYLE.messageGap}px;
   text-align: center;
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
