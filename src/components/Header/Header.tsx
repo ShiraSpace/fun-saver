@@ -45,6 +45,7 @@ export function Header({ title, avatarId }: HeaderProps): JSX.Element {
       isHidden={menu.isOpen}
     />
   );
+  const endSlot = isHome ? avatar : homeLink;
 
   return (
     <Fragment>
@@ -55,7 +56,7 @@ export function Header({ title, avatarId }: HeaderProps): JSX.Element {
       <Bar data-testid={HEADER_TEST_IDS.bar}>
         <MenuToggle isOpen={menu.isOpen} onToggle={menu.toggle} />
         <Title text={title} />
-        {isHome ? avatar : homeLink}
+        {endSlot}
       </Bar>
       <MenuOverlay
         isOpen={menu.isOpen}
