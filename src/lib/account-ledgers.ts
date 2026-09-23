@@ -58,13 +58,11 @@ function payWalletInterest(
     accountId,
   });
 
+  const settledTransactions = [...transactions, ...interestPaid];
+
   return {
     interestPaid,
-    wallet: deriveWallet({
-      wallet,
-      transactions: [...transactions, ...interestPaid],
-      asOf,
-    }),
+    wallet: deriveWallet({ wallet, transactions: settledTransactions, asOf }),
   };
 }
 
@@ -83,13 +81,15 @@ async function payOwedInterest({
     await store.insertTransactions(interestPaid);
   }
 
-  const wallets = payouts
-    .map((payout) => payout.wallet)
-    .sort((a, b) => WALLET_ORDER[a.name] - WALLET_ORDER[b.name]);
+  const paidWallets = payouts.map((payout) => payout.wallet);
+  const wallets = paidWallets.sort(
+    (a, b) => WALLET_ORDER[a.name] - WALLET_ORDER[b.name]
+  );
+  const settledHistory = [...history, ...interestPaid];
 
   return {
     account: { ...account, wallets },
-    transactions: [...history, ...interestPaid],
+    transactions: settledHistory,
   };
 }
 
