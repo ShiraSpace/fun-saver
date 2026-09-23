@@ -1,8 +1,13 @@
 import { render, screen } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
 import { PIG_EMOJI } from '@/components/Pig/constants';
+import { HEADER_TEST_IDS } from '@/components/Header/constants';
+import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
+import { PROFILE_SECTION_TEST_IDS } from '@/components/Menu/ProfileSection/constants';
 import { EmptyState } from './EmptyState';
 import { EMPTY_STATE_COPY, EMPTY_STATE_TEST_IDS } from './constants';
+
+const GREETING = 'שלום';
 
 describe('EmptyState', () => {
   beforeEach(() => {
@@ -25,5 +30,21 @@ describe('EmptyState', () => {
     expect(
       screen.getByTestId(EMPTY_STATE_TEST_IDS.createAccount)
     ).toHaveTextContent(EMPTY_STATE_COPY.createAccount);
+  });
+
+  it('carries the header, so the burger sits where it does on every screen', () => {
+    expect(screen.getByTestId(HEADER_TEST_IDS.bar)).toBeInTheDocument();
+  });
+
+  it('greets the parent where an account screen would name the account', () => {
+    expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
+      GREETING
+    );
+  });
+
+  it('offers the way out of the app that a stranger used to be denied', () => {
+    expect(
+      screen.getByTestId(PROFILE_SECTION_TEST_IDS.signOut)
+    ).toBeInTheDocument();
   });
 });
