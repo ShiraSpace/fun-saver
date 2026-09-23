@@ -36,6 +36,7 @@ export function MenuOverlay({
       aria-label={MENU_OVERLAY_CONTENT.title}
       data-testid={MENU_OVERLAY_TEST_IDS.overlay}
       data-open={isOpen}
+      inert={!isOpen}
     >
       <Content>
         <NavTabs onNavigate={onClose} />

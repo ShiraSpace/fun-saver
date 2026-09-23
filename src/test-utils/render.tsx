@@ -9,8 +9,13 @@ import {
   AccountsProvider,
   type AccountsContextValue,
 } from '@/components/Home/accounts-context';
+import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { setMockPathname } from '@mocks/next/navigation';
-import { mockDerivedAccount, mockSecondDerivedAccount } from './fixtures';
+import {
+  mockDerivedAccount,
+  mockSecondDerivedAccount,
+  mockUser,
+} from './fixtures';
 
 export interface RenderWithAccountsAtOptions {
   route: string;
@@ -35,17 +40,34 @@ export const mockAccountsContext: AccountsContextValue = {
   selectAccount: () => {},
 };
 
+export function renderWithUser(ui: ReactElement): RenderResult {
+  return render(
+    <SignedInUserProvider value={mockUser}>{ui}</SignedInUserProvider>
+  );
+}
+
 export function renderWithAccounts(
   ui: ReactElement,
   value: AccountsContextValue = mockAccountsContext
 ): RenderResult {
-  return render(<AccountsProvider value={value}>{ui}</AccountsProvider>);
+  return renderWithUser(
+    <AccountsProvider value={value}>{ui}</AccountsProvider>
+  );
 }
 
 export function renderAt(route: string, ui: ReactElement): RenderResult {
   setMockPathname(route);
 
   return render(ui);
+}
+
+export function renderWithUserAt(
+  route: string,
+  ui: ReactElement
+): RenderResult {
+  setMockPathname(route);
+
+  return renderWithUser(ui);
 }
 
 export function renderWithAccountsAt({

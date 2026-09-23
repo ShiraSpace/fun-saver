@@ -1,4 +1,4 @@
-import { renderAt, screen, within } from '@/test-utils/render';
+import { renderWithUserAt, screen, within } from '@/test-utils/render';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
@@ -23,7 +23,7 @@ function renderedSectionIds(): (string | undefined)[] {
 
 describe('the method page', () => {
   beforeEach(() => {
-    renderAt(
+    renderWithUserAt(
       METHOD_ROUTE,
       <Method
         accounts={[mockDerivedAccount, mockSecondDerivedAccount]}

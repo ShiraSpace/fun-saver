@@ -7,6 +7,8 @@ import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '@/components/Menu/EditAccountButto
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from '@/components/Menu/AccountPicker/constants';
 import { MENU_ACCOUNT_SCOPE_TEST_IDS } from '@/components/Menu/MenuAccountScope/constants';
+import { PROFILE_SECTION_TEST_IDS } from '@/components/Menu/ProfileSection/constants';
+import { SIGN_IN_TEST_IDS } from '@/components/SignIn/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '@/components/Menu/AppearanceSection/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
@@ -58,6 +60,16 @@ export class MenuDriver {
   async openMethodPage(): Promise<string> {
     await this.session.click(NAV_TABS_TEST_IDS.methodTab);
     await this.session.waitForText(TITLE_TEST_IDS.title, METHOD_COPY.title);
+
+    return this.session.currentPath();
+  }
+
+  async signOut(): Promise<string> {
+    const left = this.session.waitForNavigation();
+
+    await this.session.click(PROFILE_SECTION_TEST_IDS.signOut);
+    await left;
+    await this.session.waitForTestId(SIGN_IN_TEST_IDS.continueWithGoogle);
 
     return this.session.currentPath();
   }

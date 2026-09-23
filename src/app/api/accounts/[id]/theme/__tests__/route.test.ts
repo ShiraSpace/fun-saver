@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { signedInUserId } from '@/auth';
+import { signedInUser } from '@/auth';
 import { API_ERRORS } from '@/app/api/constants';
 import { getStore } from '@/db';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
@@ -18,7 +18,7 @@ describe('PUT /api/accounts/[id]/theme', () => {
 
   beforeEach(async () => {
     accountId = (await createOwnedAccount(getStore())).id;
-    jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockUser);
   });
 
   function putTheme(themeId: string, id: string): Promise<Response> {
@@ -68,7 +68,7 @@ describe('PUT /api/accounts/[id]/theme', () => {
   });
 
   it('refuses a stranger with 403 and leaves the theme alone', async () => {
-    jest.mocked(signedInUserId).mockResolvedValue(mockSecondUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockSecondUser);
 
     const response = await putTheme('midnight-blue', accountId);
 

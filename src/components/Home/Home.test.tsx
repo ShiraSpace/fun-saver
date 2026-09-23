@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, renderWithUser, screen } from '@/test-utils/render';
 import { useThemeId } from '@/theme/ThemeController';
 import { Home } from './Home';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
@@ -103,7 +103,7 @@ describe('Home', () => {
         },
       ];
 
-      render(
+      renderWithUser(
         <>
           <Home accounts={themedAccounts} initialAccountId={mockAccount.id} />
           <ThemeProbe />

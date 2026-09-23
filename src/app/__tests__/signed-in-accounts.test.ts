@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import { redirect } from 'next/navigation';
-import { signedInUserId } from '@/auth';
+import { signedInUser } from '@/auth';
 import { byAccountName } from '@/db/account-users';
 import { getStore } from '@/db';
 import { LOGIN_PATH } from '@/lib/constants';
@@ -22,7 +22,7 @@ interface CookieStore {
 
 let mockSelectedAccountCookie: SelectedAccountCookie | undefined;
 
-jest.mock('@/auth', () => ({ signedInUserId: jest.fn() }));
+jest.mock('@/auth', () => ({ signedInUser: jest.fn() }));
 jest.mock('next/navigation', () => ({
   redirect: jest.fn(() => {
     throw new Error('NEXT_REDIRECT');
@@ -41,7 +41,7 @@ describe('signedInAccounts', () => {
 
   beforeEach(async () => {
     mockSelectedAccountCookie = undefined;
-    jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockUser);
 
     owned = byAccountName([
       await createOwnedAccount(getStore(), {
@@ -54,7 +54,7 @@ describe('signedInAccounts', () => {
   });
 
   it('sends a visitor with no session to the login page', async () => {
-    jest.mocked(signedInUserId).mockResolvedValue(undefined);
+    jest.mocked(signedInUser).mockResolvedValue(undefined);
     const listAccountsForUser = jest.spyOn(getStore(), 'listAccountsForUser');
 
     await expect(signedInAccounts()).rejects.toThrow();

@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { signedInUserId } from '@/auth';
+import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import { validNewAccount } from '@/lib/account-input';
 import { AccountsStore } from '@/lib/accounts-store';
@@ -8,9 +8,9 @@ import { API_ERRORS } from '@/app/api/constants';
 import { badRequest, notSignedIn } from '@/app/api/responses';
 
 export async function POST(request: Request): Promise<Response> {
-  const userId = await signedInUserId();
+  const user = await signedInUser();
 
-  if (!userId) {
+  if (!user) {
     return notSignedIn();
   }
 
@@ -22,7 +22,7 @@ export async function POST(request: Request): Promise<Response> {
 
   const account = await new AccountsStore(getStore()).createAccount({
     input,
-    ownerId: userId,
+    ownerId: user.id,
   });
 
   return Response.json(account, { status: StatusCodes.CREATED });

@@ -2,7 +2,12 @@ import NextAuth, { type Session } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import Google from 'next-auth/providers/google';
 import { getStore } from '@/db';
-import { provisionUser, toGoogleIdentity } from '@/lib/user-provisioning';
+import {
+  provisionUser,
+  toDisplayName,
+  toGoogleIdentity,
+} from '@/lib/user-provisioning';
+import type { SignedInUser } from '@/lib/types';
 
 declare module 'next-auth/jwt' {
   interface JWT {
@@ -38,6 +43,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 });
 
-export async function signedInUserId(): Promise<string | undefined> {
-  return (await auth())?.user?.id;
+export async function signedInUser(): Promise<SignedInUser | undefined> {
+  const user = (await auth())?.user;
+
+  if (!user?.id || !user.email) {
+    return;
+  }
+
+  return {
+    id: user.id,
+    name: toDisplayName(user.name, user.email),
+    email: user.email,
+    image: user.image ?? undefined,
+  };
 }

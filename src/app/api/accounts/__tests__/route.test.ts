@@ -4,7 +4,7 @@
 import { mockCreateAccountInput, mockUser } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { getStore } from '@/db';
-import { signedInUserId } from '@/auth';
+import { signedInUser } from '@/auth';
 import { withTempDataPath } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
@@ -15,7 +15,7 @@ describe('POST /api/accounts', () => {
 
   beforeEach(async () => {
     await getStore().insertUser(mockUser);
-    jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockUser);
   });
 
   function postRequest(body: unknown): Request {
@@ -43,7 +43,7 @@ describe('POST /api/accounts', () => {
   });
 
   it('refuses an unauthenticated request with 401 and stores nothing', async () => {
-    jest.mocked(signedInUserId).mockResolvedValue(undefined);
+    jest.mocked(signedInUser).mockResolvedValue(undefined);
 
     const response = await POST(postRequest(mockCreateAccountInput));
 

@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { signedInUserId } from '@/auth';
+import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import {
   mockAccountEdit,
@@ -23,7 +23,7 @@ describe('PUT /api/accounts/[id]', () => {
 
   beforeEach(async () => {
     accountId = (await createOwnedAccount(getStore())).id;
-    jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockUser);
   });
 
   function putRawBody(id: string, body: string | undefined): Promise<Response> {
@@ -132,7 +132,7 @@ describe('PUT /api/accounts/[id]', () => {
   });
 
   it('refuses a stranger with 403 and leaves the name and avatar alone', async () => {
-    jest.mocked(signedInUserId).mockResolvedValue(mockSecondUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockSecondUser);
 
     const response = await putAccount(accountId, mockAccountEdit);
 

@@ -1,4 +1,4 @@
-import { signedInUserId } from '@/auth';
+import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import { canEditAccount } from '@/lib/account-access';
 import { notSignedIn, notYourAccount } from '@/app/api/responses';
@@ -19,18 +19,15 @@ type RouteHandler = (
 
 export function withAccountEditor(handle: AccountEditorHandler): RouteHandler {
   return async (request, context) => {
-    const [userId, { id }] = await Promise.all([
-      signedInUserId(),
-      context.params,
-    ]);
+    const [user, { id }] = await Promise.all([signedInUser(), context.params]);
 
-    if (!userId) {
+    if (!user) {
       return notSignedIn();
     }
 
     const canEdit = await canEditAccount({
       store: getStore(),
-      userId,
+      userId: user.id,
       accountId: id,
     });
 
