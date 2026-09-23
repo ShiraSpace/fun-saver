@@ -1293,7 +1293,19 @@ throw-if-missing hook: `accounts-context`, `signed-in-user-context`, and both of
 `app-mode-context` stays as it is — it carries a default and never throws, which
 is a deliberate difference, not an inconsistency.
 
-**Take the inert `AppModeProvider` wrap out of `MenuGlobalScope.test.tsx` here.**
+**PR 12 changed two of this section's inputs.** `accounts-context` now also
+exports `useOptionalAccounts`, which returns the value rather than throwing on
+it, so the factory needs an optional reader beside the required one — a second
+return value, or a separate export, for what is currently two callers
+(`MenuBody` and `NavTabs`, both deriving "is there an account" from whether the
+provider is mounted). And the suite named below moved: PR 12 split
+`MenuGlobalScope` and its picker and edit button went to `AccountControls`,
+taking the test file with them. The inert wrap now lives in
+`AccountControls.test.tsx`, still inert — verified by deliberate break during
+PR 12, where deleting `setMode` from the production handler reddened eleven
+tests in `Home.managing-accounts.test.tsx` and none in that file.
+
+**Take the inert `AppModeProvider` wrap out of `AccountControls.test.tsx` here.**
 The suite wraps its element in `<AppModeProvider value={{ mode: APP_MODE.viewing,
 setMode: (): void => {} }}>`, which is byte-for-byte the `createContext` default
 in `app-mode-context.tsx`. Nothing asserts on `setMode` — it is a bare noop, not a
@@ -1334,7 +1346,33 @@ decision, not two: either the panel unmounts when closed — it does not today,
 because the open/close transition animates it — or the menu's open state reaches
 the pieces that hold state, and they reset on close.
 
-Depends on: PR 7.
+**The menu drills one callback six levels deep, and this PR is where that gets
+fixed.** `Header` owns `useMenuState` and is its only caller; everything below
+receives `close` by hand — `MenuOverlay` → `MenuBody` → `AccountControls` →
+`AccountPicker` → `AccountList` → `AddAccountRow`. Two of those hops are pure
+pass-through: `AccountPicker` and `AccountList` take the callback only to hand
+it on. The chain predates PR 12, which added one hop and pushed it one level
+further while removing a duplicated add row.
+
+A menu context is the fix, and it is this PR's business rather than PR 12's for
+one reason: the decision above — whether the panel unmounts or the open state
+reaches the pieces — is the same decision. The second option *is* a menu
+context. Making it in PR 12 would have settled this PR's design in the wrong
+place.
+
+Two things to get right when building it. **Land it after PR 13** and build the
+provider with `createRequiredContext`, or it becomes a fifth hand-rolled
+`createContext<T | null>(null)` the week before the factory that deletes that
+pattern arrives. And **do not call the reader `useMenuState`** — that name
+belongs to the hook that creates the state. A reader beside it with a near
+identical name is a mis-import waiting to happen; `useMenu` reading what
+`useMenuState` created is the distinction to keep visible.
+
+Whether the context carries only `close` or the whole `MenuState` follows from
+the unmount-versus-reset decision: resetting on close needs `isOpen` to reach
+the pieces, unmounting does not.
+
+Depends on: PR 7, and land after PR 13.
 
 ### PR 15 — `refactor/one-render-helper` — **merged as #105 (`da842b1`)**
 
