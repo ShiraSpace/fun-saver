@@ -90,6 +90,10 @@ export class Session {
     return queries.signedInUserId(this.page);
   }
 
+  async waitForNavigation(): Promise<void> {
+    await this.page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+  }
+
   canTakeFocus(testId: string): Promise<boolean> {
     return queries.canTakeFocus(this.page, testId);
   }
