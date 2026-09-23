@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { css, type SerializedStyles, type Theme } from '@emotion/react';
 import Link from 'next/link';
-import { MENU_ROW_STYLE } from '../constants';
+import { MENU_LAYOUT, MENU_ROW_STYLE } from '../constants';
 import { MENU_SCREENS } from './constants';
 
 const tabFace = ({ theme }: { theme: Theme }): SerializedStyles => css`
@@ -32,7 +32,7 @@ export const Strip = styled.nav`
   display: grid;
   grid-template-columns: repeat(${MENU_SCREENS.length}, 1fr);
   gap: 6px;
-  margin-bottom: 14px;
+  margin-bottom: ${MENU_LAYOUT.blockGap}px;
 `;
 
 export const Tab = styled(Link)`

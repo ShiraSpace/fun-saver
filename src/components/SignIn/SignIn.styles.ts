@@ -8,7 +8,7 @@ const onPrimary = ({ theme }: Themed): string => theme.colors.textOnPrimary;
 const surface = ({ theme }: Themed): string => theme.colors.surface;
 const strong = ({ theme }: Themed): string => theme.colors.textStrong;
 const muted = ({ theme }: Themed): string => theme.colors.textMuted;
-const alert = ({ theme }: Themed): string => theme.colors.alert;
+const alertText = ({ theme }: Themed): string => theme.colors.alertText;
 
 export const Wordmark = styled.h1`
   font-size: ${SIGN_IN_LAYOUT.wordmarkSize}px;
@@ -85,7 +85,7 @@ export const GoogleMark = styled.span`
 export const ErrorMessage = styled.p`
   font-size: ${TYPE_SCALE.label}px;
   margin: 0;
-  color: ${alert};
+  color: ${alertText};
   line-height: 1.6;
 `;
 
@@ -93,7 +93,6 @@ export const Fineprint = styled.p`
   font-size: ${TYPE_SCALE.label}px;
   margin: 0;
   color: ${onPrimary};
-  opacity: 0.88;
   line-height: 1.6;
   max-width: ${SIGN_IN_LAYOUT.fineprintMaxWidth}ch;
 `;

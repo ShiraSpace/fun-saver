@@ -3,7 +3,6 @@ import type { ThemeTypography } from './typography';
 export interface ThemeColors {
   readonly primary: string;
   readonly primaryText: string;
-  readonly primaryGradientTop: string;
   readonly primaryShadow: string;
   readonly primaryGlow: string;
   readonly textOnPrimary: string;
@@ -12,11 +11,10 @@ export interface ThemeColors {
   readonly textStrong: string;
   readonly textOnPot: string;
   readonly labelScrim: string;
+  readonly selectionRing: string;
   readonly screenGradientStart: string;
   readonly screenGradientMid: string;
   readonly screenGradientEnd: string;
-  readonly accent: string;
-  readonly accentSoft: string;
   readonly star: string;
   readonly divider: string;
   readonly softBg: string;
@@ -28,6 +26,7 @@ export interface ThemeColors {
   readonly gainText: string;
   readonly gainSoftBg: string;
   readonly alert: string;
+  readonly alertText: string;
   readonly alertSoftBg: string;
   readonly withdrawText: string;
   readonly walletSavings: string;

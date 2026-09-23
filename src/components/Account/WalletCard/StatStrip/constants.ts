@@ -20,6 +20,5 @@ export const STAT_STRIP_STYLE = {
   cellGap: 3,
   cellRadius: 12,
   labelSize: 11,
-  labelOpacity: 0.85,
   amountSize: 17,
 } as const;

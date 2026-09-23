@@ -29,5 +29,5 @@ export const SaveError = styled.span`
   margin-top: ${APPEARANCE_SECTION_STYLE.rowGap}px;
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
-  color: ${({ theme }): string => theme.colors.alert};
+  color: ${({ theme }): string => theme.colors.alertText};
 `;

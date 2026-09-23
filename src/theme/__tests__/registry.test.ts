@@ -25,8 +25,6 @@ describe('theme registry', () => {
   it('exposes the full cohesive token set for the default theme', () => {
     const { colors, gradients } = getThemeTokens(DEFAULT_THEME_ID);
     for (const key of [
-      'accent',
-      'accentSoft',
       'star',
       'divider',
       'softBg',
@@ -50,12 +48,27 @@ describe('theme registry', () => {
       colors.primaryText,
       colors.textOnPot,
       colors.labelScrim,
+      colors.alertText,
+      colors.selectionRing,
     ]);
 
     expect(contrastTokens).toEqual([
-      ['#6B2C8E', '#2B1235', 'rgba(0, 0, 0, 0.45)'],
-      ['#1B7A6B', '#2B1800', 'rgba(0, 0, 0, 0.35)'],
-      ['#3B82F6', '#ECF1F8', 'transparent'],
+      ['#6B2C8E', '#2B1235', 'rgba(0, 0, 0, 0.45)', '#A81B3A', '#2B1235'],
+      ['#1B7A6B', '#2B1800', 'rgba(0, 0, 0, 0.35)', '#A83A21', '#2B1800'],
+      ['#3B82F6', '#ECF1F8', 'transparent', '#F87171', '#3B82F6'],
+    ]);
+  });
+
+  it('pins the muted and gain values every theme reads', () => {
+    const readableOnTints = Object.values(THEMES).map(({ colors }) => [
+      colors.textMuted,
+      colors.gainText,
+    ]);
+
+    expect(readableOnTints).toEqual([
+      ['#675A80', '#276E2C'],
+      ['#4B655B', '#316A26'],
+      ['#8A96A8', '#34D399'],
     ]);
   });
 

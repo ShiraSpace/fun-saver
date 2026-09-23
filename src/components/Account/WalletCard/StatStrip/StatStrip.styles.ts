@@ -29,8 +29,6 @@ export const Label = styled.span<{ tone: StatTone }>`
   font-weight: 600;
   color: ${({ tone, theme }): string =>
     tone === 'gain' ? theme.colors.gainText : theme.colors.textMuted};
-  opacity: ${({ tone }): number =>
-    tone === 'gain' ? STAT_STRIP_STYLE.labelOpacity : 1};
 `;
 
 export const Amount = styled.span`

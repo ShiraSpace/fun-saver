@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { TRANSACTION_DRAWER_STYLE } from './constants';
 
 export const DrawerTitle = styled.span`
   text-align: center;
@@ -8,8 +9,9 @@ export const DrawerTitle = styled.span`
 `;
 
 export const DrawerError = styled.span`
+  margin-top: ${TRANSACTION_DRAWER_STYLE.messageExtraTop}px;
   text-align: center;
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
-  color: ${({ theme }): string => theme.colors.accent};
+  color: ${({ theme }): string => theme.colors.alertText};
 `;

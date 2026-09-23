@@ -28,5 +28,5 @@ export const Arrow = styled.span<{ tone: 'in' | 'out' }>`
   font-size: ${({ theme }): number => theme.typography.heading}px;
   font-weight: 800;
   color: ${({ theme, tone }): string =>
-    tone === 'in' ? theme.colors.gainText : theme.colors.alert};
+    tone === 'in' ? theme.colors.gainText : theme.colors.alertText};
 `;

@@ -1,5 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithAccounts } from '@/test-utils/render';
+import { hexToRgb } from '@/test-utils/css-color';
+import { getThemeTokens } from '@/theme/registry';
 import { mockDerivedAccount } from '@/test-utils/fixtures';
 import { AppearanceSection } from './AppearanceSection';
 import {
@@ -70,19 +72,32 @@ describe('AppearanceSection', () => {
     });
   });
 
-  it('reverts and shows an error when the save fails', async () => {
-    global.fetch = jest.fn().mockResolvedValue({ ok: false });
-    renderSection();
+  describe('when the save fails', () => {
+    let error: HTMLElement;
 
-    fireEvent.click(swatches()[1]);
+    beforeEach(async () => {
+      global.fetch = jest.fn().mockResolvedValue({ ok: false });
+      renderSection();
 
-    await waitFor(() =>
-      expect(
-        screen.getByTestId(APPEARANCE_SECTION_TEST_IDS.saveError)
-      ).toHaveTextContent(APPEARANCE_SECTION_CONTENT.saveError)
-    );
-    expect(swatches()[0]).toHaveAttribute('data-selected', 'true');
-    expect(swatches()[1]).toHaveAttribute('data-selected', 'false');
-    expect(mockRouter.refresh).not.toHaveBeenCalled();
+      fireEvent.click(swatches()[1]);
+
+      error = await screen.findByTestId(APPEARANCE_SECTION_TEST_IDS.saveError);
+    });
+
+    it('tells the user it did not save', () => {
+      expect(error).toHaveTextContent(APPEARANCE_SECTION_CONTENT.saveError);
+    });
+
+    it('speaks it in the alert red', () => {
+      expect(getComputedStyle(error).color).toBe(
+        hexToRgb(getThemeTokens().colors.alertText)
+      );
+    });
+
+    it('reverts to the theme that is still saved', () => {
+      expect(swatches()[0]).toHaveAttribute('data-selected', 'true');
+      expect(swatches()[1]).toHaveAttribute('data-selected', 'false');
+      expect(mockRouter.refresh).not.toHaveBeenCalled();
+    });
   });
 });

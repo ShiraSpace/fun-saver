@@ -5,6 +5,9 @@ import { ACCOUNT_FORM_LAYOUT } from './constants';
 const titleColor = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
 
+const alertText = ({ theme }: { theme: Theme }): string =>
+  theme.colors.alertText;
+
 const titleSize = ({ theme }: { theme: Theme }): number =>
   theme.typography.title;
 
@@ -25,9 +28,6 @@ export const Title = styled.h1`
   align-items: center;
   gap: ${ACCOUNT_FORM_LAYOUT.titleGap}px;
   margin: 0;
-  padding: 4px 14px;
-  border-radius: 999px;
-  background: ${({ theme }): string => theme.colors.labelScrim};
   font-size: ${titleSize}px;
   font-weight: 700;
   color: ${titleColor};
@@ -41,7 +41,7 @@ export const TitleIcon = styled.span`
 export const SaveError = styled.span`
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
-  color: ${titleColor};
+  color: ${alertText};
 `;
 
 export const CloseButton = styled.button`

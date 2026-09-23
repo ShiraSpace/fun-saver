@@ -24,6 +24,7 @@ export const TRANSACTION_DRAWER_STYLE = {
   scrim: 'rgba(40, 20, 60, 0.42)',
   sheetRadius: 28,
   gap: 8,
+  messageExtraTop: 6,
   padding: '8px 16px 0px',
   handlePaddingBottom: 14,
   bodyPaddingBottom: 24,

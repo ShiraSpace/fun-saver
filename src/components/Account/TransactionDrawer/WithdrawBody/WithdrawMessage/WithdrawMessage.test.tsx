@@ -1,11 +1,15 @@
 import { type ComponentProps } from 'react';
 import { render, screen } from '@/test-utils/render';
+import { hexToRgb } from '@/test-utils/css-color';
+import { getThemeTokens } from '@/theme/registry';
+import type { ThemeId } from '@/theme/registry';
 import { WithdrawMessage } from './WithdrawMessage';
 import { WITHDRAW_BODY_TEST_IDS } from '../constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../../constants';
 
 function renderMessage(
-  props: Partial<ComponentProps<typeof WithdrawMessage>> = {}
+  props: Partial<ComponentProps<typeof WithdrawMessage>> = {},
+  themeId?: ThemeId
 ): void {
   render(
     <WithdrawMessage
@@ -13,7 +17,8 @@ function renderMessage(
       hasError={false}
       balanceShekels={40}
       {...props}
-    />
+    />,
+    themeId
   );
 }
 
@@ -35,6 +40,24 @@ describe('WithdrawMessage', () => {
     expect(
       screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
     ).toBeInTheDocument();
+  });
+
+  describe('on the theme where the old error pink fell furthest short', () => {
+    const { alertText } = getThemeTokens('jungle-quest').colors;
+
+    it('paints the overdraft hint in the alert red', () => {
+      renderMessage({ isOverdraft: true }, 'jungle-quest');
+      const overdraft = screen.getByTestId(WITHDRAW_BODY_TEST_IDS.overdraft);
+
+      expect(getComputedStyle(overdraft).color).toBe(hexToRgb(alertText));
+    });
+
+    it('paints the submit failure sharing its slot in the same red', () => {
+      renderMessage({ hasError: true }, 'jungle-quest');
+      const error = screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error);
+
+      expect(getComputedStyle(error).color).toBe(hexToRgb(alertText));
+    });
   });
 
   it('renders nothing when calm', () => {

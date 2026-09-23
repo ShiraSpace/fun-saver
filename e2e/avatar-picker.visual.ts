@@ -39,14 +39,14 @@ describe('avatar picker', () => {
     );
   });
 
-  it('rings the selected option in the primary colour', async () => {
+  it('rings the selected option in a colour the gradient does not hide', async () => {
     await avatarPicker.selectFirst();
     const option = await avatarPicker.selectedOption();
 
     assert.equal(option.borderColor, hexToRgb(COLORS.textOnPrimary));
     assert.ok(
-      option.boxShadow.includes(hexToRgb(COLORS.primary)),
-      `expected ring colour ${hexToRgb(COLORS.primary)} in "${option.boxShadow}"`
+      option.boxShadow.includes(hexToRgb(COLORS.selectionRing)),
+      `expected ring colour ${hexToRgb(COLORS.selectionRing)} in "${option.boxShadow}"`
     );
   });
 

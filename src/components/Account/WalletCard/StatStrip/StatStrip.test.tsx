@@ -1,4 +1,6 @@
 import { render, screen } from '@/test-utils/render';
+import { hexToRgb, opacityOf } from '@/test-utils/css-color';
+import { getThemeTokens } from '@/theme/registry';
 import { StatStrip } from './StatStrip';
 import { STAT_STRIP_COPY, STAT_STRIP_TEST_IDS } from './constants';
 
@@ -38,6 +40,20 @@ describe('StatStrip', () => {
       expect(screen.getByTestId(STAT_STRIP_TEST_IDS.strip)).toHaveTextContent(
         STAT_STRIP_COPY.interestGainLabel
       );
+    });
+
+    it('paints the gain label with the gain token', () => {
+      const label = screen.getByText(STAT_STRIP_COPY.interestGainLabel);
+
+      expect(getComputedStyle(label).color).toBe(
+        hexToRgb(getThemeTokens().colors.gainText)
+      );
+    });
+
+    it('leaves the gain label unfaded, so the token keeps its measured ratio', () => {
+      const label = screen.getByText(STAT_STRIP_COPY.interestGainLabel);
+
+      expect(opacityOf(label)).toBe(1);
     });
 
     it('labels the daily cell', () => {
