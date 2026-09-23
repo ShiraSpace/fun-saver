@@ -1,38 +1,34 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { MenuGlobalScope } from './MenuGlobalScope';
+import { AccountControls } from './AccountControls';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '../EditAccountButton/constants';
 import {
   APP_MODE,
   AppModeProvider,
 } from '@/components/AccountManagement/app-mode-context';
-import {
-  mockAccountsContext,
-  mockDerivedAccount,
-  mockUser,
-} from '@/test-utils/fixtures';
+import { mockAccountsContext, mockDerivedAccount } from '@/test-utils/fixtures';
 
 const mockOnLeaveMenu = jest.fn();
 
-function renderScope(): void {
+function renderControls(): void {
   render(
     <AppModeProvider
       value={{ mode: APP_MODE.viewing, setMode: (): void => {} }}
     >
-      <MenuGlobalScope
+      <AccountControls
         onLeaveMenu={mockOnLeaveMenu}
         isAccountListOpen
         onAccountListToggle={(): void => {}}
       />
     </AppModeProvider>,
-    { accounts: mockAccountsContext, user: mockUser }
+    { accounts: mockAccountsContext }
   );
 }
 
-describe('MenuGlobalScope', () => {
+describe('AccountControls', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    renderScope();
+    renderControls();
   });
 
   it('names the account in view on the edit button', () => {

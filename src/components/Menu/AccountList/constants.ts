@@ -15,10 +15,6 @@ export const ACCOUNT_LIST_CONTENT = {
 export const ACCOUNT_LIST_STYLE = {
   avatarSize: 30,
   gap: 5,
-  rowGap: 10,
-  rowPaddingY: 8,
-  rowPaddingX: 11,
-  rowRadius: 14,
   nameColumnWidth: 56,
   popoverOffset: 5,
   popoverPadding: 7,

@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
+import { mockAccountsContext } from '@/test-utils/fixtures';
 import { NavTabs } from './NavTabs';
 import { MENU_SCREENS, NAV_TABS_CONTENT, NAV_TABS_TEST_IDS } from './constants';
 
@@ -8,7 +9,10 @@ const mockOnNavigate = jest.fn();
 
 function renderTabs(route: string): void {
   jest.clearAllMocks();
-  render(<NavTabs onNavigate={mockOnNavigate} />, { route });
+  render(<NavTabs onNavigate={mockOnNavigate} />, {
+    route,
+    accounts: mockAccountsContext,
+  });
 }
 
 describe('NavTabs', () => {

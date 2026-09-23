@@ -8,7 +8,8 @@ import {
   ACCOUNT_LIST_TEST_IDS,
 } from './constants';
 import { AccountRow } from './AccountRow';
-import { List, AddRow } from './AccountList.styles';
+import { List } from './AccountList.styles';
+import { AddRow } from '../row-parts';
 
 interface AccountListProps {
   accounts: AccountWithDerivedWallets[];

@@ -17,6 +17,10 @@ export const MENU_ROW_STYLE = {
   borderWidth: 1.5,
   pressScale: 0.98,
   pressMs: 120,
+  gap: 10,
+  paddingY: 8,
+  paddingX: 11,
+  radius: 14,
 } as const;
 
 export const MENU_ICON = {

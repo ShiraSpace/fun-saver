@@ -15,6 +15,10 @@ const AccountsContext = createContext<AccountsContextValue | null>(null);
 
 export const AccountsProvider = AccountsContext.Provider;
 
+export function useOptionalAccounts(): AccountsContextValue | null {
+  return useContext(AccountsContext);
+}
+
 export function useAccounts(): AccountsContextValue {
   const value = useContext(AccountsContext);
 
