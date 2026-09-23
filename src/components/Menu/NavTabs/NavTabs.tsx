@@ -2,7 +2,6 @@
 
 import { JSX } from 'react';
 import { usePathname } from 'next/navigation';
-import { HOME_ROUTE } from '@/components/Home/constants';
 import { useOptionalAccounts } from '@/components/Home/accounts-context';
 import {
   MENU_SCREENS,
@@ -18,9 +17,7 @@ interface NavTabsProps {
 }
 
 const asReachable = (screen: MenuScreen, hasAccount: boolean): MenuScreen =>
-  hasAccount || screen.href === HOME_ROUTE
-    ? screen
-    : { ...screen, href: undefined };
+  hasAccount ? screen : { ...screen, href: undefined };
 
 export function NavTabs({ onNavigate }: NavTabsProps): JSX.Element {
   const currentPath = usePathname();
