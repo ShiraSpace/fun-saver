@@ -1,4 +1,4 @@
-import { render, screen } from '@/test-utils/render';
+import { render, screen, within } from '@/test-utils/render';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
@@ -6,6 +6,8 @@ import {
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { METHOD_SECTION_TEST_IDS } from './MethodSection/constants';
+import { SOURCE_LIST_TEST_IDS } from './SourceList/constants';
+import { SOURCE_MARKER_TEST_IDS } from './SourceMarker/constants';
 import { METHOD_INTRO_TEST_IDS } from './MethodIntro/constants';
 import { SECTION_NUMBER, SOURCES_SECTION_ID } from './constants';
 import { Method } from './Method';
@@ -63,5 +65,22 @@ describe('the method page', () => {
     );
 
     expect(sources.parentElement?.lastElementChild).toBe(sources);
+  });
+
+  it('lands a claim on the study it names, counting the list the same way the reader does', () => {
+    const [cited] = METHOD_COPY.why.evidence.sources;
+    const study = METHOD_COPY.sources.list.find(
+      (source) => source.id === cited
+    );
+
+    const [marker] = within(
+      screen.getByTestId(METHOD_SECTION_TEST_IDS.body(SECTION_NUMBER.why))
+    ).getAllByTestId(SOURCE_MARKER_TEST_IDS.marker);
+    const entries = screen.getAllByTestId(SOURCE_LIST_TEST_IDS.entry);
+    const pointedAt = entries[Number(marker.textContent) - 1];
+
+    expect(
+      within(pointedAt).getByTestId(SOURCE_LIST_TEST_IDS.citation)
+    ).toHaveAttribute('href', study?.url);
   });
 });

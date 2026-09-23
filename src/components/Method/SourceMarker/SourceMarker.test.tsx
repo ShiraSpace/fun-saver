@@ -42,4 +42,16 @@ describe('the number that points a claim at its source', () => {
       ).toHaveTextContent('1,2');
     });
   });
+
+  describe('given a claim whose last source was taken away', () => {
+    beforeEach(() => {
+      render(<SourceMarker sources={[]} />);
+    });
+
+    it('shows nothing, so the sentence does not end on a mark pointing nowhere', () => {
+      expect(
+        screen.queryByTestId(SOURCE_MARKER_TEST_IDS.marker)
+      ).not.toBeInTheDocument();
+    });
+  });
 });
