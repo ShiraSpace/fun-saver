@@ -146,13 +146,15 @@ existing `transactions_account_wallet_idx` on `(account_id, wallet_id)` covers t
 `listTransactionsByWallet` stays. `addWithdrawal` uses it for the overdraft check
 and has no reason to read the whole account.
 
-**Store order is not the contract.** Only the postgres repository sorts; the
-memory and json-file repositories return insertion order, and nothing in the app
-depends on order today. Both new derivations sort what they are given before
-using it, so dev (json-file) and prod (postgres) cannot diverge. The SQL
-`ORDER BY` is there because it is cheap, not because a caller may lean on it —
-the index covers the `account_id` lookup, not the sort, so Postgres adds a sort
-node over roughly a thousand rows, which costs nothing at this size.
+**Every store returns the same order: oldest first.** `listByAccount` and
+`listByWallet` both sort by `occurred_at, created_at, id` — postgres in SQL, the
+memory and json-file repositories through one shared `byOccurrence`
+(`src/db/transactions.ts`) — so dev (json-file) and prod (postgres) hand back the
+same rows in the same order. The derivations still do not lean on it:
+`balance-series` is independent of order and `transaction-rows` sorts newest
+first for display. The index covers the `account_id` lookup, not the sort, so
+Postgres adds a sort node over roughly a thousand rows, which costs nothing at
+this size.
 
 ### Why every account, not just the selected one
 
@@ -594,9 +596,8 @@ Four of those are not obvious from the list, and are named because they are the
 ones that catch the failures this design argued itself into:
 
 - **Rows handed in insertion order and the same rows handed sorted produce the
-  same series.** "Store order is not the contract" is asserted above and is
-  otherwise untested; this is what keeps the json-file dev store and the postgres
-  prod store from diverging silently.
+  same series.** Every store now returns rows oldest first, but the series must
+  not depend on that; this is what keeps it right for rows from anywhere else.
 - **An account whose wallet has no transactions still derives.** That is the
   grouping's `undefined` case, and every brand-new account.
 - **A window whose whole visible span is under ₪1 does not print three identical
