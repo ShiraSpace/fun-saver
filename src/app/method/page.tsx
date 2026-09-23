@@ -6,7 +6,7 @@ import { getStore } from '@/db';
 import { withDerivedWallets } from '@/lib/account-dashboard';
 import { today } from '@/lib/clock';
 import { selectedAccount } from '@/lib/selected-account';
-import { ThemeController } from '@/theme/ThemeController';
+import { ThemedPage } from '@/theme/ThemedPage';
 import { signedInAccounts } from '../signed-in-accounts';
 
 export const dynamic = 'force-dynamic';
@@ -25,10 +25,8 @@ export default async function MethodPage(): Promise<JSX.Element> {
   }
 
   return (
-    <main>
-      <ThemeController initialThemeId={themeId}>
-        <Method accounts={derived} initialAccount={initialAccount} />
-      </ThemeController>
-    </main>
+    <ThemedPage themeId={themeId}>
+      <Method accounts={derived} initialAccount={initialAccount} />
+    </ThemedPage>
   );
 }
