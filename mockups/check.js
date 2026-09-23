@@ -20,6 +20,7 @@ const ACCOUNT_SUMMARY_SLOTS = {
 
 const htmlPagesUnder = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
   const full = path.join(dir, entry.name);
+
   if (entry.isDirectory()) return htmlPagesUnder(full);
   return entry.name.endsWith('.html') ? [full] : [];
 });
@@ -33,13 +34,16 @@ function assertEveryTagClosesInOrder(file, html) {
   for (const match of html.matchAll(/<(\/?)([a-zA-Z][\w-]*)([^>]*?)(\/?)>/g)) {
     const [, isClosing, rawTag, attributes, selfClosed] = match;
     const tag = rawTag.toLowerCase();
+
     if (VOID_ELEMENTS.has(tag) || selfClosed || (attributes.endsWith('/') && !isClosing)) continue;
 
     const line = lineOf(html, match.index);
+
     if (!isClosing) {
       open.push({ tag, line });
       continue;
     }
+
     const innermost = open.pop();
     assert.ok(innermost, `${shortName(file)}:${line} — </${tag}> בלי פתיחה`);
     assert.strictEqual(innermost.tag, tag,
@@ -124,6 +128,7 @@ function assertPressedButtonIsTheChosenOne(passName, group, openingState) {
     `${passName}: ה-section פותח ב-${attribute}="${openingState[attribute]}" אבל לחוץ "${value}"`);
 
   const chosen = buttons.filter((button) => button.includes('data-chosen'));
+
   if (key === 't') {
     assert.strictEqual(chosen.length, 0,
       `${passName}: הערכה היא ציר תצוגה — שלוש הערכות נשלחו, אין בה «נבחר»`);
