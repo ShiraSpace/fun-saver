@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
+import { SCREEN_LAYOUT } from '@/components/Screen/constants';
 import { MENU_OVERLAY_LAYOUT, MENU_OVERLAY_STYLE } from './constants';
 
 const sheet = ({ theme }: { theme: Theme }): string => theme.colors.softBg;
@@ -33,6 +34,9 @@ export const Panel = styled.div`
 `;
 
 export const Content = styled.div`
+  box-sizing: border-box;
+  max-width: ${SCREEN_LAYOUT.maxWidth}px;
+  margin-inline: auto;
   padding: ${MENU_OVERLAY_LAYOUT.contentPaddingTop}px
-    ${MENU_OVERLAY_LAYOUT.contentPaddingX}px 0;
+    ${SCREEN_LAYOUT.paddingX}px 0;
 `;
