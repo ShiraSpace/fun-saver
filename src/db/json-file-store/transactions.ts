@@ -1,6 +1,6 @@
 import type { Transaction } from '@/lib/types';
 import type { TransactionRepository } from '../data-store';
-import { byOccurrence } from '../transactions';
+import { oldestFirst } from '../transaction-order';
 import type { FileSession } from './file-session';
 
 export class JsonTransactions implements TransactionRepository {
@@ -15,7 +15,7 @@ export class JsonTransactions implements TransactionRepository {
 
   listByWallet(accountId: string, walletId: string): Promise<Transaction[]> {
     return this.session.read((data): Transaction[] =>
-      byOccurrence(
+      oldestFirst(
         data.transactions.filter(
           (transaction) =>
             transaction.accountId === accountId &&
@@ -27,7 +27,7 @@ export class JsonTransactions implements TransactionRepository {
 
   listByAccount(accountId: string): Promise<Transaction[]> {
     return this.session.read((data): Transaction[] =>
-      byOccurrence(
+      oldestFirst(
         data.transactions.filter(
           (transaction) => transaction.accountId === accountId
         )

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { Method } from '@/components/Method';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { getStore } from '@/db';
-import { withDerivedWallets } from '@/lib/account-dashboard';
+import { withDerivedWallets } from '@/lib/account-ledgers';
 import { today } from '@/lib/clock';
 import { selectedAccount } from '@/lib/selected-account';
 import { ThemedPage } from '@/theme/ThemedPage';
