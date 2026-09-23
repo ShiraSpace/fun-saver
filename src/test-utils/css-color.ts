@@ -23,6 +23,7 @@ function luminance(hex: string): number {
     (value >> 8) & 255,
     value & 255,
   ].map(channel);
+
   return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
 }
 
@@ -30,5 +31,6 @@ export function contrastRatio(first: string, second: string): number {
   const [lighter, darker] = [luminance(first), luminance(second)].sort(
     (a, b) => b - a
   );
+
   return (lighter + 0.05) / (darker + 0.05);
 }
