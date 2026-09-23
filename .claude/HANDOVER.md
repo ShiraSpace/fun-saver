@@ -1,4 +1,4 @@
-# Handover — 2026-09-23 (PR 11 merged; PR 7 is all that is left)
+# Handover — 2026-09-23 (the google-login plan is done; PR 15 is next)
 
 ## Start here
 
@@ -91,7 +91,7 @@ plan and were wrong.
   `ThemeController` on `DEFAULT_THEME_ID`, which is the very thing these suites
   exist to tell apart.
 
-## PR 7 is open as #100, and three traps came out of it
+## PR 7 merged as #100, and four traps came out of it
 
 **`direction` in a styled component is reversed.** `EmotionStyleRegistry` runs
 `stylis-plugin-rtl`, which mirrors every stylesheet, so `direction: ltr` is

@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-23 (PR 7 open as #100; PR 15 next, then 12, 13 and 14)
+## Progress — updated 2026-09-23 (PR 7 merged as #100 — the plan is done; PR 15 next, then 12, 13 and 14)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -27,12 +27,12 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 6  | [#86](https://github.com/ShiraSpace/fun-saver/pull/86)   | `feat/auth-proxy`                  | **merged** — `7312359`, plus `63cc6cc` straight to main |
 | PR 10 | [#87](https://github.com/ShiraSpace/fun-saver/pull/87)   | `feat/guard-transaction-routes`    | **merged** — `f1a283d`                                  |
 | PR 11 | [#94](https://github.com/ShiraSpace/fun-saver/pull/94)   | `refactor/themed-page-shell`       | **merged** — `c36afa1`                                  |
-| PR 7  | [#100](https://github.com/ShiraSpace/fun-saver/pull/100) | `feat/profile-section`             | **open** — reviewed, fixes pushed                       |
+| PR 7  | [#100](https://github.com/ShiraSpace/fun-saver/pull/100) | `feat/profile-section`             | **merged**                                              |
 | PR 12 | —                                                        | `fix/empty-state-sign-out`         | not started — found during PR 7                         |
 | PR 13 | —                                                        | `refactor/required-context`        | not started — found during PR 7                         |
 | PR 14 | —                                                        | `fix/menu-state-on-close`          | not started — found reviewing PR 7                      |
 
-### PR 7 is open as #100, and review turned up more than it fixed
+### Every PR in this plan is merged; what is left came out of PR 7
 
 PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
 read through `listAccountsForUser` with the id from the session. A stranger who
@@ -52,10 +52,11 @@ proxy's matcher, so PR 6 did not narrow that hole by a line. All four now pass
 through one wrapper that answers 401 without a session and 403 without an editing
 membership. PR 7 is independent and can land at any time.
 
-**PR 7 turned up three follow-ups**, all recorded below: a signed-in stranger
-has no way to sign out (PR 12), four contexts hand-roll the same
-required-context boilerplate (PR 13), and menu state survives the menu closing
-(PR 14). None blocks PR 7.
+**The ten PRs this plan set out to do are all merged.** PR 7 was the last, and
+it turned up four follow-ups, all recorded below: six render helpers where one
+belongs (PR 15, next), a signed-in stranger with no way to sign out (PR 12),
+four contexts hand-rolling the same required-context boilerplate (PR 13), and
+menu state surviving the menu closing (PR 14). None of them blocked PR 7.
 
 **Review of #100 found a hole this plan did not anticipate: the closed menu was
 still reachable by keyboard.** The panel is always mounted and hidden with
@@ -831,7 +832,7 @@ implementation. The browser suites passing unchanged is the other half.
 
 Ships: the app goes private.
 
-### PR 7 — `feat/profile-section` — OPEN (#100)
+### PR 7 — `feat/profile-section` — MERGED (#100)
 
 - `src/components/Menu/ProfileSection/` — signed-in name + sign out.
 
@@ -842,8 +843,8 @@ called `auth()` and discarded all but the id, so name, address and photo cost no
 extra query and no extra call. It is now `signedInUser()`, the only session
 accessor; the API routes take `.id` from it.
 
-**Two invisible things are load-bearing, and both were found by running the app
-rather than reading it:**
+**Three invisible things are load-bearing, and none was found by reading the
+code:**
 
 - The address carries `dir="ltr"` as an **attribute**, not CSS. `stylis-plugin-rtl`
   mirrors every stylesheet, so `direction: ltr` written in a styled component is
@@ -854,6 +855,14 @@ rather than reading it:**
   answers 403 to a request carrying a `Referer`, which renders as a broken
   image. No `images.remotePatterns` is needed — `unoptimized` bypasses the host
   check, measured against a remote image that actually loads.
+- **A failed sign-out answers with a url too.** `@auth/core` returns
+  `Response.json({ url: "<origin>/api/auth/error?error=..." })` whenever
+  `X-Auth-Return-Redirect` is set, and `next-auth/react` always sets it
+  (`@auth/core/index.js:138`). `next-auth`'s own `signOut` never checks
+  `res.ok`. So "did a url come back" proves nothing; the check is whether it
+  landed where it was asked to land. Twice this PR shipped a sign-out that
+  treated a refusal as success, because `/login` does not look for a session
+  either — the user sees the sign-in screen and is still signed in.
 
 **Tests: the plan said "renders the name, calls `signOut`". That was a third of
 it.** The browser suites can never reach the photo — the e2e session cookie
@@ -861,20 +870,22 @@ carries no `picture` — so `ProfilePhoto`'s four cases are its only cover, and
 the `referrerPolicy` case is the only thing standing between a working avatar
 and a broken one.
 
-**This section predates #88 and #93 and its one placement instruction is now
-stale.** It said "mirroring `AppearanceSection`", but #88 regrouped the menu into
-two blocks and put `AppearanceSection` **inside** `MenuAccountScope`, the
-per-account block headed with the current account's name and avatar. A profile
-section is about the signed-in **user**, not the account in view, so mirroring
-`AppearanceSection` would file it under the wrong heading. `MenuGlobalScope`
-(the account picker and edit button) is the global block; #93 then took
-navigation out of the account block as well. Decide the placement against the
-menu as it now stands — `MenuOverlay.tsx` composes all of it — not against this
-line.
+**Placement: the top of the global block, above the account picker.** This
+section originally said "mirroring `AppearanceSection`", which #88 made wrong —
+it moved `AppearanceSection` **inside** `MenuAccountScope`, the per-account
+block. A profile section is about the signed-in **user**, not the account in
+view, so mirroring it would have filed the user under the account's heading.
+Three placements were drawn in `mockups/account-summary.html` first, as every
+other menu block was; P2 — a strip at the top of the global block, who is
+signed in then which account is shown — is marked chosen there.
+`MenuOverlay.test.tsx` pins it: moving the strip into the per-account block
+reddens that test and nothing else.
 
-**There is no mockup for it.** `mockups/` has no profile or sign-out artwork,
-and `.plans/2026-09-15-menu-redesign.md` does not cover it. Every other menu
-block was designed in a mockup first.
+**`signedInUser()` fails closed.** No email means not signed in, rather than a
+fallback that produced `{ name: '', email: '' }` and rendered a nameless,
+addressless strip. The sign-in callback already refuses an identity without an
+email, so the branch was unreachable defence that would have hidden a real bug
+the day it became reachable.
 
 ### PR 8 — `feat/assign-owner` — MERGED (#61, `b93e218`)
 
