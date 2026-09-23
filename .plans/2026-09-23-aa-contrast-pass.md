@@ -47,8 +47,13 @@ directly.
    is the new button teal, but the same move breaks midnight: `#1D4ED8` as text
    on the dark surface measures **2.59**, worse than the `#3B82F6` it has today.
    Dark-theme text gets lighter, not darker. `primary` also stays as it is for
-   borders and rings — `TalkBubble`'s outline, `WalletTile`'s selected state,
-   `AvatarPicker`'s ring — which are UI components needing 3:1, not 4.5:1.
+   borders — `TalkBubble`'s outline and `WalletTile`'s selected state — which
+   are UI components needing 3:1, not 4.5:1, and which land on `surface`.
+   **Corrected 2026-09-23:** this originally read "borders and rings" and named
+   `AvatarPicker`'s ring among them. That ring is a `box-shadow` on the **screen
+   gradient**, where jungle's `primary` is the gradient's own start colour —
+   **1.00**, not 3:1. The second pass gave it `textOnPot` instead; see
+   `.plans/2026-09-23-aa-contrast-pass-2.md`.
 
 2. **`primaryShadow` moves with the button, or the button breaks.**
    `ActionButton` draws `0 5px 0 primaryShadow` as a solid ledge. Darkening the
@@ -64,7 +69,10 @@ directly.
 4. **The screen-gradient label needs a scrim, because no colour can fix it.**
    Sunshine runs yellow→pink and jungle teal→lime, both mid-luminance: white
    reaches 1.53/2.04 and `textStrong` only 3.88/3.33. Nothing clears 4.5 from
-   either direction. Midnight already passes at 13.94 and gets `transparent`, so
+   either direction. **Corrected 2026-09-23:** "nothing" was measured against
+   `textStrong`. `textOnPot`, the ink this same pass introduced, does clear it —
+   4.77 sunshine, 5.12 jungle. The scrim still stands as drawn and approved; the
+   justification was too strong. Midnight already passes at 13.94 and gets `transparent`, so
    the chip shows on two themes and not the third — **drawn that way on
    purpose**, not an oversight to tidy.
 
@@ -146,4 +154,7 @@ sunshine and 4.33 becomes **3.33** on jungle.
 
 **Not scoped here.** Every item above is a separate pass; this plan's six
 surfaces are done and merged as drawn. The follow-up carries them:
-`.plans/2026-09-23-aa-contrast-pass-2.md`.
+`.plans/2026-09-23-aa-contrast-pass-2.md`, which shipped them and found two
+more the re-measure also missed — `ModeToggle`'s arrows sit on `divider`, not
+`surface` (2.91 and 3.82, not 3.91), and `AccountForm.SaveError` is white on
+the screen gradient at 1.60, the same pair as `SignIn`.
