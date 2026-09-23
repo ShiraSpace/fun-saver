@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
+import Link from 'next/link';
 import { AvatarBadge } from '../AvatarBadge';
-import { HEADER_LAYOUT } from './constants';
+import { HEADER_AVATAR_PROPS, HEADER_LAYOUT } from './constants';
 
 export const Bar = styled.header`
   position: relative;
@@ -16,6 +17,20 @@ export const Bar = styled.header`
   color: ${({ theme }): string => theme.colors.textStrong};
   min-height: ${HEADER_LAYOUT.height}px;
   box-sizing: border-box;
+`;
+
+export const HomeLink = styled(Link)`
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: ${HEADER_AVATAR_PROPS.size}px;
+  height: ${HEADER_AVATAR_PROPS.size}px;
+  border-radius: 50%;
+  background: ${({ theme }): string => theme.colors.accountScopeBg};
+  font-size: 20px;
+  line-height: 1;
+  text-decoration: none;
 `;
 
 export const HeaderAvatar = styled(AvatarBadge)<{ isHidden: boolean }>`
