@@ -168,6 +168,41 @@ sanctioned place to put styles and nothing was watching them.
   `src/lib/avatars.ts` backgrounds — brand and identity colours, not theme
   colours, and already exempt from the leak test.
 
+## What the tests pin
+
+Five, each watched reddening alone against its own deliberate break, plus a
+sixth break that adds no test: an `rgba()` planted back in `Header/constants.ts`
+to watch `no-color-leaks` fail on the axis it gained here. It had passed since
+the day it was widened, which is also what a broken test does.
+
+| test | the break that reddens it |
+| --- | --- |
+| `buildGradients` runs the screen down one diagonal and every tile down another | `160deg` → `161deg` |
+| every theme reads depth the same way | midnight given a `faint` of its own |
+| previews midnight as the near-black it actually is | the swatch back to a literal |
+| the drawer dims what it covers | `modal` → `film` |
+| the header takes its ledge colour from the theme | `faint` → `soft` |
+
+A first draft had ten, asserting each of the six tokens on the surface that
+reads it. Five went: they mirrored the styles file line for line, so they failed
+when the code changed and passed when it did not, and they re-proved what the
+leak test already makes impossible. The two component tests left guard
+**absence**, not choice — drop the scrim token and the dim goes transparent with
+no literal for the leak test to catch; drop the colour half of the header ledge
+and `0 4px 0` is still valid CSS, painting in `currentColor`. Which step a
+surface picks is the visual suite's business.
+
+## Still open
+
+**The geometry stayed in `constants.ts`.** The eight consumers found by the
+sweep keep `shadow: '0 4px 0'` there and compose it at the call site, while the
+nine original ones write the geometry inline in their `.styles.ts`. Seventeen
+consumers, two idioms — and the repo's own convention is the inline one, with
+`HEADER_LAYOUT` and `OVERVIEW_CARD_STYLE` named as the older pattern not to
+spread. Not a violation, since those constants pre-date this branch, but the
+header test now pins the older idiom. Eight small edits and one test rewrite
+would close it.
+
 ## What the work turned up
 
 1. **The sweep was still short, a third time.** The plan counted the `rgba()`
@@ -179,7 +214,11 @@ sanctioned place to put styles and nothing was watching them.
    planning on an arithmetic argument about midnight's near-black surfaces.
    Rendered at real size the argument lost, and the token group collapsed from
    three copies to one.
-3. **A plan on `main` outlives the session that wrote it.** Three of its claims
+3. **Ten tests where five would do.** One assertion per token read as thorough
+   and was three shapes wearing seven names. The question that sorted them: does
+   this catch a value being *wrong*, or only being *changed*? Only the two that
+   catch a token going missing entirely survived.
+4. **A plan on `main` outlives the session that wrote it.** Three of its claims
    were false within a day — the count, decision 2, and five token names. A
    reviewer read the stale plan and filed the code as the defect. The plan is
    the artifact that drifts; correcting it is part of the work, not after it.
