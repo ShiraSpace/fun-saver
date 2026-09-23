@@ -14,7 +14,7 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-23 (PRs 1–8 merged, plus #90; PR 9 is in flight)
+## Progress — updated 2026-09-26 (PRs 1–9 merged, plus #90; PR 10 is next)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
@@ -55,17 +55,18 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 6    | [#79](https://github.com/ShiraSpace/fun-saver/pull/79) | `feat/menu-account-popover`    | **merged** — `f9d6573` |
 | PR 7    | [#85](https://github.com/ShiraSpace/fun-saver/pull/85) | `feat/menu-edit-under-trigger` | **merged** — `2e49d4e` |
 | PR 8    | [#88](https://github.com/ShiraSpace/fun-saver/pull/88) | `feat/menu-scope-blocks`       | **merged** — `0b12ebf` |
-| PR 9    | [#96](https://github.com/ShiraSpace/fun-saver/pull/96) | `feat/menu-nav-tabs`           | **open**               |
-| PR 10   | —                                                      | —                              | planned                |
+| PR 9    | [#96](https://github.com/ShiraSpace/fun-saver/pull/96) | `feat/menu-nav-tabs`           | **merged** — `d625dd3` |
+| PR 10   | —                                                      | —                              | **next**               |
 | PR 11   | —                                                      | —                              | planned                |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
 the accounts sit behind an `AccountTrigger`, tapping it floats the list over the
 sections below instead of pushing them down, edit is a named button under the
-trigger, and the two scopes are visible blocks. What is left is the nav section
-(PR 9), which 2026-09-23 moved **out** of the per-account block, a way back to
-home from the screens the nav points at (PR 10), and a loading boundary so those
-screens do not arrive in silence (PR 11, found while reviewing PR 9).
+trigger, the two scopes are visible blocks, and navigation is a strip of tabs at
+the top of the panel rather than a setting of one child. What is left is a way home
+from the screens the nav points at (PR 10, whose shape was chosen on 2026-09-26) and
+a loading boundary so those screens do not arrive in silence (PR 11, found while
+reviewing PR 9).
 
 ### What the merged PRs changed that this plan did not predict
 
@@ -248,6 +249,53 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   affordance that never fires on touch, on a screen where the picker and the edit
   button both carry the full name untruncated.
 
+- **Emotion component selectors do not resolve in this repo, and fail silently.**
+  PR 9 dimmed the unavailable tab's icon with `${InertTab} & { opacity: .45 }`.
+  There is no `@emotion/babel-plugin` in `package.json` and no
+  `compiler: { emotion: true }` in `next.config.ts`, so `String(InertTab)` is
+  `.undefined`, the rule never reaches a stylesheet, and the icon shipped at full
+  opacity. `tsc` cannot see it, no existing test looked at it, and the page renders
+  without an error. The rule moved inside `InertTab`, which owns the only span
+  child. **Anything wanting a component selector has to add the compiler option
+  first**; until then a nested tag or attribute selector is the only safe form.
+- **The tab for the screen you are on must not be a `Link`.** As first built, every
+  tab was one, so the filled `בית` tab on the home screen — the most inviting target
+  in the menu — closed the menu and soft-navigated to the page already on display.
+  On a `force-dynamic` route with no loading boundary that is the ~370ms blind wait
+  PR 11 is about, spent to arrive where you already were. There are three tab
+  elements now, one per real state: `Tab` (a `Link`) for a screen you can reach,
+  `CurrentTab` (a `span` with `aria-current="page"`) for the one you are on, and
+  `InertTab` (a disabled `button`) for one that does not exist yet. Reusing
+  `InertTab` for the current tab — the obvious shortcut — would have dimmed it,
+  because its fade belongs to the unavailable state.
+- **`opacity` on a tile fades the label and the fill together.** The unavailable tab
+  started at `opacity: 0.55` on the whole tile, which dropped `תנועות` to 1.96:1 in
+  sunshine-quest, 2.13 in jungle-quest and 2.60 in midnight-blue — exempt as a
+  disabled control by the letter of WCAG, unreadable in daylight in an app for
+  children. Unavailability is now a dashed border, the idiom the per-account block
+  already uses, plus a faded icon which is `aria-hidden` and so costs no
+  information. Measuring it also turned up `textMuted` sitting under AA app-wide,
+  which became #98 and `.plans/2026-09-23-aa-contrast-pass-2.md`.
+- **`tabColumns` was shipped, then deleted.** The plan decided a balanced-rows rule
+  (`ceil(n / ceil(n / 4))`, so five screens are 3+2) and PR 9 built it as a module
+  with a constant, a styled prop and a test file. `MENU_SCREENS` has three entries,
+  so it only ever returned 3, and the `NaN` bug review found on it lived entirely
+  inside the branch that could not run. `Strip` reads `MENU_SCREENS.length`. **The
+  rule is still the decision** — it is written up in PR 9's section below; the code
+  comes back with the fourth screen, not before.
+- **`__mocks__/next/navigation.ts` is applied automatically, and inline mocks shadow
+  it.** It sits next to `node_modules`, so Jest uses it for every suite without a
+  `jest.mock` call — which is how `usePathname` reached most tests. But
+  `Home.test.tsx` and `Home.managing-accounts.test.tsx` declare their own
+  `jest.mock('next/navigation', …)` for the router spies, and a factory replaces the
+  module wholesale, so each needed `usePathname` adding by hand. A factory there may
+  reference an imported constant despite the usual Jest hoisting rule; `next/jest`'s
+  SWC transform allows it, and `HOME_ROUTE` is used that way today.
+- **An unnamed `<nav>` is a landmark a screen reader cannot describe.** The strip
+  shipped with only a `data-testid`. It carries `NAV_TABS_CONTENT.stripLabel`, and
+  the test asserts through `getByRole('navigation', { name })` rather than the
+  attribute, so it is the accessible name under test.
+
 ### Still open from the merged work
 
 - **`alert` is under AA on the sheet** — 3.7:1 in sunshine-quest, 3.6:1 in
@@ -255,10 +303,10 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   reader today. There is no darker red in the palette, so fixing it means a new token
   across `ThemeColors` and all three themes — a theme PR, not a repaint. Deliberately
   not done in PR 2.
-- **`השיטה` is still a bare link below both blocks.** It is not per-account, and the
-  mockup at the time had nothing outside the two blocks. Answered on 2026-09-23: the
-  nav section leaves the per-account block, and `השיטה` becomes a row in it — the
-  link is not homeless, it was waiting for a section that is not account-scoped.
+- **~~`השיטה` is still a bare link below both blocks.~~ Closed by PR 9.** It was not
+  per-account, and the mockup at the time had nothing outside the two blocks. It is
+  now a tab in the strip: the link was never homeless, it was waiting for a section
+  that is not account-scoped.
 - **The per-account block's stripe sits on the end edge, not the start.** The mockup's
   `box-shadow: inset 4px 0 0` draws on the left, and the app is RTL, so that is the end
   edge. Matched what the mockup renders rather than what reads as the reading-start
