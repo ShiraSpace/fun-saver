@@ -14,7 +14,7 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-22 (PRs 1–7 merged; PR 8 is next)
+## Progress — updated 2026-09-22 (PRs 1–7 merged; PR 8 built, not yet opened)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
@@ -37,13 +37,14 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 5    | [#70](https://github.com/ShiraSpace/fun-saver/pull/70) | `feat/menu-account-picker`     | **merged** — `d162cde` |
 | PR 6    | [#79](https://github.com/ShiraSpace/fun-saver/pull/79) | `feat/menu-account-popover`    | **merged** — `f9d6573` |
 | PR 7    | [#85](https://github.com/ShiraSpace/fun-saver/pull/85) | `feat/menu-edit-under-trigger` | **merged** — `2e49d4e` |
-| PR 8    | —                                                      | —                              | **next**               |
+| PR 8    | —                                                      | `feat/menu-scope-blocks`       | built — `4292a49`      |
 | PR 9    | —                                                      | —                              | not started            |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
 the accounts sit behind an `AccountTrigger`, tapping it floats the list over the
-sections below instead of pushing them down, and edit is a named button under the
-trigger. What is left is grouping by scope (PR 8) and the nav section (PR 9).
+sections below instead of pushing them down, edit is a named button under the
+trigger, and the two scopes are visible blocks. What is left is the nav section
+(PR 9).
 
 ### What the merged PRs changed that this plan did not predict
 
@@ -146,6 +147,41 @@ trigger. What is left is grouping by scope (PR 8) and the nav section (PR 9).
 - **`header-layout.visual.ts` never touched the edit chip.** The plan said it asserts
   the chip fits at the longest name; that assertion is `edit-account.e2e.ts`'s fourth
   `it`, and it only ever checks the button's outer box, never the icon inside it.
+- **`Screen.tsx` centres the whole app, and both blocks had to opt out.** `text-align:
+center` on the app shell is why `MenuLabel` already carried an explicit `text-align:
+start`. The per-account note inherited the centring and had to say `start` too, and
+  the language pill — now `width: fit-content` rather than full-bleed — would have sat
+  in the middle of the block without a block-level box to anchor it at the start edge.
+- **The popover stopped reaching the appearance section.** The per-account block's
+  margin, padding, heading and note put ~75px between the list and the section that
+  `menu-morph` asserted the overlap against — measured at list `173–283` against
+  appearance `305–383`. The thing the popover now floats over is the per-account block
+  itself, so both assertions retarget to it. That is the better assertion anyway: it
+  names the block the paint order is actually about.
+- **The mockup's control sizes were not optional.** Carried over unchanged, the 48px
+  swatches and the full-width `heading`-size language bar dwarfed the text inside a
+  tightened block. They take the mockup's own numbers — swatch 38/12/9, the language
+  segment a `label`-size pill at 5/12 padding filled with `textStrong`, and
+  `MenuLabel` margins 13/5 rather than 18/12. The labels sitting on their controls is
+  what closes most of the gap.
+- **`AccountsSection.test.tsx`'s eight tests were mostly duplicates.** Rows and the add
+  row belong to `AccountList`, selection and menu-closing to `Home.test.tsx` and
+  `account-switch.visual.ts`, create and edit mode to `Home.managing-accounts.test.tsx`.
+  Deleting the folder was not a coverage hole to make good on — four tests carry what
+  nothing else checks: the edit button is handed the account in view, adding and
+  editing leave the menu, and the heading names the account whose settings these are.
+  `MenuOverlay` also stopped asserting the three sections are on screen, which was true
+  before this PR too, in favour of asserting two of them sit inside the per-account
+  block.
+- **Shooting a real `before` needed a second worktree with a real install.** The change
+  is too wide to revert in place the way PR 7's was. A symlinked `node_modules` fails
+  the build outright — `Symlink [project]/node_modules is invalid, it points out of the
+filesystem root` — so the base worktree needs its own `npm install`, and `npm ci`
+  dies with `Exit handler never called!` where `npm install` succeeds.
+- **The shot fixtures select the wrong account.** `mockAccount` is `נועה` and
+  `mockSecondAccount` is `מתן`; `מ` sorts before `נ`, so the wallet-less one is selected
+  and every total shoots `₪0` even with `mockTransactions` seeded. The shot script
+  builds its second account as `רותם` instead, so the funded one sorts first.
 
 ### Still open from the merged work
 
@@ -154,16 +190,14 @@ trigger. What is left is grouping by scope (PR 8) and the nav section (PR 9).
   reader today. There is no darker red in the palette, so fixing it means a new token
   across `ThemeColors` and all three themes — a theme PR, not a repaint. Deliberately
   not done in PR 2.
-- **`AccountsSection` is no longer empty.** It forwards the picker's open state and
-  reads `accounts`, `currentAccount` and `selectAccount` from context, and since PR 7
-  it also passes `currentAccount.name` to the edit button. PR 8 still deletes the
-  folder, but `MenuOverlay` has to take those props over — it already holds them, so
-  it is a move rather than new plumbing.
-- **`ACCOUNTS_SECTION_*` outlive their folder.** `EditAccountButton`, its styles and
-  the `editButton` test id live in `src/components/Menu/AccountsSection/` and are
-  reached by `menu-driver.ts`, `home-test-helpers.tsx` and two e2e describes. PR 8
-  deletes the folder, so the button and its constants need a home of their own before
-  those imports break.
+- **`השיטה` is still a bare link below both blocks.** It is not per-account, and the
+  mockup has nothing outside the two blocks — it puts nav inside the per-account one,
+  which is where PR 9's `מסכים` goes. Left where it was rather than guessing; PR 9
+  makes it a row in that section along with the rest of the links.
+- **The per-account block's stripe sits on the end edge, not the start.** The mockup's
+  `box-shadow: inset 4px 0 0` draws on the left, and the app is RTL, so that is the end
+  edge. Matched what the mockup renders rather than what reads as the reading-start
+  edge; a sign flip is all it takes if the other way is wanted.
 - **The method page's picker can switch account but its language and appearance rows
   are the account's, on a page that is not about an account.** Nothing is broken —
   they write to the account in view — but whether `/method` should carry the whole
@@ -334,6 +368,13 @@ that PR resolved.
 Watch `MenuOverlay.tsx` against the 40-line function cap — extract the blocks as
 components rather than inlining them.
 
+Shipped as `MenuGlobalScope` and `MenuAccountScope`, named for the menu they belong
+to, over a shared `ScopeBlock` in `src/components/Menu/scope-parts.ts`. The blocks
+were not enough on their own: `MenuOverlay` still hit 42 lines, so the Escape
+ordering moved to `use-escape-dismissal.ts` beside `use-escape-key.ts` — the one part
+of that component that was never markup. `MenuAccountScope` takes `children`, so
+`MenuOverlay` keeps composing the sections and the block only supplies the frame.
+
 ## PR 9 — nav section
 
 `מסכים` with `🏠 בית` and `📈 תנועות בחשבון`, current screen marked via
@@ -359,7 +400,8 @@ transactions epic and ships inert.
   `account-switch.visual.ts` onto the new row test ids, and PR 6 added the popover
   assertions to `menu-morph.visual.ts` plus the signed-out `/method` case to
   `page-routing.visual.ts`. PR 7 needed none — nothing in the visual suites looks at
-  the edit control. Still expected in PR 8.
+  the edit control. PR 8 moved `menu-morph.visual.ts` again — its two overlap
+  assertions now name the per-account block instead of the appearance section.
 - **Every PR from #80 on carries screenshots** when it changes something visible.
   Write a `.mts` script in the gitignored `e2e/shots/`, shoot with
   `npx next build && npx tsx e2e/shots/<topic>.shot.mts`, attach with

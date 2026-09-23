@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
+import type { Theme } from '@emotion/react';
 import { APPEARANCE_SECTION_STYLE } from './constants';
+
+const selectedRing = ({ theme }: { theme: Theme }): string =>
+  theme.colors.textStrong;
 
 export const Row = styled.div`
   display: flex;
@@ -9,15 +13,14 @@ export const Row = styled.div`
 export const Swatch = styled.button<{ background: string }>`
   width: ${APPEARANCE_SECTION_STYLE.swatchSize}px;
   height: ${APPEARANCE_SECTION_STYLE.swatchSize}px;
-  border: none;
+  box-sizing: border-box;
+  border: ${APPEARANCE_SECTION_STYLE.ringWidth}px solid transparent;
   border-radius: ${APPEARANCE_SECTION_STYLE.swatchRadius}px;
   background: ${({ background }): string => background};
   cursor: pointer;
 
   &[data-selected='true'] {
-    outline: ${APPEARANCE_SECTION_STYLE.ringWidth}px solid
-      ${APPEARANCE_SECTION_STYLE.ringColor};
-    outline-offset: ${APPEARANCE_SECTION_STYLE.ringOffset}px;
+    border-color: ${selectedRing};
   }
 `;
 

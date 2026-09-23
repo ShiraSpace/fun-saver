@@ -1,11 +1,12 @@
 'use client';
 
-import { JSX, useCallback } from 'react';
-import { AccountsSection } from '../AccountsSection';
+import { JSX } from 'react';
+import { MenuGlobalScope } from '../MenuGlobalScope';
+import { MenuAccountScope } from '../MenuAccountScope';
 import { AppearanceSection } from '../AppearanceSection';
 import { LanguageSection } from '../LanguageSection';
 import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
-import { useEscapeKey } from './use-escape-key';
+import { useEscapeDismissal } from './use-escape-dismissal';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Panel, Content, NavLink } from './MenuOverlay.styles';
 
@@ -22,16 +23,12 @@ export function MenuOverlay({
   isAccountListOpen,
   onAccountListToggle,
 }: MenuOverlayProps): JSX.Element {
-  const closePickerThenMenu = useCallback((): void => {
-    if (isAccountListOpen) {
-      onAccountListToggle(false);
-      return;
-    }
-
-    onClose();
-  }, [isAccountListOpen, onAccountListToggle, onClose]);
-
-  useEscapeKey({ isListening: isOpen, onEscape: closePickerThenMenu });
+  useEscapeDismissal({
+    isOpen,
+    onClose,
+    isAccountListOpen,
+    onAccountListToggle,
+  });
 
   return (
     <Panel
@@ -41,13 +38,15 @@ export function MenuOverlay({
       data-open={isOpen}
     >
       <Content>
-        <AccountsSection
-          onAccountSelect={onClose}
+        <MenuGlobalScope
+          onLeaveMenu={onClose}
           isAccountListOpen={isAccountListOpen}
           onAccountListToggle={onAccountListToggle}
         />
-        <AppearanceSection />
-        <LanguageSection />
+        <MenuAccountScope>
+          <AppearanceSection />
+          <LanguageSection />
+        </MenuAccountScope>
         <NavLink
           href={METHOD_ROUTE}
           data-testid={MENU_OVERLAY_TEST_IDS.methodLink}

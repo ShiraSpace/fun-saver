@@ -1,9 +1,11 @@
 import { type BoundingBox } from 'puppeteer';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
-import { ACCOUNTS_SECTION_TEST_IDS } from '@/components/Menu/AccountsSection/constants';
+import { MENU_GLOBAL_SCOPE_TEST_IDS } from '@/components/Menu/MenuGlobalScope/constants';
+import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '@/components/Menu/EditAccountButton/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from '@/components/Menu/AccountPicker/constants';
+import { MENU_ACCOUNT_SCOPE_TEST_IDS } from '@/components/Menu/MenuAccountScope/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '@/components/Menu/AppearanceSection/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
@@ -45,7 +47,7 @@ export class MenuDriver {
   }
 
   clickEditAccountButton(): Promise<void> {
-    return this.session.click(ACCOUNTS_SECTION_TEST_IDS.editButton);
+    return this.session.click(EDIT_ACCOUNT_BUTTON_TEST_IDS.button);
   }
 
   async openMethodPage(): Promise<string> {
@@ -63,8 +65,12 @@ export class MenuDriver {
     return this.session.box(MENU_TEST_IDS.menuButton);
   }
 
-  accountsSectionBox(): Promise<BoundingBox> {
-    return this.session.box(ACCOUNTS_SECTION_TEST_IDS.section);
+  globalScopeBox(): Promise<BoundingBox> {
+    return this.session.box(MENU_GLOBAL_SCOPE_TEST_IDS.block);
+  }
+
+  accountScopeBox(): Promise<BoundingBox> {
+    return this.session.box(MENU_ACCOUNT_SCOPE_TEST_IDS.block);
   }
 
   appearanceSectionBox(): Promise<BoundingBox> {
@@ -83,7 +89,7 @@ export class MenuDriver {
   }
 
   editAccountButtonBox(): Promise<BoundingBox> {
-    return this.session.box(ACCOUNTS_SECTION_TEST_IDS.editButton);
+    return this.session.box(EDIT_ACCOUNT_BUTTON_TEST_IDS.button);
   }
 
   iconTransform(): Promise<string> {
