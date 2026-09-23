@@ -3,6 +3,8 @@ import { type BoundingBox } from 'puppeteer';
 import assert from 'node:assert/strict';
 import { StatusCodes } from 'http-status-codes';
 import { HOME_ROUTE } from '@/components/Home/constants';
+import { HEADER_TEST_IDS } from '@/components/Header/constants';
+import { LOADING_SHELL_TEST_IDS } from '@/components/LoadingShell/constants';
 import { LOGIN_PATH } from '@/lib/constants';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
@@ -14,6 +16,11 @@ import { THEMES, THEME_ID } from '@/theme/registry';
 import type { HeldPage } from './driver/hold-next-page';
 import { SESSION_COOKIE_NAME } from './driver/auth-session';
 import { useDriver } from './driver/use-driver';
+
+const SIGNS_OF_WAITING = [
+  HEADER_TEST_IDS.progress,
+  LOADING_SHELL_TEST_IDS.shell,
+] as const;
 
 describe('waiting for a page', () => {
   const { session, menu, header, loadingShell } = useDriver({
@@ -95,6 +102,7 @@ describe('waiting for a page', () => {
       await menu.open();
       await menu.tapHomeTab();
       await nextPage.waiting;
+      await session.waitForTestId(HEADER_TEST_IDS.progress);
       await header.tapHomeLink();
       await nextPage.settle();
     });
@@ -114,6 +122,7 @@ describe('waiting for a page', () => {
 
         await journey.leave();
         await nextPage.waiting;
+        await session.waitForAnyTestId(SIGNS_OF_WAITING);
       });
 
       it('keeps the page it is leaving on screen', async () => {

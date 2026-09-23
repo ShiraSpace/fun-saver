@@ -199,6 +199,10 @@ export class Session {
     return waits.waitForTestId({ page: this.page, testId });
   }
 
+  waitForAnyTestId(testIds: readonly string[]): Promise<void> {
+    return waits.waitForAnyTestId(this.page, testIds);
+  }
+
   waitForStyle(
     selector: string,
     property: string,

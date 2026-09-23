@@ -7,9 +7,9 @@ import { LOGIN_PATH } from '@/lib/constants';
 import { mockUser } from '@/test-utils/fixtures';
 import { config, proxy } from '../proxy';
 
-jest.mock('@/auth', () => ({
-  auth: (handler: unknown): unknown => handler,
-}));
+jest.mock('@/auth');
+
+type ProxyAnswer = Awaited<ReturnType<typeof proxy>>;
 
 const APP_ORIGIN = 'https://fun-saver.vercel.app';
 const SESSION_EXPIRY = '2099-01-01T00:00:00.000Z';
@@ -20,6 +20,8 @@ const GATED_PATHS = [
   `${LOGIN_PATH}x`,
   '/apikeys',
   '/account/v1.2/edit',
+  '/inspiration/idea.png',
+  '/avatarsx',
 ];
 const REACHABLE_PATHS = [
   LOGIN_PATH,
@@ -27,6 +29,7 @@ const REACHABLE_PATHS = [
   '/api/auth/callback/google',
   '/_next/static/chunk.js',
   '/_next/image',
+  '/avatars/kid-01.svg',
 ];
 
 function isGated(path: string): boolean {
@@ -45,7 +48,7 @@ describe('the matcher', () => {
 
 async function proxyAnswerFor(
   user: Partial<Session['user']> | undefined
-): Promise<Response | null | undefined | void> {
+): Promise<ProxyAnswer> {
   const auth = user ? { user, expires: SESSION_EXPIRY } : null;
   const request = Object.assign(new NextRequest(APP_ORIGIN), { auth });
 
@@ -54,7 +57,7 @@ async function proxyAnswerFor(
 
 describe('proxy', () => {
   describe('a request with no session', () => {
-    let response: Response | null | undefined | void;
+    let response: ProxyAnswer;
 
     beforeEach(async () => {
       response = await proxyAnswerFor(undefined);
@@ -68,7 +71,7 @@ describe('proxy', () => {
   });
 
   describe('a signed-in session', () => {
-    let response: Response | null | undefined | void;
+    let response: ProxyAnswer;
 
     beforeEach(async () => {
       response = await proxyAnswerFor({
@@ -84,7 +87,7 @@ describe('proxy', () => {
   });
 
   describe('a session that names no email', () => {
-    let response: Response | null | undefined | void;
+    let response: ProxyAnswer;
 
     beforeEach(async () => {
       response = await proxyAnswerFor({ id: mockUser.id, name: mockUser.name });

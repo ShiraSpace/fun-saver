@@ -36,7 +36,7 @@ export async function holdNextPage(page: Page): Promise<HeldPage> {
 
   const settle = (): Promise<void> => pause(SETTLE_MS);
 
-  const waiting = page.waitForRequest(isNextPageRequest).then(settle);
+  const waiting = page.waitForRequest(isNextPageRequest).then(() => {});
 
   const release = (): void => {
     isHolding = false;
