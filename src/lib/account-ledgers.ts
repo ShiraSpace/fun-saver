@@ -1,4 +1,5 @@
 import type { DataStore } from '@/db/data-store';
+import { oldestFirst } from '@/db/transaction-order';
 import type {
   Account,
   AccountWithDerivedWallets,
@@ -83,9 +84,9 @@ async function payOwedInterest({
 
   const paidWallets = payouts.map((payout) => payout.wallet);
   const wallets = paidWallets.sort(
-    (a, b) => WALLET_ORDER[a.name] - WALLET_ORDER[b.name]
+    (left, right) => WALLET_ORDER[left.name] - WALLET_ORDER[right.name]
   );
-  const settledHistory = [...history, ...interestPaid];
+  const settledHistory = oldestFirst([...history, ...interestPaid]);
 
   return {
     account: { ...account, wallets },
