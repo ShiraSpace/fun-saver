@@ -1,5 +1,4 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { render } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
 import { THEME_ID, getThemeTokens } from '@/theme/registry';
 import { mockAccountsContext, mockDerivedAccount } from '@/test-utils/fixtures';
@@ -9,20 +8,10 @@ import {
   APPEARANCE_SECTION_TEST_IDS,
 } from './constants';
 import { mockRouter } from '@mocks/next/navigation';
-import {
-  closeAndReopenMenu,
-  toggleMenu,
-  WithToggleableMenu,
-} from '@/test-utils/menu';
+import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 
 function renderSection(): void {
-  render(
-    <WithToggleableMenu>
-      <AppearanceSection />
-    </WithToggleableMenu>,
-    { accounts: mockAccountsContext }
-  );
-  toggleMenu();
+  renderInOpenMenu(<AppearanceSection />, { accounts: mockAccountsContext });
 }
 
 function swatches(): HTMLElement[] {

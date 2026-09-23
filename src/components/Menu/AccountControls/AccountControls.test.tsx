@@ -3,20 +3,16 @@ import { AccountControls } from './AccountControls';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '../EditAccountButton/constants';
 import { openAccountPicker } from '@/test-utils/account-picker';
-import {
-  mockAccountsContext,
-  mockDerivedAccount,
-  mockMenu,
-} from '@/test-utils/fixtures';
-import { MenuProvider } from '../use-menu-state';
+import { mockAccountsContext, mockDerivedAccount } from '@/test-utils/fixtures';
+import { WithMenu } from '@/test-utils/menu';
 
 const mockOnLeaveMenu = jest.fn();
 
 function renderControls(): void {
   render(
-    <MenuProvider value={{ ...mockMenu, close: mockOnLeaveMenu }}>
+    <WithMenu close={mockOnLeaveMenu}>
       <AccountControls />
-    </MenuProvider>,
+    </WithMenu>,
     { accounts: mockAccountsContext }
   );
 }
@@ -33,18 +29,22 @@ describe('AccountControls', () => {
     ).toHaveTextContent(mockDerivedAccount.name);
   });
 
-  it('leaves the menu when the add row is tapped', () => {
-    openAccountPicker();
-    fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
+  describe('with the account list open', () => {
+    beforeEach(() => {
+      openAccountPicker();
+    });
 
-    expect(mockOnLeaveMenu).toHaveBeenCalled();
-  });
+    it('leaves the menu when the add row is tapped', () => {
+      fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
 
-  it('leaves the menu when another account is picked', () => {
-    openAccountPicker();
-    fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
+      expect(mockOnLeaveMenu).toHaveBeenCalled();
+    });
 
-    expect(mockOnLeaveMenu).toHaveBeenCalled();
+    it('leaves the menu when another account is picked', () => {
+      fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
+
+      expect(mockOnLeaveMenu).toHaveBeenCalled();
+    });
   });
 
   it('leaves the menu when the edit button is tapped', () => {

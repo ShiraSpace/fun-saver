@@ -1,14 +1,13 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import {
   mockDerivedAccount,
-  mockMenu,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
 import { totalBalance } from '@/lib/derivations';
 import { agorotToWholeShekels } from '@/lib/money';
 import { AccountList } from './AccountList';
 import { ACCOUNT_LIST_CONTENT, ACCOUNT_LIST_TEST_IDS } from './constants';
-import { MenuProvider } from '../use-menu-state';
+import { WithMenu } from '@/test-utils/menu';
 
 const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
 
@@ -22,13 +21,13 @@ describe('AccountList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     render(
-      <MenuProvider value={{ ...mockMenu, close: mockOnLeaveMenu }}>
+      <WithMenu close={mockOnLeaveMenu}>
         <AccountList
           accounts={accounts}
           selectedAccountId={mockSecondDerivedAccount.id}
           onSelect={mockOnSelect}
         />
-      </MenuProvider>
+      </WithMenu>
     );
   });
 

@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { openAccountPicker } from '@/test-utils/account-picker';
-import { mockAccountsContext, mockMenu, mockUser } from '@/test-utils/fixtures';
-import { MenuProvider } from '../use-menu-state';
+import { mockAccountsContext, mockUser } from '@/test-utils/fixtures';
 import { MenuOverlay } from './MenuOverlay';
 import { MENU_OVERLAY_CONTENT } from './constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
@@ -11,15 +10,16 @@ import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
 import { NAV_TABS_TEST_IDS } from '../NavTabs/constants';
+import { WithMenu } from '@/test-utils/menu';
 
 const onClose = jest.fn();
 
 function renderOverlay(): void {
   onClose.mockClear();
   render(
-    <MenuProvider value={{ ...mockMenu, close: onClose }}>
+    <WithMenu close={onClose}>
       <MenuOverlay />
-    </MenuProvider>,
+    </WithMenu>,
     { accounts: mockAccountsContext, user: mockUser }
   );
 }

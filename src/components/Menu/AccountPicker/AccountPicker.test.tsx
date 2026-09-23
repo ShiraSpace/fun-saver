@@ -1,10 +1,5 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, screen } from '@/test-utils/render';
 import { openAccountPicker } from '@/test-utils/account-picker';
-import {
-  closeAndReopenMenu,
-  toggleMenu,
-  WithToggleableMenu,
-} from '@/test-utils/menu';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
@@ -12,21 +7,19 @@ import {
 import { AccountPicker } from './AccountPicker';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from './constants';
+import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 
 const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
 
 describe('AccountPicker', () => {
   beforeEach(() => {
-    render(
-      <WithToggleableMenu>
-        <AccountPicker
-          accounts={accounts}
-          currentAccount={mockSecondDerivedAccount}
-          onSelect={(): void => {}}
-        />
-      </WithToggleableMenu>
+    renderInOpenMenu(
+      <AccountPicker
+        accounts={accounts}
+        currentAccount={mockSecondDerivedAccount}
+        onSelect={(): void => {}}
+      />
     );
-    toggleMenu();
   });
 
   it('keeps the accounts out of sight until the trigger is tapped', () => {

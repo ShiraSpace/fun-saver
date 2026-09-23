@@ -1,12 +1,10 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { ProfilePhoto } from './ProfilePhoto';
 import { PROFILE_SECTION_TEST_IDS } from './constants';
-import { MenuProvider } from '../use-menu-state';
-import { mockMenu } from '@/test-utils/fixtures';
 import {
   closeAndReopenMenu,
-  toggleMenu,
-  WithToggleableMenu,
+  renderInOpenMenu,
+  WithMenu,
 } from '@/test-utils/menu';
 
 const GOOGLE_PHOTO = 'https://lh3.googleusercontent.com/a/photo';
@@ -21,9 +19,9 @@ describe('ProfilePhoto', () => {
   describe('when the user has a photo', () => {
     beforeEach(() => {
       render(
-        <MenuProvider value={mockMenu}>
+        <WithMenu>
           <ProfilePhoto image={GOOGLE_PHOTO} />
-        </MenuProvider>
+        </WithMenu>
       );
     });
 
@@ -47,9 +45,9 @@ describe('ProfilePhoto', () => {
   describe('when the user has no photo', () => {
     beforeEach(() => {
       render(
-        <MenuProvider value={mockMenu}>
+        <WithMenu>
           <ProfilePhoto />
-        </MenuProvider>
+        </WithMenu>
       );
     });
 
@@ -61,12 +59,7 @@ describe('ProfilePhoto', () => {
 
   describe('when the menu is closed and reopened after the photo failed', () => {
     beforeEach(() => {
-      render(
-        <WithToggleableMenu>
-          <ProfilePhoto image={GOOGLE_PHOTO} />
-        </WithToggleableMenu>
-      );
-      toggleMenu();
+      renderInOpenMenu(<ProfilePhoto image={GOOGLE_PHOTO} />);
       fireEvent.error(photo() as HTMLElement);
       closeAndReopenMenu();
     });

@@ -1,9 +1,9 @@
 import { render, screen } from '@/test-utils/render';
-import { mockMenu, mockUser } from '@/test-utils/fixtures';
-import { MenuProvider } from '../use-menu-state';
+import { mockUser } from '@/test-utils/fixtures';
 import { MenuGlobalScope } from './MenuGlobalScope';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from './constants';
 import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
+import { WithMenu } from '@/test-utils/menu';
 
 const BELOW_THE_STRIP = 'below-the-profile-strip';
 
@@ -12,11 +12,11 @@ describe('MenuGlobalScope', () => {
 
   beforeEach(() => {
     render(
-      <MenuProvider value={mockMenu}>
+      <WithMenu>
         <MenuGlobalScope>
           <span data-testid={BELOW_THE_STRIP} />
         </MenuGlobalScope>
-      </MenuProvider>,
+      </WithMenu>,
       { user: mockUser }
     );
 
