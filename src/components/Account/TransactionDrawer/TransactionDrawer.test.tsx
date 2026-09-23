@@ -36,7 +36,7 @@ describe('TransactionDrawer', () => {
     const scrim = screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.scrim);
 
     expect(getComputedStyle(scrim).background).toContain(
-      getThemeTokens().shadows.modal
+      getThemeTokens().tints.shade
     );
   });
 

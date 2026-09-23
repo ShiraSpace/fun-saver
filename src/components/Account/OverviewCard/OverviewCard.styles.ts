@@ -18,8 +18,7 @@ export const Card = styled.div`
   background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${OVERVIEW_CARD_STYLE.radius}px;
   padding: ${OVERVIEW_CARD_STYLE.padding}px;
-  box-shadow: ${OVERVIEW_CARD_STYLE.shadow}
-    ${({ theme }): string => theme.shadows.faint};
+  box-shadow: 0 6px 0 ${({ theme }): string => theme.shadows.faint};
   color: ${({ theme }): string => theme.colors.textStrong};
   display: flex;
   align-items: center;

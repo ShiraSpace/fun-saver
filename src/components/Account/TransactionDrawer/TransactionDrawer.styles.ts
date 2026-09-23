@@ -6,7 +6,7 @@ import { SWIPE_TO_CLOSE, TRANSACTION_DRAWER_STYLE } from './constants';
 export const Scrim = styled.div`
   position: fixed;
   inset: 0;
-  background: ${({ theme }): string => theme.shadows.modal};
+  background: ${({ theme }): string => theme.tints.shade};
   z-index: ${LAYERS.modal};
 `;
 

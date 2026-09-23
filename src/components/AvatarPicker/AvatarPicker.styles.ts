@@ -23,7 +23,7 @@ const selectedBorder = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
 
 const baseShadow = ({ theme }: { theme: Theme }): string =>
-  `${AVATAR_PICKER_STYLE.shadow} ${theme.shadows.soft}`;
+  `0 3px 0 ${theme.shadows.soft}`;
 
 export const OptionButton = styled.button<OptionButtonProps>`
   position: relative;

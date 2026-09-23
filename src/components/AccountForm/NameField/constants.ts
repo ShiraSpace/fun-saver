@@ -14,5 +14,4 @@ export const NAME_FIELD_STYLE = {
   paddingX: 14,
   gap: 6,
   maxWidth: 340,
-  shadow: '0 4px 0',
 } as const;

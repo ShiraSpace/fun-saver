@@ -23,8 +23,7 @@ export const EditKey = styled.button`
   align-items: center;
   justify-content: center;
   gap: 6px;
-  box-shadow: ${AMOUNT_PAD_STYLE.shadow}
-    ${({ theme }): string => theme.shadows.faint};
+  box-shadow: 0 3px 0 ${({ theme }): string => theme.shadows.faint};
   transition:
     transform ${AMOUNT_PAD_STYLE.pressMs}ms ease,
     box-shadow ${AMOUNT_PAD_STYLE.pressMs}ms ease;

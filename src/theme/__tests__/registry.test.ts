@@ -5,6 +5,7 @@ import {
   resolveThemeId,
 } from '../registry';
 import { SHADOW_SCALE } from '../shadows';
+import { TINT_SCALE } from '../tints';
 import type { ThemeTokens } from '../theme-tokens';
 
 describe('theme registry', () => {
@@ -113,10 +114,14 @@ describe('theme registry', () => {
       ]);
     });
 
-    it('reads depth the same way, so a theme swap never changes how far a card sits off the page', () => {
-      const scales = themes.map(({ shadows }) => shadows);
+    it('reads depth and tint the same way, so switching theme never moves a card off the page', () => {
+      const layers = themes.map(({ shadows, tints }) => [shadows, tints]);
 
-      expect(scales).toEqual([SHADOW_SCALE, SHADOW_SCALE, SHADOW_SCALE]);
+      expect(layers).toEqual([
+        [SHADOW_SCALE, TINT_SCALE],
+        [SHADOW_SCALE, TINT_SCALE],
+        [SHADOW_SCALE, TINT_SCALE],
+      ]);
     });
   });
 

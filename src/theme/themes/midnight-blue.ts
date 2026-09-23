@@ -1,5 +1,6 @@
 import { buildGradients } from '../gradients';
 import { SHADOW_SCALE } from '../shadows';
+import { TINT_SCALE } from '../tints';
 import { TYPE_SCALE } from '../typography';
 import type { ThemeStops, ThemeTokens } from '../theme-tokens';
 
@@ -46,5 +47,6 @@ export const midnightBlue: ThemeTokens = {
   },
   gradients: buildGradients(STOPS),
   shadows: SHADOW_SCALE,
+  tints: TINT_SCALE,
   typography: TYPE_SCALE,
 };

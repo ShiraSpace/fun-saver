@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import { mockAccountsContext, mockUser } from '@/test-utils/fixtures';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Header } from './Header';
-import { HEADER_LAYOUT, HEADER_TEST_IDS } from './constants';
+import { HEADER_TEST_IDS } from './constants';
 import { getThemeTokens } from '@/theme/registry';
 import { TITLE_TEST_IDS } from './CrossfadeTitle/constants';
 import { MENU_TEST_IDS } from '../Menu/constants';
@@ -34,7 +34,7 @@ describe('Header', () => {
       const bar = screen.getByTestId(HEADER_TEST_IDS.bar);
 
       expect(getComputedStyle(bar).boxShadow).toBe(
-        `${HEADER_LAYOUT.shadow} ${getThemeTokens().shadows.faint}`
+        `0 4px 0 ${getThemeTokens().shadows.faint}`
       );
     });
 

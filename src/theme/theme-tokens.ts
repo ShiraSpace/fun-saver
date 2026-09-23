@@ -1,4 +1,5 @@
 import type { ThemeShadows } from './shadows';
+import type { ThemeTints } from './tints';
 import type { ThemeTypography } from './typography';
 
 export interface ThemeColors {
@@ -55,6 +56,7 @@ export interface ThemeTokens {
   readonly colors: ThemeColors;
   readonly gradients: ThemeGradients;
   readonly shadows: ThemeShadows;
+  readonly tints: ThemeTints;
   readonly typography: ThemeTypography;
 }
 
@@ -63,6 +65,7 @@ declare module '@emotion/react' {
     readonly colors: ThemeColors;
     readonly gradients: ThemeGradients;
     readonly shadows: ThemeShadows;
+    readonly tints: ThemeTints;
     readonly typography: ThemeTypography;
   }
 }

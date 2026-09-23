@@ -38,7 +38,7 @@ export const List = styled.div`
   border: ${MENU_ROW_STYLE.borderWidth}px solid ${scopeBorder};
   border-radius: ${ACCOUNT_LIST_STYLE.popoverRadius}px;
   background: ${surface};
-  box-shadow: ${ACCOUNT_LIST_STYLE.shadow} ${deepShadow};
+  box-shadow: 0 14px 30px ${deepShadow};
 `;
 
 const row = `

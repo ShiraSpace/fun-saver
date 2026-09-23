@@ -79,10 +79,16 @@ see decisions 2 and 3.
 | `mid` | `SignIn` card, wordmark text-shadow | `rgba(0,0,0,.16)` |
 | `deep` | drawer, `HomeAvatarLink`, `AccountList` popover | `rgba(0,0,0,.25)`, `.28` and `.22` |
 | `film` | `CloseButton`, `MethodIntro` pill and rule | `rgba(255,255,255,.4)`, `.2`, `.25` |
-| `modal` | `TransactionDrawer` scrim | `rgba(40,20,60,.42)` |
+| `shade` | `TransactionDrawer` scrim | `rgba(40,20,60,.42)` |
 
-Geometry stays in the component: `constants.ts` keeps `'0 4px 0'` and the
-styled component composes it with the token.
+The last two are not shadows — `film` is consumed as a `background` and a
+`border-top` colour, `shade` dims a covered page — so they live in their own
+`tints` group. `theme.shadows.*` is depth; `theme.tints.*` is a translucent
+layer, light or dark.
+
+Geometry stays in the component, written inline in the `.styles.ts` —
+`box-shadow: 0 4px 0 ${faint}` — per the repo convention that spacing, radii and
+shadows are literals there rather than a `*_STYLE` constants object.
 
 They live in `src/theme/shadows.ts` as one `SHADOW_SCALE`, in their own group
 on `ThemeTokens` rather than on `ThemeColors` — shared by identity the way
@@ -194,16 +200,35 @@ no literal for the leak test to catch; drop the colour half of the header ledge
 and `0 4px 0` is still valid CSS, painting in `currentColor`. Which step a
 surface picks is the visual suite's business.
 
-## Still open
+## Closed on review
 
-**The geometry stayed in `constants.ts`.** The eight consumers found by the
-sweep keep `shadow: '0 4px 0'` there and compose it at the call site, while the
-nine original ones write the geometry inline in their `.styles.ts`. Seventeen
-consumers, two idioms — and the repo's own convention is the inline one, with
-`HEADER_LAYOUT` and `OVERVIEW_CARD_STYLE` named as the older pattern not to
-spread. Not a violation, since those constants pre-date this branch, but the
-header test now pins the older idiom. Eight small edits and one test rewrite
-would close it.
+Four comments on #110, three of which held.
+
+**The leak test could not see a `.tsx`.** Five component files keep styled CSS
+in their `.tsx` — `ActionButton`, `Pig`, `Screen`, `Column`, `MenuHeaderSheet` —
+which CLAUDE.md sanctions for a component that *is* a styled component. A hex
+dropped into any of them stayed green. `STYLE_HOMES` now covers `.tsx`, with
+`GoogleLogo.tsx` joining the brand exemption, and the guard has been watched
+failing on a planted literal. This one mattered beyond its size: the five
+per-component tests were cut on the premise that a colour literal in a style
+home is impossible, and for those five files it was not.
+
+**Both idioms closed.** Sunshine declares a module-private `STOPS` in its own
+theme file like the other two, so `palette.ts` holds only `COLORS`. The shadow
+geometry moved inline in all eight consumers the sweep found, so seventeen
+consumers now share one idiom and the older `*_STYLE` pattern stops spreading.
+
+The fourth comment — that the PR body still said four moving surfaces — was
+already stale: the body had been rewritten with the screenshots.
+
+## Known gap
+
+Nothing pins a theme's actual stop values. Changing sunshine's `#E94E89` to
+`#E94E88` reddens nothing: the `buildGradients` test uses synthetic stops, and
+the swatch test and visual suites both assert *through* `getThemeTokens`, so
+they move with the change. True before this branch too — `screenGradient*` was
+never pinned — and a pin would be the change-detector kind of test this pass
+deliberately cut five of. Recorded as a decision, not an oversight.
 
 ## What the work turned up
 

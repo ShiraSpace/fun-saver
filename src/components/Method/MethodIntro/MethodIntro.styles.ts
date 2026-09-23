@@ -14,7 +14,7 @@ export const Eyebrow = styled.span`
   margin-bottom: 10px;
   padding: 3px 9px;
   border-radius: 999px;
-  background: ${({ theme }): string => theme.shadows.film};
+  background: ${({ theme }): string => theme.tints.film};
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 700;
   letter-spacing: 0.07em;
@@ -48,7 +48,7 @@ export const Derived = styled.p`
 export const Divider = styled.hr`
   margin: 16px 0;
   border: none;
-  border-top: 1px solid ${({ theme }): string => theme.shadows.film};
+  border-top: 1px solid ${({ theme }): string => theme.tints.film};
 `;
 
 export const Brief = styled.p`

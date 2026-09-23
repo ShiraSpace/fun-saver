@@ -22,7 +22,7 @@ export const Card = styled.label`
   padding: ${NAME_FIELD_STYLE.paddingY}px ${NAME_FIELD_STYLE.paddingX}px;
   border-radius: ${NAME_FIELD_STYLE.radius}px;
   background: ${surface};
-  box-shadow: ${NAME_FIELD_STYLE.shadow} ${faintShadow};
+  box-shadow: 0 4px 0 ${faintShadow};
   color: ${labelColor};
 `;
 

@@ -8,7 +8,7 @@ const titleColor = ({ theme }: { theme: Theme }): string =>
 const alertText = ({ theme }: { theme: Theme }): string =>
   theme.colors.alertText;
 
-const film = ({ theme }: { theme: Theme }): string => theme.shadows.film;
+const film = ({ theme }: { theme: Theme }): string => theme.tints.film;
 
 const titleSize = ({ theme }: { theme: Theme }): number =>
   theme.typography.title;
