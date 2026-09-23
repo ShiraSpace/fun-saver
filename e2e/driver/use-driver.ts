@@ -1,8 +1,12 @@
-import { rm } from 'node:fs/promises';
+import { mkdir, rename, writeFile } from 'node:fs/promises';
+import { dirname } from 'node:path';
 import { after, afterEach, before, beforeEach } from 'node:test';
 import type { StoreData } from '@/db/data-store';
-import { JsonFileStore } from '@/db/json-file-store';
-import { mockOwner, mockUser } from '@/test-utils/fixtures';
+import {
+  createMockAccountUser,
+  mockOwner,
+  mockUser,
+} from '@/test-utils/fixtures';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import { sessionCookie } from './auth-session';
@@ -80,21 +84,26 @@ async function seedStore(
   dataPath: string,
   state: Partial<StoreData>
 ): Promise<void> {
-  await rm(dataPath, { force: true });
-  const store = new JsonFileStore(dataPath);
-  const users = [mockUser, ...(state.users ?? [])];
+  const accounts = state.accounts ?? [];
+  const data: StoreData = {
+    users: [mockUser, ...(state.users ?? [])],
+    accounts,
+    accountUsers: accounts.map((account) =>
+      createMockAccountUser({
+        accountId: account.id,
+        userId: mockOwner.userId,
+        addedAt: mockOwner.addedAt,
+      })
+    ),
+    transactions: state.transactions ?? [],
+  };
 
-  for (const user of users) {
-    await store.insertUser(user);
-  }
+  await mkdir(dirname(dataPath), { recursive: true });
 
-  for (const account of state.accounts ?? []) {
-    await store.insertAccountWithOwner(account, mockOwner);
-  }
+  const temporaryPath = `${dataPath}.seed.tmp`;
 
-  if (state.transactions?.length) {
-    await store.insertTransactions(state.transactions);
-  }
+  await writeFile(temporaryPath, JSON.stringify(data, null, 2), 'utf8');
+  await rename(temporaryPath, dataPath);
 }
 
 export function useDriver(
