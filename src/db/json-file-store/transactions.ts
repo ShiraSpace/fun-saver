@@ -21,4 +21,12 @@ export class JsonTransactions implements TransactionRepository {
       )
     );
   }
+
+  listByAccount(accountId: string): Promise<Transaction[]> {
+    return this.session.read((data): Transaction[] =>
+      data.transactions.filter(
+        (transaction) => transaction.accountId === accountId
+      )
+    );
+  }
 }

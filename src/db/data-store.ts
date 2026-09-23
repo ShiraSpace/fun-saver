@@ -26,6 +26,7 @@ export interface AccountRepository {
 export interface TransactionRepository {
   insert(transactions: Transaction[]): Promise<void>;
   listByWallet(accountId: string, walletId: string): Promise<Transaction[]>;
+  listByAccount(accountId: string): Promise<Transaction[]>;
 }
 
 export interface UserRepository {
@@ -57,6 +58,7 @@ export interface DataStore {
     accountId: string,
     walletId: string
   ): Promise<Transaction[]>;
+  listTransactionsByAccount(accountId: string): Promise<Transaction[]>;
   findUserByProvider(
     provider: AuthProvider,
     providerAccountId: string

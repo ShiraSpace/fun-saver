@@ -69,4 +69,16 @@ export class PostgresTransactions implements TransactionRepository {
 
     return rows.map(toTransaction);
   }
+
+  async listByAccount(accountId: string): Promise<Transaction[]> {
+    const rows = await selectRows<TransactionRow>(
+      this.sql,
+      `SELECT * FROM transactions
+       WHERE account_id = $1
+       ORDER BY occurred_at, created_at, id`,
+      [accountId]
+    );
+
+    return rows.map(toTransaction);
+  }
 }

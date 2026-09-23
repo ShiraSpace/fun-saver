@@ -17,4 +17,10 @@ export class MemoryTransactions implements TransactionRepository {
         transaction.accountId === accountId && transaction.walletId === walletId
     );
   }
+
+  async listByAccount(accountId: string): Promise<Transaction[]> {
+    return this.transactions.filter(
+      (transaction) => transaction.accountId === accountId
+    );
+  }
 }
