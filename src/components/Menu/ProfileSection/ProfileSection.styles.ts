@@ -67,6 +67,9 @@ export const Name = styled.b`
   font-size: ${nameSize}px;
   font-weight: 700;
   color: ${strongText};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const Email = styled.span`
