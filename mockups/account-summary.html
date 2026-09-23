@@ -79,7 +79,14 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 .burgerBtn { border:none; background:transparent; padding:0; cursor:pointer; width:22px;
   display:flex; flex-direction:column; gap:4px; }
 .burgerBtn i { height:2.5px; border-radius:2px; background:var(--textStrong); display:block; }
-.hname { flex:1; text-align:start; font-weight:700; font-size:17px; font-family:Fredoka,Rubik,sans-serif; }
+.hname { flex:1; min-width:0; text-align:start; font-weight:700; font-size:17px;
+  font-family:Fredoka,Rubik,sans-serif; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hname.asBack { display:flex; align-items:center; gap:6px; border:none; background:transparent;
+  padding:0; cursor:pointer; color:inherit; }
+.hname.asBack .bk { font-size:20px; color:var(--textMuted); }
+.backBtn { flex-shrink:0; width:26px; height:26px; border:none; border-radius:50%; cursor:pointer;
+  background:transparent; color:var(--textStrong); font-size:21px; line-height:1; padding:0;
+  font-family:Rubik,sans-serif; }
 .avatar { width:40px; height:40px; border-radius:50%; background:var(--sunnyTile);
   display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
 
@@ -195,6 +202,8 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 .menuPanel.withAppHeader .header { margin:14px 14px 4px; }
 .menuPanel.withAppHeader .menuContent { padding-top:8px; }
 .menuPanel.withAppHeader .menuRow, .menuPanel.withAppHeader .acctBtn { background:var(--surface); }
+/* depositBg כמעט זהה ל-softBg בשני נושאים, ולכן המסך הנוכחי מסומן בקו ובמשקל ולא במילוי */
+.menuPanel.withAppHeader .menuRow[aria-current='page'] { border-color:var(--textStrong); font-weight:700; }
 
 .menuPanel.onGradient { background:transparent; color:var(--textOnPrimary); }
 .menuPanel.onGradient .menuBar .t, .menuPanel.onGradient .scopeHead .ttl { color:var(--textOnPrimary); }
@@ -235,6 +244,19 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
   position:relative; z-index:3; padding:11px; }
 .scopeBlock.perAccount { background:transparent; border:1.5px dashed var(--divider);
   box-shadow:inset 4px 0 0 var(--softBorder); }
+/* ניווט אינו הגדרה של חשבון — לכן מסגרת רצופה בלי הפס והקו המקווקו של הבלוק תלוי-החשבון */
+.scopeBlock.nav { background:transparent; border:1.5px solid var(--softBorder); padding:8px 11px 11px; }
+.scopeBlock.nav .menuLabel { margin-top:0; }
+.scopeBlock.nav .scopeHead { margin-bottom:8px; }
+.scopeBlock.nav .menuRow:last-child { margin-bottom:0; }
+.tabStrip { display:grid; gap:6px; margin-bottom:14px; }
+.tab { flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:9px 4px; border-radius:15px; border:1.5px solid var(--divider); background:var(--surface);
+  color:var(--textMuted); font-family:Rubik,sans-serif; font-size:11.5px; font-weight:600;
+  cursor:pointer; }
+.tab .ic { font-size:17px; }
+.tab[aria-current='page'] { background:var(--textStrong); border-color:var(--textStrong);
+  color:var(--surface); }
 .scopeHead { display:flex; align-items:center; gap:7px; margin-bottom:3px; }
 .scopeHead .ttl { font-size:13.5px; font-weight:700; }
 .scopeSub { font-size:11.5px; color:var(--textMuted); line-height:1.5; margin-bottom:10px; }
@@ -291,6 +313,10 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
   שני המסכים חיים וחולקים מצב. <b>בחירת חשבון בתפריט משנה גם את הגרף, גם את הרשימה וגם את הערכת הנושא</b> — כך רואים שהחשבון הוא הדבר הגלובלי היחיד וכל השאר תלוי-חשבון.
   הכספים מחושבים ב<b>אגורות</b> כמו בקוד (<code>interestForDay = round(balanceAgorot × 0.15/30)</code>), ולכן הריבית היומית יוצאת סכום ריאלי ולא ₪1 עגול.
   פיצול הפקדה <code>40/50/10</code> כמו ב-<code>DEPOSIT_SPLIT</code>. 90 יום היסטוריה לכל חשבון.
+  <br /><span class="new">חדש</span>: שלוש עמודות הניווט מוציאות את <b>מסכים</b> מהבלוק תלוי-החשבון — ניווט אינו הגדרה של חשבון —
+  ומצרפות אליו את <b>השיטה</b>, שהיום היא קישור יתום מתחת לשני הבלוקים.
+  <b>נ3 — רצועת הטאבים — נבחרה</b>; הבורר <b>כמה מסכים</b> מראה איך היא נראית כשמתווספים מסכים מה-roadmap.
+  בכותרת נבחנות שלוש צורות של <b>חזרה לבית</b> (הבורר למעלה), כדי שממסך תנועות או מהשיטה תהיה דרך חזרה בלי לפתוח את התפריט.
   <br /><span class="new">פתוח</span>: <b>שפה</b> יושבת כרגע בקבוצה תלוית-החשבון לפי ההנחיה, אבל בקוד היא <code>LANGUAGE_SECTION_CONTENT.selectedCode</code> קבוע ללא שמירה — סביר שהיא העדפת משתמש/מכשיר ומקומה בקבוצה הגלובלית. שורה אחת להזיז.
 </p>
 
@@ -300,6 +326,8 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 </div>
 <div class="controls"><span class="ctlLabel">אייקון תנועה:</span><span class="ctlGroup" id="iconControls"></span></div>
 <div class="controls"><span class="ctlLabel">כפתור עריכה:</span><span class="ctlGroup" id="pencilControls"></span></div>
+<div class="controls"><span class="ctlLabel">חזרה בכותרת:</span><span class="ctlGroup" id="backControls"></span></div>
+<div class="controls"><span class="ctlLabel">כמה מסכים:</span><span class="ctlGroup" id="navCountControls"></span></div>
 
 <div class="row">
   <div class="slot">
@@ -333,6 +361,31 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
       הפאנל מקבל גוון <code>softBg</code> כדי שהכרטיסים הלבנים ימשיכו לצוף עליו.
     </div>
     <div id="menuPhoneAppHeader"></div>
+  </div>
+  <div class="slot">
+    <div class="slotTitle">ניווט נ1 — בלוק מסכים בין הסקופים (להשוואה)</div>
+    <div class="slotNote">
+      הניווט יוצא מהבלוק תלוי-החשבון לבלוק שלישי משלו, בין הגלובלי לתלוי-חשבון: <b>בית · תנועות בחשבון · השיטה</b>.
+      מסגרת רצופה בלי הפס והמקווקו, כי אלה אינם הגדרות של חשבון. בבלוק תלוי-החשבון נשארים רק מראה ושפה.
+    </div>
+    <div id="menuPhoneNavBlock"></div>
+  </div>
+  <div class="slot">
+    <div class="slotTitle">ניווט נ2 — סקופ «ניווט» מעל הבורר (להשוואה)</div>
+    <div class="slotNote">
+      שלוש השורות בסקופ משלהן בראש התפריט, בכותרת <b>ניווט</b> — קודם <b>לאן הולכים</b>,
+      ואחריו שני הסקופים של <b>מה משנים</b>: הגלובלי (חשבון) ותלוי-החשבון (מראה, שפה).
+    </div>
+    <div id="menuPhoneNavBare"></div>
+  </div>
+  <div class="slot">
+    <div class="slotTitle">ניווט נ3 — רצועת טאבים <span class="new">נבחר</span></div>
+    <div class="slotNote">
+      הניווט מתכווץ לרצועה מתחת לכותרת, הנוכחי מלא, והתפריט שמתחת הוא הגדרות בלבד.
+      הבורר <b>כמה מסכים</b> למעלה מוסיף מסכים מה-roadmap: עד 4 בשורה אחת, ומעבר לזה
+      שורות מאוזנות — <b>5 הם 3+2</b>, לא 4+1. התוויות מקוצרות (תנועות, יעד, חלוקה).
+    </div>
+    <div id="menuPhoneNavTabs"></div>
   </div>
 </div>
 
