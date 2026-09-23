@@ -114,8 +114,8 @@ structure can become a defect because of what is added to it.
 
 **`src/test-utils/render.tsx` has six render helpers and wants one (plan PR 15,
 next).** They are a matrix — theme × user × accounts × route — and each new
-dimension doubles it. One `render(ui, options)` with optional keys replaces
-them. **Whatever replaces them must leave `user` out of the default:** the
+dimension doubles it. One `render(element, options)` with optional keys
+replaces them. **Whatever replaces them must leave `user` out of the default:** the
 shared wrapper used to give every test a signed-in user, which made the throw in
 `signed-in-user-context` unreachable. Omitting an option has to keep meaning
 "no provider".

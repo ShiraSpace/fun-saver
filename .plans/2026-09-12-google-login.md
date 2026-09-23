@@ -1232,9 +1232,11 @@ and every new dimension doubles it. `renderWithUserAt` only exists because #101
 gave the helpers a route in the same week PR 7 made the user opt-in, and one
 suite needed both.
 
-One `render(ui, options)` replaces them, where options carries `themeId`, `user`,
-`accounts` and `route`, each optional with a default, and each call site passes
-only what it needs. A new provider is then one more optional key in one file,
+One `render(element, options)` replaces them, where options carries `themeId`,
+`user`, `accounts` and `route`, each optional with a default, and each call site
+passes only what it needs. The first argument is named `element`, not `ui` as
+RTL names it and not `component`: these helpers take a `ReactElement`, so
+`<Home />` rather than `Home`, and `component` would promise the wrong thing. A new provider is then one more optional key in one file,
 not two more helpers.
 
 **The default must leave `user` out.** Opt-in is not an accident of naming: the
