@@ -9,6 +9,7 @@ import {
   AccountsProvider,
   type AccountsContextValue,
 } from '@/components/Home/accounts-context';
+import { setMockPathname } from '@mocks/next/navigation';
 import { mockDerivedAccount, mockSecondDerivedAccount } from './fixtures';
 
 function withProviders(ui: ReactElement, themeId: ThemeId): JSX.Element {
@@ -33,6 +34,22 @@ export function renderWithAccounts(
   value: AccountsContextValue = mockAccountsContext
 ): RenderResult {
   return render(<AccountsProvider value={value}>{ui}</AccountsProvider>);
+}
+
+export function renderAt(route: string, ui: ReactElement): RenderResult {
+  setMockPathname(route);
+
+  return render(ui);
+}
+
+export function renderWithAccountsAt(
+  route: string,
+  ui: ReactElement,
+  value: AccountsContextValue = mockAccountsContext
+): RenderResult {
+  setMockPathname(route);
+
+  return renderWithAccounts(ui, value);
 }
 
 export * from '@testing-library/react';

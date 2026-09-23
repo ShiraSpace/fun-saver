@@ -1,4 +1,4 @@
-import { render, screen, within } from '@/test-utils/render';
+import { renderAt, screen, within } from '@/test-utils/render';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
@@ -13,14 +13,6 @@ import { METHOD_ROUTE, SECTION_NUMBER, SOURCES_SECTION_ID } from './constants';
 import { Method } from './Method';
 import { METHOD_COPY } from './copy';
 
-jest.mock('next/navigation', () => ({
-  usePathname: (): string => METHOD_ROUTE,
-  useRouter: (): { push: () => void; refresh: () => void } => ({
-    push: (): void => undefined,
-    refresh: (): void => undefined,
-  }),
-}));
-
 const SECTION_NUMBERS = Object.values(SECTION_NUMBER);
 
 function renderedSectionIds(): (string | undefined)[] {
@@ -31,7 +23,8 @@ function renderedSectionIds(): (string | undefined)[] {
 
 describe('the method page', () => {
   beforeEach(() => {
-    render(
+    renderAt(
+      METHOD_ROUTE,
       <Method
         accounts={[mockDerivedAccount, mockSecondDerivedAccount]}
         initialAccount={mockDerivedAccount}

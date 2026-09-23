@@ -4,12 +4,7 @@ import { TRANSACTION_DRAWER_TEST_IDS } from './constants';
 import { MODE_TOGGLE_TEST_IDS } from './ModeToggle/constants';
 import { WALLET_PICKER_TEST_IDS } from './WalletPicker/constants';
 import { mockDerivedAccount } from '@/test-utils/fixtures';
-
-const mockRefresh = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  useRouter: (): { refresh: jest.Mock } => ({ refresh: mockRefresh }),
-}));
+import { mockRouter } from '@mocks/next/navigation';
 
 jest.mock('./use-add-transaction', () => ({
   useAddTransaction: (): { addDeposit: jest.Mock; withdraw: jest.Mock } => ({
@@ -20,7 +15,7 @@ jest.mock('./use-add-transaction', () => ({
 
 describe('TransactionDrawer', () => {
   beforeEach(() => {
-    mockRefresh.mockClear();
+    mockRouter.refresh.mockClear();
     render(
       <TransactionDrawer account={mockDerivedAccount} onClose={jest.fn()} />
     );

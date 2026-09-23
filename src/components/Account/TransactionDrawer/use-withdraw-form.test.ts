@@ -1,14 +1,10 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useWithdrawForm } from './use-withdraw-form';
 import { mockDerivedWallets } from '@/test-utils/fixtures';
+import { mockRouter } from '@mocks/next/navigation';
 
 const mockWithdraw = jest.fn();
-const mockRefresh = jest.fn();
 const onClose = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  useRouter: (): { refresh: jest.Mock } => ({ refresh: mockRefresh }),
-}));
 
 jest.mock('./use-add-transaction', () => ({
   useAddTransaction: (): { addDeposit: jest.Mock; withdraw: jest.Mock } => ({
@@ -31,7 +27,7 @@ function setup(): ReturnType<
 describe('useWithdrawForm', () => {
   beforeEach(() => {
     mockWithdraw.mockReset().mockResolvedValue(undefined);
-    mockRefresh.mockClear();
+    mockRouter.refresh.mockClear();
     onClose.mockClear();
   });
 
@@ -83,7 +79,7 @@ describe('useWithdrawForm', () => {
     await waitFor(() =>
       expect(mockWithdraw).toHaveBeenCalledWith(savings.id, 10)
     );
-    await waitFor(() => expect(mockRefresh).toHaveBeenCalled());
+    await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
     await waitFor(() => expect(onClose).toHaveBeenCalled());
   });
 

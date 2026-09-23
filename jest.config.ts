@@ -12,7 +12,10 @@ const config: Config = {
     '**/src/components/**/*.test.ts',
   ],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  moduleNameMapper: { '^@/(.*)$': '<rootDir>/src/$1' },
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@mocks/(.*)$': '<rootDir>/__mocks__/$1',
+  },
 };
 
 export default createJestConfig(config);

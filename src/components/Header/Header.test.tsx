@@ -1,4 +1,4 @@
-import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
+import { fireEvent, renderWithAccountsAt, screen } from '@/test-utils/render';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
@@ -10,23 +10,15 @@ import { ACCOUNT_LIST_TEST_IDS } from '../Menu/AccountList/constants';
 import { HOME_ROUTE } from '../Home/constants';
 import { openAccountPicker } from '@/test-utils/account-picker';
 
-const mockPathname = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  usePathname: (): string => mockPathname(),
-  useRouter: (): { push: () => void; refresh: () => void } => ({
-    push: (): void => undefined,
-    refresh: (): void => undefined,
-  }),
-}));
-
 const ACCOUNT_NAME = 'יעל';
 const AVATAR_ID = 'kid-01';
 const headerAccount = { name: ACCOUNT_NAME, avatarId: AVATAR_ID };
 
-function renderHeader(pathname: string): void {
-  mockPathname.mockReturnValue(pathname);
-  renderWithAccounts(<Header title={ACCOUNT_NAME} account={headerAccount} />);
+function renderHeader(route: string): void {
+  renderWithAccountsAt(
+    route,
+    <Header title={ACCOUNT_NAME} account={headerAccount} />
+  );
 }
 
 describe('Header', () => {

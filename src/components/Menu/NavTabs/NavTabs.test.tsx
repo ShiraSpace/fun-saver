@@ -1,20 +1,14 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, renderAt, screen } from '@/test-utils/render';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { NavTabs } from './NavTabs';
 import { MENU_SCREENS, NAV_TABS_CONTENT, NAV_TABS_TEST_IDS } from './constants';
 
 const mockOnNavigate = jest.fn();
-const mockPathname = jest.fn();
 
-jest.mock('next/navigation', () => ({
-  usePathname: (): string => mockPathname(),
-}));
-
-function renderTabs(pathname: string): void {
+function renderTabs(route: string): void {
   jest.clearAllMocks();
-  mockPathname.mockReturnValue(pathname);
-  render(<NavTabs onNavigate={mockOnNavigate} />);
+  renderAt(route, <NavTabs onNavigate={mockOnNavigate} />);
 }
 
 describe('NavTabs', () => {

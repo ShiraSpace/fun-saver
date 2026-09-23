@@ -6,14 +6,10 @@ import { WALLET_PICKER_TEST_IDS } from '../WalletPicker/constants';
 import { AMOUNT_PAD_TEST_IDS } from '../AmountPad/constants';
 import { mockDerivedAccount, mockDerivedWallets } from '@/test-utils/fixtures';
 import { agorotToShekels } from '@/lib/money';
+import { mockRouter } from '@mocks/next/navigation';
 
 const mockWithdraw = jest.fn();
-const mockRefresh = jest.fn();
 const onClose = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  useRouter: (): { refresh: jest.Mock } => ({ refresh: mockRefresh }),
-}));
 
 jest.mock('../use-add-transaction', () => ({
   useAddTransaction: (): { addDeposit: jest.Mock; withdraw: jest.Mock } => ({
@@ -33,7 +29,7 @@ function type(...digits: string[]): void {
 describe('WithdrawBody', () => {
   beforeEach(() => {
     mockWithdraw.mockReset().mockResolvedValue(undefined);
-    mockRefresh.mockClear();
+    mockRouter.refresh.mockClear();
     onClose.mockClear();
     render(<WithdrawBody account={mockDerivedAccount} onClose={onClose} />);
   });
@@ -92,7 +88,7 @@ describe('WithdrawBody', () => {
     await waitFor(() =>
       expect(mockWithdraw).toHaveBeenCalledWith(spending.id, 10)
     );
-    await waitFor(() => expect(mockRefresh).toHaveBeenCalled());
+    await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
     await waitFor(() => expect(onClose).toHaveBeenCalled());
   });
 
