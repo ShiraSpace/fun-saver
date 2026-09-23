@@ -1,34 +1,28 @@
-import { JSX, useState } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import {
   mockDerivedAccount,
+  mockMenu,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
 import { AccountPicker } from './AccountPicker';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from './constants';
+import { MenuProvider } from '../use-menu-state';
 
 const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
 
-function StatefulPicker(): JSX.Element {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <AccountPicker
-      accounts={accounts}
-      currentAccount={mockSecondDerivedAccount}
-      isOpen={isOpen}
-      onToggle={setIsOpen}
-      onSelect={(): void => {}}
-      onLeaveMenu={(): void => {}}
-    />
-  );
-}
-
 describe('AccountPicker', () => {
   beforeEach(() => {
-    render(<StatefulPicker />);
+    render(
+      <MenuProvider value={mockMenu}>
+        <AccountPicker
+          accounts={accounts}
+          currentAccount={mockSecondDerivedAccount}
+          onSelect={(): void => {}}
+        />
+      </MenuProvider>
+    );
   });
 
   it('keeps the accounts out of sight until the trigger is tapped', () => {
@@ -65,6 +59,16 @@ describe('AccountPicker', () => {
 
     it('puts them away when something outside the picker is tapped', () => {
       fireEvent.mouseDown(document.body);
+
+      expect(
+        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).not.toBeInTheDocument();
+    });
+
+    it('puts them away when Escape is pressed', () => {
+      fireEvent.keyDown(screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.trigger), {
+        key: 'Escape',
+      });
 
       expect(
         screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)

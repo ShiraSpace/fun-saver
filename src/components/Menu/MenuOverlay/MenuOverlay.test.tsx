@@ -1,5 +1,8 @@
+import { Fragment, JSX } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { mockAccountsContext, mockUser } from '@/test-utils/fixtures';
+import { openAccountPicker } from '@/test-utils/account-picker';
+import { mockAccountsContext, mockMenu, mockUser } from '@/test-utils/fixtures';
+import { MenuProvider, useMenuState } from '../use-menu-state';
 import { MenuOverlay } from './MenuOverlay';
 import { MENU_OVERLAY_CONTENT } from './constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
@@ -9,20 +12,35 @@ import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
 import { NAV_TABS_TEST_IDS } from '../NavTabs/constants';
+import { ACCOUNT_PICKER_TEST_IDS } from '../AccountPicker/constants';
 
 const onClose = jest.fn();
-const onAccountListToggle = jest.fn();
+const TOGGLE_TESTID = 'toggle-menu';
+const GOOGLE_PHOTO = 'https://lh3.googleusercontent.com/a/photo';
 
-function renderOverlay(isAccountListOpen = false): void {
+function ToggleableOverlay(): JSX.Element {
+  const menu = useMenuState();
+
+  return (
+    <Fragment>
+      <button data-testid={TOGGLE_TESTID} onClick={menu.toggle} />
+      <MenuProvider value={menu}>
+        <MenuOverlay />
+      </MenuProvider>
+    </Fragment>
+  );
+}
+
+function toggleMenu(): void {
+  fireEvent.click(screen.getByTestId(TOGGLE_TESTID));
+}
+
+function renderOverlay(): void {
   onClose.mockClear();
-  onAccountListToggle.mockClear();
   render(
-    <MenuOverlay
-      isOpen
-      onClose={onClose}
-      isAccountListOpen={isAccountListOpen}
-      onAccountListToggle={onAccountListToggle}
-    />,
+    <MenuProvider value={{ ...mockMenu, close: onClose }}>
+      <MenuOverlay />
+    </MenuProvider>,
     { accounts: mockAccountsContext, user: mockUser }
   );
 }
@@ -103,14 +121,34 @@ describe('MenuOverlay', () => {
 
   describe('with the account picker open', () => {
     beforeEach(() => {
-      renderOverlay(true);
+      renderOverlay();
+      openAccountPicker();
+      fireEvent.keyDown(screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.trigger), {
+        key: 'Escape',
+      });
     });
 
-    it('lets Escape shut the picker and leaves the menu standing', () => {
-      fireEvent.keyDown(document, { key: 'Escape' });
-
-      expect(onAccountListToggle).toHaveBeenCalledWith(false);
+    it('keeps the Escape that shut the picker from closing the menu too', () => {
       expect(onClose).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('reopened after a photo failed to load', () => {
+    beforeEach(() => {
+      render(<ToggleableOverlay />, {
+        accounts: mockAccountsContext,
+        user: { ...mockUser, image: GOOGLE_PHOTO },
+      });
+      toggleMenu();
+      fireEvent.error(screen.getByTestId(PROFILE_SECTION_TEST_IDS.photo));
+      toggleMenu();
+      toggleMenu();
+    });
+
+    it('starts fresh and tries the photo again', () => {
+      expect(
+        screen.getByTestId(PROFILE_SECTION_TEST_IDS.photo)
+      ).toBeInTheDocument();
     });
   });
 });

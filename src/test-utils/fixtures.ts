@@ -11,6 +11,7 @@ import type { AccountOwner } from '@/db/data-store';
 import { DEFAULT_WALLETS } from '@/lib/constants';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import type { AccountsContextValue } from '@/components/Home/accounts-context';
+import type { MenuState } from '@/components/Menu/use-menu-state';
 
 export function createMockWallet(overrides: Partial<Wallet> = {}): Wallet {
   return {
@@ -207,4 +208,10 @@ export const mockAccountsContext: AccountsContextValue = {
   accounts: [mockDerivedAccount, mockSecondDerivedAccount],
   currentAccount: mockDerivedAccount,
   selectAccount: () => {},
+};
+
+export const mockMenu: MenuState = {
+  isOpen: true,
+  toggle: () => {},
+  close: () => {},
 };
