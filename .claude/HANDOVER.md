@@ -1,6 +1,23 @@
-# Handover — 2026-09-23 (PR 11 merged; PR 7 is all that is left)
+# Handover — 2026-09-23 (the plan's ten PRs are all merged; PR 15 in review)
 
 ## Start here
+
+**PR 7 merged as #100 (`06f2528`), which closes the plan's ten.** `#102` and
+`#104` landed after it, both theme work. What is left came out of PR 7: PR 15
+(in review), then PR 12, PR 13 and PR 14, none of which block each other.
+
+**PR 15 — `refactor/one-render-helper`.** The six render helpers in
+`src/test-utils/render.tsx` are one `render(element, options)` taking `themeId`,
+`user`, `accounts` and `route`. **Omitting `user` or `accounts` renders no
+provider** — that is load-bearing, not a detail: a default that supplies a
+signed-in user makes the throw in `signed-in-user-context` unreachable, which is
+what #100 had to correct. `signed-in-user-context.test.tsx` is the test that
+holds the line; if it passes with no provider, the change is wrong. Four suites
+(`Account`, `Header`, `MenuOverlay`, `MenuGlobalScope`) were living off the old
+implicit user and now name it, because all four reach `ProfileSection` through
+the tree. It also added `THEME_ID` in `src/theme/registry.ts` as the one source
+of the three id strings; `registry.test.ts` keeps literals on purpose, since
+asserting through the constant would pass for whatever value it held.
 
 **Plan PRs 1–5, 8, 8b and 9 are all merged** (`#28`, `#32`, `#41`, `#49`, `#53`,
 `#55`, `#61`, `#74`, `#81` — PR 9 as `f947725`), along with **`#67`**
