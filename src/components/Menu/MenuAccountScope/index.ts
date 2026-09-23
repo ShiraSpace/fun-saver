@@ -1,0 +1,1 @@
+export { MenuAccountScope } from './MenuAccountScope';
