@@ -17,7 +17,7 @@ export const Grid = styled.div`
 const optionFill = ({ background }: OptionButtonProps): string => background;
 
 const ringColor = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textOnPot;
+  theme.colors.selectionRing;
 
 const selectedBorder = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;

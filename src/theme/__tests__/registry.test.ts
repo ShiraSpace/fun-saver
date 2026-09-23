@@ -51,12 +51,13 @@ describe('theme registry', () => {
       colors.textOnPot,
       colors.labelScrim,
       colors.alertText,
+      colors.selectionRing,
     ]);
 
     expect(contrastTokens).toEqual([
-      ['#6B2C8E', '#2B1235', 'rgba(0, 0, 0, 0.45)', '#A81B3A'],
-      ['#1B7A6B', '#2B1800', 'rgba(0, 0, 0, 0.35)', '#A83A21'],
-      ['#3B82F6', '#ECF1F8', 'transparent', '#F87171'],
+      ['#6B2C8E', '#2B1235', 'rgba(0, 0, 0, 0.45)', '#A81B3A', '#2B1235'],
+      ['#1B7A6B', '#2B1800', 'rgba(0, 0, 0, 0.35)', '#A83A21', '#2B1800'],
+      ['#3B82F6', '#ECF1F8', 'transparent', '#F87171', '#3B82F6'],
     ]);
   });
 
@@ -67,8 +68,8 @@ describe('theme registry', () => {
     ]);
 
     expect(readableOnTints).toEqual([
-      ['#6F6189', '#276E2C'],
-      ['#526E63', '#316A26'],
+      ['#675A80', '#276E2C'],
+      ['#4B655B', '#316A26'],
       ['#8A96A8', '#34D399'],
     ]);
   });

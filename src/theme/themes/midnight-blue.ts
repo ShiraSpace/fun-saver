@@ -13,6 +13,7 @@ export const midnightBlue: ThemeTokens = {
     textStrong: '#ECF1F8',
     textOnPot: '#ECF1F8',
     labelScrim: 'transparent',
+    selectionRing: '#3B82F6',
     screenGradientStart: '#0A0E14',
     screenGradientMid: '#0F1620',
     screenGradientEnd: '#122036',

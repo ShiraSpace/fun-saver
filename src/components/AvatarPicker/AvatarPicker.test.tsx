@@ -18,25 +18,28 @@ describe('AvatarPicker', () => {
     );
   });
 
-  describe('on the theme whose primary is the gradient it lands on', () => {
-    const jungle = getThemeTokens('jungle-quest').colors;
+  describe.each(['jungle-quest', 'midnight-blue'] as const)(
+    'on %s, where the old ring vanished into a layer',
+    (themeId) => {
+      const { selectionRing } = getThemeTokens(themeId).colors;
 
-    beforeEach(() => {
-      render(
-        <AvatarPicker selectedId={AVATARS[0].id} onSelect={onSelect} />,
-        'jungle-quest'
-      );
-    });
+      beforeEach(() => {
+        render(
+          <AvatarPicker selectedId={AVATARS[0].id} onSelect={onSelect} />,
+          themeId
+        );
+      });
 
-    it('rings the selected avatar in a colour the gradient does not hide', () => {
-      const selected = screen
-        .getAllByTestId(AVATAR_PICKER_TEST_IDS.option)
-        .filter((option) => option.dataset.selected === 'true');
+      it('rings the selected avatar in a colour neither layer hides', () => {
+        const selected = screen
+          .getAllByTestId(AVATAR_PICKER_TEST_IDS.option)
+          .filter((option) => option.dataset.selected === 'true');
 
-      expect(selected).toHaveLength(1);
-      expect(getComputedStyle(selected[0]).boxShadow).toContain(
-        jungle.textOnPot
-      );
-    });
-  });
+        expect(selected).toHaveLength(1);
+        expect(getComputedStyle(selected[0]).boxShadow).toContain(
+          selectionRing
+        );
+      });
+    }
+  );
 });

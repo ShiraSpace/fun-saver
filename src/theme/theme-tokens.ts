@@ -11,6 +11,7 @@ export interface ThemeColors {
   readonly textStrong: string;
   readonly textOnPot: string;
   readonly labelScrim: string;
+  readonly selectionRing: string;
   readonly screenGradientStart: string;
   readonly screenGradientMid: string;
   readonly screenGradientEnd: string;

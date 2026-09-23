@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
-import { getThemeTokens } from '@/theme/registry';
 import {
   chosenAvatars,
   nameInput,
@@ -52,14 +51,6 @@ describe('AccountForm', () => {
       expect(
         screen.getByTestId(ACCOUNT_FORM_TEST_IDS.titleIcon)
       ).toHaveTextContent(mockForm.titleIcon);
-    });
-
-    it('sits the title on a scrim, because the screen gradient cannot carry white', () => {
-      const title = screen.getByTestId(ACCOUNT_FORM_TEST_IDS.title);
-
-      expect(getComputedStyle(title).backgroundColor).toBe(
-        getThemeTokens().colors.labelScrim
-      );
     });
 
     it('renders the name field and the avatar picker', () => {

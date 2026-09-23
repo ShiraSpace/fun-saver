@@ -67,6 +67,11 @@ directly.
    4.94 to 4.46. Removing it is what lets the lighter scrim pass.
 
 4. **The screen-gradient label needs a scrim, because no colour can fix it.**
+   **Superseded 2026-09-23 for the account form:** the second pass removed this
+   scrim from `AccountForm`'s title, on create and edit, as a look decision —
+   that title is white on the gradient again at 1.60/2.15. The scrim stands on
+   `WalletList`'s «הקופות», which is now its only consumer.
+
    Sunshine runs yellow→pink and jungle teal→lime, both mid-luminance: white
    reaches 1.53/2.04 and `textStrong` only 3.88/3.33. Nothing clears 4.5 from
    either direction. **Corrected 2026-09-23:** "nothing" was measured against

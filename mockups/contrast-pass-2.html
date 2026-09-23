@@ -20,9 +20,10 @@
   --alertNow:#E5484D;  --alertNew:#A81B3A;
   --accentNow:#E94E89; --accentKeep:#E94E89;
   --deepScreen:linear-gradient(160deg,#8E5210,#8B381D,#762043);
+  --scrimFill:rgba(0,0,0,.45); --ring:#2B1235;
   --gainNow:#2E7D32;   --gainNew:#276E2C;
   --mutedNow:#786A92;  --mutedNew:#6F6189;
-  --rScrimNow:'1.60';  --rDim:'4.83'; --rVig:'5.60'; --rDeep:'5.23';
+  --rScrimNow:'1.60';  --rDim:'4.83'; --rVig:'5.60'; --rDeep:'5.23'; --rSaveBare:'1.60'; --rSaveChip:'4.94';
   --rErrNow:'3.55';    --rErrAlert:'7.28'; --rErrAccent:'3.55';
 }
 :root[data-theme='jungle'] {
@@ -37,9 +38,10 @@
   --alertNow:#E5484D;  --alertNew:#A83A21;
   --accentNow:#E76F51; --accentKeep:#E76F51;
   --deepScreen:linear-gradient(160deg,#175B52,#1F5F4C,#3F631F);
+  --scrimFill:rgba(0,0,0,.35); --ring:#2B1800;
   --gainNow:#3A7D2E;   --gainNew:#316A26;
   --mutedNow:#5C7A6E;  --mutedNew:#526E63;
-  --rScrimNow:'2.15';  --rDim:'5.94'; --rVig:'6.80'; --rDeep:'5.82';
+  --rScrimNow:'2.15';  --rDim:'5.94'; --rVig:'6.80'; --rDeep:'5.82'; --rSaveBare:'2.15'; --rSaveChip:'4.72';
   --rErrNow:'3.04';    --rErrAlert:'6.26'; --rErrAccent:'3.04';
 }
 :root[data-theme='midnight'] {
@@ -54,9 +56,10 @@
   --alertNow:#F87171;  --alertNew:#F87171;
   --accentNow:#3B82F6; --accentKeep:#3B82F6;
   --deepScreen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  --scrimFill:transparent; --ring:#3B82F6;
   --gainNow:#34D399;   --gainNew:#34D399;
   --mutedNow:#8A96A8;  --mutedNew:#8A96A8;
-  --rScrimNow:'13.94'; --rDim:'14.71'; --rVig:'14.90'; --rDeep:'12.85';
+  --rScrimNow:'13.94'; --rDim:'14.71'; --rVig:'14.90'; --rDeep:'12.85'; --rSaveBare:'13.94'; --rSaveChip:'13.94';
   --rErrNow:'4.71';    --rErrAlert:'6.26'; --rErrAccent:'4.71';
 }
 :root[data-variant='now'] { --alert:var(--alertNow); --gain:var(--gainNow); --muted:var(--mutedNow);
@@ -74,6 +77,10 @@
     rgba(0,0,0,.14) 60%, rgba(0,0,0,.55) 78%); }
 :root[data-variant='new'][data-bg='deep'] .login { background:var(--deepScreen); }
 :root[data-fade='off'] .fine { opacity:1; }
+:root { --rSave:var(--rSaveBare); }
+:root[data-save='chip'][data-variant='new'] { --rSave:var(--rSaveChip); }
+:root[data-save='chip'][data-variant='new'] .saveerr {
+  background:var(--scrimFill); padding:4px 14px; border-radius:999px; }
 
 
 body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,sans-serif; }
@@ -90,6 +97,9 @@ button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff;
   background:#1d3a26; color:#6ee7a0; }
 .readout.s::after { content:'כיתוב על המסך ' var(--rScrim) ':1'; }
 .readout.e::after { content:'שגיאת מגירה ' var(--rErr) ':1'; }
+.readout.v::after { content:'שגיאת שמירה ' var(--rSave) ':1'; }
+:root[data-save='bare'] .readout.v, :root[data-variant='now'] .readout.v { background:#3a1d1f; color:#ff8a8a; }
+:root[data-theme='midnight'] .readout.v { background:#1d3a26; color:#6ee7a0; }
 :root[data-variant='now'] .readout, :root[data-variant='new'][data-err='accent'] .readout.e,
 :root[data-variant='new'][data-bg='none'] .readout.s
   { background:#3a1d1f; color:#ff8a8a; }
@@ -174,7 +184,7 @@ button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff;
 
 <h1>ניגודיות AA — המחזור השני</h1>
 <p class="sub">מה שהסריקה הראשונה החמיצה. <b>התחברות</b> מציירת תמיד סאנשיין, ולכן מתג הערכה לא נוגע בה. הכיתוב <b>נשאר לבן</b> והשקיפות <b>נשארת ‎.88</b>, ולכן מה שזז הוא הרקע — בלי שום קופסה, תווית או לוח. שלוש דרכים: <b>עמעום מלא</b> (שכבה אחת של ‎50% שחור על כל המסך), <b>וינייטה</b> (כהה למעלה ולמטה, בהיר באמצע מאחורי הכרטיס — נפילת אור, לא אובייקט), ו<b>גרדיאנט עמוק</b> (אותם גוונים, עצירות כהות יותר, בלי שכבה נוספת). הקריאה במד היא של <b>השורה הקטנה</b>, הגרועה מהשלוש.</p>
-<p class="sub"><b>האדום מותאם לערכה:</b> סאנשיין <code>#A81B3A</code> (גרוע 5.42) נמשך אל הוורוד של הערכה, ג'ונגל <code>#A83A21</code> (4.97) אל הטרקוטה שלה, מידנייט נשאר <code>#F87171</code>. <code>gainText</code> עובר ל־<code>#276E2C</code>/<code>#316A26</code>, <code>textMuted</code> ל־<code>#6F6189</code>/<code>#526E63</code>. <b>מידנייט עובר הכול היום ולא זז.</b></p>
+<p class="sub"><b>הטופס:</b> הכותרת מאבדת את התווית שקיבלה ב‏#98, והשגיאה נשארת כפי שהיא — שתיהן לבן על רקע המסך, 1.60, חריגה מודעת. <b>האדום מותאם לערכה:</b> סאנשיין <code>#A81B3A</code> (גרוע 5.42) נמשך אל הוורוד של הערכה, ג'ונגל <code>#A83A21</code> (4.97) אל הטרקוטה שלה, מידנייט נשאר <code>#F87171</code>. <code>gainText</code> עובר ל־<code>#276E2C</code>/<code>#316A26</code>, <code>textMuted</code> ל־<code>#6F6189</code>/<code>#526E63</code>. <b>מידנייט עובר הכול היום ולא זז.</b></p>
 
 <div class="bar">
   <div class="grp"><b>ערכה</b>
@@ -200,8 +210,13 @@ button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff;
     <button data-f="on" aria-pressed="true">נשארת .88</button>
     <button data-f="off" aria-pressed="false">יורדת</button>
   </div>
+  <div class="grp"><b>שגיאת שמירה בטופס</b>
+    <button data-x="bare" aria-pressed="true">בלי — נבחר</button>
+    <button data-x="chip" aria-pressed="false">עם תווית</button>
+  </div>
   <span class="readout s"></span>
   <span class="readout e"></span>
+  <span class="readout v"></span>
 </div>
 
 <div class="rack">
@@ -303,16 +318,31 @@ button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff;
     </div>
   </div>
 
+  <div class="scr">
+    <div class="cap">עריכת חשבון — שגיאת שמירה <span>· כותרת בלי תווית · SaveError</span></div>
+    <div class="phone">
+      <span class="ttl-bare">✏️ עריכת חשבון</span>
+      <div class="fld" style="width:100%;box-sizing:border-box">שם: נועה</div>
+      <div class="avatars">
+        <span class="av-o"></span><span class="av-o sel"></span>
+        <span class="av-o"></span><span class="av-o"></span>
+      </div>
+      <div class="btn">✓ שמירת שינויים</div>
+      <span class="saveerr">לא הצלחנו לשמור את החשבון, נסו שוב</span>
+    </div>
+  </div>
+
 </div>
 
 <script>
 const root = document.documentElement;
-const keys = { t:'data-theme', v:'data-variant', b:'data-bg', e:'data-err', f:'data-fade' };
+const keys = { t:'data-theme', v:'data-variant', b:'data-bg', e:'data-err', f:'data-fade', x:'data-save' };
 root.setAttribute('data-theme', 'sunshine');
 root.setAttribute('data-variant', 'now');
 root.setAttribute('data-bg', 'dim');
 root.setAttribute('data-err', 'alert');
 root.setAttribute('data-fade', 'on');
+root.setAttribute('data-save', 'bare');
 document.querySelectorAll('.bar button').forEach((btn) => {
   btn.addEventListener('click', () => {
     const [k, value] = Object.entries(btn.dataset)[0];
