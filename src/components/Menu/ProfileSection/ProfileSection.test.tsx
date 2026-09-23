@@ -26,7 +26,7 @@ const signOutError = (): HTMLElement | null =>
 describe('ProfileSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedSignOut.mockResolvedValue({ url: LOGIN_PATH });
+    mockedSignOut.mockResolvedValue({ url: `http://localhost${LOGIN_PATH}` });
     renderWithUser(<ProfileSection />);
   });
 
@@ -81,6 +81,27 @@ describe('ProfileSection', () => {
       fireEvent.click(signOutButton());
 
       expect(mockedSignOut).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('when the sign-out comes back pointing at the auth error page', () => {
+    beforeEach(async () => {
+      mockedSignOut.mockResolvedValue({
+        url: 'http://localhost/api/auth/error?error=MissingCSRF',
+      });
+
+      fireEvent.click(signOutButton());
+      await screen.findByTestId(PROFILE_SECTION_TEST_IDS.signOutError);
+    });
+
+    it('does not follow it, since the session is still alive', () => {
+      expect(goTo).not.toHaveBeenCalled();
+    });
+
+    it('says the sign-out did not happen', () => {
+      expect(signOutError()).toHaveTextContent(
+        PROFILE_SECTION_CONTENT.signOutFailed
+      );
     });
   });
 

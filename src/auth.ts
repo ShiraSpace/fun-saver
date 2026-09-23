@@ -46,16 +46,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 export async function signedInUser(): Promise<SignedInUser | undefined> {
   const user = (await auth())?.user;
 
-  if (!user?.id) {
+  if (!user?.id || !user.email) {
     return;
   }
 
-  const email = user.email ?? '';
-
   return {
     id: user.id,
-    name: toDisplayName(user.name, email),
-    email,
+    name: toDisplayName(user.name, user.email),
+    email: user.email,
     image: user.image ?? undefined,
   };
 }

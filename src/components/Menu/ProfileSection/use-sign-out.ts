@@ -19,6 +19,14 @@ interface AccountSignOut {
   signOutOfAccount: () => Promise<void>;
 }
 
+function landsOnLogin(url: string | undefined): boolean {
+  if (!url) {
+    return false;
+  }
+
+  return new URL(url, window.location.origin).pathname === LOGIN_PATH;
+}
+
 export function useSignOut(): AccountSignOut {
   const [status, setStatus] = useState<SignOutStatus>(SIGN_OUT_STATUS.idle);
 
@@ -31,12 +39,12 @@ export function useSignOut(): AccountSignOut {
         redirectTo: LOGIN_PATH,
       });
 
-      if (!ended?.url) {
+      if (!landsOnLogin(ended?.url)) {
         setStatus(SIGN_OUT_STATUS.failed);
         return;
       }
 
-      goTo(ended.url);
+      goTo(LOGIN_PATH);
     } catch {
       setStatus(SIGN_OUT_STATUS.failed);
     }
