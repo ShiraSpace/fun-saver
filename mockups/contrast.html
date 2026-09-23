@@ -596,17 +596,17 @@ button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff;
 </section>
 
 <script>
-/* כל מחזור נושא את המצב שלו על ה-section, ולכן שני הבוררים אינם נוגעים זה בזה */
-const ATTRIBUTE = { t:'data-theme', v:'data-variant', s:'data-scrim', g:'data-glow',
+const TOGGLE_ATTRIBUTE = { t:'data-theme', v:'data-variant', s:'data-scrim', g:'data-glow',
   b:'data-bg', e:'data-err', f:'data-fade', x:'data-save' };
 
-document.querySelectorAll('.pass .bar button').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const [key, value] = Object.entries(btn.dataset)
-      .find(([name]) => ATTRIBUTE[name]);
-    btn.closest('.pass').setAttribute(ATTRIBUTE[key], value);
-    btn.parentElement.querySelectorAll('button').forEach((b) =>
-      b.setAttribute('aria-pressed', String(b === btn)));
+document.querySelectorAll('.pass .bar button').forEach((toggle) => {
+  toggle.addEventListener('click', () => {
+    const [key, value] = Object.entries(toggle.dataset)
+      .find(([name]) => TOGGLE_ATTRIBUTE[name]);
+    const passThisToggleBelongsTo = toggle.closest('.pass');
+    passThisToggleBelongsTo.setAttribute(TOGGLE_ATTRIBUTE[key], value);
+    toggle.parentElement.querySelectorAll('button').forEach((button) =>
+      button.setAttribute('aria-pressed', String(button === toggle)));
   });
 });
 </script>
