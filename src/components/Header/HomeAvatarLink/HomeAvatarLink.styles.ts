@@ -14,6 +14,7 @@ export const Ring = styled(Link)`
   &[data-hidden='true'] {
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
   }
 `;
 

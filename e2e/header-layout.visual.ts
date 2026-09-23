@@ -134,5 +134,19 @@ describe('header', () => {
 
       assert.equal(takesTap, false);
     });
+
+    it('stops taking taps as the menu opens, not once it has finished', async () => {
+      const homeLink = await header.homeLinkBox();
+
+      await menu.startOpening();
+
+      const takesTap = await session.receivesTapAt({
+        testId: HEADER_TEST_IDS.homeLink,
+        x: homeLink.x + homeLink.width / 2,
+        y: homeLink.y + homeLink.height / 2,
+      });
+
+      assert.equal(takesTap, false);
+    });
   });
 });

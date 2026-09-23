@@ -33,7 +33,7 @@ export function HomeAvatarLink({
         alt={name}
         size={HEADER_AVATAR_PROPS.size}
         testId={HEADER_TEST_IDS.avatar}
-        isHidden={isHidden}
+        isHidden={false}
       />
       <HouseBadge aria-hidden>{HEADER_CONTENT.homeIcon}</HouseBadge>
     </Ring>
