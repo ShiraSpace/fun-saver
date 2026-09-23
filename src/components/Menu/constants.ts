@@ -9,6 +9,10 @@ export const MENU_TOGGLE = {
   zIndex: LAYERS.overlayForeground,
 } as const;
 
+export const ESCAPE_KEY = 'Escape';
+
+export const KEY_DOWN_EVENT = 'keydown';
+
 export const MENU_LAYOUT = {
   blockGap: 14,
 } as const;

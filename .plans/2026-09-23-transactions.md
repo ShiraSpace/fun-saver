@@ -27,8 +27,9 @@ before any PR.
 
 ## Where it stands (2026-09-23)
 
-Plan written, nothing built. Spec and plan both sit uncommitted on
-`docs/transactions-spec`.
+Spec and plan merged as #119. **PR 1 merged as #122** — the chart-line colours
+are on `main`, so PR 7 now waits only on PR 6. **PR 2 merged as #125** — every
+store lists an account's whole ledger, oldest first; PR 3 is next in lane B.
 
 ### Lanes — who can run in parallel
 
@@ -39,7 +40,7 @@ stack was rebased twice because branches were cut from each other instead.
 
 | Wave | Lane A | Lane B | Lane C | Starts when |
 | --- | --- | --- | --- | --- |
-| 1 | PR 1 — theme tokens | PR 2 → PR 3 — store, then `accountLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
+| 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 — store, then `accountLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
 | 2 | PR 6 — route, shell, headline | — | — | PRs 3 and 4 merged |
 | 3 | PR 7 — chart | PR 8 — list | — | PR 6 merged; PR 7 also needs PR 1, PR 8 needs PR 5 |
 | 4 | PR 9 — tab and browser suite | — | — | PRs 7 and 8 merged |
@@ -61,9 +62,8 @@ stack was rebased twice because branches were cut from each other instead.
 - Only the driving session edits this plan and the spec. Each lane reports its
   merged PR numbers here through that session.
 
-**What blocks what:** only decision A is still open, and it blocks lane A
-only. PR 1's Step 1 settles it. Decisions B–E were settled on 2026-09-23, so no
-other PR waits on the user for a decision.
+**What blocks what:** nothing. Decisions A–E were all settled on 2026-09-23, so
+no PR waits on the user for a decision.
 
 ## Global Constraints
 
@@ -142,10 +142,10 @@ Each refines or corrects the spec. None re-opens an approved design call.
    that. `transaction-rows.ts` is the one that sorts.
 4. **Two real movements on one day order by `createdAt`, newest first.** The spec
    uses `createdAt` only to group deposits, and leaves the order of two
-   same-day movements to whatever order the store returned — which differs
-   between json-file and postgres. For a deposit or withdrawal `createdAt` *is*
-   the event time (`new Date()` at write); only interest's is settlement time,
-   and interest is ranked separately. This is the tiebreak.
+   same-day movements to whatever order the store returned. For a deposit or
+   withdrawal `createdAt` *is* the event time (`new Date()` at write); only
+   interest's is settlement time, and interest is ranked separately. This is the
+   tiebreak.
 5. **Single-select controls are native radio inputs** in a `fieldset` with a
    visually hidden `legend`, styled as chips. The spec asks for one group with
    one checked option; native radios are that, with arrow-key movement and
@@ -174,12 +174,12 @@ Each refines or corrects the spec. None re-opens an approved design call.
 
 ## Decisions owed, and settled
 
-B–E were settled on 2026-09-23 by taking the proposals below. A is still open;
-PR 1 settles it.
+All five were settled on 2026-09-23. B–E took the proposals below; A was
+settled against `mockups/chart-contrast.html`, drawn during the decision.
 
 | # | Question | Needed before | Answer |
 | --- | --- | --- | --- |
-| A | `sunshine-quest`'s savings and spending chart lines | PR 1 | **open** — proposal `#B07D00` (3.63) · `#E2661F` (3.41), settled against a mockup drawn during the decision |
+| A | `sunshine-quest`'s savings and spending chart lines | PR 1 | **settled** — green savings `#276E2C` (6.26, the value of `gainText`) · blue spending `#2563EB` (5.17) · pink good `#E94E89` (3.55). The proposal `#B07D00` · `#E2661F` and every orange spending were rejected: spending read too close to good. `softText`'s brown for savings was rejected too |
 | B | Type sizes the scale does not have: the 30px headline, the 9.5 / 9 SVG labels | PR 6 / PR 7 | **settled** — headline `amount` (38, the token named for it; 22 and 38 tie); SVG text stays in viewBox units, because the viewBox scales with the card and 12 crowds three y ticks into 112 units |
 | C | No-history copy, for the chart frame and for the list | PR 7 | **settled** — chart `עוד אין תנועות להציג`, list `כאן יופיעו ההפקדות, המשיכות והריבית` |
 | D | The savings withdrawal's name and badge | PR 8 | **settled** — `🏦 משיכה` |
@@ -208,6 +208,7 @@ PR 1 settles it.
 ## PR 1 — the chart lines get colours they can be seen in
 
 Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
+**Merged as #122 on 2026-09-23.**
 
 **Files:**
 - Modify: `src/theme/theme-tokens.ts` (`ThemeColors`)
@@ -221,11 +222,11 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
   reads through `WALLET_CHART_COLOR`. `contrastRatio(a, b): number` in
   `src/test-utils/css-color.ts`.
 
-- [ ] **Step 1: Settle decision A.** Draw the sunshine chart card three ways in
-      `mockups/chart-contrast.html` — the mockup's pair, `#B07D00`/`#E2661F`, and
-      one darker alternative — each over the same four lines. Show the user; **STOP**.
-      Replace the sunshine values below with what they pick.
-- [ ] **Step 2: Add the three keys to `ThemeColors`**, after `walletTrack`:
+- [x] **Step 1: Settle decision A.** Settled 2026-09-23: green `#276E2C` · blue
+      `#2563EB` · pink `#E94E89`. `mockups/chart-contrast.html` draws the sunshine
+      chart card eight ways over the same four lines and records why each other
+      option was rejected.
+- [x] **Step 2: Add the three keys to `ThemeColors`**, after `walletTrack`:
 
 ```ts
   readonly chartSavings: string;
@@ -233,12 +234,12 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
   readonly chartGood: string;
 ```
 
-- [ ] **Step 3: Add the nine values.**
+- [x] **Step 3: Add the nine values.**
 
 ```ts
 // src/theme/palette.ts (sunshine-quest), after walletTrack
-  chartSavings: '#B07D00',
-  chartSpending: '#E2661F',
+  chartSavings: '#276E2C',
+  chartSpending: '#2563EB',
   chartGood: '#E94E89',
 
 // src/theme/themes/jungle-quest.ts
@@ -252,7 +253,7 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
     chartGood: '#A78BFA',
 ```
 
-- [ ] **Step 4: Add the helper** to `src/test-utils/css-color.ts`:
+- [x] **Step 4: Add the helper** to `src/test-utils/css-color.ts`:
 
 ```ts
 function channel(value: number): number {
@@ -272,9 +273,10 @@ export function contrastRatio(first: string, second: string): number {
 }
 ```
 
-- [ ] **Step 5: tsc, eslint, STOP, commit** —
+- [x] **Step 5: tsc, eslint, STOP, commit** —
       `feat(theme): the chart lines get colours they can be seen in`
-- [ ] **Step 6: The tests** — all three are the first three; there are no more.
+- [x] **Step 6: The tests** — all three are the first three; there are no more.
+      As shipped, one `describe.each` per theme:
 
 ```ts
 import { THEMES } from '../registry';
@@ -282,23 +284,22 @@ import { contrastRatio } from '@/test-utils/css-color';
 
 const GRAPHIC_CONTRAST = 3;
 
-describe('the balance chart lines', () => {
-  const themes = Object.entries(THEMES);
+describe.each(Object.entries(THEMES))('the chart lines in %s', (_, { colors }) => {
+  const lines = [colors.chartSavings, colors.chartSpending, colors.chartGood];
 
-  it.each(themes)('stand out from the card they are drawn on, in %s', (_, { colors }) => {
-    for (const line of [colors.chartSavings, colors.chartSpending, colors.chartGood]) {
-      expect(contrastRatio(line, colors.surface)).toBeGreaterThanOrEqual(GRAPHIC_CONTRAST);
-    }
+  it('stand out from the card they are drawn on', () => {
+    const ratios = lines.map((line) => contrastRatio(line, colors.surface));
+    expect(Math.min(...ratios)).toBeGreaterThanOrEqual(GRAPHIC_CONTRAST);
   });
 
-  it.each(themes)('never draw two wallets in one colour, in %s', (_, { colors }) => {
-    const lines = [colors.chartSavings, colors.chartSpending, colors.chartGood, colors.textStrong];
-    expect(new Set(lines).size).toBe(lines.length);
+  it('never draw two lines in one colour', () => {
+    const drawn = [...lines, colors.textStrong];
+    expect(new Set(drawn).size).toBe(drawn.length);
   });
+});
 
-  it('measures a ratio the way the contrast passes did', () => {
-    expect(contrastRatio('#FFFFFF', '#000000')).toBeCloseTo(21);
-  });
+it('measures a contrast ratio the way the contrast passes did', () => {
+  expect(contrastRatio('#FFFFFF', '#000000')).toBeCloseTo(21);
 });
 ```
 
@@ -306,15 +307,20 @@ Breaks: set sunshine `chartSavings` back to the mockup's `#E0A020` (first test
 reddens for `sunshine-quest` only); set midnight `chartSpending` to `#60A5FA`
 (second test reddens); drop the `+ 0.05` from `contrastRatio` (third reddens).
 
-PR body carries the measured table: every token against its theme's `surface`,
-jungle `#E76F51` at 3.04 recorded as measured and left alone, and midnight's
-donut `walletSavings` at 1.99 recorded as out of scope.
+The measured table lives in the spec's "Colours" section, not the PR body,
+which stays in domain language. Jungle `#E76F51` at 3.04 is measured and left
+alone; midnight's donut `walletSavings` at 1.99 is out of scope.
 
 ---
 
 ## PR 2 — a store can list an account's whole ledger
 
 Branch `feat/list-by-account`. Spec: "Store contract".
+**Merged as #125 on 2026-09-23.** What shipped differs from the steps below:
+review made every store return oldest first, so the memory and json-file
+repositories sort through `byOccurrence` (`src/db/transactions.ts`) in both
+`listByAccount` and `listByWallet`, and the tests reuse `mockTransactions`. The
+code on `main` is the record.
 
 **Files:**
 - Modify: `src/db/data-store.ts:26-29` (`TransactionRepository`), `:55-59` (`DataStore`)
@@ -324,7 +330,8 @@ Branch `feat/list-by-account`. Spec: "Store contract".
 
 **Interfaces:**
 - Produces: `DataStore.listTransactionsByAccount(accountId: string): Promise<Transaction[]>`,
-  which PR 3 is the first caller of. Order is **not** part of the contract.
+  which PR 3 is the first caller of. Every store returns it oldest first
+  (`occurred_at, created_at, id`).
 
 - [ ] **Step 1: The contract.**
 

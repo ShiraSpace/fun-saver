@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-23 (PR 13 merged as #118; PR 14 is the last one)
+## Progress — updated 2026-09-23 (PR 14 merged as #124; every PR in this plan has landed)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -30,7 +30,7 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 7  | [#100](https://github.com/ShiraSpace/fun-saver/pull/100) | `feat/profile-section`             | **merged** — `06f2528`                                  |
 | PR 12 | [#115](https://github.com/ShiraSpace/fun-saver/pull/115) | `fix/empty-state-header`           | **merged** — `d0a9d00`; design was #111, `bb421e9`      |
 | PR 13 | [#118](https://github.com/ShiraSpace/fun-saver/pull/118) | `refactor/required-context`        | **merged** — `4031cf6`                                  |
-| PR 14 | —                                                        | `fix/menu-state-on-close`          | not started — found reviewing PR 7                      |
+| PR 14 | [#124](https://github.com/ShiraSpace/fun-saver/pull/124) | `fix/menu-state-on-close`          | **merged** — `4081da4`, plus #127 (`aec0954`)           |
 | PR 15 | [#105](https://github.com/ShiraSpace/fun-saver/pull/105) | `refactor/one-render-helper`       | **merged** — `da842b1`                                  |
 
 ### PR 7 merged as #100, and review turned up more than it fixed
@@ -65,10 +65,11 @@ export, `useOptionalAccounts`, which PR 13's factory now has to account for —
 written into that section. PR 14 still lands in `MenuOverlay`, and PR 12 left
 it a decision rather than making it: see PR 14 for the menu context.
 
-**PR 13 merged as #118 (`4031cf6`); PR 14 is the last one.** Two things
-it changed that PR 14 will meet: `createRequiredContext` takes the name of the
-provider a caller must mount, not a message, and `ThemeController` is now
-`AppThemeProvider`. Sections written before #118 keep the old name as history.
+**PR 14 merged as #124 (`4081da4`), and with it every PR in this plan has
+landed.** PR 13 merged as #118 (`4031cf6`) just before it: `createRequiredContext`
+takes the name of the provider a caller must mount, and `ThemeController` is now
+`AppThemeProvider` — sections written before #118 keep the old name as history.
+PR 14's section records what review of #124 changed.
 
 **Review of #100 found a hole this plan did not anticipate: the closed menu was
 still reachable by keyboard.** The panel is always mounted and hidden with
@@ -1462,6 +1463,72 @@ the unmount-versus-reset decision: resetting on close needs `isOpen` to reach
 the pieces, unmounting does not.
 
 Depends on: PR 7 and PR 13, both merged.
+
+#### Decided before building, then revised in review of #124
+
+**Each piece clears its own failure when the menu closes.** `use-menu-state.ts`
+exports `useOnMenuClose(callback)`, which runs the callback whenever `isOpen`
+turns false. `useSignOut` turns `failed` back into `idle`, `useAccountTheme`
+clears `saveFailed`, and `ProfilePhoto` clears `hasPhotoFailed`. There were
+three stale states, not two: the plan had missed the theme save.
+
+**The first build used a key instead, and review showed why that was too
+blunt.** `<Content key={String(isOpen)}>` remounted everything inside the
+panel on open and close. That cleared the failures, but it also dropped a
+sign-out still in flight: tap sign out on a slow network, close and reopen the
+menu, and the button was live again, so a second tap sent a second sign-out,
+and a failure of the first landed on an unmounted component. The bug was
+failures outliving the menu, so only failures are cleared now. An in-flight
+sign-out survives.
+
+**Unmounting the panel was rejected for the animation**: it needs a delayed
+unmount after the fade-out and a closed mount before the fade-in.
+
+**The menu context lands here, beside the fix.** `use-menu-state.ts` exports
+`MenuProvider` and `useMenu`, built with `createRequiredContext`. `Header` wraps
+`MenuOverlay` in it; `MenuOverlay`, `AccountControls`, `AddAccountRow` and
+`MenuBody` read it, and `AccountPicker` and `AccountList` lose the
+`onLeaveMenu` they only passed on.
+
+**The account list's open state left the menu.** It lived in `useMenuState` for
+two reasons: `toggle` and `close` collapsed it, and Escape had to close the list
+before the menu. `AccountPicker` now owns `isOpen` and collapses it through
+`useOnMenuClose`. For Escape, `useEscapeKey` (moved up to `src/components/Menu/`)
+takes `takesPrecedence`: the picker listens on `document` in the capture phase
+while the list is open and stops the event, so the menu's own `document`
+listener never sees that Escape. **The first build handled Escape on the
+picker's element instead, which review caught**: Safari and Firefox on macOS do
+not focus a button on click, so focus stayed on `body`, the picker's handler
+never ran, and one Escape closed the whole menu with the list open. The tests
+had fired the key on the trigger, assuming focus those browsers do not give.
+`MenuState` is back to `isOpen`, `toggle` and `close`, and
+`use-escape-dismissal.ts` is gone.
+
+#### Built and merged as #124 (`4081da4`), plus #127 (`aec0954`)
+
+**`useOnMenuClose` first fired on mount too.** The panel is always mounted, so
+every piece mounted with the menu closed and the hook ran its callback then.
+The four callers only reset a value already at its start, so nothing showed; a
+caller doing real work would have run it on every page load. It now remembers
+whether the menu was open and fires only on the change to closed.
+
+**Nothing checked that picking an account closes the menu.** Removing that
+`close()` reddened no test before this PR; `AccountControls` has one now.
+
+**Tests close and reopen a real menu.** `src/test-utils/menu.tsx` holds
+`WithToggleableMenu` (a real `useMenuState` behind a toggle button),
+`renderInOpenMenu` and `closeAndReopenMenu`, and `WithMenu` for a suite that only
+needs a menu to exist. Providers stay opt-in: the shared `render` gained no
+`menu` option, so a component that reaches for the menu outside it still fails
+in its own suite.
+
+**#127 is a leftover, not a change.** It groups the `@/test-utils/menu` import
+with the other `@/test-utils/*` imports in nine suites. It was pushed to
+`fix/menu-state-on-close` minutes after #124 had merged, so it needed its own PR.
+
+**Measured on the branch:** jest 743 across 139, `test:db` 22 across 5,
+`test:visual` 57 across 31, browser `e2e` 17 across 8, `tsc --noEmit` and
+`eslint .` clean.
 
 ### PR 15 — `refactor/one-render-helper` — **merged as #105 (`da842b1`)**
 

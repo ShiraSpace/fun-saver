@@ -3,6 +3,7 @@ import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
+import { WithMenu } from '@/test-utils/menu';
 import { totalBalance } from '@/lib/derivations';
 import { agorotToWholeShekels } from '@/lib/money';
 import { AccountList } from './AccountList';
@@ -20,12 +21,13 @@ describe('AccountList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     render(
-      <AccountList
-        accounts={accounts}
-        selectedAccountId={mockSecondDerivedAccount.id}
-        onSelect={mockOnSelect}
-        onLeaveMenu={mockOnLeaveMenu}
-      />
+      <WithMenu close={mockOnLeaveMenu}>
+        <AccountList
+          accounts={accounts}
+          selectedAccountId={mockSecondDerivedAccount.id}
+          onSelect={mockOnSelect}
+        />
+      </WithMenu>
     );
   });
 

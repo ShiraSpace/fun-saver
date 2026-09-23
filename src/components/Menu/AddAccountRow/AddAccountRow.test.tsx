@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
+import { WithMenu } from '@/test-utils/menu';
 import {
   APP_MODE,
   AppModeProvider,
@@ -14,7 +15,9 @@ describe('AddAccountRow', () => {
     jest.clearAllMocks();
     render(
       <AppModeProvider value={{ mode: APP_MODE.viewing, setMode: mockSetMode }}>
-        <AddAccountRow onLeaveMenu={mockOnLeaveMenu} />
+        <WithMenu close={mockOnLeaveMenu}>
+          <AddAccountRow />
+        </WithMenu>
       </AppModeProvider>
     );
   });

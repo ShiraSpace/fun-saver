@@ -30,4 +30,7 @@ export const COLORS = {
   walletSpending: '#FF8A4C',
   walletGood: '#E94E89',
   walletTrack: '#F3ECE4',
+  chartSavings: '#276E2C',
+  chartSpending: '#2563EB',
+  chartGood: '#E94E89',
 } as const satisfies ThemeColors;

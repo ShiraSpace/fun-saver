@@ -1,5 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
+import { WithMenu } from '@/test-utils/menu';
 import { MenuGlobalScope } from './MenuGlobalScope';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from './constants';
 import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
@@ -11,9 +12,11 @@ describe('MenuGlobalScope', () => {
 
   beforeEach(() => {
     render(
-      <MenuGlobalScope>
-        <span data-testid={BELOW_THE_STRIP} />
-      </MenuGlobalScope>,
+      <WithMenu>
+        <MenuGlobalScope>
+          <span data-testid={BELOW_THE_STRIP} />
+        </MenuGlobalScope>
+      </WithMenu>,
       { user: mockUser }
     );
 

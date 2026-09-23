@@ -4,6 +4,7 @@ import { useAccounts } from '@/components/Home/accounts-context';
 import { useSetThemeId, useThemeId } from '@/theme/AppThemeProvider';
 import type { ThemeId } from '@/theme/registry';
 import { fetchJson } from '@/lib/fetch-json';
+import { useOnMenuClose } from '../use-menu-state';
 
 interface AccountTheme {
   activeThemeId: ThemeId;
@@ -21,6 +22,8 @@ export function useAccountTheme(): AccountTheme {
   const { currentAccount } = useAccounts();
   const router = useRouter();
   const [saveFailed, setSaveFailed] = useState(false);
+
+  useOnMenuClose((): void => setSaveFailed(false));
 
   const chooseTheme = (themeId: ThemeId): void => {
     const themeBeforeChange = activeThemeId;

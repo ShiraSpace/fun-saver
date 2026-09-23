@@ -1,34 +1,25 @@
-import { JSX, useState } from 'react';
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, screen } from '@/test-utils/render';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
+import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { AccountPicker } from './AccountPicker';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from './constants';
 
 const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
 
-function StatefulPicker(): JSX.Element {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <AccountPicker
-      accounts={accounts}
-      currentAccount={mockSecondDerivedAccount}
-      isOpen={isOpen}
-      onToggle={setIsOpen}
-      onSelect={(): void => {}}
-      onLeaveMenu={(): void => {}}
-    />
-  );
-}
-
 describe('AccountPicker', () => {
   beforeEach(() => {
-    render(<StatefulPicker />);
+    renderInOpenMenu(
+      <AccountPicker
+        accounts={accounts}
+        currentAccount={mockSecondDerivedAccount}
+        onSelect={(): void => {}}
+      />
+    );
   });
 
   it('keeps the accounts out of sight until the trigger is tapped', () => {
@@ -65,6 +56,22 @@ describe('AccountPicker', () => {
 
     it('puts them away when something outside the picker is tapped', () => {
       fireEvent.mouseDown(document.body);
+
+      expect(
+        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).not.toBeInTheDocument();
+    });
+
+    it('puts them away on Escape, even with focus left outside the picker', () => {
+      fireEvent.keyDown(document.body, { key: 'Escape' });
+
+      expect(
+        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+      ).not.toBeInTheDocument();
+    });
+
+    it('puts them away when the menu closes', () => {
+      closeAndReopenMenu();
 
       expect(
         screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)

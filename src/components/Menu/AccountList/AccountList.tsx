@@ -11,14 +11,12 @@ interface AccountListProps {
   accounts: AccountWithDerivedWallets[];
   selectedAccountId: string;
   onSelect: (id: string) => void;
-  onLeaveMenu: () => void;
 }
 
 export function AccountList({
   accounts,
   selectedAccountId,
   onSelect,
-  onLeaveMenu,
 }: AccountListProps): JSX.Element {
   return (
     <List id={ACCOUNT_LIST_DOM_ID} data-testid={ACCOUNT_LIST_TEST_IDS.list}>
@@ -30,7 +28,7 @@ export function AccountList({
           onSelect={onSelect}
         />
       ))}
-      <AddAccountRow onLeaveMenu={onLeaveMenu} />
+      <AddAccountRow />
     </List>
   );
 }

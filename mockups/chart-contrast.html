@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — קווי הגרף · sunshine-quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+body { margin:0; padding:26px 20px 60px; background:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+  min-height:100vh; font-family:Rubik,sans-serif; color:#3A1F5A; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:21px; margin:0 0 6px; color:#fff; }
+.sub { font-size:13px; line-height:1.7; color:#fff; margin:0 0 18px; max-width:840px; }
+.row { display:flex; gap:18px; flex-wrap:wrap; }
+.option { width:340px; }
+.option h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; color:#fff; margin:0 0 8px; }
+.option .why { font-size:12px; color:#fff; opacity:.85; margin:-4px 0 8px; }
+.option.rejected .card { opacity:.6; }
+.card { background:#FFFFFF; border-radius:24px; padding:13px 14px 11px; box-shadow:0 6px 0 rgba(0,0,0,.06); }
+.chart { display:block; width:100%; }
+.chart .grid { stroke:#F2D9D2; stroke-width:1; }
+.chart .line { fill:none; stroke-linecap:round; stroke-linejoin:round; stroke-width:2.25; }
+.chart .total { stroke:#3A1F5A; stroke-width:3.25; }
+.chart .fill { fill:#3A1F5A; fill-opacity:.07; }
+.chart text { font-size:9.5px; font-weight:700; fill:#3A1F5A;
+  paint-order:stroke; stroke:#FFFFFF; stroke-width:3px; stroke-linejoin:round; }
+.chart .axis { font-size:9px; font-weight:500; fill:#675A80; stroke-width:2.5px; }
+.chips { display:flex; gap:5px; margin-top:9px; }
+.chip { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:999px;
+  border:1.5px solid #F2D9D2; color:#675A80; font-size:12.5px; font-weight:600; background:#FFF6E0; }
+.chip .sw { width:9px; height:9px; border-radius:3px; }
+table { margin-top:10px; width:100%; border-collapse:collapse; font-size:12px; background:#fff;
+  border-radius:12px; overflow:hidden; }
+td, th { padding:5px 8px; text-align:start; border-bottom:1px solid #F2D9D2; }
+td.num { direction:ltr; text-align:end; font-variant-numeric:tabular-nums; }
+.fail { color:#C62828; font-weight:700; }
+.pass { color:#2E7D32; font-weight:700; }
+</style>
+</head>
+<body>
+<h1>קווי הגרף ב-sunshine-quest — החלטה A</h1>
+<p class="sub">אותם ארבעה קווים על אותו כרטיס בכל אפשרות. רק החיסכון וההוצאות משתנים; טוב (#E94E89)
+  והסה״כ (textStrong) קבועים. הרף לקו גרפי הוא 3:1 מול <code>surface</code> הלבן.</p>
+<div class="row" id="options"></div>
+<script>
+const OPTIONS = [
+  { name: 'א · צבעי המוקאפ', savings: '#E0A020', spending: '#FF8A4C', rejected: 'מתחת ל-3:1' },
+  { name: 'ב · ההצעה', savings: '#B07D00', spending: '#E2661F', rejected: 'הוצאות וטוב דומים מדי' },
+  { name: 'ג · כהה יותר', savings: '#8F6500', spending: '#C2410C', rejected: 'הוצאות וטוב דומים מדי' },
+  { name: 'ד · softText · withdrawText', savings: '#7A5A0A', spending: '#D9480F', rejected: 'הוצאות וטוב דומים מדי' },
+  { name: 'ה · softText · gainText', savings: '#7A5A0A', spending: '#276E2C', rejected: 'חיסכון חום' },
+  { name: 'ו · softText · טורקיז', savings: '#7A5A0A', spending: '#0E7490', rejected: 'חיסכון חום' },
+  { name: 'ז · softText · כחול', savings: '#7A5A0A', spending: '#2563EB', rejected: 'חיסכון חום' },
+  { name: 'ח · נבחר: ירוק · כחול · ורוד', savings: '#276E2C', spending: '#2563EB' },
+];
+const GOOD = '#E94E89';
+const TOTAL = '#3A1F5A';
+const SURFACE = '#FFFFFF';
+const W = 312, H = 150, PAD = { near: 6, far: 34, top: 10, bottom: 20 };
+
+function wave(base, amp, phase, drift) {
+  return Array.from({ length: 30 }, (_, i) => base + drift * i + amp * Math.sin(i / 3 + phase));
+}
+const savings = wave(140, 10, 0, 2.2);
+const spending = wave(60, 22, 1.4, -0.4);
+const good = wave(35, 6, 2.6, 0.9);
+const total = savings.map((v, i) => v + spending[i] + good[i]);
+const all = [...savings, ...spending, ...good, ...total];
+const max = Math.max(...all), min = Math.min(...all);
+
+const x = (i) => PAD.near + (W - PAD.near - PAD.far) * (i / 29);
+const y = (v) => PAD.top + (H - PAD.top - PAD.bottom) * (1 - (v - min) / (max - min));
+const path = (s) => s.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+
+function channel(v) { const r = v / 255; return r <= 0.03928 ? r / 12.92 : ((r + 0.055) / 1.055) ** 2.4; }
+function lum(hex) { const n = parseInt(hex.slice(1), 16);
+  return 0.2126 * channel(n >> 16 & 255) + 0.7152 * channel(n >> 8 & 255) + 0.0722 * channel(n & 255); }
+function ratio(a, b) { const [l, d] = [lum(a), lum(b)].sort((p, q) => q - p); return (l + 0.05) / (d + 0.05); }
+
+function label(series, name, color) {
+  const ly = y(series[0]);
+  return `<rect x="${x(0) + 4}" y="${ly - 12}" width="7" height="7" rx="2" fill="${color}"/>
+    <text x="${x(0) + 14}" y="${ly - 5}" text-anchor="end">${name}</text>`;
+}
+
+function card(o) {
+  const lines = [['חיסכון', savings, o.savings], ['הוצאות', spending, o.spending], ['טוב', good, GOOD]];
+  const ticks = [min, (min + max) / 2, max].map((v) =>
+    `<line class="grid" x1="${PAD.near}" x2="${W - PAD.far}" y1="${y(v)}" y2="${y(v)}"/>
+     <text class="axis" x="${W - 2}" y="${y(v) + 3}" text-anchor="start">₪${Math.round(v)}</text>`).join('');
+  const area = `${path(total)}L${x(29)},${H - PAD.bottom}L${x(0)},${H - PAD.bottom}Z`;
+  const rows = [['חיסכון', o.savings], ['הוצאות', o.spending], ['טוב', GOOD]].map(([n, c]) => {
+    const r = ratio(c, SURFACE);
+    return `<tr><td><span class="sw" style="display:inline-block;width:9px;height:9px;border-radius:3px;background:${c}"></span> ${n}</td>
+      <td class="num">${c}</td><td class="num ${r >= 3 ? 'pass' : 'fail'}">${r.toFixed(2)}</td></tr>`;
+  }).join('');
+  return `<div class="option ${o.rejected ? 'rejected' : ''}"><h2>${o.name}</h2>${o.rejected ? `<div class="why">נדחה — ${o.rejected}</div>` : ''}<div class="card">
+    <svg class="chart" viewBox="0 0 ${W} ${H}">${ticks}
+      <path class="fill" d="${area}"/><path class="line total" d="${path(total)}"/>
+      ${lines.map(([, s, c]) => `<path class="line" stroke="${c}" d="${path(s)}"/>`).join('')}
+      ${lines.map(([n, s, c]) => label(s, n, c)).join('')}
+      <text x="${x(0) + 4}" y="${y(total[0]) - 6}" text-anchor="end">סה״כ</text>
+    </svg>
+    <div class="chips">${lines.map(([n, , c]) => `<span class="chip"><span class="sw" style="background:${c}"></span>${n}</span>`).join('')}</div>
+  </div><table><tr><th>קו</th><th>צבע</th><th>מול surface</th></tr>${rows}</table></div>`;
+}
+
+document.getElementById('options').innerHTML = OPTIONS.map(card).join('');
+</script>
+</body>
+</html>

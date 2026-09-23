@@ -9,33 +9,17 @@ import { AddAccountRow } from '../AddAccountRow';
 import { AppearanceSection } from '../AppearanceSection';
 import { LanguageSection } from '../LanguageSection';
 import { NavTabs } from '../NavTabs';
+import { useMenu } from '../use-menu-state';
 
-interface MenuBodyProps {
-  onLeaveMenu: () => void;
-  isAccountListOpen: boolean;
-  onAccountListToggle: (isOpen: boolean) => void;
-}
-
-export function MenuBody({
-  onLeaveMenu,
-  isAccountListOpen,
-  onAccountListToggle,
-}: MenuBodyProps): JSX.Element {
+export function MenuBody(): JSX.Element {
   const hasAccount = Boolean(useOptionalAccounts());
+  const { close } = useMenu();
 
-  const accountSlot = hasAccount ? (
-    <AccountControls
-      onLeaveMenu={onLeaveMenu}
-      isAccountListOpen={isAccountListOpen}
-      onAccountListToggle={onAccountListToggle}
-    />
-  ) : (
-    <AddAccountRow onLeaveMenu={onLeaveMenu} />
-  );
+  const accountSlot = hasAccount ? <AccountControls /> : <AddAccountRow />;
 
   return (
     <Fragment>
-      <NavTabs onNavigate={onLeaveMenu} />
+      <NavTabs onNavigate={close} />
       <MenuGlobalScope>{accountSlot}</MenuGlobalScope>
       {hasAccount && (
         <MenuAccountScope>

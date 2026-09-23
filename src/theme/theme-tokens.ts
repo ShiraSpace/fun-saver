@@ -32,6 +32,9 @@ export interface ThemeColors {
   readonly walletSpending: string;
   readonly walletGood: string;
   readonly walletTrack: string;
+  readonly chartSavings: string;
+  readonly chartSpending: string;
+  readonly chartGood: string;
 }
 
 export interface ThemeStops {

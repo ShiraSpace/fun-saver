@@ -11,10 +11,6 @@ export const MENU_OVERLAY_CONTENT = {
   title: 'תפריט',
 } as const;
 
-export const ESCAPE_KEY = 'Escape';
-
-export const KEY_DOWN_EVENT = 'keydown';
-
 export const MENU_OVERLAY_STYLE = {
   zIndex: LAYERS.overlay,
   closedScale: 0.92,

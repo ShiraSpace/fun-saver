@@ -1,4 +1,9 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
+import {
+  closeAndReopenMenu,
+  renderInOpenMenu,
+  WithMenu,
+} from '@/test-utils/menu';
 import { ProfilePhoto } from './ProfilePhoto';
 import { PROFILE_SECTION_TEST_IDS } from './constants';
 
@@ -13,7 +18,11 @@ const mark = (): HTMLElement | null =>
 describe('ProfilePhoto', () => {
   describe('when the user has a photo', () => {
     beforeEach(() => {
-      render(<ProfilePhoto image={GOOGLE_PHOTO} />);
+      render(
+        <WithMenu>
+          <ProfilePhoto image={GOOGLE_PHOTO} />
+        </WithMenu>
+      );
     });
 
     it('shows it instead of the neutral mark', () => {
@@ -35,12 +44,28 @@ describe('ProfilePhoto', () => {
 
   describe('when the user has no photo', () => {
     beforeEach(() => {
-      render(<ProfilePhoto />);
+      render(
+        <WithMenu>
+          <ProfilePhoto />
+        </WithMenu>
+      );
     });
 
     it('shows the neutral mark', () => {
       expect(mark()).toBeInTheDocument();
       expect(photo()).not.toBeInTheDocument();
+    });
+  });
+
+  describe('when the menu is closed and reopened after the photo failed', () => {
+    beforeEach(() => {
+      renderInOpenMenu(<ProfilePhoto image={GOOGLE_PHOTO} />);
+      fireEvent.error(photo() as HTMLElement);
+      closeAndReopenMenu();
+    });
+
+    it('tries the photo again', () => {
+      expect(photo()).toBeInTheDocument();
     });
   });
 });

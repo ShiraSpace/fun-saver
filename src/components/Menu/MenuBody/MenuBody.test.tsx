@@ -1,5 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
+import { WithMenu } from '@/test-utils/menu';
 import { MenuBody } from './MenuBody';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from '../AccountPicker/constants';
@@ -11,11 +12,9 @@ describe('MenuBody', () => {
   describe('for a parent who has no account yet', () => {
     beforeEach(() => {
       render(
-        <MenuBody
-          onLeaveMenu={(): void => {}}
-          isAccountListOpen={false}
-          onAccountListToggle={(): void => {}}
-        />,
+        <WithMenu>
+          <MenuBody />
+        </WithMenu>,
         { user: mockUser }
       );
     });

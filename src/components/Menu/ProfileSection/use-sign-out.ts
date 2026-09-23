@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { signOut } from 'next-auth/react';
 import { LOGIN_PATH } from '@/lib/constants';
 import { goTo } from '@/lib/navigate';
+import { useOnMenuClose } from '../use-menu-state';
 
 export const SIGN_OUT_STATUS = {
   idle: 'idle',
@@ -29,6 +30,12 @@ function landsOnLogin(url: string | undefined): boolean {
 
 export function useSignOut(): AccountSignOut {
   const [status, setStatus] = useState<SignOutStatus>(SIGN_OUT_STATUS.idle);
+
+  useOnMenuClose((): void =>
+    setStatus((current) =>
+      current === SIGN_OUT_STATUS.failed ? SIGN_OUT_STATUS.idle : current
+    )
+  );
 
   const signOutOfAccount = async (): Promise<void> => {
     setStatus(SIGN_OUT_STATUS.signingOut);

@@ -6,6 +6,7 @@ import type { Account } from '@/lib/types';
 import {
   MenuHeaderSheet,
   MenuOverlay,
+  MenuProvider,
   MenuToggle,
   useMenuState,
 } from '../Menu';
@@ -49,12 +50,9 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
           <ProgressLine data-testid={HEADER_TEST_IDS.progress} />
         )}
       </Bar>
-      <MenuOverlay
-        isOpen={menu.isOpen}
-        onClose={menu.close}
-        isAccountListOpen={menu.isAccountListOpen}
-        onAccountListToggle={menu.setAccountListOpen}
-      />
+      <MenuProvider value={menu}>
+        <MenuOverlay />
+      </MenuProvider>
     </PendingLinksProvider>
   );
 }

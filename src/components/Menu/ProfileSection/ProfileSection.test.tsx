@@ -1,6 +1,7 @@
 import { signOut } from 'next-auth/react';
-import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { fireEvent, screen, waitFor } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
+import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { LOGIN_PATH } from '@/lib/constants';
 import { goTo } from '@/lib/navigate';
 import { ProfileSection } from './ProfileSection';
@@ -22,7 +23,7 @@ describe('ProfileSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockedSignOut.mockResolvedValue({ url: `http://localhost${LOGIN_PATH}` });
-    render(<ProfileSection />, { user: mockUser });
+    renderInOpenMenu(<ProfileSection />, { user: mockUser });
   });
 
   describe('before anything is tapped', () => {
@@ -116,6 +117,29 @@ describe('ProfileSection', () => {
       expect(signOutError()).toHaveTextContent(
         PROFILE_SECTION_CONTENT.signOutFailed
       );
+    });
+
+    describe('and the menu is closed and reopened', () => {
+      beforeEach(() => {
+        closeAndReopenMenu();
+      });
+
+      it('no longer says it failed', () => {
+        expect(signOutError()).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('when the menu is closed and reopened with the sign-out on its way', () => {
+    beforeEach(() => {
+      mockedSignOut.mockReturnValue(new Promise(() => {}));
+
+      fireEvent.click(signOutButton());
+      closeAndReopenMenu();
+    });
+
+    it('keeps the way out dead, so it cannot be sent twice', () => {
+      expect(signOutButton()).toBeDisabled();
     });
   });
 
