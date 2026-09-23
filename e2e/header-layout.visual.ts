@@ -2,11 +2,17 @@ import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { type BoundingBox } from 'puppeteer';
 import { TYPE_SCALE } from '@/theme/typography';
-import { mockAccount } from '@/test-utils/fixtures';
+import { HEADER_LAYOUT } from '@/components/Header/constants';
+import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
+import { createMockAccount, mockAccount } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
 const EDGE_TOLERANCE = 24;
 const HEADING_FONT_SIZE = `${TYPE_SCALE.title}px`;
+
+const longNamedAccount = createMockAccount({
+  name: 'נועה '.repeat(20).trim().slice(0, MAX_ACCOUNT_NAME_LENGTH),
+});
 
 describe('header', () => {
   const { header, menu } = useDriver({ accounts: [mockAccount] });
@@ -56,5 +62,30 @@ describe('header', () => {
     it('renders the account name at the heading size from the type scale', async () => {
       assert.equal(await header.nameFontSize(), HEADING_FONT_SIZE);
     });
+  });
+});
+
+describe('header under a name long enough to wrap', () => {
+  const { header, menu } = useDriver({ accounts: [longNamedAccount] });
+
+  it('stays one row rather than growing past the menu sheet', async () => {
+    const bar = await header.box();
+
+    assert.ok(
+      bar.height <= HEADER_LAYOUT.height,
+      `bar is ${bar.height}px tall against a ${HEADER_LAYOUT.height}px sheet`
+    );
+  });
+
+  it('leaves the open menu uncovered, the bar painting above it', async () => {
+    await menu.open();
+
+    const bar = await header.box();
+    const panel = await menu.panelBox();
+
+    assert.ok(
+      bar.y + bar.height <= panel.y,
+      `bar reaches ${bar.y + bar.height}px, panel starts at ${panel.y}px`
+    );
   });
 });

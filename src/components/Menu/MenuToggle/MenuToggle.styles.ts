@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
-import { MENU_ICON, MENU_TOGGLE } from './constants';
+import { MENU_ICON, MENU_TOGGLE } from '../constants';
 
 const openColor = ({ theme }: { theme: Theme }): string =>
   theme.colors.textStrong;

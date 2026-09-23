@@ -18,6 +18,10 @@ export const Text = styled.span`
   position: relative;
   z-index: ${HEADER_LAYOUT.foregroundZIndex};
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   text-align: start;
   font-size: ${titleSize}px;
   font-weight: ${HEADER_LAYOUT.nameWeight};

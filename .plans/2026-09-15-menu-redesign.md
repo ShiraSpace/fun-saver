@@ -14,12 +14,22 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-22 (PRs 1–7 merged; PR 8 built, not yet opened)
+## Progress — updated 2026-09-23 (PRs 1–8 merged; PR 9 is last)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
 do without. They are in all three themes, and the trigger and selected row already
 read from them.
+
+Also outside the numbering and still open,
+[#90](https://github.com/ShiraSpace/fun-saver/pull/90) stops the screen gradient
+showing in the band around the header card while the menu is open. Getting there
+dissolved `Menu`: it rendered the burger and the whole overlay together, which put a
+viewport-covering overlay inside the 68px header card, so anything it painted landed
+in that card's stacking context. `MenuToggle` now sits in the bar, `MenuOverlay`
+beside it, their state in `use-menu-state`, and `Header` places sheet, bar and
+overlay in stacking order. It merges cleanly over PR 8 — it never edits
+`MenuOverlay.tsx`, only imports its constants.
 
 Also outside the numbering, [#80](https://github.com/ShiraSpace/fun-saver/pull/80)
 (`1ce3581`) added `withShots` in `e2e/shot.ts`, the `pr-screenshots` skill and
@@ -37,8 +47,8 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 5    | [#70](https://github.com/ShiraSpace/fun-saver/pull/70) | `feat/menu-account-picker`     | **merged** — `d162cde` |
 | PR 6    | [#79](https://github.com/ShiraSpace/fun-saver/pull/79) | `feat/menu-account-popover`    | **merged** — `f9d6573` |
 | PR 7    | [#85](https://github.com/ShiraSpace/fun-saver/pull/85) | `feat/menu-edit-under-trigger` | **merged** — `2e49d4e` |
-| PR 8    | —                                                      | `feat/menu-scope-blocks`       | built — `4292a49`      |
-| PR 9    | —                                                      | —                              | not started            |
+| PR 8    | [#88](https://github.com/ShiraSpace/fun-saver/pull/88) | `feat/menu-scope-blocks`       | **merged** — `0b12ebf` |
+| PR 9    | —                                                      | —                              | **next**               |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
 the accounts sit behind an `AccountTrigger`, tapping it floats the list over the
@@ -182,6 +192,37 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   `mockSecondAccount` is `מתן`; `מ` sorts before `נ`, so the wallet-less one is selected
   and every total shoots `₪0` even with `mockTransactions` seeded. The shot script
   builds its second account as `רותם` instead, so the funded one sorts first.
+- **The mockup's `divider` frame disappears in `midnight-blue`.** Review caught it on
+  #88: the dashed border the mockup specifies measures 1.15:1 against `softBg` there,
+  so the one thing marking the per-account block out as a block was invisible in that
+  theme. Measured against `softBg` in all three — `divider` 1.26 / 1.17 / 1.15,
+  `softBorder` 1.36 / 1.48 / 4.51, `accountScopeBorder` 1.75 / 1.72 / 1.73. The scope
+  token is the only steady one and is what both blocks now use, so they differ by fill
+  and dash rather than by border colour. **The mockup only renders the light palette;
+  a value read off it has not been checked against `midnight-blue`.**
+- **Dropping the mockup's `position: relative; z-index` was wrong, for a reason that
+  only bites later.** It looked like the no-op `popoverZIndex` was — a positioned
+  element already paints over static siblings. True of the tree as it stands, false of
+  the tree PR 9 builds: the nav rows land in the per-account block, and the first one
+  to take a `position` becomes a positioned element later in tree order at the same
+  `z-index: auto`, painting over the open account list and swallowing its taps.
+  `menu-morph`'s tap assertion would keep passing right up until that row exists.
+  `GlobalBlock` carries it again, as `z-index: 1` — sibling ordering inside the panel,
+  not an app layer, so it stays out of `LAYERS`.
+- **Single-use style values belong in the `.styles.ts`, not `constants.ts`.** The
+  2026-09-15 convention: `constants.ts` holds test ids, copy, and values another module
+  reads. `MENU_ACCOUNT_SCOPE_STYLE` keeps only `avatarSize`, which the component reads.
+  The older menu files (`ACCOUNT_LIST_STYLE`, `ACCOUNT_PICKER_STYLE`,
+  `MENU_OVERLAY_STYLE`, `EDIT_ACCOUNT_BUTTON_STYLE`) predate it and were left alone.
+- **An unnamed `<section>` buys nothing.** `ScopeBlock` was a `styled.section`, so both
+  blocks rendered one with no accessible name — exposed as a generic, identical to a
+  `div`. Naming them would mean inventing a hidden heading for the global block, which
+  has none. It is a `div`; the per-account block's `<h2>` still carries the outline.
+- **The chosen theme's ring is `textStrong`, not white.** The mockup fills a reserved
+  transparent border rather than drawing an outline, so choosing a theme moves nothing.
+  White read as a gap around the swatch on a cream sheet. The swatch declares its own
+  `box-sizing: border-box` — the app has no global one, unlike the mockup, so the
+  border would otherwise have taken it from 38px to 43px.
 
 ### Still open from the merged work
 
@@ -202,11 +243,18 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   are the account's, on a page that is not about an account.** Nothing is broken —
   they write to the account in view — but whether `/method` should carry the whole
   menu is a question PR 9's nav section will raise.
-- **`HEADER_LAYOUT.foregroundZIndex` and `MENU_TOGGLE.zIndex` are vestigial.** They
-  existed so the title, avatar and burger could float above a panel that covered them;
-  since PR 3 nothing covers them. Left in place because the panel still animates under
-  a `scale()` transform and removing them risks a stacking regression for no visible
-  gain.
+- **`HEADER_LAYOUT.foregroundZIndex` stopped being vestigial.** It existed so the
+  title, avatar and burger could float above a panel that covered them, and since PR 3
+  nothing covered them. #90 gives it a real job: `Bar` takes it, plus the
+  `position: relative` without which a z-index is inert, so the header card paints
+  above the sheet behind it. `MENU_TOGGLE.zIndex` is still vestigial.
+- **`accountScopeBg` is ~1.05:1 on `softBg` in `midnight-blue`.** The global block
+  reads as unfilled there and only its border separates it. Raised on #88 and left
+  alone: the token is #76's, and the trigger and the selected account row read from it
+  too, so changing it is a theme PR — the same shape as the `alert` item above.
+- **The dashed frame holds at ~1.73:1, which is low.** Enough for a decorative
+  boundary, and the best available without a new token. Named here so the next person
+  measuring it knows it was chosen, not missed.
 
 ## Decisions
 

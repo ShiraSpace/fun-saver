@@ -9,7 +9,6 @@ export const METHOD_LAYOUT = {
   maxWidth: 420,
   gap: 18,
   paddingX: 14,
-  paddingY: 16,
 } as const;
 
 export const SECTION_NUMBER = {
