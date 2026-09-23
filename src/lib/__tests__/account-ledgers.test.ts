@@ -1,26 +1,22 @@
 import { InMemoryStore } from '@/db/memory-store';
-import { getWalletsForAccount, withDerivedWallets } from '../account-dashboard';
+import { settledLedgers, withDerivedWallets } from '../account-ledgers';
 import {
   createMockAccount,
   createMockTransaction,
   createMockWallet,
+  createMockWallets,
+  mockSecondAccount,
 } from '@/test-utils/fixtures';
-import type { WalletWithDerived } from '../types';
+import type { Account, WalletWithDerived } from '../types';
+
+const [savings, spending] = createMockWallets();
 
 const account = createMockAccount({
-  wallets: [
-    createMockWallet({
-      id: 'w2',
-      name: 'spending',
-      icon: '🛍️',
-      monthlyInterestRate: 0,
-    }),
-    createMockWallet({ lastInterestDate: '2026-01-03' }),
-  ],
+  wallets: [spending, { ...savings, lastInterestDate: '2026-01-03' }],
 });
 
 const transactions = [
-  createMockTransaction({ id: 'd', amount: 8000 }),
+  createMockTransaction(),
   createMockTransaction({
     id: 'i',
     type: 'interest',
@@ -30,21 +26,30 @@ const transactions = [
   createMockTransaction({ id: 'd2', walletId: 'w2', amount: 5000 }),
 ];
 
-describe('getWalletsForAccount', () => {
+describe('settledLedgers', () => {
   let store: InMemoryStore;
 
   beforeEach(() => {
     store = new InMemoryStore();
   });
 
-  it('returns derived wallets ordered savings-first', async () => {
+  async function walletsOf(
+    ledgerAccount: Account,
+    asOf: string
+  ): Promise<WalletWithDerived[]> {
+    const [ledger] = await settledLedgers({
+      store,
+      accounts: [ledgerAccount],
+      asOf,
+    });
+
+    return ledger.account.wallets;
+  }
+
+  it('lists savings before spending, the order the dashboard lays its wallets out in', async () => {
     await store.insertTransactions(transactions);
 
-    const wallets = await getWalletsForAccount({
-      store,
-      account,
-      asOf: '2026-01-03',
-    });
+    const wallets = await walletsOf(account, '2026-01-03');
 
     expect(wallets.map((wallet) => wallet.name)).toEqual([
       'savings',
@@ -55,49 +60,69 @@ describe('getWalletsForAccount', () => {
     expect(wallets[1].balance).toBe(5000);
   });
 
-  describe('when the savings wallet has interest unsettled up to asOf', () => {
+  it('shows a brand-new child’s wallets at zero', async () => {
+    const wallets = await walletsOf(account, '2026-01-03');
+
+    expect(wallets.map((wallet) => wallet.balance)).toEqual([0, 0]);
+  });
+
+  it('includes the interest just paid in, so the history is never a day behind', async () => {
+    const owing = createMockAccount({ wallets: [createMockWallet()] });
+    await store.insertTransactions([createMockTransaction()]);
+
+    const [ledger] = await settledLedgers({
+      store,
+      accounts: [owing],
+      asOf: '2026-01-03',
+    });
+    const saved = await store.listTransactionsByAccount(owing.id);
+
+    expect(new Set(ledger.transactions)).toEqual(new Set(saved));
+  });
+
+  it('writes nothing when no interest is owed, so opening a page never rewrites the saved data', async () => {
+    const insert = jest.spyOn(store, 'insertTransactions');
+
+    await walletsOf(account, '2026-01-03');
+
+    expect(insert).not.toHaveBeenCalled();
+  });
+
+  describe('when interest has built up since it was last paid in', () => {
     const accountWithUnsettledInterest = createMockAccount({
-      wallets: [createMockWallet({ lastInterestDate: '2026-01-01' })],
+      wallets: [createMockWallet()],
     });
 
     let savingsWallet: WalletWithDerived;
 
     beforeEach(async () => {
-      await store.insertTransactions([
-        createMockTransaction({
-          id: 'd',
-          amount: 8000,
-          occurredAt: '2026-01-01',
-        }),
-      ]);
+      await store.insertTransactions([createMockTransaction()]);
 
-      const wallets = await getWalletsForAccount({
-        store,
-        account: accountWithUnsettledInterest,
-        asOf: '2026-01-03',
-      });
+      const wallets = await walletsOf(
+        accountWithUnsettledInterest,
+        '2026-01-03'
+      );
 
       savingsWallet = wallets[0];
     });
 
-    it('accrues the compounded interest gain', () => {
+    it('pays each missed day’s interest on top of the day before', () => {
       expect(savingsWallet.interestGain).toBe(80);
     });
 
-    it('reflects the accrued interest in the balance', () => {
+    it('counts the interest just paid in as part of the balance', () => {
       expect(savingsWallet.balance).toBe(8080);
     });
 
-    it('credits the interest dated asOf to todayInterest', () => {
+    it('shows the interest earned today as today’s interest', () => {
       expect(savingsWallet.todayInterest).toBe(40);
     });
 
-    it('does not re-accrue interest on a second read', async () => {
-      const reread = await getWalletsForAccount({
-        store,
-        account: accountWithUnsettledInterest,
-        asOf: '2026-01-03',
-      });
+    it('pays missed interest once, however often the page is opened', async () => {
+      const reread = await walletsOf(
+        accountWithUnsettledInterest,
+        '2026-01-03'
+      );
 
       expect(reread[0].balance).toBe(8080);
       expect(
@@ -111,11 +136,10 @@ describe('getWalletsForAccount', () => {
 });
 
 describe('withDerivedWallets', () => {
-  const secondAccount = createMockAccount({
-    id: 'a2',
-    name: 'מתן',
+  const secondAccount = {
+    ...mockSecondAccount,
     wallets: [createMockWallet({ id: 'w9', monthlyInterestRate: 0 })],
-  });
+  };
 
   let store: InMemoryStore;
 
