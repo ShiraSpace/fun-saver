@@ -1,5 +1,10 @@
 import { InMemoryStore } from '../index';
-import { createMockTransaction } from '@/test-utils/fixtures';
+import {
+  createMockTransaction,
+  mockAccount,
+  mockSecondAccount,
+  mockTransactions,
+} from '@/test-utils/fixtures';
 
 const deposit = createMockTransaction();
 
@@ -14,5 +19,17 @@ describe('InMemoryStore transactions', () => {
         (transaction) => transaction.id
       )
     ).toEqual(['t1']);
+  });
+
+  it('lists every wallet of the account, and nothing of anyone else', async () => {
+    const store = new InMemoryStore();
+    await store.insertTransactions([
+      ...mockTransactions,
+      createMockTransaction({ id: 't7', accountId: mockSecondAccount.id }),
+    ]);
+
+    const rows = await store.listTransactionsByAccount(mockAccount.id);
+
+    expect(new Set(rows)).toEqual(new Set(mockTransactions));
   });
 });
