@@ -4,7 +4,7 @@
 import { THEME_COOKIE, writeCookie } from '../cookies';
 
 describe('writeCookie where the app renders on the server', () => {
-  it('has no document to write to', () => {
+  it('really has no document here, or the test below proves nothing', () => {
     expect(globalThis.document).toBeUndefined();
   });
 

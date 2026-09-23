@@ -21,7 +21,7 @@ export default function RootLayout({
   const themeScript = applyStoredThemeScript();
 
   return (
-    <html lang="he" dir="rtl">
+    <html lang="he" dir="rtl" suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
         <style>{themeCss}</style>
         <script>{themeScript}</script>

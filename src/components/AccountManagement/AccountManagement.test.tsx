@@ -5,6 +5,7 @@ import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
 import { THEME_COOKIE } from '@/lib/cookies';
+import { captureCookies } from '@/test-utils/cookies';
 import { DEFAULT_THEME_ID, THEME_ID, type ThemeId } from '@/theme/registry';
 import { AccountManagement } from './AccountManagement';
 import { APP_MODE } from './app-mode-context';
@@ -90,22 +91,10 @@ describe('AccountManagement', () => {
   });
 
   describe('remembering the theme for the next cold load', () => {
-    let written: string[];
+    const written = captureCookies();
 
     beforeEach(() => {
-      written = [];
-      Object.defineProperty(document, 'cookie', {
-        configurable: true,
-        set: (value: string) => {
-          written.push(value);
-        },
-      });
-
       renderManagement({}, THEME_ID.midnightBlue);
-    });
-
-    afterEach(() => {
-      Reflect.deleteProperty(document, 'cookie');
     });
 
     it('stores the theme of the account on screen', () => {
