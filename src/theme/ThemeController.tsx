@@ -1,16 +1,15 @@
 'use client';
 
 import {
-  createContext,
   JSX,
   ReactNode,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
 } from 'react';
 import { ThemeProvider } from '@emotion/react';
+import { createRequiredContext } from '@/hooks/create-required-context';
 import { getThemeTokens, type ThemeId } from './registry';
 
 interface ThemeControllerProps {
@@ -18,8 +17,14 @@ interface ThemeControllerProps {
   children: ReactNode;
 }
 
-const ThemeIdContext = createContext<ThemeId | null>(null);
-const SetThemeIdContext = createContext<((id: ThemeId) => void) | null>(null);
+const [ThemeIdProvider, useThemeId] = createRequiredContext<ThemeId>(
+  'useThemeId must be used within ThemeController'
+);
+const [SetThemeIdProvider, useSetThemeId] = createRequiredContext<
+  (id: ThemeId) => void
+>('useSetThemeId must be used within ThemeController');
+
+export { useSetThemeId, useThemeId };
 
 export function ThemeController({
   initialThemeId,
@@ -38,30 +43,10 @@ export function ThemeController({
   }, [themeId]);
 
   return (
-    <ThemeIdContext.Provider value={themeId}>
-      <SetThemeIdContext.Provider value={select}>
+    <ThemeIdProvider value={themeId}>
+      <SetThemeIdProvider value={select}>
         <ThemeProvider theme={theme}>{children}</ThemeProvider>
-      </SetThemeIdContext.Provider>
-    </ThemeIdContext.Provider>
+      </SetThemeIdProvider>
+    </ThemeIdProvider>
   );
-}
-
-export function useThemeId(): ThemeId {
-  const id = useContext(ThemeIdContext);
-
-  if (id === null) {
-    throw new Error('useThemeId must be used within ThemeController');
-  }
-
-  return id;
-}
-
-export function useSetThemeId(): (id: ThemeId) => void {
-  const set = useContext(SetThemeIdContext);
-
-  if (set === null) {
-    throw new Error('useSetThemeId must be used within ThemeController');
-  }
-
-  return set;
 }

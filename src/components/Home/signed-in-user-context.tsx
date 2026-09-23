@@ -1,13 +1,17 @@
 'use client';
 
-import { createContext, JSX, ReactNode, useContext, useEffect } from 'react';
+import { JSX, ReactNode, useEffect } from 'react';
+import { createRequiredContext } from '@/hooks/create-required-context';
 import { THEME_COOKIE, writeCookie } from '@/lib/cookies';
 import { useThemeId } from '@/theme/ThemeController';
 import type { SignedInUser } from '@/lib/types';
 
 const NO_PROVIDER = 'useSignedInUser needs a SignedInUserProvider above it';
 
-const SignedInUserContext = createContext<SignedInUser | null>(null);
+const [SignedInUserContextProvider, useSignedInUser] =
+  createRequiredContext<SignedInUser>(NO_PROVIDER);
+
+export { useSignedInUser };
 
 interface SignedInUserProviderProps {
   value: SignedInUser;
@@ -25,18 +29,8 @@ export function SignedInUserProvider({
   }, [themeId]);
 
   return (
-    <SignedInUserContext.Provider value={value}>
+    <SignedInUserContextProvider value={value}>
       {children}
-    </SignedInUserContext.Provider>
+    </SignedInUserContextProvider>
   );
-}
-
-export function useSignedInUser(): SignedInUser {
-  const value = useContext(SignedInUserContext);
-
-  if (!value) {
-    throw new Error(NO_PROVIDER);
-  }
-
-  return value;
 }
