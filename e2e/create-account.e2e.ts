@@ -20,6 +20,7 @@ describe('create account', () => {
     await avatarPicker.selectFirst();
     await createAccount.submit();
 
+    await header.waitForName('נועה');
     assert.equal(await header.name(), 'נועה');
     assert.equal(await dashboard.overviewExists(), true);
     assert.equal(await dashboard.walletCardCount(), 3);
