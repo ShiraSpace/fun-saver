@@ -1,24 +1,19 @@
-import { renderWithAccounts, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-utils/render';
 import { MenuAccountScope } from './MenuAccountScope';
 import { MENU_ACCOUNT_SCOPE_TEST_IDS } from './constants';
-import { type AccountsContextValue } from '@/components/Home/accounts-context';
 import {
-  mockDerivedAccount,
+  mockAccountsContext,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
 
-const accountsValue: AccountsContextValue = {
-  accounts: [mockDerivedAccount, mockSecondDerivedAccount],
-  currentAccount: mockSecondDerivedAccount,
-  selectAccount: () => {},
-};
-
 describe('MenuAccountScope', () => {
   beforeEach(() => {
-    renderWithAccounts(
-      <MenuAccountScope>{null}</MenuAccountScope>,
-      accountsValue
-    );
+    render(<MenuAccountScope>{null}</MenuAccountScope>, {
+      accounts: {
+        ...mockAccountsContext,
+        currentAccount: mockSecondDerivedAccount,
+      },
+    });
   });
 
   it('heads the block with the account the settings belong to', () => {

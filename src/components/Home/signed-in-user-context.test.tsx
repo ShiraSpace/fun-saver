@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { render, renderWithUser, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
 import { useSignedInUser } from './signed-in-user-context';
 
@@ -12,7 +12,7 @@ function SignedInName(): JSX.Element {
 
 describe('useSignedInUser', () => {
   it('hands the signed-in user to whoever asks', () => {
-    renderWithUser(<SignedInName />);
+    render(<SignedInName />, { user: mockUser });
 
     expect(screen.getByTestId(NAME_TESTID)).toHaveTextContent(mockUser.name);
   });

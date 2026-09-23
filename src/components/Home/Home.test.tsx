@@ -1,6 +1,7 @@
 import { JSX } from 'react';
-import { fireEvent, renderWithUser, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { useThemeId } from '@/theme/ThemeController';
+import { THEME_ID } from '@/theme/registry';
 import { Home } from './Home';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
@@ -11,6 +12,7 @@ import {
   mockAccount,
   mockDerivedWallets,
   mockSecondAccount,
+  mockUser,
 } from '@/test-utils/fixtures';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { openAccountPicker } from '@/test-utils/account-picker';
@@ -93,33 +95,34 @@ describe('Home', () => {
       const themedAccounts: AccountWithDerivedWallets[] = [
         {
           ...mockAccount,
-          themeId: 'sunshine-quest',
+          themeId: THEME_ID.sunshineQuest,
           wallets: mockDerivedWallets,
         },
         {
           ...mockSecondAccount,
-          themeId: 'midnight-blue',
+          themeId: THEME_ID.midnightBlue,
           wallets: mockDerivedWallets,
         },
       ];
 
-      renderWithUser(
+      render(
         <>
           <Home accounts={themedAccounts} initialAccountId={mockAccount.id} />
           <ThemeProbe />
-        </>
+        </>,
+        { user: mockUser }
       );
       openMenu();
       openAccountPicker();
 
       expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(
-        'sunshine-quest'
+        THEME_ID.sunshineQuest
       );
 
       fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 
       expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(
-        'midnight-blue'
+        THEME_ID.midnightBlue
       );
     });
   });

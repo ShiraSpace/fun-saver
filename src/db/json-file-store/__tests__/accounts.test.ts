@@ -1,5 +1,6 @@
 import { JsonFileStore } from '../index';
 import { DuplicateAccountError } from '@/lib/errors';
+import { THEME_ID } from '@/theme/registry';
 import {
   mockAccount,
   mockAccountEdit,
@@ -36,10 +37,13 @@ describe('JsonFileStore accounts', () => {
   it('persists an account theme change across instances', async () => {
     await new JsonFileStore(file.path).insertAccount(mockAccount);
 
-    await new JsonFileStore(file.path).setAccountTheme('a1', 'midnight-blue');
+    await new JsonFileStore(file.path).setAccountTheme(
+      'a1',
+      THEME_ID.midnightBlue
+    );
 
     expect((await new JsonFileStore(file.path).getAccount('a1'))?.themeId).toBe(
-      'midnight-blue'
+      THEME_ID.midnightBlue
     );
   });
 

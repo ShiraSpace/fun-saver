@@ -1,6 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
-import { getThemeTokens } from '@/theme/registry';
+import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { METHOD_COPY } from '../copy';
 import { SourceList } from './SourceList';
 import { SOURCE_LIST_TEST_IDS } from './constants';
@@ -30,10 +30,12 @@ describe('the studies behind the page', () => {
 });
 
 describe('the studies on a theme whose link colour cannot carry text', () => {
-  const jungle = getThemeTokens('jungle-quest').colors;
+  const jungle = getThemeTokens(THEME_ID.jungleQuest).colors;
 
   beforeEach(() => {
-    render(<SourceList sources={sources.list} />, 'jungle-quest');
+    render(<SourceList sources={sources.list} />, {
+      themeId: THEME_ID.jungleQuest,
+    });
   });
 
   it('darkens the citations away from the colour the outlines keep', () => {

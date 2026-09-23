@@ -1,11 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { ThemeDisplay, THEME_ID_TESTID } from '@/test-utils/theme-probe';
 import { ThemedPage } from '../ThemedPage';
+import { THEME_ID } from '../registry';
 
 describe('ThemedPage', () => {
   beforeEach(() => {
     render(
-      <ThemedPage themeId="midnight-blue">
+      <ThemedPage themeId={THEME_ID.midnightBlue}>
         <ThemeDisplay />
       </ThemedPage>
     );
@@ -19,7 +20,7 @@ describe('ThemedPage', () => {
 
   it('hands the given theme id to the controller', () => {
     expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(
-      'midnight-blue'
+      THEME_ID.midnightBlue
     );
   });
 });

@@ -1,7 +1,8 @@
-import { renderWithUserAt, screen, within } from '@/test-utils/render';
+import { render, screen, within } from '@/test-utils/render';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
+  mockUser,
 } from '@/test-utils/fixtures';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
@@ -23,12 +24,12 @@ function renderedSectionIds(): (string | undefined)[] {
 
 describe('the method page', () => {
   beforeEach(() => {
-    renderWithUserAt(
-      METHOD_ROUTE,
+    render(
       <Method
         accounts={[mockDerivedAccount, mockSecondDerivedAccount]}
         initialAccount={mockDerivedAccount}
-      />
+      />,
+      { route: METHOD_ROUTE, user: mockUser }
     );
   });
 

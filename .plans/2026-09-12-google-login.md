@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-23 (PR 7 open as #100; PR 15 next, then 12, 13 and 14)
+## Progress — updated 2026-09-23 (PR 7 merged as #100; PR 15 in review, then 12, 13 and 14)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -27,10 +27,11 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 6  | [#86](https://github.com/ShiraSpace/fun-saver/pull/86)   | `feat/auth-proxy`                  | **merged** — `7312359`, plus `63cc6cc` straight to main |
 | PR 10 | [#87](https://github.com/ShiraSpace/fun-saver/pull/87)   | `feat/guard-transaction-routes`    | **merged** — `f1a283d`                                  |
 | PR 11 | [#94](https://github.com/ShiraSpace/fun-saver/pull/94)   | `refactor/themed-page-shell`       | **merged** — `c36afa1`                                  |
-| PR 7  | [#100](https://github.com/ShiraSpace/fun-saver/pull/100) | `feat/profile-section`             | **open** — reviewed, fixes pushed                       |
+| PR 7  | [#100](https://github.com/ShiraSpace/fun-saver/pull/100) | `feat/profile-section`             | **merged** — `06f2528`                                  |
 | PR 12 | —                                                        | `fix/empty-state-sign-out`         | not started — found during PR 7                         |
 | PR 13 | —                                                        | `refactor/required-context`        | not started — found during PR 7                         |
 | PR 14 | —                                                        | `fix/menu-state-on-close`          | not started — found reviewing PR 7                      |
+| PR 15 | —                                                        | `refactor/one-render-helper`       | in review — found during PR 7                           |
 
 ### PR 7 is open as #100, and review turned up more than it fixed
 
@@ -1201,6 +1202,26 @@ throw-if-missing hook: `accounts-context`, `signed-in-user-context`, and both of
 `app-mode-context` stays as it is — it carries a default and never throws, which
 is a deliberate difference, not an inconsistency.
 
+**Take the inert `AppModeProvider` wrap out of `MenuGlobalScope.test.tsx` here.**
+The suite wraps its element in `<AppModeProvider value={{ mode: APP_MODE.viewing,
+setMode: (): void => {} }}>`, which is byte-for-byte the `createContext` default
+in `app-mode-context.tsx`. Nothing asserts on `setMode` — it is a bare noop, not a
+`jest.fn()` — and deleting the wrap leaves the suite at 3/3, measured during
+PR 15, not inferred. So it is 13 lines of scaffolding that read as "this suite
+must supply app mode" when nothing would break without it.
+
+It belongs to this PR and not to PR 15 because it is pre-existing rather than
+introduced by the render-helper change. PR 15 did end up touching the accounts
+fixtures its call sites pass — the suites that needed no override now share
+`mockAccountsContext` instead of each writing its own literal — but the app-mode
+wrap is a different context with a different reason to exist. More to the point,
+it is the same subject: the paragraph above is the one piece of evidence a future
+reader would cite for adding an `appMode` option to `render`, and deleting the wrap
+turns that exception into a non-exception instead of documenting it. An `appMode`
+option would anyway mean a third semantic — "override a value that is already
+there" — alongside `themeId` (always rendered, defaulted) and `user`/`accounts`
+(absent means no provider), for exactly one caller.
+
 Same shape as PR 11: no behaviour change, provable by the suites not moving, and
 each throw watched firing against a deliberate break. **Deliberately not folded
 into PR 7** — a factory with one caller while two hand-rolled copies remain is
@@ -1224,7 +1245,7 @@ the pieces that hold state, and they reset on close.
 
 Depends on: PR 7.
 
-### PR 15 — `refactor/one-render-helper` — **next**
+### PR 15 — `refactor/one-render-helper` — **in review**
 
 `src/test-utils/render.tsx` now exports six ways to render: `render`,
 `renderWithUser`, `renderWithAccounts`, `renderAt`, `renderWithUserAt`,

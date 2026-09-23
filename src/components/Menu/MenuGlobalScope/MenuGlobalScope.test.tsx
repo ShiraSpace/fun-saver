@@ -1,27 +1,21 @@
-import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { MenuGlobalScope } from './MenuGlobalScope';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '../EditAccountButton/constants';
-import { type AccountsContextValue } from '@/components/Home/accounts-context';
 import {
   APP_MODE,
   AppModeProvider,
 } from '@/components/AccountManagement/app-mode-context';
 import {
+  mockAccountsContext,
   mockDerivedAccount,
-  mockSecondDerivedAccount,
+  mockUser,
 } from '@/test-utils/fixtures';
 
 const mockOnLeaveMenu = jest.fn();
 
-const accountsValue: AccountsContextValue = {
-  accounts: [mockDerivedAccount, mockSecondDerivedAccount],
-  currentAccount: mockDerivedAccount,
-  selectAccount: () => {},
-};
-
 function renderScope(): void {
-  renderWithAccounts(
+  render(
     <AppModeProvider
       value={{ mode: APP_MODE.viewing, setMode: (): void => {} }}
     >
@@ -31,7 +25,7 @@ function renderScope(): void {
         onAccountListToggle={(): void => {}}
       />
     </AppModeProvider>,
-    accountsValue
+    { accounts: mockAccountsContext, user: mockUser }
   );
 }
 

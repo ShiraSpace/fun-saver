@@ -1,4 +1,4 @@
-import { fireEvent, renderAt, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { NavTabs } from './NavTabs';
@@ -8,7 +8,7 @@ const mockOnNavigate = jest.fn();
 
 function renderTabs(route: string): void {
   jest.clearAllMocks();
-  renderAt(route, <NavTabs onNavigate={mockOnNavigate} />);
+  render(<NavTabs onNavigate={mockOnNavigate} />, { route });
 }
 
 describe('NavTabs', () => {

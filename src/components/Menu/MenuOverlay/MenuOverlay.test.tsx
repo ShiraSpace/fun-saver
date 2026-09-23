@@ -1,4 +1,5 @@
-import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
+import { mockAccountsContext, mockUser } from '@/test-utils/fixtures';
 import { MenuOverlay } from './MenuOverlay';
 import { MENU_OVERLAY_CONTENT } from './constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
@@ -15,13 +16,14 @@ const onAccountListToggle = jest.fn();
 function renderOverlay(isAccountListOpen = false): void {
   onClose.mockClear();
   onAccountListToggle.mockClear();
-  renderWithAccounts(
+  render(
     <MenuOverlay
       isOpen
       onClose={onClose}
       isAccountListOpen={isAccountListOpen}
       onAccountListToggle={onAccountListToggle}
-    />
+    />,
+    { accounts: mockAccountsContext, user: mockUser }
   );
 }
 

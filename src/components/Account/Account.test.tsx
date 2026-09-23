@@ -1,4 +1,4 @@
-import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { Account } from './Account';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { OVERVIEW_CARD_TEST_IDS } from './OverviewCard/constants';
@@ -6,7 +6,12 @@ import { WALLET_LIST_TEST_IDS } from './WalletList/constants';
 import { WALLET_CARD_TEST_IDS } from './WalletCard/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from './TransactionDrawer/constants';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
-import { createMockAccount, mockDerivedWallets } from '@/test-utils/fixtures';
+import {
+  createMockAccount,
+  mockAccountsContext,
+  mockDerivedWallets,
+  mockUser,
+} from '@/test-utils/fixtures';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 
 describe('Account', () => {
@@ -24,7 +29,10 @@ describe('Account', () => {
   };
 
   beforeEach(() => {
-    renderWithAccounts(<Account account={account} />);
+    render(<Account account={account} />, {
+      accounts: mockAccountsContext,
+      user: mockUser,
+    });
   });
 
   it('shows the account header with the account name', () => {

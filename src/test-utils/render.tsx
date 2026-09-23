@@ -1,4 +1,4 @@
-import { JSX, ReactElement } from 'react';
+import { ReactElement } from 'react';
 import {
   render as renderWithRtl,
   type RenderResult,
@@ -10,74 +10,48 @@ import {
   type AccountsContextValue,
 } from '@/components/Home/accounts-context';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
+import type { SignedInUser } from '@/lib/types';
 import { setMockPathname } from '@mocks/next/navigation';
-import {
-  mockDerivedAccount,
-  mockSecondDerivedAccount,
-  mockUser,
-} from './fixtures';
 
-export interface RenderWithAccountsAtOptions {
-  route: string;
-  ui: ReactElement;
-  value?: AccountsContextValue;
+interface RenderOptions {
+  themeId?: ThemeId;
+  user?: SignedInUser;
+  accounts?: AccountsContextValue;
+  route?: string;
 }
 
-function withProviders(ui: ReactElement, themeId: ThemeId): JSX.Element {
-  return <ThemeController initialThemeId={themeId}>{ui}</ThemeController>;
+function withAccounts(
+  element: ReactElement,
+  accounts?: AccountsContextValue
+): ReactElement {
+  if (!accounts) {
+    return element;
+  }
+
+  return <AccountsProvider value={accounts}>{element}</AccountsProvider>;
+}
+
+function withUser(element: ReactElement, user?: SignedInUser): ReactElement {
+  if (!user) {
+    return element;
+  }
+
+  return <SignedInUserProvider value={user}>{element}</SignedInUserProvider>;
 }
 
 export function render(
-  ui: ReactElement,
-  themeId: ThemeId = DEFAULT_THEME_ID
+  element: ReactElement,
+  { themeId = DEFAULT_THEME_ID, user, accounts, route }: RenderOptions = {}
 ): RenderResult {
-  return renderWithRtl(withProviders(ui, themeId));
-}
+  if (route) {
+    setMockPathname(route);
+  }
 
-export const mockAccountsContext: AccountsContextValue = {
-  accounts: [mockDerivedAccount, mockSecondDerivedAccount],
-  currentAccount: mockDerivedAccount,
-  selectAccount: () => {},
-};
-
-export function renderWithUser(ui: ReactElement): RenderResult {
-  return render(
-    <SignedInUserProvider value={mockUser}>{ui}</SignedInUserProvider>
+  return renderWithRtl(
+    <ThemeController initialThemeId={themeId}>
+      {withUser(withAccounts(element, accounts), user)}
+    </ThemeController>
   );
-}
-
-export function renderWithAccounts(
-  ui: ReactElement,
-  value: AccountsContextValue = mockAccountsContext
-): RenderResult {
-  return renderWithUser(
-    <AccountsProvider value={value}>{ui}</AccountsProvider>
-  );
-}
-
-export function renderAt(route: string, ui: ReactElement): RenderResult {
-  setMockPathname(route);
-
-  return render(ui);
-}
-
-export function renderWithUserAt(
-  route: string,
-  ui: ReactElement
-): RenderResult {
-  setMockPathname(route);
-
-  return renderWithUser(ui);
-}
-
-export function renderWithAccountsAt({
-  route,
-  ui,
-  value = mockAccountsContext,
-}: RenderWithAccountsAtOptions): RenderResult {
-  setMockPathname(route);
-
-  return renderWithAccounts(ui, value);
 }
 
 export * from '@testing-library/react';
