@@ -6,29 +6,32 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-23 (plan PR 10 merged as #87; PR 7 and PR 11 are what is left)
+## Progress — updated 2026-09-23 (plan PR 11 merged as #94; PR 7 next, then 12 and 13)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
-| Plan     | GitHub                                                 | Branch                             | Status                                                  |
-| -------- | ------------------------------------------------------ | ---------------------------------- | ------------------------------------------------------- |
-| PR 1     | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                              |
-| —        | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                           |
-| —        | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                           |
-| PR 2     | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged**                                              |
-| —        | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                           |
-| PR 3a    | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                                  |
-| PR 3b    | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                                  |
-| PR 4     | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                                  |
-| PR 5     | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                              |
-| PR 8     | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                                  |
-| PR 8b    | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff    |
-| PR 9     | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **merged** — `f947725`                                  |
-| PR 6     | [#86](https://github.com/ShiraSpace/fun-saver/pull/86) | `feat/auth-proxy`                  | **merged** — `7312359`, plus `63cc6cc` straight to main |
-| PR 10    | [#87](https://github.com/ShiraSpace/fun-saver/pull/87) | `feat/guard-transaction-routes`    | **merged** — `f1a283d`                                  |
-| PR 7, 11 | —                                                      | —                                  | not started                                             |
+| Plan  | GitHub                                                 | Branch                             | Status                                                  |
+| ----- | ------------------------------------------------------ | ---------------------------------- | ------------------------------------------------------- |
+| PR 1  | [#28](https://github.com/ShiraSpace/fun-saver/pull/28) | `feat/members-schema`              | **merged**                                              |
+| —     | [#29](https://github.com/ShiraSpace/fun-saver/pull/29) | test-utils rename                  | **merged** (not in this plan)                           |
+| —     | [#30](https://github.com/ShiraSpace/fun-saver/pull/30) | `feat/split-stores-by-entity`      | **merged** (not in this plan)                           |
+| PR 2  | [#32](https://github.com/ShiraSpace/fun-saver/pull/32) | `feat/user-store-methods`          | **merged**                                              |
+| —     | [#33](https://github.com/ShiraSpace/fun-saver/pull/33) | `refactor/user-identity-predicate` | **merged** (not in this plan)                           |
+| PR 3a | [#41](https://github.com/ShiraSpace/fun-saver/pull/41) | `feat/account-user-reads`          | **merged** — `ca1a505`                                  |
+| PR 3b | [#49](https://github.com/ShiraSpace/fun-saver/pull/49) | `feat/account-user-writes`         | **merged** — `41319f8`                                  |
+| PR 4  | [#53](https://github.com/ShiraSpace/fun-saver/pull/53) | `feat/google-auth`                 | **merged** — `5d02045`                                  |
+| PR 5  | [#55](https://github.com/ShiraSpace/fun-saver/pull/55) | `feat/login-page`                  | **merged**                                              |
+| PR 8  | [#61](https://github.com/ShiraSpace/fun-saver/pull/61) | `feat/assign-owner`                | **merged** — `b93e218`                                  |
+| PR 8b | [#74](https://github.com/ShiraSpace/fun-saver/pull/74) | `chore/e2e-signed-in-driver`       | **merged** — test infrastructure, no production diff    |
+| PR 9  | [#81](https://github.com/ShiraSpace/fun-saver/pull/81) | `feat/scope-accounts-to-user`      | **merged** — `f947725`                                  |
+| PR 6  | [#86](https://github.com/ShiraSpace/fun-saver/pull/86) | `feat/auth-proxy`                  | **merged** — `7312359`, plus `63cc6cc` straight to main |
+| PR 10 | [#87](https://github.com/ShiraSpace/fun-saver/pull/87) | `feat/guard-transaction-routes`    | **merged** — `f1a283d`                                  |
+| PR 11 | [#94](https://github.com/ShiraSpace/fun-saver/pull/94) | `refactor/themed-page-shell`       | **merged** — `c36afa1`                                  |
+| PR 7  | —                                                      | `feat/profile-section`             | in progress                                             |
+| PR 12 | —                                                      | `fix/empty-state-sign-out`         | not started — found during PR 7                         |
+| PR 13 | —                                                      | `refactor/required-context`        | not started — found during PR 7                         |
 
-### PR 10 is merged, and PR 7 and PR 11 are all that is left
+### PR 11 is merged; PR 7 is in flight, and it found two more
 
 PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
 read through `listAccountsForUser` with the id from the session. A stranger who
@@ -46,7 +49,16 @@ what changed against what this plan assumed.
 with no authorization at all until now — `/api` is deliberately outside the
 proxy's matcher, so PR 6 did not narrow that hole by a line. All four now pass
 through one wrapper that answers 401 without a session and 403 without an editing
-membership. PR 7 and PR 11 are independent and can land at any time.
+membership. PR 7 is independent and can land at any time.
+
+**PR 7 turned up two follow-ups**, both recorded below: a signed-in stranger
+has no way to sign out (PR 12), and four contexts hand-roll the same
+required-context boilerplate (PR 13). Neither blocks PR 7.
+
+**PR 11 merged as #94 (`c36afa1`).** One `ThemedPage` in `src/theme/` holds the
+shell the three pages were each writing out. It also corrected this plan: the
+section below claimed no new test was needed because the browser suites already
+assert the themed render. They do not — see there.
 
 ### PR 8's backfill ran on both targets, and PR 9 deleted it
 
@@ -54,10 +66,15 @@ The manual step that blocked it — signing in on production — happened on
 2026-09-15, and both backfills ran the same evening. Measured after, and
 unchanged since:
 
-| branch       | `users` | `accounts` | `account_users` | orphan accounts |
-| ------------ | ------- | ---------- | --------------- | --------------- |
-| `production` | 1       | 4          | **4**           | **0**           |
-| `dev`        | 1       | 3          | **3**           | **0**           |
+| branch       | `users` | `accounts` | `account_users` | orphan accounts | transactions |
+| ------------ | ------- | ---------- | --------------- | --------------- | ------------ |
+| `production` | 1       | 4          | **4**           | **0**           | 266          |
+| `dev`        | 1       | 3          | **3**           | **0**           | 293          |
+
+Re-measured 2026-09-23 during PR 11. Production's transactions moved 263 → 266:
+**that is real use**, PR 10 having been the last thing blocking go-live. Dev's
+221 → 293 is other worktrees. Orphans are still 0 on both, which is the
+invariant PR 9 depends on.
 
 All four production accounts — אמא, יעל, רוני, שירי — carry an `owner` row for
 the one user, written in a single transaction. The plan's verification query
@@ -805,12 +822,26 @@ Ships: the app goes private.
 
 ### PR 7 — `feat/profile-section`
 
-- `src/components/Menu/ProfileSection/` — signed-in name + sign out, mirroring
-  `AppearanceSection`.
+- `src/components/Menu/ProfileSection/` — signed-in name + sign out.
 
 Tests: component test — renders the name, calls `signOut`.
 
 Depends on: PR 4. Independent of 5/6 — can land any time after 4.
+
+**This section predates #88 and #93 and its one placement instruction is now
+stale.** It said "mirroring `AppearanceSection`", but #88 regrouped the menu into
+two blocks and put `AppearanceSection` **inside** `MenuAccountScope`, the
+per-account block headed with the current account's name and avatar. A profile
+section is about the signed-in **user**, not the account in view, so mirroring
+`AppearanceSection` would file it under the wrong heading. `MenuGlobalScope`
+(the account picker and edit button) is the global block; #93 then took
+navigation out of the account block as well. Decide the placement against the
+menu as it now stands — `MenuOverlay.tsx` composes all of it — not against this
+line.
+
+**There is no mockup for it.** `mockups/` has no profile or sign-out artwork,
+and `.plans/2026-09-15-menu-redesign.md` does not cover it. Every other menu
+block was designed in a mockup first.
 
 ### PR 8 — `feat/assign-owner` — MERGED (#61, `b93e218`)
 
@@ -1074,7 +1105,7 @@ browser e2e 14, `tsc` and `eslint` clean, `next build` accepts the wrapped
 
 Depends on: PR 9. Ships: writes are authorized.
 
-### PR 11 — `refactor/themed-page-shell`
+### PR 11 — `refactor/themed-page-shell` — MERGED (#94, `c36afa1`)
 
 `<main><ThemeController initialThemeId={...}>{children}</ThemeController></main>`
 is written out in full in all three pages — `src/app/page.tsx`,
@@ -1088,12 +1119,60 @@ _data_ duplications into `src/app/signed-in-accounts.ts` — the session read,
 the cookie, the scoped account list and the resolved theme — because both of
 its own callers shared them. The shell is what is left.
 
-Tests: the three pages are covered by the browser suites, which assert the
-themed render already. No new test.
+**Shipped in `src/theme/ThemedPage.tsx`**, beside `ThemeController` rather than
+under `src/components/`: it carries no styles, no constants and no test IDs,
+which is what that folder layout exists to hold. It stays a server component —
+`ThemeController` is still the client boundary.
+
+**"No new test" was wrong, and the suites proved it.** Both deliberate breaks —
+dropping the `<main>`, and ignoring `themeId` in favour of `DEFAULT_THEME_ID` —
+passed `test:db`, all 51 visual shots and all 14 browser checks, twice. Nothing
+in `src/` or `e2e/` selects a `main` element, and **every fixture carries
+`DEFAULT_THEME_ID`** (`src/test-utils/fixtures.ts`), which `resolveThemeId` also
+falls back to. No suite could tell the resolved theme from the default, so "the
+browser suites assert the themed render" held only for the one theme every
+fixture uses. `src/theme/__tests__/ThemedPage.test.tsx` covers both, each case
+watched failing against its own break and passing against the other's.
+
+The shared `ThemeDisplay` probe lives in `src/test-utils/theme-probe.tsx`; it
+was copy-pasted in two theme suites. It is deliberately **not** in
+`test-utils/render.tsx`, whose `render` wraps everything in a `ThemeController`
+on `DEFAULT_THEME_ID` — the exact thing these suites exist to distinguish.
 
 Depends on: nothing. Independent of 6, 7 and 10; can land any time.
 
 ---
+
+### PR 12 — `fix/empty-state-sign-out`
+
+**A stranger who signs in cannot sign out.** With no `account_users` rows the
+app renders `EmptyState`, which has no `Header` — and the menu, with it the
+profile strip, lives in `Header` inside `Account`. The only way out is clearing
+cookies. Found while placing the profile strip in PR 7, and it is the state this
+plan's own authorization model makes reachable: signing in is open, so any
+stranger lands there.
+
+`SignedInProviders` wraps the page above `Home`, so the user is already in scope
+at the empty state. This is a placement decision, not new plumbing.
+
+Depends on: PR 7.
+
+### PR 13 — `refactor/required-context`
+
+Four contexts hand-roll the same `createContext<T | null>(null)` plus a
+throw-if-missing hook: `accounts-context`, `signed-in-user-context`, and both of
+`ThemeController`'s. One `createRequiredContext<T>(message)` returning
+`[Provider, useRequired]` replaces them.
+
+`app-mode-context` stays as it is — it carries a default and never throws, which
+is a deliberate difference, not an inconsistency.
+
+Same shape as PR 11: no behaviour change, provable by the suites not moving, and
+each throw watched firing against a deliberate break. **Deliberately not folded
+into PR 7** — a factory with one caller while two hand-rolled copies remain is
+worse than the duplication it removes.
+
+Depends on: nothing.
 
 ## Architecture touch points
 
@@ -1126,6 +1205,8 @@ Depends on: nothing. Independent of 6, 7 and 10; can land any time.
 | `src/lib/account-access.ts`                         | **new** — `canEditAccount`; `EDITING_ROLES` in `constants.ts`               | 10      |
 | `src/app/api/accounts/[id]/with-account-editor.ts`  | **new** — 401 without a session, 403 without an editing membership          | 10      |
 | `src/app/api/accounts/[id]/**/route.ts`             | wrapped in `withAccountEditor`, edit PUT included                           | 10      |
+| `src/theme/ThemedPage.tsx`                          | **new** — the `main` + `ThemeController` shell, one copy for three pages    | 11      |
+| `src/app/{,method/,login/}page.tsx`                 | each drops its own copy of the shell                                        | 11      |
 
 Unchanged throughout: `AccountSwitcher`, `Account`, `AccountForm`, wallets,
 drawer, transactions, theme, `EmptyState`, `use-create-account`.

@@ -1,4 +1,4 @@
-# Handover — 2026-09-23 (PR 10 merged; PR 7 and PR 11 are what is left)
+# Handover — 2026-09-23 (PR 11 merged; PR 7 is all that is left)
 
 ## Start here
 
@@ -53,12 +53,77 @@ browser: `openApp` always installs a session cookie. Making `cookie` optional
 through `Session.open`/`openApp`/`withShots` is about 8 lines if a later PR needs
 it.
 
+**Plan PR 11 merged as #94 (`c36afa1`), and PR 7 is the only thing left.** One
+`ThemedPage` in `src/theme/` holds the `<main>` + `ThemeController` shell that
+all three pages were writing out. Read "What PR 11 proved about the suites"
+below before trusting any claim that the browser suites already cover something.
+
 **Plan PR 10 merged as #87 (`f1a283d`).** It closed the last cross-user path —
 the four `[id]` mutation routes ran with no authorization at all, and PR 6 never
 narrowed them, because `/api` is deliberately outside the proxy's matcher.
 **Production may now take real data.** **PR 7 (`feat/profile-section`) and PR 11
 (`refactor/themed-page-shell`) are what is left**, both independent of
 everything else and of each other.
+
+## What PR 11 proved about the suites — read this before writing a test plan
+
+**The plan said PR 11 needed no new test, because "the browser suites assert the
+themed render already". That was false, and two deliberate breaks proved it.**
+Dropping the `<main>` and ignoring the passed `themeId` in favour of
+`DEFAULT_THEME_ID` each passed `test:db`, all 51 visual shots and all 14 browser
+checks — twice. Two reasons, both worth remembering beyond this PR:
+
+- **Nothing in `src/` or `e2e/` selects a `main` element.** A landmark no test
+  queries is a landmark no test protects.
+- **Every seeded fixture carries `DEFAULT_THEME_ID`** (`src/test-utils/fixtures.ts`),
+  and `resolveThemeId` falls back to it too. So no suite can distinguish the
+  resolved theme from the default. **Any future theme assertion must use a
+  non-default id** — `midnight-blue` is what `ThemedPage.test.tsx` uses — or it
+  passes against a component that ignores the theme entirely.
+
+The lesson generalises: "the existing suites already cover it" is a claim to
+test by breaking the thing, not a fact to accept. 87 checks agreed with the
+plan and were wrong.
+
+- **`src/test-utils/theme-probe.tsx`** holds the shared `ThemeDisplay` probe and
+  `THEME_ID_TESTID`, used by both theme suites. It is **not** in
+  `test-utils/render.tsx` on purpose: that `render` wraps everything in a
+  `ThemeController` on `DEFAULT_THEME_ID`, which is the very thing these suites
+  exist to tell apart.
+
+## PR 7 is in flight, and it found two follow-ups
+
+- **A signed-in stranger cannot sign out (plan PR 12).** No `account_users`
+  rows → `EmptyState` → no `Header` → no menu → no sign-out. Only exit is
+  clearing cookies. The open sign-in this plan chose makes that state reachable
+  by anyone.
+- **Four contexts hand-roll the same required-context boilerplate (plan PR 13)**
+  — `accounts-context`, `signed-in-user-context`, and both of
+  `ThemeController`'s. `app-mode-context` is deliberately different: it has a
+  default and never throws.
+
+**Providers for signed-in pages live in `src/app/SignedInProviders.tsx`**, used
+by both pages inside `ThemedPage`. Add a new app-wide provider there, not to
+each page. `AccountsProvider` stays inside `Home`/`Method` because its value
+comes from each one's own `useAccountNavigation` state.
+
+**`signedInUserId` is gone — `signedInUser()` is the only session accessor**, and
+returns `id`, `name`, `email` and an optional `image`. The API routes take `.id`
+from it. `src/__mocks__/auth.ts` mocks that one name.
+
+## PR 7's plan section was stale
+
+**The plan says `ProfileSection` should mirror `AppearanceSection`. Do not.**
+#88 regrouped the menu into `MenuGlobalScope` (account picker, edit button) and
+`MenuAccountScope` (headed with the current account's name and avatar), and put
+`AppearanceSection` **inside the per-account block**. A profile section is about
+the signed-in _user_, so mirroring `AppearanceSection` files it under the wrong
+heading. #93 then took navigation out of the account block too. `MenuOverlay.tsx`
+composes the lot — decide placement from there.
+
+**There is no mockup for it.** `mockups/` has no profile or sign-out artwork and
+the menu-redesign plan does not cover it, unlike every other menu block. Worth
+settling the design before writing the component.
 
 ## What PR 10 changed that you need to know
 
@@ -142,20 +207,34 @@ everything else and of each other.
   mock of `next/navigation` must **throw**, because the real `redirect` is typed
   `never`.
 
-## Test suites — measured 2026-09-23 on PR 10 merged with `main`
+## Test suites — measured 2026-09-23 on `c36afa1` (PR 11 merged)
 
-`jest` 598 across 116 suites · `test:db` 22 across 5 · `test:visual` 45 ·
-browser `e2e` 14 · `tsc --noEmit` and `eslint .` clean · `next build` accepts the
-wrapped route exports. The count moved with #88, which deleted the
-`AccountsSection` suite and added two of its own; PR 10 itself added 29 tests.
+`jest` **622 across 122 suites** · `test:db` 22 across 5 · `test:visual` **51** ·
+browser `e2e` 14 · `tsc --noEmit` and `eslint .` clean.
 
-## Database state — measured 2026-09-22, **not** re-measured during PR 10
+**The handover's previous figures were stale in both directions** — it recorded
+598/116 and 45 visual against an actual 620/121 and 47 at the same commit, and
+#92 then added 4 more shots. Re-measure; do not cite this table without doing so.
+
+**Re-run a failing browser suite before believing it, and check nothing else is
+touching the worktree.** Two visual tests failed here with
+`Navigation timeout of 30000 ms exceeded` and a puppeteer `protocolTimeout`,
+which read as visual regressions and were neither: a concurrent review agent had
+checked the branch back out mid-run, swapping `.next` under a live `next start`.
+A clean re-run went 51/51. **One worktree, one writer** — do not run a
+HEAD-switching script and a review agent against the same worktree at once.
+
+## Database state — re-measured 2026-09-23 during PR 11
 
 | branch       | `users` | `accounts` | `account_users` | orphan accounts | transactions |
 | ------------ | ------- | ---------- | --------------- | --------------- | ------------ |
-| `production` | 1       | 4          | 4               | **0**           | 263          |
-| `dev`        | 1       | 3          | 3               | **0**           | 221          |
+| `production` | 1       | 4          | 4               | **0**           | **266**      |
+| `dev`        | 1       | 3          | 3               | **0**           | **293**      |
 | `test`       | 0       | 0          | 0               | **0**           | 0            |
+
+**Production's transactions moved 263 → 266 — that is real use**, PR 10 having
+been the last thing blocking go-live. Treat production as live data from here
+on. Dev's 221 → 293 is other worktrees, as ever.
 
 Re-measure rather than trusting this table — dev grew an orphan between two
 measurements an hour apart during PR 9. The `test` branch is written and cleaned
