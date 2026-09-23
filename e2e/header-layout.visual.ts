@@ -15,77 +15,98 @@ const longNamedAccount = createMockAccount({
 });
 
 describe('header', () => {
-  const { header, menu } = useDriver({ accounts: [mockAccount] });
+  describe('on home', () => {
+    const { header, menu } = useDriver({ accounts: [mockAccount] });
 
-  describe('layout', () => {
-    let bar: BoundingBox;
-    let menuButton: BoundingBox;
-    let name: BoundingBox;
-    let avatar: BoundingBox;
+    describe('layout', () => {
+      let bar: BoundingBox;
+      let menuButton: BoundingBox;
+      let name: BoundingBox;
+      let avatar: BoundingBox;
 
-    beforeEach(async () => {
-      bar = await header.box();
-      menuButton = await menu.buttonBox();
-      name = await header.nameBox();
-      avatar = await header.avatarBox();
+      beforeEach(async () => {
+        bar = await header.box();
+        menuButton = await menu.buttonBox();
+        name = await header.nameBox();
+        avatar = await header.avatarBox();
+      });
+
+      it('places the menu at the start edge (right in RTL)', () => {
+        assert.ok(
+          Math.abs(bar.x + bar.width - (menuButton.x + menuButton.width)) <=
+            EDGE_TOLERANCE
+        );
+      });
+
+      it('places the avatar at the end edge (left in RTL)', () => {
+        assert.ok(Math.abs(avatar.x - bar.x) <= EDGE_TOLERANCE);
+      });
+
+      it('anchors the account name to the start, beside the menu', () => {
+        assert.ok(
+          Math.abs(name.x + name.width - menuButton.x) <= EDGE_TOLERANCE
+        );
+      });
+
+      it('places the avatar after the name', () => {
+        assert.ok(avatar.x + avatar.width <= name.x + EDGE_TOLERANCE);
+      });
+
+      it('keeps the menu, name and avatar on the top row', () => {
+        const onNameRow = (box: BoundingBox): boolean =>
+          box.y < name.y + name.height && box.y + box.height > name.y;
+
+        assert.ok(onNameRow(menuButton));
+        assert.ok(onNameRow(avatar));
+      });
     });
 
-    it('places the menu at the start edge (right in RTL)', () => {
+    describe('typography', () => {
+      it('renders the account name at the heading size from the type scale', async () => {
+        assert.equal(await header.nameFontSize(), HEADING_FONT_SIZE);
+      });
+    });
+  });
+
+  describe('under a name long enough to wrap', () => {
+    const { header, menu } = useDriver({ accounts: [longNamedAccount] });
+
+    it('stays one row rather than growing past the menu sheet', async () => {
+      const bar = await header.box();
+
       assert.ok(
-        Math.abs(bar.x + bar.width - (menuButton.x + menuButton.width)) <=
-          EDGE_TOLERANCE
+        bar.height <= HEADER_LAYOUT.height,
+        `bar is ${bar.height}px tall against a ${HEADER_LAYOUT.height}px sheet`
       );
     });
 
-    it('places the avatar at the end edge (left in RTL)', () => {
-      assert.ok(Math.abs(avatar.x - bar.x) <= EDGE_TOLERANCE);
-    });
+    it('leaves the open menu uncovered, the bar painting above it', async () => {
+      await menu.open();
 
-    it('anchors the account name to the start, beside the menu', () => {
-      assert.ok(Math.abs(name.x + name.width - menuButton.x) <= EDGE_TOLERANCE);
-    });
+      const bar = await header.box();
+      const panel = await menu.panelBox();
 
-    it('places the avatar after the name', () => {
-      assert.ok(avatar.x + avatar.width <= name.x + EDGE_TOLERANCE);
-    });
-
-    it('keeps the menu, name and avatar on the top row', () => {
-      const onNameRow = (box: BoundingBox): boolean =>
-        box.y < name.y + name.height && box.y + box.height > name.y;
-
-      assert.ok(onNameRow(menuButton));
-      assert.ok(onNameRow(avatar));
+      assert.ok(
+        bar.y + bar.height <= panel.y,
+        `bar reaches ${bar.y + bar.height}px, panel starts at ${panel.y}px`
+      );
     });
   });
 
-  describe('typography', () => {
-    it('renders the account name at the heading size from the type scale', async () => {
-      assert.equal(await header.nameFontSize(), HEADING_FONT_SIZE);
+  describe('on a screen that is not home', () => {
+    const { header, method } = useDriver({ accounts: [mockAccount] });
+
+    it('carries the way home without growing the bar the sheet is sized to', async () => {
+      await method.open();
+
+      assert.equal(await header.homeLinkExists(), true);
+
+      const bar = await header.box();
+
+      assert.ok(
+        bar.height <= HEADER_LAYOUT.height,
+        `bar is ${bar.height}px tall against a ${HEADER_LAYOUT.height}px sheet`
+      );
     });
-  });
-});
-
-describe('header under a name long enough to wrap', () => {
-  const { header, menu } = useDriver({ accounts: [longNamedAccount] });
-
-  it('stays one row rather than growing past the menu sheet', async () => {
-    const bar = await header.box();
-
-    assert.ok(
-      bar.height <= HEADER_LAYOUT.height,
-      `bar is ${bar.height}px tall against a ${HEADER_LAYOUT.height}px sheet`
-    );
-  });
-
-  it('leaves the open menu uncovered, the bar painting above it', async () => {
-    await menu.open();
-
-    const bar = await header.box();
-    const panel = await menu.panelBox();
-
-    assert.ok(
-      bar.y + bar.height <= panel.y,
-      `bar reaches ${bar.y + bar.height}px, panel starts at ${panel.y}px`
-    );
   });
 });

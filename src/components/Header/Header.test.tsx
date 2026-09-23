@@ -1,4 +1,5 @@
 import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
+import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
 import { TITLE_TEST_IDS } from './CrossfadeTitle/constants';
@@ -6,114 +7,154 @@ import { MENU_TEST_IDS } from '../Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '../Menu/MenuOverlay/constants';
 import { MENU_HEADER_SHEET_TEST_IDS } from '../Menu/MenuHeaderSheet/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '../Menu/AccountList/constants';
+import { HOME_ROUTE } from '../Home/constants';
 import { openAccountPicker } from '@/test-utils/account-picker';
 
+const mockPathname = jest.fn();
+
+jest.mock('next/navigation', () => ({
+  usePathname: (): string => mockPathname(),
+  useRouter: (): { push: () => void; refresh: () => void } => ({
+    push: (): void => undefined,
+    refresh: (): void => undefined,
+  }),
+}));
+
+const ACCOUNT_NAME = 'יעל';
+const AVATAR_ID = 'kid-01';
+
+function renderHeader(pathname: string): void {
+  mockPathname.mockReturnValue(pathname);
+  renderWithAccounts(<Header title={ACCOUNT_NAME} avatarId={AVATAR_ID} />);
+}
+
 describe('Header', () => {
-  const ACCOUNT_NAME = 'יעל';
-  const AVATAR_ID = 'kid-01';
-
-  beforeEach(() => {
-    renderWithAccounts(<Header title={ACCOUNT_NAME} avatarId={AVATAR_ID} />);
-  });
-
-  it('shows the account name', () => {
-    expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
-      ACCOUNT_NAME
-    );
-  });
-
-  it('contains the menu button', () => {
-    expect(screen.getByTestId(MENU_TEST_IDS.menuButton)).toBeInTheDocument();
-  });
-
-  it('shows the account avatar', () => {
-    const avatar = screen.getByTestId(HEADER_TEST_IDS.avatar);
-    expect(avatar).toHaveAttribute('src', expect.stringContaining(AVATAR_ID));
-  });
-
-  describe('the menu', () => {
-    let button: HTMLElement;
-    let overlay: HTMLElement;
-
+  describe('on home', () => {
     beforeEach(() => {
-      button = screen.getByTestId(MENU_TEST_IDS.menuButton);
-      overlay = screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay);
+      renderHeader(HOME_ROUTE);
     });
 
-    it('starts closed', () => {
-      expect(button).toHaveAttribute('aria-expanded', 'false');
-      expect(overlay).toHaveAttribute('data-open', 'false');
-    });
-
-    it('opens the overlay when the menu button is clicked', () => {
-      fireEvent.click(button);
-
-      expect(button).toHaveAttribute('aria-expanded', 'true');
-      expect(overlay).toHaveAttribute('data-open', 'true');
-    });
-
-    it('closes the overlay when the menu button is clicked again', () => {
-      fireEvent.click(button);
-      fireEvent.click(button);
-
-      expect(button).toHaveAttribute('aria-expanded', 'false');
-      expect(overlay).toHaveAttribute('data-open', 'false');
-    });
-  });
-
-  describe('the bar under an open menu', () => {
-    beforeEach(() => {
-      fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
-    });
-
-    it('keeps the account name rather than swapping in a menu title', () => {
+    it('shows the account name', () => {
       expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
         ACCOUNT_NAME
       );
     });
 
-    it('takes the avatar away, the picker below already showing it', () => {
-      expect(screen.getByTestId(HEADER_TEST_IDS.avatar)).not.toBeVisible();
+    it('contains the menu button', () => {
+      expect(screen.getByTestId(MENU_TEST_IDS.menuButton)).toBeInTheDocument();
     });
-  });
 
-  describe('the sheet behind the bar', () => {
-    it('leaves the screen gradient alone while the menu is shut', () => {
+    it('shows the account avatar', () => {
+      const avatar = screen.getByTestId(HEADER_TEST_IDS.avatar);
+      expect(avatar).toHaveAttribute('src', expect.stringContaining(AVATAR_ID));
+    });
+
+    it('offers no way home, this being home', () => {
       expect(
-        screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
-      ).toHaveAttribute('data-open', 'false');
+        screen.queryByTestId(HEADER_TEST_IDS.homeLink)
+      ).not.toBeInTheDocument();
     });
 
-    it('covers the gradient once the menu is open', () => {
-      fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+    describe('the menu', () => {
+      let button: HTMLElement;
+      let overlay: HTMLElement;
 
-      expect(
-        screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
-      ).toHaveAttribute('data-open', 'true');
+      beforeEach(() => {
+        button = screen.getByTestId(MENU_TEST_IDS.menuButton);
+        overlay = screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay);
+      });
+
+      it('starts closed', () => {
+        expect(button).toHaveAttribute('aria-expanded', 'false');
+        expect(overlay).toHaveAttribute('data-open', 'false');
+      });
+
+      it('opens the overlay when the menu button is clicked', () => {
+        fireEvent.click(button);
+
+        expect(button).toHaveAttribute('aria-expanded', 'true');
+        expect(overlay).toHaveAttribute('data-open', 'true');
+      });
+
+      it('closes the overlay when the menu button is clicked again', () => {
+        fireEvent.click(button);
+        fireEvent.click(button);
+
+        expect(button).toHaveAttribute('aria-expanded', 'false');
+        expect(overlay).toHaveAttribute('data-open', 'false');
+      });
     });
 
-    it('sits outside the bar, which would otherwise paint over it', () => {
-      expect(screen.getByTestId(HEADER_TEST_IDS.bar)).not.toContainElement(
-        screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
-      );
-    });
-  });
-
-  describe('reopening after the account list was left open', () => {
-    beforeEach(() => {
-      const openMenu = (): void => {
+    describe('the bar under an open menu', () => {
+      beforeEach(() => {
         fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
-      };
+      });
 
-      openMenu();
-      openAccountPicker();
-      openMenu();
-      openMenu();
+      it('keeps the account name rather than swapping in a menu title', () => {
+        expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
+          ACCOUNT_NAME
+        );
+      });
+
+      it('takes the avatar away, the picker below already showing it', () => {
+        expect(screen.getByTestId(HEADER_TEST_IDS.avatar)).not.toBeVisible();
+      });
     });
 
-    it('shows the account it is on rather than the whole list', () => {
+    describe('the sheet behind the bar', () => {
+      it('leaves the screen gradient alone while the menu is shut', () => {
+        expect(
+          screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
+        ).toHaveAttribute('data-open', 'false');
+      });
+
+      it('covers the gradient once the menu is open', () => {
+        fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+
+        expect(
+          screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
+        ).toHaveAttribute('data-open', 'true');
+      });
+
+      it('sits outside the bar, which would otherwise paint over it', () => {
+        expect(screen.getByTestId(HEADER_TEST_IDS.bar)).not.toContainElement(
+          screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
+        );
+      });
+    });
+
+    describe('reopening after the account list was left open', () => {
+      beforeEach(() => {
+        const openMenu = (): void => {
+          fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+        };
+
+        openMenu();
+        openAccountPicker();
+        openMenu();
+        openMenu();
+      });
+
+      it('shows the account it is on rather than the whole list', () => {
+        expect(
+          screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+        ).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('on a screen that is not home', () => {
+    beforeEach(() => {
+      renderHeader(METHOD_ROUTE);
+    });
+
+    it('offers a way home, which the avatar has given its slot to', () => {
+      expect(screen.getByTestId(HEADER_TEST_IDS.homeLink)).toHaveAttribute(
+        'href',
+        HOME_ROUTE
+      );
       expect(
-        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
+        screen.queryByTestId(HEADER_TEST_IDS.avatar)
       ).not.toBeInTheDocument();
     });
   });
