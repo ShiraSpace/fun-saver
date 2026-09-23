@@ -6,9 +6,9 @@ import {
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { METHOD_SECTION_TEST_IDS } from './MethodSection/constants';
+import { METHOD_INTRO_TEST_IDS } from './MethodIntro/constants';
 import { SOURCE_LIST_TEST_IDS } from './SourceList/constants';
 import { SOURCE_MARKER_TEST_IDS } from './SourceMarker/constants';
-import { METHOD_INTRO_TEST_IDS } from './MethodIntro/constants';
 import { SECTION_NUMBER, SOURCES_SECTION_ID } from './constants';
 import { Method } from './Method';
 import { METHOD_COPY } from './copy';
