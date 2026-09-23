@@ -15,7 +15,7 @@ const shekelsOf = (account: (typeof accounts)[number]): string =>
 
 describe('AccountList', () => {
   const mockOnSelect = jest.fn();
-  const mockOnAdd = jest.fn();
+  const mockOnLeaveMenu = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -24,7 +24,7 @@ describe('AccountList', () => {
         accounts={accounts}
         selectedAccountId={mockSecondDerivedAccount.id}
         onSelect={mockOnSelect}
-        onAdd={mockOnAdd}
+        onLeaveMenu={mockOnLeaveMenu}
       />
     );
   });
@@ -55,9 +55,9 @@ describe('AccountList', () => {
     );
   });
 
-  it('asks to add an account when the add row is tapped', () => {
+  it('leaves the menu when the add row is tapped, the form taking over', () => {
     fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
 
-    expect(mockOnAdd).toHaveBeenCalled();
+    expect(mockOnLeaveMenu).toHaveBeenCalled();
   });
 });

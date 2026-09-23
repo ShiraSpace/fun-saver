@@ -16,6 +16,15 @@ const ACCOUNT_NAME = 'יעל';
 const AVATAR_ID = 'kid-01';
 const headerAccount = { name: ACCOUNT_NAME, avatarId: AVATAR_ID };
 
+const GREETING = 'שלום';
+
+function renderHeaderWithoutAccount(): void {
+  render(<Header title={GREETING} />, {
+    route: HOME_ROUTE,
+    user: mockUser,
+  });
+}
+
 function renderHeader(route: string): void {
   render(<Header title={ACCOUNT_NAME} account={headerAccount} />, {
     route,
@@ -169,6 +178,29 @@ describe('Header', () => {
       fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
 
       expect(screen.getByTestId(HEADER_TEST_IDS.homeLink)).not.toBeVisible();
+    });
+  });
+
+  describe('with no account, which is what the empty state has', () => {
+    beforeEach(() => {
+      renderHeaderWithoutAccount();
+    });
+
+    it('stands up all the same, so the burger is on every screen', () => {
+      expect(screen.getByTestId(HEADER_TEST_IDS.bar)).toBeInTheDocument();
+      expect(screen.getByTestId(MENU_TEST_IDS.menuButton)).toBeInTheDocument();
+    });
+
+    it('greets the parent where an account screen names the account', () => {
+      expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
+        GREETING
+      );
+    });
+
+    it('leaves the end of the bar bare, there being no account to picture', () => {
+      expect(
+        screen.queryByTestId(HEADER_TEST_IDS.avatar)
+      ).not.toBeInTheDocument();
     });
   });
 });

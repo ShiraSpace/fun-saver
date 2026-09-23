@@ -1,55 +1,32 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { render, screen } from '@/test-utils/render';
+import { mockUser } from '@/test-utils/fixtures';
 import { MenuGlobalScope } from './MenuGlobalScope';
-import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
-import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '../EditAccountButton/constants';
-import {
-  APP_MODE,
-  AppModeProvider,
-} from '@/components/AccountManagement/app-mode-context';
-import {
-  mockAccountsContext,
-  mockDerivedAccount,
-  mockUser,
-} from '@/test-utils/fixtures';
+import { MENU_GLOBAL_SCOPE_TEST_IDS } from './constants';
+import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
 
-const mockOnLeaveMenu = jest.fn();
-
-function renderScope(): void {
-  render(
-    <AppModeProvider
-      value={{ mode: APP_MODE.viewing, setMode: (): void => {} }}
-    >
-      <MenuGlobalScope
-        onLeaveMenu={mockOnLeaveMenu}
-        isAccountListOpen
-        onAccountListToggle={(): void => {}}
-      />
-    </AppModeProvider>,
-    { accounts: mockAccountsContext, user: mockUser }
-  );
-}
+const BELOW_THE_STRIP = 'below-the-profile-strip';
 
 describe('MenuGlobalScope', () => {
+  let block: HTMLElement;
+
   beforeEach(() => {
-    jest.clearAllMocks();
-    renderScope();
+    render(
+      <MenuGlobalScope>
+        <span data-testid={BELOW_THE_STRIP} />
+      </MenuGlobalScope>,
+      { user: mockUser }
+    );
+
+    block = screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block);
   });
 
-  it('names the account in view on the edit button', () => {
-    expect(
-      screen.getByTestId(EDIT_ACCOUNT_BUTTON_TEST_IDS.button)
-    ).toHaveTextContent(mockDerivedAccount.name);
+  it('names the signed-in parent, who belongs to no one account', () => {
+    expect(block).toContainElement(
+      screen.getByTestId(PROFILE_SECTION_TEST_IDS.strip)
+    );
   });
 
-  it('leaves the menu when the add row is tapped', () => {
-    fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
-
-    expect(mockOnLeaveMenu).toHaveBeenCalled();
-  });
-
-  it('leaves the menu when the edit button is tapped', () => {
-    fireEvent.click(screen.getByTestId(EDIT_ACCOUNT_BUTTON_TEST_IDS.button));
-
-    expect(mockOnLeaveMenu).toHaveBeenCalled();
+  it('holds whatever the menu puts under them', () => {
+    expect(block).toContainElement(screen.getByTestId(BELOW_THE_STRIP));
   });
 });

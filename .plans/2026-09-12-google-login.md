@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-23 (PR 15 merged as #105; PR 12, 13 and 14 are what is left)
+## Progress — updated 2026-09-23 (PR 12's design merged as #111; 12, 13 and 14 are what is left, and 13 goes first)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -28,7 +28,7 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 10 | [#87](https://github.com/ShiraSpace/fun-saver/pull/87)   | `feat/guard-transaction-routes`    | **merged** — `f1a283d`                                  |
 | PR 11 | [#94](https://github.com/ShiraSpace/fun-saver/pull/94)   | `refactor/themed-page-shell`       | **merged** — `c36afa1`                                  |
 | PR 7  | [#100](https://github.com/ShiraSpace/fun-saver/pull/100) | `feat/profile-section`             | **merged** — `06f2528`                                  |
-| PR 12 | —                                                        | `fix/empty-state-sign-out`         | **design settled 2026-09-23** — found during PR 7       |
+| PR 12 | [#111](https://github.com/ShiraSpace/fun-saver/pull/111) | `fix/empty-state-header`           | design merged `bb421e9`; **built** — see PR 12's notes  |
 | PR 13 | —                                                        | `refactor/required-context`        | not started — found during PR 7                         |
 | PR 14 | —                                                        | `fix/menu-state-on-close`          | not started — found reviewing PR 7                      |
 | PR 15 | [#105](https://github.com/ShiraSpace/fun-saver/pull/105) | `refactor/one-render-helper`       | **merged** — `da842b1`                                  |
@@ -57,6 +57,15 @@ membership. PR 7 is independent and can land at any time.
 has no way to sign out (PR 12), four contexts hand-roll the same
 required-context boilerplate (PR 13), and menu state survives the menu closing
 (PR 14). None blocks PR 7.
+
+**They are no longer independent of each other.** PR 12's design landed as
+#111 and gives the empty state the `Header`, which means rewriting how
+`MenuOverlay` composes its account-scoped blocks. **Do PR 13 first** — it
+rewrites `accounts-context`, whose callers PR 12 changes the shape of, and
+doing it after means touching the same four contexts twice. PR 14 also lands
+in `MenuOverlay`; sequence it against 12 deliberately rather than discovering
+the conflict in a rebase. Nothing of PR 12 is built yet: #111 is plan and
+mockup only.
 
 **Review of #100 found a hole this plan did not anticipate: the closed menu was
 still reachable by keyboard.** The panel is always mounted and hidden with
@@ -1178,7 +1187,7 @@ Depends on: nothing. Independent of 6, 7 and 10; can land any time.
 
 ---
 
-### PR 12 — `fix/empty-state-sign-out`
+### PR 12 — `fix/empty-state-header`
 
 **A stranger who signs in cannot sign out.** With no `account_users` rows the
 app renders `EmptyState`, which has no `Header` — and the menu, with it the
@@ -1264,6 +1273,57 @@ empty state and not the header"* — that assertion inverts in this PR.
 `menu.signOut()` moves off `MenuDriver`: the strip gains a second placement, and
 the method is a lie from a screen with no menu.
 
+#### Built 2026-09-23 — what the section above got wrong, and what it cost
+
+**Three of the five files it opens needed no change.** `CrossfadeTitle` has
+taken arbitrary text since it was written and its own suite already rendered
+`שלום`; "gains a non-account title" described work already done. `useMenuState`
+needed nothing either — `isAccountListOpen` is simply never set at the empty
+state and `useEscapeDismissal` reads it as false. And `menu.signOut()` should
+**not** move off `MenuDriver`: that instruction says the strip "gains a second
+placement" and that the method "is a lie from a screen with no menu", both of
+which describe the *rejected* lighter placements. The chosen design keeps
+`ProfileSection` the only sign-out UI, inside a menu the empty state now has.
+
+**The trap was solved by deletion, not by a stub.** `MenuGlobalScope` became a
+layout taking children — `GlobalBlock` plus `ProfileSection`, no context calls —
+which is the shape `MenuAccountScope` already had. The picker and edit button
+moved to a new `AccountControls`, which keeps `useAccounts()`. A new `MenuBody`
+chooses between it and a new `AddAccountRow`.
+
+**Nothing is threaded that can be derived.** `hasAccount` is not a prop: it is
+`Boolean(useOptionalAccounts())`, read where it is used, because the app mounts
+`AccountsProvider` only when there is an account. `NavTabs` asks the same
+question for tab liveness, so `MENU_SCREENS` needed no per-screen flag.
+
+**Two things only a deliberate break would have caught.** The first version of
+`asReachable` kept home live with `|| screen.href === HOME_ROUTE`; removing that
+clause left every test green, because the empty state exists only on home where
+the tab is already current — untestable code, deleted. The second was a test of
+mine that asserted the rendered greeting against `EMPTY_STATE_COPY.greeting`,
+the constant the component renders: changing the constant moved both sides and
+705 tests still passed. It pins a test-local literal now.
+
+**`create-account.e2e.ts` was synchronising on an absence.** It read
+`header.name()` straight after submitting, with no wait, and passed only because
+`findByTest` blocked until `Account` mounted — there being no title at the empty
+state. A title exists there now, so the call returned early. Its sibling already
+waited; this one does too. The PR 7 lesson again: a pre-existing structure
+became a defect because of what was added to it.
+
+**Measured on the branch, all green:** jest 705 across 133, `test:db` 22 across
+5, `test:visual` 57 across 31 (56 before #109's rewrite), browser `e2e` 17
+across 8, `tsc --noEmit` and `eslint .` clean.
+
+**PR 13 went second, not first.** The cost was one export: `accounts-context`
+gained `useOptionalAccounts`, recorded in that section.
+
+**The branch is `fix/empty-state-header`, not the name above the section.**
+`fix/empty-state-sign-out` was spent by #111: the repo squash-merges, so that
+branch still exists on origin with two commits main already holds by content, and
+reusing it would have meant a force-push or carrying dead commits into the build's
+PR.
+
 Depends on: PR 7. **Land PR 13 first** — it rewrites `accounts-context`, which
 this PR changes the shape of the callers for. PR 14 touches `MenuOverlay` panel
 state and will conflict; order them deliberately.
@@ -1278,7 +1338,19 @@ throw-if-missing hook: `accounts-context`, `signed-in-user-context`, and both of
 `app-mode-context` stays as it is — it carries a default and never throws, which
 is a deliberate difference, not an inconsistency.
 
-**Take the inert `AppModeProvider` wrap out of `MenuGlobalScope.test.tsx` here.**
+**PR 12 changed two of this section's inputs.** `accounts-context` now also
+exports `useOptionalAccounts`, which returns the value rather than throwing on
+it, so the factory needs an optional reader beside the required one — a second
+return value, or a separate export, for what is currently two callers
+(`MenuBody` and `NavTabs`, both deriving "is there an account" from whether the
+provider is mounted). And the suite named below moved: PR 12 split
+`MenuGlobalScope` and its picker and edit button went to `AccountControls`,
+taking the test file with them. The inert wrap now lives in
+`AccountControls.test.tsx`, still inert — verified by deliberate break during
+PR 12, where deleting `setMode` from the production handler reddened eleven
+tests in `Home.managing-accounts.test.tsx` and none in that file.
+
+**Take the inert `AppModeProvider` wrap out of `AccountControls.test.tsx` here.**
 The suite wraps its element in `<AppModeProvider value={{ mode: APP_MODE.viewing,
 setMode: (): void => {} }}>`, which is byte-for-byte the `createContext` default
 in `app-mode-context.tsx`. Nothing asserts on `setMode` — it is a bare noop, not a
@@ -1319,7 +1391,33 @@ decision, not two: either the panel unmounts when closed — it does not today,
 because the open/close transition animates it — or the menu's open state reaches
 the pieces that hold state, and they reset on close.
 
-Depends on: PR 7.
+**The menu drills one callback six levels deep, and this PR is where that gets
+fixed.** `Header` owns `useMenuState` and is its only caller; everything below
+receives `close` by hand — `MenuOverlay` → `MenuBody` → `AccountControls` →
+`AccountPicker` → `AccountList` → `AddAccountRow`. Two of those hops are pure
+pass-through: `AccountPicker` and `AccountList` take the callback only to hand
+it on. The chain predates PR 12, which added one hop and pushed it one level
+further while removing a duplicated add row.
+
+A menu context is the fix, and it is this PR's business rather than PR 12's for
+one reason: the decision above — whether the panel unmounts or the open state
+reaches the pieces — is the same decision. The second option *is* a menu
+context. Making it in PR 12 would have settled this PR's design in the wrong
+place.
+
+Two things to get right when building it. **Land it after PR 13** and build the
+provider with `createRequiredContext`, or it becomes a fifth hand-rolled
+`createContext<T | null>(null)` the week before the factory that deletes that
+pattern arrives. And **do not call the reader `useMenuState`** — that name
+belongs to the hook that creates the state. A reader beside it with a near
+identical name is a mis-import waiting to happen; `useMenu` reading what
+`useMenuState` created is the distinction to keep visible.
+
+Whether the context carries only `close` or the whole `MenuState` follows from
+the unmount-versus-reset decision: resetting on close needs `isOpen` to reach
+the pieces, unmounting does not.
+
+Depends on: PR 7, and land after PR 13.
 
 ### PR 15 — `refactor/one-render-helper` — **merged as #105 (`da842b1`)**
 

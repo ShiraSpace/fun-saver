@@ -1,14 +1,23 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
+import { mockAccountsContext } from '@/test-utils/fixtures';
 import { NavTabs } from './NavTabs';
 import { MENU_SCREENS, NAV_TABS_CONTENT, NAV_TABS_TEST_IDS } from './constants';
 
 const mockOnNavigate = jest.fn();
 
-function renderTabs(route: string): void {
+function renderTabsWithoutAccount(route: string): void {
   jest.clearAllMocks();
   render(<NavTabs onNavigate={mockOnNavigate} />, { route });
+}
+
+function renderTabs(route: string): void {
+  jest.clearAllMocks();
+  render(<NavTabs onNavigate={mockOnNavigate} />, {
+    route,
+    accounts: mockAccountsContext,
+  });
 }
 
 describe('NavTabs', () => {
@@ -85,6 +94,16 @@ describe('NavTabs', () => {
         'href',
         HOME_ROUTE
       );
+    });
+  });
+
+  describe('for a parent who has no account yet', () => {
+    beforeEach(() => {
+      renderTabsWithoutAccount(HOME_ROUTE);
+    });
+
+    it('cannot send them to the method, which needs an account to open', () => {
+      expect(screen.getByTestId(NAV_TABS_TEST_IDS.methodTab)).toBeDisabled();
     });
   });
 });

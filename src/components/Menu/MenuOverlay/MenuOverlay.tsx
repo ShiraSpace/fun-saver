@@ -1,11 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { MenuGlobalScope } from '../MenuGlobalScope';
-import { MenuAccountScope } from '../MenuAccountScope';
-import { NavTabs } from '../NavTabs';
-import { AppearanceSection } from '../AppearanceSection';
-import { LanguageSection } from '../LanguageSection';
+import { MenuBody } from '../MenuBody';
 import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
 import { useEscapeDismissal } from './use-escape-dismissal';
 import { Panel, Content } from './MenuOverlay.styles';
@@ -39,16 +35,11 @@ export function MenuOverlay({
       inert={!isOpen}
     >
       <Content>
-        <NavTabs onNavigate={onClose} />
-        <MenuGlobalScope
+        <MenuBody
           onLeaveMenu={onClose}
           isAccountListOpen={isAccountListOpen}
           onAccountListToggle={onAccountListToggle}
         />
-        <MenuAccountScope>
-          <AppearanceSection />
-          <LanguageSection />
-        </MenuAccountScope>
       </Content>
     </Panel>
   );

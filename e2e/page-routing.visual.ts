@@ -11,9 +11,9 @@ describe('page routing', () => {
   describe('with no accounts', () => {
     const { header, emptyState } = useDriver();
 
-    it('shows the empty state and not the header', async () => {
+    it('shows the empty state, and the header that carries the way out', async () => {
       assert.equal(await emptyState.exists(), true);
-      assert.equal(await header.exists(), false);
+      assert.equal(await header.exists(), true);
     });
   });
 
