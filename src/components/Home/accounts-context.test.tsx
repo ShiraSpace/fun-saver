@@ -1,6 +1,7 @@
 import { JSX } from 'react';
 import { render, screen } from '@/test-utils/render';
 import { mockAccountsContext } from '@/test-utils/fixtures';
+import { missingProviderMessage } from '@/hooks/create-required-context';
 import { useAccounts, useOptionalAccounts } from './accounts-context';
 
 const NAME_TESTID = 'current-account-name';
@@ -34,7 +35,7 @@ describe('useAccounts', () => {
 
   it('refuses to guess when no provider is above it', () => {
     expect(() => render(<CurrentAccountName />)).toThrow(
-      'No AccountsProvider above this component'
+      missingProviderMessage('AccountsProvider')
     );
   });
 });

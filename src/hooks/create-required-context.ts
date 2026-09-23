@@ -2,6 +2,10 @@
 
 import { createContext, Provider, useContext } from 'react';
 
+export function missingProviderMessage(providerName: string): string {
+  return `No ${providerName} above this component`;
+}
+
 export function createRequiredContext<T>(
   providerName: string
 ): [Provider<T | null>, () => T, () => T | null] {
@@ -16,7 +20,7 @@ export function createRequiredContext<T>(
     const value = useOptional();
 
     if (value === null) {
-      throw new Error(`No ${providerName} above this component`);
+      throw new Error(missingProviderMessage(providerName));
     }
 
     return value;
