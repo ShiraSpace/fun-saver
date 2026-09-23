@@ -11,19 +11,19 @@ split into three wallets, and what the parent has to do. Static and read-only.
 
 ## Where it stands (2026-09-23)
 
-PRs 1–7 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
+PRs 1–8 are merged: #64 (copy, route, menu link), #66 and #71 (the opener), #69
 (section shell, evidence quote, section 1), #73 (the three wallets, the block
 renderer, the talk bubble), #82 (the actions, sections 3 and 4), #84 (the
-scripts, section 5). **PR 8 is open as #89 — the page is done when it lands.**
+scripts, section 5), #89 (limits, the sources and the citation numbers).
+**The page is done.**
 
 `main` moved under the page while PRs 7 and 8 were open: #79 gave `Method`
-`accounts` and `initialAccount` props, and #85 and #86 continued the menu and
-login work. #89 branches off `main` as it stands, not off #84.
+`accounts` and `initialAccount` props, and #85, #86 and #90 continued the menu
+and login work. #89 branched off `main` as it stood, not off #84.
 
-Two follow-ups outlive the page and are **not** in #89: the e2e visual baseline
-(one recording now, rather than the five PRs 5–8 would each have re-recorded),
-and the AA contrast pass on `gradients.actionButton` and pot text — decisions 7
-and 10, raised together.
+Two follow-ups outlive the page. The `/method` browser suite is one of them and
+is in flight; **the AA contrast pass on `gradients.actionButton` and pot text —
+decisions 7 and 10, raised together — is the last thing owing.**
 
 Worktree `~/Projects/technotronic/fun-saver-method-page`. Each PR branches off
 `main` once the one before it has merged — the stack was rebased twice because
@@ -471,11 +471,20 @@ section is one `MethodBlocks` over the five `limits.*` blocks and nothing else.
   work is in the custom-split feature, not here — but it lands on section 4
   first, because section 4 is the only place the page quotes a number the
   parent can change.
-- **e2e visual snapshots** — a new route adds a baseline, it doesn't change
-  existing ones. Still not taken: every PR from 5 to 8 adds content to the same
-  page, so one recording after PR 8 replaces five that would be re-recorded. It
-  is also the only thing that can cover the chevron flip, which is CSS state and
-  invisible to jsdom.
+- **`*.visual.ts` are browser assertions, not image snapshots.** There is no
+  pixel tooling in this repo and no stored baselines — a visual suite drives a
+  real page and asserts computed styles and geometry, so there is nothing to
+  record and nothing to re-record. Deferring the `/method` suite through PRs 5
+  to 8 was still right, but for the plainer reason that it would have been
+  rewritten five times rather than re-recorded five times.
+
+  It covers what jsdom cannot see: the chevron turning over, and
+  `list-style: decimal` surviving Tailwind's reset — the numbering every
+  citation mark points at. **Assert the flipped matrix, not merely "some
+  transform":** `rotate(0deg)` computes to a matrix rather than `none`, so a
+  chevron that never turns passes the looser form. The `details[open] >
+  summary &` scoping stays uncovered — loosening it to a descendant combinator
+  passes, correctly, because nothing on this page nests.
 - **The page is no longer static.** #79 wired `/method` to the signed-in
   user's accounts, so PR 8 branches off a `main` where `Method` takes props and
   a section can reach the selected account if it needs to — which is the shape
