@@ -85,6 +85,10 @@
            background:var(--surface);color:var(--textMuted);font:inherit;font-size:12px;
            font-weight:600;cursor:pointer}
 
+  .addrow{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+          padding:8px 11px;border:1.5px dashed var(--divider);border-radius:14px;
+          background:transparent;color:var(--textMuted);font:inherit;font-size:15px;
+          font-weight:600;cursor:pointer}
   .trigger{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;
            border:1.5px solid var(--scopeBorder);border-radius:16px;background:var(--surface);
            color:var(--textStrong);font:inherit;text-align:start;cursor:pointer}
@@ -143,7 +147,7 @@
 
   <div class="cell">
     <p class="cap">2 · Empty state, menu open — CHOSEN
-      <small>Everything account-scoped is gone. What is left is the profile block — and two dead tabs.</small></p>
+      <small>Everything account-scoped is gone. The profile block keeps the AccountList add row, so the menu can still start an account.</small></p>
     <div class="frame">
       <div class="sheet"></div>
       <div class="panel">
@@ -154,7 +158,7 @@
             <button class="tab inert" type="button" disabled><span class="ic">📖</span><span class="lb">השיטה</span></button>
           </nav>
           <div class="scope global">
-            <div class="profile">
+            <div class="profile ruled">
               <span class="mark" aria-hidden="true">👤</span>
               <span class="naming">
                 <b class="pname">אלי</b>
@@ -162,6 +166,7 @@
               </span>
               <button class="signout" type="button" aria-label="יציאה מהחשבון">יציאה</button>
             </div>
+            <button class="addrow" type="button" aria-label="הוספת חשבון">＋ חשבון חדש</button>
           </div>
         </div>
         <p class="empty-note">אין עדיין חשבונות — צרו אחד כדי לראות כאן מראה, שפה והחלפת חשבון.</p>

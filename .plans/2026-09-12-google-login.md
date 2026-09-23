@@ -1225,13 +1225,31 @@ throws with no provider. So:
 - `MenuOverlay` — stops owning the account-scoped blocks; `ProfileSection` is
   hoisted to be its own direct child.
 - `MenuGlobalScope` — loses `ProfileSection`, keeps the picker and edit button,
-  and takes the divider `ProfileSection`'s `Block` carries today. That divider
-  separates the strip from the picker below it, so it belongs to the block that
-  owns both; at the empty state nothing follows the strip.
+  and renders the add row on its own when there is no picker to hold it.
 - `NavTabs` — per-screen liveness instead of the `MENU_SCREENS` constant.
   `תנועות` has no `href` and is already inert; `השיטה` would bounce back, since
   `method/page.tsx` redirects home without an account.
 - `useMenuState` — `isAccountListOpen` has no picker to describe.
+
+**The menu can start an account, with the affordance that already does it.**
+`AccountList`'s `AddRow` — dashed, `＋ חשבון חדש`, `aria-label` `הוספת חשבון` —
+moves into the slot the picker occupies when accounts exist, wired the way
+`MenuGlobalScope.handleAddAccount` wires it today: close the menu, then
+`APP_MODE.creatingAccount`. Same overlay and same copy the parent meets again
+when they add a second account.
+
+`AddRow` shares a `row` base with the selectable `Row` in
+`AccountList.styles.ts`. Both lift into a `src/components/Menu/*-parts.ts`
+sibling, the way `scope-parts.ts` already holds `ScopeBlock`.
+
+**This keeps `ProfileSection`'s divider where it is.** The rule under the strip
+separates it from whatever follows inside `GlobalBlock`; the add row follows it
+at the empty state exactly as the picker does elsewhere, so nothing moves.
+
+The empty state then offers account creation twice — the screen's `צור חשבון`
+and the menu's row. Deliberate: the account-present menu duplicates paths the
+same way, and dropping the screen CTA would make the burger mandatory for a
+stranger.
 
 **Still open: whether the empty state shows `NavTabs` at all.** Two of three
 tabs are inert there. Drop the strip, keep both inert as drawn, or make
