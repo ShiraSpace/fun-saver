@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { render } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
-import { mockDerivedAccount } from '@/test-utils/fixtures';
+import { mockAccountsContext, mockDerivedAccount } from '@/test-utils/fixtures';
 import { AppearanceSection } from './AppearanceSection';
 import {
   APPEARANCE_SECTION_CONTENT,
@@ -12,11 +12,7 @@ import { mockRouter } from '@mocks/next/navigation';
 
 function renderSection(): void {
   render(<AppearanceSection />, {
-    accounts: {
-      accounts: [mockDerivedAccount],
-      currentAccount: mockDerivedAccount,
-      selectAccount: jest.fn(),
-    },
+    accounts: mockAccountsContext,
   });
 }
 

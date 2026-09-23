@@ -1,22 +1,18 @@
 import { render, screen } from '@/test-utils/render';
 import { MenuAccountScope } from './MenuAccountScope';
 import { MENU_ACCOUNT_SCOPE_TEST_IDS } from './constants';
-import { type AccountsContextValue } from '@/components/Home/accounts-context';
 import {
-  mockDerivedAccount,
+  mockAccountsContext,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
-
-const accountsValue: AccountsContextValue = {
-  accounts: [mockDerivedAccount, mockSecondDerivedAccount],
-  currentAccount: mockSecondDerivedAccount,
-  selectAccount: () => {},
-};
 
 describe('MenuAccountScope', () => {
   beforeEach(() => {
     render(<MenuAccountScope>{null}</MenuAccountScope>, {
-      accounts: accountsValue,
+      accounts: {
+        ...mockAccountsContext,
+        currentAccount: mockSecondDerivedAccount,
+      },
     });
   });
 

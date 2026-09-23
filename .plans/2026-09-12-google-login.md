@@ -1210,11 +1210,13 @@ in `app-mode-context.tsx`. Nothing asserts on `setMode` — it is a bare noop, n
 PR 15, not inferred. So it is 13 lines of scaffolding that read as "this suite
 must supply app mode" when nothing would break without it.
 
-It belongs to this PR and not to PR 15 for two reasons. It is pre-existing rather
-than introduced by the render-helper change, and PR 15 was explicitly held to
-changing only render invocations, no test setup. More to the point, it is the
-same subject: the paragraph above is the one piece of evidence a future reader
-would cite for adding an `appMode` option to `render`, and deleting the wrap
+It belongs to this PR and not to PR 15 because it is pre-existing rather than
+introduced by the render-helper change. PR 15 did end up touching the accounts
+fixtures its call sites pass — the suites that needed no override now share
+`mockAccountsContext` instead of each writing its own literal — but the app-mode
+wrap is a different context with a different reason to exist. More to the point,
+it is the same subject: the paragraph above is the one piece of evidence a future
+reader would cite for adding an `appMode` option to `render`, and deleting the wrap
 turns that exception into a non-exception instead of documenting it. An `appMode`
 option would anyway mean a third semantic — "override a value that is already
 there" — alongside `themeId` (always rendered, defaulted) and `user`/`accounts`
