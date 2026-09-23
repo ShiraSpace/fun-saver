@@ -17,11 +17,7 @@ import {
 } from './fixtures';
 
 function withProviders(ui: ReactElement, themeId: ThemeId): JSX.Element {
-  return (
-    <ThemeController initialThemeId={themeId}>
-      <SignedInUserProvider value={mockUser}>{ui}</SignedInUserProvider>
-    </ThemeController>
-  );
+  return <ThemeController initialThemeId={themeId}>{ui}</ThemeController>;
 }
 
 export function render(
@@ -37,11 +33,19 @@ export const mockAccountsContext: AccountsContextValue = {
   selectAccount: () => {},
 };
 
+export function renderWithUser(ui: ReactElement): RenderResult {
+  return render(
+    <SignedInUserProvider value={mockUser}>{ui}</SignedInUserProvider>
+  );
+}
+
 export function renderWithAccounts(
   ui: ReactElement,
   value: AccountsContextValue = mockAccountsContext
 ): RenderResult {
-  return render(<AccountsProvider value={value}>{ui}</AccountsProvider>);
+  return renderWithUser(
+    <AccountsProvider value={value}>{ui}</AccountsProvider>
+  );
 }
 
 export * from '@testing-library/react';

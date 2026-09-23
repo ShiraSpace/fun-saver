@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, renderWithUser, screen } from '@/test-utils/render';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '@/components/Menu/EditAccountButton/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
@@ -39,7 +39,9 @@ export function renderHome({
   accounts: accountsProp = accounts,
   initialAccountId = mockAccount.id,
 }: RenderHomeParams = {}): void {
-  render(<Home accounts={accountsProp} initialAccountId={initialAccountId} />);
+  renderWithUser(
+    <Home accounts={accountsProp} initialAccountId={initialAccountId} />
+  );
 }
 
 export function openMenu(): void {
