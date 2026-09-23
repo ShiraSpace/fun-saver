@@ -14,7 +14,8 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-26 (PRs 1–10 merged, plus #90; PR 11 is next)
+## Progress — updated 2026-09-23 (PRs 1–10 merged, plus #76 and #90; PR 11 is
+next and splits into 11a then 11)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
@@ -391,6 +392,15 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
 - **Back goes to home, not through history.** Decided 2026-09-23 with PR 10.
 - **The control is a house, not a chevron**, in the avatar's slot — shape ב1.
   Decided 2026-09-26 after rendering four house shapes beside the three chevrons.
+- **The theme moves onto `<html>` before the loading boundary lands.** Decided
+  2026-09-23: a static loading shell has no emotion context, so PR 11a publishes the
+  themes as CSS custom properties and PR 11 reads them.
+- **The loading shell is a header card plus a bar delayed 150ms**, and it is the
+  same shell for every route. Decided 2026-09-23 against a dimmed body, a centred
+  donut and a bare header card, in `mockups/loading-states.html`.
+- **The arriving page fades, 240ms, and nothing moves.** Decided 2026-09-23 against
+  a 6px rise, a 0.985 settle and a staggered rise, through the existing
+  `entrance()` helper.
 - **Transaction icons use the corner-badge variant** (`תג בפינה`) — decided
   2026-09-15, relevant to the transactions epic, not this one.
 
@@ -674,6 +684,51 @@ The chevron glyph, if a chevron is ever wanted after all, is `‹` in the source
 paints as `›`: it is bidi-mirrored, the same way `.chev` already is in the menu rows.
 Writing `›` gets you an arrow pointing the wrong way in RTL.
 
+## PR 11a — the theme leaves the page
+
+Prerequisite for PR 11, its own branch and its own PR, and visually a no-op.
+
+`ThemeController` provides the theme through emotion's React context, and it is
+mounted by `ThemedPage` **inside** each page. `src/app/layout.tsx` is only
+`<html><body><EmotionStyleRegistry>`. So anything rendered in place of a page —
+which is exactly what a loading boundary is — has no theme at all: a styled
+component reading `theme.colors.surface` there is a TypeError, not a wrong colour.
+The same is true of the account: the shell has no name and no avatar to show.
+
+`loading.tsx` cannot read its way out of this. It has to stay static or it is not
+prefetched, which is the whole point of the file, so `cookies()` is not available
+to it — and putting `cookies()` in the root layout would deopt every route instead.
+
+**The theme is nonetheless knowable, twice over.** On a soft navigation it is
+already live in the document; the only reason the shell cannot see it is that it
+exists solely inside emotion's context. Put it on `<html data-theme>` with CSS
+custom properties and the shell inherits the real theme for free. On a cold load, a
+theme cookie written client-side — the pattern `persistSelectedAccount` already
+uses — plus a three-line inline script in `layout.tsx` applies it before first
+paint, with no dynamic API and so no deopt.
+
+What it takes:
+
+- `src/theme/theme-css.ts` renders every entry in `THEMES` to
+  `:root[data-theme='…']{--fs-…}`. Generated in a loop from the registry, so a new
+  theme or token cannot drift; emitting all of them is less code than curating the
+  subset the shell happens to need.
+- `layout.tsx` emits that `<style>` and the inline script.
+- `src/theme/theme-cookie.ts` — `persistTheme`, modelled on
+  `persistSelectedAccount`; `ThemeController` keeps its provider and additionally
+  syncs the attribute and the cookie when the theme changes.
+
+Decided 2026-09-23 to split this out rather than carry it inside PR 11: without it
+the shell is grey and every navigation flashes neutral between two coloured
+screens, and with it inside, PR 11 stops being about the loading boundary.
+
+**It overlaps `.plans/2026-09-23-theme-parity.md`, which is unimplemented.** That
+plan pulls the 18 literal gradient strings into structured stops and gives the nine
+unowned `rgba()` component colours a home — which is exactly the shape a generator
+walks. Landing theme parity first makes the generator simpler and means it is
+written once; landing 11a first means theme parity has to update it. Check that
+plan's state before starting, and prefer taking it first if it is still open.
+
 ## PR 11 — the screens the nav points at arrive in silence
 
 Raised while reviewing PR 9: `השיטה` takes a long time to appear. It is not the tab
@@ -695,36 +750,81 @@ nav tab buys a full server round trip, and with no loading boundary the router h
 nothing to put on screen — it holds the old page until the whole RSC payload lands.
 The menu closes and then nothing happens.
 
-Measured 2026-09-23 against the dev Neon branch:
+**Measured 2026-09-23, click to content on screen**, puppeteer against a production
+build at phone size, five runs each, min / median / max:
 
-| Step                      | ms                                  |
-| ------------------------- | ----------------------------------- |
-| cold connect + `select 1` | 255                                 |
-| `listAccountsForUser`     | 71 — 3 accounts                     |
-| `withDerivedWallets`      | 302 — 9 wallets, 6 parallel queries |
+| Backend                           | home → `/method`    | `/method` → home    |
+| --------------------------------- | ------------------- | ------------------- |
+| JSON file store (the e2e harness) | 43 / 44 / 60        | 26 / 27 / 40        |
+| **Neon dev branch, warm compute** | **242 / 251 / 269** | **156 / 165 / 178** |
 
-Each page awaits `signedInAccounts()` and then `withDerivedWallets`, sequential
-because the second needs the first's accounts, so ~370ms of database before React
-renders anything. In dev, add Turbopack compiling the Method tree — 1832 lines of
-components plus ~20K of copy — the first time you go there.
+Measured at `585a017`. A full document load of `/method` against Neon measured
+254ms. The earlier figures
+in this plan — 255ms cold connect, 71ms `listAccountsForUser`, 302ms
+`withDerivedWallets` — were the database leg in isolation and add up pessimistically
+for a warm compute; the real wait is **~250ms out and ~175ms back**, plus the user's
+own network to Vercel, plus that 255ms cold connect on the first tap after Neon
+autosuspends. Call it 250ms typical and 500ms+ when cold.
+
+**The harness cannot measure this on its own.** `e2e/server.ts` sets
+`FUNSAVER_DATA_PATH`, so every existing suite runs against the JSON store and sees
+45ms — a tenth of the real number. The Neon figures came from a throwaway script in
+the gitignored `e2e/shots/` that spawns `next start` with `DATABASE_URL` pointed at
+the dev branch and mints a session cookie for a user who actually has accounts
+there.
 
 **One file, at the root, not under `method/`.** `/` is `force-dynamic` too, so
 `🏠 בית` pays the same on the way back and a boundary under `method/` would fix one
 tab while leaving its neighbour broken. `src/app/loading.tsx` covers `/`, `/method`
-and `/login` together.
+and `/login` together — and because it covers all three, **the shell has to be
+screen-agnostic**. A skeleton of the home screen was mocked and rejected on exactly
+that: it would show wallet cards on the way to `השיטה`.
 
-**It invents the app's first loading state.** There is no spinner, skeleton or
-pending affordance anywhere in `src/` today, so the work here is a design decision
-rather than a wiring one. The cheap shape is the header card over a dimmed body, so
-the shell does not jump when the real page arrives.
+**The shape — a header card and a bar that is late to arrive.** Decided 2026-09-23
+from `mockups/loading-states.html`, which renders four shells and four entrances in
+all three themes. The shell keeps the gradient and a header-shaped card, and adds a
+3px indeterminate bar under it that only starts after 150ms. At the measured 250ms
+that is about a hundred milliseconds of motion; a faster hop shows nothing at all
+rather than flashing something on and off. The rejected three: a dimmed body (the
+dim itself is the flash), the app's donut spinning centre-screen (the header
+disappears and comes back — the biggest jump of the four), and the header card
+alone (quietest, but says nothing happened).
+
+**The page fades in when it lands, 240ms, nothing moves.** Also decided 2026-09-23.
+`entrance()` in `src/theme/motion.ts` already does this for `OverviewCard`, at
+`TOTAL_ANIMATION.fadeMs`, and already compiles to `animation: none` under
+`prefers-reduced-motion` — so the entrance costs one call and inherits the
+accessibility behaviour rather than restating it. A 6px rise, a 0.985 settle and a
+50ms-per-card stagger were all mocked; the stagger lands its last card 250ms after
+its first, making the entrance as long as the wait that preceded it.
+
+Open when the code is written: `Screen` is rendered by `Account`, `Method`,
+`AccountForm`, `EmptyState` and `SignIn`. Putting the fade there is one line and
+gives every screen the same entrance, including the create and edit forms that open
+from the menu; confining it to the two routed pages needs a wrapper. The lean is
+`Screen`.
+
+**The shell reads `var(--fs-…)`, never `theme.colors`.** That is what PR 11a is
+for, and it is also what keeps `loading.tsx` renderable with no `ThemeProvider`
+above it — worth a unit test of its own, because the failure mode is a production
+TypeError that no themed test would ever see.
+
+**Two assertions carry this PR, and both are easy to write vacuously.**
+
+- _The prefetch now happens._ With the menu open, a `/method?_rsc` request should be
+  in flight **before** the tap. That is the mechanism the file exists for, and it is
+  absent on `main` today, so the assertion fails for the right reason before the fix.
+- _The shell is really on screen._ At 45ms against the JSON store it is
+  uncatchable, so the suite has to delay the `_rsc` response — request interception
+  — then assert the shell is visible **and takes a tap**, and assert it is gone once
+  the page lands. An assertion that holds either way round is not an assertion; this
+  plan has two earlier entries saying so, both written after getting it wrong.
 
 **What it does not fix.** The round trip still happens; a boundary only stops it
-being invisible. Cutting the ~370ms means collapsing the two sequential store calls
-or caching them — a data-layer change this epic has otherwise avoided, and the
-reason this is its own PR rather than a line in PR 9.
-
-Not measured: click-to-paint in a real browser. The figures above are the database
-leg; the rest is read off the routing docs.
+being invisible, and prefetching only fetches the static shell, not the data. Cutting
+the ~250ms means collapsing the two sequential store calls or caching them — a
+data-layer change this epic has otherwise avoided, and the reason this is its own PR
+rather than a line in PR 9.
 
 ## Notes / risks
 
