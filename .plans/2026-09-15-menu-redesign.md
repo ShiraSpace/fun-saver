@@ -14,7 +14,7 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-26 (PRs 1–9 merged, plus #90; PR 10 is next)
+## Progress — updated 2026-09-26 (PRs 1–9 merged, plus #90; PR 10 is open as #101)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
@@ -56,8 +56,8 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 7    | [#85](https://github.com/ShiraSpace/fun-saver/pull/85) | `feat/menu-edit-under-trigger` | **merged** — `2e49d4e` |
 | PR 8    | [#88](https://github.com/ShiraSpace/fun-saver/pull/88) | `feat/menu-scope-blocks`       | **merged** — `0b12ebf` |
 | PR 9    | [#96](https://github.com/ShiraSpace/fun-saver/pull/96) | `feat/menu-nav-tabs`           | **merged** — `d625dd3` |
-| PR 10   | —                                                      | —                              | **next**               |
-| PR 11   | —                                                      | —                              | planned                |
+| PR 10   | [#101](https://github.com/ShiraSpace/fun-saver/pull/101) | `feat/home-link-in-header`   | **open**               |
+| PR 11   | —                                                      | —                              | **next**               |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
 the accounts sit behind an `AccountTrigger`, tapping it floats the list over the
@@ -584,14 +584,15 @@ have the same problem. The header gains a control that returns to `HOME_ROUTE`.
 refresh, a shared link — and history-back then leaves the app or goes nowhere.
 `HOME_ROUTE` is deterministic and is a `next/link` rather than a handler.
 
-**A house, not a chevron. Decided 2026-09-26 — shape ב1.** A back arrow answers
-"where did I come from", which the app cannot know on a cold open; a house answers
-"where am I going", which is the same answer every time. It takes the avatar's slot
-at the end edge on non-home screens, so the bar stays at three slots and nothing
-shifts.
+**A house, not a chevron. Decided 2026-09-26 — shape ב1, changed to ב3 while
+building.** A back arrow answers "where did I come from", which the app cannot know
+on a cold open; a house answers "where am I going", which is the same answer every
+time. The house sits at the end edge on non-home screens, so the bar stays at three
+slots and nothing shifts.
 
-`usePathname()` decides whether it renders at all, the same hook PR 9 already brings
-in for `aria-current`. Home shows the avatar and no house.
+`usePathname()` decides which the slot holds, the same hook PR 9 already brings in
+for `aria-current`. Home shows the plain avatar; everywhere else the avatar is a
+link wearing the house.
 
 Seven shapes were rendered on the summary phone's header, behind the mockup's
 `חזרה לבית בכותרת` control group. The three chevron shapes are kept for reference:
@@ -601,23 +602,38 @@ Seven shapes were rendered on the summary phone's header, behind the mockup's
 | ח1     | Chevron at the start edge, burger after it                                      | Four slots in a 68px bar; the title loses width                                                  |
 | ח2     | Chevron glued to the title, the whole run tappable                              | Bar stays at three slots; the target is large but reads as a title, not a button                 |
 | ח3     | Chevron in the avatar's slot at the end edge, avatar dropped off non-home pages | Keeps three slots, but the avatar is how you know which account you are looking at               |
-| **ב1** | **House in the avatar's slot**                                                  | **Chosen.** Three slots, nothing moves; pays the avatar                                          |
+| ב1     | House in the avatar's slot                                                      | Chosen 2026-09-26, built, then dropped: three slots, nothing moves, but it pays the avatar        |
 | ב2     | House beside the avatar                                                         | Keeps the avatar, but four slots and the title loses width                                       |
-| ב3     | The avatar itself is the button, ringed with a house badge                      | Keeps both, but one target carries two meanings and it is busy at 40px                           |
+| **ב3** | **The avatar itself is the button, badged with a house**                        | **Chosen.** Keeps both in one slot; the two meanings it carries turned out to be the same one    |
 | ב4     | Labelled `🏠 בית` pill                                                          | The only one a child who does not read a bare glyph cannot misread; widest, and drops the avatar |
 
-**What ב1 costs, named so it is not rediscovered in review.** The avatar is how you
-know which child you are looking at, and it is gone on every screen that is not home
-— exactly the screens where a total on display belongs to somebody. The title still
-carries the name (`תנועות בחשבון · <name>`), which is what makes this affordable;
-if a screen ever drops the name from its title, this decision needs revisiting.
+**Why ב1 did not survive contact.** Its cost was named in advance: the avatar is how
+you know which child you are looking at, and ב1 takes it off every screen that is not
+home — exactly the screens where a total on display belongs to somebody. Seen on the
+built screen rather than in the table, that cost read larger than the objection to
+ב3, which was that one 40px target carrying two meanings would be busy. It is not
+two meanings: "this child" and "back to this child's home" are the same place, and
+the badge says which. `/method` also passed no `avatarId` at all, so ב1 left that
+header with nothing in the slot; ב3 made the page name its child for the first time.
+
+**ב3 costs a ring the mockup drew and this does not.** The mockup gives the linked
+avatar a 2.5px `textStrong` ring. Dropped on sight: it read as a hard outline around
+one child's face, and at 2.5px the badge measures 45px against the burger's 44, which
+grows the bar past the sheet — the trap below, reached through styling rather than
+through the control. The avatar keeps the 2px `surface` border every avatar has.
 
 **The trap this PR has to clear:** `HEADER_LAYOUT.height` is a `min-height`, and both
 the menu sheet's height and the panel's `top` derive from it (#90). A control that
-makes the bar even a few pixels taller paints an opaque card over the open menu. ב1
-is the shape least likely to do it — it replaces a 40px avatar with a 40px tile, so
-the bar's tallest child does not change — and `header-layout.visual.ts` is where
-that gets asserted. ח1 was the shape most at risk, at 26px inside `40 + 12 × 2`.
+makes the bar even a few pixels taller paints an opaque card over the open menu. ב3
+clears it by rendering the same avatar the home screen renders, wrapped in a link
+that adds no box of its own — and `header-layout.visual.ts` is where that gets
+asserted. ח1 was the shape most at risk, at 26px inside `40 + 12 × 2`.
+
+Two things about that assertion, learned by getting them wrong. The real ceiling is
+the **44px burger**, not the 40px avatar: the bar is `44 + 12 × 2`, so a 44px control
+changes nothing and a 45px one grows it. And the assertion holds vacuously on a
+header whose end slot is empty, so it checks the control is on screen before it
+measures — see the two entries above on what an e2e run can pass without testing.
 
 The chevron glyph, if a chevron is ever wanted after all, is `‹` in the source and
 paints as `›`: it is bidi-mirrored, the same way `.chev` already is in the menu rows.
