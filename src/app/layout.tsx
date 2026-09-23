@@ -17,11 +17,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>): JSX.Element {
+  const themeCss = everyThemeAsCss();
+  const themeScript = applyStoredThemeScript();
+
   return (
     <html lang="he" dir="rtl">
       <body className="flex min-h-full flex-col">
-        <style>{everyThemeAsCss()}</style>
-        <script>{applyStoredThemeScript()}</script>
+        <style>{themeCss}</style>
+        <script>{themeScript}</script>
         <EmotionStyleRegistry>{children}</EmotionStyleRegistry>
       </body>
     </html>

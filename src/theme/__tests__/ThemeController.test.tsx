@@ -33,4 +33,28 @@ describe('ThemeController', () => {
       THEME_ID.midnightBlue
     );
   });
+
+  describe('naming the theme on the document, for screens with no provider', () => {
+    beforeEach(() => {
+      delete document.documentElement.dataset.theme;
+
+      render(
+        <ThemeController initialThemeId={THEME_ID.jungleQuest}>
+          <ThemeSwitcher targetId={THEME_ID.midnightBlue} />
+        </ThemeController>
+      );
+    });
+
+    it('names the theme it starts on', () => {
+      expect(document.documentElement.dataset.theme).toBe(THEME_ID.jungleQuest);
+    });
+
+    it('renames it when the theme changes', () => {
+      fireEvent.click(screen.getByRole('button', { name: 'switch' }));
+
+      expect(document.documentElement.dataset.theme).toBe(
+        THEME_ID.midnightBlue
+      );
+    });
+  });
 });
