@@ -99,6 +99,8 @@ const state = {
   interestMode: 'monthly',
   iconStyle: 'badge',
   pencilStyle: 'under',
+  backStyle: 'lead',
+  navCount: 3,
   typeFilter: 'all',
   menuOpen: true,
   accountListOpen: false,
@@ -327,6 +329,20 @@ const PENCIL_STYLES = [
   { id: 'inList', label: 'בתוך הרשימה הפתוחה' },
 ];
 
+const NAV_COUNTS = [
+  { id: '3', label: '3 מסכים (היום)' },
+  { id: '4', label: '4' },
+  { id: '5', label: '5' },
+  { id: '6', label: '6' },
+];
+
+const BACK_STYLES = [
+  { id: 'none', label: 'בלי חזרה (היום)' },
+  { id: 'lead', label: 'ח1 · חץ לפני ההמבורגר' },
+  { id: 'title', label: 'ח2 · הכותרת היא החזרה' },
+  { id: 'trail', label: 'ח3 · חץ במקום האווטאר' },
+];
+
 const ICON_STYLES = [
   { id: 'split', label: 'חצי־חצי' },
   { id: 'badge', label: 'תג בפינה' },
@@ -522,14 +538,29 @@ function chartCardHtml() {
   </div>`;
 }
 
+/* חץ חזרה מצביע לכיוון תחילת הקריאה — ב-RTL זה ימינה.
+   הסימן ‹ מתהפך בבידי ומצויר כ-› בדיוק כמו ה-chev בשורות התפריט. */
+const BACK_GLYPH = '‹';
+
+function appHeaderHtml(burgerLabel) {
+  const current = account();
+  const back = `<button class="backBtn" data-act="noop" aria-label="חזרה לבית">${BACK_GLYPH}</button>`;
+  const title = state.backStyle === 'title'
+    ? `<button class="hname asBack" data-act="noop"><span class="bk">${BACK_GLYPH}</span>תנועות בחשבון · ${current.name}</button>`
+    : `<span class="hname">תנועות בחשבון · ${current.name}</span>`;
+
+  return `<div class="header">
+    ${state.backStyle === 'lead' ? back : ''}
+    <button class="burgerBtn" data-act="menu" aria-label="${burgerLabel}"><i></i><i></i><i></i></button>
+    ${title}
+    ${state.backStyle === 'trail' ? back : `<span class="avatar">${current.avatar}</span>`}
+  </div>`;
+}
+
 function summaryPhoneHtml() {
   return `<div class="phone">
     <div class="col">
-      <div class="header">
-        <button class="burgerBtn" data-act="menu" aria-label="תפריט"><i></i><i></i><i></i></button>
-        <span class="hname">תנועות בחשבון · ${account().name}</span>
-        <span class="avatar">${account().avatar}</span>
-      </div>
+      ${appHeaderHtml('תפריט')}
       ${chartCardHtml()}
       ${txListHtml()}
     </div>
@@ -563,7 +594,62 @@ function accountListHtml() {
     <button class="acctOpt add" data-act="noop"><span class="av">＋</span>חשבון חדש</button></div>`;
 }
 
-function menuPhoneHtml(variant) {
+/* שלושת הראשונים קיימים או מתוכננים באפיק הנוכחי; השאר הם מסכים סבירים מה-roadmap
+   (יעד חיסכון §1, דמי כיס §5, פריסת הפקדה וריבית §3–§4) — כדי לראות איך הרצועה גדלה */
+const NAV_ITEMS = [
+  { id: 'home', icon: '🏠', label: 'בית', short: 'בית' },
+  { id: 'transactions', icon: '📈', label: 'תנועות בחשבון', short: 'תנועות' },
+  { id: 'method', icon: '📖', label: 'השיטה', short: 'השיטה' },
+  { id: 'goal', icon: '🎯', label: 'יעד החיסכון', short: 'יעד' },
+  { id: 'allowance', icon: '🗓️', label: 'דמי כיס', short: 'דמי כיס' },
+  { id: 'rules', icon: '⚙️', label: 'חלוקה וריבית', short: 'חלוקה' },
+];
+const CURRENT_SCREEN = 'transactions';
+const TABS_PER_ROW = 4;
+
+const navItems = () => NAV_ITEMS.slice(0, state.navCount);
+
+/* שורות מאוזנות במקום שארית יתומה: 5 מסכים הם 3+2, לא 4+1 */
+function tabColumns(count) {
+  return Math.ceil(count / Math.ceil(count / TABS_PER_ROW));
+}
+
+function navRowsHtml() {
+  return navItems().map((item) => {
+    const current = item.id === CURRENT_SCREEN;
+    /* אין חץ במסך שכבר נמצאים בו — אין לאן ללכת */
+    return `<button class="menuRow" data-act="noop" ${current ? 'aria-current="page"' : ''}>
+      <span class="ic">${item.icon}</span>${item.label}
+      ${current ? '' : '<span class="chev">‹</span>'}</button>`;
+  }).join('');
+}
+
+function navTabsHtml() {
+  const tabs = navItems().map((item) => `<button class="tab" data-act="noop"
+    ${item.id === CURRENT_SCREEN ? 'aria-current="page"' : ''}>
+    <span class="ic">${item.icon}</span>${item.short}</button>`).join('');
+
+  return `<div class="tabStrip" style="grid-template-columns:repeat(${tabColumns(state.navCount)},1fr)">${tabs}</div>`;
+}
+
+/* ניווט מחוץ לבלוק תלוי-החשבון — שלוש הצורות שנבחנות */
+function navHtml(placement) {
+  if (placement === 'block') {
+    return `<div class="scopeBlock nav">
+      <div class="menuLabel">מסכים</div>${navRowsHtml()}</div>`;
+  }
+  if (placement === 'bare') {
+    return `<div class="scopeBlock nav">
+      <div class="scopeHead"><span class="ttl">ניווט</span></div>
+      ${navRowsHtml()}</div>`;
+  }
+  if (placement === 'tabs') {
+    return navTabsHtml();
+  }
+  return '';
+}
+
+function menuPhoneHtml(variant, navPlacement = 'inAccount') {
   const current = account();
   const theme = THEME_BY_ACCOUNT.get(current.id);
 
@@ -572,11 +658,7 @@ function menuPhoneHtml(variant) {
     style="background:${swatch.background}"></button>`).join('');
 
   const bar = variant === 'appHeader'
-    ? `<div class="header">
-        <button class="burgerBtn" data-act="menu" aria-label="סגירה"><i></i><i></i><i></i></button>
-        <span class="hname">תנועות בחשבון · ${current.name}</span>
-        <span class="avatar">${current.avatar}</span>
-      </div>`
+    ? appHeaderHtml('סגירה')
     : `<div class="menuBar">
         <button class="burgerBtn" data-act="menu" aria-label="סגירה"><i></i><i></i><i></i></button>
         <span class="t">תפריט</span>
@@ -587,6 +669,7 @@ function menuPhoneHtml(variant) {
       data-open="${state.menuOpen}">
       ${bar}
       <div class="menuContent">
+        ${navPlacement === 'bare' || navPlacement === 'tabs' ? navHtml(navPlacement) : ''}
 
         <div class="scopeBlock global">
           <button class="acctBtn" data-act="account-toggle" aria-expanded="${state.accountListOpen}">
@@ -600,13 +683,17 @@ function menuPhoneHtml(variant) {
           ${state.accountListOpen ? accountListHtml() : ''}
         </div>
 
+        ${navPlacement === 'block' ? navHtml('block') : ''}
+
         <div class="scopeBlock perAccount">
           <div class="scopeHead"><span class="ttl">הגדרות של ${current.name} ${current.avatar}</span></div>
           <div class="scopeSub">נשמר על החשבון הזה בלבד.</div>
 
-          <div class="menuLabel">מסכים</div>
-          <button class="menuRow" data-act="noop"><span class="ic">🏠</span>בית<span class="chev">‹</span></button>
-          <button class="menuRow" aria-current="page" data-act="noop"><span class="ic">📈</span>תנועות בחשבון<span class="chev">‹</span></button>
+          ${navPlacement === 'inAccount'
+            ? `<div class="menuLabel">מסכים</div>
+               <button class="menuRow" data-act="noop"><span class="ic">🏠</span>בית<span class="chev">‹</span></button>
+               <button class="menuRow" aria-current="page" data-act="noop"><span class="ic">📈</span>תנועות בחשבון<span class="chev">‹</span></button>`
+            : ''}
 
           <div class="menuLabel">מראה</div>
           <div class="swatches">${swatches}</div>
@@ -631,6 +718,8 @@ function renderControlGroup(id, styles, action, selected) {
 function renderIconControls() {
   renderControlGroup('iconControls', ICON_STYLES, 'icon-style', state.iconStyle);
   renderControlGroup('pencilControls', PENCIL_STYLES, 'pencil-style', state.pencilStyle);
+  renderControlGroup('backControls', BACK_STYLES, 'back-style', state.backStyle);
+  renderControlGroup('navCountControls', NAV_COUNTS, 'nav-count', String(state.navCount));
 }
 
 function render() {
@@ -643,6 +732,9 @@ function render() {
   document.getElementById('menuPhone').innerHTML = menuPhoneHtml('surface');
   document.getElementById('menuPhoneGradient').innerHTML = menuPhoneHtml('gradient');
   document.getElementById('menuPhoneAppHeader').innerHTML = menuPhoneHtml('appHeader');
+  document.getElementById('menuPhoneNavBlock').innerHTML = menuPhoneHtml('appHeader', 'block');
+  document.getElementById('menuPhoneNavBare').innerHTML = menuPhoneHtml('appHeader', 'bare');
+  document.getElementById('menuPhoneNavTabs').innerHTML = menuPhoneHtml('appHeader', 'tabs');
 
   const next = document.getElementById('txScroll');
   if (next) {
@@ -684,6 +776,8 @@ const ACTIONS = {
   filter: (target) => { state.typeFilter = target.dataset.filter; },
   'icon-style': (target) => { state.iconStyle = target.dataset.style; },
   'pencil-style': (target) => { state.pencilStyle = target.dataset.style; },
+  'back-style': (target) => { state.backStyle = target.dataset.style; },
+  'nav-count': (target) => { state.navCount = Number(target.dataset.style); },
   'interest-mode': (target) => { state.interestMode = target.dataset.mode; },
   'account-toggle': () => { state.accountListOpen = !state.accountListOpen; },
   account: (target) => {

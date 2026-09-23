@@ -56,12 +56,14 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 7    | [#85](https://github.com/ShiraSpace/fun-saver/pull/85) | `feat/menu-edit-under-trigger` | **merged** — `2e49d4e` |
 | PR 8    | [#88](https://github.com/ShiraSpace/fun-saver/pull/88) | `feat/menu-scope-blocks`       | **merged** — `0b12ebf` |
 | PR 9    | —                                                      | —                              | **next**               |
+| PR 10   | —                                                      | —                              | planned                |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
 the accounts sit behind an `AccountTrigger`, tapping it floats the list over the
 sections below instead of pushing them down, edit is a named button under the
 trigger, and the two scopes are visible blocks. What is left is the nav section
-(PR 9).
+(PR 9), which 2026-09-23 moved **out** of the per-account block, and a way back to
+home from the screens the nav points at (PR 10).
 
 ### What the merged PRs changed that this plan did not predict
 
@@ -252,9 +254,9 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   across `ThemeColors` and all three themes — a theme PR, not a repaint. Deliberately
   not done in PR 2.
 - **`השיטה` is still a bare link below both blocks.** It is not per-account, and the
-  mockup has nothing outside the two blocks — it puts nav inside the per-account one,
-  which is where PR 9's `מסכים` goes. Left where it was rather than guessing; PR 9
-  makes it a row in that section along with the rest of the links.
+  mockup at the time had nothing outside the two blocks. Answered on 2026-09-23: the
+  nav section leaves the per-account block, and `השיטה` becomes a row in it — the
+  link is not homeless, it was waiting for a section that is not account-scoped.
 - **The per-account block's stripe sits on the end edge, not the start.** The mockup's
   `box-shadow: inset 4px 0 0` draws on the left, and the app is RTL, so that is the end
   edge. Matched what the mockup renders rather than what reads as the reading-start
@@ -283,7 +285,12 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
 - **Language stays a stub** and stays in the per-account block. Making it real is
   per-account and needs a data layer — parked in `docs/backlog.md` roadmap §2.
 - **Nav section ships in this epic**, before the transactions screen exists, so the
-  second row is inert on merge.
+  `תנועות בחשבון` row is inert on merge.
+- **Nav is not an account setting.** Decided 2026-09-23: it leaves the per-account
+  block and becomes a strip of tabs at the top of the panel — column נ3 of the
+  mockup, balanced rows of at most four, short labels. נ1 and נ2 stay rendered for
+  reference, and נ2 is where this goes if the app ever passes ~8 screens.
+- **Back goes to home, not through history.** Decided 2026-09-23 with PR 10.
 - **Transaction icons use the corner-badge variant** (`תג בפינה`) — decided
   2026-09-15, relevant to the transactions epic, not this one.
 
@@ -443,10 +450,50 @@ ordering moved to `use-escape-dismissal.ts` beside `use-escape-key.ts` — the o
 of that component that was never markup. `MenuAccountScope` takes `children`, so
 `MenuOverlay` keeps composing the sections and the block only supplies the frame.
 
-## PR 9 — nav section
+## PR 9 — nav section, outside the account block
 
-`מסכים` with `🏠 בית` and `📈 תנועות בחשבון`, current screen marked via
+Three screens — `🏠 בית`, `📈 תנועות`, `📖 השיטה` — with the current one marked via
 `aria-current="page"`.
+
+**Nav leaves the per-account block.** Where the mockup first put it, under
+`הגדרות של <name>`, says navigation is something you set per child. It is not: the
+screens are the same screens whichever account is in view.
+
+**Chosen 2026-09-23 — column נ3: a strip of tabs under the header.** Icon over a
+short label, the current screen filled `textStrong`, sitting first in the panel above
+the account picker. The menu then reads as where you are going, which child, what you
+change about that child — and nav costs one row of height instead of one row per
+screen, which is what a list of links spends.
+
+The two columns not taken stay in the mockup for reference: נ1 is the same rows in a
+block between the two existing ones, נ2 the same block headed `ניווט` above the
+picker.
+
+**How it grows.** The mockup's `כמה מסכים` control adds screens from the roadmap —
+savings goal (§1), allowance (§5), split and rate (§3–§4) — so the strip can be seen
+at 3, 4, 5 and 6 rather than argued about:
+
+- At most **four tabs per row**; past that it wraps into **balanced rows**, so five
+  screens are `3+2` and not `4+1`, six are `3+3`. One line:
+  `columns = ceil(n / ceil(n / 4))`.
+- Tabs carry a **short label** — `תנועות`, `יעד`, `חלוקה` — not the screen's full
+  name. At four across a tile is ~85px on a 392px phone, which fits one short word
+  and no more. The full name belongs to the screen's own title.
+- The ceiling is around **eight**: at that point the strip is a block of tiles taller
+  than the list it replaced, and the honest move is to go back to rows — column נ2,
+  which is why it stays rendered.
+
+`השיטה` folds into the strip, which is what the open item below asked for — it is the
+only nav link the app has today and it has been sitting outside both blocks since
+PR 8.
+
+**The current screen cannot be marked with `depositBg`.** The mockup's
+`menuRow[aria-current='page']` fills with it, and on the `softBg` sheet that is
+`#F3F7E4` on `#F3F7E4` in jungle-quest and `#FFF6E0` on `#FFF8E0` in sunshine-quest —
+invisible in two of three themes. The tab strip fills the current tab with
+`textStrong`, the idiom the language segment and the wallet chips already use; the row
+variants mark it with a `textStrong` border plus `font-weight: 700` and drop the
+chevron, since there is nowhere to go from the screen you are on.
 
 Real routes already exist: `/method` is one, reached from the menu through a
 `next/link` `NavLink`, and `HOME_ROUTE` / `METHOD_ROUTE` live in their components'
@@ -457,6 +504,42 @@ transactions epic and ships inert.
 
 `/method` shows this section too, so `aria-current="page"` needs the real path —
 `usePathname()` rather than anything the menu knows on its own.
+
+With nav out of it, the per-account block holds only `מראה` and `שפה` — both of
+which the merged work already flagged as questionable there (language is a device
+preference, and `/method` is not about an account). Nothing to do in this PR; it
+just gets easier to see.
+
+## PR 10 — a way back from a screen that is not home
+
+`/method` today can only be left through the menu, and the transactions screen will
+have the same problem. The header gains a back control that returns to `HOME_ROUTE`.
+
+**To home, not `router.back()`.** These pages are reachable cold — a bookmark, a
+refresh, a shared link — and history-back then leaves the app or goes nowhere.
+`HOME_ROUTE` is deterministic and is a `next/link` rather than a handler.
+
+`usePathname()` decides whether it renders at all, the same hook PR 9 already brings
+in for `aria-current`. Home shows no back control.
+
+Three shapes in the mockup, on the summary phone's header, behind the `חזרה בכותרת`
+control group:
+
+| | Shape | Note |
+| - | ----- | ---- |
+| ח1 | Chevron at the start edge, burger after it | Four slots in a 68px bar; the title loses width |
+| ח2 | Chevron glued to the title, the whole run tappable | Bar stays at three slots; the target is large but reads as a title, not a button |
+| ח3 | Chevron in the avatar's slot at the end edge, avatar dropped off non-home pages | Keeps three slots, but the avatar is how you know which account you are looking at |
+
+The glyph is `‹` in the source and paints as `›`: it is bidi-mirrored, the same way
+`.chev` already is in the menu rows. Writing `›` gets you an arrow pointing the wrong
+way in RTL.
+
+**The trap this PR has to clear:** `HEADER_LAYOUT.height` is a `min-height`, and both
+the menu sheet's height and the panel's `top` derive from it (#90). A fourth control
+that makes the bar even a few pixels taller paints an opaque card over the open menu.
+ח1 is the shape most likely to do it — the 26px control has to fit inside the
+existing `40 + 12 × 2`, and `header-layout.visual.ts` is where that gets asserted.
 
 ## Notes / risks
 
