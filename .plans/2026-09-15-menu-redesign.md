@@ -867,6 +867,19 @@ for, and it is also what keeps `loading.tsx` renderable with no `ThemeProvider`
 above it — worth a unit test of its own, because the failure mode is a production
 TypeError that no themed test would ever see.
 
+**Open against `/login`, and this PR has to answer it.** PR 11a's boot script is
+route-agnostic: it sets `data-theme` from the cookie on every route, and `/login`
+then renders `ThemedPage` with a hardcoded `DEFAULT_THEME_ID`, so `ThemeController`
+snaps the attribute back on hydration. Harmless while nothing reads the variables —
+which is the whole of 11a — but this shell reads them in exactly the pre-hydration
+window the script controls. A returning user landing on `/login` after signing out
+would see their old account's colours in the shell before it settles to the
+default. Raised in review of 11a and deliberately left there rather than fixed
+blind: `/login` is `○ (Static)`, so it is prerendered and may never show a shell at
+all. **Check whether it does before adding a route test to the script** — a
+`location.pathname` branch in a theme file is worth having only if the flash is
+real.
+
 **Two assertions carry this PR, and both are easy to write vacuously.**
 
 - _The prefetch now happens._ With the menu open, a `/method?_rsc` request should be
