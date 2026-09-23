@@ -6,6 +6,7 @@ import { ProfilePhoto } from './ProfilePhoto';
 import { useSignOut } from './use-sign-out';
 import { PROFILE_SECTION_CONTENT, PROFILE_SECTION_TEST_IDS } from './constants';
 import {
+  Block,
   Email,
   Name,
   Naming,
@@ -19,27 +20,32 @@ export function ProfileSection(): JSX.Element {
   const { hasSignOutFailed, signOutOfAccount } = useSignOut();
 
   return (
-    <Strip data-testid={PROFILE_SECTION_TEST_IDS.strip}>
-      <ProfilePhoto image={user.image} />
-      <Naming>
-        <Name data-testid={PROFILE_SECTION_TEST_IDS.name}>{user.name}</Name>
-        <Email dir="ltr" data-testid={PROFILE_SECTION_TEST_IDS.email}>
-          {user.email}
-        </Email>
-      </Naming>
-      <SignOut
-        type="button"
-        aria-label={PROFILE_SECTION_CONTENT.signOutLabel}
-        data-testid={PROFILE_SECTION_TEST_IDS.signOut}
-        onClick={(): void => void signOutOfAccount()}
-      >
-        {PROFILE_SECTION_CONTENT.signOut}
-      </SignOut>
+    <Block data-testid={PROFILE_SECTION_TEST_IDS.strip}>
+      <Strip>
+        <ProfilePhoto image={user.image} />
+        <Naming>
+          <Name data-testid={PROFILE_SECTION_TEST_IDS.name}>{user.name}</Name>
+          <Email dir="ltr" data-testid={PROFILE_SECTION_TEST_IDS.email}>
+            {user.email}
+          </Email>
+        </Naming>
+        <SignOut
+          type="button"
+          aria-label={PROFILE_SECTION_CONTENT.signOutLabel}
+          data-testid={PROFILE_SECTION_TEST_IDS.signOut}
+          onClick={(): void => void signOutOfAccount()}
+        >
+          {PROFILE_SECTION_CONTENT.signOut}
+        </SignOut>
+      </Strip>
       {hasSignOutFailed && (
-        <SignOutError data-testid={PROFILE_SECTION_TEST_IDS.signOutError}>
+        <SignOutError
+          role="alert"
+          data-testid={PROFILE_SECTION_TEST_IDS.signOutError}
+        >
           {PROFILE_SECTION_CONTENT.signOutFailed}
         </SignOutError>
       )}
-    </Strip>
+    </Block>
   );
 }

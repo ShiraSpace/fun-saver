@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
 import { LOGIN_PATH } from '@/lib/constants';
 import { ProfileSection } from './ProfileSection';
-import { PROFILE_SECTION_TEST_IDS } from './constants';
+import { PROFILE_SECTION_CONTENT, PROFILE_SECTION_TEST_IDS } from './constants';
 
 const mockedSignOut = signOut as unknown as jest.Mock<Promise<void>>;
 
@@ -30,5 +30,21 @@ describe('ProfileSection', () => {
     fireEvent.click(screen.getByTestId(PROFILE_SECTION_TEST_IDS.signOut));
 
     expect(mockedSignOut).toHaveBeenCalledWith({ redirectTo: LOGIN_PATH });
+  });
+
+  it('says so when signing out does not go through', async () => {
+    mockedSignOut.mockRejectedValue(new Error('offline'));
+
+    fireEvent.click(screen.getByTestId(PROFILE_SECTION_TEST_IDS.signOut));
+
+    expect(
+      await screen.findByTestId(PROFILE_SECTION_TEST_IDS.signOutError)
+    ).toHaveTextContent(PROFILE_SECTION_CONTENT.signOutFailed);
+  });
+
+  it('keeps quiet about a failure until one happens', () => {
+    expect(
+      screen.queryByTestId(PROFILE_SECTION_TEST_IDS.signOutError)
+    ).not.toBeInTheDocument();
   });
 });

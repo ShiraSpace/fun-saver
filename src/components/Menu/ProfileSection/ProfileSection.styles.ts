@@ -24,13 +24,16 @@ const nameSize = ({ theme }: { theme: Theme }): number => theme.typography.body;
 
 const subSize = ({ theme }: { theme: Theme }): number => theme.typography.label;
 
+export const Block = styled.div`
+  padding-bottom: 9px;
+  margin-bottom: 9px;
+  border-bottom: 1px solid ${scopeBorder};
+`;
+
 export const Strip = styled.div`
   display: flex;
   align-items: center;
   gap: 9px;
-  padding-bottom: 9px;
-  margin-bottom: 9px;
-  border-bottom: 1px solid ${scopeBorder};
 `;
 
 export const UserMark = styled.span`
