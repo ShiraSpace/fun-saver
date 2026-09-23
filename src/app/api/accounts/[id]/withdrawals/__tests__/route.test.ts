@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { signedInUserId } from '@/auth';
+import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import { today } from '@/lib/clock';
 import { addDeposit } from '@/lib/transactions';
@@ -29,7 +29,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
       amountAgorot: 10000,
       asOf: today(),
     });
-    jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockUser);
   });
 
   function postWithdraw(
@@ -94,7 +94,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
   });
 
   it('refuses a stranger with 403 and leaves the savings untouched', async () => {
-    jest.mocked(signedInUserId).mockResolvedValue(mockSecondUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockSecondUser);
 
     const before = await savingsBalance();
 

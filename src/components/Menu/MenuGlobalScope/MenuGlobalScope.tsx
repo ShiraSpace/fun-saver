@@ -3,6 +3,7 @@
 import { JSX } from 'react';
 import { AccountPicker } from '../AccountPicker';
 import { EditAccountButton } from '../EditAccountButton';
+import { ProfileSection } from '../ProfileSection';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from './constants';
 import { GlobalBlock } from './MenuGlobalScope.styles';
 import { useAccounts } from '@/components/Home/accounts-context';
@@ -42,6 +43,7 @@ export function MenuGlobalScope({
 
   return (
     <GlobalBlock data-testid={MENU_GLOBAL_SCOPE_TEST_IDS.block}>
+      <ProfileSection />
       <AccountPicker
         accounts={accounts}
         currentAccount={currentAccount}

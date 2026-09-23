@@ -1,1 +1,1 @@
-export const signedInUserId = jest.fn();
+export const signedInUser = jest.fn();

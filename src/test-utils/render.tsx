@@ -9,10 +9,19 @@ import {
   AccountsProvider,
   type AccountsContextValue,
 } from '@/components/Home/accounts-context';
-import { mockDerivedAccount, mockSecondDerivedAccount } from './fixtures';
+import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
+import {
+  mockDerivedAccount,
+  mockSecondDerivedAccount,
+  mockUser,
+} from './fixtures';
 
 function withProviders(ui: ReactElement, themeId: ThemeId): JSX.Element {
-  return <ThemeController initialThemeId={themeId}>{ui}</ThemeController>;
+  return (
+    <ThemeController initialThemeId={themeId}>
+      <SignedInUserProvider value={mockUser}>{ui}</SignedInUserProvider>
+    </ThemeController>
+  );
 }
 
 export function render(

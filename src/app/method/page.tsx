@@ -7,12 +7,14 @@ import { withDerivedWallets } from '@/lib/account-dashboard';
 import { today } from '@/lib/clock';
 import { selectedAccount } from '@/lib/selected-account';
 import { ThemedPage } from '@/theme/ThemedPage';
+import { SignedInProviders } from '../SignedInProviders';
 import { signedInAccounts } from '../signed-in-accounts';
 
 export const dynamic = 'force-dynamic';
 
 export default async function MethodPage(): Promise<JSX.Element> {
-  const { accounts, selectedAccountId, themeId } = await signedInAccounts();
+  const { user, accounts, selectedAccountId, themeId } =
+    await signedInAccounts();
   const derived = await withDerivedWallets({
     store: getStore(),
     accounts,
@@ -26,7 +28,9 @@ export default async function MethodPage(): Promise<JSX.Element> {
 
   return (
     <ThemedPage themeId={themeId}>
-      <Method accounts={derived} initialAccount={initialAccount} />
+      <SignedInProviders user={user}>
+        <Method accounts={derived} initialAccount={initialAccount} />
+      </SignedInProviders>
     </ThemedPage>
   );
 }

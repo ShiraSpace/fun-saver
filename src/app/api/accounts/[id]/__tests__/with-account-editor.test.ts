@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { signedInUserId } from '@/auth';
+import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
@@ -32,7 +32,7 @@ describe('withAccountEditor', () => {
   }
 
   it('answers 401 without a session and never runs the handler', async () => {
-    jest.mocked(signedInUserId).mockResolvedValue(undefined);
+    jest.mocked(signedInUser).mockResolvedValue(undefined);
 
     const response = await callGuarded(accountId);
 
@@ -41,7 +41,7 @@ describe('withAccountEditor', () => {
   });
 
   it('answers 403 to a member of no account and never runs the handler', async () => {
-    jest.mocked(signedInUserId).mockResolvedValue(mockSecondUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockSecondUser);
 
     const response = await callGuarded(accountId);
 
@@ -50,7 +50,7 @@ describe('withAccountEditor', () => {
   });
 
   it('passes a member through to the handler with the account id', async () => {
-    jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockUser);
 
     const response = await callGuarded(accountId);
 

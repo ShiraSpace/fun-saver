@@ -1,36 +1,35 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { signedInUserId } from '@/auth';
+import { signedInUser } from '@/auth';
 import { SELECTED_ACCOUNT_COOKIE } from '@/components/Home/selected-account-cookie';
 import { getStore } from '@/db';
 import { LOGIN_PATH } from '@/lib/constants';
 import { selectedAccount } from '@/lib/selected-account';
-import type { Account } from '@/lib/types';
+import type { Account, SignedInUser } from '@/lib/types';
 import { resolveThemeId, type ThemeId } from '@/theme/registry';
 
 export interface SignedInAccounts {
+  user: SignedInUser;
   accounts: Account[];
   selectedAccountId: string;
   themeId: ThemeId;
 }
 
 export async function signedInAccounts(): Promise<SignedInAccounts> {
-  const [userId, cookieStore] = await Promise.all([
-    signedInUserId(),
-    cookies(),
-  ]);
+  const [user, cookieStore] = await Promise.all([signedInUser(), cookies()]);
 
-  if (!userId) {
+  if (!user) {
     redirect(LOGIN_PATH);
   }
 
-  const accounts = await getStore().listAccountsForUser(userId);
+  const accounts = await getStore().listAccountsForUser(user.id);
   const selected = selectedAccount(
     accounts,
     cookieStore.get(SELECTED_ACCOUNT_COOKIE)?.value ?? ''
   );
 
   return {
+    user,
     accounts,
     selectedAccountId: selected?.id ?? '',
     themeId: resolveThemeId(selected?.themeId),

@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { signedInUserId } from '@/auth';
+import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { splitDeposit } from '@/lib/transactions';
@@ -19,7 +19,7 @@ describe('POST /api/accounts/[id]/deposits', () => {
 
   beforeEach(async () => {
     accountId = (await createOwnedAccount(getStore())).id;
-    jest.mocked(signedInUserId).mockResolvedValue(mockUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockUser);
   });
 
   function postDeposit(amount: number, id: string): Promise<Response> {
@@ -80,7 +80,7 @@ describe('POST /api/accounts/[id]/deposits', () => {
   });
 
   it('refuses a stranger with 403 and banks nothing', async () => {
-    jest.mocked(signedInUserId).mockResolvedValue(mockSecondUser.id);
+    jest.mocked(signedInUser).mockResolvedValue(mockSecondUser);
 
     const response = await postDeposit(20, accountId);
 

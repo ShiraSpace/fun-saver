@@ -26,7 +26,7 @@ export function toGoogleIdentity(
     return;
   }
 
-  return { providerAccountId: sub, email, name: name || emailLocalPart(email) };
+  return { providerAccountId: sub, email, name: toDisplayName(name, email) };
 }
 
 export async function provisionUser(
@@ -80,6 +80,13 @@ function findGoogleUser(
   providerAccountId: string
 ): Promise<User | undefined> {
   return store.findUserByProvider(GOOGLE_PROVIDER, providerAccountId);
+}
+
+export function toDisplayName(
+  name: string | null | undefined,
+  email: string
+): string {
+  return name || emailLocalPart(email);
 }
 
 function emailLocalPart(email: string): string {

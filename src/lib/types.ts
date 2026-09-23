@@ -61,6 +61,10 @@ export interface User {
   createdAt: string;
 }
 
+export type SignedInUser = Pick<User, 'id' | 'name' | 'email'> & {
+  image?: string;
+};
+
 export interface AccountUser {
   accountId: string;
   userId: string;
