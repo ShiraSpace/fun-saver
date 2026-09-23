@@ -1,4 +1,9 @@
-import { DEFAULT_THEME_ID, getThemeTokens, resolveThemeId } from '../registry';
+import {
+  DEFAULT_THEME_ID,
+  THEMES,
+  getThemeTokens,
+  resolveThemeId,
+} from '../registry';
 
 describe('theme registry', () => {
   it('resolves the default theme when no id is given', () => {
@@ -38,6 +43,20 @@ describe('theme registry', () => {
     for (const key of ['potSavings', 'potSpending', 'potGood'] as const) {
       expect(gradients[key]).toContain('linear-gradient');
     }
+  });
+
+  it('gives every theme a colour for each contrast token', () => {
+    const contrastTokens = Object.values(THEMES).map(({ colors }) => [
+      colors.primaryText,
+      colors.textOnPot,
+      colors.labelScrim,
+    ]);
+
+    expect(contrastTokens).toEqual([
+      ['#6B2C8E', '#2B1235', 'rgba(0, 0, 0, 0.45)'],
+      ['#1B7A6B', '#2B1800', 'rgba(0, 0, 0, 0.35)'],
+      ['#3B82F6', '#ECF1F8', 'transparent'],
+    ]);
   });
 
   it('resolves jungle-quest with full tokens', () => {
