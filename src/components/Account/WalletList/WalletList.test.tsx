@@ -1,4 +1,5 @@
 import { render, screen } from '@/test-utils/render';
+import { opacityOf } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
 import { WalletList } from './WalletList';
 import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
@@ -22,7 +23,7 @@ describe('WalletList', () => {
     expect(getComputedStyle(label).backgroundColor).toBe(
       getThemeTokens().colors.labelScrim
     );
-    expect(getComputedStyle(label).opacity).toBe('');
+    expect(opacityOf(label)).toBe(1);
   });
 
   it('renders one card per wallet', () => {

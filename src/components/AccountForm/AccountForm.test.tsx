@@ -1,4 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { hexToRgb } from '@/test-utils/css-color';
+import { getThemeTokens } from '@/theme/registry';
 import {
   chosenAvatars,
   nameInput,
@@ -23,6 +25,14 @@ const mockForm = {
 
 const mockOnSubmit = jest.fn();
 const mockOnCancel = jest.fn();
+
+function failASave(): Promise<HTMLElement> {
+  typeName(mockForm.name);
+  pickFirstAvatar();
+  submitForm();
+
+  return screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError);
+}
 
 describe('AccountForm', () => {
   beforeEach(() => {
@@ -126,22 +136,23 @@ describe('AccountForm', () => {
     it('tells the user when the save fails', async () => {
       mockOnSubmit.mockRejectedValue(new Error('nope'));
 
-      typeName(mockForm.name);
-      pickFirstAvatar();
-      submitForm();
+      expect(await failASave()).toHaveTextContent(ACCOUNT_FORM_COPY.saveError);
+    });
 
-      expect(
-        await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
-      ).toHaveTextContent(ACCOUNT_FORM_COPY.saveError);
+    it('speaks that failure in the alert red, not as ordinary copy', async () => {
+      mockOnSubmit.mockRejectedValue(new Error('nope'));
+
+      const error = await failASave();
+
+      expect(getComputedStyle(error).color).toBe(
+        hexToRgb(getThemeTokens().colors.alertText)
+      );
     });
 
     it('clears a previous failure when the next save succeeds', async () => {
       mockOnSubmit.mockRejectedValueOnce(new Error('nope'));
 
-      typeName(mockForm.name);
-      pickFirstAvatar();
-      submitForm();
-      await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError);
+      await failASave();
 
       submitForm();
 

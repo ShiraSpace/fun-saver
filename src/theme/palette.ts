@@ -15,8 +15,6 @@ export const COLORS = {
   screenGradientMid: '#FF8A4C',
   screenGradientEnd: '#E94E89',
   sunnyTileSoft: '#FFE6B0',
-  accent: '#E94E89',
-  accentSoft: '#FFF1D9',
   star: '#FFD23F',
   divider: '#F2D9D2',
   softBg: '#FFF8E0',

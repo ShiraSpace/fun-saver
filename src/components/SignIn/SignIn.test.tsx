@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { hexToRgb } from '@/test-utils/css-color';
+import { hexToRgb, opacityOf } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
 import { PIG_EMOJI } from '@/components/Pig/constants';
 import { SignIn } from './SignIn';
@@ -52,6 +52,6 @@ describe('SignIn', () => {
   it('leaves the fineprint unfaded, the way the wallet label was', () => {
     const fineprint = screen.getByTestId(SIGN_IN_TEST_IDS.fineprint);
 
-    expect(getComputedStyle(fineprint).opacity).toBe('');
+    expect(opacityOf(fineprint)).toBe(1);
   });
 });

@@ -6,3 +6,7 @@ export function hexToRgb(hex: string): string {
 export function gradientToRgb(gradient: string): string {
   return gradient.replace(/#[0-9a-fA-F]{6}/g, hexToRgb);
 }
+
+export function opacityOf(element: Element): number {
+  return Number(getComputedStyle(element).opacity || 1);
+}

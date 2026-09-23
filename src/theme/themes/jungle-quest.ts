@@ -17,8 +17,6 @@ export const jungleQuest: ThemeTokens = {
     screenGradientStart: '#2A9D8F',
     screenGradientMid: '#43AA8B',
     screenGradientEnd: '#90BE6D',
-    accent: '#E76F51',
-    accentSoft: '#FBE6DC',
     star: '#F9C74F',
     divider: '#DDE7CC',
     softBg: '#F3F7E4',

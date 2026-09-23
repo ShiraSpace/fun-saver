@@ -15,8 +15,6 @@ export interface ThemeColors {
   readonly screenGradientStart: string;
   readonly screenGradientMid: string;
   readonly screenGradientEnd: string;
-  readonly accent: string;
-  readonly accentSoft: string;
   readonly star: string;
   readonly divider: string;
   readonly softBg: string;

@@ -75,9 +75,18 @@ gradient outside it and the white `selectedBorder` inside it: 4.77/16.93,
    bare one was chosen. Then the **`Title`'s own chip was removed too**, on
    create and edit alike, which **undoes what #98 shipped for that surface**:
    decision 4 of the first pass put `labelScrim` there precisely because white
-   cannot carry on the gradient. The form now has two failing pairs where it had
-   one. This is a look decision taken against the drawing, with the ratios on
-   the table. `labelScrim` keeps one consumer, `WalletList`'s «הקופות» on בית.
+   cannot carry on the gradient. At 22px/700 that title is *large text*, so its
+   bar is 3:1 rather than 4.5 — and sunshine still misses it at **1.60**, while
+   jungle clears it at 3.32. This is a look decision taken against the drawing,
+   with the ratios on the table, and it is the one change in this pass that
+   leaves a surface worse than `main`. `labelScrim` keeps one consumer,
+   `WalletList`'s «הקופות» on בית.
+
+   **`SaveError` did take the red**, after review pointed out that white left a
+   failed save looking exactly like ordinary form copy — no colour signal at
+   all, contrast aside. `alertText` on that gradient measures **2.05** sunshine
+   and **1.92** jungle, *worse* than the white it replaces, so this buys signal
+   and not legibility. Taken deliberately on that trade.
 
 2. **`DrawerError` joins the `alert` family, and the red fits each theme.** Not
    one flat red across all three: a crimson on sunshine pulled toward its
@@ -134,7 +143,17 @@ its bar is 3:1, and it sits at 4.30 / 4.22. It passes and does not move.
   is a *consumer* move and the suite pinned what the consumer used to read.
   A `box-shadow` also normalises to `rgb()` in the browser but keeps its hex in
   jsdom, so the e2e needs `hexToRgb` and the unit test must not have it.
+- **`colors.accent` and `colors.accentSoft` are deleted.** Moving `DrawerError`
+  off `accent` left it with zero consumers and `accentSoft` had none already.
+- **`primaryGradientTop` stays half-removed on purpose** — out of `ThemeColors`
+  and both themes, still in `COLORS` for `gradients.ts`. `COLORS` already
+  carried one key the interface does not (`sunnyTileSoft`) before this branch,
+  so the mismatch is pre-existing rather than introduced.
+- **The opacity assertions say "not faded", not "unset".** `toBe('')` leaned on
+  jsdom resolving an unset property to the empty string, so a jsdom that
+  resolved it to `1` would have reddened them with no regression behind it, and
+  an explicit `opacity: 1` failed them for nothing. `opacityOf` in
+  `src/test-utils/css-color.ts` reads the number instead, across `StatStrip`,
+  `SignIn` and `WalletList` so the repo keeps one idiom.
 - **Not in scope:** `TalkBubble`'s `text-decoration-color`, which is a strike
-  through text and not text itself. And `colors.accent`, which this pass leaves
-  with **zero consumers** — dead the way `primaryGradientTop` was, but a brand
-  colour rather than a derived one, so it stays for now.
+  through text and not text itself.

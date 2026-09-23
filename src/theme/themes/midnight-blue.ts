@@ -17,8 +17,6 @@ export const midnightBlue: ThemeTokens = {
     screenGradientStart: '#0A0E14',
     screenGradientMid: '#0F1620',
     screenGradientEnd: '#122036',
-    accent: '#3B82F6',
-    accentSoft: '#14213F',
     star: '#93C5FD',
     divider: '#1E2A40',
     softBg: '#121E36',

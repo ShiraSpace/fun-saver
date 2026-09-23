@@ -5,6 +5,9 @@ import { ACCOUNT_FORM_LAYOUT } from './constants';
 const titleColor = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
 
+const alertText = ({ theme }: { theme: Theme }): string =>
+  theme.colors.alertText;
+
 const titleSize = ({ theme }: { theme: Theme }): number =>
   theme.typography.title;
 
@@ -38,7 +41,7 @@ export const TitleIcon = styled.span`
 export const SaveError = styled.span`
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
-  color: ${titleColor};
+  color: ${alertText};
 `;
 
 export const CloseButton = styled.button`
