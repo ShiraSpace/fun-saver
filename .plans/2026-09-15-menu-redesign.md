@@ -967,6 +967,34 @@ rather than a line in PR 9.
 - `themeVar(group, name)` beside `everyThemeAsCss()`, sharing its prefix table, so a
   misspelt token is a `tsc` error rather than a transparent card.
 
+### What review of #121 turned up
+
+- **A Suspense above the page turns every `redirect()` inside it into a browser
+  redirect.** The boundary sends the shell with a `200` before the page renders, and a
+  status cannot change once the body has started. Measured: `/` with a garbage session
+  cookie and `/method` for a user with no account both went from a real `307` to a
+  `200` that streamed the shell and then redirected in the browser. Fixed by moving
+  both decisions out of the boundary rather than dropping the shell:
+  - `proxy.ts` checked only that a session cookie *existed*. It is now
+    `auth((request) => …)` from `src/auth.ts` — one NextAuth config, so the secret,
+    cookie name and `x-forwarded-proto` handling are never restated — and applies
+    `toSignedInUser`, the rule the pages use (an id and an email). A missing, garbage,
+    expired or incomplete session gets a `307` to `/login` before anything streams.
+    `toSignedInUser` lives in `src/lib/signed-in-user.ts`: `next-auth` cannot load
+    under jest, so in `src/auth.ts` the rule was reachable only through a mock.
+  - `/method` with no account renders `Home`, which shows the empty state, instead of
+    redirecting home. Creating an account there calls `router.refresh()`, and the
+    method page appears.
+  - **The rule for next time: nothing under the root Suspense may call `redirect()`
+    or `notFound()`.** The one left, in `signedInAccounts`, is unreachable once the
+    proxy has applied the same rule — but a new one would stream a `200` silently.
+- **Several reporters writing one boolean: the last effect wins.** Tapping Home in the
+  menu and then the house link flips both links in one update; the house link's
+  effect ran first, the tab's second, and the line went out mid-navigation. The
+  header now counts pending links — a reporter adds one while pending and takes it
+  back in its effect cleanup — so the order no longer matters. The e2e test for that
+  scenario fails against the boolean.
+
 ## Notes / risks
 
 - **`e2e/driver/menu-driver.ts` is the seam.** Six of its methods hardcode
