@@ -44,7 +44,12 @@ export function MethodSection({
         {numeral}
         <Title>{heading}</Title>
         {hintChip}
-        <Chevron aria-hidden="true">{METHOD_SECTION_COPY.chevron}</Chevron>
+        <Chevron
+          aria-hidden="true"
+          data-testid={METHOD_SECTION_TEST_IDS.chevron(id)}
+        >
+          {METHOD_SECTION_COPY.chevron}
+        </Chevron>
       </Summary>
       <Body data-testid={METHOD_SECTION_TEST_IDS.body(id)}>{children}</Body>
     </Section>
