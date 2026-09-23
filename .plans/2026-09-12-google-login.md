@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-23 (PR 12 merged as #115; 13 and 14 are what is left, and 13 goes first)
+## Progress — updated 2026-09-23 (PR 13 merged as #118; PR 14 is the last one)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -29,7 +29,7 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 11 | [#94](https://github.com/ShiraSpace/fun-saver/pull/94)   | `refactor/themed-page-shell`       | **merged** — `c36afa1`                                  |
 | PR 7  | [#100](https://github.com/ShiraSpace/fun-saver/pull/100) | `feat/profile-section`             | **merged** — `06f2528`                                  |
 | PR 12 | [#115](https://github.com/ShiraSpace/fun-saver/pull/115) | `fix/empty-state-header`           | **merged** — `d0a9d00`; design was #111, `bb421e9`      |
-| PR 13 | —                                                        | `refactor/required-context`        | not started — found during PR 7                         |
+| PR 13 | [#118](https://github.com/ShiraSpace/fun-saver/pull/118) | `refactor/required-context`        | **merged** — `4031cf6`                                  |
 | PR 14 | —                                                        | `fix/menu-state-on-close`          | not started — found reviewing PR 7                      |
 | PR 15 | [#105](https://github.com/ShiraSpace/fun-saver/pull/105) | `refactor/one-render-helper`       | **merged** — `da842b1`                                  |
 
@@ -65,10 +65,10 @@ export, `useOptionalAccounts`, which PR 13's factory now has to account for —
 written into that section. PR 14 still lands in `MenuOverlay`, and PR 12 left
 it a decision rather than making it: see PR 14 for the menu context.
 
-**13 and 14 are what is left, and 13 still goes first** — not because of PR 12
-any more, but because PR 14 should build its provider from
-`createRequiredContext` rather than hand-rolling a fifth context the week
-before that factory arrives.
+**PR 13 merged as #118 (`4031cf6`); PR 14 is the last one.** Two things
+it changed that PR 14 will meet: `createRequiredContext` takes the name of the
+provider a caller must mount, not a message, and `ThemeController` is now
+`AppThemeProvider`. Sections written before #118 keep the old name as history.
 
 **Review of #100 found a hole this plan did not anticipate: the closed menu was
 still reachable by keyboard.** The panel is always mounted and hidden with
@@ -1380,6 +1380,46 @@ worse than the duplication it removes.
 
 Depends on: nothing.
 
+#### Built and merged as #118 (`4031cf6`) — what the section above got wrong
+
+**The factory takes the provider's name, not a message.** The section had
+`createRequiredContext<T>(message)`, and the first build kept each context's
+own wording. Review asked how a stack could say which provider was missing
+without one: it cannot, because all four hooks are the same `useRequired` and
+JavaScript does not tell a function the name it was destructured into. So the
+input shrank to the one fact the reader needs. Every missing provider now reads
+`No AccountsProvider above this component`, and the context's `displayName` is
+the same string. The hook that asked is the next frame down the stack. A context
+name was considered and dropped: the theme's contexts are private, and
+`ThemeIdProvider` names nothing a caller can mount.
+
+**`ThemeController` became `AppThemeProvider`**, since that is the name its
+errors now tell you to mount, and `ThemeProvider` is Emotion's, rendered inside
+it. The `select` wrapper around `setThemeId` went with it — a `useState` setter
+is already stable.
+
+**This was a wording change, not "no behaviour change".** Every throw message
+moved. The suites pin it in one place: the factory's own suite asserts the full
+sentence as a literal, and each context's suite asserts through the exported
+`missingProviderMessage(providerName)`. Changing the template reddens one test;
+changing one context's provider name reddens only that context's test.
+`NO_PROVIDER` is gone — `accounts-context.test.tsx` asserted against the constant
+the code passed in, so rewording could never redden it.
+
+**The theme hooks' throws had no test before this PR.** Each has one now.
+
+**The inert `AppModeProvider` wrap is out of `AccountControls.test.tsx`**, and
+the suite stayed at 3/3.
+
+**A test beside a hook never runs.** `jest.config.ts` matches tests outside
+`src/components` only under `__tests__/`. The factory's suite was first written
+next to the factory, and a break-watch that ran 8 tests instead of 11 is what
+showed it — every other test file in the run was passing for it.
+
+**Measured on the branch:** jest 727 across 137, `test:db` 22 across 5,
+`test:visual` 57 across 31, browser `e2e` 17 across 8, `tsc --noEmit` and
+`eslint .` clean.
+
 ### PR 14 — `fix/menu-state-on-close`
 
 The menu panel never unmounts, so state inside it survives the menu closing.
@@ -1408,10 +1448,11 @@ reaches the pieces — is the same decision. The second option *is* a menu
 context. Making it in PR 12 would have settled this PR's design in the wrong
 place.
 
-Two things to get right when building it. **Land it after PR 13** and build the
-provider with `createRequiredContext`, or it becomes a fifth hand-rolled
-`createContext<T | null>(null)` the week before the factory that deletes that
-pattern arrives. And **do not call the reader `useMenuState`** — that name
+Two things to get right when building it. **Build the provider with
+`createRequiredContext`**, which #118 landed: pass it the name of the component
+a caller must mount, and it builds the error and the `displayName` from that. It
+also returns an optional reader, for a caller that needs to ask rather than
+require. And **do not call the reader `useMenuState`** — that name
 belongs to the hook that creates the state. A reader beside it with a near
 identical name is a mis-import waiting to happen; `useMenu` reading what
 `useMenuState` created is the distinction to keep visible.
@@ -1420,7 +1461,7 @@ Whether the context carries only `close` or the whole `MenuState` follows from
 the unmount-versus-reset decision: resetting on close needs `isOpen` to reach
 the pieces, unmounting does not.
 
-Depends on: PR 7, and land after PR 13.
+Depends on: PR 7 and PR 13, both merged.
 
 ### PR 15 — `refactor/one-render-helper` — **merged as #105 (`da842b1`)**
 
