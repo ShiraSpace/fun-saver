@@ -15,7 +15,7 @@ export const Pot = styled.div<{ walletName: WalletName }>`
   text-align: center;
   background: ${({ walletName, theme }): string =>
     theme.gradients[WALLET_GRADIENT[walletName]]};
-  color: ${({ theme }): string => theme.colors.textStrong};
+  color: ${({ theme }): string => theme.colors.textOnPot};
 `;
 
 export const Icon = styled.span`

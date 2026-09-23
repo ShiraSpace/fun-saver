@@ -25,6 +25,9 @@ export const Title = styled.h1`
   align-items: center;
   gap: ${ACCOUNT_FORM_LAYOUT.titleGap}px;
   margin: 0;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: ${({ theme }): string => theme.colors.labelScrim};
   font-size: ${titleSize}px;
   font-weight: 700;
   color: ${titleColor};

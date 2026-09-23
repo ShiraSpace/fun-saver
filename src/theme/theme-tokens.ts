@@ -2,6 +2,7 @@ import type { ThemeTypography } from './typography';
 
 export interface ThemeColors {
   readonly primary: string;
+  readonly primaryText: string;
   readonly primaryGradientTop: string;
   readonly primaryShadow: string;
   readonly primaryGlow: string;
@@ -9,6 +10,8 @@ export interface ThemeColors {
   readonly surface: string;
   readonly textMuted: string;
   readonly textStrong: string;
+  readonly textOnPot: string;
+  readonly labelScrim: string;
   readonly screenGradientStart: string;
   readonly screenGradientMid: string;
   readonly screenGradientEnd: string;
