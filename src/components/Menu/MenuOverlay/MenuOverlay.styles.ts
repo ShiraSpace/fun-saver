@@ -15,6 +15,7 @@ export const Panel = styled.div`
   box-sizing: border-box;
   padding-bottom: ${MENU_OVERLAY_STYLE.paddingBottom}px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   scrollbar-gutter: stable both-edges;
   background: ${sheet};
   color: ${onSheet};

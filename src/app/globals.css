@@ -4,3 +4,7 @@ html,
 body {
   overflow-x: hidden;
 }
+
+html:has([role='dialog'][data-open='true']) {
+  overflow: hidden;
+}
