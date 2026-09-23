@@ -89,6 +89,18 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
   font-family:Rubik,sans-serif; }
 .avatar { width:40px; height:40px; border-radius:50%; background:var(--sunnyTile);
   display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+/* כל בקרת הבית תופסת 40px כמו האווטאר — הפס לא מתגבה, והתפריט הפתוח לא נחסם */
+.homeBtn { flex-shrink:0; width:40px; height:40px; border:none; border-radius:50%; cursor:pointer;
+  background:var(--globalBg); font-size:20px; line-height:1; padding:0; }
+.homePill { flex-shrink:0; display:flex; align-items:center; gap:5px; height:40px; padding:0 12px;
+  border:1.5px solid var(--globalBorder); border-radius:999px; background:var(--globalBg);
+  color:var(--textStrong); font-family:Rubik,sans-serif; font-size:13px; font-weight:700;
+  cursor:pointer; box-sizing:border-box; }
+.avatar.asHome { border:2.5px solid var(--textStrong); padding:0; cursor:pointer; position:relative;
+  box-sizing:border-box; }
+.avatar.asHome .hb { position:absolute; inset-block-end:-4px; inset-inline-start:-4px; font-size:11px;
+  background:var(--surface); border-radius:50%; width:18px; height:18px; display:flex;
+  align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.28); }
 
 /* ---------- chart card ---------- */
 .card { background:var(--surface); border-radius:24px; padding:13px 14px 11px;
@@ -316,7 +328,9 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
   <br /><span class="new">חדש</span>: שלוש עמודות הניווט מוציאות את <b>מסכים</b> מהבלוק תלוי-החשבון — ניווט אינו הגדרה של חשבון —
   ומצרפות אליו את <b>השיטה</b>, שהיום היא קישור יתום מתחת לשני הבלוקים.
   <b>נ3 — רצועת הטאבים — נבחרה</b>; הבורר <b>כמה מסכים</b> מראה איך היא נראית כשמתווספים מסכים מה-roadmap.
-  בכותרת נבחנות שלוש צורות של <b>חזרה לבית</b> (הבורר למעלה), כדי שממסך תנועות או מהשיטה תהיה דרך חזרה בלי לפתוח את התפריט.
+  בכותרת נבחנות שבע צורות של <b>חזרה לבית</b> (הבורר למעלה), כדי שממסך תנועות או מהשיטה תהיה דרך חזרה בלי לפתוח את התפריט —
+  שלוש עם חץ (ח1–ח3) וארבע עם בית (ב1–ב4). <b>ב1 — בית במקום האווטאר — נבחרה</b>: חץ עונה «מאיפה הגעתי», שהאפליקציה
+  לא יודעת בכניסה קרה, ובית עונה «לאן אני הולך» — אותה תשובה בכל פעם. המחיר הוא האווטאר, ולכן שם הילד נשאר בכותרת.
   <br /><span class="new">פתוח</span>: <b>שפה</b> יושבת כרגע בקבוצה תלוית-החשבון לפי ההנחיה, אבל בקוד היא <code>LANGUAGE_SECTION_CONTENT.selectedCode</code> קבוע ללא שמירה — סביר שהיא העדפת משתמש/מכשיר ומקומה בקבוצה הגלובלית. שורה אחת להזיז.
 </p>
 
@@ -326,7 +340,7 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 </div>
 <div class="controls"><span class="ctlLabel">אייקון תנועה:</span><span class="ctlGroup" id="iconControls"></span></div>
 <div class="controls"><span class="ctlLabel">כפתור עריכה:</span><span class="ctlGroup" id="pencilControls"></span></div>
-<div class="controls"><span class="ctlLabel">חזרה בכותרת:</span><span class="ctlGroup" id="backControls"></span></div>
+<div class="controls"><span class="ctlLabel">חזרה לבית בכותרת:</span><span class="ctlGroup" id="backControls"></span></div>
 <div class="controls"><span class="ctlLabel">כמה מסכים:</span><span class="ctlGroup" id="navCountControls"></span></div>
 
 <div class="row">

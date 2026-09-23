@@ -291,6 +291,8 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   mockup, balanced rows of at most four, short labels. נ1 and נ2 stay rendered for
   reference, and נ2 is where this goes if the app ever passes ~8 screens.
 - **Back goes to home, not through history.** Decided 2026-09-23 with PR 10.
+- **The control is a house, not a chevron**, in the avatar's slot — shape ב1.
+  Decided 2026-09-26 after rendering four house shapes beside the three chevrons.
 - **Transaction icons use the corner-badge variant** (`תג בפינה`) — decided
   2026-09-15, relevant to the transactions epic, not this one.
 
@@ -510,36 +512,53 @@ which the merged work already flagged as questionable there (language is a devic
 preference, and `/method` is not about an account). Nothing to do in this PR; it
 just gets easier to see.
 
-## PR 10 — a way back from a screen that is not home
+## PR 10 — a way home from a screen that is not home
 
 `/method` today can only be left through the menu, and the transactions screen will
-have the same problem. The header gains a back control that returns to `HOME_ROUTE`.
+have the same problem. The header gains a control that returns to `HOME_ROUTE`.
 
 **To home, not `router.back()`.** These pages are reachable cold — a bookmark, a
 refresh, a shared link — and history-back then leaves the app or goes nowhere.
 `HOME_ROUTE` is deterministic and is a `next/link` rather than a handler.
 
+**A house, not a chevron. Decided 2026-09-26 — shape ב1.** A back arrow answers
+"where did I come from", which the app cannot know on a cold open; a house answers
+"where am I going", which is the same answer every time. It takes the avatar's slot
+at the end edge on non-home screens, so the bar stays at three slots and nothing
+shifts.
+
 `usePathname()` decides whether it renders at all, the same hook PR 9 already brings
-in for `aria-current`. Home shows no back control.
+in for `aria-current`. Home shows the avatar and no house.
 
-Three shapes in the mockup, on the summary phone's header, behind the `חזרה בכותרת`
-control group:
+Seven shapes were rendered on the summary phone's header, behind the mockup's
+`חזרה לבית בכותרת` control group. The three chevron shapes are kept for reference:
 
-| | Shape | Note |
-| - | ----- | ---- |
-| ח1 | Chevron at the start edge, burger after it | Four slots in a 68px bar; the title loses width |
-| ח2 | Chevron glued to the title, the whole run tappable | Bar stays at three slots; the target is large but reads as a title, not a button |
-| ח3 | Chevron in the avatar's slot at the end edge, avatar dropped off non-home pages | Keeps three slots, but the avatar is how you know which account you are looking at |
+|        | Shape                                                                           | Note                                                                                             |
+| ------ | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| ח1     | Chevron at the start edge, burger after it                                      | Four slots in a 68px bar; the title loses width                                                  |
+| ח2     | Chevron glued to the title, the whole run tappable                              | Bar stays at three slots; the target is large but reads as a title, not a button                 |
+| ח3     | Chevron in the avatar's slot at the end edge, avatar dropped off non-home pages | Keeps three slots, but the avatar is how you know which account you are looking at               |
+| **ב1** | **House in the avatar's slot**                                                  | **Chosen.** Three slots, nothing moves; pays the avatar                                          |
+| ב2     | House beside the avatar                                                         | Keeps the avatar, but four slots and the title loses width                                       |
+| ב3     | The avatar itself is the button, ringed with a house badge                      | Keeps both, but one target carries two meanings and it is busy at 40px                           |
+| ב4     | Labelled `🏠 בית` pill                                                          | The only one a child who does not read a bare glyph cannot misread; widest, and drops the avatar |
 
-The glyph is `‹` in the source and paints as `›`: it is bidi-mirrored, the same way
-`.chev` already is in the menu rows. Writing `›` gets you an arrow pointing the wrong
-way in RTL.
+**What ב1 costs, named so it is not rediscovered in review.** The avatar is how you
+know which child you are looking at, and it is gone on every screen that is not home
+— exactly the screens where a total on display belongs to somebody. The title still
+carries the name (`תנועות בחשבון · <name>`), which is what makes this affordable;
+if a screen ever drops the name from its title, this decision needs revisiting.
 
 **The trap this PR has to clear:** `HEADER_LAYOUT.height` is a `min-height`, and both
-the menu sheet's height and the panel's `top` derive from it (#90). A fourth control
-that makes the bar even a few pixels taller paints an opaque card over the open menu.
-ח1 is the shape most likely to do it — the 26px control has to fit inside the
-existing `40 + 12 × 2`, and `header-layout.visual.ts` is where that gets asserted.
+the menu sheet's height and the panel's `top` derive from it (#90). A control that
+makes the bar even a few pixels taller paints an opaque card over the open menu. ב1
+is the shape least likely to do it — it replaces a 40px avatar with a 40px tile, so
+the bar's tallest child does not change — and `header-layout.visual.ts` is where
+that gets asserted. ח1 was the shape most at risk, at 26px inside `40 + 12 × 2`.
+
+The chevron glyph, if a chevron is ever wanted after all, is `‹` in the source and
+paints as `›`: it is bidi-mirrored, the same way `.chev` already is in the menu rows.
+Writing `›` gets you an arrow pointing the wrong way in RTL.
 
 ## Notes / risks
 
