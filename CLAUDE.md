@@ -59,29 +59,28 @@ For technical details (commands, architecture, dependencies), see [DEVELOPMENT.m
 10. Commit the production code
 
 ### Phase 3: Testing (Per Phase/Step)
-11. Write the FIRST test case only
-12. Run the test, make it pass
-13. **STOP** - Wait for user approval of first test
-14. Refactor if needed after approval
-15. **STOP** - Wait for approval to move to next test
-16. Write next test case (one at a time)
-17. Run test, make it pass
-18. **STOP** - Wait for approval
-19. Repeat steps 16-18 for each remaining test case
-20. **STOP** - Wait for approval: "commit tests"
-21. Commit all tests
-22. **STOP** - Wait for approval: "push" or "next phase"
+11. Write the first THREE test cases
+12. Run them, make them pass, and watch **each one fail against its own deliberate break** — break the implementation, read *which* test reddens, restore. A test that has never failed proves nothing
+13. **STOP** - Wait for user approval; refactor on feedback
+14. Write the remaining test cases in bulk, each one watched failing against its own break the same way
+15. **STOP** - Wait for approval: "commit tests"
+16. Commit all tests
+17. **STOP** - Wait for approval: "push" or "next phase"
+
+The first three come first so the shape — naming, fixtures, what is asserted — is
+agreed before the volume. Once they are approved, the rest follow in one go.
 
 ### Phase 4: Continue
-23. Push to remote only if user explicitly requests. A pull request that changes anything visible gets screenshots — see the `pr-screenshots` skill
-24. **STOP** - Wait for approval before moving to next phase/step
-25. Go back to step 5 for next phase/step
+18. Push to remote only if user explicitly requests. A pull request that changes anything visible gets screenshots — see the `pr-screenshots` skill
+19. **STOP** - Wait for approval before moving to next phase/step
+20. Go back to step 5 for next phase/step
 
 ## Key Workflow Rules
 
 - **NEVER** commit without explicit "commit" approval
 - **NEVER** write tests before production code is approved and committed
-- **NEVER** write multiple tests at once - one test at a time
+- **NEVER** write more than the first three tests before approval — three, approval, then the rest in bulk
+- **NEVER** count a test that has not been watched failing against a deliberate break
 - **NEVER** move to next phase without explicit approval
 - **NEVER** push to remote unless explicitly requested
 - **NEVER** force-push, including `--force-with-lease` — once a branch is pushed, correct it with a new commit on top, never by rewriting published history (rebase/amend are fine on branches that have never been pushed)
