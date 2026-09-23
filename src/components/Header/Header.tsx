@@ -19,14 +19,14 @@ import { HeaderAvatar } from './header-parts';
 
 export interface HeaderProps {
   title: string;
-  account?: Pick<Account, 'name' | 'avatarId'>;
+  account: Pick<Account, 'name' | 'avatarId'>;
 }
 
 export function Header({ title, account }: HeaderProps): JSX.Element {
   const menu = useMenuState();
   const isHome = usePathname() === HOME_ROUTE;
 
-  const avatar = account && (
+  const avatar = (
     <HeaderAvatar
       avatarId={account.avatarId}
       alt={account.name}
@@ -36,7 +36,7 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
     />
   );
 
-  const homeLink = account && (
+  const homeLink = (
     <HomeAvatarLink
       avatarId={account.avatarId}
       name={account.name}
