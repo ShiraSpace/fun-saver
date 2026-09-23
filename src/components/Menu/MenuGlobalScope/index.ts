@@ -1,0 +1,1 @@
+export { MenuGlobalScope } from './MenuGlobalScope';

@@ -1,9 +1,9 @@
 import { JSX } from 'react';
 import {
-  ACCOUNTS_SECTION_CONTENT,
-  ACCOUNTS_SECTION_TEST_IDS,
+  EDIT_ACCOUNT_BUTTON_CONTENT,
+  EDIT_ACCOUNT_BUTTON_TEST_IDS,
 } from './constants';
-import { EditButton, EditLabel } from './AccountsSection.styles';
+import { EditButton, EditLabel } from './EditAccountButton.styles';
 
 interface EditAccountButtonProps {
   accountName: string;
@@ -16,12 +16,12 @@ export const EditAccountButton = ({
 }: EditAccountButtonProps): JSX.Element => (
   <EditButton
     type="button"
-    data-testid={ACCOUNTS_SECTION_TEST_IDS.editButton}
+    data-testid={EDIT_ACCOUNT_BUTTON_TEST_IDS.button}
     onClick={onEditAccount}
   >
-    <span aria-hidden="true">{ACCOUNTS_SECTION_CONTENT.editIcon}</span>
+    <span aria-hidden="true">{EDIT_ACCOUNT_BUTTON_CONTENT.icon}</span>
     <EditLabel>
-      {ACCOUNTS_SECTION_CONTENT.editLabel} {accountName}
+      {EDIT_ACCOUNT_BUTTON_CONTENT.label} {accountName}
     </EditLabel>
   </EditButton>
 );

@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { EditAccountButton } from './EditAccountButton';
 import {
-  ACCOUNTS_SECTION_CONTENT,
-  ACCOUNTS_SECTION_TEST_IDS,
+  EDIT_ACCOUNT_BUTTON_CONTENT,
+  EDIT_ACCOUNT_BUTTON_TEST_IDS,
 } from './constants';
 import { mockAccount } from '@/test-utils/fixtures';
 
@@ -20,16 +20,16 @@ describe('EditAccountButton', () => {
   });
 
   it('calls onEditAccount when clicked', () => {
-    fireEvent.click(screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editButton));
+    fireEvent.click(screen.getByTestId(EDIT_ACCOUNT_BUTTON_TEST_IDS.button));
 
     expect(mockOnEditAccount).toHaveBeenCalledTimes(1);
   });
 
   it('names the account it edits', () => {
     expect(
-      screen.getByTestId(ACCOUNTS_SECTION_TEST_IDS.editButton)
+      screen.getByTestId(EDIT_ACCOUNT_BUTTON_TEST_IDS.button)
     ).toHaveAccessibleName(
-      `${ACCOUNTS_SECTION_CONTENT.editLabel} ${mockAccount.name}`
+      `${EDIT_ACCOUNT_BUTTON_CONTENT.label} ${mockAccount.name}`
     );
   });
 });

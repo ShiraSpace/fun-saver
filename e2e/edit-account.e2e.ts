@@ -52,16 +52,16 @@ describe('edit account from the menu', () => {
     await session.resize(PHONE);
     await menu.open();
 
-    const section = await menu.accountsSectionBox();
+    const scope = await menu.globalScopeBox();
     const editButton = await menu.editAccountButtonBox();
 
     assert.ok(
-      editButton.width <= section.width,
-      `edit button is ${editButton.width}px wide inside a ${section.width}px menu`
+      editButton.width <= scope.width,
+      `edit button is ${editButton.width}px wide inside a ${scope.width}px block`
     );
     assert.ok(
-      editButton.x >= section.x,
-      `edit button starts at ${editButton.x}px, left of the ${section.x}px menu`
+      editButton.x >= scope.x,
+      `edit button starts at ${editButton.x}px, left of the ${scope.x}px block`
     );
   });
 

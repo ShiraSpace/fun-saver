@@ -75,36 +75,36 @@ describe('menu morph', () => {
     });
 
     describe('with the account list open', () => {
-      let appearance: BoundingBox;
+      let accountScope: BoundingBox;
       let list: BoundingBox;
 
       beforeEach(async () => {
         await menu.openAccountPicker();
 
-        appearance = await menu.appearanceSectionBox();
+        accountScope = await menu.accountScopeBox();
         list = await menu.accountListBox();
       });
 
-      it('reaches down over the appearance section', () => {
-        const listReachesOverIt = overlapVertically(list, appearance);
+      it('reaches down over the per-account block', () => {
+        const listReachesOverIt = overlapVertically(list, accountScope);
 
         assert.ok(
           listReachesOverIt,
-          `list spans ${spanOf(list)}, appearance spans ${spanOf(appearance)}`
+          `list spans ${spanOf(list)}, per-account block spans ${spanOf(accountScope)}`
         );
       });
 
-      it('takes a tap meant for the appearance section underneath', async () => {
+      it('takes a tap meant for the per-account block underneath', async () => {
         const whereTheyOverlap = {
-          x: centreX(appearance),
-          y: justInsideTop(appearance),
+          x: centreX(accountScope),
+          y: justInsideTop(accountScope),
         };
         const listTakesTheTap =
           await menu.accountListReceivesTapAt(whereTheyOverlap);
 
         assert.ok(
           listTakesTheTap,
-          `the appearance section takes the tap at ${whereTheyOverlap.x},${whereTheyOverlap.y}`
+          `the per-account block takes the tap at ${whereTheyOverlap.x},${whereTheyOverlap.y}`
         );
       });
     });
