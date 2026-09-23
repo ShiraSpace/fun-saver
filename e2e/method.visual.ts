@@ -1,6 +1,7 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockAccount } from '@/test-utils/fixtures';
+import { SOURCE_MARKER_COPY } from '@/components/Method/SourceMarker/constants';
 import { SOURCES_SECTION_ID } from '@/components/Method/constants';
 import { useDriver } from './driver/use-driver';
 
@@ -53,7 +54,7 @@ describe('the method page in a browser', () => {
     it('lists a row for every number the page sends the parent to', async () => {
       const rows = await method.citationCount();
       const pointed = (await method.markerNumbers())
-        .flatMap((mark) => mark.split(','))
+        .flatMap((mark) => mark.split(SOURCE_MARKER_COPY.separator))
         .map(Number);
 
       assert.ok(pointed.length > 0);
