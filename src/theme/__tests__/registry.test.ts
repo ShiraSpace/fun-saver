@@ -4,98 +4,120 @@ import {
   getThemeTokens,
   resolveThemeId,
 } from '../registry';
+import { SHADOW_SCALE } from '../shadows';
+import type { ThemeTokens } from '../theme-tokens';
 
 describe('theme registry', () => {
   it('resolves the default theme when no id is given', () => {
     expect(getThemeTokens()).toBe(getThemeTokens(DEFAULT_THEME_ID));
   });
 
-  it('exposes the sunset colours and gradients as tokens', () => {
-    const tokens = getThemeTokens(DEFAULT_THEME_ID);
-
-    expect(tokens.colors.primary).toBe('#6B2C8E');
-    expect(tokens.gradients.actionButton).toContain('linear-gradient');
-    expect(tokens.gradients.screen).toContain('linear-gradient');
-  });
-
   it('throws on an unknown theme id', () => {
     expect(() => getThemeTokens('does-not-exist')).toThrow();
   });
 
-  it('exposes the full cohesive token set for the default theme', () => {
-    const { colors, gradients } = getThemeTokens(DEFAULT_THEME_ID);
-    for (const key of [
-      'star',
-      'divider',
-      'softBg',
-      'softBorder',
-      'softText',
-      'accountScopeBg',
-      'accountScopeBorder',
-      'depositBg',
-      'gainText',
-      'gainSoftBg',
-    ] as const) {
-      expect(colors[key]).toMatch(/^#|rgb/);
-    }
-    for (const key of ['potSavings', 'potSpending', 'potGood'] as const) {
-      expect(gradients[key]).toContain('linear-gradient');
-    }
+  describe('the default theme', () => {
+    let tokens: ThemeTokens;
+
+    beforeEach(() => {
+      tokens = getThemeTokens(DEFAULT_THEME_ID);
+    });
+
+    it('exposes the sunset colours and gradients as tokens', () => {
+      expect(tokens.colors.primary).toBe('#6B2C8E');
+      expect(tokens.gradients.actionButton).toContain('linear-gradient');
+      expect(tokens.gradients.screen).toContain('linear-gradient');
+    });
+
+    it('exposes the full cohesive token set', () => {
+      const { colors, gradients } = tokens;
+      for (const key of [
+        'star',
+        'divider',
+        'softBg',
+        'softBorder',
+        'softText',
+        'accountScopeBg',
+        'accountScopeBorder',
+        'depositBg',
+        'gainText',
+        'gainSoftBg',
+      ] as const) {
+        expect(colors[key]).toMatch(/^#|rgb/);
+      }
+      for (const key of ['potSavings', 'potSpending', 'potGood'] as const) {
+        expect(gradients[key]).toContain('linear-gradient');
+      }
+    });
   });
 
-  it('gives every theme a colour for each contrast token', () => {
-    const contrastTokens = Object.values(THEMES).map(({ colors }) => [
-      colors.primaryText,
-      colors.textOnPot,
-      colors.labelShade,
-      colors.alertText,
-      colors.selectionRing,
-    ]);
+  describe('every theme', () => {
+    let themes: ThemeTokens[];
 
-    expect(contrastTokens).toEqual([
-      ['#6B2C8E', '#2B1235', 'rgba(0, 0, 0, 0.45)', '#A81B3A', '#2B1235'],
-      ['#1B7A6B', '#2B1800', 'rgba(0, 0, 0, 0.35)', '#A83A21', '#2B1800'],
-      ['#3B82F6', '#ECF1F8', 'transparent', '#F87171', '#3B82F6'],
-    ]);
-  });
+    beforeEach(() => {
+      themes = Object.values(THEMES);
+    });
 
-  it('pins the muted and gain values every theme reads', () => {
-    const readableOnTints = Object.values(THEMES).map(({ colors }) => [
-      colors.textMuted,
-      colors.gainText,
-    ]);
+    it('has a colour for each contrast token', () => {
+      const contrastTokens = themes.map(({ colors }) => [
+        colors.primaryText,
+        colors.textOnPot,
+        colors.labelShade,
+        colors.alertText,
+        colors.selectionRing,
+      ]);
 
-    expect(readableOnTints).toEqual([
-      ['#675A80', '#276E2C'],
-      ['#4B655B', '#316A26'],
-      ['#8A96A8', '#34D399'],
-    ]);
-  });
+      expect(contrastTokens).toEqual([
+        ['#6B2C8E', '#2B1235', 'rgba(0, 0, 0, 0.45)', '#A81B3A', '#2B1235'],
+        ['#1B7A6B', '#2B1800', 'rgba(0, 0, 0, 0.35)', '#A83A21', '#2B1800'],
+        ['#3B82F6', '#ECF1F8', 'transparent', '#F87171', '#3B82F6'],
+      ]);
+    });
 
-  it('drops the button shadow below the button on every theme', () => {
-    const buttonTokens = Object.values(THEMES).map(({ colors, gradients }) => [
-      gradients.actionButton,
-      colors.primaryShadow,
-      colors.primaryGlow,
-    ]);
+    it('pins the muted and gain values it reads', () => {
+      const readableOnTints = themes.map(({ colors }) => [
+        colors.textMuted,
+        colors.gainText,
+      ]);
 
-    expect(buttonTokens).toEqual([
-      [
-        'linear-gradient(#8A3AAE, #6B2C8E)',
-        '#4A1A6E',
-        'rgba(107, 44, 142, 0.45)',
-      ],
-      [
-        'linear-gradient(#1B7A6B, #12564B)',
-        '#0B3A33',
-        'rgba(27, 122, 107, 0.45)',
-      ],
-      [
-        'linear-gradient(#1D4ED8, #1E3A8A)',
-        '#152A63',
-        'rgba(29, 78, 216, 0.40)',
-      ],
-    ]);
+      expect(readableOnTints).toEqual([
+        ['#675A80', '#276E2C'],
+        ['#4B655B', '#316A26'],
+        ['#8A96A8', '#34D399'],
+      ]);
+    });
+
+    it('drops the button shadow below the button', () => {
+      const buttonTokens = themes.map(({ colors, gradients }) => [
+        gradients.actionButton,
+        colors.primaryShadow,
+        colors.primaryGlow,
+      ]);
+
+      expect(buttonTokens).toEqual([
+        [
+          'linear-gradient(#8A3AAE, #6B2C8E)',
+          '#4A1A6E',
+          'rgba(107, 44, 142, 0.45)',
+        ],
+        [
+          'linear-gradient(#1B7A6B, #12564B)',
+          '#0B3A33',
+          'rgba(27, 122, 107, 0.45)',
+        ],
+        [
+          'linear-gradient(#1D4ED8, #1E3A8A)',
+          '#152A63',
+          'rgba(29, 78, 216, 0.40)',
+        ],
+      ]);
+    });
+
+    it('reads depth the same way, so a theme swap never changes how far a card sits off the page', () => {
+      const scales = themes.map(({ shadows }) => shadows);
+
+      expect(scales).toEqual([SHADOW_SCALE, SHADOW_SCALE, SHADOW_SCALE]);
+    });
   });
 
   it('resolves jungle-quest with full tokens', () => {
