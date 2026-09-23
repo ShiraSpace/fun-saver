@@ -108,5 +108,15 @@ describe('header', () => {
         `bar is ${bar.height}px tall against a ${HEADER_LAYOUT.height}px sheet`
       );
     });
+
+    it('takes the end edge the avatar holds on home', async () => {
+      await method.open();
+
+      const bar = await header.box();
+      const homeLink = await header.homeLinkBox();
+      const distanceFromEndEdge = Math.abs(homeLink.x - bar.x);
+
+      assert.ok(distanceFromEndEdge <= EDGE_TOLERANCE);
+    });
   });
 });

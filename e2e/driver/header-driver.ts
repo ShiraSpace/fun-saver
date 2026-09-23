@@ -18,6 +18,10 @@ export class HeaderDriver {
     return this.session.exists(HEADER_TEST_IDS.homeLink);
   }
 
+  homeLinkBox(): Promise<BoundingBox> {
+    return this.session.box(HEADER_TEST_IDS.homeLink);
+  }
+
   name(): Promise<string> {
     return this.session.text(TITLE_TEST_IDS.title);
   }

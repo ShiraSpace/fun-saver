@@ -153,6 +153,7 @@ describe('Header', () => {
         'href',
         HOME_ROUTE
       );
+
       expect(
         screen.queryByTestId(HEADER_TEST_IDS.avatar)
       ).not.toBeInTheDocument();

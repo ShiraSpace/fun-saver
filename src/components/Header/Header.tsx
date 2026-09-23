@@ -36,6 +36,7 @@ const homeLink = (
 export function Header({ title, avatarId }: HeaderProps): JSX.Element {
   const menu = useMenuState();
   const isHome = usePathname() === HOME_ROUTE;
+
   const avatar = avatarId && (
     <HeaderAvatar
       avatarId={avatarId}
