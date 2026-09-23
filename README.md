@@ -130,6 +130,6 @@ Each script runs the whole schema in a single Postgres transaction — a failure
 
 ## Project docs
 
-- [`AGENTS.md`](./AGENTS.md) — a warning that Next.js 16 has breaking changes vs. older docs.
+- [`AGENTS.md`](./AGENTS.md) — the Next.js 16 warning, and the watch-outs that have each cost a session.
 - [`CLAUDE.md`](./CLAUDE.md) — workflow, code style, and TDD rules used when building this app.
-- [`docs/HANDOFF.md`](./docs/HANDOFF.md) — full design decisions, rationale, and open questions.
+- [`.plans/`](./.plans) — one file per body of work, each recording what shipped and what it taught.

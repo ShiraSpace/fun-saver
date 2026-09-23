@@ -1006,7 +1006,8 @@ builds its answer from it.
 **3 — the backfill deleted**, with `src/db/migration-target.ts` kept for
 `run-migration.ts`. Verified by running `db:migrate-dev`, not by grep.
 
-**4 — this file and `.claude/HANDOVER.md`.**
+**4 — this file and `.claude/HANDOVER.md`** (the handover has since been removed;
+its durable watch-outs live in `AGENTS.md`).
 
 **Thirteen test files moved, not seven.** The seven were right for
 `listAccounts`; six more used `AccountsStore.createAccount` as fixture setup and
