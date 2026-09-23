@@ -1,6 +1,6 @@
 import type { Transaction } from '@/lib/types';
 
-export function byOccurrence(transactions: Transaction[]): Transaction[] {
+export function oldestFirst(transactions: Transaction[]): Transaction[] {
   return [...transactions].sort(
     (left, right) =>
       left.occurredAt.localeCompare(right.occurredAt) ||

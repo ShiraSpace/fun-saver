@@ -25,7 +25,7 @@ describe('JsonFileStore transactions', () => {
     ).toEqual(['t1']);
   });
 
-  it('lists the whole ledger again after a reopen, and nothing of anyone else', async () => {
+  it('still holds a child’s whole history after a restart, and none of another child’s', async () => {
     const store = new JsonFileStore(file.path);
     await store.insertAccount(mockAccount);
     await store.insertTransactions([
@@ -39,7 +39,7 @@ describe('JsonFileStore transactions', () => {
     expect(new Set(rows)).toEqual(new Set(mockTransactions));
   });
 
-  it('returns a ledger oldest first, ties broken by write time', async () => {
+  it('tells the history in the order it happened, same-day entries in the order they were made', async () => {
     const evening = createMockTransaction({
       id: 'evening',
       createdAt: '2026-01-01T09:00:00.000Z',

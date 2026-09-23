@@ -92,10 +92,10 @@ Rather than adding a second path beside `getWalletsForAccount`, the existing one
 is turned inside out:
 
 ```
-accountLedgers({ store, accounts, asOf })
+settledLedgers({ store, accounts, asOf })
   -> { account: AccountWithDerivedWallets, transactions: Transaction[] }[]
 
-withDerivedWallets = accountLedgers(...).map((ledger) => ledger.account)
+withDerivedWallets = settledLedgers(...).map((ledger) => ledger.account)
 ```
 
 One `listTransactionsByAccount` call per account, grouped by `walletId`, each
@@ -108,9 +108,9 @@ queries become 1 and 3 inserts become 1. It stays one insert **per account** —
 of unrelated accounts into one write buys nothing at three children.
 `getWalletsForAccount` has no caller outside `withDerivedWallets` and its own
 tests, so the refactor is contained: it stops being exported, and its body becomes
-`accountLedgers`' per-account branch. The one existing test file it rewrites is
-`src/lib/__tests__/account-dashboard.test.ts`, which exercises
-`getWalletsForAccount` directly.
+`settledLedgers`' per-account branch. The one existing test file it rewrites
+exercised `getWalletsForAccount` directly; it moves with the code, from
+`account-dashboard` to `src/lib/__tests__/account-ledgers.test.ts`.
 
 Three details the grouping has to get right that the current per-wallet loop
 cannot get wrong:
@@ -148,8 +148,8 @@ and has no reason to read the whole account.
 
 **Every store returns the same order: oldest first.** `listByAccount` and
 `listByWallet` both sort by `occurred_at, created_at, id` — postgres in SQL, the
-memory and json-file repositories through one shared `byOccurrence`
-(`src/db/transactions.ts`) — so dev (json-file) and prod (postgres) hand back the
+memory and json-file repositories through one shared `oldestFirst`
+(`src/db/transaction-order.ts`) — so dev (json-file) and prod (postgres) hand back the
 same rows in the same order. The derivations still do not lean on it:
 `balance-series` is independent of order and `transaction-rows` sorts newest
 first for display. The index covers the `account_id` lookup, not the sort, so
@@ -589,7 +589,7 @@ day resolving to one balance, ordering within a day, filters, and the empty
 cases. The one-day and zero-day series get their own tests, since the path
 builder and the extent both degenerate there. Store tests cover `listByAccount`
 in all three implementations, with the live-database ones as `*.e2e.ts`; the
-`accountLedgers` refactor rewrites `src/lib/__tests__/account-dashboard.test.ts`,
+`settledLedgers` refactor rewrites `src/lib/__tests__/account-ledgers.test.ts`,
 the only existing test file it touches.
 
 Four of those are not obvious from the list, and are named because they are the
@@ -637,8 +637,8 @@ plan's to choose.
    passes do: a ratio per token per surface in the body. The chart PR cannot ship a
    readable line without them, and they cannot land one at a time without
    `midnight-blue` drawing two lines the same colour.
-2. **The `accountLedgers` refactor comes before anything that reads a ledger.**
-   It changes `src/lib/account-dashboard.ts` and the store contract under `/` and
+2. **The `settledLedgers` refactor comes before anything that reads a ledger.**
+   It changes `src/lib/account-ledgers.ts` and the store contract under `/` and
    `/method`, which both keep their behaviour; landing it alone keeps that
    regression surface separate from the new screen.
 3. **`TRANSACTIONS_ROUTE` reaches `MENU_SCREENS` only once the route renders.**

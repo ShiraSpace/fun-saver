@@ -47,7 +47,7 @@ describe('PostgresTransactions', () => {
     expect(bRows.map((row) => row.id)).toEqual([txId('b1')]);
   });
 
-  it('lists an account across its wallets and never another account', async () => {
+  it('gathers every wallet of one child’s history, and none of another child’s', async () => {
     const ledger = mockTransactions.map((row) => ({
       ...row,
       id: txId(row.id),
@@ -63,7 +63,7 @@ describe('PostgresTransactions', () => {
     expect(new Set(rows)).toEqual(new Set(ledger));
   });
 
-  it('returns an account oldest first, ties broken by write time', async () => {
+  it('tells the history in the order it happened, same-day entries in the order they were made', async () => {
     await store.insertTransactions([
       createMockTransaction({
         id: txId('evening'),
