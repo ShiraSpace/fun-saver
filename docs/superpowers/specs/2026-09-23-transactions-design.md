@@ -5,7 +5,8 @@
 > review that measured the colour table it had only asserted and re-did its
 > payload arithmetic. `sunshine-quest`'s chart-line colours settled 2026-09-23
 > in PR 1 (the plan's decision A).
-> Implementation in progress; PR 1, the chart-line colour tokens, merged as #122.
+> Implementation in progress; PR 1, the chart-line colour tokens, merged as #122;
+> PR 2, the whole-ledger store read, as #125; PR 3, the shared read, as #129.
 > Mockup: `mockups/account-summary/transactions.html` + `account-summary.js` —
 > one screen, no competing variants; the controls beneath it are details inside
 > that screen. The mockup is the specification of record for anything this
@@ -102,6 +103,8 @@ One `listTransactionsByAccount` call per account, grouped by `walletId`, each
 wallet settled through `addDailyInterest`, accrued rows inserted in **one** write.
 The returned `transactions` are the **settled** set — stored rows plus the rows
 just accrued — because the screen must not render history one settlement behind.
+They come back oldest first, the rows just accrued sorted in, so the first visit
+reads in the same order as every later one.
 `/` and `/method` keep their current signature and get faster: per account, 3
 queries become 1 and 3 inserts become 1. It stays one insert **per account** —
 `withDerivedWallets` still maps over accounts — because batching the settlement
