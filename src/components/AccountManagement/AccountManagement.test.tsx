@@ -4,9 +4,7 @@ import type { AccountNavigation } from '@/hooks/use-account-navigation';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
-import { THEME_COOKIE } from '@/lib/cookies';
-import { captureCookies } from '@/test-utils/cookies';
-import { DEFAULT_THEME_ID, THEME_ID, type ThemeId } from '@/theme/registry';
+import { DEFAULT_THEME_ID, type ThemeId } from '@/theme/registry';
 import { AccountManagement } from './AccountManagement';
 import { APP_MODE } from './app-mode-context';
 
@@ -86,20 +84,6 @@ describe('AccountManagement', () => {
     it('fills it with the account being edited', () => {
       expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(
         mockDerivedAccount.name
-      );
-    });
-  });
-
-  describe('remembering the theme for the next cold load', () => {
-    const written = captureCookies();
-
-    beforeEach(() => {
-      renderManagement({}, THEME_ID.midnightBlue);
-    });
-
-    it('stores the theme of the account on screen', () => {
-      expect(written).toContainEqual(
-        expect.stringContaining(`${THEME_COOKIE}=${THEME_ID.midnightBlue}`)
       );
     });
   });
