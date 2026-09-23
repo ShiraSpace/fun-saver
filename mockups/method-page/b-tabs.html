@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — «השיטה» · חלופה B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root, :root[data-theme='sunshine-quest'] {
+  --textOnPrimary:#FFFFFF; --surface:#FFFFFF;
+  --textMuted:#8A7AA7; --textStrong:#3A1F5A;
+  --divider:#F2D9D2; --softBg:#FFF8E0; --softBorder:#FFD23F; --softText:#7A5A0A;
+  --depositBg:#FFF6E0; --gainText:#2E7D32; --gainSoftBg:#E1F4E5;
+  --alert:#E5484D; --alertSoftBg:#FDECEC;
+  --primary:#6B2C8E; --accentSoft:#FFF1D9;
+  --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+  --actionButton:linear-gradient(#8A3AAE,#6B2C8E);
+  --potSavings:linear-gradient(135deg,#FFE6B0,#FFC34D);
+  --potSpending:linear-gradient(135deg,#FFD8C7,#FF8A4C);
+  --potGood:linear-gradient(135deg,#FBC4DA,#E94E89);
+  --arcSavings:#FFC34D; --arcSpending:#FF8A4C; --arcGood:#E94E89; --arcTrack:#F3ECE4;
+}
+:root[data-theme='jungle-quest'] {
+  --textOnPrimary:#FFFFFF; --surface:#FFFDF5;
+  --textMuted:#5C7A6E; --textStrong:#1B4332;
+  --divider:#DDE7CC; --softBg:#F3F7E4; --softBorder:#B5D94C; --softText:#4A6A1E;
+  --depositBg:#F3F7E4; --gainText:#3A7D2E; --gainSoftBg:#E4F2D9;
+  --alert:#C1421F; --alertSoftBg:#FBE9E2;
+  --primary:#2A9D8F; --accentSoft:#EAF3DC;
+  --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+  --actionButton:linear-gradient(#3AB3A3,#2A9D8F);
+  --potSavings:linear-gradient(135deg,#52B69A,#2A9D8F);
+  --potSpending:linear-gradient(135deg,#B5D94C,#90BE6D);
+  --potGood:linear-gradient(135deg,#F4A261,#E76F51);
+  --arcSavings:#2A9D8F; --arcSpending:#90BE6D; --arcGood:#E76F51; --arcTrack:#E8EFDC;
+}
+:root[data-theme='midnight-blue'] {
+  --textOnPrimary:#FFFFFF; --surface:#141B24;
+  --textMuted:#8A96A8; --textStrong:#ECF1F8;
+  --divider:#1E2A40; --softBg:#121E36; --softBorder:#3B82F6; --softText:#93C5FD;
+  --depositBg:#111B30; --gainText:#34D399; --gainSoftBg:#0E2E2A;
+  --alert:#F87171; --alertSoftBg:#2A1518;
+  --primary:#3B82F6; --accentSoft:#132445;
+  --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  --actionButton:linear-gradient(#60A5FA,#3B82F6);
+  --potSavings:linear-gradient(135deg,#1E40AF,#172554);
+  --potSpending:linear-gradient(135deg,#2563EB,#1E40AF);
+  --potGood:linear-gradient(135deg,#4338CA,#312E81);
+  --arcSavings:#1E40AF; --arcSpending:#60A5FA; --arcGood:#818CF8; --arcTrack:#1E2A40;
+}
+/* TYPE_SCALE: display 48 / amount 38 / title 22 / heading 18 / body 15 / label 12 */
+
+* { box-sizing:border-box; }
+body { margin:0; padding:24px 20px 60px; background:#20242c; color:#fff;
+  font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
+.sub { color:#9aa3b2; font-size:13px; line-height:1.6; margin:0 0 18px; max-width:760px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px; }
+.controls button { font-family:Rubik,sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+  padding:7px 14px; border-radius:999px; border:1.5px solid #3a4150; background:#2a303a; color:#dfe4ec; }
+.controls button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff; }
+.controls button:focus-visible { outline:2px solid #FFD23F; outline-offset:2px; }
+
+.rack { display:flex; gap:26px; flex-wrap:wrap; align-items:flex-start; }
+.variant { display:flex; flex-direction:column; gap:10px; }
+.vhead { max-width:392px; }
+.vhead h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:0 0 4px; color:#fff; }
+.vhead p { margin:0; font-size:12.5px; line-height:1.65; color:#9aa3b2; }
+.vhead .tag { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.06em;
+  padding:2px 8px; border-radius:999px; background:#3a4150; color:#dfe4ec; margin-bottom:6px; }
+
+.phone { width:392px; height:760px; overflow-y:auto; border-radius:30px; background:var(--screen);
+  box-shadow:0 18px 40px rgba(0,0,0,.45); font-family:Rubik,sans-serif; direction:rtl;
+  scrollbar-width:thin; }
+.col { display:flex; flex-direction:column; gap:14px; padding:14px 13px 40px; }
+
+.header { display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--surface);
+  border-radius:18px; box-shadow:0 4px 0 rgba(0,0,0,.06); color:var(--textStrong); }
+.burger { width:22px; display:flex; flex-direction:column; gap:4px; }
+.burger i { height:2.5px; border-radius:2px; background:var(--textStrong); display:block; }
+.header h3 { font-family:Fredoka,Rubik,sans-serif; font-size:18px; margin:0; font-weight:600; }
+
+.card { background:var(--surface); border-radius:18px; padding:16px 16px 18px;
+  box-shadow:0 4px 0 rgba(0,0,0,.06); color:var(--textStrong); }
+.card.tight { padding:13px 14px 14px; }
+.eyebrow { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.num { width:24px; height:24px; flex:none; border-radius:999px; background:var(--actionButton);
+  color:var(--textOnPrimary); font-family:Fredoka,Rubik,sans-serif; font-size:13px; font-weight:600;
+  display:flex; align-items:center; justify-content:center; }
+.card h4 { font-family:Fredoka,Rubik,sans-serif; font-size:18px; margin:0; font-weight:600; }
+.card p { font-size:15px; line-height:1.75; margin:0 0 10px; color:var(--textStrong); }
+.card p:last-child { margin-bottom:0; }
+.card p.muted { color:var(--textMuted); font-size:13.5px; }
+.lede { font-size:13px; color:var(--textMuted); line-height:1.6; margin:0 0 14px; }
+
+.quote { background:var(--softBg); border-inline-start:4px solid var(--softBorder);
+  border-radius:12px; padding:12px 13px; margin:10px 0; }
+.quote p { font-size:13.5px; line-height:1.7; color:var(--softText); margin:0; }
+.quote .src { display:block; margin-top:7px; font-size:11px; font-weight:600; opacity:.75; }
+
+.pots { display:flex; gap:9px; }
+.pot { flex:1; border-radius:14px; padding:11px 9px; text-align:center; color:#fff; }
+.pot.s { background:var(--potSavings); } .pot.p { background:var(--potSpending); }
+.pot.g { background:var(--potGood); }
+.pot .emoji { font-size:21px; display:block; }
+.pot .nm { font-size:12px; font-weight:700; display:block; margin-top:3px; }
+.pot .pc { font-family:Fredoka,Rubik,sans-serif; font-size:17px; font-weight:600; display:block; }
+.pot.s, .pot.p, .pot.g { color:#4A2A00; }
+:root[data-theme='midnight-blue'] .pot.s,
+:root[data-theme='midnight-blue'] .pot.p,
+:root[data-theme='midnight-blue'] .pot.g { color:#ECF1F8; }
+
+table { width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;
+  font-variant-numeric:tabular-nums; }
+th, td { text-align:start; padding:7px 6px; border-bottom:1px solid var(--divider); }
+th { font-size:11px; letter-spacing:.05em; color:var(--textMuted); font-weight:600; }
+td.n { font-weight:600; }
+.scroller { overflow-x:auto; }
+
+.rule { display:flex; gap:9px; align-items:flex-start; padding:9px 0;
+  border-bottom:1px solid var(--divider); }
+.rule:last-child { border-bottom:none; }
+.rule .k { font-size:18px; flex:none; line-height:1.3; }
+.rule .t { font-size:14.5px; line-height:1.6; }
+.rule .t b { font-weight:700; }
+
+.say { border-radius:12px; padding:10px 12px; margin:8px 0; font-size:14px; line-height:1.7; }
+.say.no { background:var(--alertSoftBg); color:var(--alert); }
+.say.yes { background:var(--gainSoftBg); color:var(--gainText); }
+
+details { border-radius:14px; background:var(--surface); box-shadow:0 4px 0 rgba(0,0,0,.06);
+  color:var(--textStrong); overflow:hidden; }
+details + details { margin-top:10px; }
+summary { list-style:none; cursor:pointer; padding:14px 16px; display:flex; align-items:center;
+  gap:10px; font-family:Fredoka,Rubik,sans-serif; font-size:16px; font-weight:600; }
+summary::-webkit-details-marker { display:none; }
+summary:focus-visible { outline:2px solid var(--softBorder); outline-offset:-2px; }
+summary .chev { margin-inline-start:auto; font-size:13px; color:var(--textMuted); transition:transform .18s; }
+details[open] summary .chev { transform:rotate(180deg); }
+details .body { padding:0 16px 16px; }
+summary .hint { font-family:Rubik,sans-serif; font-size:11.5px; font-weight:500; color:var(--textMuted); }
+
+.why { font-size:12.5px; margin-top:6px; }
+.why summary { padding:0; font-family:Rubik,sans-serif; font-size:12.5px; font-weight:600;
+  color:var(--primary); }
+.why .body { padding:8px 0 0; }
+.why { background:none; box-shadow:none; }
+
+.srcs { font-size:12px; line-height:1.75; color:var(--textMuted); padding-inline-start:18px; margin:0; }
+.srcs li { margin-bottom:7px; }
+.srcs a { color:var(--primary); word-break:break-word; }
+
+.banner { border-radius:18px; padding:16px; background:var(--actionButton);
+  color:var(--textOnPrimary); box-shadow:0 4px 0 rgba(0,0,0,.12); }
+.banner h4 { font-family:Fredoka,Rubik,sans-serif; font-size:18px; margin:0 0 6px; font-weight:600; }
+.banner p { font-size:14px; line-height:1.7; margin:0; opacity:.95; }
+.banner .pill { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.05em;
+  background:rgba(255,255,255,.22); padding:3px 9px; border-radius:999px; margin-bottom:8px; }
+
+.chk { display:flex; gap:10px; align-items:flex-start; padding:11px 0;
+  border-bottom:1px solid var(--divider); }
+.chk:last-of-type { border-bottom:none; }
+.chk .box { width:19px; height:19px; flex:none; border-radius:6px; border:2px solid var(--softBorder);
+  margin-top:2px; }
+.chk .box.done { background:var(--softBorder); position:relative; }
+.chk .box.done::after { content:'✓'; position:absolute; inset:0; display:flex; align-items:center;
+  justify-content:center; font-size:12px; font-weight:700; color:var(--softText); }
+.chk .q { font-size:14.5px; font-weight:600; line-height:1.5; }
+.chk .a { font-size:13px; color:var(--textMuted); line-height:1.6; margin-top:2px; }
+.chk .a b { color:var(--textStrong); }
+
+/* ── D: three distinct information formats ───────────────────────────
+   .card p   → regular explanation (plain, on the white card)
+   .quote    → research reference (filled, rail, cited)
+   .talk     → what to SAY to the child (outlined speech bubble)
+   .todo     → things to decide / communicate / set in the app        */
+.talk { background:var(--surface); border:2px solid var(--primary); border-radius:16px;
+  padding:12px 13px; margin:12px 0 18px; position:relative; }
+.talk::after { content:''; position:absolute; bottom:-9px; inset-inline-start:26px;
+  width:14px; height:14px; background:var(--surface);
+  border-inline-start:2px solid var(--primary); border-bottom:2px solid var(--primary);
+  transform:rotate(-45deg); }
+.talk .lbl { display:flex; align-items:center; gap:6px; font-size:10.5px; font-weight:700;
+  letter-spacing:.07em; color:var(--primary); margin-bottom:9px; }
+.talk .line { font-size:14px; line-height:1.75; color:var(--textStrong); }
+.talk .line + .line { margin-top:9px; }
+.talk .line.no { color:var(--textMuted); text-decoration:line-through;
+  text-decoration-color:var(--alert); text-decoration-thickness:1.5px; }
+
+.goal { border-radius:18px; padding:17px 16px; background:var(--surface); color:var(--textStrong);
+  box-shadow:0 4px 0 rgba(0,0,0,.06); border-top:5px solid var(--softBorder); }
+.goal .pill { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.07em;
+  background:var(--softBg); color:var(--softText); padding:3px 9px; border-radius:999px;
+  margin-bottom:9px; }
+.goal h4 { font-family:Fredoka,Rubik,sans-serif; font-size:19px; margin:0 0 9px; font-weight:600; }
+.goal .big { font-size:15px; line-height:1.8; margin:0 0 14px; }
+.goal .big b { color:var(--primary); }
+.goal .outs { display:flex; flex-direction:column; gap:9px; }
+.goal .out { display:flex; gap:9px; align-items:flex-start; font-size:13.5px; line-height:1.6;
+  color:var(--textMuted); }
+.goal .out b { color:var(--textStrong); font-weight:600; }
+
+.todo { background:var(--depositBg); border-radius:12px; padding:11px 12px 6px; margin-top:12px; }
+.todo .lbl { font-size:10.5px; font-weight:700; letter-spacing:.07em; color:var(--softText);
+  margin-bottom:2px; }
+.todo .chk { padding:8px 0; border-bottom:1px solid var(--divider); }
+.todo .chk:last-child { border-bottom:none; }
+.todo .chk .q { font-size:13.5px; }
+.todo .chk .a { font-size:12.5px; }
+
+/* D: goal + summary, one purple block with a divider */
+.intro { border-radius:18px; padding:17px 16px; background:var(--actionButton);
+  color:var(--textOnPrimary); box-shadow:0 4px 0 rgba(0,0,0,.12); }
+.intro .pill { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.07em;
+  background:rgba(255,255,255,.2); padding:3px 9px; border-radius:999px; margin-bottom:10px; }
+.intro h4 { font-family:Fredoka,Rubik,sans-serif; font-size:19px; margin:0 0 12px; font-weight:600; }
+.intro .goals { display:flex; flex-direction:column; gap:13px; }
+.intro .g { display:flex; gap:10px; align-items:flex-start; }
+.intro .g .ic { font-size:20px; line-height:1.35; flex:none; }
+.intro .g .tx { font-size:14px; line-height:1.7; }
+.intro .g .tx .note { display:block; font-size:12.5px; opacity:.82; margin-top:3px; }
+.intro .also { font-size:12.5px; line-height:1.65; opacity:.82; margin:13px 0 0; }
+.intro hr { border:none; border-top:1px solid rgba(255,255,255,.25); margin:16px 0; }
+.intro .brief { font-family:Fredoka,Rubik,sans-serif; font-size:18px; font-weight:600;
+  margin:0 0 5px; }
+.intro .briefsub { font-size:13px; line-height:1.65; opacity:.88; margin:0; }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important; } }
+/* ── סטטוס ההחלטה ─────────────────────────────────────────────── */
+.crumb { max-width:392px; margin:0 0 14px; font-size:12.5px; }
+.crumb a { color:#9aa3b2; text-decoration:none; border-bottom:1px solid #3a3a42; }
+.crumb a:hover { color:#fff; }
+.status { display:flex; align-items:flex-start; gap:10px; max-width:392px;
+  margin:0 0 12px; padding:9px 11px; border-radius:10px; font-size:12.5px; line-height:1.65; }
+.status .badge { flex-shrink:0; font-weight:800; font-size:11px; letter-spacing:.06em;
+  padding:3px 8px; border-radius:999px; white-space:nowrap; }
+.status p { margin:0; }
+.status code, .status a { font-size:11.5px; color:inherit; }
+.status.chosen { background:#12301c; color:#b7f0c8; border:1px solid #2f7a4a; }
+.status.chosen .badge { background:#2f7a4a; color:#eafff1; }
+.status.rejected { background:#26262b; color:#9aa3b2; border:1px solid #3a3a42; }
+.status.rejected .badge { background:#3a3a42; color:#c3c9d4; }
+.status.info { background:#1b2740; color:#a8c0e8; border:1px solid #33507f; }
+.status.info .badge { background:#33507f; color:#dbe8ff; }
+</style>
+</head>
+<body>
+<p class="crumb"><a href="../index.html">← כל המוקאפים</a> · עמוד «השיטה» — חלופה B מתוך חמש</p>
+<h1>fun-saver — עמוד «השיטה» · חלופה B</h1>
+<div class="status rejected"><span class="badge">נדחה</span><p>נדחתה 2026-09-15 לטובת חלופה E. נשמרת כתיעוד — התוכנית מורה לא למחוק את א׳–ד׳. · <a href="../../.plans/2026-09-15-method-page.md"><code>.plans/2026-09-15-method-page.md</code></a></p></div>
+<div class="controls">
+  <button type="button" data-t="sunshine-quest" aria-pressed="true">☀️ Sunshine</button>
+  <button type="button" data-t="jungle-quest" aria-pressed="false">🌴 Jungle</button>
+  <button type="button" data-t="midnight-blue" aria-pressed="false">🌙 Midnight</button>
+</div>
+<div class="rack">
+<div class="variant">
+  <div class="vhead">
+    <span class="tag">B</span>
+    <h2>כרטיסיות — שש, מקופלות</h2>
+    <p>כל העמוד נכנס למסך אחד. ההורה רואה מייד מה יש, ופותח רק מה שמעניין. סעיף 3 (ההבטחה) פתוח כברירת מחדל כי הוא הקריטי. חיסרון: פחות "מספר סיפור", יותר תפריט.</p>
+  </div>
+  <div class="phone"><div class="col">
+    <div class="header"><span class="burger"><i></i><i></i><i></i></span><h3>השיטה</h3></div>
+
+    <div class="banner">
+      <span class="pill">בקצרה</span>
+      <h4>שלוש קופות. סכום קבוע. יום קבוע.</h4>
+      <p>שש החלטות ואתם בפנים. כל מספר בעמוד הזה מגיע ממחקר — הקישורים למטה.</p>
+    </div>
+
+    <details>
+      <summary><span class="num">1</span>למה לא קופה אחת<span class="chev">▾</span></summary>
+      <div class="body">
+        <p>כשכל הכסף יושב במספר אחד, אין מה ללמוד ממנו. הילד מוציא, ורואה מספר קטן יותר. אין רגע שבו הוא צריך לבחור.</p>
+        <div class="quote"><p>אותו סכום חיסכון, במעטפה אחת מול שתי מעטפות סגורות. שתי המעטפות — <b>72% יותר חיסכון</b>.<span class="src">Soman &amp; Cheema, JMR, 2011</span></p></div>
+        <p class="muted">לכן אין באפליקציה העברה בין קופות.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">2</span>שלוש הקופות<span class="chev">▾</span></summary>
+      <div class="body">
+        <div class="pots">
+          <div class="pot p"><span class="emoji">🛍️</span><span class="nm">הוצאות</span><span class="pc">50%</span></div>
+          <div class="pot s"><span class="emoji">🐷</span><span class="nm">חיסכון</span><span class="pc">40%</span></div>
+          <div class="pot g"><span class="emoji">💛</span><span class="nm">מעשים טובים</span><span class="pc">10%</span></div>
+        </div>
+        <p style="margin-top:12px"><b>הוצאות</b> — הכסף של עכשיו, וזה הכסף שנגמר.</p>
+        <p><b>חיסכון</b> — הכסף של אחר כך. כאן ההמתנה, וכאן נוספים מטבעות.</p>
+        <p><b>מעשים טובים</b> — הכסף של מישהו אחר. עשירית.</p>
+      </div>
+    </details>
+
+    <details open>
+      <summary><span class="num">3</span>ההבטחה <span class="hint">הכי חשוב</span><span class="chev">▾</span></summary>
+      <div class="body">
+        <p>ילד מחכה לכסף של מחר רק אם הוא מאמין שמחר הכסף יגיע. אם הוא מגיע לפעמים, או נלקח כשמתעצבנים — הילד לומד לבזבז הכל עכשיו. והוא צודק.</p>
+        <div class="quote"><p>ילדים שפגשו מבוגר שלא קיים הבטחה <b>ויתרו על ההמתנה כמעט מיד</b>.<span class="src">Kidd, Palmeri &amp; Aslin, Cognition, 2013</span></p></div>
+        <div class="rule"><span class="k">📅</span><span class="t">יום קבוע, בלי שצריך לבקש.</span></div>
+        <div class="rule"><span class="k">🚫</span><span class="t">לא לוקחים כסף כעונש. אף פעם.</span></div>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">4</span>מה צריך להחליט <span class="hint">6</span><span class="chev">▾</span></summary>
+      <div class="body">
+        <div class="rule"><span class="k">💰</span><span class="t"><b>כמה?</b> ₪5–15 לשבוע בגיל 5–7.</span></div>
+        <div class="rule"><span class="k">🗓️</span><span class="t"><b>כל כמה זמן?</b> שבועי עד גיל 9.</span></div>
+        <div class="rule"><span class="k">📌</span><span class="t"><b>איזה יום?</b> לא משנה איזה — משנה שקבוע.</span></div>
+        <div class="rule"><span class="k">🥧</span><span class="t"><b>חלוקה?</b> 50/40/10, החלטה של ערכים.</span></div>
+        <div class="rule"><span class="k">🧹</span><span class="t"><b>מטלות?</b> לא לקשור.</span></div>
+        <div class="rule"><span class="k">🆘</span><span class="t"><b>נגמר באמצע?</b> לא ממלאים מראש.</span></div>
+        <div class="scroller"><table style="margin-top:12px">
+          <tr><th>₪30 לשבוע</th><th>שבוע</th><th>חודש</th></tr>
+          <tr><td>🛍️ הוצאות</td><td class="n">₪15</td><td class="n">₪65</td></tr>
+          <tr><td>🐷 חיסכון</td><td class="n">₪12</td><td class="n">₪52</td></tr>
+          <tr><td>💛 מעשים טובים</td><td class="n">₪3</td><td class="n">₪13</td></tr>
+        </table></div>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">5</span>מה אומרים לילד<span class="chev">▾</span></summary>
+      <div class="body">
+        <p><b>כשנגמר הכסף באמצע השבוע</b></p>
+        <div class="say no">❌ "אמרתי לך לא לבזבז את הכל."</div>
+        <div class="say yes">✅ "נגמר. זה מרגיש רע, ואני מבין. ביום שישי יגיע עוד."</div>
+        <p style="margin-top:12px"><b>כשרוצה לקחת מהחיסכון</b></p>
+        <div class="say yes">✅ "אני שומר עליו בשבילך, בשביל מה שרצית."</div>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">6</span>מה השיטה לא עושה<span class="chev">▾</span></summary>
+      <div class="body">
+        <p><b>זה לא קסם.</b> חינוך פיננסי משפר ידע הרבה יותר מהתנהגות.</p>
+        <p><b>דמי כיס לבדם לא מלמדים.</b> מה שמלמד זה המבנה סביבם.</p>
+        <p><b>מסך זה לא מזומן.</b> בגיל הזה תנו את כסף ההוצאות במזומן ביד.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>המקורות <span class="hint">16</span><span class="chev">▾</span></summary>
+      <div class="body"><ol class="srcs">
+        <li>Soman &amp; Cheema, JMR 48, 2011</li>
+        <li>Kidd, Palmeri &amp; Aslin, Cognition 126(1), 2013</li>
+        <li class="muted">…ועוד 14</li>
+      </ol></div>
+    </details>
+  </div></div>
+</div>
+</div>
+<script>
+const root = document.documentElement;
+document.querySelectorAll('.controls button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    root.setAttribute('data-theme', btn.dataset.t);
+    document.querySelectorAll('.controls button').forEach((b) =>
+      b.setAttribute('aria-pressed', String(b === btn)));
+  });
+});
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>fun-saver — Login (Google)</title>
+<title>fun-saver — התחברות · 2 · מתחברים…</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -127,15 +127,41 @@
   }
   .caption b { color:#3A1F5A; }
   .caption code { background:#F3EEF8; padding:1px 5px; border-radius:5px; font-size:12px; }
+  /* ── סטטוס ההחלטה וניווט בין השלבים ──────────────────────────── */
+  .crumb { margin:0 0 14px; font-size:12.5px; color:#6E6382; text-align:center; }
+  .crumb a { color:#6B2C8E; text-decoration:none; border-bottom:1px solid #C9BBDD; }
+  .crumb a:hover { color:#3A1F5A; }
+  .status { display:flex; align-items:flex-start; gap:10px; max-width:520px;
+    margin:0 auto 14px; padding:9px 12px; border-radius:10px;
+    font-size:12.5px; line-height:1.65; text-align:start; }
+  .status .badge { flex-shrink:0; font-weight:800; font-size:11px; letter-spacing:.06em;
+    padding:3px 8px; border-radius:999px; white-space:nowrap; }
+  .status p { margin:0; }
+  .status code, .status a { font-size:11.5px; color:inherit; }
+  .status.chosen { background:#EAF7EE; color:#1E5B32; border:1px solid #9AD3AE; }
+  .status.chosen .badge { background:#2F7A4A; color:#fff; }
+  .status.rejected { background:#F2F2F4; color:#5A5A66; border:1px solid #D6D6DE; }
+  .status.rejected .badge { background:#6E6E7A; color:#fff; }
+  .status.info { background:#F3EEF8; color:#4A1A6E; border:1px solid #C9BBDD; }
+  .status.info .badge { background:#6B2C8E; color:#fff; }
+  .controls a {
+    font-family:'Rubik',sans-serif; font-size:13px; font-weight:600; text-decoration:none;
+    padding:8px 14px; border-radius:999px; border:1.5px solid #C9BBDD;
+    background:#fff; color:#4A1A6E;
+  }
+  .controls a[aria-current='page'] { background:#6B2C8E; color:#fff; border-color:#6B2C8E; }
 </style>
 </head>
 <body>
 
+<p class="crumb"><a href="../index.html">← כל המוקאפים</a> · התחברות — שלב 2 מתוך 4</p>
+<div class="status info"><span class="badge">שלב 2/4</span><p>ארבעת המסכים הם <b>שלבים בזרימה אחת</b>, לא חלופות מתחרות — אין כאן «נבחר» ו«נדחה». כולם נבנו. תיעוד: <a href="../../.plans/2026-09-12-google-login.md"><code>.plans/2026-09-12-google-login.md</code></a></p></div>
+
 <div class="controls">
-  <button data-state="signedOut" aria-pressed="true">1 · מסך התחברות</button>
-  <button data-state="signingIn" aria-pressed="false">2 · מתחברים…</button>
-  <button data-state="firstTime" aria-pressed="false">3 · משתמש חדש</button>
-  <button data-state="returning" aria-pressed="false">4 · משתמש חוזר</button>
+  <a href="1-signed-out.html">1 · מסך התחברות</a>
+  <a href="2-signing-in.html" aria-current="page">2 · מתחברים…</a>
+  <a href="3-first-time.html">3 · משתמש חדש</a>
+  <a href="4-returning.html">4 · משתמש חוזר</a>
   <span class="sep"></span>
   <button data-theme-btn="sunshine-quest" aria-pressed="true">sunshine</button>
   <button data-theme-btn="jungle-quest" aria-pressed="false">jungle</button>
@@ -144,68 +170,10 @@
 
 <div class="phone">
 
-  <!-- 1 — signed out -->
-  <div class="screen" data-screen="signedOut" data-active="true">
-    <div class="pig">🐷</div>
-    <h1 class="wordmark">Fun Saver</h1>
-    <p class="tagline">החיסכון של הילדים, במקום אחד</p>
-    <div class="card">
-      <h2>התחברות</h2>
-      <p>התחברו עם חשבון Google כדי לראות את החשבונות שלכם מכל מכשיר.</p>
-      <button class="google">
-        <span class="g">
-          <svg viewBox="0 0 48 48" aria-hidden="true">
-            <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.1 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.7 9.5 24 9.5z"/>
-            <path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9.1h12.4c-.5 2.9-2.2 5.3-4.6 7l7.2 5.6c4.2-3.9 6.6-9.7 6.6-16.6z"/>
-            <path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-2.9-.8-4.5s.3-3.1.8-4.5l-7.8-6.1C.9 16.7 0 20.2 0 24s.9 7.3 2.6 10.4l7.8-5.7z"/>
-            <path fill="#34A853" d="M24 48c6.1 0 11.3-2 15-5.4l-7.2-5.6c-2 1.4-4.6 2.2-7.8 2.2-6.3 0-11.7-3.7-13.6-9.1l-7.8 5.7C6.5 42.6 14.6 48 24 48z"/>
-          </svg>
-        </span>
-        המשך עם Google
-      </button>
-    </div>
-    <p class="fineprint">בכניסה ראשונה ניצור לכם חשבון משתמש אוטומטית. אנחנו שומרים רק שם ואימייל.</p>
-  </div>
-
-  <!-- 2 — signing in -->
-  <div class="screen" data-screen="signingIn">
+  <div class="screen" data-screen="signingIn" data-active="true">
     <div class="pig" data-oinking="true">🐷</div>
     <div class="spinner"></div>
     <p class="tagline">רגע, מתחברים…</p>
-  </div>
-
-  <!-- 3 — first-time user -->
-  <div class="screen" data-screen="firstTime">
-    <div class="pig">🐷</div>
-    <h1 class="wordmark">ברוכים הבאים!</h1>
-    <div class="card">
-      <h2>שלום אלי 👋</h2>
-      <p>יצרנו לכם חשבון משתמש. עכשיו אפשר להוסיף את החשבון הראשון.</p>
-      <button class="google" style="background:var(--actionButton)">צור חשבון</button>
-      <div class="note">
-        <b>מה קרה מאחורי הקלעים:</b><br />
-        נוצרה שורה ב־<code>users</code> עם ה־Google sub שלכם.<br />
-        טרם קיימות שורות ב־<code>account_users</code>.
-      </div>
-    </div>
-  </div>
-
-  <!-- 4 — returning user -->
-  <div class="screen" data-screen="returning">
-    <div class="pig">🐷</div>
-    <h1 class="wordmark">שוב שלום, אלי</h1>
-    <p class="tagline">החשבונות שלכם מחכים</p>
-    <div class="avatars">
-      <div class="chip"><span class="face">🦊</span> אלי</div>
-      <div class="chip"><span class="face">🐨</span> מושית</div>
-    </div>
-    <div class="card">
-      <div class="note">
-        <b>מה קרה מאחורי הקלעים:</b><br />
-        ה־Google sub נמצא ב־<code>users</code> — לא נוצר משתמש חדש.<br />
-        <code>listAccountsForUser</code> החזיר 2 חשבונות דרך <code>account_users</code>.
-      </div>
-    </div>
   </div>
 
 </div>
@@ -218,18 +186,7 @@
 </p>
 
 <script>
-  var screens = document.querySelectorAll('[data-screen]');
-  var stateButtons = document.querySelectorAll('[data-state]');
   var themeButtons = document.querySelectorAll('[data-theme-btn]');
-
-  function show(name) {
-    screens.forEach(function (el) {
-      el.setAttribute('data-active', String(el.getAttribute('data-screen') === name));
-    });
-    stateButtons.forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.getAttribute('data-state') === name));
-    });
-  }
 
   function setTheme(name) {
     document.documentElement.setAttribute('data-theme', name);
@@ -238,15 +195,11 @@
     });
   }
 
-  stateButtons.forEach(function (b) {
-    b.addEventListener('click', function () { show(b.getAttribute('data-state')); });
-  });
   themeButtons.forEach(function (b) {
     b.addEventListener('click', function () { setTheme(b.getAttribute('data-theme-btn')); });
   });
 
   setTheme('sunshine-quest');
-  show('signedOut');
 </script>
 </body>
 </html>
