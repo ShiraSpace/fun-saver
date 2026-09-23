@@ -4,10 +4,10 @@ import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
+import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { AccountPicker } from './AccountPicker';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from './constants';
-import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 
 const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
 
