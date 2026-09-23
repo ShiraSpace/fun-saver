@@ -51,6 +51,10 @@ export class BaseStore implements DataStore {
     return this.transactions.listByWallet(accountId, walletId);
   }
 
+  listTransactionsByAccount(accountId: string): Promise<Transaction[]> {
+    return this.transactions.listByAccount(accountId);
+  }
+
   findUserByProvider(
     provider: AuthProvider,
     providerAccountId: string
