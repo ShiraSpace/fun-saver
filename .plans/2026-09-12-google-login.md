@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-23 (PR 7 merged as #100; PR 15 in review, then 12, 13 and 14)
+## Progress — updated 2026-09-23 (PR 15 merged as #105; PR 12, 13 and 14 are what is left)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -31,9 +31,9 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 12 | —                                                        | `fix/empty-state-sign-out`         | not started — found during PR 7                         |
 | PR 13 | —                                                        | `refactor/required-context`        | not started — found during PR 7                         |
 | PR 14 | —                                                        | `fix/menu-state-on-close`          | not started — found reviewing PR 7                      |
-| PR 15 | —                                                        | `refactor/one-render-helper`       | in review — found during PR 7                           |
+| PR 15 | [#105](https://github.com/ShiraSpace/fun-saver/pull/105) | `refactor/one-render-helper`       | **merged** — `da842b1`                                  |
 
-### PR 7 is open as #100, and review turned up more than it fixed
+### PR 7 merged as #100, and review turned up more than it fixed
 
 PR 9 closed the public hole: `DataStore.listAccounts()` is gone and both pages
 read through `listAccountsForUser` with the id from the session. A stranger who
@@ -1245,7 +1245,7 @@ the pieces that hold state, and they reset on close.
 
 Depends on: PR 7.
 
-### PR 15 — `refactor/one-render-helper` — **in review**
+### PR 15 — `refactor/one-render-helper` — **merged as #105 (`da842b1`)**
 
 `src/test-utils/render.tsx` now exports six ways to render: `render`,
 `renderWithUser`, `renderWithAccounts`, `renderAt`, `renderWithUserAt`,
@@ -1273,6 +1273,33 @@ moving, with each missing-provider throw watched firing against a deliberate
 break.
 
 Depends on: nothing. Worth doing before the next feature adds a seventh helper.
+
+**Merged as #105 (`da842b1`), 679 tests across 127 suites unmoved.** Three things
+it turned up, none of them in this section beforehand:
+
+**Four suites were living off the implicit user.** `renderWithAccounts` called
+`renderWithUser` internally, so `Account`, `Header`, `MenuOverlay` and
+`MenuGlobalScope` were each handed a signed-in user they never asked for — all
+four reach `ProfileSection` through the tree, so all four now name it. That is
+the same defect PR 7 corrected, one layer down. `AppearanceSection` and
+`MenuAccountScope` need no user and pass none.
+
+**`as X[]` asserts where `: X[]` checks.** The theme ids moved behind one
+`THEME_ID` in the registry, and two separate holes came out of it. Writing
+`ThemeId` as the union of `THEME_ID`'s values rather than `keyof typeof THEMES`
+let an id with no registered tokens be a valid `ThemeId`, failing only at runtime
+and leaving `isThemeId` narrowing to a type wider than the object it tests.
+Separately `APPEARANCE_SECTION_CONTENT.themes` carried an inline `as MenuTheme[]`,
+which accepted an unregistered id whichever way `ThemeId` was written — a swatch
+that throws `unknown theme id` the first time a parent taps it. Both are closed;
+the second needed the array lifted to its own annotated const. Neither was caught
+by any suite, and the first shipped in the PR that followed #104, which existed
+to hold the neighbouring contract in the compiler.
+
+**Setup that no suite uses reads as a requirement.** `AppearanceSection` built a
+one-account context with a `jest.fn()` nothing asserted on; both went, and the
+suite stayed at 8/8. `MenuAccountScope`'s override stayed, because rendering with
+the default `currentAccount` fails it. One override site does not earn a factory.
 
 ## Architecture touch points
 
