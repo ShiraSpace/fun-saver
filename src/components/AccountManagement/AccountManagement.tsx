@@ -1,9 +1,11 @@
 'use client';
 
-import { JSX, ReactNode } from 'react';
+import { JSX, ReactNode, useEffect } from 'react';
 import { CreateAccount } from '@/components/CreateAccount';
 import { EditAccount } from '@/components/EditAccount';
 import type { AccountNavigation } from '@/hooks/use-account-navigation';
+import { THEME_COOKIE, writeCookie } from '@/lib/cookies';
+import { useThemeId } from '@/theme/ThemeController';
 import { AppModeProvider } from './app-mode-context';
 import { Overlay } from './AccountManagement.styles';
 
@@ -17,6 +19,11 @@ export function AccountManagement({
   children,
 }: AccountManagementProps): JSX.Element {
   const { mode, setMode, cancel } = navigation;
+  const themeId = useThemeId();
+
+  useEffect((): void => {
+    writeCookie(THEME_COOKIE, themeId);
+  }, [themeId]);
 
   return (
     <AppModeProvider value={{ mode, setMode }}>

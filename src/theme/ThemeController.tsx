@@ -6,6 +6,7 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -31,6 +32,10 @@ export function ThemeController({
   }, []);
 
   const theme = useMemo(() => getThemeTokens(themeId), [themeId]);
+
+  useEffect((): void => {
+    document.documentElement.dataset.theme = themeId;
+  }, [themeId]);
 
   return (
     <ThemeIdContext.Provider value={themeId}>

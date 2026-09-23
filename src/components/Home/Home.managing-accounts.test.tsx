@@ -2,6 +2,7 @@ import { screen, waitFor } from '@/test-utils/render';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
+import { SELECTED_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { cancelForm, nameInput } from '@/test-utils/account-form';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { mockAccount } from '@/test-utils/fixtures';
@@ -21,8 +22,9 @@ const mockPersist = jest.fn();
 const mockCreateAccount = jest.fn();
 const mockUpdateAccount = jest.fn();
 
-jest.mock('./selected-account-cookie', () => ({
-  persistSelectedAccount: (accountId: string): void => mockPersist(accountId),
+jest.mock('@/lib/cookies', () => ({
+  ...jest.requireActual('@/lib/cookies'),
+  writeCookie: (name: string, value: string): void => mockPersist(name, value),
 }));
 
 jest.mock('../CreateAccount/use-create-account', () => ({
@@ -65,14 +67,20 @@ describe('Home — managing accounts', () => {
       expect(
         screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
       ).not.toBeInTheDocument();
-      expect(mockPersist).not.toHaveBeenCalled();
+      expect(mockPersist).not.toHaveBeenCalledWith(
+        SELECTED_ACCOUNT_COOKIE,
+        expect.anything()
+      );
     });
 
     it('selects the new account, persists it and refreshes on submit', async () => {
       submitCreateForm();
 
       await waitFor(() =>
-        expect(mockPersist).toHaveBeenCalledWith(createdAccount.id)
+        expect(mockPersist).toHaveBeenCalledWith(
+          SELECTED_ACCOUNT_COOKIE,
+          createdAccount.id
+        )
       );
       expect(mockRouter.refresh).toHaveBeenCalled();
       await waitFor(() =>

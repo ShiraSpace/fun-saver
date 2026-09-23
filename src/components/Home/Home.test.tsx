@@ -15,13 +15,15 @@ import {
   mockUser,
 } from '@/test-utils/fixtures';
 import type { AccountWithDerivedWallets } from '@/lib/types';
+import { SELECTED_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { openMenu, renderHome } from './home-test-helpers';
 
 const mockPersist = jest.fn();
 
-jest.mock('./selected-account-cookie', () => ({
-  persistSelectedAccount: (accountId: string): void => mockPersist(accountId),
+jest.mock('@/lib/cookies', () => ({
+  ...jest.requireActual('@/lib/cookies'),
+  writeCookie: (name: string, value: string): void => mockPersist(name, value),
 }));
 
 describe('Home', () => {
@@ -76,7 +78,10 @@ describe('Home', () => {
       expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
         mockSecondAccount.name
       );
-      expect(mockPersist).toHaveBeenCalledWith(mockSecondAccount.id);
+      expect(mockPersist).toHaveBeenCalledWith(
+        SELECTED_ACCOUNT_COOKIE,
+        mockSecondAccount.id
+      );
       expect(screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)).toHaveAttribute(
         'data-open',
         'false'
