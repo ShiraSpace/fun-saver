@@ -3,7 +3,7 @@
 import { JSX } from 'react';
 import { useSignedInUser } from '@/components/Home/signed-in-user-context';
 import { ProfilePhoto } from './ProfilePhoto';
-import { useSignOut } from './use-sign-out';
+import { SIGN_OUT_STATUS, useSignOut } from './use-sign-out';
 import { PROFILE_SECTION_CONTENT, PROFILE_SECTION_TEST_IDS } from './constants';
 import {
   Block,
@@ -17,7 +17,9 @@ import {
 
 export function ProfileSection(): JSX.Element {
   const user = useSignedInUser();
-  const { hasSignOutFailed, signOutOfAccount } = useSignOut();
+  const { status, signOutOfAccount } = useSignOut();
+  const isSigningOut = status === SIGN_OUT_STATUS.signingOut;
+  const hasSignOutFailed = status === SIGN_OUT_STATUS.failed;
 
   return (
     <Block data-testid={PROFILE_SECTION_TEST_IDS.strip}>
@@ -32,6 +34,7 @@ export function ProfileSection(): JSX.Element {
         <SignOut
           type="button"
           aria-label={PROFILE_SECTION_CONTENT.signOutLabel}
+          disabled={isSigningOut}
           data-testid={PROFILE_SECTION_TEST_IDS.signOut}
           onClick={(): void => void signOutOfAccount()}
         >

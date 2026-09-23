@@ -96,6 +96,12 @@ export const SignOut = styled.button`
   &:active {
     transform: scale(${MENU_ROW_STYLE.pressScale});
   }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.55;
+    transform: none;
+  }
 `;
 
 export const SignOutError = styled.p`
