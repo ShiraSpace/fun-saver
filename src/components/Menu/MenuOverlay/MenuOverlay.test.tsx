@@ -61,6 +61,18 @@ describe('MenuOverlay', () => {
       );
     });
 
+    it('keeps navigation out of the settings that belong to one account', () => {
+      const strip = screen.getByTestId(NAV_TABS_TEST_IDS.strip);
+
+      expect(strip).toBeInTheDocument();
+      expect(
+        screen.getByTestId(MENU_ACCOUNT_SCOPE_TEST_IDS.block)
+      ).not.toContainElement(strip);
+      expect(
+        screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block)
+      ).not.toContainElement(strip);
+    });
+
     it('offers a way out to the method page', () => {
       expect(screen.getByTestId(NAV_TABS_TEST_IDS.methodTab)).toHaveAttribute(
         'href',
