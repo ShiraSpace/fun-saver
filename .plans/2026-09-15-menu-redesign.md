@@ -55,7 +55,7 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 6    | [#79](https://github.com/ShiraSpace/fun-saver/pull/79) | `feat/menu-account-popover`    | **merged** — `f9d6573` |
 | PR 7    | [#85](https://github.com/ShiraSpace/fun-saver/pull/85) | `feat/menu-edit-under-trigger` | **merged** — `2e49d4e` |
 | PR 8    | [#88](https://github.com/ShiraSpace/fun-saver/pull/88) | `feat/menu-scope-blocks`       | **merged** — `0b12ebf` |
-| PR 9    | —                                                      | `feat/menu-nav-tabs`           | **in flight**          |
+| PR 9    | [#96](https://github.com/ShiraSpace/fun-saver/pull/96) | `feat/menu-nav-tabs`           | **open**               |
 | PR 10   | —                                                      | —                              | planned                |
 | PR 11   | —                                                      | —                              | planned                |
 
