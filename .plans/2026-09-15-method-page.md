@@ -21,9 +21,11 @@ scripts, section 5), #89 (limits, the sources and the citation numbers).
 `accounts` and `initialAccount` props, and #85, #86 and #90 continued the menu
 and login work. #89 branched off `main` as it stood, not off #84.
 
-Two follow-ups outlive the page. The `/method` browser suite is one of them and
-is in flight; **the AA contrast pass on `gradients.actionButton` and pot text —
-decisions 7 and 10, raised together — is the last thing owing.**
+Both follow-ups are now resolved or specced. The `/method` browser suite landed
+as #92. **The AA contrast pass — decisions 7 and 10 — grew past this page once
+every text-on-colour pair was measured, and has its own plan:
+`.plans/2026-09-23-aa-contrast-pass.md`.** It is decided and drawn, not yet
+written.
 
 Worktree `~/Projects/technotronic/fun-saver-method-page`. Each PR branches off
 `main` once the one before it has merged — the stack was rebased twice because
@@ -67,7 +69,10 @@ branches were cut from each other instead.
    and no `opacity` on a themed colour — that is a second, invisible colour
    decision on top of the token's. Spacing, radii and shadows stay literals; no
    scale exists for them.
-7. **The opener keeps `gradients.actionButton` knowingly under AA.** White on it
+7. **The opener keeps `gradients.actionButton` knowingly under AA.**
+   *(Specced out in `.plans/2026-09-23-aa-contrast-pass.md`. The measured
+   numbers below held; what changed is the reach — the same gradient sits under
+   every button in the app, and its drop shadow has to move with it.)* White on it
    is 6.37:1 on sunshine but 2.57:1 on jungle and 2.54:1 on midnight, where
    12–15px prose needs 4.5:1. The mockup renders the purple block and the purple
    numbered pill in all three themes and that is the approved design, so it
@@ -91,7 +96,10 @@ branches were cut from each other instead.
    moved to `src/theme/` for the same reason — `Method/` was reaching into
    `Account/` for it.
 
-10. **Pot text ships under AA, and is raised with decision 7.** `textStrong` on
+10. **Pot text ships under AA, and is raised with decision 7.**
+    *(Specced out in `.plans/2026-09-23-aa-contrast-pass.md`, where it turned
+    out to be the smallest part: outside `WalletTrio` the pot gradients carry an
+    emoji and no text.)* `textStrong` on
     the pot gradients measures 3.33:1 on jungle `potSavings`, 3.58 on jungle
     `potGood` and 3.88 on sunshine `potGood`; the pots' 12px and 18px text needs
     4.5. The mockup's own `#4A2A00` clears neither (3.89 jungle, 3.65 sunshine),
