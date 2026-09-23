@@ -456,11 +456,13 @@ after confirming which Neon branch `DATABASE_URL` points at.
 ## PR 3 — one read serves both the wallets and the ledger
 
 Branch `refactor/account-ledgers`. Spec: "The shared read", delivery order 2.
+
 What ships differs from the steps below: each wallet is settled and derived in
 one pass (`payWalletInterest`, gathered by `payOwedInterest`), so the per-wallet
 split happens once; the names say what the code does; and the tests reuse the
 shared fixtures under names in domain language. The code on the branch is the
 record.
+
 `/` and `/method` keep their behaviour; this PR changes nothing a parent sees.
 
 **Files:**

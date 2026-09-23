@@ -66,9 +66,16 @@ describe('settledLedgers', () => {
     expect(wallets.map((wallet) => wallet.balance)).toEqual([0, 0]);
   });
 
-  it('includes the interest just paid in, so the history is never a day behind', async () => {
+  it('includes the interest just paid in, in the order it happened, so the first visit reads like every later one', async () => {
     const owing = createMockAccount({ wallets: [createMockWallet()] });
-    await store.insertTransactions([createMockTransaction()]);
+    await store.insertTransactions([
+      createMockTransaction(),
+      createMockTransaction({
+        id: 't2',
+        occurredAt: '2026-01-03',
+        createdAt: '2026-01-03T00:00:00.000Z',
+      }),
+    ]);
 
     const [ledger] = await settledLedgers({
       store,
@@ -77,10 +84,11 @@ describe('settledLedgers', () => {
     });
     const saved = await store.listTransactionsByAccount(owing.id);
 
-    expect(new Set(ledger.transactions)).toEqual(new Set(saved));
+    expect(ledger.transactions).toEqual(saved);
   });
 
   it('writes nothing when no interest is owed, so opening a page never rewrites the saved data', async () => {
+    await store.insertTransactions([createMockTransaction()]);
     const insert = jest.spyOn(store, 'insertTransactions');
 
     await walletsOf(account, '2026-01-03');
