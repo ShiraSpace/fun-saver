@@ -982,12 +982,17 @@ rather than a line in PR 9.
     expired or incomplete session gets a `307` to `/login` before anything streams.
     `toSignedInUser` lives in `src/lib/signed-in-user.ts`: `next-auth` cannot load
     under jest, so in `src/auth.ts` the rule was reachable only through a mock.
-  - `/method` with no account renders `Home`, which shows the empty state, instead of
-    redirecting home. Creating an account there calls `router.refresh()`, and the
-    method page appears.
-  - **The rule for next time: nothing under the root Suspense may call `redirect()`
-    or `notFound()`.** The one left, in `signedInAccounts`, is unreachable once the
-    proxy has applied the same rule — but a new one would stream a `200` silently.
+  - `/method` with no account still redirects home, inside the boundary — so it
+    answers `200`, streams the shell, and redirects in the browser. Accepted on
+    purpose, after rendering the empty state in place was tried and reverted on
+    review: the menu marked השיטה current over the empty state, and a first account
+    created there landed on the method page instead of on the new account. Only a
+    signed-in user with no account who types `/method` gets here, and nothing that
+    reads status codes can see an authenticated page. Moving it to the proxy would
+    cost a database read on every `/method` request.
+  - **The rule for next time: a `redirect()` or `notFound()` under the root Suspense
+    answers `200`.** Put it in the proxy if its status matters; leave it only where a
+    `200` is harmless, as `/method`'s is.
 - **Several reporters writing one boolean: the last effect wins.** Tapping Home in the
   menu and then the house link flips both links in one update; the house link's
   effect ran first, the tab's second, and the line went out mid-navigation. The
