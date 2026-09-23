@@ -10,11 +10,18 @@ import {
   type AccountsContextValue,
 } from '@/components/Home/accounts-context';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
+import { setMockPathname } from '@mocks/next/navigation';
 import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
   mockUser,
 } from './fixtures';
+
+export interface RenderWithAccountsAtOptions {
+  route: string;
+  ui: ReactElement;
+  value?: AccountsContextValue;
+}
 
 function withProviders(ui: ReactElement, themeId: ThemeId): JSX.Element {
   return <ThemeController initialThemeId={themeId}>{ui}</ThemeController>;
@@ -46,6 +53,31 @@ export function renderWithAccounts(
   return renderWithUser(
     <AccountsProvider value={value}>{ui}</AccountsProvider>
   );
+}
+
+export function renderAt(route: string, ui: ReactElement): RenderResult {
+  setMockPathname(route);
+
+  return render(ui);
+}
+
+export function renderWithUserAt(
+  route: string,
+  ui: ReactElement
+): RenderResult {
+  setMockPathname(route);
+
+  return renderWithUser(ui);
+}
+
+export function renderWithAccountsAt({
+  route,
+  ui,
+  value = mockAccountsContext,
+}: RenderWithAccountsAtOptions): RenderResult {
+  setMockPathname(route);
+
+  return renderWithAccounts(ui, value);
 }
 
 export * from '@testing-library/react';
