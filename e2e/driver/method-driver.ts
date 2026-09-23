@@ -1,15 +1,13 @@
-import { METHOD_SECTION_TEST_IDS } from '@/components/Method/MethodSection/constants';
+import {
+  METHOD_SECTION_TEST_IDS,
+  type MethodSectionId,
+} from '@/components/Method/MethodSection/constants';
 import { SOURCE_LIST_TEST_IDS } from '@/components/Method/SourceList/constants';
 import { SOURCE_MARKER_TEST_IDS } from '@/components/Method/SourceMarker/constants';
-import {
-  METHOD_ROUTE,
-  SECTION_NUMBER,
-  SOURCES_SECTION_ID,
-} from '@/components/Method/constants';
+import { METHOD_ROUTE, SECTION_NUMBER } from '@/components/Method/constants';
 import { Session } from './session';
 
 type SectionKey = keyof typeof SECTION_NUMBER;
-type AccordionId = number | typeof SOURCES_SECTION_ID;
 
 export class MethodDriver {
   constructor(private readonly session: Session) {}
@@ -18,7 +16,7 @@ export class MethodDriver {
     return this.session.visit(METHOD_ROUTE);
   }
 
-  expand(id: AccordionId): Promise<void> {
+  expand(id: MethodSectionId): Promise<void> {
     return this.session.click(METHOD_SECTION_TEST_IDS.summary(id));
   }
 
@@ -26,7 +24,7 @@ export class MethodDriver {
     return SECTION_NUMBER[section];
   }
 
-  chevronRotation(id: AccordionId): Promise<string> {
+  chevronRotation(id: MethodSectionId): Promise<string> {
     return this.session.computedStyle(
       METHOD_SECTION_TEST_IDS.chevron(id),
       'transform'
