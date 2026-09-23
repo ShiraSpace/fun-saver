@@ -1,3 +1,5 @@
+import { SCREEN_LAYOUT } from '@/components/Screen/constants';
+
 export type TransactionMode = 'deposit' | 'withdraw';
 
 export const TRANSACTION_DRAWER_TEST_IDS = {
@@ -19,7 +21,7 @@ export const TRANSACTION_DRAWER_COPY = {
 } as const;
 
 export const TRANSACTION_DRAWER_STYLE = {
-  maxWidth: 420,
+  maxWidth: SCREEN_LAYOUT.maxWidth,
   maxHeight: '80svh',
   scrim: 'rgba(40, 20, 60, 0.42)',
   sheetRadius: 28,

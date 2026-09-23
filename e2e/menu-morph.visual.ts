@@ -24,7 +24,7 @@ const SHEET = hexToRgb(COLORS.softBg);
 const ON_SHEET = hexToRgb(COLORS.textStrong);
 
 describe('menu morph', () => {
-  const { menu, header } = useDriver({ accounts: [mockAccount] });
+  const { session, menu, header } = useDriver({ accounts: [mockAccount] });
 
   describe('when closed', () => {
     it('shows a hamburger', async () => {
@@ -111,24 +111,22 @@ describe('menu morph', () => {
       });
     });
   });
-});
 
-describe('menu on a window wider than the page column', () => {
-  const { session, menu, header } = useDriver({ accounts: [mockAccount] });
+  describe('on a window wider than the page column', () => {
+    beforeEach(async () => {
+      await session.resize(DESKTOP);
+      await menu.open();
+    });
 
-  beforeEach(async () => {
-    await session.resize(DESKTOP);
-    await menu.open();
-  });
+    it('keeps its column on the header card edges, not the window edges', async () => {
+      const bar = await header.box();
+      const block = await menu.globalScopeBox();
 
-  it('keeps its column on the header card edges, not the window edges', async () => {
-    const bar = await header.box();
-    const block = await menu.globalScopeBox();
-
-    assert.ok(
-      Math.abs(block.x - bar.x) <= EDGE_TOLERANCE &&
-        Math.abs(block.width - bar.width) <= EDGE_TOLERANCE,
-      `menu column is ${block.width}px at ${block.x}, header is ${bar.width}px at ${bar.x}`
-    );
+      assert.ok(
+        Math.abs(block.x - bar.x) <= EDGE_TOLERANCE &&
+          Math.abs(block.width - bar.width) <= EDGE_TOLERANCE,
+        `menu column is ${block.width}px at ${block.x}, header is ${bar.width}px at ${bar.x}`
+      );
+    });
   });
 });
