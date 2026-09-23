@@ -14,22 +14,29 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-23 (PRs 1–8 merged; PR 9 is last)
+## Progress — updated 2026-09-23 (PRs 1–8 merged, plus #90; PR 9 is last)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
 do without. They are in all three themes, and the trigger and selected row already
 read from them.
 
-Also outside the numbering and still open,
-[#90](https://github.com/ShiraSpace/fun-saver/pull/90) stops the screen gradient
-showing in the band around the header card while the menu is open. Getting there
-dissolved `Menu`: it rendered the burger and the whole overlay together, which put a
-viewport-covering overlay inside the 68px header card, so anything it painted landed
-in that card's stacking context. `MenuToggle` now sits in the bar, `MenuOverlay`
-beside it, their state in `use-menu-state`, and `Header` places sheet, bar and
-overlay in stacking order. It merges cleanly over PR 8 — it never edits
-`MenuOverlay.tsx`, only imports its constants.
+Also outside the numbering, [#90](https://github.com/ShiraSpace/fun-saver/pull/90)
+(`82007b9`) stopped the screen gradient showing in the band around the header card
+while the menu is open. Getting there dissolved `Menu`: it rendered the burger and
+the whole overlay together, which put a viewport-covering overlay inside the 68px
+header card, so anything it painted landed in that card's stacking context.
+`MenuToggle` now sits in the bar, `MenuOverlay` beside it, their state in
+`use-menu-state`, and `Header` places sheet, bar and overlay in stacking order. The
+avatar hides while the menu is open, since the picker below already names and
+pictures the same account.
+
+Two things fell out of it that outlive the PR. `HEADER_LAYOUT.height` is a
+**`min-height`**, and the sheet's height and the panel's `top` are derived from it —
+so anything that makes the bar taller now paints an opaque card over the open menu,
+because the bar sits above the panel. And the seam is cut from one
+`SCREEN_LAYOUT.paddingY`; `ACCOUNT_LAYOUT.paddingY` and `METHOD_LAYOUT.paddingY` are
+gone, having been two constants that only lined `/method` up by both being 16.
 
 Also outside the numbering, [#80](https://github.com/ShiraSpace/fun-saver/pull/80)
 (`1ce3581`) added `withShots` in `e2e/shot.ts`, the `pr-screenshots` skill and
@@ -223,6 +230,19 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   White read as a gap around the swatch on a cream sheet. The swatch declares its own
   `box-sizing: border-box` — the app has no global one, unlike the mockup, so the
   border would otherwise have taken it from 38px to 43px.
+- **A 60-character name only wraps if it contains spaces, and the longest-name e2e
+  uses one that does not.** `edit-account.e2e.ts` types `'א'.repeat(60)` — a single
+  unbroken token, which overflows the card sideways and leaves the bar at 68px. That
+  is why nothing caught the header bar growing until #90 shot it with
+  `'נועה '.repeat(20)`, which wraps to three rows. Any test meaning to exercise
+  wrapping has to use a name with spaces; the existing one exercises overflow.
+  The title now takes one row with an ellipsis, the treatment `EditLabel` already had.
+- **CSS truncation hides nothing from a screen reader.** Raised in review against the
+  header's new ellipsis, and worth writing down because it reads plausible:
+  `text-overflow: ellipsis` is purely visual, the full string stays in the DOM and in
+  the accessibility tree. No `title` attribute was added — it is a desktop-hover
+  affordance that never fires on touch, on a screen where the picker and the edit
+  button both carry the full name untruncated.
 
 ### Still open from the merged work
 
@@ -245,7 +265,7 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   menu is a question PR 9's nav section will raise.
 - **`HEADER_LAYOUT.foregroundZIndex` stopped being vestigial.** It existed so the
   title, avatar and burger could float above a panel that covered them, and since PR 3
-  nothing covered them. #90 gives it a real job: `Bar` takes it, plus the
+  nothing covered them. #90 gave it a real job: `Bar` takes it, plus the
   `position: relative` without which a z-index is inert, so the header card paints
   above the sheet behind it. `MENU_TOGGLE.zIndex` is still vestigial.
 - **`accountScopeBg` is ~1.05:1 on `softBg` in `midnight-blue`.** The global block
