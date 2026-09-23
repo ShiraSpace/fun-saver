@@ -2,6 +2,8 @@ import type { DataStore } from '@/db/data-store';
 import type {
   Account,
   AccountWithDerivedWallets,
+  Transaction,
+  Wallet,
   WalletName,
   WalletWithDerived,
 } from './types';
@@ -26,46 +28,80 @@ interface AccountQuery {
   asOf: string;
 }
 
-export async function withDerivedWallets({
-  store,
-  accounts,
-  asOf,
-}: AccountsQuery): Promise<AccountWithDerivedWallets[]> {
-  return Promise.all(
-    accounts.map(async (account) => ({
-      ...account,
-      wallets: await getWalletsForAccount({ store, account, asOf }),
-    }))
-  );
+export interface AccountLedger {
+  account: AccountWithDerivedWallets;
+  transactions: Transaction[];
 }
 
-export async function getWalletsForAccount({
+interface WalletQuery {
+  stored: Transaction[];
+  accountId: string;
+  asOf: string;
+}
+
+interface WalletSettlement {
+  accrued: Transaction[];
+  wallet: WalletWithDerived;
+}
+
+function settleWallet(
+  wallet: Wallet,
+  { stored, accountId, asOf }: WalletQuery
+): WalletSettlement {
+  const transactions = stored.filter(
+    (transaction) => transaction.walletId === wallet.id
+  );
+  const accrued = addDailyInterest({ wallet, transactions, asOf, accountId });
+
+  return {
+    accrued,
+    wallet: deriveWallet({
+      wallet,
+      transactions: [...transactions, ...accrued],
+      asOf,
+    }),
+  };
+}
+
+async function settleAccount({
   store,
   account,
   asOf,
-}: AccountQuery): Promise<WalletWithDerived[]> {
-  const derived = await Promise.all(
-    account.wallets.map(async (wallet) => {
-      const transactions = await store.listTransactionsByWallet(
-        account.id,
-        wallet.id
-      );
-      const accrued = addDailyInterest({
-        wallet,
-        transactions,
-        asOf,
-        accountId: account.id,
-      });
-
-      if (accrued.length > 0) {
-        await store.insertTransactions(accrued);
-      }
-
-      const settledTransactions = [...transactions, ...accrued];
-
-      return deriveWallet({ wallet, transactions: settledTransactions, asOf });
-    })
+}: AccountQuery): Promise<AccountLedger> {
+  const stored = await store.listTransactionsByAccount(account.id);
+  const settlements = account.wallets.map((wallet) =>
+    settleWallet(wallet, { stored, accountId: account.id, asOf })
   );
+  const accrued = settlements.flatMap((settlement) => settlement.accrued);
 
-  return derived.sort((a, b) => WALLET_ORDER[a.name] - WALLET_ORDER[b.name]);
+  if (accrued.length > 0) {
+    await store.insertTransactions(accrued);
+  }
+
+  const wallets = settlements
+    .map((settlement) => settlement.wallet)
+    .sort((a, b) => WALLET_ORDER[a.name] - WALLET_ORDER[b.name]);
+
+  return {
+    account: { ...account, wallets },
+    transactions: [...stored, ...accrued],
+  };
+}
+
+export function accountLedgers({
+  store,
+  accounts,
+  asOf,
+}: AccountsQuery): Promise<AccountLedger[]> {
+  return Promise.all(
+    accounts.map((account) => settleAccount({ store, account, asOf }))
+  );
+}
+
+export async function withDerivedWallets(
+  query: AccountsQuery
+): Promise<AccountWithDerivedWallets[]> {
+  const ledgers = await accountLedgers(query);
+
+  return ledgers.map((ledger) => ledger.account);
 }
