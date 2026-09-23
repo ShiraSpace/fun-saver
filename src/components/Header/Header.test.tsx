@@ -101,8 +101,9 @@ describe('Header', () => {
 
   describe('reopening after the account list was left open', () => {
     beforeEach(() => {
-      const openMenu = (): void =>
+      const openMenu = (): void => {
         fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+      };
 
       openMenu();
       openAccountPicker();
