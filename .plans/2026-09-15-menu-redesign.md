@@ -14,7 +14,7 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-26 (PRs 1–9 merged, plus #90; PR 10 is open as #101)
+## Progress — updated 2026-09-26 (PRs 1–10 merged, plus #90; PR 11 is next)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
@@ -56,17 +56,16 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 7    | [#85](https://github.com/ShiraSpace/fun-saver/pull/85) | `feat/menu-edit-under-trigger` | **merged** — `2e49d4e` |
 | PR 8    | [#88](https://github.com/ShiraSpace/fun-saver/pull/88) | `feat/menu-scope-blocks`       | **merged** — `0b12ebf` |
 | PR 9    | [#96](https://github.com/ShiraSpace/fun-saver/pull/96) | `feat/menu-nav-tabs`           | **merged** — `d625dd3` |
-| PR 10   | [#101](https://github.com/ShiraSpace/fun-saver/pull/101) | `feat/home-link-in-header`   | **open**               |
+| PR 10   | [#101](https://github.com/ShiraSpace/fun-saver/pull/101) | `feat/home-link-in-header`   | **merged** — `709d74d` |
 | PR 11   | —                                                      | —                              | **next**               |
 
 The panel is now a `softBg` sheet that starts below a header which no longer fades,
 the accounts sit behind an `AccountTrigger`, tapping it floats the list over the
 sections below instead of pushing them down, edit is a named button under the
 trigger, the two scopes are visible blocks, and navigation is a strip of tabs at
-the top of the panel rather than a setting of one child. What is left is a way home
-from the screens the nav points at (PR 10, whose shape was chosen on 2026-09-26) and
-a loading boundary so those screens do not arrive in silence (PR 11, found while
-reviewing PR 9).
+the top of the panel rather than a setting of one child, and the avatar on every
+screen that is not home is the way back to it. What is left is a loading boundary so
+those screens do not arrive in silence (PR 11, found while reviewing PR 9).
 
 ### What the merged PRs changed that this plan did not predict
 
@@ -308,6 +307,42 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   control". It now asserts the house exists before measuring. Same shape as the
   box-overlap note above — an assertion that holds either way round is not an
   assertion.
+- **Hiding a control with `visibility` leaves it clickable, twice over.** PR 10's
+  linked avatar hid through `opacity: 0; visibility: hidden` on the ring, and both
+  halves leaked. A descendant that declares `visibility: visible` is **shown again**
+  inside a hidden ancestor (CSS 2.1 §11.2), so the avatar inside re-showed itself and
+  only `opacity: 0` was left — and opacity-0 elements still take taps. And
+  `visibility` is a discrete property under transition: going to `hidden` it holds
+  `visible` for every progress below 1, so even once the descendant was fixed the
+  control stayed hit-testable and tabbable for the whole 300ms. `pointer-events: none`
+  in the hidden block is what actually settles it, being untransitioned and applying
+  on the same frame. With the menu open, `Bar` at `overlayForeground` (60) sits above
+  the overlay (50) and the panel starts below the header, so that corner is live.
+- **`not.toBeVisible()` cannot see either of those.** jest-dom walks the element and
+  its ancestors, never the child that re-shows itself, so the unit assertion passed
+  throughout. `receivesTapAt` in `header-layout.visual.ts` is what caught it — and
+  only after `menu.startOpening()` was added, because `menu.open()` waits for the
+  overlay's own transition to finish and so samples nothing but the steady state.
+  `REDUCED_MOTION` does not close that window: `src/theme/motion.ts` sets
+  `animation: none` and never touches `transition`.
+- **Nested opacity fades a badge off its own avatar.** Passing the hide down to the
+  avatar *as well as* the ring dropped the face at opacity squared while `HouseBadge`,
+  a sibling of the avatar rather than a child, fell only at the ring's — the house
+  visibly lingering over a face already gone. One element owns the fade.
+- **An `aria-label` silently discards the `alt` beneath it.** The linked avatar's
+  label named the action only, so the child's name in the image `alt` was never
+  announced — the page still said nothing about whose money it showed, for exactly
+  the users it was added for. `HEADER_CONTENT.homeLabel` takes the name.
+- **Nine test files were shadowing `__mocks__/next/navigation.ts`.** An inline
+  `jest.mock` factory replaces the module wholesale, so each file re-declared whichever
+  half its own subtree happened to call, and the shared mock only ever reached the
+  files that declared nothing. It now owns a settable pathname and one `mockRouter`,
+  reset from `jest.setup.ts` and reached through a new `@mocks/*` alias; `renderAt`
+  and `renderWithAccountsAt` fold the route into the render. Two things fell out:
+  `mockPush` was declared in both `Home` suites and asserted in neither, and
+  `Method.test.tsx`'s "carries no avatar" passed only because the default mock returns
+  `/` — it never rendered the off-home branch at all. `signed-in-accounts.test.ts`
+  keeps its own, mocking `redirect` to throw.
 
 ### Still open from the merged work
 
