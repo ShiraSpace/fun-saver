@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-23 (PR 7 open as #100; then 12, 13 and 14)
+## Progress — updated 2026-09-23 (PR 7 open as #100; PR 15 next, then 12, 13 and 14)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -1222,6 +1222,33 @@ because the open/close transition animates it — or the menu's open state reach
 the pieces that hold state, and they reset on close.
 
 Depends on: PR 7.
+
+### PR 15 — `refactor/one-render-helper` — **next**
+
+`src/test-utils/render.tsx` now exports six ways to render: `render`,
+`renderWithUser`, `renderWithAccounts`, `renderAt`, `renderWithUserAt`,
+`renderWithAccountsAt`. They are a matrix — theme × user × accounts × route —
+and every new dimension doubles it. `renderWithUserAt` only exists because #101
+gave the helpers a route in the same week PR 7 made the user opt-in, and one
+suite needed both.
+
+One `render(ui, options)` replaces them, where options carries `themeId`, `user`,
+`accounts` and `route`, each optional with a default, and each call site passes
+only what it needs. A new provider is then one more optional key in one file,
+not two more helpers.
+
+**The default must leave `user` out.** Opt-in is not an accident of naming: the
+shared wrapper used to supply the signed-in user to every test, which made the
+throw in `signed-in-user-context` unreachable, and the context had no suite of
+its own. Omitting an option must keep meaning "no provider", so that a component
+reaching for a context it was not given still fails loudly in its own suite.
+A default that quietly provides everything would undo PR 7's correction.
+
+Same shape as PR 11 and PR 13: no behaviour change, provable by the suites not
+moving, with each missing-provider throw watched firing against a deliberate
+break.
+
+Depends on: nothing. Worth doing before the next feature adds a seventh helper.
 
 ## Architecture touch points
 
