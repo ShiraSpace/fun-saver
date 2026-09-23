@@ -1,9 +1,3 @@
-export const ACCOUNT_LAYOUT = {
-  maxWidth: 420,
-  gap: 18,
-  paddingX: 14,
-} as const;
-
 export const ACCOUNT_TEST_IDS = {
   actionCta: 'account-action-cta',
 } as const;

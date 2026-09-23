@@ -14,6 +14,8 @@ const spanOf = (box: BoundingBox): string => `${box.y}-${bottomOf(box)}`;
 const overlapVertically = (a: BoundingBox, b: BoundingBox): boolean =>
   a.y < bottomOf(b) && bottomOf(a) > b.y;
 
+const EDGE_TOLERANCE = 1;
+const DESKTOP = { width: 1280, height: 900 };
 const NO_TRANSFORM = 'none';
 const VISIBLE = '1';
 const HIDDEN = '0';
@@ -22,7 +24,7 @@ const SHEET = hexToRgb(COLORS.softBg);
 const ON_SHEET = hexToRgb(COLORS.textStrong);
 
 describe('menu morph', () => {
-  const { menu, header } = useDriver({ accounts: [mockAccount] });
+  const { session, menu, header } = useDriver({ accounts: [mockAccount] });
 
   describe('when closed', () => {
     it('shows a hamburger', async () => {
@@ -107,6 +109,24 @@ describe('menu morph', () => {
           `the per-account block takes the tap at ${whereTheyOverlap.x},${whereTheyOverlap.y}`
         );
       });
+    });
+  });
+
+  describe('on a window wider than the page column', () => {
+    beforeEach(async () => {
+      await session.resize(DESKTOP);
+      await menu.open();
+    });
+
+    it('keeps its column on the header card edges, not the window edges', async () => {
+      const bar = await header.box();
+      const block = await menu.globalScopeBox();
+
+      assert.ok(
+        Math.abs(block.x - bar.x) <= EDGE_TOLERANCE &&
+          Math.abs(block.width - bar.width) <= EDGE_TOLERANCE,
+        `menu column is ${block.width}px at ${block.x}, header is ${bar.width}px at ${bar.x}`
+      );
     });
   });
 });

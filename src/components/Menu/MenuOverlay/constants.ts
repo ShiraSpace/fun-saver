@@ -23,7 +23,6 @@ export const MENU_OVERLAY_STYLE = {
 } as const;
 
 export const MENU_OVERLAY_LAYOUT = {
-  contentPaddingX: 22,
   contentPaddingTop: MENU_LAYOUT.blockGap,
   top: SCREEN_LAYOUT.paddingY + HEADER_LAYOUT.height,
 } as const;

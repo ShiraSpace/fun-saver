@@ -3,7 +3,7 @@
 import { JSX } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { Header } from '@/components/Header';
-import { Screen } from '@/components/Screen';
+import { Column, Screen } from '@/components/Screen';
 import { AccountManagement } from '@/components/AccountManagement';
 import { AccountsProvider } from '@/components/Home/accounts-context';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
@@ -16,7 +16,6 @@ import { SourcesSection } from './SourcesSection';
 import { WalletsSection } from './WalletsSection';
 import { WhySection } from './WhySection';
 import { METHOD_COPY } from './copy';
-import { Column } from './Method.styles';
 
 interface MethodProps {
   accounts: AccountWithDerivedWallets[];

@@ -2,14 +2,13 @@
 
 import { JSX, useState } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
-import { Screen } from '@/components/Screen';
+import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { ActionButton } from '@/components/ActionButton';
 import { OverviewCard } from './OverviewCard';
 import { WalletList } from './WalletList/WalletList';
 import { TransactionDrawer } from './TransactionDrawer';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
-import { Column } from './Account.styles';
 
 interface AccountProps {
   account: AccountWithDerivedWallets;

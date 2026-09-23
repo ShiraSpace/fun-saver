@@ -14,8 +14,8 @@ target.
 First of two epics. `תנועות בחשבון` (the transactions screen the nav section points
 at) follows in its own plan.
 
-## Progress — updated 2026-09-23 (PRs 1–10 merged, plus #76 and #90; PR 11 is
-next and splits into 11a then 11)
+## Progress — updated 2026-09-23 (PRs 1–10 merged, plus #76, #90 and #109; PR 11
+is next and splits into 11a then 11)
 
 Outside the numbering, [#76](https://github.com/ShiraSpace/fun-saver/pull/76)
 (`3897156`) added the `accountScopeBg` / `accountScopeBorder` tokens PR 8 was told to
@@ -43,6 +43,19 @@ Also outside the numbering, [#80](https://github.com/ShiraSpace/fun-saver/pull/8
 (`1ce3581`) added `withShots` in `e2e/shot.ts`, the `pr-screenshots` skill and
 `.github/pull_request_template.md`. Every PR from here on that changes something
 visible carries screenshots; `gh --attach` uploads them and needs `gh` ≥ 2.99.
+
+Also outside the numbering,
+[#109](https://github.com/ShiraSpace/fun-saver/pull/109) gave the panel's content
+the page column's cap. The sheet is fixed to the viewport, so on anything wider
+than a phone its rows ran the whole window under a 420px header card, and on a
+phone they sat 22px in against the card's 14px. `Screen` now exports the `Column`
+both pages were declaring separately, `MenuOverlay`'s `Content` takes the same
+`SCREEN_LAYOUT.maxWidth` and `paddingX`, and `ACCOUNT_LAYOUT` and `METHOD_LAYOUT`
+are gone the way their `paddingY` went in #90.
+
+`Content` cannot simply extend `Column` — the column is a flex container with an
+18px gap, which would respace the menu's sections — so the two agree by reading one
+constant, and `Column.test.tsx` is what catches them drifting apart.
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
