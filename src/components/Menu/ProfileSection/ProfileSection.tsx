@@ -1,63 +1,45 @@
 'use client';
 
-import { JSX, useState } from 'react';
-import { signOut } from 'next-auth/react';
+import { JSX } from 'react';
 import { useSignedInUser } from '@/components/Home/signed-in-user-context';
-import { LOGIN_PATH } from '@/lib/constants';
-import {
-  PROFILE_SECTION_CONTENT,
-  PROFILE_SECTION_PHOTO_SIZE,
-  PROFILE_SECTION_TEST_IDS,
-} from './constants';
+import { ProfilePhoto } from './ProfilePhoto';
+import { useSignOut } from './use-sign-out';
+import { PROFILE_SECTION_CONTENT, PROFILE_SECTION_TEST_IDS } from './constants';
 import {
   Email,
   Name,
   Naming,
   SignOut,
+  SignOutError,
   Strip,
-  UserMark,
-  UserPhoto,
 } from './ProfileSection.styles';
 
 export function ProfileSection(): JSX.Element {
   const user = useSignedInUser();
-  const [photoFailed, setPhotoFailed] = useState(false);
-
-  const leave = (): void => {
-    void signOut({ redirectTo: LOGIN_PATH });
-  };
-
-  const mark =
-    user.image && !photoFailed ? (
-      <UserPhoto
-        src={user.image}
-        alt=""
-        width={PROFILE_SECTION_PHOTO_SIZE}
-        height={PROFILE_SECTION_PHOTO_SIZE}
-        unoptimized
-        referrerPolicy="no-referrer"
-        onError={(): void => setPhotoFailed(true)}
-        data-testid={PROFILE_SECTION_TEST_IDS.photo}
-      />
-    ) : (
-      <UserMark aria-hidden="true">{PROFILE_SECTION_CONTENT.avatar}</UserMark>
-    );
+  const { hasSignOutFailed, signOutOfAccount } = useSignOut();
 
   return (
     <Strip data-testid={PROFILE_SECTION_TEST_IDS.strip}>
-      {mark}
+      <ProfilePhoto image={user.image} />
       <Naming>
         <Name data-testid={PROFILE_SECTION_TEST_IDS.name}>{user.name}</Name>
-        <Email data-testid={PROFILE_SECTION_TEST_IDS.email}>{user.email}</Email>
+        <Email dir="ltr" data-testid={PROFILE_SECTION_TEST_IDS.email}>
+          {user.email}
+        </Email>
       </Naming>
       <SignOut
         type="button"
         aria-label={PROFILE_SECTION_CONTENT.signOutLabel}
         data-testid={PROFILE_SECTION_TEST_IDS.signOut}
-        onClick={leave}
+        onClick={(): void => void signOutOfAccount()}
       >
         {PROFILE_SECTION_CONTENT.signOut}
       </SignOut>
+      {hasSignOutFailed && (
+        <SignOutError data-testid={PROFILE_SECTION_TEST_IDS.signOutError}>
+          {PROFILE_SECTION_CONTENT.signOutFailed}
+        </SignOutError>
+      )}
     </Strip>
   );
 }

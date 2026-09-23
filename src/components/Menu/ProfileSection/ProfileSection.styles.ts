@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import Image from 'next/image';
 import type { Theme } from '@emotion/react';
 import { MENU_ROW_STYLE } from '../constants';
+import { PROFILE_SECTION_PHOTO_SIZE } from './constants';
 
 const mutedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textMuted;
@@ -37,8 +38,8 @@ export const UserMark = styled.span`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  width: ${PROFILE_SECTION_PHOTO_SIZE}px;
+  height: ${PROFILE_SECTION_PHOTO_SIZE}px;
   border: ${MENU_ROW_STYLE.borderWidth}px solid ${softEdge};
   border-radius: 50%;
   background: ${softFill};
@@ -66,11 +67,11 @@ export const Name = styled.b`
 `;
 
 export const Email = styled.span`
-  display: block;
+  display: inline-block;
+  max-width: 100%;
   margin-top: 1px;
   font-size: ${subSize}px;
   color: ${mutedText};
-  unicode-bidi: isolate;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -92,4 +93,11 @@ export const SignOut = styled.button`
   &:active {
     transform: scale(${MENU_ROW_STYLE.pressScale});
   }
+`;
+
+export const SignOutError = styled.p`
+  margin: 7px 0 0;
+  font-size: ${subSize}px;
+  color: ${({ theme }: { theme: Theme }): string => theme.colors.alert};
+  text-align: start;
 `;
