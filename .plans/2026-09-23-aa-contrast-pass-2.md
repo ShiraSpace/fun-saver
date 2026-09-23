@@ -84,9 +84,20 @@ gradient outside it and the white `selectedBorder` inside it: 4.77/16.93,
 
    **`SaveError` did take the red**, after review pointed out that white left a
    failed save looking exactly like ordinary form copy — no colour signal at
-   all, contrast aside. `alertText` on that gradient measures **2.05** sunshine
-   and **1.92** jungle, *worse* than the white it replaces, so this buys signal
-   and not legibility. Taken deliberately on that trade.
+   all, contrast aside. Scored on the **worst stop** the red is 2.05 sunshine
+   and 1.92 jungle, but that convention misleads here: this element sits below
+   the save button, at the gradient's **end**, and the red's best stop is the
+   top it never occupies. Where the text actually is:
+
+   | at the gradient's end | white | `alertText` |
+   | --- | --- | --- |
+   | sunshine `#E94E89` | 3.55 | **2.05** |
+   | jungle `#90BE6D` | 2.15 | **2.97** |
+   | midnight `#122036` | 16.33 | 5.91 |
+
+   So it is not one trade but two: jungle gains legibility along with the
+   signal, and **sunshine loses it**, 3.55 down to 2.05. Neither cleared 4.5
+   either way. Taken deliberately, with the split understood.
 
 2. **`DrawerError` joins the `alert` family, and the red fits each theme.** Not
    one flat red across all three: a crimson on sunshine pulled toward its
