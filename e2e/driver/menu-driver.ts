@@ -25,9 +25,13 @@ export class MenuDriver {
   constructor(private readonly session: Session) {}
 
   async open(): Promise<void> {
-    await this.session.click(MENU_TEST_IDS.menuButton);
+    await this.startOpening();
     await this.session.waitForStyle(MIDDLE_BAR, 'opacity', '0');
     await this.session.waitForStyle(OVERLAY, 'opacity', '1');
+  }
+
+  startOpening(): Promise<void> {
+    return this.session.click(MENU_TEST_IDS.menuButton);
   }
 
   async openAccountPicker(): Promise<void> {

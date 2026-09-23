@@ -6,14 +6,10 @@ import { splitDeposit } from '@/lib/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { mockDerivedAccount } from '@/test-utils/fixtures';
+import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddDeposit = jest.fn();
-const mockRefresh = jest.fn();
 const onClose = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  useRouter: (): { refresh: jest.Mock } => ({ refresh: mockRefresh }),
-}));
 
 jest.mock('../use-add-transaction', () => ({
   useAddTransaction: (): { addDeposit: jest.Mock; withdraw: jest.Mock } => ({
@@ -25,7 +21,7 @@ jest.mock('../use-add-transaction', () => ({
 describe('DepositBody', () => {
   beforeEach(() => {
     mockAddDeposit.mockReset().mockResolvedValue(undefined);
-    mockRefresh.mockClear();
+    mockRouter.refresh.mockClear();
     onClose.mockClear();
     render(<DepositBody account={mockDerivedAccount} onClose={onClose} />);
   });
@@ -100,7 +96,7 @@ describe('DepositBody', () => {
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.confirm));
 
     await waitFor(() => expect(mockAddDeposit).toHaveBeenCalledWith(20));
-    await waitFor(() => expect(mockRefresh).toHaveBeenCalled());
+    await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
     await waitFor(() => expect(onClose).toHaveBeenCalled());
   });
 
@@ -117,7 +113,7 @@ describe('DepositBody', () => {
       ).toBeInTheDocument()
     );
     expect(onClose).not.toHaveBeenCalled();
-    expect(mockRefresh).not.toHaveBeenCalled();
+    expect(mockRouter.refresh).not.toHaveBeenCalled();
     expect(
       screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)
     ).toHaveTextContent('20');

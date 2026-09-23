@@ -8,13 +8,9 @@ import {
   ACCOUNT_FORM_TEST_IDS,
 } from '@/components/AccountForm/constants';
 import { CREATE_ACCOUNT_COPY } from './constants';
+import { mockRouter } from '@mocks/next/navigation';
 
-const mockPush = jest.fn();
 const mockCreateAccount = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  useRouter: (): { push: jest.Mock } => ({ push: mockPush }),
-}));
 
 jest.mock('./use-create-account', () => ({
   useCreateAccount: (): { createAccount: jest.Mock } => ({
@@ -32,7 +28,7 @@ function fillAndSubmit(name: string): void {
 
 describe('CreateAccount', () => {
   beforeEach(() => {
-    mockPush.mockClear();
+    mockRouter.push.mockClear();
     mockCreateAccount.mockReset().mockResolvedValue(mockAccount);
   });
 
@@ -90,14 +86,14 @@ describe('CreateAccount', () => {
       expect(
         await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
       ).toHaveTextContent(ACCOUNT_FORM_COPY.saveError);
-      expect(mockPush).not.toHaveBeenCalled();
+      expect(mockRouter.push).not.toHaveBeenCalled();
     });
 
     it('creates the account and navigates home on submit', async () => {
       fillAndSubmit(mockCreateAccountInput.name);
 
       expect(mockCreateAccount).toHaveBeenCalledWith(mockCreateAccountInput);
-      await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/'));
+      await waitFor(() => expect(mockRouter.push).toHaveBeenCalledWith('/'));
     });
   });
 
@@ -125,7 +121,7 @@ describe('CreateAccount', () => {
       await waitFor(() =>
         expect(mockOnCreated).toHaveBeenCalledWith(mockAccount)
       );
-      expect(mockPush).not.toHaveBeenCalled();
+      expect(mockRouter.push).not.toHaveBeenCalled();
     });
   });
 });

@@ -16,7 +16,7 @@ interface AccountProps {
 }
 
 export function Account({ account }: AccountProps): JSX.Element {
-  const { name, avatarId, wallets } = account;
+  const { name, wallets } = account;
   const savings = wallets.find((wallet) => wallet.name === 'savings');
   const others = wallets.filter((wallet) => wallet.name !== 'savings');
   const ordered = savings ? [savings, ...others] : others;
@@ -25,7 +25,7 @@ export function Account({ account }: AccountProps): JSX.Element {
   return (
     <Screen align="top">
       <Column>
-        <Header title={name} avatarId={avatarId} />
+        <Header title={name} account={account} />
         <OverviewCard key={account.id} wallets={ordered} />
         <WalletList wallets={ordered} />
         <ActionButton

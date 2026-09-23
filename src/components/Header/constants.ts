@@ -4,6 +4,12 @@ import { MENU_ICON } from '@/components/Menu/constants';
 export const HEADER_TEST_IDS = {
   bar: 'header',
   avatar: 'header-avatar',
+  homeLink: 'header-home-link',
+} as const;
+
+export const HEADER_CONTENT = {
+  homeLabel: (name: string): string => `חזרה לבית של ${name}`,
+  homeIcon: '🏠',
 } as const;
 
 export const HEADER_AVATAR_PROPS = {

@@ -1,6 +1,8 @@
 'use client';
 
 import { Fragment, JSX } from 'react';
+import { usePathname } from 'next/navigation';
+import type { Account } from '@/lib/types';
 import {
   MenuHeaderSheet,
   MenuOverlay,
@@ -8,26 +10,41 @@ import {
   useMenuState,
 } from '../Menu';
 import { MENU_HEADER_SHEET_TEST_IDS } from '../Menu/MenuHeaderSheet/constants';
+import { HOME_ROUTE } from '../Home/constants';
 import { Title } from './CrossfadeTitle';
+import { HomeAvatarLink } from './HomeAvatarLink';
 import { HEADER_AVATAR_PROPS, HEADER_TEST_IDS } from './constants';
-import { Bar, HeaderAvatar } from './Header.styles';
+import { Bar } from './Header.styles';
+import { HeaderAvatar } from './header-parts';
 
 export interface HeaderProps {
   title: string;
-  avatarId?: string;
+  account: Pick<Account, 'name' | 'avatarId'>;
 }
 
-export function Header({ title, avatarId }: HeaderProps): JSX.Element {
+export function Header({ title, account }: HeaderProps): JSX.Element {
   const menu = useMenuState();
-  const avatar = avatarId && (
+  const isHome = usePathname() === HOME_ROUTE;
+
+  const avatar = (
     <HeaderAvatar
-      avatarId={avatarId}
-      alt={title}
+      avatarId={account.avatarId}
+      alt={account.name}
       size={HEADER_AVATAR_PROPS.size}
       testId={HEADER_TEST_IDS.avatar}
       isHidden={menu.isOpen}
     />
   );
+
+  const homeLink = (
+    <HomeAvatarLink
+      avatarId={account.avatarId}
+      name={account.name}
+      isHidden={menu.isOpen}
+    />
+  );
+
+  const endSlot = isHome ? avatar : homeLink;
 
   return (
     <Fragment>
@@ -38,7 +55,7 @@ export function Header({ title, avatarId }: HeaderProps): JSX.Element {
       <Bar data-testid={HEADER_TEST_IDS.bar}>
         <MenuToggle isOpen={menu.isOpen} onToggle={menu.toggle} />
         <Title text={title} />
-        {avatar}
+        {endSlot}
       </Bar>
       <MenuOverlay
         isOpen={menu.isOpen}

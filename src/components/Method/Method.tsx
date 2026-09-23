@@ -38,7 +38,10 @@ export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
       >
         <Screen align="top">
           <Column>
-            <Header title={METHOD_COPY.title} />
+            <Header
+              title={METHOD_COPY.title}
+              account={currentAccount ?? initialAccount}
+            />
             <MethodIntro />
             <WhySection />
             <WalletsSection />
