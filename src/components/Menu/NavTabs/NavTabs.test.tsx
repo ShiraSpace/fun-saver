@@ -7,7 +7,7 @@ import { MENU_SCREENS, NAV_TABS_TEST_IDS } from './constants';
 const mockOnNavigate = jest.fn();
 
 jest.mock('next/navigation', () => ({
-  usePathname: (): string => '/method',
+  usePathname: (): string => METHOD_ROUTE,
 }));
 
 describe('NavTabs', () => {
