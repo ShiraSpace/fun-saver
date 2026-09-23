@@ -1185,7 +1185,7 @@ cookies. Found while placing the profile strip in PR 7, and it is the state this
 plan's own authorization model makes reachable: signing in is open, so any
 stranger lands there.
 
-`SignedInProviders` wraps the page above `Home`, so the user is already in scope
+`SignedInUserProvider` wraps the page above `Home`, so the user is already in scope
 at the empty state. This is a placement decision, not new plumbing.
 
 Depends on: PR 7.
@@ -1242,7 +1242,6 @@ Depends on: PR 7.
 | `src/app/login/page.tsx` + `src/components/SignIn/` | **new** — one Google button, RTL, themed                                    | 5       |
 | `src/proxy.ts`                                      | **new** — no session cookie → `/login`; `/login` and `/api` off the matcher | 6       |
 | `src/components/Menu/ProfileSection/`               | **new** — name + sign out                                                   | 7       |
-| `src/app/SignedInProviders.tsx`                     | **new** — the providers every signed-in page gets; add new ones here        | 7       |
 | `src/test-utils/render.tsx`                         | `renderWithUser` beside `renderWithAccounts`, both opt-in                   | 7       |
 | `src/db/migration-target.ts`                        | **new** — shared `--dev` / `--test` target resolution                       | 8       |
 | `src/db/assign-owner.ts`                            | **new** — adopt orphan accounts as `owner`; deleted again in 9              | 8       |

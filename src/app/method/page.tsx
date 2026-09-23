@@ -7,7 +7,7 @@ import { withDerivedWallets } from '@/lib/account-dashboard';
 import { today } from '@/lib/clock';
 import { selectedAccount } from '@/lib/selected-account';
 import { ThemedPage } from '@/theme/ThemedPage';
-import { SignedInProviders } from '../SignedInProviders';
+import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { signedInAccounts } from '../signed-in-accounts';
 
 export const dynamic = 'force-dynamic';
@@ -28,9 +28,9 @@ export default async function MethodPage(): Promise<JSX.Element> {
 
   return (
     <ThemedPage themeId={themeId}>
-      <SignedInProviders user={user}>
+      <SignedInUserProvider value={user}>
         <Method accounts={derived} initialAccount={initialAccount} />
-      </SignedInProviders>
+      </SignedInUserProvider>
     </ThemedPage>
   );
 }

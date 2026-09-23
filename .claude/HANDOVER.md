@@ -127,10 +127,13 @@ and menu state survives the menu closing (PR 14).
   `ThemeController`'s. `app-mode-context` is deliberately different: it has a
   default and never throws.
 
-**Providers for signed-in pages live in `src/app/SignedInProviders.tsx`**, used
-by both pages inside `ThemedPage`. Add a new app-wide provider there, not to
-each page. `AccountsProvider` stays inside `Home`/`Method` because its value
-comes from each one's own `useAccountNavigation` state.
+**Both signed-in pages wrap their content in `SignedInUserProvider` inside
+`ThemedPage`.** A context Provider from a `'use client'` module can be rendered
+straight from a server component — measured, not assumed — so no wrapper
+component is needed for one provider. If a second app-wide provider ever
+arrives, that is the moment to compose them in one place, not before.
+`AccountsProvider` stays inside `Home`/`Method` regardless: its value comes from
+each one's own `useAccountNavigation` state.
 
 **`signedInUserId` is gone — `signedInUser()` is the only session accessor**, and
 returns `id`, `name`, `email` and an optional `image`. The API routes take `.id`
