@@ -14,6 +14,7 @@ import { EmptyStateDriver } from './empty-state-driver';
 import { AccountFormDriver } from './account-form-driver';
 import { AvatarPickerDriver } from './avatar-picker-driver';
 import { DashboardDriver } from './dashboard-driver';
+import { MethodDriver } from './method-driver';
 import { startServer, type RunningServer } from '../server';
 
 interface OpenAppOptions {
@@ -32,6 +33,7 @@ export interface AppDriver {
   editAccount: AccountFormDriver;
   avatarPicker: AvatarPickerDriver;
   dashboard: DashboardDriver;
+  method: MethodDriver;
 }
 
 export function createDrivers(session: Session): AppDriver {
@@ -50,6 +52,7 @@ export function createDrivers(session: Session): AppDriver {
     ),
     avatarPicker: new AvatarPickerDriver(session),
     dashboard: new DashboardDriver(session),
+    method: new MethodDriver(session),
   };
 }
 
