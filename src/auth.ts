@@ -43,8 +43,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 });
 
-export async function signedInUser(): Promise<SignedInUser | undefined> {
-  const user = (await auth())?.user;
+export function toSignedInUser(
+  session: Session | null
+): SignedInUser | undefined {
+  const user = session?.user;
 
   if (!user?.id || !user.email) {
     return;
@@ -56,4 +58,8 @@ export async function signedInUser(): Promise<SignedInUser | undefined> {
     email: user.email,
     image: user.image ?? undefined,
   };
+}
+
+export async function signedInUser(): Promise<SignedInUser | undefined> {
+  return toSignedInUser(await auth());
 }

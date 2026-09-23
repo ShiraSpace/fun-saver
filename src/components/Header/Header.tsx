@@ -16,7 +16,7 @@ import { HeaderEndSlot } from './HeaderEndSlot';
 import { HEADER_TEST_IDS } from './constants';
 import { Bar } from './Header.styles';
 import { ProgressLine } from './ProgressLine';
-import { NavigationPendingProvider } from './navigation-pending-context';
+import { PendingLinksProvider } from './navigation-pending-context';
 
 export interface HeaderProps {
   title: string;
@@ -26,10 +26,11 @@ export interface HeaderProps {
 export function Header({ title, account }: HeaderProps): JSX.Element {
   const menu = useMenuState();
   const isHome = usePathname() === HOME_ROUTE;
-  const [isNavigating, setNavigating] = useState(false);
+  const [pendingLinks, setPendingLinks] = useState(0);
+  const isNavigating = pendingLinks > 0;
 
   return (
-    <NavigationPendingProvider value={setNavigating}>
+    <PendingLinksProvider value={setPendingLinks}>
       <MenuHeaderSheet
         data-open={menu.isOpen}
         data-testid={MENU_HEADER_SHEET_TEST_IDS.sheet}
@@ -54,6 +55,6 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
         isAccountListOpen={menu.isAccountListOpen}
         onAccountListToggle={menu.setAccountListOpen}
       />
-    </NavigationPendingProvider>
+    </PendingLinksProvider>
   );
 }

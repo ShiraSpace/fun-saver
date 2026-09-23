@@ -1,21 +1,33 @@
 'use client';
 
-import { createContext, useContext, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import { useLinkStatus } from 'next/link';
 
-type ReportPending = (isPending: boolean) => void;
+const PendingLinksContext = createContext<Dispatch<SetStateAction<number>>>(
+  () => {}
+);
 
-const ReportPendingContext = createContext<ReportPending>(() => {});
-
-export const NavigationPendingProvider = ReportPendingContext.Provider;
+export const PendingLinksProvider = PendingLinksContext.Provider;
 
 export function PendingNavigationReporter(): null {
   const { pending } = useLinkStatus();
-  const reportPending = useContext(ReportPendingContext);
+  const countPendingLinks = useContext(PendingLinksContext);
 
-  useEffect((): void => {
-    reportPending(pending);
-  }, [pending, reportPending]);
+  useEffect((): (() => void) | undefined => {
+    if (!pending) {
+      return undefined;
+    }
+
+    countPendingLinks((count) => count + 1);
+
+    return (): void => countPendingLinks((count) => count - 1);
+  }, [pending, countPendingLinks]);
 
   return null;
 }

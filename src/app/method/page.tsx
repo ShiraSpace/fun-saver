@@ -1,7 +1,6 @@
 import { JSX } from 'react';
-import { redirect } from 'next/navigation';
 import { Method } from '@/components/Method';
-import { HOME_ROUTE } from '@/components/Home/constants';
+import { Home } from '@/components/Home';
 import { getStore } from '@/db';
 import { withDerivedWallets } from '@/lib/account-dashboard';
 import { today } from '@/lib/clock';
@@ -21,16 +20,15 @@ export default async function MethodPage(): Promise<JSX.Element> {
     asOf: today(),
   });
   const initialAccount = selectedAccount(derived, selectedAccountId);
-
-  if (!initialAccount) {
-    redirect(HOME_ROUTE);
-  }
+  const screen = initialAccount ? (
+    <Method accounts={derived} initialAccount={initialAccount} />
+  ) : (
+    <Home accounts={derived} initialAccountId={selectedAccountId} />
+  );
 
   return (
     <ThemedPage themeId={themeId}>
-      <SignedInUserProvider value={user}>
-        <Method accounts={derived} initialAccount={initialAccount} />
-      </SignedInUserProvider>
+      <SignedInUserProvider value={user}>{screen}</SignedInUserProvider>
     </ThemedPage>
   );
 }

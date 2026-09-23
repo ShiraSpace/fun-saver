@@ -1,18 +1,15 @@
-import { NextResponse, type NextRequest } from 'next/server';
-import { LOGIN_PATH, SESSION_COOKIE_NAMES } from '@/lib/constants';
+import { NextResponse } from 'next/server';
+import { auth, toSignedInUser } from '@/auth';
+import { LOGIN_PATH } from '@/lib/constants';
 
 export const config = {
   matcher: ['/((?!login(?:/|$)|api(?:/|$)|_next(?:/|$)).*)'],
 };
 
-export function proxy(request: NextRequest): NextResponse {
-  if (hasSessionCookie(request)) {
+export const proxy = auth((request): NextResponse => {
+  if (toSignedInUser(request.auth)) {
     return NextResponse.next();
   }
 
   return NextResponse.redirect(new URL(LOGIN_PATH, request.url));
-}
-
-function hasSessionCookie(request: NextRequest): boolean {
-  return SESSION_COOKIE_NAMES.some((name) => request.cookies.has(name));
-}
+});
