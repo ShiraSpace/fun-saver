@@ -6,7 +6,7 @@
 > pull requests. The JSON→Neon import PR was dropped: there is no real data
 > worth migrating, and it was new code serving a one-time need.
 
-## Progress — updated 2026-09-23 (PR 12's design merged as #111; 12, 13 and 14 are what is left, and 13 goes first)
+## Progress — updated 2026-09-23 (PR 12 merged as #115; 13 and 14 are what is left, and 13 goes first)
 
 Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 
@@ -28,7 +28,7 @@ Plan PR numbers below are **not** GitHub PR numbers. Mapping so far:
 | PR 10 | [#87](https://github.com/ShiraSpace/fun-saver/pull/87)   | `feat/guard-transaction-routes`    | **merged** — `f1a283d`                                  |
 | PR 11 | [#94](https://github.com/ShiraSpace/fun-saver/pull/94)   | `refactor/themed-page-shell`       | **merged** — `c36afa1`                                  |
 | PR 7  | [#100](https://github.com/ShiraSpace/fun-saver/pull/100) | `feat/profile-section`             | **merged** — `06f2528`                                  |
-| PR 12 | [#111](https://github.com/ShiraSpace/fun-saver/pull/111) | `fix/empty-state-header`           | design merged `bb421e9`; **built** — see PR 12's notes  |
+| PR 12 | [#115](https://github.com/ShiraSpace/fun-saver/pull/115) | `fix/empty-state-header`           | **merged** — `d0a9d00`; design was #111, `bb421e9`      |
 | PR 13 | —                                                        | `refactor/required-context`        | not started — found during PR 7                         |
 | PR 14 | —                                                        | `fix/menu-state-on-close`          | not started — found reviewing PR 7                      |
 | PR 15 | [#105](https://github.com/ShiraSpace/fun-saver/pull/105) | `refactor/one-render-helper`       | **merged** — `da842b1`                                  |
@@ -58,14 +58,17 @@ has no way to sign out (PR 12), four contexts hand-roll the same
 required-context boilerplate (PR 13), and menu state survives the menu closing
 (PR 14). None blocks PR 7.
 
-**They are no longer independent of each other.** PR 12's design landed as
-#111 and gives the empty state the `Header`, which means rewriting how
-`MenuOverlay` composes its account-scoped blocks. **Do PR 13 first** — it
-rewrites `accounts-context`, whose callers PR 12 changes the shape of, and
-doing it after means touching the same four contexts twice. PR 14 also lands
-in `MenuOverlay`; sequence it against 12 deliberately rather than discovering
-the conflict in a rebase. Nothing of PR 12 is built yet: #111 is plan and
-mockup only.
+**PR 12 went first anyway, and merged as #115 (`d0a9d00`).** The advice here
+was to land 13 before it, so that `accounts-context` was not touched twice. It
+was overtaken; the cost is recorded and small. `accounts-context` gained one
+export, `useOptionalAccounts`, which PR 13's factory now has to account for —
+written into that section. PR 14 still lands in `MenuOverlay`, and PR 12 left
+it a decision rather than making it: see PR 14 for the menu context.
+
+**13 and 14 are what is left, and 13 still goes first** — not because of PR 12
+any more, but because PR 14 should build its provider from
+`createRequiredContext` rather than hand-rolling a fifth context the week
+before that factory arrives.
 
 **Review of #100 found a hole this plan did not anticipate: the closed menu was
 still reachable by keyboard.** The panel is always mounted and hidden with
@@ -1273,7 +1276,7 @@ empty state and not the header"* — that assertion inverts in this PR.
 `menu.signOut()` moves off `MenuDriver`: the strip gains a second placement, and
 the method is a lie from a screen with no menu.
 
-#### Built 2026-09-23 — what the section above got wrong, and what it cost
+#### Built and merged as #115 (`d0a9d00`) — what the section above got wrong
 
 **Three of the five files it opens needed no change.** `CrossfadeTitle` has
 taken arbitrary text since it was written and its own suite already rendered
