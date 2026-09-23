@@ -8,6 +8,10 @@ export const NAV_TABS_TEST_IDS = {
   methodTab: 'menu-nav-tab-method',
 } as const;
 
+export const NAV_TABS_CONTENT = {
+  stripLabel: 'מסכים',
+} as const;
+
 export interface MenuScreen {
   id: string;
   icon: string;
@@ -16,7 +20,7 @@ export interface MenuScreen {
   href?: string;
 }
 
-export const MENU_SCREENS: MenuScreen[] = [
+export const MENU_SCREENS: readonly MenuScreen[] = [
   {
     id: 'home',
     icon: '🏠',
@@ -38,5 +42,3 @@ export const MENU_SCREENS: MenuScreen[] = [
     href: METHOD_ROUTE,
   },
 ];
-
-export const TABS_PER_ROW = 4;

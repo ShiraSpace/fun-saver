@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { css, type SerializedStyles, type Theme } from '@emotion/react';
 import Link from 'next/link';
 import { MENU_ROW_STYLE } from '../constants';
+import { MENU_SCREENS } from './constants';
 
 const tabFace = ({ theme }: { theme: Theme }): SerializedStyles => css`
   box-sizing: border-box;
@@ -27,12 +28,9 @@ const tabFace = ({ theme }: { theme: Theme }): SerializedStyles => css`
   }
 `;
 
-export const Strip = styled.nav<{ columnCount: number }>`
+export const Strip = styled.nav`
   display: grid;
-  grid-template-columns: repeat(
-    ${({ columnCount }): number => columnCount},
-    1fr
-  );
+  grid-template-columns: repeat(${MENU_SCREENS.length}, 1fr);
   gap: 6px;
   margin-bottom: 14px;
 `;
@@ -49,12 +47,12 @@ export const InertTab = styled.button`
   ${tabFace}
   border-style: dashed;
   cursor: default;
+
+  span {
+    opacity: 0.45;
+  }
 `;
 
 export const TabIcon = styled.span`
   font-size: ${({ theme }): number => theme.typography.heading}px;
-
-  ${InertTab} & {
-    opacity: 0.45;
-  }
 `;

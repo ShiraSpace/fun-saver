@@ -2,8 +2,7 @@
 
 import { JSX } from 'react';
 import { usePathname } from 'next/navigation';
-import { MENU_SCREENS, NAV_TABS_TEST_IDS } from './constants';
-import { tabColumns } from './tab-columns';
+import { MENU_SCREENS, NAV_TABS_CONTENT, NAV_TABS_TEST_IDS } from './constants';
 import { NavTab } from './NavTab';
 import { Strip } from './NavTabs.styles';
 
@@ -13,7 +12,6 @@ interface NavTabsProps {
 
 export function NavTabs({ onNavigate }: NavTabsProps): JSX.Element {
   const currentPath = usePathname();
-  const columnCount = tabColumns(MENU_SCREENS.length);
 
   const tabComponents = MENU_SCREENS.map((screen) => (
     <NavTab
@@ -25,7 +23,10 @@ export function NavTabs({ onNavigate }: NavTabsProps): JSX.Element {
   ));
 
   return (
-    <Strip data-testid={NAV_TABS_TEST_IDS.strip} columnCount={columnCount}>
+    <Strip
+      aria-label={NAV_TABS_CONTENT.stripLabel}
+      data-testid={NAV_TABS_TEST_IDS.strip}
+    >
       {tabComponents}
     </Strip>
   );

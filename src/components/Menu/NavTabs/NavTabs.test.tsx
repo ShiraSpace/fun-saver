@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { NavTabs } from './NavTabs';
-import { MENU_SCREENS, NAV_TABS_TEST_IDS } from './constants';
+import { MENU_SCREENS, NAV_TABS_CONTENT, NAV_TABS_TEST_IDS } from './constants';
 
 const mockOnNavigate = jest.fn();
 const mockPathname = jest.fn();
@@ -21,6 +21,12 @@ describe('NavTabs', () => {
   describe('on the home screen', () => {
     beforeEach(() => {
       renderTabs(HOME_ROUTE);
+    });
+
+    it('names the landmark, so it is not an unlabelled region in the dialog', () => {
+      expect(
+        screen.getByRole('navigation', { name: NAV_TABS_CONTENT.stripLabel })
+      ).toBeInTheDocument();
     });
 
     it('offers a tab for every screen the app has', () => {
