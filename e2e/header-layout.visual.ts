@@ -96,9 +96,11 @@ describe('header', () => {
   describe('on a screen that is not home', () => {
     const { header, method } = useDriver({ accounts: [mockAccount] });
 
-    it('carries the way home without growing the bar the sheet is sized to', async () => {
+    beforeEach(async () => {
       await method.open();
+    });
 
+    it('carries the way home without growing the bar the sheet is sized to', async () => {
       assert.equal(await header.homeLinkExists(), true);
 
       const bar = await header.box();
@@ -110,8 +112,6 @@ describe('header', () => {
     });
 
     it('takes the end edge the avatar holds on home', async () => {
-      await method.open();
-
       const bar = await header.box();
       const homeLink = await header.homeLinkBox();
       const distanceFromEndEdge = Math.abs(homeLink.x - bar.x);
