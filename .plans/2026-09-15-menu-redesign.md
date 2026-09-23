@@ -1000,6 +1000,17 @@ rather than a line in PR 9.
   back in its effect cleanup — so the order no longer matters. The e2e test for that
   scenario fails against the boolean.
 
+- **Sessions slide, on purpose.** Checking the session through `auth()` in the proxy
+  re-signs the JWT and sets a fresh cookie on every proxied request — Auth.js's JWT
+  branch has no `updateAge` throttle, and the wrapper copies its `Set-Cookie` onto the
+  proxy's response. So an active user stays signed in and only thirty days idle signs
+  them out. The avatars are no longer proxied (`avatars/` in the matcher), so they
+  carry no `Set-Cookie` and stay cacheable; `public/inspiration/` holds two unused
+  screenshots and stays behind the session.
+- **The progress line's sweep ends at `-240%`.** The chunk is 42% of the track and
+  `translateX` percentages are of the chunk, so `-160%` — the mockup's value — ended
+  each loop still on screen and snapped back from inside the track.
+
 ## Notes / risks
 
 - **`e2e/driver/menu-driver.ts` is the seam.** Six of its methods hardcode
