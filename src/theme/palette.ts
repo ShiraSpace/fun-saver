@@ -1,9 +1,13 @@
-import type { ThemeColors } from './theme-tokens';
+import type { ThemeColors, ThemeStops } from './theme-tokens';
 
-export const GRADIENT_STOPS = {
-  primaryTop: '#8A3AAE',
-  sunnyTileSoft: '#FFE6B0',
-} as const;
+export const STOPS = {
+  screen: ['#FFC34D', '#FF8A4C', '#E94E89'],
+  actionButton: ['#8A3AAE', '#6B2C8E'],
+  sunnyTile: ['#FFE6B0', '#FFC34D'],
+  potSavings: ['#FFE6B0', '#FFC34D'],
+  potSpending: ['#FFD8C7', '#FF8A4C'],
+  potGood: ['#FBC4DA', '#E94E89'],
+} as const satisfies ThemeStops;
 
 export const COLORS = {
   primary: '#6B2C8E',
@@ -15,11 +19,8 @@ export const COLORS = {
   textMuted: '#675A80',
   textStrong: '#3A1F5A',
   textOnPot: '#2B1235',
-  labelScrim: 'rgba(0, 0, 0, 0.45)',
+  labelShade: 'rgba(0, 0, 0, 0.45)',
   selectionRing: '#2B1235',
-  screenGradientStart: '#FFC34D',
-  screenGradientMid: '#FF8A4C',
-  screenGradientEnd: '#E94E89',
   star: '#FFD23F',
   divider: '#F2D9D2',
   softBg: '#FFF8E0',

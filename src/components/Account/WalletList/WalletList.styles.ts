@@ -12,7 +12,7 @@ export const Label = styled.span`
   text-align: start;
   padding: 4px 10px;
   border-radius: 999px;
-  background: ${({ theme }): string => theme.colors.labelScrim};
+  background: ${({ theme }): string => theme.colors.labelShade};
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 700;
   color: ${({ theme }): string => theme.colors.textOnPrimary};

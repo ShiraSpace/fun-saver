@@ -1,5 +1,16 @@
+import { buildGradients } from '../gradients';
+import { SHADOW_SCALE } from '../shadows';
 import { TYPE_SCALE } from '../typography';
-import type { ThemeTokens } from '../theme-tokens';
+import type { ThemeStops, ThemeTokens } from '../theme-tokens';
+
+const STOPS = {
+  screen: ['#0A0E14', '#0F1620', '#122036'],
+  actionButton: ['#1D4ED8', '#1E3A8A'],
+  sunnyTile: ['#1E40AF', '#172554'],
+  potSavings: ['#1E40AF', '#172554'],
+  potSpending: ['#2563EB', '#1E40AF'],
+  potGood: ['#4338CA', '#312E81'],
+} as const satisfies ThemeStops;
 
 export const midnightBlue: ThemeTokens = {
   colors: {
@@ -12,11 +23,8 @@ export const midnightBlue: ThemeTokens = {
     textMuted: '#8A96A8',
     textStrong: '#ECF1F8',
     textOnPot: '#ECF1F8',
-    labelScrim: 'transparent',
+    labelShade: 'transparent',
     selectionRing: '#3B82F6',
-    screenGradientStart: '#0A0E14',
-    screenGradientMid: '#0F1620',
-    screenGradientEnd: '#122036',
     star: '#93C5FD',
     divider: '#1E2A40',
     softBg: '#121E36',
@@ -36,13 +44,7 @@ export const midnightBlue: ThemeTokens = {
     walletGood: '#818CF8',
     walletTrack: '#1E2A40',
   },
-  gradients: {
-    screen: 'linear-gradient(160deg, #0A0E14, #0F1620, #122036)',
-    actionButton: 'linear-gradient(#1D4ED8, #1E3A8A)',
-    sunnyTile: 'linear-gradient(135deg, #1E40AF, #172554)',
-    potSavings: 'linear-gradient(135deg, #1E40AF, #172554)',
-    potSpending: 'linear-gradient(135deg, #2563EB, #1E40AF)',
-    potGood: 'linear-gradient(135deg, #4338CA, #312E81)',
-  },
+  gradients: buildGradients(STOPS),
+  shadows: SHADOW_SCALE,
   typography: TYPE_SCALE,
 };

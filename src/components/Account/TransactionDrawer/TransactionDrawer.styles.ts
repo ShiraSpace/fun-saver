@@ -6,7 +6,7 @@ import { SWIPE_TO_CLOSE, TRANSACTION_DRAWER_STYLE } from './constants';
 export const Scrim = styled.div`
   position: fixed;
   inset: 0;
-  background: ${TRANSACTION_DRAWER_STYLE.scrim};
+  background: ${({ theme }): string => theme.shadows.modal};
   z-index: ${LAYERS.modal};
 `;
 
@@ -26,7 +26,7 @@ export const Sheet = styled.div<{ offset: number; dragging: boolean }>`
   background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${TRANSACTION_DRAWER_STYLE.sheetRadius}px
     ${TRANSACTION_DRAWER_STYLE.sheetRadius}px 0 0;
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 -10px 30px ${({ theme }): string => theme.shadows.deep};
   transform: translateY(${({ offset }): number => offset}px);
   transition: ${({ dragging }): string =>
     dragging ? 'none' : `transform ${SWIPE_TO_CLOSE.snapMs}ms ease`};

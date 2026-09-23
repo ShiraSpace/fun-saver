@@ -1,5 +1,16 @@
+import { buildGradients } from '../gradients';
+import { SHADOW_SCALE } from '../shadows';
 import { TYPE_SCALE } from '../typography';
-import type { ThemeTokens } from '../theme-tokens';
+import type { ThemeStops, ThemeTokens } from '../theme-tokens';
+
+const STOPS = {
+  screen: ['#2A9D8F', '#43AA8B', '#90BE6D'],
+  actionButton: ['#1B7A6B', '#12564B'],
+  sunnyTile: ['#52B69A', '#2A9D8F'],
+  potSavings: ['#52B69A', '#2A9D8F'],
+  potSpending: ['#B5D94C', '#90BE6D'],
+  potGood: ['#F4A261', '#E76F51'],
+} as const satisfies ThemeStops;
 
 export const jungleQuest: ThemeTokens = {
   colors: {
@@ -12,11 +23,8 @@ export const jungleQuest: ThemeTokens = {
     textMuted: '#4B655B',
     textStrong: '#1B4332',
     textOnPot: '#2B1800',
-    labelScrim: 'rgba(0, 0, 0, 0.35)',
+    labelShade: 'rgba(0, 0, 0, 0.35)',
     selectionRing: '#2B1800',
-    screenGradientStart: '#2A9D8F',
-    screenGradientMid: '#43AA8B',
-    screenGradientEnd: '#90BE6D',
     star: '#F9C74F',
     divider: '#DDE7CC',
     softBg: '#F3F7E4',
@@ -36,13 +44,7 @@ export const jungleQuest: ThemeTokens = {
     walletGood: '#E76F51',
     walletTrack: '#E8EFDC',
   },
-  gradients: {
-    screen: 'linear-gradient(160deg, #2A9D8F, #43AA8B, #90BE6D)',
-    actionButton: 'linear-gradient(#1B7A6B, #12564B)',
-    sunnyTile: 'linear-gradient(135deg, #52B69A, #2A9D8F)',
-    potSavings: 'linear-gradient(135deg, #52B69A, #2A9D8F)',
-    potSpending: 'linear-gradient(135deg, #B5D94C, #90BE6D)',
-    potGood: 'linear-gradient(135deg, #F4A261, #E76F51)',
-  },
+  gradients: buildGradients(STOPS),
+  shadows: SHADOW_SCALE,
   typography: TYPE_SCALE,
 };

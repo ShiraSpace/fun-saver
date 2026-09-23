@@ -23,5 +23,5 @@ export const ACCOUNT_LIST_STYLE = {
   popoverOffset: 5,
   popoverPadding: 7,
   popoverRadius: 16,
-  popoverShadow: '0 14px 30px rgba(0, 0, 0, 0.22)',
+  shadow: '0 14px 30px',
 } as const;

@@ -60,7 +60,7 @@ export const LEGEND_ANIMATION = {
 export const OVERVIEW_CARD_STYLE = {
   radius: 24,
   padding: 16,
-  shadow: '0 6px 0 rgba(0, 0, 0, 0.06)',
+  shadow: '0 6px 0',
   rowGap: 16,
   holeLabelSize: 10,
   holeLabelSpacing: 0.4,

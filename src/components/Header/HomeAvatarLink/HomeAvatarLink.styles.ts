@@ -29,7 +29,7 @@ export const HouseBadge = styled.span`
   height: 18px;
   border-radius: 50%;
   background: ${({ theme }): string => theme.colors.surface};
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 1px 3px ${({ theme }): string => theme.shadows.deep};
   font-size: ${({ theme }): number => theme.typography.label}px;
   line-height: 1;
 `;

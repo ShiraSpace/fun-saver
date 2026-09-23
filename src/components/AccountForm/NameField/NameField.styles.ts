@@ -7,6 +7,9 @@ const surface = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 const labelColor = ({ theme }: { theme: Theme }): string =>
   theme.colors.textMuted;
 
+const faintShadow = ({ theme }: { theme: Theme }): string =>
+  theme.shadows.faint;
+
 const valueColor = ({ theme }: { theme: Theme }): string =>
   theme.colors.textStrong;
 
@@ -19,7 +22,7 @@ export const Card = styled.label`
   padding: ${NAME_FIELD_STYLE.paddingY}px ${NAME_FIELD_STYLE.paddingX}px;
   border-radius: ${NAME_FIELD_STYLE.radius}px;
   background: ${surface};
-  box-shadow: ${NAME_FIELD_STYLE.shadow};
+  box-shadow: ${NAME_FIELD_STYLE.shadow} ${faintShadow};
   color: ${labelColor};
 `;
 

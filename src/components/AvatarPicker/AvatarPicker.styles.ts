@@ -22,6 +22,9 @@ const ringColor = ({ theme }: { theme: Theme }): string =>
 const selectedBorder = ({ theme }: { theme: Theme }): string =>
   theme.colors.textOnPrimary;
 
+const baseShadow = ({ theme }: { theme: Theme }): string =>
+  `${AVATAR_PICKER_STYLE.shadow} ${theme.shadows.soft}`;
+
 export const OptionButton = styled.button<OptionButtonProps>`
   position: relative;
   width: 100%;
@@ -32,7 +35,7 @@ export const OptionButton = styled.button<OptionButtonProps>`
   overflow: hidden;
   cursor: pointer;
   background: ${optionFill};
-  box-shadow: ${AVATAR_PICKER_STYLE.baseShadow};
+  box-shadow: ${baseShadow};
   transition: transform ${AVATAR_PICKER_STYLE.transitionMs}ms ease;
 
   &:hover {
@@ -43,6 +46,6 @@ export const OptionButton = styled.button<OptionButtonProps>`
     border-color: ${selectedBorder};
     box-shadow:
       0 0 0 ${AVATAR_PICKER_STYLE.ringWidth}px ${ringColor},
-      ${AVATAR_PICKER_STYLE.baseShadow};
+      ${baseShadow};
   }
 `;

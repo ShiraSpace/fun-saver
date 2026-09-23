@@ -47,7 +47,7 @@ describe('theme registry', () => {
     const contrastTokens = Object.values(THEMES).map(({ colors }) => [
       colors.primaryText,
       colors.textOnPot,
-      colors.labelScrim,
+      colors.labelShade,
       colors.alertText,
       colors.selectionRing,
     ]);

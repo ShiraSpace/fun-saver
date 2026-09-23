@@ -21,7 +21,6 @@ export const TRANSACTION_DRAWER_COPY = {
 export const TRANSACTION_DRAWER_STYLE = {
   maxWidth: 420,
   maxHeight: '80svh',
-  scrim: 'rgba(40, 20, 60, 0.42)',
   sheetRadius: 28,
   gap: 8,
   messageExtraTop: 6,

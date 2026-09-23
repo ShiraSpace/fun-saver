@@ -21,7 +21,7 @@ describe('WalletList', () => {
     const label = screen.getByTestId(WALLET_LIST_TEST_IDS.label);
 
     expect(getComputedStyle(label).backgroundColor).toBe(
-      getThemeTokens().colors.labelScrim
+      getThemeTokens().colors.labelShade
     );
     expect(opacityOf(label)).toBe(1);
   });

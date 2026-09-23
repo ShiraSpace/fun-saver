@@ -7,7 +7,8 @@ export const Card = styled.div`
   padding: ${WALLET_CARD_STYLE.paddingY}px ${WALLET_CARD_STYLE.paddingX}px;
   background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${WALLET_CARD_STYLE.radius}px;
-  box-shadow: ${WALLET_CARD_STYLE.shadow};
+  box-shadow: ${WALLET_CARD_STYLE.shadow}
+    ${({ theme }): string => theme.shadows.faint};
 `;
 
 export const Head = styled.div`

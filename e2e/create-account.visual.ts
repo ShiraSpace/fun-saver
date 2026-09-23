@@ -1,6 +1,6 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { GRADIENTS } from '@/theme/gradients';
+import { getThemeTokens } from '@/theme/registry';
 import { COLORS } from '@/theme/palette';
 import { TYPE_SCALE } from '@/theme/typography';
 import { SCREEN_LAYOUT } from '@/components/Screen/constants';
@@ -9,7 +9,7 @@ import { useDriver } from './driver/use-driver';
 
 describe('create account', () => {
   const { emptyState, createAccount } = useDriver();
-  const expectedGradient = gradientToRgb(GRADIENTS.screen);
+  const expectedGradient = gradientToRgb(getThemeTokens().gradients.screen);
 
   beforeEach(async () => {
     await emptyState.clickCreateAccount();

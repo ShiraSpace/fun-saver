@@ -9,13 +9,14 @@ const surface = ({ theme }: Themed): string => theme.colors.surface;
 const strong = ({ theme }: Themed): string => theme.colors.textStrong;
 const muted = ({ theme }: Themed): string => theme.colors.textMuted;
 const alertText = ({ theme }: Themed): string => theme.colors.alertText;
+const midShadow = ({ theme }: Themed): string => theme.shadows.mid;
 
 export const Wordmark = styled.h1`
   font-size: ${SIGN_IN_LAYOUT.wordmarkSize}px;
   font-weight: 700;
   margin: 0;
   color: ${onPrimary};
-  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.16);
+  text-shadow: 0 3px 0 ${midShadow};
 `;
 
 export const Tagline = styled.p`
@@ -32,7 +33,7 @@ export const Card = styled.section`
   background: ${surface};
   border-radius: ${SIGN_IN_LAYOUT.cardRadius}px;
   padding: ${SIGN_IN_LAYOUT.cardPaddingY}px ${SIGN_IN_LAYOUT.cardPaddingX}px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 12px 30px ${midShadow};
   display: flex;
   flex-direction: column;
   gap: ${SIGN_IN_LAYOUT.cardGap}px;

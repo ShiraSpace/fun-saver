@@ -19,6 +19,8 @@ const scopeBorder = ({ theme }: { theme: Theme }): string =>
 const selectedFill = ({ theme }: { theme: Theme }): string =>
   theme.colors.accountScopeBg;
 
+const deepShadow = ({ theme }: { theme: Theme }): string => theme.shadows.deep;
+
 const rowSize = ({ theme }: { theme: Theme }): number => theme.typography.body;
 
 const totalSize = ({ theme }: { theme: Theme }): number =>
@@ -36,7 +38,7 @@ export const List = styled.div`
   border: ${MENU_ROW_STYLE.borderWidth}px solid ${scopeBorder};
   border-radius: ${ACCOUNT_LIST_STYLE.popoverRadius}px;
   background: ${surface};
-  box-shadow: ${ACCOUNT_LIST_STYLE.popoverShadow};
+  box-shadow: ${ACCOUNT_LIST_STYLE.shadow} ${deepShadow};
 `;
 
 const row = `
