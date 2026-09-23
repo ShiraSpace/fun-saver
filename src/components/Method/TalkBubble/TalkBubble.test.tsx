@@ -1,4 +1,6 @@
 import { render, screen } from '@/test-utils/render';
+import { hexToRgb } from '@/test-utils/css-color';
+import { getThemeTokens } from '@/theme/registry';
 import type { TalkLine } from '../copy';
 import { TalkBubble } from './TalkBubble';
 import { TALK_BUBBLE_TEST_IDS } from './constants';
@@ -27,6 +29,23 @@ describe('a talk bubble', () => {
     it('runs the label through the same emphasis as everything else on the page', () => {
       expect(screen.getByTestId(TALK_BUBBLE_TEST_IDS.label)).toHaveTextContent(
         '🗣️ מה אומרים לילד'
+      );
+    });
+  });
+
+  describe('on a theme whose text colour left its outline behind', () => {
+    const jungle = getThemeTokens('jungle-quest').colors;
+
+    beforeEach(() => {
+      render(<TalkBubble label={LABEL} lines={LINES} />, 'jungle-quest');
+    });
+
+    it('darkens the label to read on the surface and leaves the outline bright', () => {
+      const label = screen.getByTestId(TALK_BUBBLE_TEST_IDS.label);
+
+      expect(getComputedStyle(label).color).toBe(hexToRgb(jungle.primaryText));
+      expect(getComputedStyle(label.parentElement!).borderColor).toBe(
+        hexToRgb(jungle.primary)
       );
     });
   });

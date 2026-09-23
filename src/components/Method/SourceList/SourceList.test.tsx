@@ -1,4 +1,6 @@
 import { render, screen } from '@/test-utils/render';
+import { hexToRgb } from '@/test-utils/css-color';
+import { getThemeTokens } from '@/theme/registry';
 import { METHOD_COPY } from '../copy';
 import { SourceList } from './SourceList';
 import { SOURCE_LIST_TEST_IDS } from './constants';
@@ -24,5 +26,23 @@ describe('the studies behind the page', () => {
       .map((citation) => citation.getAttribute('target'));
 
     expect(opened).toEqual(sources.list.map(() => '_blank'));
+  });
+});
+
+describe('the studies on a theme whose link colour cannot carry text', () => {
+  const jungle = getThemeTokens('jungle-quest').colors;
+
+  beforeEach(() => {
+    render(<SourceList sources={sources.list} />, 'jungle-quest');
+  });
+
+  it('darkens the citations away from the colour the outlines keep', () => {
+    const citationColours = screen
+      .getAllByTestId(SOURCE_LIST_TEST_IDS.citation)
+      .map((citation) => getComputedStyle(citation).color);
+
+    expect(citationColours).toEqual(
+      sources.list.map(() => hexToRgb(jungle.primaryText))
+    );
   });
 });

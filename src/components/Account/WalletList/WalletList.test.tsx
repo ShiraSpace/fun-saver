@@ -1,4 +1,5 @@
 import { render, screen } from '@/test-utils/render';
+import { getThemeTokens } from '@/theme/registry';
 import { WalletList } from './WalletList';
 import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
 import { WALLET_CARD_TEST_IDS } from '../WalletCard/constants';
@@ -13,6 +14,15 @@ describe('WalletList', () => {
     expect(screen.getByTestId(WALLET_LIST_TEST_IDS.label)).toHaveTextContent(
       WALLET_LIST_COPY.label
     );
+  });
+
+  it('lays the theme scrim behind the label instead of fading it', () => {
+    const label = screen.getByTestId(WALLET_LIST_TEST_IDS.label);
+
+    expect(getComputedStyle(label).backgroundColor).toBe(
+      getThemeTokens().colors.labelScrim
+    );
+    expect(getComputedStyle(label).opacity).toBe('');
   });
 
   it('renders one card per wallet', () => {
