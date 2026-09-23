@@ -3,11 +3,11 @@ import {
   mockDerivedAccount,
   mockSecondDerivedAccount,
 } from '@/test-utils/fixtures';
+import { WithMenu } from '@/test-utils/menu';
 import { totalBalance } from '@/lib/derivations';
 import { agorotToWholeShekels } from '@/lib/money';
 import { AccountList } from './AccountList';
 import { ACCOUNT_LIST_CONTENT, ACCOUNT_LIST_TEST_IDS } from './constants';
-import { WithMenu } from '@/test-utils/menu';
 
 const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
 

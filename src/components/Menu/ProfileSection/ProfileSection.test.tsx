@@ -1,11 +1,11 @@
 import { signOut } from 'next-auth/react';
 import { fireEvent, screen, waitFor } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
+import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { LOGIN_PATH } from '@/lib/constants';
 import { goTo } from '@/lib/navigate';
 import { ProfileSection } from './ProfileSection';
 import { PROFILE_SECTION_CONTENT, PROFILE_SECTION_TEST_IDS } from './constants';
-import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 
 jest.mock('@/lib/navigate', () => ({ goTo: jest.fn() }));
 
