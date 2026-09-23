@@ -10,18 +10,14 @@ import {
   ACCOUNT_LIST_TEST_IDS,
 } from '../AccountList/constants';
 import { AddRow } from '../row-parts';
+import { useMenu } from '../use-menu-state';
 
-interface AddAccountRowProps {
-  onLeaveMenu: () => void;
-}
-
-export function AddAccountRow({
-  onLeaveMenu,
-}: AddAccountRowProps): JSX.Element {
+export function AddAccountRow(): JSX.Element {
   const { setMode } = useAppMode();
+  const { close } = useMenu();
 
   const handleAddAccount = (): void => {
-    onLeaveMenu();
+    close();
     setMode(APP_MODE.creatingAccount);
   };
 

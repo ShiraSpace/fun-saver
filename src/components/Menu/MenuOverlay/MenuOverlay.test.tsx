@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
+import { openAccountPicker } from '@/test-utils/account-picker';
 import { mockAccountsContext, mockUser } from '@/test-utils/fixtures';
 import { MenuOverlay } from './MenuOverlay';
 import { MENU_OVERLAY_CONTENT } from './constants';
@@ -9,20 +10,16 @@ import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
 import { NAV_TABS_TEST_IDS } from '../NavTabs/constants';
+import { WithMenu } from '@/test-utils/menu';
 
 const onClose = jest.fn();
-const onAccountListToggle = jest.fn();
 
-function renderOverlay(isAccountListOpen = false): void {
+function renderOverlay(): void {
   onClose.mockClear();
-  onAccountListToggle.mockClear();
   render(
-    <MenuOverlay
-      isOpen
-      onClose={onClose}
-      isAccountListOpen={isAccountListOpen}
-      onAccountListToggle={onAccountListToggle}
-    />,
+    <WithMenu close={onClose}>
+      <MenuOverlay />
+    </WithMenu>,
     { accounts: mockAccountsContext, user: mockUser }
   );
 }
@@ -103,13 +100,12 @@ describe('MenuOverlay', () => {
 
   describe('with the account picker open', () => {
     beforeEach(() => {
-      renderOverlay(true);
+      renderOverlay();
+      openAccountPicker();
+      fireEvent.keyDown(document.body, { key: 'Escape' });
     });
 
-    it('lets Escape shut the picker and leaves the menu standing', () => {
-      fireEvent.keyDown(document, { key: 'Escape' });
-
-      expect(onAccountListToggle).toHaveBeenCalledWith(false);
+    it('keeps the Escape that shut the picker from closing the menu too', () => {
       expect(onClose).not.toHaveBeenCalled();
     });
   });

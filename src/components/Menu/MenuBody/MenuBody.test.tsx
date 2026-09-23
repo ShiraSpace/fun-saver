@@ -6,16 +6,15 @@ import { ACCOUNT_PICKER_TEST_IDS } from '../AccountPicker/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '../EditAccountButton/constants';
 import { MENU_ACCOUNT_SCOPE_TEST_IDS } from '../MenuAccountScope/constants';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from '../MenuGlobalScope/constants';
+import { WithMenu } from '@/test-utils/menu';
 
 describe('MenuBody', () => {
   describe('for a parent who has no account yet', () => {
     beforeEach(() => {
       render(
-        <MenuBody
-          onLeaveMenu={(): void => {}}
-          isAccountListOpen={false}
-          onAccountListToggle={(): void => {}}
-        />,
+        <WithMenu>
+          <MenuBody />
+        </WithMenu>,
         { user: mockUser }
       );
     });

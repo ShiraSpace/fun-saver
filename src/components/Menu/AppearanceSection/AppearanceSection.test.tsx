@@ -1,5 +1,4 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { render } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
 import { THEME_ID, getThemeTokens } from '@/theme/registry';
 import { mockAccountsContext, mockDerivedAccount } from '@/test-utils/fixtures';
@@ -9,11 +8,10 @@ import {
   APPEARANCE_SECTION_TEST_IDS,
 } from './constants';
 import { mockRouter } from '@mocks/next/navigation';
+import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 
 function renderSection(): void {
-  render(<AppearanceSection />, {
-    accounts: mockAccountsContext,
-  });
+  renderInOpenMenu(<AppearanceSection />, { accounts: mockAccountsContext });
 }
 
 function swatches(): HTMLElement[] {
@@ -100,6 +98,18 @@ describe('AppearanceSection', () => {
       expect(getComputedStyle(error).color).toBe(
         hexToRgb(getThemeTokens().colors.alertText)
       );
+    });
+
+    describe('and the menu is closed and reopened', () => {
+      beforeEach(() => {
+        closeAndReopenMenu();
+      });
+
+      it('no longer says it did not save', () => {
+        expect(
+          screen.queryByTestId(APPEARANCE_SECTION_TEST_IDS.saveError)
+        ).not.toBeInTheDocument();
+      });
     });
 
     it('reverts to the theme that is still saved', () => {

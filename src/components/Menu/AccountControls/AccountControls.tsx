@@ -3,33 +3,25 @@
 import { Fragment, JSX } from 'react';
 import { AccountPicker } from '../AccountPicker';
 import { EditAccountButton } from '../EditAccountButton';
+import { useMenu } from '../use-menu-state';
 import { useAccounts } from '@/components/Home/accounts-context';
 import {
   APP_MODE,
   useAppMode,
 } from '@/components/AccountManagement/app-mode-context';
 
-interface AccountControlsProps {
-  onLeaveMenu: () => void;
-  isAccountListOpen: boolean;
-  onAccountListToggle: (isOpen: boolean) => void;
-}
-
-export function AccountControls({
-  onLeaveMenu,
-  isAccountListOpen,
-  onAccountListToggle,
-}: AccountControlsProps): JSX.Element {
+export function AccountControls(): JSX.Element {
   const { accounts, currentAccount, selectAccount } = useAccounts();
+  const { close } = useMenu();
   const { setMode } = useAppMode();
 
   const handleSelectAccount = (id: string): void => {
     selectAccount(id);
-    onLeaveMenu();
+    close();
   };
 
   const handleEditAccount = (): void => {
-    onLeaveMenu();
+    close();
     setMode(APP_MODE.editingAccount);
   };
 
@@ -38,10 +30,7 @@ export function AccountControls({
       <AccountPicker
         accounts={accounts}
         currentAccount={currentAccount}
-        isOpen={isAccountListOpen}
-        onToggle={onAccountListToggle}
         onSelect={handleSelectAccount}
-        onLeaveMenu={onLeaveMenu}
       />
       <EditAccountButton
         accountName={currentAccount.name}

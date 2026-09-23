@@ -1463,6 +1463,46 @@ the pieces, unmounting does not.
 
 Depends on: PR 7 and PR 13, both merged.
 
+#### Decided before building, then revised in review of #124
+
+**Each piece clears its own failure when the menu closes.** `use-menu-state.ts`
+exports `useOnMenuClose(callback)`, which runs the callback whenever `isOpen`
+turns false. `useSignOut` turns `failed` back into `idle`, `useAccountTheme`
+clears `saveFailed`, and `ProfilePhoto` clears `hasPhotoFailed`. There were
+three stale states, not two: the plan had missed the theme save.
+
+**The first build used a key instead, and review showed why that was too
+blunt.** `<Content key={String(isOpen)}>` remounted everything inside the
+panel on open and close. That cleared the failures, but it also dropped a
+sign-out still in flight: tap sign out on a slow network, close and reopen the
+menu, and the button was live again, so a second tap sent a second sign-out,
+and a failure of the first landed on an unmounted component. The bug was
+failures outliving the menu, so only failures are cleared now. An in-flight
+sign-out survives.
+
+**Unmounting the panel was rejected for the animation**: it needs a delayed
+unmount after the fade-out and a closed mount before the fade-in.
+
+**The menu context lands here, beside the fix.** `use-menu-state.ts` exports
+`MenuProvider` and `useMenu`, built with `createRequiredContext`. `Header` wraps
+`MenuOverlay` in it; `MenuOverlay`, `AccountControls`, `AddAccountRow` and
+`MenuBody` read it, and `AccountPicker` and `AccountList` lose the
+`onLeaveMenu` they only passed on.
+
+**The account list's open state left the menu.** It lived in `useMenuState` for
+two reasons: `toggle` and `close` collapsed it, and Escape had to close the list
+before the menu. `AccountPicker` now owns `isOpen` and collapses it through
+`useOnMenuClose`. For Escape, `useEscapeKey` (moved up to `src/components/Menu/`)
+takes `takesPrecedence`: the picker listens on `document` in the capture phase
+while the list is open and stops the event, so the menu's own `document`
+listener never sees that Escape. **The first build handled Escape on the
+picker's element instead, which review caught**: Safari and Firefox on macOS do
+not focus a button on click, so focus stayed on `body`, the picker's handler
+never ran, and one Escape closed the whole menu with the list open. The tests
+had fired the key on the trigger, assuming focus those browsers do not give.
+`MenuState` is back to `isOpen`, `toggle` and `close`, and
+`use-escape-dismissal.ts` is gone.
+
 ### PR 15 — `refactor/one-render-helper` — **merged as #105 (`da842b1`)**
 
 `src/test-utils/render.tsx` now exports six ways to render: `render`,

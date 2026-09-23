@@ -1,34 +1,45 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createRequiredContext } from '@/hooks/create-required-context';
 
 export interface MenuState {
   isOpen: boolean;
-  isAccountListOpen: boolean;
   toggle: () => void;
   close: () => void;
-  setAccountListOpen: (isOpen: boolean) => void;
 }
+
+export const [MenuProvider, useMenu] =
+  createRequiredContext<MenuState>('MenuProvider');
 
 export function useMenuState(): MenuState {
   const [isOpen, setIsOpen] = useState(false);
-  const [isAccountListOpen, setIsAccountListOpen] = useState(false);
 
   const toggle = useCallback((): void => {
-    setIsAccountListOpen(false);
     setIsOpen((wasOpen) => !wasOpen);
   }, []);
 
   const close = useCallback((): void => {
-    setIsAccountListOpen(false);
     setIsOpen(false);
   }, []);
 
-  return {
-    isOpen,
-    isAccountListOpen,
-    toggle,
-    close,
-    setAccountListOpen: setIsAccountListOpen,
-  };
+  return { isOpen, toggle, close };
+}
+
+export function useOnMenuClose(onMenuClose: () => void): void {
+  const { isOpen } = useMenu();
+  const onMenuCloseRef = useRef(onMenuClose);
+  const wasOpenRef = useRef(isOpen);
+
+  useEffect(() => {
+    onMenuCloseRef.current = onMenuClose;
+  });
+
+  useEffect(() => {
+    if (wasOpenRef.current && !isOpen) {
+      onMenuCloseRef.current();
+    }
+
+    wasOpenRef.current = isOpen;
+  }, [isOpen]);
 }

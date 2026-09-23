@@ -5,6 +5,7 @@ import {
 } from '@/components/AccountManagement/app-mode-context';
 import { AddAccountRow } from './AddAccountRow';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
+import { WithMenu } from '@/test-utils/menu';
 
 const mockOnLeaveMenu = jest.fn();
 const mockSetMode = jest.fn();
@@ -14,7 +15,9 @@ describe('AddAccountRow', () => {
     jest.clearAllMocks();
     render(
       <AppModeProvider value={{ mode: APP_MODE.viewing, setMode: mockSetMode }}>
-        <AddAccountRow onLeaveMenu={mockOnLeaveMenu} />
+        <WithMenu close={mockOnLeaveMenu}>
+          <AddAccountRow />
+        </WithMenu>
       </AppModeProvider>
     );
   });

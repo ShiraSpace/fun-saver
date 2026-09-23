@@ -2,29 +2,15 @@
 
 import { JSX } from 'react';
 import { MenuBody } from '../MenuBody';
+import { useMenu } from '../use-menu-state';
 import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
-import { useEscapeDismissal } from './use-escape-dismissal';
+import { useEscapeKey } from '../use-escape-key';
 import { Panel, Content } from './MenuOverlay.styles';
 
-export interface MenuOverlayProps {
-  isOpen: boolean;
-  onClose: () => void;
-  isAccountListOpen: boolean;
-  onAccountListToggle: (isOpen: boolean) => void;
-}
+export function MenuOverlay(): JSX.Element {
+  const { isOpen, close } = useMenu();
 
-export function MenuOverlay({
-  isOpen,
-  onClose,
-  isAccountListOpen,
-  onAccountListToggle,
-}: MenuOverlayProps): JSX.Element {
-  useEscapeDismissal({
-    isOpen,
-    onClose,
-    isAccountListOpen,
-    onAccountListToggle,
-  });
+  useEscapeKey({ isListening: isOpen, onEscape: close });
 
   return (
     <Panel
@@ -35,11 +21,7 @@ export function MenuOverlay({
       inert={!isOpen}
     >
       <Content>
-        <MenuBody
-          onLeaveMenu={onClose}
-          isAccountListOpen={isAccountListOpen}
-          onAccountListToggle={onAccountListToggle}
-        />
+        <MenuBody />
       </Content>
     </Panel>
   );
