@@ -1463,6 +1463,34 @@ the pieces, unmounting does not.
 
 Depends on: PR 7 and PR 13, both merged.
 
+#### Decided before building — neither option above
+
+**The menu's contents remount each time it opens or closes:
+`<Content key={String(isOpen)}>` in `MenuOverlay`.** The animation lives on
+`Panel`, which stays mounted; only what is inside it starts fresh. That is
+React's own way to reset a subtree, and it covers every stateful piece at once.
+
+**There were three stale states, not two.** Besides the sign-out error and the
+failed photo, `useAccountTheme` holds `saveFailed`, so a failed theme save
+also survived the menu closing. Resetting each piece on close would have meant
+three effects, and every future piece remembering its own.
+
+**Unmounting the panel was rejected for the animation**: it needs a delayed
+unmount after the fade-out and a closed mount before the fade-in. A key made
+fresh on every render was rejected too — the contents would remount whenever
+`Header` re-renders, including opening the account list.
+
+**The cost is at close, and small.** The contents reset as the fade-out starts,
+so a showing sign-out error leaves with the fade's first frame rather than its
+last. The account list is already collapsed by `close`.
+
+**`ProfilePhoto` needs nothing of its own.** It lives only in the menu, so a
+changed URL is picked up on the next open.
+
+**The menu context is no longer part of the fix.** Drilling `onLeaveMenu` six
+levels, two of them pure pass-throughs, is still worth removing, but as its own
+refactor rather than as this bug's mechanism.
+
 ### PR 15 — `refactor/one-render-helper` — **merged as #105 (`da842b1`)**
 
 `src/test-utils/render.tsx` now exports six ways to render: `render`,

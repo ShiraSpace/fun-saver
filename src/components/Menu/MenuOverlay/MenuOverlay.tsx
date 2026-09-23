@@ -34,7 +34,7 @@ export function MenuOverlay({
       data-open={isOpen}
       inert={!isOpen}
     >
-      <Content>
+      <Content key={String(isOpen)}>
         <MenuBody
           onLeaveMenu={onClose}
           isAccountListOpen={isAccountListOpen}
