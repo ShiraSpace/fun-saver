@@ -1,5 +1,5 @@
 import { JSX, ReactNode } from 'react';
-import { ThemeController } from './ThemeController';
+import { AppThemeProvider } from './AppThemeProvider';
 import type { ThemeId } from './registry';
 
 interface ThemedPageProps {
@@ -13,7 +13,7 @@ export function ThemedPage({
 }: ThemedPageProps): JSX.Element {
   return (
     <main>
-      <ThemeController initialThemeId={themeId}>{children}</ThemeController>
+      <AppThemeProvider initialThemeId={themeId}>{children}</AppThemeProvider>
     </main>
   );
 }

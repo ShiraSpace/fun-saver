@@ -1,11 +1,7 @@
 import { JSX } from 'react';
 import { render, screen } from '@/test-utils/render';
 import { mockAccountsContext } from '@/test-utils/fixtures';
-import {
-  NO_PROVIDER,
-  useAccounts,
-  useOptionalAccounts,
-} from './accounts-context';
+import { useAccounts, useOptionalAccounts } from './accounts-context';
 
 const NAME_TESTID = 'current-account-name';
 const OPTIONAL_TESTID = 'optional-account-name';
@@ -37,7 +33,9 @@ describe('useAccounts', () => {
   });
 
   it('refuses to guess when no provider is above it', () => {
-    expect(() => render(<CurrentAccountName />)).toThrow(NO_PROVIDER);
+    expect(() => render(<CurrentAccountName />)).toThrow(
+      'No AccountsProvider above this component'
+    );
   });
 });
 

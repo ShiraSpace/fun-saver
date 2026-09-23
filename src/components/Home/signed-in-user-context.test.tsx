@@ -22,7 +22,7 @@ describe('useSignedInUser', () => {
 
   it('refuses to guess when no provider is above it', () => {
     expect(() => render(<SignedInName />)).toThrow(
-      'useSignedInUser needs a SignedInUserProvider above it'
+      'No SignedInUserProvider above this component'
     );
   });
 });

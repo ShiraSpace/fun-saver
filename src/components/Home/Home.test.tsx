@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { useThemeId } from '@/theme/ThemeController';
+import { useThemeId } from '@/theme/AppThemeProvider';
 import { THEME_ID } from '@/theme/registry';
 import { Home } from './Home';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';

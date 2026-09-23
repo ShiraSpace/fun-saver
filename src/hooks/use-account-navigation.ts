@@ -8,7 +8,7 @@ import {
 import { SELECTED_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
 import { selectedAccount } from '@/lib/selected-account';
 import { resolveThemeId } from '@/theme/registry';
-import { useSetThemeId } from '@/theme/ThemeController';
+import { useSetThemeId } from '@/theme/AppThemeProvider';
 
 export interface AccountNavigation {
   mode: AppMode;
