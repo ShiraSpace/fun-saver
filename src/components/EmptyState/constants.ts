@@ -6,6 +6,7 @@ export const EMPTY_STATE_TEST_IDS = {
 
 export const EMPTY_STATE_COPY = {
   createAccount: 'צור חשבון',
+  greeting: 'שלום',
 } as const;
 
 export const EMPTY_STATE_LAYOUT = {

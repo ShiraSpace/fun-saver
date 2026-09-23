@@ -1,11 +1,12 @@
 import { render, screen } from '@/test-utils/render';
+import { mockUser } from '@/test-utils/fixtures';
 import { PIG_EMOJI } from '@/components/Pig/constants';
 import { EmptyState } from './EmptyState';
 import { EMPTY_STATE_COPY, EMPTY_STATE_TEST_IDS } from './constants';
 
 describe('EmptyState', () => {
   beforeEach(() => {
-    render(<EmptyState onCreate={() => {}} />);
+    render(<EmptyState onCreate={() => {}} />, { user: mockUser });
   });
 
   it('renders the empty-state screen', () => {

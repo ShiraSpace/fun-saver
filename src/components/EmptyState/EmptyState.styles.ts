@@ -1,6 +1,7 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Pig as BarePig } from '@/components/Pig/Pig';
+import { SCREEN_LAYOUT } from '@/components/Screen/constants';
 import { EMPTY_STATE_ANIMATION } from './constants';
 
 const oink = keyframes`
@@ -14,4 +15,13 @@ export const Pig = styled(BarePig)`
   &[data-oinking='true'] {
     animation: ${oink} ${EMPTY_STATE_ANIMATION.oinkMs}ms ease-in-out;
   }
+`;
+
+export const Centre = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${SCREEN_LAYOUT.gap}px;
 `;
