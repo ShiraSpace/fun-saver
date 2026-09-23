@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>fun-saver — סיכום חשבון (מוקאפ אינטראקטיבי)</title>
+<title>fun-saver — סיכום חשבון · מסך התנועות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -316,90 +316,55 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 .swatch { width:38px; height:38px; border-radius:12px; border:2.5px solid transparent; cursor:pointer;
   position:relative; padding:0; }
 .swatch[aria-pressed='true'] { border-color:var(--textStrong); }
+/* ── סטטוס ההחלטה ─────────────────────────────────────────────── */
+.crumb { max-width:392px; margin:0 0 14px; font-size:12.5px; }
+.crumb a { color:#9aa3b2; text-decoration:none; border-bottom:1px solid #3a3a42; }
+.crumb a:hover { color:#fff; }
+.status { display:flex; align-items:flex-start; gap:10px; max-width:392px;
+  margin:0 0 12px; padding:9px 11px; border-radius:10px; font-size:12.5px; line-height:1.65; }
+.status .badge { flex-shrink:0; font-weight:800; font-size:11px; letter-spacing:.06em;
+  padding:3px 8px; border-radius:999px; white-space:nowrap; }
+.status p { margin:0; }
+.status code, .status a { font-size:11.5px; color:inherit; }
+.status.chosen { background:#12301c; color:#b7f0c8; border:1px solid #2f7a4a; }
+.status.chosen .badge { background:#2f7a4a; color:#eafff1; }
+.status.rejected { background:#26262b; color:#9aa3b2; border:1px solid #3a3a42; }
+.status.rejected .badge { background:#3a3a42; color:#c3c9d4; }
+.status.info { background:#1b2740; color:#a8c0e8; border:1px solid #33507f; }
+.status.info .badge { background:#33507f; color:#dbe8ff; }
+.status { max-width:820px; }
+.slot .status { max-width:392px; margin:6px 0 10px; }
 </style>
 </head>
 <body>
 
-<h1>fun-saver — סיכום חשבון · מוקאפ אינטראקטיבי</h1>
+
+<p class="crumb"><a href="../index.html">← כל המוקאפים</a> · סיכום חשבון · מסך התנועות · <a href="menu.html">התפריט ←</a></p>
+<h1>fun-saver — סיכום חשבון · מסך התנועות</h1>
 <p class="sub">
-  שני המסכים חיים וחולקים מצב. <b>בחירת חשבון בתפריט משנה גם את הגרף, גם את הרשימה וגם את הערכת הנושא</b> — כך רואים שהחשבון הוא הדבר הגלובלי היחיד וכל השאר תלוי-חשבון.
-  הכספים מחושבים ב<b>אגורות</b> כמו בקוד (<code>interestForDay = round(balanceAgorot × 0.15/30)</code>), ולכן הריבית היומית יוצאת סכום ריאלי ולא ₪1 עגול.
-  פיצול הפקדה <code>40/50/10</code> כמו ב-<code>DEPOSIT_SPLIT</code>. 90 יום היסטוריה לכל חשבון.
-  <br /><span class="new">חדש</span>: שלוש עמודות הניווט מוציאות את <b>מסכים</b> מהבלוק תלוי-החשבון — ניווט אינו הגדרה של חשבון —
-  ומצרפות אליו את <b>השיטה</b>, שהיום היא קישור יתום מתחת לשני הבלוקים.
-  <b>נ3 — רצועת הטאבים — נבחרה</b>; הבורר <b>כמה מסכים</b> מראה איך היא נראית כשמתווספים מסכים מה-roadmap.
-  בכותרת נבחנות שבע צורות של <b>חזרה לבית</b> (הבורר למעלה), כדי שממסך תנועות או מהשיטה תהיה דרך חזרה בלי לפתוח את התפריט —
-  שלוש עם חץ (ח1–ח3) וארבע עם בית (ב1–ב4). <b>ב1 — בית במקום האווטאר — נבחרה</b>: חץ עונה «מאיפה הגעתי», שהאפליקציה
-  לא יודעת בכניסה קרה, ובית עונה «לאן אני הולך» — אותה תשובה בכל פעם. המחיר הוא האווטאר, ולכן שם הילד נשאר בכותרת.
-  <br /><span class="new">פתוח</span>: <b>שפה</b> יושבת כרגע בקבוצה תלוית-החשבון לפי ההנחיה, אבל בקוד היא <code>LANGUAGE_SECTION_CONTENT.selectedCode</code> קבוע ללא שמירה — סביר שהיא העדפת משתמש/מכשיר ומקומה בקבוצה הגלובלית. שורה אחת להזיז.
+  גרף A ורשימת התנועות. הכספים מחושבים ב<b>אגורות</b> כמו בקוד
+  (<code>interestForDay = round(balanceAgorot × 0.15/30)</code>), ולכן הריבית היומית יוצאת סכום ריאלי
+  ולא ₪1 עגול. פיצול הפקדה <code>40/50/10</code> כמו ב-<code>DEPOSIT_SPLIT</code>. 90 יום היסטוריה לכל חשבון.
+  <b>בחירת חשבון בתפריט משנה גם את הגרף, גם את הרשימה וגם את ערכת הנושא</b> — החשבון הוא הדבר הגלובלי היחיד.
 </p>
+<div class="status info"><span class="badge">מסך יחיד</span><p>אין כאן חלופות מתחרות — מסך אחד, והבוררים למטה הם פרטים בתוכו. אפיק «תנועות בחשבון» מתוכנן בתוכנית נפרדת. הבורר <b>חזרה לבית בכותרת</b> משוכפל גם לעמוד התפריט, כי אותה כותרת מופיעה בשניהם.</p></div>
 
 <div class="controls">
   <button data-act="axis" aria-pressed="true" id="axisBtn">ציר זמן: ימין→שמאל (RTL)</button>
   <button data-act="menu">פתח / סגור תפריט</button>
 </div>
 <div class="controls"><span class="ctlLabel">אייקון תנועה:</span><span class="ctlGroup" id="iconControls"></span></div>
-<div class="controls"><span class="ctlLabel">כפתור עריכה:</span><span class="ctlGroup" id="pencilControls"></span></div>
 <div class="controls"><span class="ctlLabel">חזרה לבית בכותרת:</span><span class="ctlGroup" id="backControls"></span></div>
-<div class="controls"><span class="ctlLabel">כמה מסכים:</span><span class="ctlGroup" id="navCountControls"></span></div>
 
 <div class="row">
   <div class="slot">
     <div class="slotTitle">מסך סיכום חשבון — גרף A + רשימה עם בקרת ריבית</div>
+    <div class="status info"><span class="badge">מסך יחיד</span><p>הצ׳יפים, טווח שבוע/חודש/הכל, ומיתוג ריבית חודשית/יומית — כולם פרטים בתוך המסך הזה.</p></div>
     <div class="slotNote">
       צ'יפים: <b>סך הכל</b> תמיד ניתן לכיבוי/הדלקה, כל קופה בנפרד, ו־<b>הכל</b> מדליק את שלושתן יחד.
       טווח שבוע/חודש/הכל. ברשימה: מסנני סוג + מיתוג <b>ריבית חודשית / יומית</b>.
     </div>
     <div id="summaryPhone"></div>
-  </div>
-  <div class="slot">
-    <div class="slotTitle">תפריט א׳ — על משטח בהיר (כמו במוקאפ)</div>
-    <div class="slotNote">
-      למעלה בלוק <b>גלובלי</b> עם בורר החשבון בלבד (נפתח, מציג את החשבון הנוכחי ואת היתרה של כל חשבון).
-      מתחת בלוק <b>תלוי-חשבון</b> ממוסגר בקו מקווקו עם שם הילד — מסכים, עריכה, מראה, שפה.
-    </div>
-    <div id="menuPhone"></div>
-  </div>
-  <div class="slot">
-    <div class="slotTitle">תפריט ב׳ — עם צבעי הנושא הקיימים בקוד</div>
-    <div class="slotNote">
-      כך התפריט צבוע היום: <code>MenuOverlay.styles.ts</code> מצייר את הפאנל ב-<code>theme.gradients.screen</code>
-      עם <code>textOnPrimary</code>. הבלוקים הם שקיפויות לבנות, ורשימת החשבונות נשארת אטומה כי היא שכבה צפה.
-    </div>
-    <div id="menuPhoneGradient"></div>
-  </div>
-  <div class="slot">
-    <div class="slotTitle">תפריט ג׳ — כותרת זהה לאפליקציה (פחות ריצוד)</div>
-    <div class="slotNote">
-      אותו כרטיס כותרת כמו במסך עצמו — המבורגר, שם, אווטאר — באותו מקום, כך שבפתיחה רק התוכן שמתחת מתחלף.
-      הפאנל מקבל גוון <code>softBg</code> כדי שהכרטיסים הלבנים ימשיכו לצוף עליו.
-    </div>
-    <div id="menuPhoneAppHeader"></div>
-  </div>
-  <div class="slot">
-    <div class="slotTitle">ניווט נ1 — בלוק מסכים בין הסקופים (להשוואה)</div>
-    <div class="slotNote">
-      הניווט יוצא מהבלוק תלוי-החשבון לבלוק שלישי משלו, בין הגלובלי לתלוי-חשבון: <b>בית · תנועות בחשבון · השיטה</b>.
-      מסגרת רצופה בלי הפס והמקווקו, כי אלה אינם הגדרות של חשבון. בבלוק תלוי-החשבון נשארים רק מראה ושפה.
-    </div>
-    <div id="menuPhoneNavBlock"></div>
-  </div>
-  <div class="slot">
-    <div class="slotTitle">ניווט נ2 — סקופ «ניווט» מעל הבורר (להשוואה)</div>
-    <div class="slotNote">
-      שלוש השורות בסקופ משלהן בראש התפריט, בכותרת <b>ניווט</b> — קודם <b>לאן הולכים</b>,
-      ואחריו שני הסקופים של <b>מה משנים</b>: הגלובלי (חשבון) ותלוי-החשבון (מראה, שפה).
-    </div>
-    <div id="menuPhoneNavBare"></div>
-  </div>
-  <div class="slot">
-    <div class="slotTitle">ניווט נ3 — רצועת טאבים <span class="new">נבחר</span></div>
-    <div class="slotNote">
-      הניווט מתכווץ לרצועה מתחת לכותרת, הנוכחי מלא, והתפריט שמתחת הוא הגדרות בלבד.
-      הבורר <b>כמה מסכים</b> למעלה מוסיף מסכים מה-roadmap: עד 4 בשורה אחת, ומעבר לזה
-      שורות מאוזנות — <b>5 הם 3+2</b>, לא 4+1. התוויות מקוצרות (תנועות, יעד, חלוקה).
-    </div>
-    <div id="menuPhoneNavTabs"></div>
   </div>
 </div>
 

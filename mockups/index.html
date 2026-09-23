@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — כל המוקאפים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec;
+  font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:22px; margin:0 0 6px; color:#fff; }
+h2 { font-family:Fredoka,Rubik,sans-serif; font-size:15px; margin:26px 0 10px; color:#fff; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 6px; max-width:860px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.legend { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:16px 0 4px;
+  font-size:12px; color:#9aa3b2; }
+.badge { font-weight:800; font-size:11px; letter-spacing:.06em; padding:3px 9px;
+  border-radius:999px; white-space:nowrap; }
+.badge.chosen { background:#2f7a4a; color:#eafff1; }
+.badge.rejected { background:#3a3a42; color:#c3c9d4; }
+.badge.info { background:#33507f; color:#dbe8ff; }
+.badge.pending { background:#6b5320; color:#ffe6a8; }
+.badge.orphan { background:#5a2d33; color:#ffc9cf; }
+
+table { border-collapse:collapse; width:100%; max-width:1080px; font-size:13px; }
+th { text-align:start; font-size:11px; letter-spacing:.05em; color:#78839a; font-weight:600;
+  padding:0 10px 7px; border-bottom:1px solid #333a46; }
+td { padding:11px 10px; border-bottom:1px solid #2a303a; vertical-align:top; line-height:1.6; }
+tr:hover td { background:#242932; }
+td.what { white-space:nowrap; }
+td a { color:#9be7b4; text-decoration:none; font-weight:600; }
+td a:hover { text-decoration:underline; }
+td.files { display:flex; flex-direction:column; align-items:flex-start; gap:5px; }
+td .why { color:#9aa3b2; font-size:12.5px; }
+td .why b { color:#dfe4ec; font-weight:600; }
+td .plan { display:block; margin-top:4px; font-size:11px; }
+td .plan a { color:#78839a; font-weight:400; }
+.note { font-size:12.5px; line-height:1.7; color:#78839a; max-width:860px; margin:22px 0 0; }
+</style>
+</head>
+<body>
+
+<h1>fun-saver — כל המוקאפים</h1>
+<p class="sub">
+  כל מסך בקובץ משלו, עם הבוררים ששייכים לו. <b>הסימן ✓ מסמן את מה שנבחר בפועל</b> — והקובץ נפתח על החלופה הזאת.
+  מה שנדחה נשאר בתיק כתיעוד ומסומן <b>נדחה</b>; העמודה האחרונה מפנה לתוכנית שבה ההחלטה נרשמה.
+</p>
+<div class="legend">
+  <span class="badge chosen">✓ נבחר</span> נבנה או אושר לבנייה
+  <span class="badge rejected">נדחה</span> נשאר כתיעוד
+  <span class="badge info">מסך יחיד</span> אין חלופות מתחרות
+  <span class="badge pending">טרם מומש</span> הוחלט, לא נכתב
+</div>
+
+<h2>מסכים עם חלופות מתחרות</h2>
+<table>
+  <thead>
+    <tr><th>מסך</th><th>קבצים</th><th>מה נבחר, ולמה</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="what">עמוד «השיטה»</td>
+      <td class="files">
+        <a href="method-page/e-final.html">e-final</a> <span class="badge chosen">✓ נבחר</span>
+        <a href="method-page/a-scroll.html">a-scroll</a>
+        <a href="method-page/b-tabs.html">b-tabs</a>
+        <a href="method-page/c-six-decisions.html">c-six-decisions</a>
+        <a href="method-page/d-combined.html">d-combined</a>
+      </td>
+      <td>
+        <span class="why">חמישה מבנים לאותו עמוד. <b>E</b> אושרה 2026-09-15 ונבנתה — העמוד חי באפליקציה (PR&rlm; #64–#89). התוכנית מורה במפורש לא למחוק את א׳–ד׳.</span>
+        <span class="plan"><a href="../.plans/2026-09-15-method-page.md">.plans/2026-09-15-method-page.md</a></span>
+      </td>
+    </tr>
+    <tr>
+      <td class="what">התפריט</td>
+      <td class="files">
+        <a href="account-summary/menu.html">account-summary/menu</a> <span class="badge chosen">✓ נבחר</span>
+      </td>
+      <td>
+        <span class="why">שש חלופות בקובץ אחד, כי כולן אותו מסך. <b>תפריט ג׳</b> (משטח בהיר + כותרת זהה לאפליקציה) ו<b>ניווט נ3</b> (רצועת טאבים) אושרו 2026-09-15. א׳, ב׳, נ1 ו-נ2 מסומנים נדחה במקום.</span>
+        <span class="plan"><a href="../.plans/2026-09-15-menu-redesign.md">.plans/2026-09-15-menu-redesign.md</a></span>
+      </td>
+    </tr>
+    <tr>
+      <td class="what">טעינת הדונאט</td>
+      <td class="files"><a href="donut-load-animation.html">donut-load-animation</a> <span class="badge chosen">✓ נבחר</span></td>
+      <td>
+        <span class="why"><b>ה · סוויפ הכי קצר</b> (0.6s) נבנה ב-#57. חמשת המועמדים נשארו בקובץ אחד בכוונה — ההשוואה היא בעין, על הבדל של מאיות שנייה, ופיצול לחמישה קבצים הורג אותה.</span>
+        <span class="plan"><a href="../.plans/2026-09-14-donut-load-animation.md">.plans/2026-09-14-donut-load-animation.md</a></span>
+      </td>
+    </tr>
+    <tr>
+      <td class="what">מעטפת טעינה</td>
+      <td class="files"><a href="loading-states.html">loading-states</a> <span class="badge chosen">✓ נבחר</span></td>
+      <td>
+        <span class="why">ארבעה שלדים וארבע כניסות. הוחלט 2026-09-23: <b>שלד 3</b> — כרטיס כותרת ופס שמתחיל אחרי 150ms, ו<b>כניסה 1</b> — עמעום 240ms ושום דבר לא זז. גם כאן ההשוואה היא בעין, ולכן קובץ אחד.</span>
+        <span class="plan"><a href="../.plans/2026-09-15-menu-redesign.md">.plans/2026-09-15-menu-redesign.md</a></span>
+      </td>
+    </tr>
+    <tr>
+      <td class="what">ניגודיות AA</td>
+      <td class="files"><a href="contrast.html">contrast</a> <span class="badge chosen">✓ נבחר</span></td>
+      <td>
+        <span class="why">שני המחזורים בעמוד אחד, כל אחד עם הבוררים שלו צמודים למסכים שלו. <b>מחזור א׳:</b> «אחרי» + רקע לכיתוב + זוהר מותאם. <b>מחזור ב׳:</b> שלוש הדרכים להזיז את הרקע בהתחברות <b>נדחו כולן</b> והלבן נשאר על 1.60; שגיאת שמירה בלי תווית, ולקחה את האדום.</span>
+        <span class="plan"><a href="../.plans/2026-09-23-aa-contrast-pass.md">מחזור א׳</a> · <a href="../.plans/2026-09-23-aa-contrast-pass-2.md">מחזור ב׳</a></span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>מסכים בלי חלופות</h2>
+<table>
+  <thead>
+    <tr><th>מסך</th><th>קבצים</th><th>מצב</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="what">התחברות</td>
+      <td class="files">
+        <a href="login/1-signed-out.html">1 · מסך התחברות</a>
+        <a href="login/2-signing-in.html">2 · מתחברים…</a>
+        <a href="login/3-first-time.html">3 · משתמש חדש</a>
+        <a href="login/4-returning.html">4 · משתמש חוזר</a>
+      </td>
+      <td>
+        <span class="badge info">זרימה</span>
+        <span class="why">ארבעה <b>שלבים בזרימה אחת</b>, לא חלופות מתחרות — אין כאן «נבחר» ו«נדחה», כולם נבנו. רצועת השלבים בראש כל קובץ עוברת ביניהם.</span>
+        <span class="plan"><a href="../.plans/2026-09-12-google-login.md">.plans/2026-09-12-google-login.md</a></span>
+      </td>
+    </tr>
+    <tr>
+      <td class="what">מסך התנועות</td>
+      <td class="files"><a href="account-summary/transactions.html">account-summary/transactions</a></td>
+      <td>
+        <span class="badge info">מסך יחיד</span>
+        <span class="why">גרף A ורשימת התנועות. הבוררים שבו הם פרטים בתוך המסך, לא חלופות. אפיק «תנועות בחשבון» מתוכנן בתוכנית נפרדת.</span>
+        <span class="plan"><a href="../.plans/2026-09-15-menu-redesign.md">.plans/2026-09-15-menu-redesign.md</a></span>
+      </td>
+    </tr>
+    <tr>
+      <td class="what">המסך הראשי</td>
+      <td class="files"><a href="home-overview.html">home-overview</a></td>
+      <td>
+        <span class="badge chosen">✓ נבנה</span>
+        <span class="why">מקור האמת למסך הבית — טבעת עם הסך הכל ופירוט לפי קופה. נבנה ב-#44.</span>
+        <span class="plan"><a href="../.plans/2026-09-12-home-overview-redesign.md">.plans/2026-09-12-home-overview-redesign.md</a></span>
+      </td>
+    </tr>
+    <tr>
+      <td class="what">טופס חשבון</td>
+      <td class="files"><a href="edit-account.html">edit-account</a></td>
+      <td>
+        <span class="badge chosen">✓ נבנה</span>
+        <span class="why">יצירה ועריכה זה לצד זה — אותו <code>AccountForm</code> בשני מצבים. נמסר בשישה PR-ים.</span>
+        <span class="plan"><a href="../.plans/2026-06-29-edit-account.md">.plans/2026-06-29-edit-account.md</a></span>
+      </td>
+    </tr>
+    <tr>
+      <td class="what">בורר הערכות</td>
+      <td class="files"><a href="theme-swatches.html">theme-swatches</a></td>
+      <td>
+        <span class="badge pending">טרם מומש</span>
+        <span class="why">שלושת הריבועים בשורת «מראה» כתובים היום ביד ב-<code>AppearanceSection/constants.ts</code> ולא נגזרים מהערכות. הוחלט, <b>עוד לא נכתב</b>.</span>
+        <span class="plan"><a href="../.plans/2026-09-23-theme-parity.md">.plans/2026-09-23-theme-parity.md</a></span>
+      </td>
+    </tr>
+    <tr>
+      <td class="what">Sprout</td>
+      <td class="files"><a href="homework-companion.html">homework-companion</a></td>
+      <td>
+        <span class="badge orphan">לא שייך</span>
+        <span class="why">מוצר אחר לגמרי — «Sprout, Homework Companion», באנגלית. <b>אין לו אזכור באף תוכנית או מסמך במאגר.</b> נשאר כפי שהוא; המחיקה היא החלטה שלכם.</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="note">
+  <b>בדיקות.</b> שני קבצי בדיקה רצים בלי תלויות:
+  <code>node mockups/account-summary/check-slots.js</code> מוודא ששני עמודי סיכום החשבון ממלאים את כל המשבצות
+  שלהם ושה-JS המשותף שורד את החסרות, ו-<code>node mockups/check-contrast.js</code> מוודא ש-<code>contrast.html</code>
+  נפתח על מה שנבחר בפועל ולא על אפשרות שנדחתה.
+</p>
+
+</body>
+</html>

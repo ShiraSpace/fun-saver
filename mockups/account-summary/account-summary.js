@@ -732,10 +732,17 @@ function menuPhoneHtml(variant, navPlacement = 'inAccount') {
 
 /* ---------------- render + events ---------------- */
 
+function fill(id, html) {
+  const slot = document.getElementById(id);
+  if (slot) {
+    slot.innerHTML = html;
+  }
+}
+
 function renderControlGroup(id, styles, action, selected) {
-  document.getElementById(id).innerHTML = styles.map((style) =>
+  fill(id, styles.map((style) =>
     `<button data-act="${action}" data-style="${style.id}"
-      aria-pressed="${selected === style.id}">${style.label}</button>`).join('');
+      aria-pressed="${selected === style.id}">${style.label}</button>`).join(''));
 }
 function renderIconControls() {
   renderControlGroup('iconControls', ICON_STYLES, 'icon-style', state.iconStyle);
@@ -750,13 +757,13 @@ function render() {
   const scrollTop = scroller ? scroller.scrollTop : 0;
 
   document.documentElement.dataset.theme = THEME_BY_ACCOUNT.get(state.accountId);
-  document.getElementById('summaryPhone').innerHTML = summaryPhoneHtml();
-  document.getElementById('menuPhone').innerHTML = menuPhoneHtml('surface');
-  document.getElementById('menuPhoneGradient').innerHTML = menuPhoneHtml('gradient');
-  document.getElementById('menuPhoneAppHeader').innerHTML = menuPhoneHtml('appHeader');
-  document.getElementById('menuPhoneNavBlock').innerHTML = menuPhoneHtml('appHeader', 'block');
-  document.getElementById('menuPhoneNavBare').innerHTML = menuPhoneHtml('appHeader', 'bare');
-  document.getElementById('menuPhoneNavTabs').innerHTML = menuPhoneHtml('appHeader', 'tabs');
+  fill('summaryPhone', summaryPhoneHtml());
+  fill('menuPhone', menuPhoneHtml('surface'));
+  fill('menuPhoneGradient', menuPhoneHtml('gradient'));
+  fill('menuPhoneAppHeader', menuPhoneHtml('appHeader'));
+  fill('menuPhoneNavBlock', menuPhoneHtml('appHeader', 'block'));
+  fill('menuPhoneNavBare', menuPhoneHtml('appHeader', 'bare'));
+  fill('menuPhoneNavTabs', menuPhoneHtml('appHeader', 'tabs'));
 
   const next = document.getElementById('txScroll');
   if (next) {

@@ -29,6 +29,17 @@ body { margin:0; padding:24px 20px 60px; background:#20242c; color:#fff; font-fa
 h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 .sub { color:#9aa3b2; font-size:13px; line-height:1.6; margin:0 0 18px; max-width:680px; }
 .sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.crumb { margin:0 0 14px; font-size:12.5px; color:#9aa3b2; }
+.crumb a { color:#9aa3b2; text-decoration:none; border-bottom:1px solid #3a4150; }
+.crumb a:hover { color:#fff; }
+.status { display:flex; align-items:flex-start; gap:10px; max-width:680px;
+  margin:0 0 14px; padding:9px 11px; border-radius:10px; font-size:12.5px; line-height:1.65; }
+.status .badge { flex-shrink:0; font-weight:800; font-size:11px; letter-spacing:.06em;
+  padding:3px 8px; border-radius:999px; white-space:nowrap; }
+.status p { margin:0; }
+.status code, .status a { font-size:11.5px; color:inherit; }
+.status.chosen { background:#12301c; color:#b7f0c8; border:1px solid #2f7a4a; }
+.status.chosen .badge { background:#2f7a4a; color:#eafff1; }
 .controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px; }
 .controls button { font-family:Rubik,sans-serif; font-size:13px; font-weight:600; cursor:pointer;
   padding:7px 14px; border-radius:999px; border:1.5px solid #3a4150; background:#2a303a; color:#dfe4ec; }
@@ -40,6 +51,10 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 .variantHead { display:flex; align-items:baseline; gap:8px; margin-bottom:8px; }
 .variantHead h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:0; }
 .variantHead .ms { font-size:12px; color:#ffd23f; font-variant-numeric:tabular-nums; }
+.variantHead .verdict { margin-inline-start:auto; font-size:11px; font-weight:800;
+  letter-spacing:.06em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.variantHead .verdict[data-state='chosen'] { background:#2f7a4a; color:#eafff1; }
+.variantHead .verdict[data-state='rejected'] { background:#3a3a42; color:#c3c9d4; }
 .note { color:#9aa3b2; font-size:12px; line-height:1.6; margin:8px 2px 0; }
 .stage { border-radius:26px; padding:16px 14px; background:var(--screen); box-shadow:0 14px 30px rgba(0,0,0,.4); }
 
@@ -102,7 +117,9 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 </head>
 <body>
 
+<p class="crumb"><a href="index.html">← כל המוקאפים</a> · טעינת הדונאט</p>
 <h1>טעינת הדונאט — חמישה מועמדים</h1>
+<div class="status chosen"><span class="badge">✓ נבחר</span><p><b>ה · סוויפ הכי קצר</b>, 0.6s — נבנה ושוחרר ב-<code>#57</code>. חמשת המועמדים נשארים זה לצד זה כי ההשוואה היא בעין, על הבדל של מאיות שנייה. תיעוד: <a href="../.plans/2026-09-14-donut-load-animation.md"><code>.plans/2026-09-14-donut-load-animation.md</code></a></p></div>
 <p class="sub">
   אותו כרטיס מ־<code>home-overview.html</code>, חמש כניסות שונות. החלף ערכת נושא והרץ שוב.
   הסכום בחור סופר מ־0 ל־₪359 יחד עם הקשת. כל וריאנט מכבד <code>prefers-reduced-motion</code> —
@@ -120,7 +137,7 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
 
 <template id="cardTemplate">
   <div class="variant">
-    <div class="variantHead"><h2></h2><span class="ms"></span></div>
+    <div class="variantHead"><h2></h2><span class="ms"></span><span class="verdict"></span></div>
     <div class="stage">
       <div class="card">
         <div class="donutRow">
@@ -175,7 +192,7 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
       note: 'אותו רצף של א, דחוס ל־0.8 שניות, והמקרא נכנס ב־fade של ב במקום לחכות לסוף הקשת. הסכום עולה יחד עם הטבעת מההתחלה. אותו סיפור כמו א, בלי ההמתנה.'
     },
     {
-      key: 'sweepFastest', title: 'ה · סוויפ הכי קצר', budget: '0.6s',
+      key: 'sweepFastest', title: 'ה · סוויפ הכי קצר', budget: '0.6s', chosen: true,
       arcDurations: ['.34s', '.21s', '.05s'],
       count: { delay: 80, duration: 600 },
       note: 'ד באותה צורה בדיוק, דחוס ל־0.6 שניות — תקציב הזמן של ב. גם המקרא מתהדק (מתחיל ב־0.22s, 50ms בין שורות) כדי לא לגלוש מעבר לטבעת. הקשת של מעשים יורדת ל־50ms, כמעט הבהוב.'
@@ -190,6 +207,9 @@ h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
     node.querySelector('h2').textContent = variant.title;
     node.querySelector('.ms').textContent = variant.budget;
     node.querySelector('.note').textContent = variant.note;
+    const verdict = node.querySelector('.verdict');
+    verdict.textContent = variant.chosen ? '✓ נבחר' : 'נדחה';
+    verdict.dataset.state = variant.chosen ? 'chosen' : 'rejected';
     const card = node.querySelector('.card');
     card.classList.add(variant.key);
     card.dataset.variant = variant.key;
