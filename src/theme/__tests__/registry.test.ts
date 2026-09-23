@@ -50,12 +50,26 @@ describe('theme registry', () => {
       colors.primaryText,
       colors.textOnPot,
       colors.labelScrim,
+      colors.alertText,
     ]);
 
     expect(contrastTokens).toEqual([
-      ['#6B2C8E', '#2B1235', 'rgba(0, 0, 0, 0.45)'],
-      ['#1B7A6B', '#2B1800', 'rgba(0, 0, 0, 0.35)'],
-      ['#3B82F6', '#ECF1F8', 'transparent'],
+      ['#6B2C8E', '#2B1235', 'rgba(0, 0, 0, 0.45)', '#A81B3A'],
+      ['#1B7A6B', '#2B1800', 'rgba(0, 0, 0, 0.35)', '#A83A21'],
+      ['#3B82F6', '#ECF1F8', 'transparent', '#F87171'],
+    ]);
+  });
+
+  it('keeps the light themes off the muted and gain values that failed', () => {
+    const readableOnTints = Object.values(THEMES).map(({ colors }) => [
+      colors.textMuted,
+      colors.gainText,
+    ]);
+
+    expect(readableOnTints).toEqual([
+      ['#6F6189', '#276E2C'],
+      ['#526E63', '#316A26'],
+      ['#8A96A8', '#34D399'],
     ]);
   });
 

@@ -1,5 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithAccounts } from '@/test-utils/render';
+import { hexToRgb } from '@/test-utils/css-color';
+import { getThemeTokens } from '@/theme/registry';
 import { mockDerivedAccount } from '@/test-utils/fixtures';
 import { AppearanceSection } from './AppearanceSection';
 import {
@@ -89,5 +91,19 @@ describe('AppearanceSection', () => {
     expect(swatches()[0]).toHaveAttribute('data-selected', 'true');
     expect(swatches()[1]).toHaveAttribute('data-selected', 'false');
     expect(mockRefresh).not.toHaveBeenCalled();
+  });
+
+  it('speaks that failure in the alert red', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: false });
+    renderSection();
+
+    fireEvent.click(swatches()[1]);
+    const error = await screen.findByTestId(
+      APPEARANCE_SECTION_TEST_IDS.saveError
+    );
+
+    expect(getComputedStyle(error).color).toBe(
+      hexToRgb(getThemeTokens().colors.alertText)
+    );
   });
 });

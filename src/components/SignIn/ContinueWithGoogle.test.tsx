@@ -1,5 +1,7 @@
 import { signIn } from 'next-auth/react';
 import { fireEvent, render, screen } from '@/test-utils/render';
+import { hexToRgb } from '@/test-utils/css-color';
+import { getThemeTokens } from '@/theme/registry';
 import { ContinueWithGoogle } from './ContinueWithGoogle';
 import {
   GOOGLE_PROVIDER_ID,
@@ -50,6 +52,17 @@ describe('ContinueWithGoogle', () => {
 
     expect(await screen.findByTestId(SIGN_IN_TEST_IDS.error)).toHaveTextContent(
       SIGN_IN_COPY.signInFailed
+    );
+  });
+
+  it('speaks the failure in the alert red', async () => {
+    mockedSignIn.mockRejectedValue(new Error('offline'));
+
+    clickContinue();
+    const error = await screen.findByTestId(SIGN_IN_TEST_IDS.error);
+
+    expect(getComputedStyle(error).color).toBe(
+      hexToRgb(getThemeTokens().colors.alertText)
     );
   });
 

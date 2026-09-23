@@ -1,4 +1,5 @@
 import { render, screen } from '@/test-utils/render';
+import { getThemeTokens } from '@/theme/registry';
 import { AVATARS } from '@/lib/avatars';
 import { AvatarPicker } from './AvatarPicker';
 import { AVATAR_PICKER_TEST_IDS } from './constants';
@@ -15,5 +16,22 @@ describe('AvatarPicker', () => {
     expect(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)).toHaveLength(
       AVATARS.length
     );
+  });
+});
+
+describe('on the theme whose primary is the screen gradient it lands on', () => {
+  const jungle = getThemeTokens('jungle-quest').colors;
+
+  beforeEach(() => {
+    render(
+      <AvatarPicker selectedId={AVATARS[0].id} onSelect={jest.fn()} />,
+      'jungle-quest'
+    );
+  });
+
+  it('rings the selected avatar in a colour the gradient does not hide', () => {
+    const [selected] = screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option);
+
+    expect(getComputedStyle(selected).boxShadow).toContain(jungle.textOnPot);
   });
 });

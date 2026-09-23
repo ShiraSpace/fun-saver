@@ -33,6 +33,12 @@ describe('SignIn', () => {
     );
   });
 
+  it('leaves the fineprint unfaded, the way the wallet label was', () => {
+    const fineprint = screen.getByTestId(SIGN_IN_TEST_IDS.fineprint);
+
+    expect(getComputedStyle(fineprint).opacity).toBe('');
+  });
+
   it('puts the Google button in the card', () => {
     expect(
       screen.getByTestId(SIGN_IN_TEST_IDS.continueWithGoogle)
