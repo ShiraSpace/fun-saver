@@ -26,6 +26,15 @@ export async function waitForTestId({
   await findByTest(page, testId);
 }
 
+export async function waitForAnyTestId(
+  page: Page,
+  testIds: readonly string[]
+): Promise<void> {
+  await page.waitForSelector(
+    testIds.map((testId) => `[data-testid="${testId}"]`).join(', ')
+  );
+}
+
 export async function waitForStyle({
   page,
   selector,

@@ -1,10 +1,11 @@
-import React, { JSX } from 'react';
+import React, { JSX, Suspense } from 'react';
 import type { Metadata } from 'next';
 import './globals.css';
 import {
   applyStoredThemeScript,
   everyThemeAsCss,
 } from '@/theme/theme-at-first-paint';
+import { LoadingShell } from '@/components/LoadingShell';
 import { EmotionStyleRegistry } from './EmotionStyleRegistry';
 
 export const metadata: Metadata = {
@@ -25,7 +26,9 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col">
         <style>{themeCss}</style>
         <script>{themeScript}</script>
-        <EmotionStyleRegistry>{children}</EmotionStyleRegistry>
+        <EmotionStyleRegistry>
+          <Suspense fallback={<LoadingShell />}>{children}</Suspense>
+        </EmotionStyleRegistry>
       </body>
     </html>
   );

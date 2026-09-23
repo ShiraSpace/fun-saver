@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>fun-saver — Loading: the two open questions</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root,
+      :root[data-theme='sunshine-quest'] {
+        --surface: #ffffff; --textStrong: #3a1f5a; --track: #f3ece4; --primary: #ff8a4c;
+        --screen: linear-gradient(160deg, #ffc34d, #ff8a4c, #e94e89);
+      }
+      :root[data-theme='jungle-quest'] {
+        --surface: #fffdf5; --textStrong: #1b4332; --track: #e8efdc; --primary: #2a9d8f;
+        --screen: linear-gradient(160deg, #2a9d8f, #43aa8b, #90be6d);
+      }
+      :root[data-theme='midnight-blue'] {
+        --surface: #141b24; --textStrong: #ecf1f8; --track: #1e2a40; --primary: #1e40af;
+        --screen: linear-gradient(160deg, #0a0e14, #0f1620, #122036);
+      }
+      :root { --k: 1; }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 24px 20px 56px; background: #20242c; color: #fff;
+        font-family: Rubik, system-ui, sans-serif; }
+      h1 { font-family: Fredoka, Rubik, sans-serif; font-size: 20px; margin: 0 0 6px; }
+      h2 { font-family: Fredoka, Rubik, sans-serif; font-size: 17px; margin: 36px 0 4px; color: #fff; }
+      .sub { color: #b4bccb; font-size: 13.5px; line-height: 1.75; margin: 0 0 14px; max-width: 860px; }
+      .sub b { color: #fff; }
+      .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 10px 0 4px; }
+      .ctlLabel { color: #9aa3b2; font-size: 12px; }
+      button { font-family: inherit; font-size: 12px; padding: 7px 12px; border-radius: 999px;
+        border: 1px solid #39404d; background: #2a303a; color: #dfe5ee; cursor: pointer; }
+      button[aria-pressed='true'] { background: #4c6ef5; border-color: #4c6ef5; color: #fff; }
+      .row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+      .case { width: 250px; }
+      .caseName { font-family: Fredoka, Rubik, sans-serif; font-size: 14.5px; margin: 0 0 3px; }
+      .caseNote { color: #aab2c0; font-size: 12px; line-height: 1.6; margin: 0 0 9px; min-height: 76px; }
+      .tag { margin-inline-start: 6px; font-size: 10.5px; font-weight: 800; padding: 2px 8px;
+        border-radius: 999px; vertical-align: middle; white-space: nowrap; }
+      .tag.mine { background: #2f7a4a; color: #eafff1; }
+      .tag.bad { background: #7a2f2f; color: #ffecec; }
+      .tag.alt { background: #3a3a42; color: #d3d9e4; }
+      .clock { font-size: 11.5px; color: #cfd6e2; margin-top: 7px; min-height: 18px; direction: rtl; }
+
+      .phone { width: 250px; height: 330px; border-radius: 24px; overflow: hidden; position: relative;
+        background: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,.45); direction: rtl; }
+      .layer { position: absolute; inset: 0; padding: 11px 9px; background: var(--screen); display: none; }
+      .layer.on { display: block; }
+      .bar { display: flex; align-items: center; gap: 7px; background: var(--surface); border-radius: 12px;
+        box-shadow: 0 3px 0 rgba(0,0,0,.06); padding: 8px 11px; min-height: 44px; position: relative; overflow: hidden; }
+      .burger { width: 27px; height: 27px; display: grid; gap: 4px; align-content: center; justify-items: center; }
+      .burger span { display: block; width: 16px; height: 2.3px; border-radius: 2px; background: var(--textStrong); }
+      .title { flex: 1; font-family: Fredoka, Rubik, sans-serif; font-size: 14px; font-weight: 600;
+        color: var(--textStrong); text-align: start; }
+      .avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--track); }
+      .avatar.face { background: #ffd9a8; display: grid; place-items: center; font-size: 15px; }
+      .ghost { background: var(--track); border-radius: 7px; color: transparent; }
+      .body { display: flex; flex-direction: column; gap: 9px; margin-top: 11px; }
+      .card { background: var(--surface); border-radius: 12px; padding: 10px; display: flex; gap: 8px; align-items: center; }
+      .card .line { height: 8px; border-radius: 4px; background: var(--track); flex: 1; }
+      .card .dot { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); opacity: .75; }
+      .card.tall { height: 96px; align-items: flex-start; flex-direction: column; }
+      .card.tall .line { flex: none; width: 80%; }
+      .card.tall .line.s { width: 55%; }
+
+      .progress { position: absolute; inset-inline: 0; bottom: 0; height: 3px; overflow: hidden; }
+      .progress::after { content: ''; position: absolute; inset-block: 0; width: 42%; background: var(--primary);
+        transform: translateX(120%); }
+      .shell.moving .progress::after { animation: slide calc(900ms * var(--k)) ease-in-out calc(150ms * var(--k)) infinite backwards; }
+      .shell.stub .progress::after { transform: none; }
+      .shell.faint .progress::after { transform: none; width: 100%; opacity: .35; }
+      @keyframes slide { from { transform: translateX(120%); } to { transform: translateX(-160%); } }
+
+      .fade { animation: fadeIn calc(240ms * var(--k)) ease-out backwards; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+  </head>
+  <body>
+    <h1>המעטפת: שתי השאלות הפתוחות</h1>
+    <p class="sub"><b>הוחלט 2026-09-23:</b> העמעום יושב על התוכן של <code>Screen</code>, כולל הכותרת (ב), ובהפחתת תנועה הפס זז בכל זאת (ד). <a href="../.plans/2026-09-15-menu-redesign.md" style="color:#b4bccb">.plans/2026-09-15-menu-redesign.md</a></p>
+    <p class="sub">
+      כל טלפון מנגן לולאה: <b>עמוד הבית</b> → הקשה על <b>השיטה</b> → <b>המעטפת</b> (250ms, כמו ב־Neon) →
+      <b>העמוד מגיע</b>. ההבדלים הם במאיות שנייה, אז כדאי להתחיל ב<b>הילוך איטי ×4</b> ואז לחזור ל־×1 כדי
+      לראות מה המשתמש באמת ירגיש. השעון מתחת לכל טלפון אומר באיזה שלב אנחנו. הרקע הלבן של הטלפון הוא מה
+      שיש <b>מאחורי</b> <code>Screen</code> באפליקציה: ל־<code>body</code> אין רקע.
+    </p>
+    <div class="controls">
+      <span class="ctlLabel">ערכת נושא:</span>
+      <span id="themes">
+        <button data-theme="sunshine-quest" aria-pressed="true">sunshine</button>
+        <button data-theme="jungle-quest" aria-pressed="false">jungle</button>
+        <button data-theme="midnight-blue" aria-pressed="false">midnight</button>
+      </span>
+      <span class="ctlLabel" style="margin-inline-start: 14px">מהירות:</span>
+      <span id="speeds">
+        <button data-k="4" aria-pressed="true">הילוך איטי ×4</button>
+        <button data-k="1" aria-pressed="false">מהירות אמיתית ×1</button>
+      </span>
+      <span class="ctlLabel" style="margin-inline-start: 14px">המתנה לשרת:</span>
+      <span id="waits">
+        <button data-wait="250" aria-pressed="true">250ms (Neon חם)</button>
+        <button data-wait="500" aria-pressed="false">500ms (Neon קר)</button>
+      </span>
+    </div>
+
+    <h2>שאלה 1 — על מה יושב העמעום של 240ms?</h2>
+    <p class="sub">
+      הוחלט שהעמוד "מעמעם פנימה" כשהוא מגיע. השאלה היא <b>איזה חלק</b> מעמעם. זה נשמע טכני, אבל כל
+      בחירה נראית אחרת. שימו לב במיוחד לרגע שבו המעטפת מתחלפת בעמוד.
+    </p>
+    <div class="row">
+      <div class="case" data-fade="screen" data-bar="moving">
+        <p class="caseName">א — כל ה־Screen מעמעם<span class="tag bad">לא אפשרי</span></p>
+        <p class="caseNote">"שורה אחת ב־Screen", כמו שהתוכנית כתבה. אבל ה־Screen הוא שנושא את הגרדיאנט, אז
+          גם הרקע נעלם ונכנס מחדש: הבזק לבן בכל ניווט. לכן זה לא על השולחן, ואני מראה את זה רק כדי להסביר למה.</p>
+        <div class="phone"></div><div class="clock"></div>
+      </div>
+      <div class="case" data-fade="children" data-bar="moving">
+        <p class="caseName">ב — התוכן מעמעם, כולל הכותרת<span class="tag mine">✓ נבחר</span></p>
+        <p class="caseNote">הגרדיאנט נשאר יציב. כרטיס הכותרת <b>והגוף</b> מעמעמים יחד, כמו במוקאפ שבחרת.
+          המחיר: כרטיס הכותרת "מהבהב" קצת, מלא במעטפת ואז שקוף לרגע.</p>
+        <div class="phone"></div><div class="clock"></div>
+      </div>
+      <div class="case" data-fade="body" data-bar="moving">
+        <p class="caseName">ג — רק הגוף מעמעם, הכותרת קבועה<span class="tag alt">נדחה</span></p>
+        <p class="caseNote">כרטיס הכותרת לא זז בכלל. רק הכותרת המאופרת מתחלפת בשם ובאווטאר, בבת אחת. הגוף
+          מעמעם מתחתיו. בקוד זה כמעט אותו גודל כמו ב.</p>
+        <div class="phone"></div><div class="clock"></div>
+      </div>
+    </div>
+
+    <h2>שאלה 1, השלכה נוספת — העמעום קורה גם בטעינה רגילה של הדף</h2>
+    <p class="sub">
+      העמעום הוא אנימציית CSS, ואנימציה רצה <b>בכל פעם שהאלמנט מופיע</b>. היא לא יודעת אם הגענו אליה בניווט
+      בתוך האפליקציה או בפתיחה של הדף מאפס (קישור, רענון, פתיחת האפליקציה). אז אם שמים אותה על Screen, גם
+      פתיחת האפליקציה מעמעמת, וגם טופס יצירת/עריכת חשבון שנפתח מהתפריט. אין דרך זולה לעמעם "רק אחרי ניווט".
+      כאן: הדפדפן לבן, ואז הדף מצויר.
+    </p>
+    <div class="row">
+      <div class="case" data-cold="fade">
+        <p class="caseName">פתיחה מאפס, עם העמעום<span class="tag mine">מה שקורה עם ב או ג</span></p>
+        <p class="caseNote">הגרדיאנט מופיע מיד, והתוכן מעמעם פנימה ב־240ms.</p>
+        <div class="phone"></div><div class="clock"></div>
+      </div>
+      <div class="case" data-cold="none">
+        <p class="caseName">פתיחה מאפס, בלי עמעום<span class="tag alt">כמו היום</span></p>
+        <p class="caseNote">הכל מופיע בבת אחת. אפשר לקבל את זה רק אם מוותרים על העמעום בניווט.</p>
+        <div class="phone"></div><div class="clock"></div>
+      </div>
+    </div>
+
+    <h2>שאלה 2 — מה רואה מי שביקש "הפחתת תנועה"?</h2>
+    <p class="sub">
+      מי שהדליק <b>Reduce motion</b> במכשיר (הגדרת נגישות, למשל בגלל רגישות לתנועה) לא מקבל אנימציות:
+      <code>entrance()</code> כבר מבטל אצלו את העמעום, אז העמוד פשוט קופץ פנימה. השאלה היא מה קורה <b>לפס
+      ההתקדמות</b>, שכל כולו תנועה. כל הטלפונים כאן מדמים הגדרה כזאת (בלי עמעום).
+    </p>
+    <div class="row">
+      <div class="case" data-fade="none" data-bar="hidden">
+        <p class="caseName">א — רק הכרטיס, בלי פס<span class="tag alt">נדחה</span></p>
+        <p class="caseNote">שקט לגמרי. החיסרון: בהמתנה ארוכה (Neon קר, ~500ms) שום דבר לא אומר שמשהו קורה.</p>
+        <div class="phone"></div><div class="clock"></div>
+      </div>
+      <div class="case" data-fade="none" data-bar="stub">
+        <p class="caseName">ב — הפס עומד במקום<span class="tag bad">לא מומלץ</span></p>
+        <p class="caseNote">מה שיוצא אם רק "מקפיאים" את האנימציה: חתיכה של 42% תקועה בצד. נראה כמו התקדמות
+          שנתקעה, וגם מופיע מיד, בלי ההשהיה של 150ms.</p>
+        <div class="phone"></div><div class="clock"></div>
+      </div>
+      <div class="case" data-fade="none" data-bar="faint">
+        <p class="caseName">ג — קו דהוי לכל הרוחב<span class="tag alt">נדחה</span></p>
+        <p class="caseNote">קו סטטי וחלש לאורך כל הכרטיס. אומר "טוען" בלי לזוז. דורש כלל נוסף ב־CSS, וגם הוא
+          מופיע מיד, אז מעבר מהיר מהבהב אותו.</p>
+        <div class="phone"></div><div class="clock"></div>
+      </div>
+      <div class="case" data-fade="none" data-bar="moving">
+        <p class="caseName">ד — הפס זז בכל זאת<span class="tag mine">✓ נבחר</span></p>
+        <p class="caseNote">מתעלם מההגדרה בשביל הפס בלבד. תנועה קטנה ורציפה של 3px. יש אפליקציות שעושות כך,
+          אבל זה בדיוק מה שהמשתמש ביקש שלא יקרה.</p>
+        <div class="phone"></div><div class="clock"></div>
+      </div>
+    </div>
+
+    <template id="old">
+      <div class="bar"><span class="burger"><span></span><span></span><span></span></span>
+        <span class="title">נועה</span><span class="avatar face">🦊</span></div>
+      <div class="body"><div class="card tall"><span class="line"></span><span class="line s"></span></div>
+        <div class="card"><span class="dot"></span><span class="line"></span></div>
+        <div class="card"><span class="dot"></span><span class="line"></span></div>
+        <div class="card"><span class="dot"></span><span class="line"></span></div></div>
+    </template>
+    <template id="shell">
+      <div class="bar"><span class="burger"><span></span><span></span><span></span></span>
+        <span class="title ghost">כותרת</span><span class="avatar"></span><span class="progress"></span></div>
+    </template>
+    <template id="new">
+      <div class="bar"><span class="burger"><span></span><span></span><span></span></span>
+        <span class="title">השיטה</span><span class="avatar face">🦊</span></div>
+      <div class="body"><div class="card"><span class="line"></span></div>
+        <div class="card tall"><span class="line"></span><span class="line s"></span><span class="line"></span></div>
+        <div class="card tall"><span class="line s"></span><span class="line"></span></div></div>
+    </template>
+
+    <script>
+      const tpl = (id) => document.getElementById(id).innerHTML;
+      let k = 4;
+      let serverWait = 250;
+      const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms * k));
+
+      function layer(phone, id) {
+        const el = document.createElement('div');
+        el.className = `layer ${id}`;
+        el.innerHTML = tpl(id);
+        phone.append(el);
+        return el;
+      }
+
+      function applyFade(page, fade) {
+        const targets = {
+          screen: [page],
+          children: [...page.children],
+          body: [page.querySelector('.body')],
+          none: [],
+        }[fade];
+        targets.forEach((el) => el.classList.add('fade'));
+        if (fade === 'screen') page.style.background = 'var(--screen)';
+      }
+
+      async function navigation(caseEl) {
+        const phone = caseEl.querySelector('.phone');
+        const clock = caseEl.querySelector('.clock');
+        const { fade, bar } = caseEl.dataset;
+        for (;;) {
+          phone.innerHTML = '';
+          const old = layer(phone, 'old');
+          const shell = layer(phone, 'shell');
+          const page = layer(phone, 'new');
+          old.classList.add('on');
+          clock.textContent = 'עמוד הבית. עוד רגע הקשה על "השיטה"…';
+          await wait(700);
+          old.classList.remove('on');
+          shell.classList.add('on', bar);
+          clock.textContent = 'המעטפת (הפס מתחיל רק אחרי 150ms)';
+          await wait(serverWait);
+          shell.classList.remove('on');
+          page.classList.add('on');
+          applyFade(page, fade);
+          clock.textContent = fade === 'none' ? 'העמוד הגיע (בלי עמעום)' : 'העמוד הגיע ומעמעם פנימה';
+          await wait(1300);
+        }
+      }
+
+      async function coldLoad(caseEl) {
+        const phone = caseEl.querySelector('.phone');
+        const clock = caseEl.querySelector('.clock');
+        for (;;) {
+          phone.innerHTML = '';
+          clock.textContent = 'הדפדפן טוען את הדף…';
+          await wait(500);
+          const page = layer(phone, 'old');
+          page.classList.add('on');
+          if (caseEl.dataset.cold === 'fade') applyFade(page, 'children');
+          clock.textContent = 'הדף צויר';
+          await wait(1300);
+        }
+      }
+
+      document.querySelectorAll('[data-fade]').forEach(navigation);
+      document.querySelectorAll('[data-cold]').forEach(coldLoad);
+
+      function toggleGroup(groupId, onPick) {
+        const group = document.getElementById(groupId);
+        group.addEventListener('click', (event) => {
+          const button = event.target.closest('button');
+          if (!button) return;
+          group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+          onPick(button);
+        });
+      }
+      toggleGroup('waits', (b) => (serverWait = Number(b.dataset.wait)));
+      toggleGroup('themes', (b) => (document.documentElement.dataset.theme = b.dataset.theme));
+      toggleGroup('speeds', (b) => {
+        k = Number(b.dataset.k);
+        document.documentElement.style.setProperty('--k', k);
+      });
+      document.documentElement.style.setProperty('--k', k);
+    </script>
+  </body>
+</html>

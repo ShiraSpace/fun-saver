@@ -19,6 +19,7 @@ import { AccountFormDriver } from './account-form-driver';
 import { AvatarPickerDriver } from './avatar-picker-driver';
 import { DashboardDriver } from './dashboard-driver';
 import { MethodDriver } from './method-driver';
+import { LoadingShellDriver } from './loading-shell-driver';
 import { startServer, type RunningServer } from '../server';
 
 interface OpenAppOptions {
@@ -38,6 +39,7 @@ export interface AppDriver {
   avatarPicker: AvatarPickerDriver;
   dashboard: DashboardDriver;
   method: MethodDriver;
+  loadingShell: LoadingShellDriver;
 }
 
 export function createDrivers(session: Session): AppDriver {
@@ -57,6 +59,7 @@ export function createDrivers(session: Session): AppDriver {
     avatarPicker: new AvatarPickerDriver(session),
     dashboard: new DashboardDriver(session),
     method: new MethodDriver(session),
+    loadingShell: new LoadingShellDriver(session),
   };
 }
 

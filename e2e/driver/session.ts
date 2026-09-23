@@ -7,6 +7,7 @@ import puppeteer, {
 import * as actions from './page-actions';
 import * as queries from './page-queries';
 import * as waits from './page-waits';
+import { holdNextPage, type HeldPage } from './hold-next-page';
 
 interface OpenOptions {
   baseUrl: string;
@@ -80,6 +81,26 @@ export class Session {
   async stop(): Promise<void> {
     await this.browser?.close();
     this.browser = undefined;
+  }
+
+  visitWithoutScripts(path: string): Promise<void> {
+    return actions.visitWithoutScripts(this.page, `${this.baseUrl}${path}`);
+  }
+
+  setDocumentTheme(themeId: string): Promise<void> {
+    return actions.setDocumentTheme(this.page, themeId);
+  }
+
+  holdNextPage(): Promise<HeldPage> {
+    return holdNextPage(this.page);
+  }
+
+  rawResponse(path: string, cookie: string): Promise<queries.RawResponse> {
+    return queries.rawResponse(`${this.baseUrl}${path}`, cookie);
+  }
+
+  servedHtml(path: string): Promise<string> {
+    return queries.servedHtml(this.page, path);
   }
 
   currentPath(): string {
@@ -176,6 +197,10 @@ export class Session {
 
   waitForTestId(testId: string): Promise<void> {
     return waits.waitForTestId({ page: this.page, testId });
+  }
+
+  waitForAnyTestId(testIds: readonly string[]): Promise<void> {
+    return waits.waitForAnyTestId(this.page, testIds);
   }
 
   waitForStyle(

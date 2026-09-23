@@ -69,3 +69,20 @@ export async function clickNth({
 
   await element.click();
 }
+
+export async function visitWithoutScripts(
+  page: Page,
+  url: string
+): Promise<void> {
+  await page.setJavaScriptEnabled(false);
+  await page.goto(url, { waitUntil: 'networkidle0' });
+}
+
+export async function setDocumentTheme(
+  page: Page,
+  themeId: string
+): Promise<void> {
+  await page.evaluate((id: string): void => {
+    document.documentElement.dataset.theme = id;
+  }, themeId);
+}

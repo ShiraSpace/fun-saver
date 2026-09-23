@@ -1,6 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
+import { PendingNavigationReporter } from '@/components/Header/navigation-pending-context';
 import { MenuScreen } from './constants';
 import { CurrentTab, InertTab, Tab, TabIcon } from './NavTabs.styles';
 
@@ -41,6 +42,7 @@ export function NavTab({
   return (
     <Tab data-testid={screen.testId} href={screen.href} onClick={onNavigate}>
       {face}
+      <PendingNavigationReporter />
     </Tab>
   );
 }

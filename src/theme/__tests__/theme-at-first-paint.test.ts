@@ -2,6 +2,7 @@ import { THEME_COOKIE } from '@/lib/cookies';
 import {
   applyStoredThemeScript,
   everyThemeAsCss,
+  themeVar,
 } from '../theme-at-first-paint';
 import { DEFAULT_THEME_ID, THEMES, THEME_ID } from '../registry';
 
@@ -40,6 +41,17 @@ describe('the theme at first paint', () => {
     it('dresses a document that has no theme yet in the default one', () => {
       expect(everyThemeAsCss()).toContain(
         `:root,:root[data-theme='${DEFAULT_THEME_ID}']{`
+      );
+    });
+  });
+
+  describe('naming a theme variable', () => {
+    it('names the property the published css declares, with that theme’s value', () => {
+      const property = themeVar('colors', 'surface').slice('var('.length, -1);
+      const surface = THEMES[THEME_ID.midnightBlue].colors.surface;
+
+      expect(blockFor(THEME_ID.midnightBlue)).toContain(
+        `${property}:${surface}`
       );
     });
   });

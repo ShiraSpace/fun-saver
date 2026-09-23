@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, JSX } from 'react';
+import { JSX, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import type { Account } from '@/lib/types';
 import {
@@ -16,6 +16,8 @@ import { Title } from './CrossfadeTitle';
 import { HeaderEndSlot } from './HeaderEndSlot';
 import { HEADER_TEST_IDS } from './constants';
 import { Bar } from './Header.styles';
+import { ProgressLine } from './ProgressLine';
+import { PendingLinksProvider } from './navigation-pending-context';
 
 export interface HeaderProps {
   title: string;
@@ -25,9 +27,11 @@ export interface HeaderProps {
 export function Header({ title, account }: HeaderProps): JSX.Element {
   const menu = useMenuState();
   const isHome = usePathname() === HOME_ROUTE;
+  const [pendingLinks, setPendingLinks] = useState(0);
+  const isNavigating = pendingLinks > 0;
 
   return (
-    <Fragment>
+    <PendingLinksProvider value={setPendingLinks}>
       <MenuHeaderSheet
         data-open={menu.isOpen}
         data-testid={MENU_HEADER_SHEET_TEST_IDS.sheet}
@@ -42,10 +46,13 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
             isHidden={menu.isOpen}
           />
         )}
+        {isNavigating && (
+          <ProgressLine data-testid={HEADER_TEST_IDS.progress} />
+        )}
       </Bar>
       <MenuProvider value={menu}>
         <MenuOverlay />
       </MenuProvider>
-    </Fragment>
+    </PendingLinksProvider>
   );
 }

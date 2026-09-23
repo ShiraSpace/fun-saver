@@ -876,11 +876,31 @@ accessibility behaviour rather than restating it. A 6px rise, a 0.985 settle and
 50ms-per-card stagger were all mocked; the stagger lands its last card 250ms after
 its first, making the entrance as long as the wait that preceded it.
 
-Open when the code is written: `Screen` is rendered by `Account`, `Method`,
-`AccountForm`, `EmptyState` and `SignIn`. Putting the fade there is one line and
-gives every screen the same entrance, including the create and edit forms that open
-from the menu; confining it to the two routed pages needs a wrapper. The lean is
-`Screen`.
+**Superseded after building it, 2026-09-23 — the shell is for a first load only.**
+Built as a root `loading.tsx`, the header card with its moving bar replaced the page
+on every tab tap, and that read worse than the wait it covered. `loading.js` cannot
+tell a cold load from a soft navigation: Next wraps each page segment in a fresh
+boundary keyed by the segment, so its fallback always shows. What does tell them
+apart is **one `<Suspense fallback={<LoadingShell />}>` in the root layout**. On a
+cold load there is nothing on screen yet, so the fallback streams first — measured in
+the served HTML of `/`: the shell at ~10KB, the page in a hidden chunk at ~55KB. On a
+soft navigation that boundary is already revealed, and a router navigation is a
+transition, so React keeps the old page up instead of re-showing the fallback. Measured
+by holding the navigation `_rsc` response 1.5s: the home page stayed, no shell.
+
+**Between pages, the old page stays and its own header shows the moving line**
+(option 3 of three: nothing, a pending tab in an open menu, a line on the real
+header). `useLinkStatus` reports the pending state, and it can only be read inside
+the `<Link>` being tapped, so `PendingNavigationReporter` — rendering nothing — sits
+inside the nav tab and the house link and tells `Header` through a context whose
+default is a no-op. `<Link onNavigate>` plus `useTransition` and `router.push` was
+weighed and turned down: it is the community's global-progress pattern and hook-only,
+but it cancels `<Link>`'s own navigation to redo it by hand.
+
+**The page fade is dropped.** With the shell gone from navigation there is nothing for
+a landing page to fade in from. `mockups/loading-open-questions.html` records the
+question as it stood; its reduced-motion answer (ד, the line moves regardless) still
+holds, for the header line as much as the shell.
 
 **The shell reads `var(--fs-…)`, never `theme.colors`.** That is what PR 11a is
 for, and it is also what keeps `loading.tsx` renderable with no `ThemeProvider`
@@ -906,22 +926,90 @@ So the two writers do disagree and it cannot reach the screen. No
 the day something introduces a `<Link href="/login">` or a `router.push(LOGIN_PATH)`**
 — that is the trigger to revisit, not the disagreement itself.
 
-**Two assertions carry this PR, and both are easy to write vacuously.**
+**The assertions that carry this PR, all easy to write vacuously.** Originally a
+prefetch-before-tap check and a shell-under-delay check; the first went with
+`loading.tsx`. What the built version rests on:
 
-- _The prefetch now happens._ With the menu open, a `/method?_rsc` request should be
-  in flight **before** the tap. That is the mechanism the file exists for, and it is
-  absent on `main` today, so the assertion fails for the right reason before the fix.
-- _The shell is really on screen._ At 45ms against the JSON store it is
-  uncatchable, so the suite has to delay the `_rsc` response — request interception
-  — then assert the shell is visible **and takes a tap**, and assert it is gone once
-  the page lands. An assertion that holds either way round is not an assertion; this
-  plan has two earlier entries saying so, both written after getting it wrong.
+- _A cold load streams the shell before the page_ — the shell's markup precedes the
+  page's in the served HTML, and the page arrives in the hidden streamed chunk.
+- _A navigation keeps the old page, with the line on its header_ — under a held
+  navigation `_rsc` response (the JSON store answers in ~45ms, so without the hold
+  nothing is catchable), the old page is still there, no shell is, the header line
+  is, and the line is gone once the new page lands. Both directions.
+- _The shell renders with no `ThemeProvider` above it_ — plain
+  `@testing-library/react`; the failure mode is a production TypeError no themed test
+  would ever see. Any theme assertion uses a non-default theme.
 
 **What it does not fix.** The round trip still happens; a boundary only stops it
 being invisible, and prefetching only fetches the static shell, not the data. Cutting
 the ~250ms means collapsing the two sequential store calls or caching them — a
 data-layer change this epic has otherwise avoided, and the reason this is its own PR
 rather than a line in PR 9.
+
+### PR 11 — build
+
+- `src/app/layout.tsx` wraps `children` in `<Suspense fallback={<LoadingShell />}>`.
+  There is no `loading.tsx`. The layout stays static — `next build` still reports
+  `/login` as `○ (Static)`.
+- `src/components/LoadingShell/` — its own styled parts, **not** `Screen` or `Bar`.
+  Moving those two onto `var()` would repaint `/login` in the cookie's theme on a cold
+  load until `ThemeController` snaps it back. It reuses what carries no theme:
+  `Column`, `SCREEN_LAYOUT`, `HEADER_LAYOUT`, `HEADER_AVATAR_PROPS.size`, and the real
+  `BurgerIcon` in a `MENU_ICON.buttonSize` slot — the 44px ceiling.
+- `src/components/Header/ProgressLine/` — the 3px line, 150ms late, 900ms sweep, inset
+  by the header radius. Shared by the shell's card and the real `Bar`.
+- `src/components/Header/navigation-pending-context.tsx` — the reporter and its context;
+  `Header` holds the state and draws the line.
+- `MenuOverlay` is `memo`ised. Measured with a render-counting probe: a navigation
+  starting re-rendered `MenuBody` once, and zero with the `memo`. All four props are
+  already stable (`useCallback` with no deps, a state setter, two booleans); an inline
+  `onClose` brings the render back.
+- `themeVar(group, name)` beside `everyThemeAsCss()`, sharing its prefix table, so a
+  misspelt token is a `tsc` error rather than a transparent card.
+
+### What review of #121 turned up
+
+- **A Suspense above the page turns every `redirect()` inside it into a browser
+  redirect.** The boundary sends the shell with a `200` before the page renders, and a
+  status cannot change once the body has started. Measured: `/` with a garbage session
+  cookie and `/method` for a user with no account both went from a real `307` to a
+  `200` that streamed the shell and then redirected in the browser. Fixed by moving
+  both decisions out of the boundary rather than dropping the shell:
+  - `proxy.ts` checked only that a session cookie *existed*. It is now
+    `auth((request) => …)` from `src/auth.ts` — one NextAuth config, so the secret,
+    cookie name and `x-forwarded-proto` handling are never restated — and applies
+    `toSignedInUser`, the rule the pages use (an id and an email). A missing, garbage,
+    expired or incomplete session gets a `307` to `/login` before anything streams.
+    `toSignedInUser` lives in `src/lib/signed-in-user.ts`: `next-auth` cannot load
+    under jest, so in `src/auth.ts` the rule was reachable only through a mock.
+  - `/method` with no account still redirects home, inside the boundary — so it
+    answers `200`, streams the shell, and redirects in the browser. Accepted on
+    purpose, after rendering the empty state in place was tried and reverted on
+    review: the menu marked השיטה current over the empty state, and a first account
+    created there landed on the method page instead of on the new account. Only a
+    signed-in user with no account who types `/method` gets here, and nothing that
+    reads status codes can see an authenticated page. Moving it to the proxy would
+    cost a database read on every `/method` request.
+  - **The rule for next time: a `redirect()` or `notFound()` under the root Suspense
+    answers `200`.** Put it in the proxy if its status matters; leave it only where a
+    `200` is harmless, as `/method`'s is.
+- **Several reporters writing one boolean: the last effect wins.** Tapping Home in the
+  menu and then the house link flips both links in one update; the house link's
+  effect ran first, the tab's second, and the line went out mid-navigation. The
+  header now counts pending links — a reporter adds one while pending and takes it
+  back in its effect cleanup — so the order no longer matters. The e2e test for that
+  scenario fails against the boolean.
+
+- **Sessions slide, on purpose.** Checking the session through `auth()` in the proxy
+  re-signs the JWT and sets a fresh cookie on every proxied request — Auth.js's JWT
+  branch has no `updateAge` throttle, and the wrapper copies its `Set-Cookie` onto the
+  proxy's response. So an active user stays signed in and only thirty days idle signs
+  them out. The avatars are no longer proxied (`avatars/` in the matcher), so they
+  carry no `Set-Cookie` and stay cacheable; `public/inspiration/` holds two unused
+  screenshots and stays behind the session.
+- **The progress line's sweep ends at `-240%`.** The chunk is 42% of the track and
+  `translateX` percentages are of the chunk, so `-160%` — the mockup's value — ended
+  each loop still on screen and snapped back from inside the track.
 
 ## Notes / risks
 
