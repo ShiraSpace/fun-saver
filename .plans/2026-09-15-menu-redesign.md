@@ -876,18 +876,31 @@ accessibility behaviour rather than restating it. A 6px rise, a 0.985 settle and
 50ms-per-card stagger were all mocked; the stagger lands its last card 250ms after
 its first, making the entrance as long as the wait that preceded it.
 
-**Where the fade sits — decided 2026-09-23, from `mockups/loading-open-questions.html`:
-on `Screen`'s children, header included (option ב).** Not on `Screen` itself: it
-carries the gradient and `body` has none, so fading `Screen` fades the background
-too and flashes white on every navigation. `& > *` keeps the gradient solid and
-matches `loading-states.html`, which fades `.bar` and `.body > *`. Accepted with it:
-the fade also runs on a cold document load and when the create and edit forms open —
-a CSS animation cannot tell a soft navigation from a first paint.
+**Superseded after building it, 2026-09-23 — the shell is for a first load only.**
+Built as a root `loading.tsx`, the header card with its moving bar replaced the page
+on every tab tap, and that read worse than the wait it covered. `loading.js` cannot
+tell a cold load from a soft navigation: Next wraps each page segment in a fresh
+boundary keyed by the segment, so its fallback always shows. What does tell them
+apart is **one `<Suspense fallback={<LoadingShell />}>` in the root layout**. On a
+cold load there is nothing on screen yet, so the fallback streams first — measured in
+the served HTML of `/`: the shell at ~10KB, the page in a hidden chunk at ~55KB. On a
+soft navigation that boundary is already revealed, and a router navigation is a
+transition, so React keeps the old page up instead of re-showing the fallback. Measured
+by holding the navigation `_rsc` response 1.5s: the home page stayed, no shell.
 
-**Under reduced motion the bar still slides (option ד), and the fade does not.** The
-fade goes through `entrance()` and so compiles to `animation: none`; the bar does
-**not** go through `entrance()`, and carries no reduced-motion rule of its own. A
-frozen 42% stub reads as stuck, and a card with nothing on it says nothing happened.
+**Between pages, the old page stays and its own header shows the moving line**
+(option 3 of three: nothing, a pending tab in an open menu, a line on the real
+header). `useLinkStatus` reports the pending state, and it can only be read inside
+the `<Link>` being tapped, so `PendingNavigationReporter` — rendering nothing — sits
+inside the nav tab and the house link and tells `Header` through a context whose
+default is a no-op. `<Link onNavigate>` plus `useTransition` and `router.push` was
+weighed and turned down: it is the community's global-progress pattern and hook-only,
+but it cancels `<Link>`'s own navigation to redo it by hand.
+
+**The page fade is dropped.** With the shell gone from navigation there is nothing for
+a landing page to fade in from. `mockups/loading-open-questions.html` records the
+question as it stood; its reduced-motion answer (ד, the line moves regardless) still
+holds, for the header line as much as the shell.
 
 **The shell reads `var(--fs-…)`, never `theme.colors`.** That is what PR 11a is
 for, and it is also what keeps `loading.tsx` renderable with no `ThemeProvider`
@@ -913,16 +926,19 @@ So the two writers do disagree and it cannot reach the screen. No
 the day something introduces a `<Link href="/login">` or a `router.push(LOGIN_PATH)`**
 — that is the trigger to revisit, not the disagreement itself.
 
-**Two assertions carry this PR, and both are easy to write vacuously.**
+**The assertions that carry this PR, all easy to write vacuously.** Originally a
+prefetch-before-tap check and a shell-under-delay check; the first went with
+`loading.tsx`. What the built version rests on:
 
-- _The prefetch now happens._ With the menu open, a `/method?_rsc` request should be
-  in flight **before** the tap. That is the mechanism the file exists for, and it is
-  absent on `main` today, so the assertion fails for the right reason before the fix.
-- _The shell is really on screen._ At 45ms against the JSON store it is
-  uncatchable, so the suite has to delay the `_rsc` response — request interception
-  — then assert the shell is visible **and takes a tap**, and assert it is gone once
-  the page lands. An assertion that holds either way round is not an assertion; this
-  plan has two earlier entries saying so, both written after getting it wrong.
+- _A cold load streams the shell before the page_ — the shell's markup precedes the
+  page's in the served HTML, and the page arrives in the hidden streamed chunk.
+- _A navigation keeps the old page, with the line on its header_ — under a held
+  navigation `_rsc` response (the JSON store answers in ~45ms, so without the hold
+  nothing is catchable), the old page is still there, no shell is, the header line
+  is, and the line is gone once the new page lands. Both directions.
+- _The shell renders with no `ThemeProvider` above it_ — plain
+  `@testing-library/react`; the failure mode is a production TypeError no themed test
+  would ever see. Any theme assertion uses a non-default theme.
 
 **What it does not fix.** The round trip still happens; a boundary only stops it
 being invisible, and prefetching only fetches the static shell, not the data. Cutting
@@ -932,29 +948,24 @@ rather than a line in PR 9.
 
 ### PR 11 — build
 
-- `src/app/loading.tsx` — the default export Next requires, rendering `<LoadingShell />`
-  and nothing else. Static: no `cookies()`, no data. `next build` must still report
+- `src/app/layout.tsx` wraps `children` in `<Suspense fallback={<LoadingShell />}>`.
+  There is no `loading.tsx`. The layout stays static — `next build` still reports
   `/login` as `○ (Static)`.
 - `src/components/LoadingShell/` — its own styled parts, **not** `Screen` or `Bar`.
   Moving those two onto `var()` would repaint `/login` in the cookie's theme on a cold
-  load until `ThemeController` snaps it back — the flash the section above says cannot
-  reach the screen. It reuses what carries no theme: `Column`, `SCREEN_LAYOUT`,
-  `HEADER_LAYOUT` (padding, radius, `min-height`), and `MENU_ICON.buttonSize` for the
-  burger slot, the real 44px ceiling. Placeholders are `aria-hidden`; the shell is a
-  `role="status"` with a name.
-- `themeVar(group, name)` beside `everyThemeAsCss()` in `theme-at-first-paint.ts`,
-  sharing `TOKEN_GROUPS`, so a misspelt token is a `tsc` error rather than a
-  transparent card. The shell is the first reader of the custom properties.
-- `fadeIn` moves into `motion.ts`; `OverviewCard.styles.ts` and `Title.styles.ts` each
-  carry a copy today.
-- Tests — unit: the shell renders under plain `@testing-library/react` with no
-  provider; `themeVar` names what `everyThemeAsCss` emits. e2e: the prefetch is in
-  flight before the tap (watched failing against a build without `loading.tsx`); under
-  a held navigation `_rsc` response — prefetches pass, identified by
-  `next-router-prefetch` — the shell is visible, `receivesTapAt` its centre, and is
-  gone once the page lands, both ways; it paints midnight-blue, not the default; its
-  card's box equals the real header's; `Screen`'s children animate under full motion
-  and not under reduced, while the bar animates under both.
+  load until `ThemeController` snaps it back. It reuses what carries no theme:
+  `Column`, `SCREEN_LAYOUT`, `HEADER_LAYOUT`, `HEADER_AVATAR_PROPS.size`, and the real
+  `BurgerIcon` in a `MENU_ICON.buttonSize` slot — the 44px ceiling.
+- `src/components/Header/ProgressLine/` — the 3px line, 150ms late, 900ms sweep, inset
+  by the header radius. Shared by the shell's card and the real `Bar`.
+- `src/components/Header/navigation-pending-context.tsx` — the reporter and its context;
+  `Header` holds the state and draws the line.
+- `MenuOverlay` is `memo`ised. Measured with a render-counting probe: a navigation
+  starting re-rendered `MenuBody` once, and zero with the `memo`. All four props are
+  already stable (`useCallback` with no deps, a state setter, two booleans); an inline
+  `onClose` brings the render back.
+- `themeVar(group, name)` beside `everyThemeAsCss()`, sharing its prefix table, so a
+  misspelt token is a `tsc` error rather than a transparent card.
 
 ## Notes / risks
 
