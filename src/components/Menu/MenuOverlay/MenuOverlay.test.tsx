@@ -1,11 +1,12 @@
 import { fireEvent, renderWithAccounts, screen } from '@/test-utils/render';
 import { MenuOverlay } from './MenuOverlay';
-import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
+import { MENU_OVERLAY_CONTENT } from './constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from '../MenuGlobalScope/constants';
 import { MENU_ACCOUNT_SCOPE_TEST_IDS } from '../MenuAccountScope/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
+import { NAV_TABS_TEST_IDS } from '../NavTabs/constants';
 
 const onClose = jest.fn();
 const onAccountListToggle = jest.fn();
@@ -60,14 +61,27 @@ describe('MenuOverlay', () => {
       );
     });
 
-    it('offers a way out to the method page', () => {
+    it('keeps navigation out of the settings that belong to one account', () => {
+      const strip = screen.getByTestId(NAV_TABS_TEST_IDS.strip);
+
+      expect(strip).toBeInTheDocument();
       expect(
-        screen.getByTestId(MENU_OVERLAY_TEST_IDS.methodLink)
-      ).toHaveAttribute('href', METHOD_ROUTE);
+        screen.getByTestId(MENU_ACCOUNT_SCOPE_TEST_IDS.block)
+      ).not.toContainElement(strip);
+      expect(
+        screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block)
+      ).not.toContainElement(strip);
+    });
+
+    it('offers a way out to the method page', () => {
+      expect(screen.getByTestId(NAV_TABS_TEST_IDS.methodTab)).toHaveAttribute(
+        'href',
+        METHOD_ROUTE
+      );
     });
 
     it('closes itself on the way there, so returning does not land on an open menu', () => {
-      fireEvent.click(screen.getByTestId(MENU_OVERLAY_TEST_IDS.methodLink));
+      fireEvent.click(screen.getByTestId(NAV_TABS_TEST_IDS.methodTab));
 
       expect(onClose).toHaveBeenCalled();
     });
