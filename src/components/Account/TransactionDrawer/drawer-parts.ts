@@ -11,5 +11,5 @@ export const DrawerError = styled.span`
   text-align: center;
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
-  color: ${({ theme }): string => theme.colors.accent};
+  color: ${({ theme }): string => theme.colors.alertText};
 `;

@@ -5,7 +5,6 @@ export const midnightBlue: ThemeTokens = {
   colors: {
     primary: '#3B82F6',
     primaryText: '#3B82F6',
-    primaryGradientTop: '#60A5FA',
     primaryShadow: '#152A63',
     primaryGlow: 'rgba(29, 78, 216, 0.40)',
     textOnPrimary: '#FFFFFF',
@@ -30,6 +29,7 @@ export const midnightBlue: ThemeTokens = {
     gainText: '#34D399',
     gainSoftBg: '#0E2E2A',
     alert: '#F87171',
+    alertText: '#F87171',
     alertSoftBg: '#3A1518',
     withdrawText: '#FB923C',
     walletSavings: '#1E40AF',

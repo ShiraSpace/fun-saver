@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — ניגודיות AA, המחזור השני</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root[data-theme='sunshine'] {
+  --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+  --surface:#FFFFFF; --textStrong:#3A1F5A; --onPrimary:#FFFFFF;
+  --divider:#F2D9D2; --softBg:#FFF8E0; --depositBg:#FFF6E0; --softBorder:#FFD23F;
+  --scopeBg:#F4EEFA; --scopeBorder:#C9B6E4;
+  --alertBg:#FDECEC; --gainBg:#E1F4E5;
+  --ab:linear-gradient(#8A3AAE,#6B2C8E); --shadow:#4A1A6E;
+  --potSavings:linear-gradient(135deg,#FFE6B0,#FFC34D);
+  --potSpending:linear-gradient(135deg,#FFD8C7,#FF8A4C);
+  --alertNow:#E5484D;  --alertNew:#A81B3A;
+  --accentNow:#E94E89; --accentKeep:#E94E89;
+  --deepScreen:linear-gradient(160deg,#8E5210,#8B381D,#762043);
+  --gainNow:#2E7D32;   --gainNew:#276E2C;
+  --mutedNow:#786A92;  --mutedNew:#6F6189;
+  --rScrimNow:'1.60';  --rDim:'4.83'; --rVig:'5.60'; --rDeep:'5.23';
+  --rErrNow:'3.55';    --rErrAlert:'7.28'; --rErrAccent:'3.55';
+}
+:root[data-theme='jungle'] {
+  --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+  --surface:#FFFDF5; --textStrong:#1B4332; --onPrimary:#FFFFFF;
+  --divider:#DDE7CC; --softBg:#F3F7E4; --depositBg:#F3F7E4; --softBorder:#B5D94C;
+  --scopeBg:#EDF4E6; --scopeBorder:#A9C77E;
+  --alertBg:#FDECEC; --gainBg:#E4F2D9;
+  --ab:linear-gradient(#1B7A6B,#12564B); --shadow:#0B3A33;
+  --potSavings:linear-gradient(135deg,#52B69A,#2A9D8F);
+  --potSpending:linear-gradient(135deg,#B5D94C,#90BE6D);
+  --alertNow:#E5484D;  --alertNew:#A83A21;
+  --accentNow:#E76F51; --accentKeep:#E76F51;
+  --deepScreen:linear-gradient(160deg,#175B52,#1F5F4C,#3F631F);
+  --gainNow:#3A7D2E;   --gainNew:#316A26;
+  --mutedNow:#5C7A6E;  --mutedNew:#526E63;
+  --rScrimNow:'2.15';  --rDim:'5.94'; --rVig:'6.80'; --rDeep:'5.82';
+  --rErrNow:'3.04';    --rErrAlert:'6.26'; --rErrAccent:'3.04';
+}
+:root[data-theme='midnight'] {
+  --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  --surface:#141B24; --textStrong:#ECF1F8; --onPrimary:#FFFFFF;
+  --divider:#1E2A40; --softBg:#121E36; --depositBg:#111B30; --softBorder:#3B82F6;
+  --scopeBg:#101A2C; --scopeBorder:#2F4470;
+  --alertBg:#3A1518; --gainBg:#0E2E2A;
+  --ab:linear-gradient(#1D4ED8,#1E3A8A); --shadow:#152A63;
+  --potSavings:linear-gradient(135deg,#1E40AF,#172554);
+  --potSpending:linear-gradient(135deg,#2563EB,#1E40AF);
+  --alertNow:#F87171;  --alertNew:#F87171;
+  --accentNow:#3B82F6; --accentKeep:#3B82F6;
+  --deepScreen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  --gainNow:#34D399;   --gainNew:#34D399;
+  --mutedNow:#8A96A8;  --mutedNew:#8A96A8;
+  --rScrimNow:'13.94'; --rDim:'14.71'; --rVig:'14.90'; --rDeep:'12.85';
+  --rErrNow:'4.71';    --rErrAlert:'6.26'; --rErrAccent:'4.71';
+}
+:root[data-variant='now'] { --alert:var(--alertNow); --gain:var(--gainNow); --muted:var(--mutedNow);
+  --err:var(--accentNow); --rErr:var(--rErrNow); --gainOpacity:.85; --rScrim:var(--rScrimNow); }
+:root[data-variant='new'] { --alert:var(--alertNew); --gain:var(--gainNew); --muted:var(--mutedNew);
+  --err:var(--alertNew); --rErr:var(--rErrAlert); --gainOpacity:1; }
+:root[data-variant='new'][data-err='accent'] { --err:var(--accentKeep); --rErr:var(--rErrAccent); }
+:root[data-variant='new'][data-bg='dim']  { --rScrim:var(--rDim); }
+:root[data-variant='new'][data-bg='vig']  { --rScrim:var(--rVig); }
+:root[data-variant='new'][data-bg='deep'] { --rScrim:var(--rDeep); }
+:root[data-variant='new'][data-bg='dim'] .login::before {
+  background:rgba(0,0,0,.50); }
+:root[data-variant='new'][data-bg='vig'] .login::before {
+  background:linear-gradient(rgba(0,0,0,.55) 0 30%, rgba(0,0,0,.14) 46%,
+    rgba(0,0,0,.14) 60%, rgba(0,0,0,.55) 78%); }
+:root[data-variant='new'][data-bg='deep'] .login { background:var(--deepScreen); }
+:root[data-fade='off'] .fine { opacity:1; }
+
+
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:21px; margin:0 0 6px; color:#fff; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 10px; max-width:880px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.bar { display:flex; gap:20px; flex-wrap:wrap; align-items:center; margin:14px 0 4px; }
+.grp { display:flex; gap:7px; align-items:center; }
+.grp b { font-size:11px; color:#78839a; font-weight:600; letter-spacing:.05em; }
+button { font-family:Rubik,sans-serif; font-size:12.5px; font-weight:600; cursor:pointer;
+  padding:6px 13px; border-radius:999px; border:1.5px solid #3a4150; background:#2a303a; color:#dfe4ec; }
+button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff; }
+.readout { font-family:Fredoka,Rubik,sans-serif; font-size:12px; padding:5px 12px; border-radius:999px;
+  background:#1d3a26; color:#6ee7a0; }
+.readout.s::after { content:'כיתוב על המסך ' var(--rScrim) ':1'; }
+.readout.e::after { content:'שגיאת מגירה ' var(--rErr) ':1'; }
+:root[data-variant='now'] .readout, :root[data-variant='new'][data-err='accent'] .readout.e,
+:root[data-variant='new'][data-bg='none'] .readout.s
+  { background:#3a1d1f; color:#ff8a8a; }
+:root[data-variant='now'][data-theme='midnight'] .readout { background:#1d3a26; color:#6ee7a0; }
+
+.rack { display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; margin-top:18px; }
+.scr { width:300px; }
+.cap { font-size:12px; font-weight:600; color:#9aa3b2; margin-bottom:7px; }
+.cap span { color:#5f6a7d; font-weight:500; }
+.phone { position:relative; border-radius:24px; background:var(--screen); padding:16px 13px 22px; direction:rtl;
+  box-shadow:0 14px 30px rgba(0,0,0,.45); min-height:430px; display:flex; flex-direction:column;
+  gap:11px; align-items:center; }
+.phone.start { align-items:stretch; }
+.login::before { content:''; position:absolute; inset:0; border-radius:24px; pointer-events:none; }
+.login > * { position:relative; }
+
+.hero { padding:4px 16px 8px; text-align:center; }
+.pig { font-size:56px; line-height:1; }
+.wm { font-family:Fredoka,Rubik,sans-serif; font-size:27px; font-weight:700; color:var(--onPrimary);
+  text-shadow:0 3px 0 rgba(0,0,0,.16); padding:2px 12px; display:inline-block; }
+.tag { font-size:12px; color:var(--onPrimary); margin:6px 0 0;
+  padding:4px 12px; display:inline-block; line-height:1.5; }
+.fineplate { max-width:250px; }
+.fine { font-size:10.5px; color:var(--onPrimary); opacity:.88; line-height:1.6; margin:0;
+  border-radius:14px; padding:5px 11px; display:inline-block; text-align:center; }
+
+.card { background:var(--surface); border-radius:20px; padding:14px 14px; color:var(--textStrong);
+  width:100%; box-sizing:border-box; display:flex; flex-direction:column; gap:9px; }
+.card .ttl { font-family:Fredoka,Rubik,sans-serif; font-size:16px; font-weight:700; margin:0; }
+.card p { font-size:12px; line-height:1.6; margin:0; }
+.card p.m { color:var(--muted); }
+.err { font-size:11px; font-weight:600; color:var(--alert); margin:0; }
+.btn { display:block; width:100%; text-align:center; padding:13px 28px; border-radius:999px;
+  background:var(--ab); color:var(--onPrimary); font-size:14px; font-weight:700;
+  box-shadow:0 5px 0 var(--shadow); box-sizing:border-box; }
+
+.track { display:flex; gap:4px; padding:4px; border-radius:999px; background:var(--divider); }
+.pill { flex:1; text-align:center; padding:7px 0; border-radius:999px; font-size:13px; font-weight:700;
+  color:var(--muted); }
+.pill.on { background:var(--surface); color:var(--textStrong); }
+.pill .ar { margin-inline-start:5px; font-size:17px; font-weight:800; }
+.pill .ar.in { color:var(--gain); } .pill .ar.out { color:var(--alert); }
+.amount { font-family:Fredoka,Rubik,sans-serif; font-size:30px; font-weight:600; text-align:center;
+  color:var(--textStrong); }
+.over { display:block; text-align:center; font-size:11px; font-weight:600; color:var(--alert);
+  background:var(--alertBg); border-radius:12px; padding:7px 10px; }
+.drawerr { display:block; text-align:center; font-size:11px; font-weight:600; color:var(--err); }
+
+.wrow { display:flex; align-items:center; gap:9px; }
+.tile { width:34px; height:34px; border-radius:11px; display:flex; align-items:center;
+  justify-content:center; font-size:18px; flex:none; }
+.tile.s { background:var(--potSavings); } .tile.p { background:var(--potSpending); }
+.wrow .nm { flex:1; font-size:13px; font-weight:700; }
+.wrow .nm small { display:block; font-size:10.5px; font-weight:500; color:var(--muted); margin-top:2px; }
+.strip { display:flex; gap:8px; margin-top:10px; padding-top:10px;
+  border-top:1.5px dashed var(--divider); }
+.cell { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 6px;
+  border-radius:12px; }
+.cell.d { background:var(--depositBg); color:var(--textStrong); }
+.cell.g { background:var(--gainBg); color:var(--gain); }
+.cell .lb { font-size:10.5px; font-weight:600; }
+.cell.d .lb { color:var(--muted); } .cell.g .lb { opacity:var(--gainOpacity); }
+.cell .am { font-family:Fredoka,Rubik,sans-serif; font-size:16px; font-weight:600; }
+
+.scope { border:1.5px solid var(--scopeBorder); background:var(--scopeBg); border-radius:18px;
+  padding:11px 12px; width:100%; box-sizing:border-box; }
+.picker { display:flex; align-items:center; gap:8px; background:var(--surface); border-radius:14px;
+  padding:9px 11px; color:var(--textStrong); font-size:13px; font-weight:700; }
+.picker .av { width:24px; height:24px; border-radius:999px; background:var(--softBg);
+  display:flex; align-items:center; justify-content:center; font-size:13px; }
+.picker .cv { margin-inline-start:auto; font-size:11px; color:var(--muted); }
+.editrow { display:flex; align-items:center; justify-content:center; gap:7px; margin-top:9px;
+  font-size:12px; font-weight:600; color:var(--muted); }
+.editrow u { text-decoration-color:var(--scopeBorder); text-underline-offset:3px; }
+.swatches { display:flex; gap:9px; margin-top:4px; }
+.sw { width:34px; height:34px; border-radius:11px; box-sizing:border-box;
+  border:2.5px solid transparent; }
+.sw.on { border-color:var(--textStrong); }
+</style>
+</head>
+<body>
+
+<h1>ניגודיות AA — המחזור השני</h1>
+<p class="sub">מה שהסריקה הראשונה החמיצה. <b>התחברות</b> מציירת תמיד סאנשיין, ולכן מתג הערכה לא נוגע בה. הכיתוב <b>נשאר לבן</b> והשקיפות <b>נשארת ‎.88</b>, ולכן מה שזז הוא הרקע — בלי שום קופסה, תווית או לוח. שלוש דרכים: <b>עמעום מלא</b> (שכבה אחת של ‎50% שחור על כל המסך), <b>וינייטה</b> (כהה למעלה ולמטה, בהיר באמצע מאחורי הכרטיס — נפילת אור, לא אובייקט), ו<b>גרדיאנט עמוק</b> (אותם גוונים, עצירות כהות יותר, בלי שכבה נוספת). הקריאה במד היא של <b>השורה הקטנה</b>, הגרועה מהשלוש.</p>
+<p class="sub"><b>האדום מותאם לערכה:</b> סאנשיין <code>#A81B3A</code> (גרוע 5.42) נמשך אל הוורוד של הערכה, ג'ונגל <code>#A83A21</code> (4.97) אל הטרקוטה שלה, מידנייט נשאר <code>#F87171</code>. <code>gainText</code> עובר ל־<code>#276E2C</code>/<code>#316A26</code>, <code>textMuted</code> ל־<code>#6F6189</code>/<code>#526E63</code>. <b>מידנייט עובר הכול היום ולא זז.</b></p>
+
+<div class="bar">
+  <div class="grp"><b>ערכה</b>
+    <button data-t="sunshine" aria-pressed="true">סאנשיין</button>
+    <button data-t="jungle" aria-pressed="false">ג'ונגל</button>
+    <button data-t="midnight" aria-pressed="false">מידנייט</button>
+  </div>
+  <div class="grp"><b>גרסה</b>
+    <button data-v="now" aria-pressed="true">היום</button>
+    <button data-v="new" aria-pressed="false">אחרי</button>
+  </div>
+  <div class="grp"><b>הרקע בהתחברות</b>
+    <button data-b="none" aria-pressed="false">כמו היום</button>
+    <button data-b="dim" aria-pressed="true">עמעום מלא</button>
+    <button data-b="vig" aria-pressed="false">וינייטה</button>
+    <button data-b="deep" aria-pressed="false">גרדיאנט עמוק</button>
+  </div>
+  <div class="grp"><b>שגיאת מגירה</b>
+    <button data-e="alert" aria-pressed="true">אדום (alertText)</button>
+    <button data-e="accent" aria-pressed="false">ורוד (accent)</button>
+  </div>
+  <div class="grp"><b>שקיפות השורה הקטנה</b>
+    <button data-f="on" aria-pressed="true">נשארת .88</button>
+    <button data-f="off" aria-pressed="false">יורדת</button>
+  </div>
+  <span class="readout s"></span>
+  <span class="readout e"></span>
+</div>
+
+<div class="rack">
+
+  <div class="scr">
+    <div class="cap">התחברות <span>· Wordmark · Tagline · Fineprint</span></div>
+    <div class="phone login">
+      <div class="pig">🐷</div>
+      <div class="hero">
+        <div class="wm">Fun Saver</div>
+        <p class="tag">החיסכון של הילדים, במקום אחד</p>
+      </div>
+      <div class="card">
+        <p class="ttl">התחברות</p>
+        <p class="m">התחברו עם חשבון Google כדי לראות את החשבונות שלכם מכל מכשיר.</p>
+              <div class="btn">המשך עם Google</div>
+      </div>
+      <div class="fineplate">
+        <p class="fine">בכניסה ראשונה ניצור לכם חשבון משתמש אוטומטית. אנחנו שומרים רק שם ואימייל.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="scr">
+    <div class="cap">התחברות — כשלון <span>· ErrorMessage על surface</span></div>
+    <div class="phone login">
+      <div class="pig">🐷</div>
+      <div class="hero">
+        <div class="wm">Fun Saver</div>
+        <p class="tag">החיסכון של הילדים, במקום אחד</p>
+      </div>
+      <div class="card">
+        <p class="ttl">התחברות</p>
+        <p class="m">התחברו עם חשבון Google כדי לראות את החשבונות שלכם מכל מכשיר.</p>
+        <div class="btn">המשך עם Google</div>
+        <p class="err">ההתחברות נכשלה. בדקו את החיבור לאינטרנט ונסו שוב.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="scr">
+    <div class="cap">מגירת משיכה <span>· ModeToggle · חריגה · שגיאה</span></div>
+    <div class="phone start">
+      <div class="card">
+        <div class="track">
+          <span class="pill">הפקדה<span class="ar in">↓</span></span>
+          <span class="pill on">משיכה<span class="ar out">↑</span></span>
+        </div>
+        <p class="ttl">כמה מושכים?</p>
+        <div class="amount">₪30</div>
+        <span class="over">אין מספיק בקופה — יש ₪12</span>
+        <span class="drawerr">לא הצלחנו לשמור. נסו שוב.</span>
+        <div class="btn">משיכה של ₪30</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scr">
+    <div class="cap">בית <span>· StatStrip, הרווח וה«היום»</span></div>
+    <div class="phone start">
+      <div class="card">
+        <div class="wrow">
+          <span class="tile s">🐷</span>
+          <span class="nm">חיסכון<small>ריבית 3% בשבוע</small></span>
+          <span class="am">₪99</span>
+        </div>
+        <div class="strip">
+          <div class="cell d"><span class="lb">הפקדת</span><span class="am">₪90</span></div>
+          <div class="cell g"><span class="lb">רווח מריבית</span><span class="am">₪9</span></div>
+          <div class="cell g"><span class="lb">היום</span><span class="am">₪0.5</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="wrow">
+          <span class="tile p">🛍️</span>
+          <span class="nm">בזבוזים<small>בלי ריבית</small></span>
+          <span class="am">₪124</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scr">
+    <div class="cap">תפריט <span>· עריכת נועה · AppearanceSection</span></div>
+    <div class="phone start">
+      <div class="scope">
+        <div class="picker"><span class="av">🦊</span>נועה<span class="cv">▾</span></div>
+        <div class="editrow"><span>✏️</span><u>עריכת נועה</u></div>
+      </div>
+      <div class="card">
+        <p class="ttl">מראה</p>
+        <div class="swatches">
+          <span class="sw on" style="background:linear-gradient(160deg,#FFC34D,#E94E89)"></span>
+          <span class="sw" style="background:linear-gradient(160deg,#2A9D8F,#90BE6D)"></span>
+          <span class="sw" style="background:linear-gradient(160deg,#0A0E14,#122036)"></span>
+        </div>
+        <p class="err">לא הצלחנו לשמור את הערכה. נסו שוב.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const root = document.documentElement;
+const keys = { t:'data-theme', v:'data-variant', b:'data-bg', e:'data-err', f:'data-fade' };
+root.setAttribute('data-theme', 'sunshine');
+root.setAttribute('data-variant', 'now');
+root.setAttribute('data-bg', 'dim');
+root.setAttribute('data-err', 'alert');
+root.setAttribute('data-fade', 'on');
+document.querySelectorAll('.bar button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const [k, value] = Object.entries(btn.dataset)[0];
+    root.setAttribute(keys[k], value);
+    btn.parentElement.querySelectorAll('button').forEach((b) =>
+      b.setAttribute('aria-pressed', String(b === btn)));
+  });
+});
+</script>
+</body>
+</html>
