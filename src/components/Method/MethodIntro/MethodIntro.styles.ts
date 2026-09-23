@@ -5,7 +5,7 @@ export const Intro = styled.section`
   border-radius: 18px;
   background: ${({ theme }): string => theme.gradients.actionButton};
   color: ${({ theme }): string => theme.colors.textOnPrimary};
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 0 ${({ theme }): string => theme.shadows.soft};
   text-align: start;
 `;
 
@@ -14,7 +14,7 @@ export const Eyebrow = styled.span`
   margin-bottom: 10px;
   padding: 3px 9px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.2);
+  background: ${({ theme }): string => theme.tints.film};
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 700;
   letter-spacing: 0.07em;
@@ -48,7 +48,7 @@ export const Derived = styled.p`
 export const Divider = styled.hr`
   margin: 16px 0;
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  border-top: 1px solid ${({ theme }): string => theme.tints.film};
 `;
 
 export const Brief = styled.p`

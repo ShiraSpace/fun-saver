@@ -24,7 +24,6 @@ export const HEADER_LAYOUT = {
   height: MENU_ICON.buttonSize + PADDING_Y * 2,
   gap: 10,
   radius: 18,
-  shadow: '0 4px 0 rgba(0, 0, 0, 0.06)',
   nameWeight: 700,
   foregroundZIndex: LAYERS.overlayForeground,
   transitionMs: 300,

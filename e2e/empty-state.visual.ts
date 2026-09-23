@@ -1,13 +1,15 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { GRADIENTS } from '@/theme/gradients';
+import { getThemeTokens } from '@/theme/registry';
 import { gradientToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
 describe('empty state', () => {
   const { emptyState, session } = useDriver();
-  const expectedGradient = gradientToRgb(GRADIENTS.screen);
-  const expectedCtaGradient = gradientToRgb(GRADIENTS.actionButton);
+  const expectedGradient = gradientToRgb(getThemeTokens().gradients.screen);
+  const expectedCtaGradient = gradientToRgb(
+    getThemeTokens().gradients.actionButton
+  );
 
   describe('the screen', () => {
     it('fits within the viewport', async () => {

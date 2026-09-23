@@ -1,6 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
+import { getThemeTokens } from '@/theme/registry';
 import { MenuLabel } from '../MenuLabel';
 import { useAccountTheme } from './use-account-theme';
 import {
@@ -13,13 +14,13 @@ export function AppearanceSection(): JSX.Element {
   const { activeThemeId, chooseTheme, saveFailed } = useAccountTheme();
 
   const themeSelectorComponents = APPEARANCE_SECTION_CONTENT.themes.map(
-    ({ id, label, background }) => (
+    ({ id, label }) => (
       <Swatch
         key={id}
         type="button"
         aria-label={label}
         title={label}
-        background={background}
+        background={getThemeTokens(id).gradients.screen}
         data-testid={APPEARANCE_SECTION_TEST_IDS.swatch}
         data-selected={id === activeThemeId}
         onClick={(): void => chooseTheme(id)}

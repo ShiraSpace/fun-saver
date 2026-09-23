@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { render } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
-import { getThemeTokens } from '@/theme/registry';
+import { THEME_ID, getThemeTokens } from '@/theme/registry';
 import { mockAccountsContext, mockDerivedAccount } from '@/test-utils/fixtures';
 import { AppearanceSection } from './AppearanceSection';
 import {
@@ -28,17 +28,27 @@ describe('AppearanceSection', () => {
       .mockResolvedValue({ ok: true, json: async () => mockDerivedAccount });
   });
 
-  it('renders a swatch per theme', () => {
-    renderSection();
+  describe('the swatch row', () => {
+    beforeEach(() => {
+      renderSection();
+    });
 
-    expect(swatches()).toHaveLength(APPEARANCE_SECTION_CONTENT.themes.length);
-  });
+    it('renders a swatch per theme', () => {
+      expect(swatches()).toHaveLength(APPEARANCE_SECTION_CONTENT.themes.length);
+    });
 
-  it('marks the active theme as selected', () => {
-    renderSection();
+    it('previews midnight as the near-black it actually is, not a blue that flatters it', () => {
+      const midnight = swatches()[2];
 
-    expect(swatches()[0]).toHaveAttribute('data-selected', 'true');
-    expect(swatches()[1]).toHaveAttribute('data-selected', 'false');
+      expect(getComputedStyle(midnight).backgroundImage).toBe(
+        getThemeTokens(THEME_ID.midnightBlue).gradients.screen
+      );
+    });
+
+    it('marks the active theme as selected', () => {
+      expect(swatches()[0]).toHaveAttribute('data-selected', 'true');
+      expect(swatches()[1]).toHaveAttribute('data-selected', 'false');
+    });
   });
 
   describe('when a swatch is chosen', () => {

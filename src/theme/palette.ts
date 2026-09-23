@@ -1,10 +1,5 @@
 import type { ThemeColors } from './theme-tokens';
 
-export const GRADIENT_STOPS = {
-  primaryTop: '#8A3AAE',
-  sunnyTileSoft: '#FFE6B0',
-} as const;
-
 export const COLORS = {
   primary: '#6B2C8E',
   primaryText: '#6B2C8E',
@@ -15,11 +10,8 @@ export const COLORS = {
   textMuted: '#675A80',
   textStrong: '#3A1F5A',
   textOnPot: '#2B1235',
-  labelScrim: 'rgba(0, 0, 0, 0.45)',
+  labelShade: 'rgba(0, 0, 0, 0.45)',
   selectionRing: '#2B1235',
-  screenGradientStart: '#FFC34D',
-  screenGradientMid: '#FF8A4C',
-  screenGradientEnd: '#E94E89',
   star: '#FFD23F',
   divider: '#F2D9D2',
   softBg: '#FFF8E0',

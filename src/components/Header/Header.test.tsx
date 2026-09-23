@@ -3,6 +3,7 @@ import { mockAccountsContext, mockUser } from '@/test-utils/fixtures';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
+import { getThemeTokens } from '@/theme/registry';
 import { TITLE_TEST_IDS } from './CrossfadeTitle/constants';
 import { MENU_TEST_IDS } from '../Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '../Menu/MenuOverlay/constants';
@@ -27,6 +28,14 @@ describe('Header', () => {
   describe('on home', () => {
     beforeEach(() => {
       renderHeader(HOME_ROUTE);
+    });
+
+    it('takes its ledge colour from the theme, never a colour of its own', () => {
+      const bar = screen.getByTestId(HEADER_TEST_IDS.bar);
+
+      expect(getComputedStyle(bar).boxShadow).toBe(
+        `0 4px 0 ${getThemeTokens().shadows.faint}`
+      );
     });
 
     it('shows the account name', () => {

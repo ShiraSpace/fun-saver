@@ -11,7 +11,7 @@ export const Bar = styled.header`
   padding: ${HEADER_LAYOUT.paddingY}px ${HEADER_LAYOUT.paddingX}px;
   background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${HEADER_LAYOUT.radius}px;
-  box-shadow: ${HEADER_LAYOUT.shadow};
+  box-shadow: 0 4px 0 ${({ theme }): string => theme.shadows.faint};
   color: ${({ theme }): string => theme.colors.textStrong};
   min-height: ${HEADER_LAYOUT.height}px;
   box-sizing: border-box;

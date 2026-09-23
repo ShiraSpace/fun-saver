@@ -5,6 +5,7 @@ import { MODE_TOGGLE_TEST_IDS } from './ModeToggle/constants';
 import { WALLET_PICKER_TEST_IDS } from './WalletPicker/constants';
 import { mockDerivedAccount } from '@/test-utils/fixtures';
 import { mockRouter } from '@mocks/next/navigation';
+import { getThemeTokens } from '@/theme/registry';
 
 jest.mock('./use-add-transaction', () => ({
   useAddTransaction: (): { addDeposit: jest.Mock; withdraw: jest.Mock } => ({
@@ -29,6 +30,14 @@ describe('TransactionDrawer', () => {
     expect(
       screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.split)
     ).toBeInTheDocument();
+  });
+
+  it('dims what it covers, so the sheet owns the attention', () => {
+    const scrim = screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.scrim);
+
+    expect(getComputedStyle(scrim).background).toContain(
+      getThemeTokens().tints.shade
+    );
   });
 
   it('switches to the withdraw wallet picker when the withdraw mode is chosen', () => {

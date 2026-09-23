@@ -1,10 +1,18 @@
-import { COLORS, GRADIENT_STOPS } from './palette';
+import type { ThemeGradients, ThemeStops } from './theme-tokens';
 
-export const GRADIENTS = {
-  screen: `linear-gradient(160deg, ${COLORS.screenGradientStart}, ${COLORS.screenGradientMid}, ${COLORS.screenGradientEnd})`,
-  actionButton: `linear-gradient(${GRADIENT_STOPS.primaryTop}, ${COLORS.primary})`,
-  sunnyTile: `linear-gradient(135deg, ${GRADIENT_STOPS.sunnyTileSoft}, ${COLORS.screenGradientStart})`,
-  potSavings: 'linear-gradient(135deg,#FFE6B0,#FFC34D)',
-  potSpending: 'linear-gradient(135deg,#FFD8C7,#FF8A4C)',
-  potGood: 'linear-gradient(135deg,#FBC4DA,#E94E89)',
-} as const;
+const SCREEN_ANGLE = '160deg';
+const TILE_ANGLE = '135deg';
+
+const angled = (angle: string, stops: readonly string[]): string =>
+  `linear-gradient(${angle}, ${stops.join(', ')})`;
+
+export function buildGradients(stops: ThemeStops): ThemeGradients {
+  return {
+    screen: angled(SCREEN_ANGLE, stops.screen),
+    actionButton: `linear-gradient(${stops.actionButton.join(', ')})`,
+    sunnyTile: angled(TILE_ANGLE, stops.sunnyTile),
+    potSavings: angled(TILE_ANGLE, stops.potSavings),
+    potSpending: angled(TILE_ANGLE, stops.potSpending),
+    potGood: angled(TILE_ANGLE, stops.potGood),
+  };
+}

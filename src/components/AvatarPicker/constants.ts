@@ -14,5 +14,4 @@ export const AVATAR_PICKER_STYLE = {
   ringWidth: 4,
   hoverLift: 2,
   transitionMs: 100,
-  baseShadow: '0 3px 0 rgba(0, 0, 0, 0.12)',
 } as const;

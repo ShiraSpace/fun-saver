@@ -26,7 +26,6 @@ export const WALLET_CARD_STYLE = {
   paddingY: 10,
   paddingX: 12,
   gap: 12,
-  shadow: '0 3px 0 rgba(0, 0, 0, 0.06)',
   illustSize: 42,
   illustRadius: 12,
   illustFontSize: 22,

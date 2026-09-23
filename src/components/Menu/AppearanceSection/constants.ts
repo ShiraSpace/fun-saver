@@ -9,25 +9,12 @@ export const APPEARANCE_SECTION_TEST_IDS = {
 export interface MenuTheme {
   id: ThemeId;
   label: string;
-  background: string;
 }
 
 const MENU_THEMES: MenuTheme[] = [
-  {
-    id: THEME_ID.sunshineQuest,
-    label: 'Sunshine Quest',
-    background: 'linear-gradient(135deg, #FFC34D, #E94E89)',
-  },
-  {
-    id: THEME_ID.jungleQuest,
-    label: 'Jungle Quest',
-    background: 'linear-gradient(135deg, #2A9D8F, #90BE6D)',
-  },
-  {
-    id: THEME_ID.midnightBlue,
-    label: 'Midnight Blue',
-    background: 'linear-gradient(135deg, #0F1620, #3B82F6)',
-  },
+  { id: THEME_ID.sunshineQuest, label: 'Sunshine Quest' },
+  { id: THEME_ID.jungleQuest, label: 'Jungle Quest' },
+  { id: THEME_ID.midnightBlue, label: 'Midnight Blue' },
 ];
 
 export const APPEARANCE_SECTION_CONTENT = {

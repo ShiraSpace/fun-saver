@@ -5,7 +5,7 @@ export const Section = styled.details`
   overflow: hidden;
   border-radius: 14px;
   background: ${({ theme }): string => theme.colors.surface};
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 0 ${({ theme }): string => theme.shadows.faint};
   color: ${({ theme }): string => theme.colors.textStrong};
   text-align: start;
 `;

@@ -8,6 +8,8 @@ const titleColor = ({ theme }: { theme: Theme }): string =>
 const alertText = ({ theme }: { theme: Theme }): string =>
   theme.colors.alertText;
 
+const film = ({ theme }: { theme: Theme }): string => theme.tints.film;
+
 const titleSize = ({ theme }: { theme: Theme }): number =>
   theme.typography.title;
 
@@ -56,7 +58,7 @@ export const CloseButton = styled.button`
   padding: 0;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
+  background: ${film};
   font-size: ${backSize}px;
   font-weight: 700;
   color: ${titleColor};

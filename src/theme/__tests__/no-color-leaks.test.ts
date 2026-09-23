@@ -3,31 +3,31 @@ import { join } from 'path';
 
 const componentsDir = join(process.cwd(), 'src/components');
 
-const THEME_SWATCHES_FILE = 'Menu/AppearanceSection/constants.ts';
 const GOOGLE_BRAND_MARK_FILE = 'SignIn/constants.ts';
+const GOOGLE_BRAND_LOGO_FILE = 'SignIn/GoogleLogo.tsx';
 
-const HEX_EXEMPT = [THEME_SWATCHES_FILE, GOOGLE_BRAND_MARK_FILE];
+const COLOUR_EXEMPT = [GOOGLE_BRAND_MARK_FILE, GOOGLE_BRAND_LOGO_FILE];
+
+const STYLE_HOMES = /(\.styles\.ts|constants\.ts|-parts\.ts|\.tsx)$/;
+
+const TEST_FILE = /\.test\.tsx?$/;
+
+const COLOUR_LITERAL = /#[0-9A-Fa-f]{3,6}|rgba?\(|hsla?\(/;
 
 const componentFiles = (match: RegExp): string[] =>
   readdirSync(componentsDir, { recursive: true, encoding: 'utf8' }).filter(
-    (file) => match.test(file)
+    (file) => match.test(file) && !TEST_FILE.test(file)
   );
 
 const reads = (file: string): string =>
   readFileSync(join(componentsDir, file), 'utf8');
 
-const holdsHex = (file: string): boolean =>
-  /#[0-9A-Fa-f]{3,6}/.test(reads(file));
+const holdsColour = (file: string): boolean => COLOUR_LITERAL.test(reads(file));
 
-it('component constants hold no theme hex', () => {
-  const offenders = componentFiles(/constants\.ts$/)
-    .filter((file) => !HEX_EXEMPT.includes(file))
-    .filter(holdsHex);
-  expect(offenders).toEqual([]);
-});
-
-it('component styles hold no theme hex', () => {
-  const offenders = componentFiles(/\.styles\.ts$/).filter(holdsHex);
+it('no style home holds a colour literal', () => {
+  const offenders = componentFiles(STYLE_HOMES)
+    .filter((file) => !COLOUR_EXEMPT.includes(file))
+    .filter(holdsColour);
   expect(offenders).toEqual([]);
 });
 

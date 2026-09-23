@@ -1,3 +1,5 @@
+import type { ThemeShadows } from './shadows';
+import type { ThemeTints } from './tints';
 import type { ThemeTypography } from './typography';
 
 export interface ThemeColors {
@@ -10,11 +12,8 @@ export interface ThemeColors {
   readonly textMuted: string;
   readonly textStrong: string;
   readonly textOnPot: string;
-  readonly labelScrim: string;
+  readonly labelShade: string;
   readonly selectionRing: string;
-  readonly screenGradientStart: string;
-  readonly screenGradientMid: string;
-  readonly screenGradientEnd: string;
   readonly star: string;
   readonly divider: string;
   readonly softBg: string;
@@ -35,6 +34,15 @@ export interface ThemeColors {
   readonly walletTrack: string;
 }
 
+export interface ThemeStops {
+  readonly screen: readonly [string, string, string];
+  readonly actionButton: readonly [string, string];
+  readonly sunnyTile: readonly [string, string];
+  readonly potSavings: readonly [string, string];
+  readonly potSpending: readonly [string, string];
+  readonly potGood: readonly [string, string];
+}
+
 export interface ThemeGradients {
   readonly screen: string;
   readonly actionButton: string;
@@ -47,6 +55,8 @@ export interface ThemeGradients {
 export interface ThemeTokens {
   readonly colors: ThemeColors;
   readonly gradients: ThemeGradients;
+  readonly shadows: ThemeShadows;
+  readonly tints: ThemeTints;
   readonly typography: ThemeTypography;
 }
 
@@ -54,6 +64,8 @@ declare module '@emotion/react' {
   export interface Theme {
     readonly colors: ThemeColors;
     readonly gradients: ThemeGradients;
+    readonly shadows: ThemeShadows;
+    readonly tints: ThemeTints;
     readonly typography: ThemeTypography;
   }
 }

@@ -18,7 +18,7 @@ export const Key = styled.button`
   font-weight: 600;
   padding: ${AMOUNT_PAD_STYLE.keyPaddingY}px 0;
   cursor: pointer;
-  box-shadow: ${AMOUNT_PAD_STYLE.shadow};
+  box-shadow: 0 3px 0 ${({ theme }): string => theme.shadows.faint};
   transition:
     transform ${AMOUNT_PAD_STYLE.pressMs}ms ease,
     box-shadow ${AMOUNT_PAD_STYLE.pressMs}ms ease;
