@@ -5,7 +5,7 @@
 > review that measured the colour table it had only asserted and re-did its
 > payload arithmetic. `sunshine-quest`'s chart-line colours settled 2026-09-23
 > in PR 1 (the plan's decision A).
-> In progress: PR 1, the chart-line colour tokens, merged as #122.
+> Implementation in progress; PR 1, the chart-line colour tokens, merged as #122.
 > Mockup: `mockups/account-summary/transactions.html` + `account-summary.js` —
 > one screen, no competing variants; the controls beneath it are details inside
 > that screen. The mockup is the specification of record for anything this
