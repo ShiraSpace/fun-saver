@@ -3,6 +3,7 @@
  */
 import { signedInUser } from '@/auth';
 import { API_ERRORS } from '@/app/api/constants';
+import { THEME_ID } from '@/theme/registry';
 import { getStore } from '@/db';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
@@ -42,12 +43,12 @@ describe('PUT /api/accounts/[id]/theme', () => {
   }
 
   it('saves the theme on the account', async () => {
-    const response = await putTheme('midnight-blue', accountId);
+    const response = await putTheme(THEME_ID.midnightBlue, accountId);
 
     expect(response.status).toBe(200);
-    expect((await response.json()).themeId).toBe('midnight-blue');
+    expect((await response.json()).themeId).toBe(THEME_ID.midnightBlue);
     expect((await getStore().getAccount(accountId))?.themeId).toBe(
-      'midnight-blue'
+      THEME_ID.midnightBlue
     );
   });
 
@@ -62,7 +63,7 @@ describe('PUT /api/accounts/[id]/theme', () => {
   });
 
   it('refuses an unknown account with 403 rather than admitting it is gone', async () => {
-    const response = await putTheme('midnight-blue', 'does-not-exist');
+    const response = await putTheme(THEME_ID.midnightBlue, 'does-not-exist');
 
     expect(response.status).toBe(403);
   });
@@ -70,11 +71,11 @@ describe('PUT /api/accounts/[id]/theme', () => {
   it('refuses a stranger with 403 and leaves the theme alone', async () => {
     jest.mocked(signedInUser).mockResolvedValue(mockSecondUser);
 
-    const response = await putTheme('midnight-blue', accountId);
+    const response = await putTheme(THEME_ID.midnightBlue, accountId);
 
     expect(response.status).toBe(403);
     expect((await getStore().getAccount(accountId))?.themeId).not.toBe(
-      'midnight-blue'
+      THEME_ID.midnightBlue
     );
   });
 

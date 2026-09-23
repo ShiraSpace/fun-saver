@@ -1,5 +1,6 @@
 import { InMemoryStore } from '../index';
 import { DuplicateAccountError } from '@/lib/errors';
+import { THEME_ID } from '@/theme/registry';
 import {
   createMockAccount,
   mockAccount,
@@ -44,10 +45,10 @@ describe('InMemoryStore accounts', () => {
   it('changes an account theme and ignores unknown ids', async () => {
     await store.insertAccount(createMockAccount());
 
-    await store.setAccountTheme('a1', 'midnight-blue');
-    await store.setAccountTheme('missing', 'jungle-quest');
+    await store.setAccountTheme('a1', THEME_ID.midnightBlue);
+    await store.setAccountTheme('missing', THEME_ID.jungleQuest);
 
-    expect((await store.getAccount('a1'))?.themeId).toBe('midnight-blue');
+    expect((await store.getAccount('a1'))?.themeId).toBe(THEME_ID.midnightBlue);
   });
 
   describe('edit account', () => {

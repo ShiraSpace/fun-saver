@@ -3,15 +3,21 @@ import { sunshineQuest } from './themes/sunshine-quest';
 import { jungleQuest } from './themes/jungle-quest';
 import { midnightBlue } from './themes/midnight-blue';
 
-export const THEMES = {
-  'sunshine-quest': sunshineQuest,
-  'jungle-quest': jungleQuest,
-  'midnight-blue': midnightBlue,
+export const THEME_ID = {
+  sunshineQuest: 'sunshine-quest',
+  jungleQuest: 'jungle-quest',
+  midnightBlue: 'midnight-blue',
 } as const;
 
-export type ThemeId = keyof typeof THEMES;
+export const THEMES = {
+  [THEME_ID.sunshineQuest]: sunshineQuest,
+  [THEME_ID.jungleQuest]: jungleQuest,
+  [THEME_ID.midnightBlue]: midnightBlue,
+} as const;
 
-export const DEFAULT_THEME_ID: ThemeId = 'sunshine-quest';
+export type ThemeId = (typeof THEME_ID)[keyof typeof THEME_ID];
+
+export const DEFAULT_THEME_ID: ThemeId = THEME_ID.sunshineQuest;
 
 export function getThemeTokens(id: string = DEFAULT_THEME_ID): ThemeTokens {
   const tokens = (THEMES as Record<string, ThemeTokens>)[id];

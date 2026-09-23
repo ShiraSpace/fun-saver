@@ -2,6 +2,7 @@
  * @jest-environment node
  */
 import { DuplicateAccountError } from '@/lib/errors';
+import { THEME_ID } from '@/theme/registry';
 import { createMockAccount, mockAccountEdit } from '@/test-utils/fixtures';
 import { withLiveStore } from './live-store';
 
@@ -42,12 +43,17 @@ describe('PostgresAccounts', () => {
     const account = createMockAccount({ id: accountId('theme') });
     await store.insertAccount(account);
 
-    const updated = await store.setAccountTheme(account.id, 'midnight-blue');
+    const updated = await store.setAccountTheme(
+      account.id,
+      THEME_ID.midnightBlue
+    );
 
-    expect(updated?.themeId).toBe('midnight-blue');
-    expect((await store.getAccount(account.id))?.themeId).toBe('midnight-blue');
+    expect(updated?.themeId).toBe(THEME_ID.midnightBlue);
+    expect((await store.getAccount(account.id))?.themeId).toBe(
+      THEME_ID.midnightBlue
+    );
     expect(
-      await store.setAccountTheme(accountId('missing'), 'sunshine-quest')
+      await store.setAccountTheme(accountId('missing'), THEME_ID.sunshineQuest)
     ).toBeUndefined();
   });
 

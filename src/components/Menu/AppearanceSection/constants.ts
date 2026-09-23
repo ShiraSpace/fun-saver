@@ -1,4 +1,4 @@
-import type { ThemeId } from '@/theme/registry';
+import { THEME_ID, type ThemeId } from '@/theme/registry';
 
 export const APPEARANCE_SECTION_TEST_IDS = {
   section: 'menu-appearance-section',
@@ -17,17 +17,17 @@ export const APPEARANCE_SECTION_CONTENT = {
   saveError: 'לא הצלחנו לשמור את העיצוב, נסו שוב',
   themes: [
     {
-      id: 'sunshine-quest',
+      id: THEME_ID.sunshineQuest,
       label: 'Sunshine Quest',
       background: 'linear-gradient(135deg, #FFC34D, #E94E89)',
     },
     {
-      id: 'jungle-quest',
+      id: THEME_ID.jungleQuest,
       label: 'Jungle Quest',
       background: 'linear-gradient(135deg, #2A9D8F, #90BE6D)',
     },
     {
-      id: 'midnight-blue',
+      id: THEME_ID.midnightBlue,
       label: 'Midnight Blue',
       background: 'linear-gradient(135deg, #0F1620, #3B82F6)',
     },

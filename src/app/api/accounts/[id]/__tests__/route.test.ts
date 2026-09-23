@@ -10,6 +10,7 @@ import {
   mockUser,
 } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
+import { THEME_ID } from '@/theme/registry';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempDataPath } from '@/test-utils/test-utils';
 import { PUT } from '../route';
@@ -90,9 +91,9 @@ describe('PUT /api/accounts/[id]', () => {
     ],
     [
       'a field that is not editable',
-      { name: 'רוני', themeId: 'midnight-blue' },
+      { name: 'רוני', themeId: THEME_ID.midnightBlue },
     ],
-    ['only fields that are not editable', { themeId: 'midnight-blue' }],
+    ['only fields that are not editable', { themeId: THEME_ID.midnightBlue }],
   ])('rejects %s with 400', async (_label, body) => {
     const response = await putAccount(accountId, body);
 
