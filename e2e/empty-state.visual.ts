@@ -8,7 +8,7 @@ describe('empty state', () => {
   const { emptyState, session } = useDriver();
   const expectedGradient = gradientToRgb(getThemeTokens().gradients.screen);
   const expectedCtaGradient = gradientToRgb(
-    getThemeTokens().gradients.actionButton
+    getThemeTokens().gradients.primaryButton
   );
 
   describe('the screen', () => {
@@ -22,7 +22,7 @@ describe('empty state', () => {
   });
 
   describe('the create-account call to action', () => {
-    it('wears the purple action gradient', async () => {
+    it('wears the purple primary-button gradient', async () => {
       assert.equal(await emptyState.ctaBackground(), expectedCtaGradient);
     });
 

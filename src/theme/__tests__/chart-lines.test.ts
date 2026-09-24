@@ -6,7 +6,11 @@ const GRAPHIC_CONTRAST = 3;
 describe.each(Object.entries(THEMES))(
   'the chart lines in %s',
   (_, { colors }) => {
-    const lines = [colors.chartSavings, colors.chartSpending, colors.chartGood];
+    const lines = [
+      colors.chartSavings,
+      colors.chartSpending,
+      colors.chartGoodDeeds,
+    ];
 
     it('stand out from the card they are drawn on', () => {
       const ratios = lines.map((line) => contrastRatio(line, colors.surface));

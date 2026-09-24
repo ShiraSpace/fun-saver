@@ -30,7 +30,7 @@ export interface TransactionRepository {
 }
 
 export interface UserRepository {
-  findByProvider(
+  findByIdentity(
     provider: AuthProvider,
     providerAccountId: string
   ): Promise<User | undefined>;
@@ -59,7 +59,7 @@ export interface DataStore {
     walletId: string
   ): Promise<Transaction[]>;
   listTransactionsByAccount(accountId: string): Promise<Transaction[]>;
-  findUserByProvider(
+  findUserByIdentity(
     provider: AuthProvider,
     providerAccountId: string
   ): Promise<User | undefined>;

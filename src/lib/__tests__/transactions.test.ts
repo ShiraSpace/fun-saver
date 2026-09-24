@@ -84,7 +84,7 @@ describe('addWithdrawal', () => {
   const walletIdFor = (account: Account, name: WalletName): string =>
     account.wallets.find((wallet) => wallet.name === name)!.id;
 
-  it('records and persists a withdrawal on the chosen pot', async () => {
+  it('records and persists a withdrawal on the chosen wallet', async () => {
     const { store, account } = await seedAccount();
     const savings = walletIdFor(account, 'savings');
     await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
@@ -105,24 +105,24 @@ describe('addWithdrawal', () => {
     expect(balance(saved)).toBe(splitDeposit(2000).savings - 500);
   });
 
-  it('allows withdrawing the exact pot balance', async () => {
+  it('allows withdrawing the exact wallet balance', async () => {
     const { store, account } = await seedAccount();
     const savings = walletIdFor(account, 'savings');
     await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
-    const potBalance = splitDeposit(2000).savings;
+    const walletBalance = splitDeposit(2000).savings;
 
     await expect(
       addWithdrawal({
         store,
         account,
         walletId: savings,
-        amountAgorot: potBalance,
+        amountAgorot: walletBalance,
         asOf: ASOF,
       })
-    ).resolves.toMatchObject({ amount: potBalance });
+    ).resolves.toMatchObject({ amount: walletBalance });
   });
 
-  it('rejects withdrawing more than the pot balance', async () => {
+  it('rejects withdrawing more than the wallet balance', async () => {
     const { store, account } = await seedAccount();
     const savings = walletIdFor(account, 'savings');
     await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
@@ -186,7 +186,7 @@ describe('addWithdrawal', () => {
 });
 
 describe('splitDeposit', () => {
-  it('gives each pot its configured share of the deposit', () => {
+  it('gives each wallet its configured share of the deposit', () => {
     const total = 2000;
     const split = splitDeposit(total);
 

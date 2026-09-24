@@ -11,13 +11,13 @@ import { Row } from '../row-parts';
 
 interface AccountRowProps {
   account: AccountWithDerivedWallets;
-  isSelected: boolean;
+  isCurrent: boolean;
   onSelect: (id: string) => void;
 }
 
 export function AccountRow({
   account,
-  isSelected,
+  isCurrent,
   onSelect,
 }: AccountRowProps): JSX.Element {
   const totalBalanceAgorot = totalBalance(account.wallets);
@@ -28,7 +28,7 @@ export function AccountRow({
     <Row
       type="button"
       data-testid={ACCOUNT_LIST_TEST_IDS.row}
-      aria-current={isSelected}
+      aria-current={isCurrent}
       onClick={handleSelect}
     >
       <Avatar

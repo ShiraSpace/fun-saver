@@ -49,8 +49,8 @@ export function openMenu(): void {
   fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
 }
 
-export function tapAddRow(): void {
-  fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
+export function tapAddAccount(): void {
+  fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addAccount));
 }
 
 export function tapEditButton(): void {

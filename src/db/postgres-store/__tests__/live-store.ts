@@ -18,7 +18,7 @@ export interface LiveStore {
   store: PostgresStore;
   sql: Sql;
   accountId: (suffix: string) => string;
-  txId: (suffix: string) => string;
+  transactionId: (suffix: string) => string;
   userId: (suffix: string) => string;
 }
 
@@ -39,7 +39,7 @@ export function withLiveStore(): LiveStore {
     store,
     sql,
     accountId: (suffix: string): string => `${runPrefix}-a-${suffix}`,
-    txId: (suffix: string): string => `${runPrefix}-t-${suffix}`,
+    transactionId: (suffix: string): string => `${runPrefix}-t-${suffix}`,
     userId: (suffix: string): string => `${runPrefix}-u-${suffix}`,
   };
 }

@@ -21,7 +21,7 @@ export const PROMISE_COPY = {
       body: '**לא לוקחים כסף מהקופות כעונש. אף פעם.** אם צריך גבול — הגבול הוא לא הכסף.',
     },
   },
-  action: {
+  checklist: {
     label: 'להחליט',
     items: [
       {

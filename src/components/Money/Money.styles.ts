@@ -20,6 +20,6 @@ export const Currency = styled.span`
   }
 `;
 
-export const Number = styled.span`
+export const Shekels = styled.span`
   font-variant-numeric: tabular-nums;
 `;

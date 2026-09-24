@@ -32,15 +32,15 @@ export interface IconLine {
   note?: string;
 }
 
-export interface ActionItem {
+export interface ChecklistItem {
   done: boolean;
   question: string;
   answer: string;
 }
 
-export interface ActionGroup {
+export interface ChecklistGroup {
   label: string;
-  items: readonly ActionItem[];
+  items: readonly ChecklistItem[];
 }
 
 export interface ExampleRow {

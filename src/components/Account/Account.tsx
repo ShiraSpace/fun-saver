@@ -4,8 +4,8 @@ import { JSX, useState } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
-import { ActionButton } from '@/components/ActionButton';
-import { OverviewCard } from './OverviewCard';
+import { PrimaryButton } from '@/components/PrimaryButton';
+import { BalanceBreakdown } from './BalanceBreakdown';
 import { WalletList } from './WalletList/WalletList';
 import { TransactionDrawer } from './TransactionDrawer';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
@@ -15,25 +15,25 @@ interface AccountProps {
 }
 
 export function Account({ account }: AccountProps): JSX.Element {
-  const { name, wallets } = account;
+  const { wallets } = account;
   const savings = wallets.find((wallet) => wallet.name === 'savings');
-  const others = wallets.filter((wallet) => wallet.name !== 'savings');
-  const ordered = savings ? [savings, ...others] : others;
+  const otherWallets = wallets.filter((wallet) => wallet.name !== 'savings');
+  const savingsFirst = savings ? [savings, ...otherWallets] : otherWallets;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
     <Screen align="top">
       <Column>
-        <Header title={name} account={account} />
-        <OverviewCard key={account.id} wallets={ordered} />
-        <WalletList wallets={ordered} />
-        <ActionButton
+        <Header title={account.name} account={account} />
+        <BalanceBreakdown key={account.id} wallets={savingsFirst} />
+        <WalletList wallets={savingsFirst} />
+        <PrimaryButton
           type="button"
-          data-testid={ACCOUNT_TEST_IDS.actionCta}
+          data-testid={ACCOUNT_TEST_IDS.newTransaction}
           onClick={() => setIsDrawerOpen(true)}
         >
-          {ACCOUNT_COPY.actionCta}
-        </ActionButton>
+          {ACCOUNT_COPY.newTransaction}
+        </PrimaryButton>
       </Column>
       {isDrawerOpen && (
         <TransactionDrawer

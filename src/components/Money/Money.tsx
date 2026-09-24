@@ -1,9 +1,9 @@
 'use client';
 
 import { JSX } from 'react';
-import { agorotToWholeShekels, halfShekelAmount } from '@/lib/money';
+import { agorotToWholeShekels, nearestHalfShekel } from '@/lib/money';
 import { MONEY_COPY } from './constants';
-import { Amount, Currency, Number } from './Money.styles';
+import { Amount, Currency, Shekels } from './Money.styles';
 
 interface MoneyProps {
   amountAgorot: number;
@@ -19,15 +19,15 @@ export function Money({
   fullSizeCurrency = false,
 }: MoneyProps): JSX.Element {
   const shekels = allowHalf
-    ? (halfShekelAmount(amountAgorot) ?? 0)
+    ? (nearestHalfShekel(amountAgorot) ?? 0)
     : agorotToWholeShekels(amountAgorot);
 
   return (
     <Amount dir="ltr" data-testid={testId}>
       <Currency data-full-size={fullSizeCurrency}>
-        {MONEY_COPY.currency}
+        {MONEY_COPY.currencySign}
       </Currency>
-      <Number>{shekels}</Number>
+      <Shekels>{shekels}</Shekels>
     </Amount>
   );
 }

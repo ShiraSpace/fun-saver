@@ -2,7 +2,7 @@ import { asObject } from './json-object';
 
 export interface WithdrawalInput {
   walletId: string;
-  amount: number;
+  amountShekels: number;
 }
 
 export function validDeposit(body: unknown): number | undefined {
@@ -25,5 +25,5 @@ export function validWithdrawal(body: unknown): WithdrawalInput | undefined {
     return;
   }
 
-  return { walletId: requested.walletId, amount: requested.amount };
+  return { walletId: requested.walletId, amountShekels: requested.amount };
 }

@@ -9,11 +9,11 @@ describe('withdraw', () => {
     transactions: mockTransactions,
   });
 
-  it('withdraws from the savings wallet and lowers its deposits', async () => {
-    assert.match(await dashboard.savingsDeposits(), /80/);
+  it('withdraws from the savings wallet and lowers its principal', async () => {
+    assert.match(await dashboard.savingsPrincipal(), /80/);
 
     await dashboard.withdraw('savings', 30);
 
-    await dashboard.waitForSavingsDeposits('50');
+    await dashboard.waitForSavingsPrincipal('50');
   });
 });

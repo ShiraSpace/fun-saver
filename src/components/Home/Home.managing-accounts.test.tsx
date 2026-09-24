@@ -2,7 +2,7 @@ import { screen, waitFor } from '@/test-utils/render';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
-import { SELECTED_ACCOUNT_COOKIE } from '@/lib/cookies';
+import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { cancelForm, nameInput } from '@/test-utils/account-form';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { mockAccount } from '@/test-utils/fixtures';
@@ -13,7 +13,7 @@ import {
   renderHome,
   submitCreateForm,
   submitEditForm,
-  tapAddRow,
+  tapAddAccount,
   tapEditButton,
 } from './home-test-helpers';
 import { mockRouter } from '@mocks/next/navigation';
@@ -51,7 +51,7 @@ describe('Home — managing accounts', () => {
       renderHome();
       openMenu();
       openAccountPicker();
-      tapAddRow();
+      tapAddAccount();
     });
 
     it('opens the create overlay over the still-mounted account view', () => {
@@ -68,7 +68,7 @@ describe('Home — managing accounts', () => {
         screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
       ).not.toBeInTheDocument();
       expect(mockPersist).not.toHaveBeenCalledWith(
-        SELECTED_ACCOUNT_COOKIE,
+        CURRENT_ACCOUNT_COOKIE,
         expect.anything()
       );
     });
@@ -78,7 +78,7 @@ describe('Home — managing accounts', () => {
 
       await waitFor(() =>
         expect(mockPersist).toHaveBeenCalledWith(
-          SELECTED_ACCOUNT_COOKIE,
+          CURRENT_ACCOUNT_COOKIE,
           createdAccount.id
         )
       );
@@ -128,7 +128,7 @@ describe('Home — managing accounts', () => {
       expect(mockUpdateAccount).not.toHaveBeenCalled();
     });
 
-    it('saves the edit against the selected account', () => {
+    it('saves the edit against the current account', () => {
       submitEditForm();
 
       expect(mockUpdateAccount).toHaveBeenCalledWith(mockAccount.id, {

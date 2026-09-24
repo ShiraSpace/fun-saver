@@ -4,7 +4,7 @@ export const ACCOUNT_LIST_TEST_IDS = {
   list: 'menu-account-list',
   row: 'menu-account-row',
   total: 'menu-account-total',
-  addRow: 'menu-account-add',
+  addAccount: 'menu-account-add',
 } as const;
 
 export const ACCOUNT_LIST_CONTENT = {

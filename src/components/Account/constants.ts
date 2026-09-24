@@ -1,7 +1,7 @@
 export const ACCOUNT_TEST_IDS = {
-  actionCta: 'account-action-cta',
+  newTransaction: 'account-action-cta',
 } as const;
 
 export const ACCOUNT_COPY = {
-  actionCta: '＋ פעולה חדשה',
+  newTransaction: '＋ פעולה חדשה',
 } as const;

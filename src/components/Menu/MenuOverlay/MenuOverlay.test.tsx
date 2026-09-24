@@ -7,7 +7,7 @@ import { MENU_OVERLAY_CONTENT } from './constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from '../MenuGlobalScope/constants';
 import { MENU_ACCOUNT_SCOPE_TEST_IDS } from '../MenuAccountScope/constants';
-import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
+import { SIGNED_IN_USER_SECTION_TEST_IDS } from '../SignedInUserSection/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
 import { NAV_TABS_TEST_IDS } from '../NavTabs/constants';
@@ -17,7 +17,7 @@ const onClose = jest.fn();
 function renderOverlay(): void {
   onClose.mockClear();
   render(
-    <WithMenu close={onClose}>
+    <WithMenu closeMenu={onClose}>
       <MenuOverlay />
     </WithMenu>,
     { accounts: mockAccountsContext, user: mockUser }
@@ -62,7 +62,7 @@ describe('MenuOverlay', () => {
     });
 
     it('puts the signed-in user in the block that is not about one account', () => {
-      const strip = screen.getByTestId(PROFILE_SECTION_TEST_IDS.strip);
+      const strip = screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.section);
 
       expect(
         screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block)

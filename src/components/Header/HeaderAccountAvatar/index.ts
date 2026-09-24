@@ -1,0 +1,1 @@
+export { HeaderAccountAvatar } from './HeaderAccountAvatar';

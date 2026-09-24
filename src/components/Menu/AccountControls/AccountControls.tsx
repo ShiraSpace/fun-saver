@@ -11,17 +11,17 @@ import {
 } from '@/components/AccountManagement/app-mode-context';
 
 export function AccountControls(): JSX.Element {
-  const { accounts, currentAccount, selectAccount } = useAccounts();
-  const { close } = useMenu();
+  const { accounts, currentAccount, switchAccount } = useAccounts();
+  const { closeMenu } = useMenu();
   const { setMode } = useAppMode();
 
-  const handleSelectAccount = (id: string): void => {
-    selectAccount(id);
-    close();
+  const openAccount = (id: string): void => {
+    switchAccount(id);
+    closeMenu();
   };
 
-  const handleEditAccount = (): void => {
-    close();
+  const startEditingAccount = (): void => {
+    closeMenu();
     setMode(APP_MODE.editingAccount);
   };
 
@@ -30,11 +30,11 @@ export function AccountControls(): JSX.Element {
       <AccountPicker
         accounts={accounts}
         currentAccount={currentAccount}
-        onSelect={handleSelectAccount}
+        onSelect={openAccount}
       />
       <EditAccountButton
         accountName={currentAccount.name}
-        onEditAccount={handleEditAccount}
+        onEditAccount={startEditingAccount}
       />
     </Fragment>
   );

@@ -4,7 +4,14 @@ import { JSX, ReactNode } from 'react';
 import type { WalletName, WalletWithDerived } from '@/lib/types';
 import { Money } from '@/components/Money';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
-import { Card, Head, Illust, Name, Pill, SubLine } from './WalletCard.styles';
+import {
+  Card,
+  Head,
+  WalletIcon,
+  Name,
+  Balance,
+  Summary,
+} from './WalletCard.styles';
 
 type CardWallet = Pick<
   WalletWithDerived,
@@ -16,12 +23,12 @@ type CardWallet = Pick<
   | 'withdrawals'
 >;
 
-const SPENT_SUB_LINE: Record<
+const WITHDRAWALS_SUMMARY: Record<
   Exclude<WalletName, 'savings'>,
   (wallet: CardWallet) => string
 > = {
-  spending: WALLET_CARD_COPY.spendingSubLine,
-  goodDeeds: WALLET_CARD_COPY.goodDeedsSubLine,
+  spending: WALLET_CARD_COPY.spendingSummary,
+  goodDeeds: WALLET_CARD_COPY.goodDeedsSummary,
 };
 
 interface WalletCardProps {
@@ -29,39 +36,39 @@ interface WalletCardProps {
   children?: ReactNode;
 }
 
-function subLineOf(wallet: CardWallet): string | undefined {
+function walletSummary(wallet: CardWallet): string | undefined {
   if (wallet.name === 'savings') {
-    return WALLET_CARD_COPY.savingsSubLine(wallet);
+    return WALLET_CARD_COPY.savingsSummary(wallet);
   }
 
   if (wallet.withdrawals === 0) {
     return;
   }
 
-  return SPENT_SUB_LINE[wallet.name](wallet);
+  return WITHDRAWALS_SUMMARY[wallet.name](wallet);
 }
 
 export function WalletCard({ wallet, children }: WalletCardProps): JSX.Element {
-  const subLine = subLineOf(wallet);
+  const summary = walletSummary(wallet);
 
   return (
     <Card data-testid={WALLET_CARD_TEST_IDS.card}>
       <Head>
-        <Illust walletName={wallet.name}>{wallet.icon}</Illust>
+        <WalletIcon walletName={wallet.name}>{wallet.icon}</WalletIcon>
         <Name>
           {WALLET_CARD_COPY.name[wallet.name]}
-          {subLine && (
-            <SubLine data-testid={WALLET_CARD_TEST_IDS.subLine}>
-              {subLine}
-            </SubLine>
+          {summary && (
+            <Summary data-testid={WALLET_CARD_TEST_IDS.summary}>
+              {summary}
+            </Summary>
           )}
         </Name>
-        <Pill>
+        <Balance>
           <Money
             amountAgorot={wallet.balance}
             testId={WALLET_CARD_TEST_IDS.balance}
           />
-        </Pill>
+        </Balance>
       </Head>
       {children}
     </Card>
