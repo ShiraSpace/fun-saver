@@ -12,12 +12,12 @@ import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { LANGUAGE_SECTION_TEST_IDS } from '../LanguageSection/constants';
 import { NAVIGATION_TABS_TEST_IDS } from '../NavigationTabs/constants';
 
-const onClose = jest.fn();
+const mockOnClose = jest.fn();
 
 function renderOverlay(): void {
-  onClose.mockClear();
+  mockOnClose.mockClear();
   render(
-    <WithMenu closeMenu={onClose}>
+    <WithMenu closeMenu={mockOnClose}>
       <MenuOverlay />
     </WithMenu>,
     { accounts: mockAccountsContext, user: mockUser }
@@ -39,7 +39,7 @@ describe('MenuOverlay', () => {
     it('calls onClose when Escape is pressed while open', () => {
       fireEvent.keyDown(document, { key: 'Escape' });
 
-      expect(onClose).toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalled();
     });
 
     it('keeps the account picker in the block that is not about one account', () => {
@@ -93,7 +93,7 @@ describe('MenuOverlay', () => {
     it('closes itself on the way there, so returning does not land on an open menu', () => {
       fireEvent.click(screen.getByTestId(NAVIGATION_TABS_TEST_IDS.methodTab));
 
-      expect(onClose).toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalled();
     });
   });
 
@@ -105,7 +105,7 @@ describe('MenuOverlay', () => {
     });
 
     it('keeps the Escape that shut the picker from closing the menu too', () => {
-      expect(onClose).not.toHaveBeenCalled();
+      expect(mockOnClose).not.toHaveBeenCalled();
     });
   });
 });

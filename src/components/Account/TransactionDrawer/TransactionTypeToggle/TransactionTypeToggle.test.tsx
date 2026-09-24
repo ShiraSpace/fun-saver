@@ -9,7 +9,7 @@ import {
   TRANSACTION_TYPE_TOGGLE_TEST_IDS,
 } from './constants';
 
-const onChange = jest.fn();
+const mockOnChange = jest.fn();
 
 function renderToggle(
   transactionType: EnteredTransactionType,
@@ -18,7 +18,7 @@ function renderToggle(
   render(
     <TransactionTypeToggle
       transactionType={transactionType}
-      onChange={onChange}
+      onChange={mockOnChange}
     />,
     { themeId }
   );
@@ -26,7 +26,7 @@ function renderToggle(
 
 describe('TransactionTypeToggle', () => {
   beforeEach(() => {
-    onChange.mockClear();
+    mockOnChange.mockClear();
   });
 
   it('marks the chosen transaction type as pressed', () => {
@@ -47,7 +47,7 @@ describe('TransactionTypeToggle', () => {
       screen.getByTestId(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal)
     );
 
-    expect(onChange).toHaveBeenCalledWith('withdrawal');
+    expect(mockOnChange).toHaveBeenCalledWith('withdrawal');
   });
 
   describe('the arrows, which sit on the track and not on the surface', () => {

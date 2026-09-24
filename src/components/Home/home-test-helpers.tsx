@@ -3,15 +3,15 @@ import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '@/components/Menu/EditAccountButton/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import {
-  pickFirstAvatar,
+  selectFirstAvatar,
   submitForm,
-  typeName,
+  fillName,
 } from '@/test-utils/account-form';
 import {
   createMockAccount,
   mockAccount,
   mockDerivedWallets,
-  mockSecondAccount,
+  mockSiblingAccount,
   mockUser,
 } from '@/test-utils/fixtures';
 import type { AccountWithDerivedWallets } from '@/lib/types';
@@ -19,7 +19,7 @@ import { Home } from './Home';
 
 export const accounts: AccountWithDerivedWallets[] = [
   { ...mockAccount, wallets: mockDerivedWallets },
-  { ...mockSecondAccount, wallets: mockDerivedWallets },
+  { ...mockSiblingAccount, wallets: mockDerivedWallets },
 ];
 
 export const createdAccount = createMockAccount({
@@ -58,12 +58,12 @@ export function tapEditButton(): void {
 }
 
 export function submitEditForm(): void {
-  typeName(renamedAccount.name);
+  fillName(renamedAccount.name);
   submitForm();
 }
 
 export function submitCreateForm(): void {
-  typeName(createdAccount.name);
-  pickFirstAvatar();
+  fillName(createdAccount.name);
+  selectFirstAvatar();
   submitForm();
 }

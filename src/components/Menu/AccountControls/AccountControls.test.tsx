@@ -6,11 +6,11 @@ import { openAccountPicker } from '@/test-utils/account-picker';
 import { mockAccountsContext, mockDerivedAccount } from '@/test-utils/fixtures';
 import { WithMenu } from '@/test-utils/menu';
 
-const mockOnLeaveMenu = jest.fn();
+const mockCloseMenu = jest.fn();
 
 function renderControls(): void {
   render(
-    <WithMenu closeMenu={mockOnLeaveMenu}>
+    <WithMenu closeMenu={mockCloseMenu}>
       <AccountControls />
     </WithMenu>,
     { accounts: mockAccountsContext }
@@ -37,19 +37,19 @@ describe('AccountControls', () => {
     it('leaves the menu when the add-account button is tapped', () => {
       fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addAccount));
 
-      expect(mockOnLeaveMenu).toHaveBeenCalled();
+      expect(mockCloseMenu).toHaveBeenCalled();
     });
 
     it('leaves the menu when another account is picked', () => {
       fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 
-      expect(mockOnLeaveMenu).toHaveBeenCalled();
+      expect(mockCloseMenu).toHaveBeenCalled();
     });
   });
 
   it('leaves the menu when the edit button is tapped', () => {
     fireEvent.click(screen.getByTestId(EDIT_ACCOUNT_BUTTON_TEST_IDS.button));
 
-    expect(mockOnLeaveMenu).toHaveBeenCalled();
+    expect(mockCloseMenu).toHaveBeenCalled();
   });
 });

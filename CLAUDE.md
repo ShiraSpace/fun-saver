@@ -120,6 +120,10 @@ agreed before the volume. Once they are approved, the rest follow in one go.
 - Mock dependencies appropriately
 - Use centralized mocks in `__mocks__/` directory for shared module mocks (e.g., `__mocks__/next/image.tsx`) — do not
   duplicate `jest.mock()` calls across test files
+- Every test stand-in takes a `mock` prefix in camelCase: fixtures (`mockAccountId`), values built by a `createMock…`
+  helper (`const mockAccount = createMockAccount()`) and jest mocks (`const mockOnClose = jest.fn()`).
+  `SCREAMING_SNAKE_CASE` is only for real constants: env vars, URLs, selectors, viewports, timings, `*_TEST_IDS`, `*_COPY`
+- Name things with the words in [`docs/glossary.md`](./docs/glossary.md)
 
 ### Code Formatting
 

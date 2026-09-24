@@ -6,7 +6,7 @@ import { useAccounts, useOptionalAccounts } from './accounts-context';
 
 const NAME_TESTID = 'current-account-name';
 const OPTIONAL_TESTID = 'optional-account-name';
-const NOTHING = 'nothing';
+const mockNothing = 'nothing';
 
 function CurrentAccountName(): JSX.Element {
   const { currentAccount } = useAccounts();
@@ -19,7 +19,7 @@ function OptionalAccountName(): JSX.Element {
 
   return (
     <span data-testid={OPTIONAL_TESTID}>
-      {accounts ? accounts.currentAccount.name : NOTHING}
+      {accounts ? accounts.currentAccount.name : mockNothing}
     </span>
   );
 }
@@ -52,6 +52,6 @@ describe('useOptionalAccounts', () => {
   it('answers that there are none rather than throwing, so the empty state can ask', () => {
     render(<OptionalAccountName />);
 
-    expect(screen.getByTestId(OPTIONAL_TESTID)).toHaveTextContent(NOTHING);
+    expect(screen.getByTestId(OPTIONAL_TESTID)).toHaveTextContent(mockNothing);
   });
 });

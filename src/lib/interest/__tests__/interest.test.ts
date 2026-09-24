@@ -3,12 +3,12 @@ import { DAYS_PER_MONTH } from '@/lib/constants';
 import type { Transaction } from '@/lib/types';
 import { createMockTransaction, createMockWallet } from '@/test-utils/fixtures';
 
-const MONTHLY_RATE = 0.2;
-const ACCOUNT_ID = 'a1';
-const WALLET_ID = 'w1';
-const OPENED_ON = '2026-01-01';
-const DEPOSIT_AGOROT = 8000;
-const LATER_DEPOSIT_AGOROT = 2000;
+const mockMonthlyRate = 0.2;
+const mockAccountId = 'a1';
+const mockWalletId = 'w1';
+const mockOpenedOn = '2026-01-01';
+const mockDepositAgorot = 8000;
+const mockLaterDepositAgorot = 2000;
 
 const deposit = (amount: number, occurredAt: string): Transaction =>
   createMockTransaction({ id: `d-${occurredAt}`, amount, occurredAt });
@@ -31,29 +31,29 @@ const interest = (amount: number, occurredAt: string): Transaction =>
 
 describe('interest primitives', () => {
   it('dailyRate is monthlyRate / DAYS_PER_MONTH', () => {
-    const actualDailyRate = dailyRate(MONTHLY_RATE);
-    const expectedDailyRate = MONTHLY_RATE / DAYS_PER_MONTH;
+    const actualDailyRate = dailyRate(mockMonthlyRate);
+    const expectedDailyRate = mockMonthlyRate / DAYS_PER_MONTH;
 
     expect(actualDailyRate).toBeCloseTo(expectedDailyRate, 10);
   });
 
   it('interestForDay rounds the daily interest to the nearest agora', () => {
-    const actualInterest = interestForDay(DEPOSIT_AGOROT, MONTHLY_RATE);
+    const actualInterest = interestForDay(mockDepositAgorot, mockMonthlyRate);
     const expectedInterest = Math.round(
-      DEPOSIT_AGOROT * (MONTHLY_RATE / DAYS_PER_MONTH)
+      mockDepositAgorot * (mockMonthlyRate / DAYS_PER_MONTH)
     );
 
     expect(actualInterest).toBe(expectedInterest);
   });
 
   it('interestForDay earns nothing on a zero balance', () => {
-    const interestOnZeroBalance = interestForDay(0, MONTHLY_RATE);
+    const interestOnZeroBalance = interestForDay(0, mockMonthlyRate);
 
     expect(interestOnZeroBalance).toBe(0);
   });
 
   it('interestForDay earns nothing on a negative balance', () => {
-    const interestOnNegativeBalance = interestForDay(-500, MONTHLY_RATE);
+    const interestOnNegativeBalance = interestForDay(-500, mockMonthlyRate);
 
     expect(interestOnNegativeBalance).toBe(0);
   });
@@ -63,17 +63,20 @@ describe('addDailyInterest', () => {
   const savingsWallet = (
     lastInterestDate: string
   ): ReturnType<typeof createMockWallet> =>
-    createMockWallet({ monthlyInterestRate: MONTHLY_RATE, lastInterestDate });
+    createMockWallet({
+      monthlyInterestRate: mockMonthlyRate,
+      lastInterestDate,
+    });
 
   describe('accruing a single deposit from the settled day through asOf', () => {
     let actualTransactions: Transaction[];
 
     beforeEach(() => {
       actualTransactions = addDailyInterest({
-        wallet: savingsWallet(OPENED_ON),
-        transactions: [deposit(DEPOSIT_AGOROT, OPENED_ON)],
+        wallet: savingsWallet(mockOpenedOn),
+        transactions: [deposit(mockDepositAgorot, mockOpenedOn)],
         asOf: '2026-01-03',
-        accountId: ACCOUNT_ID,
+        accountId: mockAccountId,
       });
     });
 
@@ -89,10 +92,13 @@ describe('addDailyInterest', () => {
       const interestAmounts = actualTransactions.map(
         (transaction) => transaction.amount
       );
-      const firstDayInterest = interestForDay(DEPOSIT_AGOROT, MONTHLY_RATE);
+      const firstDayInterest = interestForDay(
+        mockDepositAgorot,
+        mockMonthlyRate
+      );
       const secondDayInterest = interestForDay(
-        DEPOSIT_AGOROT + firstDayInterest,
-        MONTHLY_RATE
+        mockDepositAgorot + firstDayInterest,
+        mockMonthlyRate
       );
 
       expect(interestAmounts).toEqual([firstDayInterest, secondDayInterest]);
@@ -109,30 +115,30 @@ describe('addDailyInterest', () => {
 
   it('stamps walletId and accountId on every created transaction', () => {
     const actualTransactions = addDailyInterest({
-      wallet: savingsWallet(OPENED_ON),
-      transactions: [deposit(DEPOSIT_AGOROT, OPENED_ON)],
+      wallet: savingsWallet(mockOpenedOn),
+      transactions: [deposit(mockDepositAgorot, mockOpenedOn)],
       asOf: '2026-01-02',
-      accountId: ACCOUNT_ID,
+      accountId: mockAccountId,
     });
 
     const [firstInterest] = actualTransactions;
 
-    expect(firstInterest.walletId).toBe(WALLET_ID);
-    expect(firstInterest.accountId).toBe(ACCOUNT_ID);
+    expect(firstInterest.walletId).toBe(mockWalletId);
+    expect(firstInterest.accountId).toBe(mockAccountId);
   });
 
   it('is idempotent — interest already settled through asOf returns nothing', () => {
     const settledTransactions: Transaction[] = [
-      deposit(DEPOSIT_AGOROT, OPENED_ON),
+      deposit(mockDepositAgorot, mockOpenedOn),
       interest(53, '2026-01-02'),
       interest(54, '2026-01-03'),
     ];
 
     const actualTransactions = addDailyInterest({
-      wallet: savingsWallet(OPENED_ON),
+      wallet: savingsWallet(mockOpenedOn),
       transactions: settledTransactions,
       asOf: '2026-01-03',
-      accountId: ACCOUNT_ID,
+      accountId: mockAccountId,
     });
 
     expect(actualTransactions).toEqual([]);
@@ -141,16 +147,16 @@ describe('addDailyInterest', () => {
   it('treats lastInterestDate as the floor when no interest exists yet', () => {
     const actualTransactions = addDailyInterest({
       wallet: savingsWallet('2026-01-05'),
-      transactions: [deposit(DEPOSIT_AGOROT, OPENED_ON)],
+      transactions: [deposit(mockDepositAgorot, mockOpenedOn)],
       asOf: '2026-01-06',
-      accountId: ACCOUNT_ID,
+      accountId: mockAccountId,
     });
 
     const interestDays = actualTransactions.map(
       (transaction) => transaction.occurredAt
     );
     const [firstInterest] = actualTransactions;
-    const firstDayInterest = interestForDay(DEPOSIT_AGOROT, MONTHLY_RATE);
+    const firstDayInterest = interestForDay(mockDepositAgorot, mockMonthlyRate);
 
     expect(interestDays).toEqual(['2026-01-06']);
     expect(firstInterest.amount).toBe(firstDayInterest);
@@ -158,20 +164,20 @@ describe('addDailyInterest', () => {
 
   it('weights by day of deposit — a mid-period deposit earns no interest that day', () => {
     const actualTransactions = addDailyInterest({
-      wallet: savingsWallet(OPENED_ON),
+      wallet: savingsWallet(mockOpenedOn),
       transactions: [
-        deposit(DEPOSIT_AGOROT, OPENED_ON),
-        deposit(LATER_DEPOSIT_AGOROT, '2026-01-03'),
+        deposit(mockDepositAgorot, mockOpenedOn),
+        deposit(mockLaterDepositAgorot, '2026-01-03'),
       ],
       asOf: '2026-01-03',
-      accountId: ACCOUNT_ID,
+      accountId: mockAccountId,
     });
 
     const [firstInterest, secondInterest] = actualTransactions;
-    const firstDayInterest = interestForDay(DEPOSIT_AGOROT, MONTHLY_RATE);
+    const firstDayInterest = interestForDay(mockDepositAgorot, mockMonthlyRate);
     const secondDayInterest = interestForDay(
-      DEPOSIT_AGOROT + firstDayInterest,
-      MONTHLY_RATE
+      mockDepositAgorot + firstDayInterest,
+      mockMonthlyRate
     );
 
     expect(firstInterest.amount).toBe(firstDayInterest);
@@ -181,9 +187,9 @@ describe('addDailyInterest', () => {
   it('earns nothing on a zero-rate wallet', () => {
     const actualTransactions = addDailyInterest({
       wallet: createMockWallet({ monthlyInterestRate: 0 }),
-      transactions: [deposit(DEPOSIT_AGOROT, OPENED_ON)],
+      transactions: [deposit(mockDepositAgorot, mockOpenedOn)],
       asOf: '2026-01-05',
-      accountId: ACCOUNT_ID,
+      accountId: mockAccountId,
     });
 
     expect(actualTransactions).toEqual([]);
@@ -191,19 +197,19 @@ describe('addDailyInterest', () => {
 
   it('lets a withdrawal cut later interest to zero', () => {
     const actualTransactions = addDailyInterest({
-      wallet: savingsWallet(OPENED_ON),
+      wallet: savingsWallet(mockOpenedOn),
       transactions: [
-        deposit(DEPOSIT_AGOROT, OPENED_ON),
-        withdrawal(DEPOSIT_AGOROT, '2026-01-02'),
+        deposit(mockDepositAgorot, mockOpenedOn),
+        withdrawal(mockDepositAgorot, '2026-01-02'),
       ],
       asOf: '2026-01-04',
-      accountId: ACCOUNT_ID,
+      accountId: mockAccountId,
     });
 
     const interestAmounts = actualTransactions.map(
       (transaction) => transaction.amount
     );
-    const firstDayInterest = interestForDay(DEPOSIT_AGOROT, MONTHLY_RATE);
+    const firstDayInterest = interestForDay(mockDepositAgorot, mockMonthlyRate);
 
     expect(interestAmounts).toEqual([firstDayInterest]);
   });

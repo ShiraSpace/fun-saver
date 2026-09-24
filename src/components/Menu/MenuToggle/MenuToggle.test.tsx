@@ -2,16 +2,16 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import { MenuToggle } from './MenuToggle';
 import { MENU_TEST_IDS } from '../constants';
 
-const onToggle = jest.fn();
+const mockOnToggle = jest.fn();
 
 describe('MenuToggle', () => {
   beforeEach(() => {
-    onToggle.mockClear();
+    mockOnToggle.mockClear();
   });
 
   describe('when the menu is closed', () => {
     beforeEach(() => {
-      render(<MenuToggle isOpen={false} onToggle={onToggle} />);
+      render(<MenuToggle isOpen={false} onToggle={mockOnToggle} />);
     });
 
     it('marks the button as collapsed', () => {
@@ -31,13 +31,13 @@ describe('MenuToggle', () => {
     it('asks for the menu when clicked', () => {
       fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
 
-      expect(onToggle).toHaveBeenCalledTimes(1);
+      expect(mockOnToggle).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('when the menu is open', () => {
     beforeEach(() => {
-      render(<MenuToggle isOpen onToggle={onToggle} />);
+      render(<MenuToggle isOpen onToggle={mockOnToggle} />);
     });
 
     it('marks the button as expanded', () => {
@@ -64,7 +64,7 @@ describe('MenuToggle', () => {
     it('asks to put the menu away when clicked', () => {
       fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
 
-      expect(onToggle).toHaveBeenCalledTimes(1);
+      expect(mockOnToggle).toHaveBeenCalledTimes(1);
     });
   });
 });

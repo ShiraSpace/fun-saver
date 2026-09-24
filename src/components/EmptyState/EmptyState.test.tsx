@@ -7,7 +7,7 @@ import { SIGNED_IN_USER_SECTION_TEST_IDS } from '@/components/Menu/SignedInUserS
 import { EmptyState } from './EmptyState';
 import { EMPTY_STATE_COPY, EMPTY_STATE_TEST_IDS } from './constants';
 
-const GREETING = 'שלום';
+const mockGreeting = 'שלום';
 
 describe('EmptyState', () => {
   beforeEach(() => {
@@ -38,7 +38,7 @@ describe('EmptyState', () => {
 
   it('greets the parent where an account screen would name the account', () => {
     expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-      GREETING
+      mockGreeting
     );
   });
 

@@ -2,9 +2,9 @@ import { deriveWallet } from '../derive-wallet';
 import type { WalletWithDerived } from '../types';
 import { createMockTransaction, createMockWallet } from '@/test-utils/fixtures';
 
-const wallet = createMockWallet({ lastInterestDate: '2026-01-03' });
+const mockWallet = createMockWallet({ lastInterestDate: '2026-01-03' });
 
-const transactions = [
+const mockTransactions = [
   createMockTransaction({ id: 'd', amount: 8000 }),
   createMockTransaction({
     id: 'i',
@@ -19,11 +19,15 @@ describe('deriveWallet', () => {
   let derived: WalletWithDerived;
 
   beforeEach(() => {
-    derived = deriveWallet({ wallet, transactions, asOf: '2026-01-03' });
+    derived = deriveWallet({
+      wallet: mockWallet,
+      transactions: mockTransactions,
+      asOf: '2026-01-03',
+    });
   });
 
   it('keeps the wallet it was given', () => {
-    expect(derived).toMatchObject(wallet);
+    expect(derived).toMatchObject(mockWallet);
   });
 
   it('nets the balance across every transaction', () => {

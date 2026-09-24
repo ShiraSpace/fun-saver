@@ -102,7 +102,7 @@ export function createMockAccountUser(
 
 export const mockAccount: Account = createMockAccount();
 
-export const mockSecondAccount: Account = createMockAccount({
+export const mockSiblingAccount: Account = createMockAccount({
   id: 'a2',
   name: 'מתן',
   avatarId: 'kid-08',
@@ -111,7 +111,7 @@ export const mockSecondAccount: Account = createMockAccount({
 
 export const mockUser: User = createMockUser();
 
-export const mockSecondUser: User = createMockUser({
+export const mockCoParent: User = createMockUser({
   id: 'u2',
   providerAccountId: 'google-sub-2',
   email: 'mushit@example.com',
@@ -125,7 +125,7 @@ export const mockOwner: AccountOwner = {
   addedAt: mockAccountUser.addedAt,
 };
 
-export const mockUnknownOwner: AccountOwner = {
+export const mockStrangerOwner: AccountOwner = {
   userId: 'ghost',
   addedAt: mockAccountUser.addedAt,
 };
@@ -135,7 +135,7 @@ export const mockCreateAccountInput = {
   avatarId: mockAccount.avatarId,
 };
 
-export const mockAccountEdit = {
+export const mockAccountEdits = {
   name: 'רוני',
   avatarId: 'kid-07',
 };
@@ -199,7 +199,7 @@ export const mockDerivedAccount: AccountWithDerivedWallets = {
 };
 
 export const mockSecondDerivedAccount: AccountWithDerivedWallets = {
-  ...mockSecondAccount,
+  ...mockSiblingAccount,
   wallets: [createMockDerivedWallet({ id: 'w4', balance: 4200 })],
 };
 

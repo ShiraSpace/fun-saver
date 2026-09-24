@@ -5,17 +5,17 @@ import {
   createMockTransaction,
   createMockWallet,
   createMockWallets,
-  mockSecondAccount,
+  mockSiblingAccount,
 } from '@/test-utils/fixtures';
 import type { Account, WalletWithDerived } from '../types';
 
-const [savings, spending] = createMockWallets();
+const [mockSavings, mockSpending] = createMockWallets();
 
-const account = createMockAccount({
-  wallets: [spending, { ...savings, lastInterestDate: '2026-01-03' }],
+const mockAccount = createMockAccount({
+  wallets: [mockSpending, { ...mockSavings, lastInterestDate: '2026-01-03' }],
 });
 
-const transactions = [
+const mockTransactions = [
   createMockTransaction(),
   createMockTransaction({
     id: 'i',
@@ -47,9 +47,9 @@ describe('settleInterest', () => {
   }
 
   it('lists savings before spending, the order the dashboard lays its wallets out in', async () => {
-    await store.insertTransactions(transactions);
+    await store.insertTransactions(mockTransactions);
 
-    const wallets = await settleWallets(account, '2026-01-03');
+    const wallets = await settleWallets(mockAccount, '2026-01-03');
 
     expect(wallets.map((wallet) => wallet.name)).toEqual([
       'savings',
@@ -61,13 +61,15 @@ describe('settleInterest', () => {
   });
 
   it('shows a brand-new child’s wallets at zero', async () => {
-    const wallets = await settleWallets(account, '2026-01-03');
+    const wallets = await settleWallets(mockAccount, '2026-01-03');
 
     expect(wallets.map((wallet) => wallet.balance)).toEqual([0, 0]);
   });
 
   it('includes the interest just paid in, in the order it happened, so the first visit reads like every later one', async () => {
-    const owing = createMockAccount({ wallets: [createMockWallet()] });
+    const mockOwingAccount = createMockAccount({
+      wallets: [createMockWallet()],
+    });
     await store.insertTransactions([
       createMockTransaction(),
       createMockTransaction({
@@ -79,25 +81,25 @@ describe('settleInterest', () => {
 
     const [settledAccount] = await settleInterest({
       store,
-      accounts: [owing],
+      accounts: [mockOwingAccount],
       asOf: '2026-01-03',
     });
-    const saved = await store.listTransactionsByAccount(owing.id);
+    const saved = await store.listTransactionsByAccount(mockOwingAccount.id);
 
     expect(settledAccount.transactions).toEqual(saved);
   });
 
   it('writes nothing when no interest is owed, so opening a page never rewrites the saved data', async () => {
     await store.insertTransactions([createMockTransaction()]);
-    const insert = jest.spyOn(store, 'insertTransactions');
+    const mockInsertTransactions = jest.spyOn(store, 'insertTransactions');
 
-    await settleWallets(account, '2026-01-03');
+    await settleWallets(mockAccount, '2026-01-03');
 
-    expect(insert).not.toHaveBeenCalled();
+    expect(mockInsertTransactions).not.toHaveBeenCalled();
   });
 
   describe('when interest has built up since it was last paid in', () => {
-    const accountWithUnsettledInterest = createMockAccount({
+    const mockAccountWithUnsettledInterest = createMockAccount({
       wallets: [createMockWallet()],
     });
 
@@ -107,7 +109,7 @@ describe('settleInterest', () => {
       await store.insertTransactions([createMockTransaction()]);
 
       const wallets = await settleWallets(
-        accountWithUnsettledInterest,
+        mockAccountWithUnsettledInterest,
         '2026-01-03'
       );
 
@@ -128,14 +130,14 @@ describe('settleInterest', () => {
 
     it('pays missed interest once, however often the page is opened', async () => {
       const reread = await settleWallets(
-        accountWithUnsettledInterest,
+        mockAccountWithUnsettledInterest,
         '2026-01-03'
       );
 
       expect(reread[0].balance).toBe(8080);
       expect(
         await store.listTransactionsByWallet(
-          accountWithUnsettledInterest.id,
+          mockAccountWithUnsettledInterest.id,
           'w1'
         )
       ).toHaveLength(3);
@@ -144,8 +146,8 @@ describe('settleInterest', () => {
 });
 
 describe('withDerivedWallets', () => {
-  const secondAccount = {
-    ...mockSecondAccount,
+  const mockSiblingAccountWithoutInterest = {
+    ...mockSiblingAccount,
     wallets: [createMockWallet({ id: 'w9', monthlyInterestRate: 0 })],
   };
 
@@ -154,10 +156,10 @@ describe('withDerivedWallets', () => {
   beforeEach(async () => {
     store = new InMemoryStore();
     await store.insertTransactions([
-      ...transactions,
+      ...mockTransactions,
       createMockTransaction({
         id: 'd3',
-        accountId: secondAccount.id,
+        accountId: mockSiblingAccountWithoutInterest.id,
         walletId: 'w9',
         amount: 2500,
       }),
@@ -167,20 +169,20 @@ describe('withDerivedWallets', () => {
   it('keeps every account it was handed', async () => {
     const derived = await withDerivedWallets({
       store,
-      accounts: [account, secondAccount],
+      accounts: [mockAccount, mockSiblingAccountWithoutInterest],
       asOf: '2026-01-03',
     });
 
     expect(derived.map((each) => each.id)).toEqual([
-      account.id,
-      secondAccount.id,
+      mockAccount.id,
+      mockSiblingAccountWithoutInterest.id,
     ]);
   });
 
   it('gives each account the balances of its own wallets', async () => {
     const [first, second] = await withDerivedWallets({
       store,
-      accounts: [account, secondAccount],
+      accounts: [mockAccount, mockSiblingAccountWithoutInterest],
       asOf: '2026-01-03',
     });
 

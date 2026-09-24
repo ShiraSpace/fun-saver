@@ -7,7 +7,7 @@ import {
 import { AddAccountButton } from './AddAccountButton';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 
-const mockOnLeaveMenu = jest.fn();
+const mockCloseMenu = jest.fn();
 const mockSetMode = jest.fn();
 
 describe('AddAccountButton', () => {
@@ -15,7 +15,7 @@ describe('AddAccountButton', () => {
     jest.clearAllMocks();
     render(
       <AppModeProvider value={{ mode: APP_MODE.viewing, setMode: mockSetMode }}>
-        <WithMenu closeMenu={mockOnLeaveMenu}>
+        <WithMenu closeMenu={mockCloseMenu}>
           <AddAccountButton />
         </WithMenu>
       </AppModeProvider>
@@ -25,7 +25,7 @@ describe('AddAccountButton', () => {
   it('takes the parent out of the menu and into starting an account', () => {
     fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addAccount));
 
-    expect(mockOnLeaveMenu).toHaveBeenCalled();
+    expect(mockCloseMenu).toHaveBeenCalled();
     expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.creatingAccount);
   });
 });

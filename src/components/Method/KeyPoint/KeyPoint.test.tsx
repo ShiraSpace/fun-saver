@@ -3,24 +3,24 @@ import { KeyPoint } from './KeyPoint';
 import { KEY_POINT_TEST_IDS } from './constants';
 
 describe('a goal outcome', () => {
-  const OUTCOME = { icon: '🐷', body: 'להתאמן בהמתנה' };
-  const NOTE = 'ככה מגיעה ההבנה הראשונה של ריבית';
+  const mockOutcome = { icon: '🐷', body: 'להתאמן בהמתנה' };
+  const mockNote = 'ככה מגיעה ההבנה הראשונה של ריבית';
 
   describe('when the copy attaches a note to it', () => {
     beforeEach(() => {
-      render(<KeyPoint {...OUTCOME} note={NOTE} />);
+      render(<KeyPoint {...mockOutcome} note={mockNote} />);
     });
 
     it('carries the note, so the reason sits with the outcome that earns it', () => {
       expect(screen.getByTestId(KEY_POINT_TEST_IDS.note)).toHaveTextContent(
-        NOTE
+        mockNote
       );
     });
   });
 
   describe('when the copy attaches none', () => {
     beforeEach(() => {
-      render(<KeyPoint {...OUTCOME} />);
+      render(<KeyPoint {...mockOutcome} />);
     });
 
     it('leaves the note out rather than opening an empty line under the body', () => {
@@ -31,10 +31,10 @@ describe('a goal outcome', () => {
   });
 
   describe('when the note itself carries emphasis', () => {
-    const MARKED_NOTE = 'נוספים **מטבעות** בכל יום';
+    const mockMarkedNote = 'נוספים **מטבעות** בכל יום';
 
     beforeEach(() => {
-      render(<KeyPoint {...OUTCOME} note={MARKED_NOTE} />);
+      render(<KeyPoint {...mockOutcome} note={mockMarkedNote} />);
     });
 
     it('renders it through the same emphasis as the body, so no markers reach the page', () => {

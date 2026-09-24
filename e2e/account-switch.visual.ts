@@ -1,11 +1,11 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { sortedByName } from '@/db/account-users';
-import { mockAccount, mockSecondAccount } from '@/test-utils/fixtures';
+import { mockAccount, mockSiblingAccount } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
 describe('account switching', () => {
-  const accounts = [mockAccount, mockSecondAccount];
+  const accounts = [mockAccount, mockSiblingAccount];
   const { menu, header } = useDriver({ accounts });
 
   it('shows a row for each account', async () => {

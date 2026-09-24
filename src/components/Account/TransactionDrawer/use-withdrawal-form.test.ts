@@ -4,7 +4,7 @@ import { mockDerivedWallets } from '@/test-utils/fixtures';
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddWithdrawal = jest.fn();
-const onClose = jest.fn();
+const mockOnClose = jest.fn();
 
 jest.mock('./use-add-transaction', () => ({
   useAddTransaction: (): {
@@ -16,14 +16,14 @@ jest.mock('./use-add-transaction', () => ({
   }),
 }));
 
-const ACCOUNT_ID = 'a1';
+const mockAccountId = 'a1';
 const [savings, , goodDeeds] = mockDerivedWallets;
 
 function setup(): ReturnType<
   typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>
 > {
   return renderHook(() =>
-    useWithdrawalForm(ACCOUNT_ID, mockDerivedWallets, onClose)
+    useWithdrawalForm(mockAccountId, mockDerivedWallets, mockOnClose)
   );
 }
 
@@ -31,7 +31,7 @@ describe('useWithdrawalForm', () => {
   beforeEach(() => {
     mockAddWithdrawal.mockReset().mockResolvedValue(undefined);
     mockRouter.refresh.mockClear();
-    onClose.mockClear();
+    mockOnClose.mockClear();
   });
 
   it('selects the first wallet by default', () => {
@@ -83,7 +83,7 @@ describe('useWithdrawalForm', () => {
       expect(mockAddWithdrawal).toHaveBeenCalledWith(savings.id, 10)
     );
     await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
   });
 
   it('shows an error and stays open when the withdrawal fails', async () => {
@@ -94,7 +94,7 @@ describe('useWithdrawalForm', () => {
     act(() => result.current.onSubmit());
 
     await waitFor(() => expect(result.current.hasError).toBe(true));
-    expect(onClose).not.toHaveBeenCalled();
+    expect(mockOnClose).not.toHaveBeenCalled();
     expect(result.current.amountShekels).toBe(5);
   });
 });

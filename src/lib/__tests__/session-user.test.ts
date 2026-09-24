@@ -2,11 +2,11 @@ import type { Session } from 'next-auth';
 import { mockUser } from '@/test-utils/fixtures';
 import { sessionUser } from '../session-user';
 
-const SESSION_EXPIRY = '2099-01-01T00:00:00.000Z';
-const PHOTO_URL = 'https://example.com/photo.png';
+const mockSessionExpiry = '2099-01-01T00:00:00.000Z';
+const mockPhotoUrl = 'https://example.com/photo.png';
 
 function sessionFor(user: Session['user']): Session {
-  return { user, expires: SESSION_EXPIRY };
+  return { user, expires: mockSessionExpiry };
 }
 
 describe('sessionUser', () => {
@@ -33,14 +33,14 @@ describe('sessionUser', () => {
           id: mockUser.id,
           email: mockUser.email,
           name: mockUser.name,
-          image: PHOTO_URL,
+          image: mockPhotoUrl,
         })
       )
     ).toEqual({
       id: mockUser.id,
       email: mockUser.email,
       name: mockUser.name,
-      image: PHOTO_URL,
+      image: mockPhotoUrl,
     });
   });
 

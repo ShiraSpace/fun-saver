@@ -18,13 +18,14 @@ import {
 } from './home-test-helpers';
 import { mockRouter } from '@mocks/next/navigation';
 
-const mockPersist = jest.fn();
+const mockWriteCookie = jest.fn();
 const mockCreateAccount = jest.fn();
 const mockUpdateAccount = jest.fn();
 
 jest.mock('@/lib/cookies', () => ({
   ...jest.requireActual('@/lib/cookies'),
-  writeCookie: (name: string, value: string): void => mockPersist(name, value),
+  writeCookie: (name: string, value: string): void =>
+    mockWriteCookie(name, value),
 }));
 
 jest.mock('../CreateAccount/use-create-account', () => ({
@@ -67,7 +68,7 @@ describe('Home — managing accounts', () => {
       expect(
         screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
       ).not.toBeInTheDocument();
-      expect(mockPersist).not.toHaveBeenCalledWith(
+      expect(mockWriteCookie).not.toHaveBeenCalledWith(
         CURRENT_ACCOUNT_COOKIE,
         expect.anything()
       );
@@ -77,7 +78,7 @@ describe('Home — managing accounts', () => {
       submitCreateForm();
 
       await waitFor(() =>
-        expect(mockPersist).toHaveBeenCalledWith(
+        expect(mockWriteCookie).toHaveBeenCalledWith(
           CURRENT_ACCOUNT_COOKIE,
           createdAccount.id
         )

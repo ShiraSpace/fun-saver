@@ -9,7 +9,7 @@ import { agorotToShekels } from '@/lib/money';
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddWithdrawal = jest.fn();
-const onClose = jest.fn();
+const mockOnClose = jest.fn();
 
 jest.mock('../use-add-transaction', () => ({
   useAddTransaction: (): {
@@ -33,8 +33,10 @@ describe('WithdrawalForm', () => {
   beforeEach(() => {
     mockAddWithdrawal.mockReset().mockResolvedValue(undefined);
     mockRouter.refresh.mockClear();
-    onClose.mockClear();
-    render(<WithdrawalForm account={mockDerivedAccount} onClose={onClose} />);
+    mockOnClose.mockClear();
+    render(
+      <WithdrawalForm account={mockDerivedAccount} onClose={mockOnClose} />
+    );
   });
 
   it('renders a wallet picker with the savings wallet selected by default', () => {
@@ -92,7 +94,7 @@ describe('WithdrawalForm', () => {
       expect(mockAddWithdrawal).toHaveBeenCalledWith(spending.id, 10)
     );
     await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
   });
 
   it('shows an error and stays open when the withdrawal fails', async () => {
@@ -106,6 +108,6 @@ describe('WithdrawalForm', () => {
         screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
       ).toBeInTheDocument()
     );
-    expect(onClose).not.toHaveBeenCalled();
+    expect(mockOnClose).not.toHaveBeenCalled();
   });
 });

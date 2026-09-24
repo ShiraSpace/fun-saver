@@ -5,7 +5,7 @@ import {
   createMockAccountUser,
   mockAccount,
   mockAccountUser,
-  mockSecondAccount,
+  mockSiblingAccount,
   mockUser,
 } from '@/test-utils/fixtures';
 
@@ -13,7 +13,7 @@ const mockParentId = mockUser.id;
 const mockUnrelatedParentId = 'u2';
 
 const mockOwnChildAccount = mockAccount;
-const mockUnrelatedChildAccount = mockSecondAccount;
+const mockUnrelatedChildAccount = mockSiblingAccount;
 const mockEveryChildAccount = [mockOwnChildAccount, mockUnrelatedChildAccount];
 
 const mockParentOwnsOwnChild = mockAccountUser;

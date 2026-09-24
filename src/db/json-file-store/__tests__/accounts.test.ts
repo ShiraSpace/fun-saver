@@ -3,8 +3,8 @@ import { DuplicateAccountError } from '@/lib/errors';
 import { THEME_ID } from '@/theme/registry';
 import {
   mockAccount,
-  mockAccountEdit,
-  mockSecondAccount,
+  mockAccountEdits,
+  mockSiblingAccount,
 } from '@/test-utils/fixtures';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
@@ -50,32 +50,32 @@ describe('JsonFileStore accounts', () => {
   describe('edit account', () => {
     beforeEach(async () => {
       await store.insertAccount(mockAccount);
-      await store.insertAccount(mockSecondAccount);
+      await store.insertAccount(mockSiblingAccount);
     });
 
     it('persists a name and avatar change across instances', async () => {
-      const updated = await store.updateAccount('a1', mockAccountEdit);
+      const updated = await store.updateAccount('a1', mockAccountEdits);
 
-      expect(updated).toMatchObject(mockAccountEdit);
+      expect(updated).toMatchObject(mockAccountEdits);
       expect(await new JsonFileStore(file.path).getAccount('a1')).toMatchObject(
         {
-          ...mockAccountEdit,
+          ...mockAccountEdits,
           wallets: mockAccount.wallets,
         }
       );
     });
 
     it('leaves the other accounts untouched', async () => {
-      await store.updateAccount('a1', mockAccountEdit);
+      await store.updateAccount('a1', mockAccountEdits);
 
       expect(await new JsonFileStore(file.path).getAccount('a2')).toEqual(
-        mockSecondAccount
+        mockSiblingAccount
       );
     });
 
     it('returns undefined when updating an unknown account', async () => {
       expect(
-        await store.updateAccount('missing', mockAccountEdit)
+        await store.updateAccount('missing', mockAccountEdits)
       ).toBeUndefined();
       expect((await store.getAccount('a1'))?.name).toBe(mockAccount.name);
     });

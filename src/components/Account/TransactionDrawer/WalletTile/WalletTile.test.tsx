@@ -4,11 +4,11 @@ import { agorotToShekels } from '@/lib/money';
 
 const VALUE_TEST_ID = 'tile-value';
 const TILE_TEST_ID = 'tile';
-const onSelect = jest.fn();
+const mockOnSelect = jest.fn();
 
 describe('WalletTile', () => {
   beforeEach(() => {
-    onSelect.mockClear();
+    mockOnSelect.mockClear();
   });
 
   it('renders its balance in shekels', () => {
@@ -35,7 +35,7 @@ describe('WalletTile', () => {
         amountTestId={VALUE_TEST_ID}
         testId={TILE_TEST_ID}
         selected
-        onSelect={onSelect}
+        onSelect={mockOnSelect}
       />
     );
 
@@ -44,7 +44,7 @@ describe('WalletTile', () => {
     expect(tile).toHaveAttribute('aria-pressed', 'true');
 
     fireEvent.click(tile);
-    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(mockOnSelect).toHaveBeenCalledTimes(1);
   });
 
   it('is disabled when there is no onSelect', () => {

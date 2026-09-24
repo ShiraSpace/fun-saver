@@ -3,7 +3,7 @@
  */
 import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
-import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
+import { mockCoParent, mockUser } from '@/test-utils/fixtures';
 import { splitDeposit } from '@/lib/transactions';
 import type { Transaction } from '@/lib/types';
 import { createOwnedAccount } from '@/test-utils/owned-account';
@@ -80,7 +80,7 @@ describe('POST /api/accounts/[id]/deposits', () => {
   });
 
   it('refuses a stranger with 403 and banks nothing', async () => {
-    jest.mocked(signedInUser).mockResolvedValue(mockSecondUser);
+    jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
 
     const response = await postDeposit(20, accountId);
 

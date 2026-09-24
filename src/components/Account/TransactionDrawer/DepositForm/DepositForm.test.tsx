@@ -9,7 +9,7 @@ import { mockDerivedAccount } from '@/test-utils/fixtures';
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddDeposit = jest.fn();
-const onClose = jest.fn();
+const mockOnClose = jest.fn();
 
 jest.mock('../use-add-transaction', () => ({
   useAddTransaction: (): {
@@ -25,8 +25,8 @@ describe('DepositForm', () => {
   beforeEach(() => {
     mockAddDeposit.mockReset().mockResolvedValue(undefined);
     mockRouter.refresh.mockClear();
-    onClose.mockClear();
-    render(<DepositForm account={mockDerivedAccount} onClose={onClose} />);
+    mockOnClose.mockClear();
+    render(<DepositForm account={mockDerivedAccount} onClose={mockOnClose} />);
   });
 
   it('shows a zero amount by default', () => {
@@ -100,7 +100,7 @@ describe('DepositForm', () => {
 
     await waitFor(() => expect(mockAddDeposit).toHaveBeenCalledWith(20));
     await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
   });
 
   it('shows an error and stays open when the deposit fails', async () => {
@@ -115,7 +115,7 @@ describe('DepositForm', () => {
         screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
       ).toBeInTheDocument()
     );
-    expect(onClose).not.toHaveBeenCalled();
+    expect(mockOnClose).not.toHaveBeenCalled();
     expect(mockRouter.refresh).not.toHaveBeenCalled();
     expect(
       screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)
@@ -140,6 +140,6 @@ describe('DepositForm', () => {
     );
 
     resolveDeposit();
-    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
   });
 });

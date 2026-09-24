@@ -5,7 +5,7 @@ import { today } from '../clock';
 import { SAVINGS_MONTHLY_RATE } from '../constants';
 import {
   mockCreateAccountInput,
-  mockAccountEdit,
+  mockAccountEdits,
   mockUser,
 } from '@/test-utils/fixtures';
 import type { Account } from '@/lib/types';
@@ -72,15 +72,15 @@ describe('AccountsStore', () => {
     it('updates the name and avatar of an existing account', async () => {
       const updated = await accountsStore.updateAccount(
         account.id,
-        mockAccountEdit
+        mockAccountEdits
       );
 
-      expect(updated).toMatchObject(mockAccountEdit);
+      expect(updated).toMatchObject(mockAccountEdits);
     });
 
     it('returns undefined for an unknown id', async () => {
       expect(
-        await accountsStore.updateAccount('missing', mockAccountEdit)
+        await accountsStore.updateAccount('missing', mockAccountEdits)
       ).toBeUndefined();
     });
   });

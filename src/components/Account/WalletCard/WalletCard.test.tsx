@@ -3,7 +3,7 @@ import { WalletCard } from './WalletCard';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import { createMockDerivedWallet } from '@/test-utils/fixtures';
 
-const SAVINGS_SUB_LINE = 'צובר 15% בחודש · פעיל מאז 1 בינואר';
+const mockSavingsSubLine = 'צובר 15% בחודש · פעיל מאז 1 בינואר';
 
 describe('WalletCard', () => {
   describe('a spending wallet', () => {
@@ -100,7 +100,7 @@ describe('WalletCard', () => {
     it('shows the savings rate and opening date as a sub-line', () => {
       expect(
         screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
-      ).toHaveTextContent(SAVINGS_SUB_LINE);
+      ).toHaveTextContent(mockSavingsSubLine);
     });
   });
 
@@ -119,7 +119,7 @@ describe('WalletCard', () => {
     it('keeps its own sub-line rather than the spent one', () => {
       expect(
         screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
-      ).toHaveTextContent(SAVINGS_SUB_LINE);
+      ).toHaveTextContent(mockSavingsSubLine);
     });
   });
 
