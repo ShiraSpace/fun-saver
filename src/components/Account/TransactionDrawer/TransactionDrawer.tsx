@@ -2,6 +2,7 @@
 
 import { JSX, useState } from 'react';
 import type { AccountSummary } from '@/lib/types';
+import { TRANSACTION_TYPE } from '@/lib/constants';
 import { TransactionTypeToggle } from './TransactionTypeToggle';
 import { DepositForm } from './DepositForm';
 import { WithdrawalForm } from './WithdrawalForm';
@@ -21,13 +22,13 @@ export function TransactionDrawer({
   onClose,
 }: TransactionDrawerProps): JSX.Element {
   const [transactionType, setTransactionType] =
-    useState<EnteredTransactionType>('deposit');
+    useState<EnteredTransactionType>(TRANSACTION_TYPE.deposit);
   const swipe = useSwipeToClose(onClose);
 
   useCloseOnBack(onClose);
 
   const transactionForm =
-    transactionType === 'deposit' ? (
+    transactionType === TRANSACTION_TYPE.deposit ? (
       <DepositForm account={account} onClose={onClose} />
     ) : (
       <WithdrawalForm account={account} onClose={onClose} />

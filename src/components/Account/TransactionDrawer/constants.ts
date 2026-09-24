@@ -1,6 +1,11 @@
 import { SCREEN_LAYOUT } from '@/components/Screen/constants';
+import type { TRANSACTION_TYPE } from '@/lib/constants';
+import type { TransactionType } from '@/lib/types';
 
-export type EnteredTransactionType = 'deposit' | 'withdrawal';
+export type EnteredTransactionType = Exclude<
+  TransactionType,
+  typeof TRANSACTION_TYPE.interest
+>;
 
 export const TRANSACTION_DRAWER_TEST_IDS = {
   drawer: 'transaction-drawer',
