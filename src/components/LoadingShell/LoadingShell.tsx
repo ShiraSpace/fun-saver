@@ -3,8 +3,8 @@
 import { JSX } from 'react';
 import { Column } from '@/components/Screen';
 import { BurgerIcon } from '@/components/Menu/BurgerIcon';
-import { ProgressLine } from '@/components/Header/ProgressLine';
-import { LOADING_SHELL_CONTENT, LOADING_SHELL_TEST_IDS } from './constants';
+import { NavigationProgress } from '@/components/Header/NavigationProgress';
+import { LOADING_SHELL_COPY, LOADING_SHELL_TEST_IDS } from './constants';
 import {
   BurgerSlot,
   Card,
@@ -17,7 +17,7 @@ export function LoadingShell(): JSX.Element {
   return (
     <Surface
       role="status"
-      aria-label={LOADING_SHELL_CONTENT.label}
+      aria-label={LOADING_SHELL_COPY.label}
       data-testid={LOADING_SHELL_TEST_IDS.shell}
     >
       <Column>
@@ -27,7 +27,7 @@ export function LoadingShell(): JSX.Element {
           </BurgerSlot>
           <GhostTitle />
           <GhostAvatar />
-          <ProgressLine />
+          <NavigationProgress />
         </Card>
       </Column>
     </Surface>

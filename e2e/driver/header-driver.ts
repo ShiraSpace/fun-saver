@@ -1,6 +1,6 @@
 import { type BoundingBox } from 'puppeteer';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
-import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
+import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { Session } from './session';
 
 export class HeaderDriver {
@@ -23,15 +23,15 @@ export class HeaderDriver {
   }
 
   name(): Promise<string> {
-    return this.session.text(TITLE_TEST_IDS.title);
+    return this.session.text(HEADER_TITLE_TEST_IDS.title);
   }
 
   waitForName(name: string): Promise<void> {
-    return this.session.waitForText(TITLE_TEST_IDS.title, name);
+    return this.session.waitForText(HEADER_TITLE_TEST_IDS.title, name);
   }
 
   nameBox(): Promise<BoundingBox> {
-    return this.session.box(TITLE_TEST_IDS.title);
+    return this.session.box(HEADER_TITLE_TEST_IDS.title);
   }
 
   avatarSource(): Promise<string> {
@@ -47,7 +47,7 @@ export class HeaderDriver {
   }
 
   nameFontSize(): Promise<string> {
-    return this.session.computedStyle(TITLE_TEST_IDS.title, 'font-size');
+    return this.session.computedStyle(HEADER_TITLE_TEST_IDS.title, 'font-size');
   }
 
   background(): Promise<string> {
@@ -67,6 +67,6 @@ export class HeaderDriver {
   }
 
   titleColor(): Promise<string> {
-    return this.session.computedStyle(TITLE_TEST_IDS.title, 'color');
+    return this.session.computedStyle(HEADER_TITLE_TEST_IDS.title, 'color');
   }
 }

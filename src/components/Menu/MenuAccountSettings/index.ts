@@ -1,0 +1,1 @@
+export { MenuAccountSettings } from './MenuAccountSettings';

@@ -8,7 +8,7 @@ export const HEADER_TEST_IDS = {
   progress: 'header-progress',
 } as const;
 
-export const HEADER_CONTENT = {
+export const HEADER_COPY = {
   homeLabel: (accountName: string): string => `חזרה לבית של ${accountName}`,
   homeIcon: '🏠',
 } as const;

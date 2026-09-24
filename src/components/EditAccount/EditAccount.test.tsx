@@ -115,7 +115,7 @@ describe('EditAccount', () => {
     expect(mockOnUpdated).not.toHaveBeenCalled();
   });
 
-  it('calls onCancel from the close button', () => {
+  it('calls onCancel from the cancel button', () => {
     cancelForm();
 
     expect(mockOnCancel).toHaveBeenCalledTimes(1);

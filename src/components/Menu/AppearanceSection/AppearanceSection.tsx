@@ -2,10 +2,10 @@
 
 import { JSX } from 'react';
 import { getThemeTokens } from '@/theme/registry';
-import { MenuLabel } from '../MenuLabel';
+import { MenuSectionTitle } from '../MenuSectionTitle';
 import { useAccountTheme } from './use-account-theme';
 import {
-  APPEARANCE_SECTION_CONTENT,
+  APPEARANCE_SECTION_COPY,
   APPEARANCE_SECTION_TEST_IDS,
 } from './constants';
 import { Row, Swatch, SaveError } from './AppearanceSection.styles';
@@ -13,7 +13,7 @@ import { Row, Swatch, SaveError } from './AppearanceSection.styles';
 export function AppearanceSection(): JSX.Element {
   const { activeThemeId, chooseTheme, saveFailed } = useAccountTheme();
 
-  const themeSelectorComponents = APPEARANCE_SECTION_CONTENT.themes.map(
+  const themeSelectorComponents = APPEARANCE_SECTION_COPY.themes.map(
     ({ id, label }) => (
       <Swatch
         key={id}
@@ -30,11 +30,11 @@ export function AppearanceSection(): JSX.Element {
 
   return (
     <section data-testid={APPEARANCE_SECTION_TEST_IDS.section}>
-      <MenuLabel>{APPEARANCE_SECTION_CONTENT.label}</MenuLabel>
+      <MenuSectionTitle>{APPEARANCE_SECTION_COPY.label}</MenuSectionTitle>
       <Row>{themeSelectorComponents}</Row>
       {saveFailed && (
         <SaveError data-testid={APPEARANCE_SECTION_TEST_IDS.saveError}>
-          {APPEARANCE_SECTION_CONTENT.saveError}
+          {APPEARANCE_SECTION_COPY.saveError}
         </SaveError>
       )}
     </section>

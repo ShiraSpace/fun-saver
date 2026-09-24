@@ -9,25 +9,25 @@ import {
 } from 'react';
 import { useLinkStatus } from 'next/link';
 
-const PendingLinksContext = createContext<Dispatch<SetStateAction<number>>>(
-  () => {}
-);
+const PendingNavigationsContext = createContext<
+  Dispatch<SetStateAction<number>>
+>(() => {});
 
-export const PendingLinksProvider = PendingLinksContext.Provider;
+export const PendingNavigationsProvider = PendingNavigationsContext.Provider;
 
 export function PendingNavigationReporter(): null {
   const { pending } = useLinkStatus();
-  const countPendingLinks = useContext(PendingLinksContext);
+  const setPendingNavigationCount = useContext(PendingNavigationsContext);
 
   useEffect((): (() => void) | undefined => {
     if (!pending) {
       return;
     }
 
-    countPendingLinks((count) => count + 1);
+    setPendingNavigationCount((count) => count + 1);
 
-    return (): void => countPendingLinks((count) => count - 1);
-  }, [pending, countPendingLinks]);
+    return (): void => setPendingNavigationCount((count) => count - 1);
+  }, [pending, setPendingNavigationCount]);
 
   return null;
 }

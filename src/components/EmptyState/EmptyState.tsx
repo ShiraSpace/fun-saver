@@ -18,7 +18,8 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ onCreate }: EmptyStateProps): JSX.Element {
-  const { isOinking, onCtaClick, onPigDoneOinking } = useOinkThenRun(onCreate);
+  const { isOinking, onCreateAccountClick, onPigDoneOinking } =
+    useOinkThenRun(onCreate);
 
   return (
     <Screen align="top" data-testid={EMPTY_STATE_TEST_IDS.container}>
@@ -27,7 +28,7 @@ export function EmptyState({ onCreate }: EmptyStateProps): JSX.Element {
       </Column>
       <Centre>
         <Pig
-          size={EMPTY_STATE_LAYOUT.emojiSize}
+          size={EMPTY_STATE_LAYOUT.pigSize}
           data-testid={EMPTY_STATE_TEST_IDS.pig}
           data-oinking={isOinking}
           onAnimationEnd={onPigDoneOinking}
@@ -37,7 +38,7 @@ export function EmptyState({ onCreate }: EmptyStateProps): JSX.Element {
         <PrimaryButton
           type="button"
           data-testid={EMPTY_STATE_TEST_IDS.createAccount}
-          onClick={onCtaClick}
+          onClick={onCreateAccountClick}
         >
           {EMPTY_STATE_COPY.createAccount}
         </PrimaryButton>

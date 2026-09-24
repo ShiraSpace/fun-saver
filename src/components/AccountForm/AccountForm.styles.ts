@@ -46,12 +46,12 @@ export const SaveError = styled.span`
   color: ${alertText};
 `;
 
-export const CloseButton = styled.button`
+export const Cancel = styled.button`
   position: absolute;
-  inset-block-start: ${ACCOUNT_FORM_LAYOUT.closeInset}px;
-  inset-inline-start: ${ACCOUNT_FORM_LAYOUT.closeInset}px;
-  width: ${ACCOUNT_FORM_LAYOUT.closeButtonSize}px;
-  height: ${ACCOUNT_FORM_LAYOUT.closeButtonSize}px;
+  inset-block-start: ${ACCOUNT_FORM_LAYOUT.cancelInset}px;
+  inset-inline-start: ${ACCOUNT_FORM_LAYOUT.cancelInset}px;
+  width: ${ACCOUNT_FORM_LAYOUT.cancelSize}px;
+  height: ${ACCOUNT_FORM_LAYOUT.cancelSize}px;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -7,7 +7,7 @@ export const MENU_OVERLAY_TEST_IDS = {
   overlay: 'menu-overlay',
 } as const;
 
-export const MENU_OVERLAY_CONTENT = {
+export const MENU_OVERLAY_COPY = {
   title: 'תפריט',
 } as const;
 

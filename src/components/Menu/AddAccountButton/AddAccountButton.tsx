@@ -6,7 +6,7 @@ import {
   useAppMode,
 } from '@/components/AccountManagement/app-mode-context';
 import {
-  ACCOUNT_LIST_CONTENT,
+  ACCOUNT_LIST_COPY,
   ACCOUNT_LIST_TEST_IDS,
 } from '../AccountList/constants';
 import { AddButton } from '../row-parts';
@@ -24,11 +24,11 @@ export function AddAccountButton(): JSX.Element {
   return (
     <AddButton
       type="button"
-      aria-label={ACCOUNT_LIST_CONTENT.addAccessibleLabel}
+      aria-label={ACCOUNT_LIST_COPY.addAccessibleLabel}
       data-testid={ACCOUNT_LIST_TEST_IDS.addAccount}
       onClick={startCreatingAccount}
     >
-      {ACCOUNT_LIST_CONTENT.addLabel}
+      {ACCOUNT_LIST_COPY.addLabel}
     </AddButton>
   );
 }

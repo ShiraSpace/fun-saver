@@ -6,7 +6,7 @@ describe('useOinkThenRun', () => {
     const onDone = jest.fn();
     const { result } = renderHook(() => useOinkThenRun(onDone));
 
-    act(() => result.current.onCtaClick());
+    act(() => result.current.onCreateAccountClick());
 
     expect(result.current.isOinking).toBe(true);
     expect(onDone).not.toHaveBeenCalled();

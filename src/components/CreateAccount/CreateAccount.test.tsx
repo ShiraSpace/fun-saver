@@ -109,7 +109,7 @@ describe('CreateAccount', () => {
       );
     });
 
-    it('calls onCancel when the close button is tapped', () => {
+    it('calls onCancel when the cancel button is tapped', () => {
       fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
 
       expect(mockOnCancel).toHaveBeenCalledTimes(1);

@@ -37,6 +37,4 @@ export const SIGN_IN_LAYOUT = {
 
 export const GOOGLE_PROVIDER_ID = 'google';
 
-export const SIGNED_IN_DESTINATION = '/';
-
 export const GOOGLE_BRAND_WHITE = '#FFFFFF';

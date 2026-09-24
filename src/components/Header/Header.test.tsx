@@ -4,10 +4,10 @@ import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
 import { getThemeTokens } from '@/theme/registry';
-import { TITLE_TEST_IDS } from './CrossfadeTitle/constants';
+import { HEADER_TITLE_TEST_IDS } from './HeaderTitle/constants';
 import { MENU_TEST_IDS } from '../Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '../Menu/MenuOverlay/constants';
-import { MENU_HEADER_SHEET_TEST_IDS } from '../Menu/MenuHeaderSheet/constants';
+import { MENU_HEADER_BACKDROP_TEST_IDS } from '../Menu/MenuHeaderBackdrop/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '../Menu/AccountList/constants';
 import { HOME_ROUTE } from '../Home/constants';
 import { openAccountPicker } from '@/test-utils/account-picker';
@@ -48,7 +48,7 @@ describe('Header', () => {
     });
 
     it('shows the account name', () => {
-      expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
+      expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
         ACCOUNT_NAME
       );
     });
@@ -104,9 +104,9 @@ describe('Header', () => {
       });
 
       it('keeps the account name rather than swapping in a menu title', () => {
-        expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
-          ACCOUNT_NAME
-        );
+        expect(
+          screen.getByTestId(HEADER_TITLE_TEST_IDS.title)
+        ).toHaveTextContent(ACCOUNT_NAME);
       });
 
       it('takes the avatar away, the picker below already showing it', () => {
@@ -114,10 +114,10 @@ describe('Header', () => {
       });
     });
 
-    describe('the sheet behind the bar', () => {
+    describe('the backdrop behind the bar', () => {
       it('leaves the screen gradient alone while the menu is shut', () => {
         expect(
-          screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
+          screen.getByTestId(MENU_HEADER_BACKDROP_TEST_IDS.backdrop)
         ).toHaveAttribute('data-open', 'false');
       });
 
@@ -125,13 +125,13 @@ describe('Header', () => {
         fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
 
         expect(
-          screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
+          screen.getByTestId(MENU_HEADER_BACKDROP_TEST_IDS.backdrop)
         ).toHaveAttribute('data-open', 'true');
       });
 
       it('sits outside the bar, which would otherwise paint over it', () => {
         expect(screen.getByTestId(HEADER_TEST_IDS.bar)).not.toContainElement(
-          screen.getByTestId(MENU_HEADER_SHEET_TEST_IDS.sheet)
+          screen.getByTestId(MENU_HEADER_BACKDROP_TEST_IDS.backdrop)
         );
       });
     });
@@ -192,7 +192,7 @@ describe('Header', () => {
     });
 
     it('greets the parent where an account screen names the account', () => {
-      expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
+      expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
         GREETING
       );
     });
