@@ -1,15 +1,15 @@
 import type { Account, AccountUser } from '@/lib/types';
 import type { AccountOwner, AccountUserRepository } from '../data-store';
-import { byAccountName, ownerAccountUser } from '../account-users';
+import { sortedByName, ownerAccountUser } from '../account-users';
 import {
-  toAccount,
-  toAccountUser,
+  accountFromRow,
+  accountUserFromRow,
   type AccountRow,
   type AccountUserRow,
-} from '../row-mappers';
+} from '../rows';
 import { PostgresAccounts } from './accounts';
-import { toAccountWriteError } from './errors';
-import { selectRows, type Sql } from './query';
+import { accountWriteError } from './errors';
+import { queryRows, type Sql } from './query';
 
 export class PostgresAccountUsers implements AccountUserRepository {
   private readonly accounts: PostgresAccounts;
@@ -22,17 +22,17 @@ export class PostgresAccountUsers implements AccountUserRepository {
     accountId: string,
     userId: string
   ): Promise<AccountUser | undefined> {
-    const rows = await selectRows<AccountUserRow>(
+    const rows = await queryRows<AccountUserRow>(
       this.sql,
       'SELECT * FROM account_users WHERE account_id = $1 AND user_id = $2',
       [accountId, userId]
     );
 
-    return rows[0] ? toAccountUser(rows[0]) : undefined;
+    return rows[0] ? accountUserFromRow(rows[0]) : undefined;
   }
 
   async listAccountsForUser(userId: string): Promise<Account[]> {
-    const rows = await selectRows<AccountRow>(
+    const rows = await queryRows<AccountRow>(
       this.sql,
       `SELECT accounts.* FROM accounts
        JOIN account_users ON account_users.account_id = accounts.id
@@ -40,7 +40,7 @@ export class PostgresAccountUsers implements AccountUserRepository {
       [userId]
     );
 
-    return byAccountName(rows.map(toAccount));
+    return sortedByName(rows.map(accountFromRow));
   }
 
   async insertAccountWithOwner(
@@ -58,7 +58,7 @@ export class PostgresAccountUsers implements AccountUserRepository {
         `,
       ]);
     } catch (error) {
-      throw toAccountWriteError(error, {
+      throw accountWriteError(error, {
         accountId: account.id,
         ownerId: owner.userId,
       });

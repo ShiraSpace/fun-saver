@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { GOOGLE_PROVIDER_ID, SIGNED_IN_DESTINATION } from './constants';
+import { HOME_ROUTE } from '@/components/Home/constants';
+import { GOOGLE_PROVIDER_ID } from './constants';
 
 interface GoogleSignIn {
   isSigningIn: boolean;
@@ -19,7 +20,7 @@ export function useGoogleSignIn(): GoogleSignIn {
     setHasFailed(false);
 
     try {
-      await signIn(GOOGLE_PROVIDER_ID, { redirectTo: SIGNED_IN_DESTINATION });
+      await signIn(GOOGLE_PROVIDER_ID, { redirectTo: HOME_ROUTE });
     } catch {
       setHasFailed(true);
       setIsSigningIn(false);

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { EditAccountButton } from './EditAccountButton';
 import {
-  EDIT_ACCOUNT_BUTTON_CONTENT,
+  EDIT_ACCOUNT_BUTTON_COPY,
   EDIT_ACCOUNT_BUTTON_TEST_IDS,
 } from './constants';
 import { mockAccount } from '@/test-utils/fixtures';
@@ -29,7 +29,7 @@ describe('EditAccountButton', () => {
     expect(
       screen.getByTestId(EDIT_ACCOUNT_BUTTON_TEST_IDS.button)
     ).toHaveAccessibleName(
-      `${EDIT_ACCOUNT_BUTTON_CONTENT.label} ${mockAccount.name}`
+      `${EDIT_ACCOUNT_BUTTON_COPY.label} ${mockAccount.name}`
     );
   });
 });

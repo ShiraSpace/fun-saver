@@ -3,9 +3,9 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
 import { ContinueWithGoogle } from './ContinueWithGoogle';
+import { HOME_ROUTE } from '@/components/Home/constants';
 import {
   GOOGLE_PROVIDER_ID,
-  SIGNED_IN_DESTINATION,
   SIGN_IN_COPY,
   SIGN_IN_TEST_IDS,
 } from './constants';
@@ -36,7 +36,7 @@ describe('ContinueWithGoogle', () => {
     clickContinue();
 
     expect(signIn).toHaveBeenCalledWith(GOOGLE_PROVIDER_ID, {
-      redirectTo: SIGNED_IN_DESTINATION,
+      redirectTo: HOME_ROUTE,
     });
   });
 

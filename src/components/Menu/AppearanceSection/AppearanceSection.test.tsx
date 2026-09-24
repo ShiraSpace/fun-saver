@@ -5,7 +5,7 @@ import { mockAccountsContext, mockDerivedAccount } from '@/test-utils/fixtures';
 import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { AppearanceSection } from './AppearanceSection';
 import {
-  APPEARANCE_SECTION_CONTENT,
+  APPEARANCE_SECTION_COPY,
   APPEARANCE_SECTION_TEST_IDS,
 } from './constants';
 import { mockRouter } from '@mocks/next/navigation';
@@ -32,7 +32,7 @@ describe('AppearanceSection', () => {
     });
 
     it('renders a swatch per theme', () => {
-      expect(swatches()).toHaveLength(APPEARANCE_SECTION_CONTENT.themes.length);
+      expect(swatches()).toHaveLength(APPEARANCE_SECTION_COPY.themes.length);
     });
 
     it('previews midnight as the near-black it actually is, not a blue that flatters it', () => {
@@ -50,7 +50,7 @@ describe('AppearanceSection', () => {
   });
 
   describe('when a swatch is chosen', () => {
-    const chosenTheme = APPEARANCE_SECTION_CONTENT.themes[1];
+    const chosenTheme = APPEARANCE_SECTION_COPY.themes[1];
 
     beforeEach(async () => {
       renderSection();
@@ -91,7 +91,7 @@ describe('AppearanceSection', () => {
     });
 
     it('tells the user it did not save', () => {
-      expect(error).toHaveTextContent(APPEARANCE_SECTION_CONTENT.saveError);
+      expect(error).toHaveTextContent(APPEARANCE_SECTION_COPY.saveError);
     });
 
     it('speaks it in the alert red', () => {

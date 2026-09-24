@@ -4,7 +4,7 @@ import { JSX } from 'react';
 import { HOME_ROUTE } from '../../Home/constants';
 import {
   HEADER_AVATAR_PROPS,
-  HEADER_CONTENT,
+  HEADER_COPY,
   HEADER_TEST_IDS,
 } from '../constants';
 import { HeaderAvatar } from '../header-parts';
@@ -25,7 +25,7 @@ export function HomeAvatarLink({
   return (
     <Ring
       href={HOME_ROUTE}
-      aria-label={HEADER_CONTENT.homeLabel(accountName)}
+      aria-label={HEADER_COPY.homeLabel(accountName)}
       data-testid={HEADER_TEST_IDS.homeLink}
       data-hidden={isHidden}
     >
@@ -36,7 +36,7 @@ export function HomeAvatarLink({
         testId={HEADER_TEST_IDS.avatar}
         isHidden={false}
       />
-      <HouseBadge aria-hidden>{HEADER_CONTENT.homeIcon}</HouseBadge>
+      <HouseBadge aria-hidden>{HEADER_COPY.homeIcon}</HouseBadge>
       <PendingNavigationReporter />
     </Ring>
   );

@@ -24,7 +24,7 @@ export function ownerAccountUser(
   };
 }
 
-export function byAccountName(accounts: Account[]): Account[] {
+export function sortedByName(accounts: Account[]): Account[] {
   return [...accounts].sort(
     (left, right) =>
       left.name.localeCompare(right.name) || left.id.localeCompare(right.id)
@@ -42,7 +42,5 @@ export function accountsForUser(
       .map((accountUser) => accountUser.accountId)
   );
 
-  return byAccountName(
-    accounts.filter((account) => accountIds.has(account.id))
-  );
+  return sortedByName(accounts.filter((account) => accountIds.has(account.id)));
 }

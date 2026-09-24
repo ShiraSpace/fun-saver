@@ -7,13 +7,13 @@ import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { splitDeposit } from '@/lib/transactions';
 import type { Transaction } from '@/lib/types';
 import { createOwnedAccount } from '@/test-utils/owned-account';
-import { withTempDataPath } from '@/test-utils/test-utils';
+import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
 jest.mock('@/auth');
 
 describe('POST /api/accounts/[id]/deposits', () => {
-  withTempDataPath();
+  withTempStoreEnv();
 
   let accountId: string;
 

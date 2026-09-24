@@ -1,10 +1,10 @@
 import { readFile, writeFile, mkdir, rename } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import type { StoreData } from '../data-store';
+import type { StoreContents } from '../data-store';
 
 let writeSequence = 0;
 
-function emptyData(): StoreData {
+function emptyContents(): StoreContents {
   return { accounts: [], transactions: [], users: [], accountUsers: [] };
 }
 
@@ -18,19 +18,22 @@ export class FileSession {
 
   constructor(private readonly filePath: string) {}
 
-  read<T>(operation: (data: StoreData) => T): Promise<T> {
+  read<T>(operation: (contents: StoreContents) => T): Promise<T> {
     return this.enqueue(async (): Promise<T> =>
       operation(await this.readFromDisk())
     );
   }
 
   write<T>(
-    operation: (data: StoreData, save: () => Promise<void>) => Promise<T>
+    operation: (
+      contents: StoreContents,
+      save: () => Promise<void>
+    ) => Promise<T>
   ): Promise<T> {
     return this.enqueue(async (): Promise<T> => {
-      const data = await this.readFromDisk();
+      const contents = await this.readFromDisk();
 
-      return operation(data, () => this.persist(data));
+      return operation(contents, () => this.saveToDisk(contents));
     });
   }
 
@@ -43,21 +46,24 @@ export class FileSession {
     return result;
   }
 
-  private async persist(data: StoreData): Promise<void> {
+  private async saveToDisk(contents: StoreContents): Promise<void> {
     await mkdir(dirname(this.filePath), { recursive: true });
     const temporaryPath = `${this.filePath}.${process.pid}.${writeSequence++}.tmp`;
-    await writeFile(temporaryPath, JSON.stringify(data, null, 2), 'utf8');
+    await writeFile(temporaryPath, JSON.stringify(contents, null, 2), 'utf8');
     await rename(temporaryPath, this.filePath);
   }
 
-  private async readFromDisk(): Promise<StoreData> {
+  private async readFromDisk(): Promise<StoreContents> {
     try {
       const raw = await readFile(this.filePath, 'utf8');
-      return { ...emptyData(), ...(JSON.parse(raw) as Partial<StoreData>) };
+      return {
+        ...emptyContents(),
+        ...(JSON.parse(raw) as Partial<StoreContents>),
+      };
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-        const empty = emptyData();
-        await this.persist(empty);
+        const empty = emptyContents();
+        await this.saveToDisk(empty);
         return empty;
       }
 

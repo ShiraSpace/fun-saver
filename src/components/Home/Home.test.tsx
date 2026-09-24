@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import { useThemeId } from '@/theme/AppThemeProvider';
 import { THEME_ID } from '@/theme/registry';
 import { Home } from './Home';
-import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
+import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
@@ -35,7 +35,7 @@ describe('Home', () => {
     it('renders the account named by initialAccountId', () => {
       renderHome({ initialAccountId: mockSecondAccount.id });
 
-      expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
+      expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
         mockSecondAccount.name
       );
     });
@@ -75,7 +75,7 @@ describe('Home', () => {
     it('switches to and persists the tapped account, then closes the menu', () => {
       fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 
-      expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
+      expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
         mockSecondAccount.name
       );
       expect(mockPersist).toHaveBeenCalledWith(

@@ -9,7 +9,7 @@ export interface AttemptedAccountWrite {
   ownerId?: string;
 }
 
-export function toAccountWriteError(
+export function accountWriteError(
   error: unknown,
   { accountId, ownerId }: AttemptedAccountWrite
 ): unknown {

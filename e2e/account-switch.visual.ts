@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { byAccountName } from '@/db/account-users';
+import { sortedByName } from '@/db/account-users';
 import { mockAccount, mockSecondAccount } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
@@ -15,7 +15,7 @@ describe('account switching', () => {
   });
 
   it('switches the active account and closes the menu when a row is tapped', async () => {
-    const [firstListed, secondListed] = byAccountName(accounts);
+    const [firstListed, secondListed] = sortedByName(accounts);
 
     assert.equal(await header.name(), firstListed.name);
 

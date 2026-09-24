@@ -5,7 +5,7 @@ export const ACCOUNT_PICKER_TEST_IDS = {
   caret: 'menu-account-caret',
 } as const;
 
-export const ACCOUNT_PICKER_CONTENT = {
+export const ACCOUNT_PICKER_COPY = {
   currentSuffix: ' · מוצג כרגע',
   openCaret: '▲',
   closedCaret: '▼',

@@ -1,17 +1,17 @@
 import { type BoundingBox } from 'puppeteer';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
-import { NAV_TABS_TEST_IDS } from '@/components/Menu/NavTabs/constants';
-import { MENU_GLOBAL_SCOPE_TEST_IDS } from '@/components/Menu/MenuGlobalScope/constants';
+import { NAVIGATION_TABS_TEST_IDS } from '@/components/Menu/NavigationTabs/constants';
+import { MENU_USER_SETTINGS_TEST_IDS } from '@/components/Menu/MenuUserSettings/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '@/components/Menu/EditAccountButton/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from '@/components/Menu/AccountPicker/constants';
-import { MENU_ACCOUNT_SCOPE_TEST_IDS } from '@/components/Menu/MenuAccountScope/constants';
+import { MENU_ACCOUNT_SETTINGS_TEST_IDS } from '@/components/Menu/MenuAccountSettings/constants';
 import { SIGNED_IN_USER_SECTION_TEST_IDS } from '@/components/Menu/SignedInUserSection/constants';
 import { SIGN_IN_TEST_IDS } from '@/components/SignIn/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '@/components/Menu/AppearanceSection/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
-import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
+import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { Session } from './session';
 
 const MIDDLE_BAR = `[data-testid="${MENU_TEST_IDS.menuIcon}"] > span:nth-of-type(2)`;
@@ -58,16 +58,19 @@ export class MenuDriver {
   }
 
   tapHomeTab(): Promise<void> {
-    return this.session.click(NAV_TABS_TEST_IDS.homeTab);
+    return this.session.click(NAVIGATION_TABS_TEST_IDS.homeTab);
   }
 
   tapMethodTab(): Promise<void> {
-    return this.session.click(NAV_TABS_TEST_IDS.methodTab);
+    return this.session.click(NAVIGATION_TABS_TEST_IDS.methodTab);
   }
 
   async openMethodPage(): Promise<string> {
-    await this.session.click(NAV_TABS_TEST_IDS.methodTab);
-    await this.session.waitForText(TITLE_TEST_IDS.title, METHOD_COPY.title);
+    await this.session.click(NAVIGATION_TABS_TEST_IDS.methodTab);
+    await this.session.waitForText(
+      HEADER_TITLE_TEST_IDS.title,
+      METHOD_COPY.title
+    );
 
     return this.session.currentPath();
   }
@@ -91,11 +94,11 @@ export class MenuDriver {
   }
 
   globalScopeBox(): Promise<BoundingBox> {
-    return this.session.box(MENU_GLOBAL_SCOPE_TEST_IDS.block);
+    return this.session.box(MENU_USER_SETTINGS_TEST_IDS.block);
   }
 
   accountScopeBox(): Promise<BoundingBox> {
-    return this.session.box(MENU_ACCOUNT_SCOPE_TEST_IDS.block);
+    return this.session.box(MENU_ACCOUNT_SETTINGS_TEST_IDS.block);
   }
 
   appearanceSectionBox(): Promise<BoundingBox> {
@@ -115,7 +118,7 @@ export class MenuDriver {
 
   methodTabBackground(): Promise<string> {
     return this.session.computedStyle(
-      NAV_TABS_TEST_IDS.methodTab,
+      NAVIGATION_TABS_TEST_IDS.methodTab,
       'background-color'
     );
   }

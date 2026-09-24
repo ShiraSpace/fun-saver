@@ -5,13 +5,13 @@ import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
-import { withTempDataPath } from '@/test-utils/test-utils';
+import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { withAccountEditor } from '../with-account-editor';
 
 jest.mock('@/auth');
 
 describe('withAccountEditor', () => {
-  withTempDataPath();
+  withTempStoreEnv();
 
   const handle = jest.fn(async (): Promise<Response> =>
     Response.json({ edited: true })

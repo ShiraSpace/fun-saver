@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 interface OinkThenRun {
   isOinking: boolean;
-  onCtaClick: () => void;
+  onCreateAccountClick: () => void;
   onPigDoneOinking: () => void;
 }
 
@@ -13,7 +13,7 @@ export function useOinkThenRun(onDone: () => void): OinkThenRun {
 
   return {
     isOinking,
-    onCtaClick: (): void => setIsOinking(true),
+    onCreateAccountClick: (): void => setIsOinking(true),
     onPigDoneOinking: (): void => onDone(),
   };
 }

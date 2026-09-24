@@ -11,8 +11,8 @@ export const ACCOUNT_FORM_TEST_IDS = {
 export const ACCOUNT_FORM_LAYOUT = {
   gap: SCREEN_LAYOUT.gap - 2,
   titleGap: 8,
-  closeButtonSize: 40,
-  closeInset: 16,
+  cancelSize: 40,
+  cancelInset: 16,
 } as const;
 
 export const ACCOUNT_FORM_COPY = {

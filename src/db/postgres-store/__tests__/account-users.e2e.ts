@@ -3,12 +3,12 @@
  */
 import type { Account, User } from '@/lib/types';
 import { createMockAccount, createMockUser } from '@/test-utils/fixtures';
-import { withLiveStore } from './live-store';
+import { withTestDatabase } from './test-database';
 
 const mockAddedAt = '2026-01-01T00:00:00.000Z';
 
 describe('PostgresAccountUsers', () => {
-  const { store, sql, accountId, userId } = withLiveStore();
+  const { store, sql, accountId, userId } = withTestDatabase();
   let mockFirstAccount: Account;
   let mockLaterAccount: Account;
   let mockStrangersAccount: Account;
