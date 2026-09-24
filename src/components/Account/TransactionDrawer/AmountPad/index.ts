@@ -1,1 +1,0 @@
-export { AmountPad } from './AmountPad';

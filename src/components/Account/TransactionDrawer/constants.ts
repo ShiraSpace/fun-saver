@@ -1,6 +1,6 @@
 import { SCREEN_LAYOUT } from '@/components/Screen/constants';
 
-export type TransactionMode = 'deposit' | 'withdraw';
+export type EnteredTransactionType = 'deposit' | 'withdrawal';
 
 export const TRANSACTION_DRAWER_TEST_IDS = {
   drawer: 'transaction-drawer',
@@ -8,14 +8,15 @@ export const TRANSACTION_DRAWER_TEST_IDS = {
   scrim: 'transaction-drawer-scrim',
   amount: 'transaction-drawer-amount',
   split: 'transaction-drawer-split',
-  splitShare: (name: string): string => `transaction-drawer-split-${name}`,
-  confirm: 'transaction-drawer-confirm',
+  splitAmount: (walletName: string): string =>
+    `transaction-drawer-split-${walletName}`,
+  submit: 'transaction-drawer-confirm',
   error: 'transaction-drawer-error',
 } as const;
 
 export const TRANSACTION_DRAWER_COPY = {
   title: 'כמה מפקידים?',
-  confirm: 'הפקדה של',
+  submit: 'הפקדה של',
   submitting: 'מפקידים…',
   error: 'אופס, משהו השתבש. נסו שוב.',
 } as const;

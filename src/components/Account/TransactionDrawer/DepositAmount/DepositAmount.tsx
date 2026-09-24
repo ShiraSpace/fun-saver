@@ -7,15 +7,17 @@ import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { Block, Value } from './DepositAmount.styles';
 
 interface DepositAmountProps {
-  amount: number;
+  amountShekels: number;
 }
 
-export function DepositAmount({ amount }: DepositAmountProps): JSX.Element {
+export function DepositAmount({
+  amountShekels,
+}: DepositAmountProps): JSX.Element {
   return (
     <Block>
       <Value>
         <Money
-          amountAgorot={amount * AGOROT_PER_SHEKEL}
+          amountAgorot={amountShekels * AGOROT_PER_SHEKEL}
           testId={TRANSACTION_DRAWER_TEST_IDS.amount}
         />
       </Value>
