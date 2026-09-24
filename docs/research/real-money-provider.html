@@ -1,0 +1,315 @@
+<title>Real Money for Kids</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&family=Assistant:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#FBF8FD; --surface:#FFFFFF; --ink:#2B1235; --muted:#675A80; --line:#E7DDF0;
+  --brand:#6B2C8E; --brand-soft:#F4EEFA; --spend:#D9480F; --spend-soft:#FFF1E8;
+  --good:#276E2C; --good-soft:#E1F4E5; --warn:#7A5A0A; --warn-soft:#FFF8E0;
+  --bad:#A81B3A; --bad-soft:#FDECEC;
+  --display:'Rubik','Segoe UI',system-ui,sans-serif;
+  --body:'Assistant','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#17101D; --surface:#211829; --ink:#F1E9F7; --muted:#B4A6C6; --line:#3A2D46;
+    --brand:#C79BE6; --brand-soft:#2E2140; --spend:#FF9A66; --spend-soft:#3A2218;
+    --good:#7FD18A; --good-soft:#1C3322; --warn:#F2CD62; --warn-soft:#352C12;
+    --bad:#FF8FA3; --bad-soft:#3D1A22;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#17101D; --surface:#211829; --ink:#F1E9F7; --muted:#B4A6C6; --line:#3A2D46;
+  --brand:#C79BE6; --brand-soft:#2E2140; --spend:#FF9A66; --spend-soft:#3A2218;
+  --good:#7FD18A; --good-soft:#1C3322; --warn:#F2CD62; --warn-soft:#352C12;
+  --bad:#FF8FA3; --bad-soft:#3D1A22;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--body);padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(30px,5vw,44px);font-weight:700}
+h2{font-size:24px;font-weight:700}
+h3{font-size:17px;font-weight:500}
+p{margin:0;max-width:66ch}
+a{color:var(--brand);text-underline-offset:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+q[lang="he"]{font-family:var(--body);quotes:none}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:2;background:var(--bg);border-bottom:1px solid var(--line);margin-inline:-16px;padding:10px 16px;overflow-x:auto;white-space:nowrap}
+nav.toc .row{max-width:980px;margin:0 auto;display:flex;gap:18px;font:500 14px/1 var(--display)}
+nav.toc a{color:var(--muted);text-decoration:none}
+nav.toc a:hover{color:var(--brand)}
+header{padding-top:40px;display:flex;flex-direction:column;gap:16px}
+.lead{font-size:19px;max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font:400 13px/1.4 var(--mono);color:var(--muted)}
+section{display:flex;flex-direction:column;gap:18px}
+.verdicts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.verdict{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.verdict.best{border-color:var(--spend);box-shadow:inset 4px 0 0 var(--spend)}
+.pill{display:inline-block;font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:99px;white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.brand{background:var(--brand-soft);color:var(--brand)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14.5px}
+th,td{text-align:start;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font:500 12px/1.3 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--brand-soft)}
+tr:last-child td{border-bottom:0}
+td.name{font-weight:700;white-space:nowrap}
+.money{font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:13.5px}
+.wallets{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.wallet{border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);background:var(--surface)}
+.wallet .split{font:500 28px/1 var(--display)}
+.wallet.real{background:var(--spend-soft);border-color:var(--spend)}
+.wallet.real .split{color:var(--spend)}
+.flow{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;overflow-x:auto}
+ul.checks{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 24px}
+ul.checks li{display:flex;gap:10px;align-items:baseline}
+ul.checks li::before{content:"";flex:none;width:10px;height:10px;border-radius:3px;background:var(--spend);transform:translateY(1px)}
+ol.phases{margin:0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:ph}
+ol.phases li{counter-increment:ph;display:grid;grid-template-columns:40px 1fr;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+ol.phases li::before{content:counter(ph);font:700 22px/1 var(--display);color:var(--brand)}
+blockquote{margin:0;padding:14px 18px;border-inline-start:3px solid var(--brand);background:var(--brand-soft);border-radius:0 8px 8px 0;display:flex;flex-direction:column;gap:8px}
+blockquote .he{direction:rtl;text-align:right;font-size:17px}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filters button{font:500 13px/1 var(--display);padding:8px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--surface)}
+ol.qs{margin:0;padding-inline-start:0;list-style:none;display:grid;gap:8px}
+ol.qs li{display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:baseline;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+ol.qs .n{font:500 13px/1 var(--mono);color:var(--muted)}
+ol.qs li.top{border-color:var(--bad)}
+.src{columns:2 280px;column-gap:28px;font-size:14px}
+.src h3{font:500 12px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px;break-after:avoid}
+.src ul{margin:0;padding-inline-start:18px}
+.note{font-size:14px;color:var(--muted)}
+@media (max-width:520px){ol.qs li{grid-template-columns:28px 1fr}ol.qs li .pill{grid-column:2}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<nav class="toc" aria-label="Sections"><div class="row">
+  <a href="#verdict">Verdict</a><a href="#plan">Plan</a><a href="#candidates">Candidates</a><a href="#law">Law</a><a href="#build">What to build</a><a href="#questions">Open questions</a><a href="#sources">Sources</a>
+</div></nav>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">fun-saver · research dossier</span>
+  <h1>Real money for kids: provider and legal findings</h1>
+  <p class="lead">Older kids get a real spending wallet on their phone, while savings and good deeds stay virtual. This works only through a licensed provider with an API. One provider's own docs prove the basics; three questions still block it.</p>
+  <div class="meta"><span>Researched 2026-09-24</span><span>Israel · ILS</span><span>Full record: <a href="#repo">docs/research/real-money-provider.md</a></span></div>
+</header>
+
+<section id="verdict">
+  <h2>Verdict</h2>
+  <div class="verdicts">
+    <div class="verdict best"><span class="pill good">Best candidate</span><h3>Airwallex</h3><p>Docs list an Israel consumer debit program billed in ILS, with per-card limits, merchant blocks, ATM blocking, named cards for Apple and Google Pay, and an instant sandbox.</p><p class="note">Blocked by: licence aimed at businesses, consumer program needs approval, no documented minimum age.</p></div>
+    <div class="verdict"><span class="pill warn">Runner-up</span><h3>Rapyd</h3><p>Wallet and card API, free sandbox, Israeli licence. Docs don't say whether it issues cards in Israel, and its only published age rule is 18+.</p><p class="note">The parent would have to be a "company" wallet.</p></div>
+    <div class="verdict"><span class="pill bad">Closed</span><h3>Israeli kids cards</h3><p>PayBox Young, Poalim Junior, MyCal, MyMax and Isracard's kids card are the right product, but none has an API.</p><p class="note">Only route: a partnership deal.</p></div>
+    <div class="verdict"><span class="pill bad">Ruled out</span><h3>Global platforms</h3><p>Stripe, Adyen, Marqeta, Checkout.com, Swan, Wallester and Weavr don't issue cards to Israeli residents.</p></div>
+  </div>
+</section>
+
+<section id="plan">
+  <span class="eyebrow">The plan</span>
+  <h2>Only the spending wallet becomes real money</h2>
+  <p>The parent is the customer and holds the account; child accounts sit under them, as in the app today. The kid can't touch savings, and good deeds aren't spent alone, so those two stay virtual.</p>
+  <div class="wallets">
+    <div class="wallet"><span class="eyebrow">Savings</span><span class="split">40%</span><p>Virtual. Parent holds the money. Interest is a labelled simulation.</p></div>
+    <div class="wallet real"><span class="eyebrow">Spending</span><span class="split">50%</span><p>Real money at the provider, on a card in the child's name in Apple or Google Pay.</p></div>
+    <div class="wallet"><span class="eyebrow">Good deeds</span><span class="split">10%</span><p>Virtual. Parent holds the money and gives with the child.</p></div>
+  </div>
+  <div class="flow"><pre class="mermaid">
+sequenceDiagram
+    participant P as Parent
+    participant F as fun-saver
+    participant W as Provider API
+    participant K as Kid's phone
+    P->>W: Fund parent wallet
+    F->>W: Weekly: move spending share to kid wallet
+    W-->>F: Transfer done
+    K->>W: Pay in a shop with the card
+    F->>W: Read kid wallet balance
+    W-->>F: Balance
+  </pre></div>
+  <ol class="phases">
+    <li><div><h3>In-app weekly allowance</h3><p>Parent sets amount and weekday; the deposit posts itself with the usual split, reusing the once-per-day settlement pattern. No provider needed.</p></div></li>
+    <li><div><h3>Provider due diligence</h3><p>Send the questions below to Airwallex and Rapyd sales, and book a fintech lawyer.</p></div></li>
+    <li><div><h3>Sandbox prototype</h3><p>Airwallex sandbox: parent wallet, child cardholder, weekly transfer, balance read, card controls.</p></div></li>
+    <li><div><h3>Integration</h3><p>Only once a provider confirms consumer and minor support and the lawyer confirms our role.</p></div></li>
+  </ol>
+  <p class="note">Fallback if no provider accepts: fun-saver stays a ledger, the parent loads PayBox Young or MyCal by hand, and a "sync balance" action records the difference as spending.</p>
+</section>
+
+<section id="candidates">
+  <span class="eyebrow">Proof</span>
+  <h2>Candidates compared</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Provider</th><th>Israeli cardholders</th><th>ILS</th><th>Consumers / minors</th><th>API</th><th>Sandbox</th></tr></thead>
+    <tbody>
+      <tr><td class="name"><a href="https://www.airwallex.com/docs/issuing/supported-card-programs">Airwallex</a></td><td>Yes: "Israel CONSUMER DEBIT … For platform accounts that have approval to launch a consumer card program only"</td><td><span class="pill good">Yes</span></td><td>Consumers with approval; minors unverified</td><td><span class="pill good">Yes</span></td><td>Instant</td></tr>
+      <tr><td class="name"><a href="https://docs.rapyd.net/en/cards.html">Rapyd</a></td><td>Unverified: "Issuing cards is supported in specific countries. Contact your Rapyd sales representative"</td><td><span class="pill warn">Unverified</span></td><td>Consumer terms say 18+</td><td><span class="pill good">Yes</span></td><td>Free</td></tr>
+      <tr><td class="name"><a href="https://docs.nium.com/docs/cards">Nium</a></td><td>Israel on <a href="https://partner.visa.com/site/partner-directory/nium.html">Visa's list</a>; shared at onboarding</td><td><span class="pill warn">Unverified</span></td><td>Individuals; minors unverified</td><td><span class="pill good">Yes</span></td><td>Unverified</td></tr>
+      <tr><td class="name"><a href="https://docs.thredd.ai/More_Information/Regions.htm">Thredd</a></td><td>Israel on regions list; processor only</td><td><span class="pill warn">Unverified</span></td><td>Needs a separate issuer</td><td><span class="pill good">Yes</span></td><td>Unverified</td></tr>
+      <tr><td class="name">Israeli kids cards</td><td>Yes</td><td><span class="pill good">Yes</span></td><td>From age 8</td><td><span class="pill bad">No</span></td><td>No</td></tr>
+      <tr><td class="name"><a href="https://docs.stripe.com/issuing/global">Stripe</a> and EU/US platforms</td><td>No</td><td><span class="pill bad">No</span></td><td>—</td><td><span class="pill good">Yes</span></td><td>—</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="law">
+  <span class="eyebrow">Parent holds, child uses</span>
+  <h2>It's legal, and the parent carries the risk</h2>
+  <p>Holding a child's balance needs an Israel Securities Authority licence, so the provider holds the money and fun-saver only calls its API. The parent-held model is how every Israeli kids card already works.</p>
+  <blockquote>
+    <span class="he" lang="he" dir="rtl">דוגמא לכך היא הורה שנותן את אמצעי התשלום לילדו</span>
+    <span>"An example is a parent who gives the payment instrument to their child." The legislature decided the provider shouldn't bear the loss if the child goes beyond what the parent allowed. <a href="https://www.gov.il/BlobFolder/reports/phishing-opition/he/internternational-law_media_phishing-opition.pdf">Ministry of Justice opinion, 30 Sep 2021</a>, checked in the PDF.</span>
+  </blockquote>
+  <div class="tbl"><table>
+    <thead><tr><th>Situation</th><th>Who pays</th><th>Basis</th></tr></thead>
+    <tbody>
+      <tr><td>Child spends within or beyond what the parent intended</td><td>Parent, in full</td><td><a href="https://www.nevo.co.il/law_html/law00/159510.htm">Payment Services Law</a> s.24(ד)</td></tr>
+      <tr><td>Card lost by or stolen from the child</td><td>Parent up to <span class="money">₪450</span>; provider the rest</td><td>s.24(ד)(2), s.24(ג)</td></tr>
+      <tr><td>After reporting it, or while frozen</td><td>Not the parent</td><td>s.24(ב), s.25(ב)</td></tr>
+      <tr><td>Purchase within the parent's consent</td><td>Valid</td><td><a href="https://www.nevo.co.il/law_html/law00/70325.htm">Legal Capacity Law</a> s.4</td></tr>
+      <tr><td>Instalment purchase</td><td>Void without consent</td><td>s.6א</td></tr>
+      <tr><td>Alcohol, tobacco or gambling sold to the child</td><td>Seller</td><td><a href="https://www.nevo.co.il/law_html/law00/70301.htm">Penal Law</a> s.193א</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="build">
+  <span class="eyebrow">Requirements from the findings</span>
+  <h2>What fun-saver must build</h2>
+  <ul class="checks">
+    <li>A card in the child's name under the parent's contract; never the parent's card or login</li>
+    <li>A weekly allowance the parent approves once and cancels with one tap</li>
+    <li>Freeze and report-lost actions that reach the provider immediately</li>
+    <li>Blocks on instalments, ATM, gambling, alcohol and tobacco, crypto, money transfers and fuel</li>
+    <li>A balance cap on the child's wallet</li>
+    <li>The child's details for the provider's beneficiary record</li>
+    <li>Parent's informed privacy consent and a child-friendly notice</li>
+    <li>No marketing aimed at the child; interest labelled as a simulation</li>
+  </ul>
+</section>
+
+<section id="questions">
+  <span class="eyebrow">Unanswered</span>
+  <h2>Open questions</h2>
+  <p>All 41 open questions, grouped by who can answer them. Red borders mark the ones that block everything else.</p>
+  <div class="filters" role="group" aria-label="Filter questions">
+    <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
+    <button type="button" id="f-airwallex" data-f="airwallex" aria-pressed="false">Airwallex</button>
+    <button type="button" id="f-rapyd" data-f="rapyd" aria-pressed="false">Rapyd</button>
+    <button type="button" id="f-partners" data-f="partners" aria-pressed="false">Other providers</button>
+    <button type="button" id="f-lawyer" data-f="lawyer" aria-pressed="false">Lawyer</button>
+    <button type="button" id="f-research" data-f="research" aria-pressed="false">More research</button>
+  </div>
+  <ol class="qs" id="qs"></ol>
+</section>
+
+<section id="sources">
+  <span class="eyebrow">Proof</span>
+  <h2>Key sources</h2>
+  <div class="src">
+    <h3>Airwallex</h3><ul>
+      <li><a href="https://www.airwallex.com/docs/issuing/supported-card-programs">Supported card programs</a></li>
+      <li><a href="https://www.airwallex.com/docs/issuing/supported-regions-and-currencies">Regions and currencies</a></li>
+      <li><a href="https://www.airwallex.com/docs/issuing/get-started/create-cardholders">Cardholders</a></li>
+      <li><a href="https://www.airwallex.com/docs/issuing/card-controls/authorization-controls">Authorization controls</a></li>
+      <li><a href="https://www.airwallex.com/global/newsroom/airwallex-secures-payment-service-license-in-israel-enabling-global-payment-solutions">Israeli licence announcement</a></li></ul>
+    <h3>Rapyd</h3><ul>
+      <li><a href="https://docs.rapyd.net/en/cards.html">Cards</a></li>
+      <li><a href="https://docs.rapyd.net/en/create-wallet.html">Create wallet</a></li>
+      <li><a href="https://docs.rapyd.net/en/set-up-your-account.html">Sandbox setup</a></li>
+      <li><a href="https://www.rapyd.net/security-compliance/regulatory-framework/">Regulatory framework</a></li></ul>
+    <h3>Israeli products</h3><ul>
+      <li><a href="https://www.payboxapp.com/young-tos">PayBox Young terms</a></li>
+      <li><a href="https://www.max.co.il/api/umbraco/getImage?imageName=MYMAX-taarifun-mungash-new_amla-6.2024.pdf">MyMax form</a></li>
+      <li><a href="https://digital.isracard.co.il/globalassets/isracard/pdf/nitanchick2023.pdf">Isracard Nitanchik agreement</a></li>
+      <li><a href="https://www.bankhapoalim.co.il/he/poalim-digital/junior">Poalim Junior</a></li>
+      <li><a href="https://www.bizportal.co.il/capitalmarket/news/article/20039545">Bizportal: 37 payment licences</a></li></ul>
+    <h3>Law</h3><ul>
+      <li><a href="https://www.nevo.co.il/law_html/law00/216790.htm">Payment Services Licensing Law 2023</a></li>
+      <li><a href="https://www.nevo.co.il/law_html/law00/159510.htm">Payment Services Law 2019</a></li>
+      <li><a href="https://www.nevo.co.il/law_html/law00/70325.htm">Legal Capacity Law 1962</a></li>
+      <li><a href="https://www.nevo.co.il/law_html/law00/230796.htm">AML order for payment companies</a></li>
+      <li><a href="https://www.nevo.co.il/law_html/law00/71631.htm">Privacy Protection Law</a></li>
+      <li><a href="https://www.new.isa.gov.il/images/Fittings/isa-be/asset_library_pic/al_lobby/al_lobby-63a2db729e575/outsourcing.pdf">ISA outsourcing directive</a></li>
+      <li><a href="https://boi.org.il/media/ascl2lho/416_5n.pdf">BOI Directive 416 (minors)</a></li></ul>
+  </div>
+  <p class="note" id="repo">The complete record, with every quote, every source and the verification log, lives in the repo at <code>docs/research/real-money-provider.md</code>. This page is research, not legal advice.</p>
+</section>
+</div>
+
+<script>
+const Q = [
+  ['airwallex','Does your Israeli licence cover consumer customers (a parent), or businesses only?',1],
+  ['airwallex','What does approval for the Israel consumer card program require? Minimum volumes, fees?',1],
+  ['airwallex','Can a child aged 8–17 be the cardholder, with the parent as the verified customer?',1],
+  ['airwallex','Which ID works for a child without a Teudat Zehut card?'],
+  ['airwallex','Can a consumer card be issued to someone other than the onboarded individual?'],
+  ['airwallex','Do Israeli-issued cards work in Apple Pay and Google Pay?'],
+  ['airwallex','Can fun-saver (an Israeli company or sole trader) be the platform account?'],
+  ['airwallex','Are scheduled transfers between wallets native, or must we trigger them?'],
+  ['rapyd','Do you issue cards to Israeli residents in ILS?',1],
+  ['rapyd','Can minors hold a person wallet or card, with the parent as the verified contact?'],
+  ['rapyd','Can a parent be a company wallet with the child as a contact, for a consumer use case?'],
+  ['rapyd','Per-card limits, merchant and ATM blocks without Enterprise remote authorization?'],
+  ['rapyd','What is our role, and what does the PCI-DSS "special agreement" involve?'],
+  ['rapyd','Pricing and minimums.'],
+  ['rapyd','Does the sandbox issue cards without a card program from sales?'],
+  ['partners','PayBox: would you expose a partner API for PayBox Young?'],
+  ['partners','Bank of Jerusalem: would you sponsor a prepaid program for a kids app?'],
+  ['partners','STB Union: partnership terms for a kids prepaid program?'],
+  ['partners','Nium: is Israel in your cardholder countries? Minors?'],
+  ['partners','Isracard: what do the "Cards" APIs on your developer portal do?'],
+  ['lawyer','Does triggering transfers through the provider\'s API need a payment-initiation licence?',1],
+  ['lawyer','Is a branded app under a licensee\'s contract an outsourcing supplier, or a payment service itself?',1],
+  ['lawyer','Is the child\'s sub-wallet a separate payment account or part of the parent\'s?'],
+  ['lawyer','Must the provider record the child as a beneficiary? Separate ID at 16–17?'],
+  ['lawyer','Does the ISA set age or spending limits on payment-company cards for minors?'],
+  ['lawyer','Is Bank of Israel Directive 416 (v5, 11/00) still current?'],
+  ['lawyer','Does a card on the child\'s own phone, with the child\'s biometrics, count as "given to another person"?'],
+  ['lawyer','Can the parent approve a recurring transfer once, or is a direct debit needed?'],
+  ['lawyer','Are exemption thresholds counted per child or per parent?'],
+  ['lawyer','Is paying real interest on balances permitted?'],
+  ['lawyer','Is simulated interest aimed at children a consumer-law risk?'],
+  ['lawyer','How does a parent validly consent to storing a child\'s financial data?'],
+  ['research','Full ISA licensee register: which licensees serve consumers and minors?'],
+  ['research','Is there a newer version of Directive 416?'],
+  ['research','ISA directives on anti-money-laundering relief for prepaid cards'],
+  ['research','Whose name is printed on Israeli kids cards?'],
+  ['research','MyCal terms: liability, merchant blocks, child ID'],
+  ['research','Esh Bank banking-as-a-service plans and API'],
+  ['research','Mani prepaid card: primary source'],
+  ['research','Revolut under-18 launch in Israel'],
+  ['research','Information Security Regulations 2017: duties for children\'s financial data']
+];
+const LABEL = {airwallex:'Airwallex',rapyd:'Rapyd',partners:'Other providers',lawyer:'Lawyer',research:'More research'};
+const list = document.getElementById('qs');
+function render(f){
+  list.innerHTML = '';
+  Q.forEach(([who,text,top],i)=>{
+    if(f!=='all' && f!==who) return;
+    const li = document.createElement('li');
+    if(top) li.className = 'top';
+    li.innerHTML = '<span class="n">'+String(i+1).padStart(2,'0')+'</span><span></span><span class="pill brand"></span>';
+    li.children[1].textContent = text;
+    li.children[2].textContent = LABEL[who];
+    list.appendChild(li);
+  });
+}
+document.querySelectorAll('.filters button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.filters button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  render(b.dataset.f);
+  try{localStorage.setItem('qf',b.dataset.f)}catch(e){}
+}));
+let saved='all'; try{saved=localStorage.getItem('qf')||'all'}catch(e){}
+(document.querySelector('.filters button[data-f="'+saved+'"]')||document.getElementById('f-all')).click();
+</script>
