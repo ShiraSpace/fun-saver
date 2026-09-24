@@ -1,24 +1,27 @@
 import { fetchJson } from '@/lib/fetch-json';
 interface AddTransaction {
   addDeposit: (amountShekels: number) => Promise<void>;
-  withdraw: (walletId: string, amountShekels: number) => Promise<void>;
+  addWithdrawal: (walletId: string, amountShekels: number) => Promise<void>;
 }
 
-function accountEndpoint(accountId: string, action: string): string {
-  return `/api/accounts/${accountId}/${action}`;
+function accountTransactionUrl(
+  accountId: string,
+  transactionPath: string
+): string {
+  return `/api/accounts/${accountId}/${transactionPath}`;
 }
 
 export function useAddTransaction(accountId: string): AddTransaction {
   return {
     addDeposit: (amountShekels): Promise<void> =>
       fetchJson({
-        url: accountEndpoint(accountId, 'deposits'),
+        url: accountTransactionUrl(accountId, 'deposits'),
         method: 'POST',
         body: { amount: amountShekels },
       }),
-    withdraw: (walletId, amountShekels): Promise<void> =>
+    addWithdrawal: (walletId, amountShekels): Promise<void> =>
       fetchJson({
-        url: accountEndpoint(accountId, 'withdrawals'),
+        url: accountTransactionUrl(accountId, 'withdrawals'),
         method: 'POST',
         body: { walletId, amount: amountShekels },
       }),

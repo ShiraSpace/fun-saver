@@ -3,7 +3,7 @@ import { splitDeposit, type DepositSplit } from '@/lib/transactions';
 import { useAddTransaction } from './use-add-transaction';
 import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 
-interface DepositForm extends AmountEntry {
+interface DepositFormState extends AmountEntry {
   split: DepositSplit;
   canSubmit: boolean;
 }
@@ -11,13 +11,13 @@ interface DepositForm extends AmountEntry {
 export function useDepositForm(
   accountId: string,
   onClose: () => void
-): DepositForm {
+): DepositFormState {
   const { addDeposit } = useAddTransaction(accountId);
   const entry = useAmountEntry(addDeposit, onClose);
 
   return {
     ...entry,
-    split: splitDeposit(entry.amount * AGOROT_PER_SHEKEL),
-    canSubmit: entry.amount > 0 && !entry.isSubmitting,
+    split: splitDeposit(entry.amountShekels * AGOROT_PER_SHEKEL),
+    canSubmit: entry.amountShekels > 0 && !entry.isSubmitting,
   };
 }

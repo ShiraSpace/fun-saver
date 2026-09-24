@@ -4,7 +4,7 @@ import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 
 describe('DepositAmount', () => {
   it('shows the whole-shekel amount', () => {
-    render(<DepositAmount amount={50} />);
+    render(<DepositAmount amountShekels={50} />);
 
     expect(
       screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)
