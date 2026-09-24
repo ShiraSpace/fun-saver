@@ -22,35 +22,29 @@ const WALLET_NAMES: readonly WalletName[] = DEFAULT_WALLETS.map(
 );
 
 function firstTransactionDay(entries: LedgerEntry[]): string | undefined {
-  return entries.reduce<string | undefined>(
-    (earliest, entry) =>
-      earliest === undefined || entry.occurredAt < earliest
-        ? entry.occurredAt
-        : earliest,
-    undefined
-  );
+  const transactionDays = entries.map((entry) => entry.occurredAt).sort();
+
+  return transactionDays[0];
 }
 
 function balanceChangeByDay(entries: LedgerEntry[]): Map<string, number> {
-  const balanceChange = new Map<string, number>();
+  const changeByDay = new Map<string, number>();
 
   for (const entry of entries) {
-    balanceChange.set(
-      entry.occurredAt,
-      (balanceChange.get(entry.occurredAt) ?? 0) + signedAmount(entry)
-    );
+    const changeSoFar = changeByDay.get(entry.occurredAt) ?? 0;
+    changeByDay.set(entry.occurredAt, changeSoFar + signedAmount(entry));
   }
 
-  return balanceChange;
+  return changeByDay;
 }
 
 function runningBalance(days: string[], entries: LedgerEntry[]): number[] {
-  const balanceChange = balanceChangeByDay(entries);
+  const changeByDay = balanceChangeByDay(entries);
   const balances: number[] = [];
   let balance = 0;
 
   for (const day of days) {
-    balance += balanceChange.get(day) ?? 0;
+    balance += changeByDay.get(day) ?? 0;
     balances.push(balance);
   }
 
@@ -61,20 +55,22 @@ function walletTransactions(
   name: WalletName,
   { wallets, entries }: BalanceHistoryInput
 ): LedgerEntry[] {
-  const ids = new Set(
-    wallets.filter((wallet) => wallet.name === name).map((wallet) => wallet.id)
-  );
+  const wallet = wallets.find((candidate) => candidate.name === name);
 
-  return entries.filter((entry) => ids.has(entry.walletId));
+  return entries.filter((entry) => entry.walletId === wallet?.id);
 }
 
 function accountTotals(
   walletBalances: WalletBalances,
   days: string[]
 ): number[] {
-  return days.map((_, index) =>
-    WALLET_NAMES.reduce((sum, name) => sum + walletBalances[name][index], 0)
-  );
+  const totalOn = (dayIndex: number): number =>
+    WALLET_NAMES.reduce(
+      (total, name) => total + walletBalances[name][dayIndex],
+      0
+    );
+
+  return days.map((_, dayIndex) => totalOn(dayIndex));
 }
 
 function perWallet(balancesOf: (name: WalletName) => number[]): WalletBalances {
@@ -86,8 +82,9 @@ function perWallet(balancesOf: (name: WalletName) => number[]): WalletBalances {
 }
 
 export function balanceHistory(input: BalanceHistoryInput): BalanceHistory {
-  const start = firstTransactionDay(input.entries);
-  const days = start === undefined ? [] : eachDayInclusive(start, input.asOf);
+  const firstDay = firstTransactionDay(input.entries);
+  const hasNoTransactions = firstDay === undefined;
+  const days = hasNoTransactions ? [] : eachDayInclusive(firstDay, input.asOf);
   const wallets = perWallet((name) =>
     runningBalance(days, walletTransactions(name, input))
   );
@@ -99,8 +96,9 @@ export function balanceOverRange(
   history: BalanceHistory,
   rangeInDays: number
 ): BalanceHistory {
-  const from = Math.max(0, history.days.length - 1 - rangeInDays);
-  const fromRangeStart = <T>(values: T[]): T[] => values.slice(from);
+  const todayIndex = history.days.length - 1;
+  const rangeStartIndex = Math.max(0, todayIndex - rangeInDays);
+  const fromRangeStart = <T>(values: T[]): T[] => values.slice(rangeStartIndex);
 
   return {
     days: fromRangeStart(history.days),
