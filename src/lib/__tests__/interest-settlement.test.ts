@@ -145,7 +145,7 @@ describe('settleInterest', () => {
   });
 });
 
-describe('withDerivedWallets', () => {
+describe('summarizeAccounts', () => {
   const mockSiblingAccountWithoutInterest = {
     ...mockSiblingAccount,
     wallets: [createMockWallet({ id: 'w9', monthlyInterestRate: 0 })],

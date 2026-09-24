@@ -193,3 +193,7 @@ export async function rawResponse(
     redirectPath: redirectTarget && new URL(redirectTarget, url).pathname,
   };
 }
+
+export function firstPaintThemeId(page: Page): Promise<unknown> {
+  return page.evaluate((): unknown => Reflect.get(window, 'funSaverThemeId'));
+}

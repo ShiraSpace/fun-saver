@@ -25,11 +25,11 @@ PR is up.
 
 ```ts
 // e2e/shots/<topic>.shot.mts
-import { mockAccount, mockSecondAccount, mockTransactions } from '@/test-utils/fixtures';
+import { mockAccount, mockSiblingAccount, mockTransactions } from '@/test-utils/fixtures';
 import { withShots } from '../shot';
 
 await withShots(
-  { accounts: [mockAccount, mockSecondAccount], transactions: mockTransactions },
+  { accounts: [mockAccount, mockSiblingAccount], transactions: mockTransactions },
   async (app, shoot) => {
     await app.menu.open();
     await shoot('picker-shut');
@@ -42,8 +42,8 @@ await withShots(
 
 `withShots` boots a built server on a free port, seeds a fresh store, signs in
 as `mockUser`, and opens a 402×874 page at `deviceScaleFactor: 2`. `app` is the
-same `AppDriver` the visual suites use — `menu`, `header`, `dashboard`,
-`createAccount`, `editAccount`, `avatarPicker`, `emptyState`, `session`. Reach
+same `AppDriver` the visual suites use — `menu`, `header`, `account`,
+`createAccount`, `editAccount`, `avatarPicker`, `emptyState`, `appBrowser`. Reach
 for a driver method before writing a raw selector; add one to the driver if it
 is missing, the way a visual test would.
 

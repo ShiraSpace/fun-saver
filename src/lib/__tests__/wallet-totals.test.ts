@@ -23,7 +23,7 @@ const transaction = (
     occurredAt,
   });
 
-describe('derivations', () => {
+describe('wallet totals', () => {
   const transactions: Transaction[] = [
     transaction('deposit', 8000, '2026-01-01'),
     transaction('interest', 53, '2026-01-02'),
@@ -38,23 +38,23 @@ describe('derivations', () => {
     expect(balanceChange(transaction('interest', 5, '2026-01-01'))).toBe(5);
   });
 
-  it('balance = deposits - withdrawals + interest', () => {
+  it('balance = deposited - withdrawn + interest earned', () => {
     expect(balance(transactions)).toBe(8000 - 1000 + 53 + 47);
   });
 
-  it('withdrawals = sum of withdrawal transactions', () => {
+  it('withdrawn = sum of withdrawal transactions', () => {
     expect(withdrawn(transactions)).toBe(1000);
   });
 
-  it('principal = deposits - withdrawals', () => {
+  it('principal = deposited - withdrawn', () => {
     expect(principal(transactions)).toBe(7000);
   });
 
-  it('interestGain = sum of interest', () => {
+  it('interestEarned = sum of interest', () => {
     expect(interestEarned(transactions)).toBe(100);
   });
 
-  it('todayInterest = interest dated asOf only', () => {
+  it('interestEarnedToday = interest dated asOf only', () => {
     expect(interestEarnedToday(transactions, '2026-01-03')).toBe(47);
     expect(interestEarnedToday(transactions, '2026-01-10')).toBe(0);
   });
