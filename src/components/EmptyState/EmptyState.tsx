@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { ActionButton } from '@/components/ActionButton';
+import { PrimaryButton } from '@/components/PrimaryButton';
 import { Header } from '@/components/Header';
 import { PIG_EMOJI } from '@/components/Pig/constants';
 import { Column, Screen } from '@/components/Screen';
@@ -34,13 +34,13 @@ export function EmptyState({ onCreate }: EmptyStateProps): JSX.Element {
         >
           {PIG_EMOJI}
         </Pig>
-        <ActionButton
+        <PrimaryButton
           type="button"
           data-testid={EMPTY_STATE_TEST_IDS.createAccount}
           onClick={onCtaClick}
         >
           {EMPTY_STATE_COPY.createAccount}
-        </ActionButton>
+        </PrimaryButton>
       </Centre>
     </Screen>
   );

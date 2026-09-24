@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 export const Intro = styled.section`
   padding: 17px 16px;
   border-radius: 18px;
-  background: ${({ theme }): string => theme.gradients.actionButton};
+  background: ${({ theme }): string => theme.gradients.primaryButton};
   color: ${({ theme }): string => theme.colors.textOnPrimary};
   box-shadow: 0 4px 0 ${({ theme }): string => theme.shadows.soft};
   text-align: start;

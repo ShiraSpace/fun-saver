@@ -5,7 +5,7 @@ import { ExampleWalletSplitTable } from './ExampleWalletSplitTable';
 import { EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS } from './constants';
 
 describe('the worked example of a week of allowance', () => {
-  const { example } = METHOD_COPY.actions;
+  const { example } = METHOD_COPY.setup;
 
   beforeEach(() => {
     render(<ExampleWalletSplitTable {...example} />);

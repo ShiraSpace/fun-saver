@@ -6,7 +6,7 @@ const APP_SPLIT = WALLETS_COPY.pots
   .map((wallet) => share(DEPOSIT_SPLIT[wallet]))
   .join(' / ');
 
-export const ACTIONS_COPY = {
+export const SETUP_COPY = {
   title: 'מה צריך לעשות',
   intro: {
     kind: 'text',

@@ -9,7 +9,7 @@ const angled = (angle: string, stops: readonly string[]): string =>
 export function buildGradients(stops: ThemeStops): ThemeGradients {
   return {
     screen: angled(SCREEN_ANGLE, stops.screen),
-    actionButton: `linear-gradient(${stops.actionButton.join(', ')})`,
+    primaryButton: `linear-gradient(${stops.primaryButton.join(', ')})`,
     sunnyTile: angled(TILE_ANGLE, stops.sunnyTile),
     potSavings: angled(TILE_ANGLE, stops.potSavings),
     potSpending: angled(TILE_ANGLE, stops.potSpending),

@@ -26,7 +26,7 @@ describe('theme registry', () => {
 
     it('exposes the sunset colours and gradients as tokens', () => {
       expect(tokens.colors.primary).toBe('#6B2C8E');
-      expect(tokens.gradients.actionButton).toContain('linear-gradient');
+      expect(tokens.gradients.primaryButton).toContain('linear-gradient');
       expect(tokens.gradients.screen).toContain('linear-gradient');
     });
 
@@ -90,7 +90,7 @@ describe('theme registry', () => {
 
     it('drops the button shadow below the button', () => {
       const buttonTokens = themes.map(({ colors, gradients }) => [
-        gradients.actionButton,
+        gradients.primaryButton,
         colors.primaryShadow,
         colors.primaryGlow,
       ]);

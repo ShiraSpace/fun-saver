@@ -31,7 +31,7 @@ describe('waiting for a page', () => {
     it('sends the shell ahead of the page', async () => {
       const positions = await loadingShell.positionsOnFirstLoad(
         HOME_ROUTE,
-        ACCOUNT_TEST_IDS.actionCta
+        ACCOUNT_TEST_IDS.newTransaction
       );
 
       assert.ok(positions.shell >= 0, 'the first load carries no shell');
@@ -78,7 +78,7 @@ describe('waiting for a page', () => {
     {
       name: 'from home to the method page',
       start: HOME_ROUTE,
-      leavingPage: ACCOUNT_TEST_IDS.actionCta,
+      leavingPage: ACCOUNT_TEST_IDS.newTransaction,
       arrivingTitle: METHOD_COPY.title,
       leave: async (): Promise<void> => {
         await menu.open();

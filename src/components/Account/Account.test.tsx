@@ -50,11 +50,11 @@ describe('Account', () => {
     expect(screen.getAllByTestId(WALLET_CARD_TEST_IDS.card)).toHaveLength(3);
   });
 
-  it('shows the new-action CTA button', () => {
-    const cta = screen.getByTestId(ACCOUNT_TEST_IDS.actionCta);
+  it('shows the new-transaction button', () => {
+    const cta = screen.getByTestId(ACCOUNT_TEST_IDS.newTransaction);
 
     expect(cta.tagName).toBe('BUTTON');
-    expect(cta).toHaveTextContent(ACCOUNT_COPY.actionCta);
+    expect(cta).toHaveTextContent(ACCOUNT_COPY.newTransaction);
   });
 
   it('opens the transaction drawer when the CTA is clicked', () => {
@@ -62,7 +62,7 @@ describe('Account', () => {
       screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.drawer)
     ).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByTestId(ACCOUNT_TEST_IDS.actionCta));
+    fireEvent.click(screen.getByTestId(ACCOUNT_TEST_IDS.newTransaction));
 
     expect(
       screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.drawer)
@@ -70,7 +70,7 @@ describe('Account', () => {
   });
 
   it('closes the drawer when the scrim is clicked', () => {
-    fireEvent.click(screen.getByTestId(ACCOUNT_TEST_IDS.actionCta));
+    fireEvent.click(screen.getByTestId(ACCOUNT_TEST_IDS.newTransaction));
 
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.scrim));
 

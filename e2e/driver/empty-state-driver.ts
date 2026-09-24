@@ -1,4 +1,4 @@
-import { ACTION_BUTTON } from '@/components/ActionButton/constants';
+import { PRIMARY_BUTTON } from '@/components/PrimaryButton/constants';
 import {
   EMPTY_STATE_ANIMATION,
   EMPTY_STATE_TEST_IDS,
@@ -38,7 +38,7 @@ export class EmptyStateDriver {
     return this.session.waitForStyle(
       `[data-testid="${EMPTY_STATE_TEST_IDS.createAccount}"]`,
       'transform',
-      `matrix(1, 0, 0, 1, 0, -${ACTION_BUTTON.hoverLift})`
+      `matrix(1, 0, 0, 1, 0, -${PRIMARY_BUTTON.hoverLift})`
     );
   }
 

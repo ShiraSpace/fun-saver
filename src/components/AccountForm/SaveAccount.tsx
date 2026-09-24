@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { ActionButton } from '@/components/ActionButton';
+import { PrimaryButton } from '@/components/PrimaryButton';
 import { ACCOUNT_FORM_COPY, ACCOUNT_FORM_TEST_IDS } from './constants';
 import { SaveError } from './AccountForm.styles';
 
@@ -22,13 +22,13 @@ export function SaveAccount({
 
   return (
     <>
-      <ActionButton
+      <PrimaryButton
         type="submit"
         disabled={!canSubmit}
         data-testid={ACCOUNT_FORM_TEST_IDS.submit}
       >
         {submitLabel}
-      </ActionButton>
+      </PrimaryButton>
       {saveError}
     </>
   );
