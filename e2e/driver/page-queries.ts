@@ -14,9 +14,9 @@ export function currentPath(page: Page): string {
 export function signedInUserId(page: Page): Promise<string> {
   return page.evaluate(async (): Promise<string> => {
     const response = await fetch('/api/auth/session');
-    const appBrowser = await response.json();
+    const session = await response.json();
 
-    return appBrowser?.user?.id ?? '';
+    return session?.user?.id ?? '';
   });
 }
 
