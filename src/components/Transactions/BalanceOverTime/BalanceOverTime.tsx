@@ -12,6 +12,7 @@ import { TotalBalance } from './TotalBalance';
 import {
   BALANCE_OVER_TIME_COPY,
   BALANCE_OVER_TIME_TEST_IDS,
+  RANGE,
   RANGES,
 } from './constants';
 import { Card, RangeRow } from './BalanceOverTime.styles';
@@ -25,14 +26,15 @@ export function BalanceOverTime({
   balanceHistory,
   viewChoices,
 }: BalanceOverTimeProps): JSX.Element {
-  const range =
-    RANGES.find((candidate) => candidate.id === viewChoices.range) ?? RANGES[1];
+  const range = RANGE[viewChoices.range];
+  const totalBalance = todaysTotalBalance(balanceHistory);
+  const balanceChange = totalBalanceChange(balanceHistory, range.days);
 
   return (
     <Card data-testid={BALANCE_OVER_TIME_TEST_IDS.card}>
       <TotalBalance
-        totalBalance={todaysTotalBalance(balanceHistory)}
-        balanceChange={totalBalanceChange(balanceHistory, range.days)}
+        totalBalance={totalBalance}
+        balanceChange={balanceChange}
         changeLabel={range.changeLabel}
       />
       <RangeRow>

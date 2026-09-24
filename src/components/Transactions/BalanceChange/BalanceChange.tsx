@@ -15,12 +15,13 @@ export function BalanceChange({
 }: BalanceChangeProps): JSX.Element {
   const sign =
     balanceChange < 0 ? BALANCE_CHANGE_COPY.fell : BALANCE_CHANGE_COPY.rose;
+  const shekels = agorotToWholeShekels(Math.abs(balanceChange));
 
   return (
     <Amount dir="ltr" data-testid={testId}>
       {sign}
       {MONEY_COPY.currencySign}
-      {agorotToWholeShekels(Math.abs(balanceChange))}
+      {shekels}
     </Amount>
   );
 }

@@ -7,12 +7,14 @@ export interface Range {
   changeLabel: string;
 }
 
-export const RANGES: readonly Range[] = [
-  { id: 'week', days: 7, label: 'שבוע', changeLabel: 'השבוע' },
-  { id: 'month', days: 30, label: 'חודש', changeLabel: 'החודש' },
-  { id: 'year', days: 365, label: 'שנה', changeLabel: 'השנה' },
-  { id: 'all', days: Infinity, label: 'הכל', changeLabel: 'מאז ההתחלה' },
-];
+export const RANGE: Record<RangeId, Range> = {
+  week: { id: 'week', days: 7, label: 'שבוע', changeLabel: 'השבוע' },
+  month: { id: 'month', days: 30, label: 'חודש', changeLabel: 'החודש' },
+  year: { id: 'year', days: 365, label: 'שנה', changeLabel: 'השנה' },
+  all: { id: 'all', days: Infinity, label: 'הכל', changeLabel: 'מאז ההתחלה' },
+};
+
+export const RANGES: readonly Range[] = Object.values(RANGE);
 
 export const DEFAULT_RANGE: RangeId = 'month';
 

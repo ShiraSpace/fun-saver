@@ -28,6 +28,7 @@ export default async function TransactionsPage(): Promise<JSX.Element> {
     (settledAccount) => settledAccount.account
   );
   const initialAccount = findCurrentAccount(accountSummaries, currentAccountId);
+  const settledTransactionsByAccount = transactionsByAccount(settledAccounts);
 
   if (!initialAccount) {
     redirect(HOME_ROUTE);
@@ -39,7 +40,7 @@ export default async function TransactionsPage(): Promise<JSX.Element> {
         <Transactions
           accounts={accountSummaries}
           initialAccount={initialAccount}
-          transactionsByAccount={transactionsByAccount(settledAccounts)}
+          transactionsByAccount={settledTransactionsByAccount}
           asOf={asOf}
         />
       </SignedInUserProvider>

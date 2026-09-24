@@ -20,6 +20,8 @@ export function TotalBalance({
   balanceChange,
   changeLabel,
 }: TotalBalanceProps): JSX.Element {
+  const balanceFell = balanceChange < 0;
+
   return (
     <Head>
       <TotalBalanceLabel>{TOTAL_BALANCE_COPY.label}</TotalBalanceLabel>
@@ -30,7 +32,7 @@ export function TotalBalance({
         />
       </TotalBalanceAmount>
       <ChangeOverRange
-        data-balance-fell={balanceChange < 0}
+        data-balance-fell={balanceFell}
         data-testid={TOTAL_BALANCE_TEST_IDS.changeOverRange}
       >
         <BalanceChange

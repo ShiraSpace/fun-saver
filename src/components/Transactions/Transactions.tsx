@@ -29,9 +29,12 @@ export function Transactions({
   asOf,
 }: TransactionsProps): JSX.Element {
   const navigation = useAccountNavigation(accounts, initialAccount.id);
+  const viewChoices = useTransactionsViewChoices();
+
   const { switchAccount } = navigation;
   const currentAccount = navigation.currentAccount ?? initialAccount;
-  const viewChoices = useTransactionsViewChoices();
+  const accountsContext = { accounts, currentAccount, switchAccount };
+
   const currentBalanceHistory = useMemo(
     () =>
       balanceHistory({
@@ -44,7 +47,7 @@ export function Transactions({
 
   return (
     <AccountManagement navigation={navigation}>
-      <AccountsProvider value={{ accounts, currentAccount, switchAccount }}>
+      <AccountsProvider value={accountsContext}>
         <Screen align="top">
           <Column>
             <Header title={TRANSACTIONS_COPY.title} account={currentAccount} />
