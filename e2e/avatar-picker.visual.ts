@@ -2,7 +2,7 @@ import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { AVATARS } from '@/lib/avatars';
 import { AVATAR_PICKER_LAYOUT } from '@/components/AvatarPicker/constants';
-import { SUNSHINE_QUEST_COLORS } from '@/theme/palette';
+import { getThemeTokens } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
@@ -45,11 +45,13 @@ describe('avatar picker', () => {
 
     assert.equal(
       option.borderColor,
-      hexToRgb(SUNSHINE_QUEST_COLORS.textOnPrimary)
+      hexToRgb(getThemeTokens().colors.textOnPrimary)
     );
     assert.ok(
-      option.boxShadow.includes(hexToRgb(SUNSHINE_QUEST_COLORS.selectionRing)),
-      `expected ring colour ${hexToRgb(SUNSHINE_QUEST_COLORS.selectionRing)} in "${option.boxShadow}"`
+      option.boxShadow.includes(
+        hexToRgb(getThemeTokens().colors.selectionRing)
+      ),
+      `expected ring colour ${hexToRgb(getThemeTokens().colors.selectionRing)} in "${option.boxShadow}"`
     );
   });
 

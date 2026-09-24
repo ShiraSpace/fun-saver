@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { type BoundingBox } from 'puppeteer';
 import { mockAccount } from '@/test-utils/fixtures';
-import { SUNSHINE_QUEST_COLORS } from '@/theme/palette';
+import { getThemeTokens } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
@@ -20,8 +20,8 @@ const NO_TRANSFORM = 'none';
 const VISIBLE = '1';
 const HIDDEN = '0';
 const TRANSPARENT = 'rgba(0, 0, 0, 0)';
-const OVERLAY_BACKGROUND = hexToRgb(SUNSHINE_QUEST_COLORS.softBg);
-const TEXT_ON_OVERLAY = hexToRgb(SUNSHINE_QUEST_COLORS.textStrong);
+const OVERLAY_BACKGROUND = hexToRgb(getThemeTokens().colors.softBg);
+const TEXT_ON_OVERLAY = hexToRgb(getThemeTokens().colors.textStrong);
 
 describe('menu morph', () => {
   const { appBrowser, menu, header } = useDriver({ accounts: [mockAccount] });
