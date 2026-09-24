@@ -27,7 +27,7 @@ picking a different child in the menu changes graph, list and theme together.
 ## Scope
 
 **In:** one route, `/transactions`. The chart card with its total, delta pill,
-total/per-wallet chips and four ranges. The movement list with month sections,
+total/per-wallet chips and four ranges. The transaction list with month sections,
 type filters and a monthly/daily interest rollup. Hebrew only, RTL. Plus five
 things outside the route that the screen cannot ship without:
 
@@ -154,7 +154,7 @@ and has no reason to read the whole account.
 memory and json-file repositories through one shared `oldestFirst`
 (`src/db/transaction-order.ts`) — so dev (json-file) and prod (postgres) hand back the
 same rows in the same order. The derivations still do not lean on it:
-`balance-series` is independent of order and `transaction-rows` sorts newest
+`balance-history` is independent of order and `transaction-rows` sorts newest
 first for display. The index covers the `account_id` lookup, not the sort, so
 Postgres adds a sort node over roughly a thousand rows, which costs nothing at
 this size.
@@ -174,30 +174,30 @@ switch — is named there as the upgrade.
 
 ## The graph
 
-A hand-rolled SVG. `src/lib/balance-series.ts` will be pure and unit-tested:
+A hand-rolled SVG. `src/lib/balance-history.ts` will be pure and unit-tested:
 `Transaction[]` to a per-day balance per wallet plus a total, over the account's
-whole history. Days with no movement carry the previous day's balance forward, so
-the series has one point per day from the account's first transaction to `asOf`
+whole history. Days with no transactions carry the previous day's balance forward, so
+the history has one point per day from the account's first transaction to `asOf`
 and the path never gaps. The component owns the scales, path building, axis ticks
 and direct labels.
 
-**Degenerate series.** An account whose whole history is one day yields a
-one-point series: a `M x y` path with no `L` draws nothing, and the extent
+**Degenerate histories.** An account whose whole history is one day yields a
+one-point history: a `M x y` path with no `L` draws nothing, and the extent
 collapses so the vertical scale divides by a zero span. One point renders as a
 dot at mid-height with its direct label, and zero points falls through to the
 no-history state below — neither is left to the path builder.
 
-**Ranges window the series, never the transactions.** A range selects a slice of
-the already-built day series. Deriving a series from transactions filtered to the
+**Ranges slice the history, never the transactions.** A range selects a slice of
+the already-built balance history. Deriving a history from transactions filtered to the
 last seven days would start every line at zero instead of at the balance carried
-into the window.
+into the range.
 
 **The vertical scale is relative, not zero-based.** It runs from the minimum to
-the maximum of the *currently visible lines* within the *current window*, as the
+the maximum of the *currently visible lines* within the *current range*, as the
 mockup's `extentOf` does. Two consequences the port must keep deliberately:
 turning off `סך הכל` re-scales the chart, so a savings line that looked flat
 beneath the total becomes a mountain; and narrowing the range re-scales it again.
-This is what makes a seven-day window readable at all — a zero-based axis would
+This is what makes a seven-day range readable at all — a zero-based axis would
 flatten every line at this app's amounts — but it means the chart shows shape,
 not magnitude, which is why the direct labels and the y-axis ticks carry the
 numbers.
@@ -208,12 +208,12 @@ is no separate gridline decision.
 
 **The y ticks cannot all be whole shekels.** The mockup labels them through the
 equivalent of `agorotToWholeShekels`, which reads correctly at its synthetic
-amounts and collapses at this app's. A quiet seven-day window on an ₪18 savings
-pot moves about ₪0.63 end to end, so a relative scale over that window yields
+amounts and collapses at this app's. A quiet seven-day range on an ₪18 savings
+pot moves about ₪0.63 end to end, so a relative scale over that range yields
 three ticks that all round to the same number and three gridlines that read as
 noise — the exact failure the relative scale was chosen to avoid, moved off the
 paths and onto the labels. The ticks therefore take the same precision rule as the
-change column below: agorot when the window's visible span is under ₪10, whole
+change column below: agorot when the range's visible span is under ₪10, whole
 shekels above it, one shared helper serving both. The x axis carries 4, 5 or 6 date ticks depending on the span,
 switches from day-and-month to month names past a wide span, adds the year past a
 wider one, and the newest tick reads `היום`.
@@ -233,7 +233,7 @@ x-axis tick granularity changes with range, and the newest tick reads `היום`
 mockup boots. Switching a range or a chip never refetches — it re-slices data
 already on the page.
 
-**`שנה` and `הכל` are the same window until an account is a year old**, which is
+**`שנה` and `הכל` are the same range until an account is a year old**, which is
 every account this app currently has; the mockup only separates them by giving
 itself 430 days of synthetic history. Both chips ship anyway rather than
 appearing later, because a range strip that grows a button on an account's first
@@ -241,7 +241,7 @@ birthday is stranger than two chips that agree for a while.
 
 **Headline and delta.** The headline total is always today's account total, in
 whole shekels, independent of range. The delta pill is
-`total(today) − total(window start)` in whole shekels, labelled by the selected
+`total(today) − total(range start)` in whole shekels, labelled by the selected
 range: `השבוע` · `החודש` · `השנה` · `מאז ההתחלה`. Negative takes `withdrawText`,
 non-negative `gainText`.
 
@@ -372,7 +372,7 @@ The list shows the account's whole history. **The ranges belong to the chart
 alone** — selecting `שבוע` does not shorten the list, and the count line beneath
 the title reads the row count and the span of the whole ledger.
 
-### Deposits are three rows and one movement
+### Deposits are three transactions and one row
 
 `addDeposit` writes one transaction per wallet and gives all three a **single
 `createdAt`**, computed once before the map, plus the same `occurredAt`. The list
@@ -402,21 +402,21 @@ interest-bearing wallet from silently merging under one icon later.
 ### Running balance
 
 The balance column is the account total **at the end of the row's day** — a
-lookup into the same per-day total series the chart draws, not an accumulation
+lookup into the same per-day totals of the balance history the chart draws, not an accumulation
 down the list.
 
 This is the only definition that survives the monthly rollup. A rolled-up row
 covers a month in which deposits and withdrawals also happened, so
 `previous row + amount` cannot equal its balance; any accumulating derivation
 stops reconciling the moment monthly mode is on. Reading the balance out of the
-series keeps every row true on its own terms, and makes the column independent of
+history keeps every row true on its own terms, and makes the column independent of
 which type filter is active.
 
 Three consequences, all of them deliberate:
 
-- `transaction-rows.ts` depends on `balance-series.ts`. They are not two
-  independent derivations; the list asks the series for the balance of a day.
-- **An interest row reads the end-of-day total minus that day's real movement,
+- `transaction-rows.ts` depends on `balance-history.ts`. They are not two
+  independent derivations; the list asks the history for the balance of a day.
+- **An interest row reads the end-of-day total minus that day's deposits and withdrawals,
   in both modes.** `addDailyInterest` accrues on the opening balance and only
   then applies the day's deposit or withdrawal, so within a day the interest is
   the earlier event, and the balance beside it is the balance interest actually
@@ -424,15 +424,15 @@ Three consequences, all of them deliberate:
   balance column. The mockup applies the subtraction to daily rows and not to
   monthly ones, so the same month's interest shows two different balances
   depending on the toggle; that is a mockup bug and the port does not carry it —
-  a rolled-up row subtracts its anchor day's movement the same way.
+  a rolled-up row subtracts its anchor day's deposits and withdrawals the same way.
   Read precisely, the number is *the account total after all of that day's
   interest*, which stays true if a second wallet starts bearing interest; "minus
-  the movement" is how that reads today, with one interest-bearing wallet.
-- **Two movements on the same day show the same balance.** A deposit and a
+  the deposits and withdrawals" is how that reads today, with one interest-bearing wallet.
+- **Two transactions on the same day show the same balance.** A deposit and a
   purchase on one afternoon are two rows with different amounts and one identical
   `יתרה`, and neither equals the balance immediately after its own row. This is
   the price of a definition that does not accumulate, and it is paid knowingly:
-  the alternative is ordering movements within a day, which the data cannot do —
+  the alternative is ordering transactions within a day, which the data cannot do —
   `occurredAt` is a date, and `createdAt` is settlement time, not event time.
   Upgrade is an intra-day sequence on the transaction, which is a migration and
   a write-path change, so it is not this epic's.
@@ -440,10 +440,10 @@ Three consequences, all of them deliberate:
 ### Ordering, sections, filters
 
 Sort key is `(occurredAt descending, interest last within a day)` — newest first,
-and within one day the real movement sits above the interest, which mirrors the
+and within one day a deposit or withdrawal sits above the interest, which mirrors the
 accrual order above. **Not `createdAt`:** interest rows are written at settlement
 time, so a `createdAt` sort floats today's settlement of an old day above recent
-movements. `createdAt` is used for one thing only — grouping a deposit's three
+transactions. `createdAt` is used for one thing only — grouping a deposit's three
 legs.
 
 Rows are grouped into one `<section>` per month with a sticky header, so headers
@@ -487,14 +487,14 @@ Range, chip, filter and interest-mode state live in the client shell, not the
 URL — the same choice `/method` made. The back button therefore leaves the screen
 rather than undoing a chip. The state is **one set for the screen, not one per
 account**: switching child keeps the range and the lines you were looking at and
-re-draws them from the new account's series, which is what the mockup does and
+re-draws them from the new account's balance history, which is what the mockup does and
 what makes comparing two children a single tap.
 
 ## Components
 
 ```
-src/lib/balance-series.ts       pure, graph: per-day balance per wallet + total
-src/lib/transaction-rows.ts     pure, list: grouping, rollup, ordering; reads the series for balances
+src/lib/balance-history.ts      pure, graph: per-day balance per wallet + total
+src/lib/transaction-rows.ts     pure, list: grouping, rollup, ordering; reads the history for balances
 src/components/Transactions/
   Transactions.tsx              client shell, account navigation
   use-transactions-view.ts      range, line chips, type filter, interest mode
@@ -576,7 +576,7 @@ it left behind.
 The chart is an `<svg role="img">` with an `aria-label`, and its "pick at least
 one line" state carries its own label — both already in the mockup. The list
 below carries every balance the chart plots as text, so the chart needs no data
-table; what it does not carry is *which window and which lines are currently
+table; what it does not carry is *which range and which lines are currently
 drawn*, and the mockup's label is the static `מאזן לאורך זמן`. The label is
 therefore built from the selected range and the visible lines, so toggling a chip
 or a range changes what a screen reader is told, not just what the path looks
@@ -584,12 +584,12 @@ like.
 
 ## Testing
 
-Pure derivations (`balance-series`, `transaction-rows`) carry the weight as plain
-unit tests: forward-fill across empty days, windowing a range out of a built
-series, deposit grouping, interest rollup in both modes, the running balance in
-both modes including the minus-the-movement case in each, two movements on one
+Pure derivations (`balance-history`, `transaction-rows`) carry the weight as plain
+unit tests: forward-fill across empty days, slicing a range out of a built
+history, deposit grouping, interest rollup in both modes, the running balance in
+both modes including an interest row's deposits-and-withdrawals subtraction in each, two transactions on one
 day resolving to one balance, ordering within a day, filters, and the empty
-cases. The one-day and zero-day series get their own tests, since the path
+cases. The one-day and zero-day histories get their own tests, since the path
 builder and the extent both degenerate there. Store tests cover `listByAccount`
 in all three implementations, with the live-database ones as `*.e2e.ts`; the
 `settledLedgers` refactor rewrites `src/lib/__tests__/account-ledgers.test.ts`,
@@ -599,11 +599,11 @@ Four of those are not obvious from the list, and are named because they are the
 ones that catch the failures this design argued itself into:
 
 - **Rows handed in insertion order and the same rows handed sorted produce the
-  same series.** Every store now returns rows oldest first, but the series must
+  same history.** Every store now returns rows oldest first, but the history must
   not depend on that; this is what keeps it right for rows from anywhere else.
 - **An account whose wallet has no transactions still derives.** That is the
   grouping's `undefined` case, and every brand-new account.
-- **A window whose whole visible span is under ₪1 does not print three identical
+- **A range whose whole visible span is under ₪1 does not print three identical
   y ticks.**
 - **Deposit fixtures carry distinct `createdAt`s.** `createMockTransaction`
   defaults every row to `2026-01-01T00:00:00.000Z` and deposit grouping keys on
@@ -685,16 +685,16 @@ comment in the source.
   `walletId`, `type`, `amount`, `occurredAt`, `createdAt` — and not the
   `Transaction`. `id` and `accountId` are 95 of the 240 bytes, neither derivation
   reads either, and the list's React key is composite. That is **145 bytes a row, a
-  40% cut**, and it costs nothing in purity: `balance-series.ts` and
+  40% cut**, and it costs nothing in purity: `balance-history.ts` and
   `transaction-rows.ts` take the projection, which is all they ever needed.
 
   Deferred, with the trigger stated honestly rather than optimistically: **when the
   page's payload approaches ~500 KB** — about 3,500 projected rows, which three
   children reach in roughly **two years**. That is a near ceiling, not a distant
   one, and it is accepted on the grounds that both upgrades are cheap when it
-  arrives, because `balance-series.ts` and `transaction-rows.ts` are pure and
+  arrives, because `balance-history.ts` and `transaction-rows.ts` are pure and
   framework-agnostic and run unchanged on the server. In order: ship the derived
-  day series and the month-rolled list instead of rows; then ship only the selected
+  balance history and the month-rolled list instead of rows; then ship only the selected
   account and take a `router.refresh()` on switch, trading free switching for the
   payload. Neither is a parameter until something calls it.
 - **Settlement can run twice.** Two concurrent renders — two tabs, two devices —
@@ -706,7 +706,7 @@ comment in the source.
   (`(account_id, wallet_id, occurred_at) WHERE type = 'interest'`) plus
   `ON CONFLICT DO NOTHING` on the insert — a migration, so it is its own PR, taken
   the first time a duplicate is seen rather than pre-emptively.
-- **Days are UTC days.** `today()` slices a UTC ISO string, so a movement made
+- **Days are UTC days.** `today()` slices a UTC ISO string, so a transaction made
   between midnight and 03:00 Israel time is filed to the previous day. Invisible
   until now; this is the first screen that prints dates in a list. Upgrade is a
   timezone-aware `today()`, which changes interest accrual too and so is its own
@@ -715,9 +715,9 @@ comment in the source.
   millisecond would merge into one row. One parent, one tap — unreachable in
   production, but trivially reachable in a fixture, which is why the testing
   section makes distinct `createdAt`s a rule. Upgrade is a batch-id column.
-- **Two movements on one day share a balance**, and a rolled-up interest row
+- **Two transactions on one day share a balance**, and a rolled-up interest row
   shares its anchor day with whatever else happened. Both follow from a balance
-  column that reads the day series instead of accumulating; the upgrade is an
+  column that reads the balance history instead of accumulating; the upgrade is an
   intra-day sequence on the transaction, which is a migration.
 - **Gridlines borrow `divider` rather than the mockup's `--grid`.** If it reads
   wrong against the card in one theme, it joins the chart-token theme PR.
@@ -732,7 +732,7 @@ comment in the source.
 - **The rolled-up interest row's name.** `ריבית`, letting the month come from the
   section header, versus the mockup's `ריבית ספטמבר`. Same PR as the one above.
 - **The no-history copy**, for the chart frame and the list, on an account that
-  exists but has never had a movement. Also the same PR.
+  exists but has never had a transaction. Also the same PR.
 
 (The graph needs no loading state: it is server-rendered. The shell it arrives
 under is menu-epic PR 11 / 11a — see the note under "Delivery order".)
