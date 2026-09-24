@@ -4,20 +4,20 @@ import { JSX, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import type { Account } from '@/lib/types';
 import {
-  MenuHeaderSheet,
+  MenuHeaderBackdrop,
   MenuOverlay,
   MenuProvider,
   MenuToggle,
   useMenuState,
 } from '../Menu';
-import { MENU_HEADER_SHEET_TEST_IDS } from '../Menu/MenuHeaderSheet/constants';
+import { MENU_HEADER_BACKDROP_TEST_IDS } from '../Menu/MenuHeaderBackdrop/constants';
 import { HOME_ROUTE } from '../Home/constants';
-import { Title } from './CrossfadeTitle';
+import { HeaderTitle } from './HeaderTitle';
 import { HeaderAccountAvatar } from './HeaderAccountAvatar';
 import { HEADER_TEST_IDS } from './constants';
 import { Bar } from './Header.styles';
-import { ProgressLine } from './ProgressLine';
-import { PendingLinksProvider } from './navigation-pending-context';
+import { NavigationProgress } from './NavigationProgress';
+import { PendingNavigationsProvider } from './navigation-pending-context';
 
 export interface HeaderProps {
   title: string;
@@ -27,18 +27,18 @@ export interface HeaderProps {
 export function Header({ title, account }: HeaderProps): JSX.Element {
   const menu = useMenuState();
   const isHome = usePathname() === HOME_ROUTE;
-  const [pendingLinks, setPendingLinks] = useState(0);
-  const isNavigating = pendingLinks > 0;
+  const [pendingNavigationCount, setPendingNavigationCount] = useState(0);
+  const isNavigating = pendingNavigationCount > 0;
 
   return (
-    <PendingLinksProvider value={setPendingLinks}>
-      <MenuHeaderSheet
+    <PendingNavigationsProvider value={setPendingNavigationCount}>
+      <MenuHeaderBackdrop
         data-open={menu.isOpen}
-        data-testid={MENU_HEADER_SHEET_TEST_IDS.sheet}
+        data-testid={MENU_HEADER_BACKDROP_TEST_IDS.backdrop}
       />
       <Bar data-testid={HEADER_TEST_IDS.bar}>
         <MenuToggle isOpen={menu.isOpen} onToggle={menu.toggle} />
-        <Title text={title} />
+        <HeaderTitle text={title} />
         {account && (
           <HeaderAccountAvatar
             account={account}
@@ -47,12 +47,12 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
           />
         )}
         {isNavigating && (
-          <ProgressLine data-testid={HEADER_TEST_IDS.progress} />
+          <NavigationProgress data-testid={HEADER_TEST_IDS.progress} />
         )}
       </Bar>
       <MenuProvider value={menu}>
         <MenuOverlay />
       </MenuProvider>
-    </PendingLinksProvider>
+    </PendingNavigationsProvider>
   );
 }

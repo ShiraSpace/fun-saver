@@ -2,7 +2,7 @@ import { render, screen } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
 import { PIG_EMOJI } from '@/components/Pig/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
-import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
+import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { SIGNED_IN_USER_SECTION_TEST_IDS } from '@/components/Menu/SignedInUserSection/constants';
 import { EmptyState } from './EmptyState';
 import { EMPTY_STATE_COPY, EMPTY_STATE_TEST_IDS } from './constants';
@@ -37,7 +37,7 @@ describe('EmptyState', () => {
   });
 
   it('greets the parent where an account screen would name the account', () => {
-    expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
+    expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
       GREETING
     );
   });

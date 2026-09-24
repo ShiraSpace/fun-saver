@@ -1,7 +1,7 @@
 import { Context, JSX, useState } from 'react';
 import { render, screen, type RenderResult } from '@testing-library/react';
 import {
-  PendingLinksProvider,
+  PendingNavigationsProvider,
   PendingNavigationReporter,
 } from './navigation-pending-context';
 
@@ -32,22 +32,22 @@ function TwoLinks({
   homeLinkPending,
   homeTabPending,
 }: LinksProps): JSX.Element {
-  const [pendingLinks, setPendingLinks] = useState(0);
+  const [pendingNavigationCount, setPendingNavigationCount] = useState(0);
 
   return (
-    <PendingLinksProvider value={setPendingLinks}>
+    <PendingNavigationsProvider value={setPendingNavigationCount}>
       <LinkPending.Provider value={homeLinkPending}>
         <PendingNavigationReporter />
       </LinkPending.Provider>
       <LinkPending.Provider value={homeTabPending}>
         <PendingNavigationReporter />
       </LinkPending.Provider>
-      <output data-testid={PENDING_COUNT}>{pendingLinks}</output>
-    </PendingLinksProvider>
+      <output data-testid={PENDING_COUNT}>{pendingNavigationCount}</output>
+    </PendingNavigationsProvider>
   );
 }
 
-describe('counting pending links', () => {
+describe('counting pending navigations', () => {
   let view: RenderResult;
 
   beforeEach(() => {

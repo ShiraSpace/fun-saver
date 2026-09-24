@@ -1,9 +1,9 @@
 'use client';
 
 import { JSX, memo } from 'react';
-import { MenuBody } from '../MenuBody';
+import { MenuContent } from '../MenuContent';
 import { useMenu } from '../use-menu-state';
-import { MENU_OVERLAY_CONTENT, MENU_OVERLAY_TEST_IDS } from './constants';
+import { MENU_OVERLAY_COPY, MENU_OVERLAY_TEST_IDS } from './constants';
 import { useEscapeKey } from '../use-escape-key';
 import { Panel, Content } from './MenuOverlay.styles';
 
@@ -15,13 +15,13 @@ export const MenuOverlay = memo(function MenuOverlay(): JSX.Element {
   return (
     <Panel
       role="dialog"
-      aria-label={MENU_OVERLAY_CONTENT.title}
+      aria-label={MENU_OVERLAY_COPY.title}
       data-testid={MENU_OVERLAY_TEST_IDS.overlay}
       data-open={isOpen}
       inert={!isOpen}
     >
       <Content>
-        <MenuBody />
+        <MenuContent />
       </Content>
     </Panel>
   );

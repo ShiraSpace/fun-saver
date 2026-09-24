@@ -7,7 +7,7 @@ import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { NameField } from './NameField';
 import { CancelButton } from './CancelButton';
 import { FormTitle } from './FormTitle';
-import { SaveAccount } from './SaveAccount';
+import { SaveAccountButton } from './SaveAccountButton';
 import { Form } from './AccountForm.styles';
 import { useAccountForm, type AccountFormValues } from './use-account-form';
 
@@ -50,7 +50,7 @@ export function AccountForm({
           selectedId={form.selectedAvatarId}
           onSelect={form.setSelectedAvatarId}
         />
-        <SaveAccount
+        <SaveAccountButton
           submitLabel={submitLabel}
           canSubmit={form.canSubmit}
           saveFailed={form.saveFailed}

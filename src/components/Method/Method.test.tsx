@@ -4,7 +4,7 @@ import {
   mockSecondDerivedAccount,
   mockUser,
 } from '@/test-utils/fixtures';
-import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
+import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { METHOD_SECTION_TEST_IDS } from './MethodSection/constants';
 import { METHOD_INTRO_TEST_IDS } from './MethodIntro/constants';
@@ -34,7 +34,7 @@ describe('the method page', () => {
   });
 
   it('names itself in the header, so the parent knows what they opened', () => {
-    expect(screen.getByTestId(TITLE_TEST_IDS.title)).toHaveTextContent(
+    expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
       METHOD_COPY.title
     );
   });
