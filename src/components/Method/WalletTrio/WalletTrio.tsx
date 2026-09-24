@@ -1,7 +1,7 @@
 import { JSX } from 'react';
 import type { WalletName } from '@/lib/types';
 import { DEPOSIT_SPLIT, WALLET_ICON, WALLET_NAME } from '@/lib/constants';
-import { share } from '../constants';
+import { percentLabel } from '../constants';
 import { WALLET_TRIO_TEST_IDS } from './constants';
 import { Icon, Name, TrioWallet, Share, Trio } from './WalletTrio.styles';
 
@@ -19,7 +19,7 @@ export function WalletTrio({ walletNames }: WalletTrioProps): JSX.Element {
       <Icon aria-hidden="true">{WALLET_ICON[walletName]}</Icon>
       <Name>{WALLET_NAME[walletName]}</Name>
       <Share data-testid={WALLET_TRIO_TEST_IDS.share}>
-        {share(DEPOSIT_SPLIT[walletName])}
+        {percentLabel(DEPOSIT_SPLIT[walletName])}
       </Share>
     </TrioWallet>
   ));

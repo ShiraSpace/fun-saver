@@ -20,7 +20,7 @@ export class MethodDriver {
     return this.session.click(METHOD_SECTION_TEST_IDS.summary(id));
   }
 
-  sectionId(section: SectionKey): number {
+  sectionNumber(section: SectionKey): number {
     return SECTION_NUMBER[section];
   }
 

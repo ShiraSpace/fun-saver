@@ -38,7 +38,7 @@ export const Outcomes = styled.div`
   gap: 13px;
 `;
 
-export const Derived = styled.p`
+export const AlongTheWay = styled.p`
   margin: 13px 0 0;
   font-size: ${({ theme }): number => theme.typography.body}px;
   line-height: 1.65;
