@@ -48,5 +48,5 @@ export function everyThemeAsCss(): string {
 export function applyStoredThemeScript(): string {
   const knownThemes = JSON.stringify(Object.keys(THEMES));
 
-  return `try{var c=document.cookie.match(/(?:^|; )${THEME_COOKIE}=([^;]*)/);var t=c&&${knownThemes}.indexOf(c[1])>=0?c[1]:'${DEFAULT_THEME_ID}';document.documentElement.dataset.theme=t}catch(e){}`;
+  return `try{var themeCookie=document.cookie.match(/(?:^|; )${THEME_COOKIE}=([^;]*)/)?.[1];var themeId=${knownThemes}.indexOf(themeCookie)>=0?themeCookie:'${DEFAULT_THEME_ID}';document.documentElement.dataset.theme=themeId}catch(e){}`;
 }
