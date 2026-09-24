@@ -27,7 +27,7 @@ export interface ThemeColors {
   readonly alert: string;
   readonly alertText: string;
   readonly alertSoftBg: string;
-  readonly withdrawText: string;
+  readonly withdrawalText: string;
   readonly walletSavings: string;
   readonly walletSpending: string;
   readonly walletGoodDeeds: string;

@@ -7,11 +7,11 @@ import { agorotToShekels } from '@/lib/money';
 const onSelect = jest.fn();
 const [savings, spending] = mockDerivedWallets;
 
-function renderPicker(selectedId: string): void {
+function renderPicker(selectedWalletId: string): void {
   render(
     <WalletPicker
       wallets={mockDerivedWallets}
-      selectedId={selectedId}
+      selectedWalletId={selectedWalletId}
       onSelect={onSelect}
     />
   );

@@ -39,7 +39,7 @@ export const jungleQuest: ThemeTokens = {
     alert: '#E5484D',
     alertText: '#A83A21',
     alertSoftBg: '#FDECEC',
-    withdrawText: '#D9480F',
+    withdrawalText: '#D9480F',
     walletSavings: '#2A9D8F',
     walletSpending: '#90BE6D',
     walletGoodDeeds: '#E76F51',

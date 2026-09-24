@@ -39,7 +39,7 @@ export const midnightBlue: ThemeTokens = {
     alert: '#F87171',
     alertText: '#F87171',
     alertSoftBg: '#3A1518',
-    withdrawText: '#FB923C',
+    withdrawalText: '#FB923C',
     walletSavings: '#1E40AF',
     walletSpending: '#60A5FA',
     walletGoodDeeds: '#818CF8',

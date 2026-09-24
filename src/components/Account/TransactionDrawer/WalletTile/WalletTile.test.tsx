@@ -14,10 +14,10 @@ describe('WalletTile', () => {
   it('renders its balance in shekels', () => {
     render(
       <WalletTile
-        name="savings"
+        walletName="savings"
         icon="🐷"
         amountAgorot={8500}
-        valueTestId={VALUE_TEST_ID}
+        amountTestId={VALUE_TEST_ID}
       />
     );
 
@@ -29,11 +29,11 @@ describe('WalletTile', () => {
   it('is selectable and reports presses when given onSelect', () => {
     render(
       <WalletTile
-        name="savings"
+        walletName="savings"
         icon="🐷"
         amountAgorot={8500}
-        valueTestId={VALUE_TEST_ID}
-        tileTestId={TILE_TEST_ID}
+        amountTestId={VALUE_TEST_ID}
+        testId={TILE_TEST_ID}
         selected
         onSelect={onSelect}
       />
@@ -50,11 +50,11 @@ describe('WalletTile', () => {
   it('is disabled when there is no onSelect', () => {
     render(
       <WalletTile
-        name="savings"
+        walletName="savings"
         icon="🐷"
         amountAgorot={8500}
-        valueTestId={VALUE_TEST_ID}
-        tileTestId={TILE_TEST_ID}
+        amountTestId={VALUE_TEST_ID}
+        testId={TILE_TEST_ID}
       />
     );
 

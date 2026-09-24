@@ -30,7 +30,7 @@ export const Head = styled.span`
   gap: ${WALLET_TILE_STYLE.headGap}px;
 `;
 
-export const IconTile = styled.span<{ name: WalletName }>`
+export const WalletIcon = styled.span<{ walletName: WalletName }>`
   width: ${WALLET_TILE_STYLE.iconSize}px;
   height: ${WALLET_TILE_STYLE.iconSize}px;
   border-radius: ${WALLET_TILE_STYLE.iconRadius}px;
@@ -38,8 +38,8 @@ export const IconTile = styled.span<{ name: WalletName }>`
   align-items: center;
   justify-content: center;
   font-size: ${WALLET_TILE_STYLE.iconFontSize}px;
-  background: ${({ theme, name }): string =>
-    theme.gradients[WALLET_GRADIENT[name]]};
+  background: ${({ theme, walletName }): string =>
+    theme.gradients[WALLET_GRADIENT[walletName]]};
 `;
 
 export const Name = styled.span`
@@ -49,7 +49,7 @@ export const Name = styled.span`
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
 
-export const Value = styled.span`
+export const Amount = styled.span`
   font-size: ${({ theme }): number => theme.typography.body}px;
   font-weight: 700;
   color: ${({ theme }): string => theme.colors.textStrong};
