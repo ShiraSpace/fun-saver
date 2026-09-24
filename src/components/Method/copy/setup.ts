@@ -1,9 +1,9 @@
 import { DEPOSIT_SPLIT } from '@/lib/constants';
-import { share } from '../constants';
+import { percentLabel } from '../constants';
 import { WALLETS_COPY } from './wallets';
 
 const APP_SPLIT = WALLETS_COPY.walletNames
-  .map((wallet) => share(DEPOSIT_SPLIT[wallet]))
+  .map((walletName) => percentLabel(DEPOSIT_SPLIT[walletName]))
   .join(' / ');
 
 export const SETUP_COPY = {
@@ -75,9 +75,9 @@ export const SETUP_COPY = {
     table: {
       headers: ['קופה', 'לשבוע', 'לחודש', 'לשנה'],
       rows: [
-        { wallet: 'spending', amounts: ['₪15', '₪65', '₪780'] },
-        { wallet: 'savings', amounts: ['₪12', '₪52', '₪624'] },
-        { wallet: 'goodDeeds', amounts: ['₪3', '₪13', '₪156'] },
+        { walletName: 'spending', amounts: ['₪15', '₪65', '₪780'] },
+        { walletName: 'savings', amounts: ['₪12', '₪52', '₪624'] },
+        { walletName: 'goodDeeds', amounts: ['₪3', '₪13', '₪156'] },
       ],
     },
     note: {

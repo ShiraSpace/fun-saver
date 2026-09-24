@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 import { Checklist } from '../Checklist';
-import { GoalOutcome } from '../GoalOutcome';
+import { KeyPoint } from '../KeyPoint';
 import { MethodBlocks } from '../MethodBlocks';
 import { MethodSection } from '../MethodSection';
 import { SECTION_NUMBER } from '../constants';
@@ -12,8 +12,8 @@ const { promise } = METHOD_COPY;
 const PROMISE_BLOCKS: readonly MethodBlock[] = [promise.body, promise.evidence];
 
 export function PromiseSection(): JSX.Element {
-  const rules = Object.entries(promise.rule).map(([name, rule]) => (
-    <GoalOutcome key={name} {...rule} />
+  const rules = Object.entries(promise.rule).map(([ruleName, rule]) => (
+    <KeyPoint key={ruleName} {...rule} />
   ));
 
   return (

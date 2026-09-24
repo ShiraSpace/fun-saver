@@ -26,7 +26,7 @@ export type MethodBlock =
     }
   | { kind: 'talk'; label?: string; lines: readonly TalkLine[] };
 
-export interface IconLine {
+export interface KeyPointCopy {
   icon: string;
   body: string;
   note?: string;
@@ -44,7 +44,7 @@ export interface ChecklistGroup {
 }
 
 export interface ExampleRow {
-  wallet: WalletName;
+  walletName: WalletName;
   amounts: readonly string[];
 }
 

@@ -1,12 +1,12 @@
 import { JSX } from 'react';
-import { GoalOutcome } from '../GoalOutcome';
+import { KeyPoint } from '../KeyPoint';
 import { METHOD_COPY } from '../copy';
 import { emphasize } from '../rich-text';
 import { METHOD_INTRO_COPY, METHOD_INTRO_TEST_IDS } from './constants';
 import {
   Brief,
   BriefNote,
-  Derived,
+  AlongTheWay,
   Divider,
   Eyebrow,
   Intro,
@@ -21,10 +21,10 @@ export function MethodIntro(): JSX.Element {
   const eyebrow = emphasize(goal.eyebrow);
   const title = emphasize(goal.title);
   const lead = emphasize(goal.body.body);
-  const derived = emphasize(goal.derived);
-  const outcomes = Object.entries(goal.outcome).map(([name, outcome]) => (
-    <GoalOutcome key={name} {...outcome} />
-  ));
+  const alongTheWay = emphasize(goal.alongTheWay);
+  const outcomes = Object.entries(goal.outcomes).map(
+    ([walletName, outcome]) => <KeyPoint key={walletName} {...outcome} />
+  );
   const briefLine = emphasize(
     `${brief.eyebrow}${METHOD_INTRO_COPY.briefSeparator}${brief.body}`
   );
@@ -36,7 +36,7 @@ export function MethodIntro(): JSX.Element {
       <Title>{title}</Title>
       <Lead>{lead}</Lead>
       <Outcomes>{outcomes}</Outcomes>
-      <Derived>{derived}</Derived>
+      <AlongTheWay>{alongTheWay}</AlongTheWay>
       <Divider />
       <Brief data-testid={METHOD_INTRO_TEST_IDS.brief}>{briefLine}</Brief>
       <BriefNote>{briefNote}</BriefNote>
