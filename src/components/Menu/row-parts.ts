@@ -52,7 +52,7 @@ export const Row = styled.button`
   }
 `;
 
-export const AddRow = styled.button`
+export const AddButton = styled.button`
   ${row}
   justify-content: center;
   border: ${MENU_ROW_STYLE.borderWidth}px dashed ${divider};

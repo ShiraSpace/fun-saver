@@ -21,7 +21,7 @@ describe('account switching', () => {
 
     await menu.open();
     await menu.openAccountPicker();
-    await menu.selectAccount(1);
+    await menu.switchAccount(1);
     await menu.waitForClosed();
 
     assert.equal(await header.name(), secondListed.name);

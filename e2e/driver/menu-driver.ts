@@ -45,12 +45,12 @@ export class MenuDriver {
     return this.session.count(ACCOUNT_LIST_TEST_IDS.row);
   }
 
-  selectAccount(index: number): Promise<void> {
+  switchAccount(index: number): Promise<void> {
     return this.session.clickNth(ACCOUNT_ROW, index);
   }
 
   clickAddAccountRow(): Promise<void> {
-    return this.session.click(ACCOUNT_LIST_TEST_IDS.addRow);
+    return this.session.click(ACCOUNT_LIST_TEST_IDS.addAccount);
   }
 
   clickEditAccountButton(): Promise<void> {

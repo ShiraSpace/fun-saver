@@ -16,7 +16,7 @@ export type SignOutStatus =
   (typeof SIGN_OUT_STATUS)[keyof typeof SIGN_OUT_STATUS];
 
 interface AccountSignOut {
-  status: SignOutStatus;
+  signOutStatus: SignOutStatus;
   signOutOfAccount: () => Promise<void>;
 }
 
@@ -29,16 +29,18 @@ function landsOnLogin(url: string | undefined): boolean {
 }
 
 export function useSignOut(): AccountSignOut {
-  const [status, setStatus] = useState<SignOutStatus>(SIGN_OUT_STATUS.idle);
+  const [signOutStatus, setSignOutStatus] = useState<SignOutStatus>(
+    SIGN_OUT_STATUS.idle
+  );
 
   useOnMenuClose((): void =>
-    setStatus((current) =>
+    setSignOutStatus((current) =>
       current === SIGN_OUT_STATUS.failed ? SIGN_OUT_STATUS.idle : current
     )
   );
 
   const signOutOfAccount = async (): Promise<void> => {
-    setStatus(SIGN_OUT_STATUS.signingOut);
+    setSignOutStatus(SIGN_OUT_STATUS.signingOut);
 
     try {
       const ended = await signOut({
@@ -47,15 +49,15 @@ export function useSignOut(): AccountSignOut {
       });
 
       if (!landsOnLogin(ended?.url)) {
-        setStatus(SIGN_OUT_STATUS.failed);
+        setSignOutStatus(SIGN_OUT_STATUS.failed);
         return;
       }
 
       goTo(LOGIN_PATH);
     } catch {
-      setStatus(SIGN_OUT_STATUS.failed);
+      setSignOutStatus(SIGN_OUT_STATUS.failed);
     }
   };
 
-  return { status, signOutOfAccount };
+  return { signOutStatus, signOutOfAccount };
 }

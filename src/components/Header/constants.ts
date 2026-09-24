@@ -9,7 +9,7 @@ export const HEADER_TEST_IDS = {
 } as const;
 
 export const HEADER_CONTENT = {
-  homeLabel: (name: string): string => `חזרה לבית של ${name}`,
+  homeLabel: (accountName: string): string => `חזרה לבית של ${accountName}`,
   homeIcon: '🏠',
 } as const;
 

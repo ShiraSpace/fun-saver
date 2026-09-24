@@ -13,17 +13,17 @@ import {
 } from './constants';
 import { Trigger, Naming, Name, Current, Caret } from './AccountPicker.styles';
 
-interface AccountTriggerProps {
+interface CurrentAccountButtonProps {
   account: AccountWithDerivedWallets;
   isOpen: boolean;
   onToggle: (isOpen: boolean) => void;
 }
 
-export function AccountTrigger({
+export function CurrentAccountButton({
   account,
   isOpen,
   onToggle,
-}: AccountTriggerProps): JSX.Element {
+}: CurrentAccountButtonProps): JSX.Element {
   const totalBalanceAgorot = totalBalance(account.wallets);
   const caret = isOpen
     ? ACCOUNT_PICKER_CONTENT.openCaret
@@ -48,7 +48,7 @@ export function AccountTrigger({
           <Money
             amountAgorot={totalBalanceAgorot}
             fullSizeCurrency
-            testId={ACCOUNT_PICKER_TEST_IDS.triggerTotal}
+            testId={ACCOUNT_PICKER_TEST_IDS.currentTotalBalance}
           />
           {ACCOUNT_PICKER_CONTENT.currentSuffix}
         </Current>

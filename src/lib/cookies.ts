@@ -1,4 +1,4 @@
-export const SELECTED_ACCOUNT_COOKIE = 'selectedAccountId';
+export const CURRENT_ACCOUNT_COOKIE = 'currentAccountId';
 export const THEME_COOKIE = 'themeId';
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;

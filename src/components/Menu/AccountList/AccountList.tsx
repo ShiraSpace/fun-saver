@@ -5,17 +5,17 @@ import type { AccountWithDerivedWallets } from '@/lib/types';
 import { ACCOUNT_LIST_DOM_ID, ACCOUNT_LIST_TEST_IDS } from './constants';
 import { AccountRow } from './AccountRow';
 import { List } from './AccountList.styles';
-import { AddAccountRow } from '../AddAccountRow';
+import { AddAccountButton } from '../AddAccountButton';
 
 interface AccountListProps {
   accounts: AccountWithDerivedWallets[];
-  selectedAccountId: string;
+  currentAccountId: string;
   onSelect: (id: string) => void;
 }
 
 export function AccountList({
   accounts,
-  selectedAccountId,
+  currentAccountId,
   onSelect,
 }: AccountListProps): JSX.Element {
   return (
@@ -24,11 +24,11 @@ export function AccountList({
         <AccountRow
           key={account.id}
           account={account}
-          isSelected={account.id === selectedAccountId}
+          isCurrent={account.id === currentAccountId}
           onSelect={onSelect}
         />
       ))}
-      <AddAccountRow />
+      <AddAccountButton />
     </List>
   );
 }

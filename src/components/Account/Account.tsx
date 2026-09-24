@@ -15,18 +15,18 @@ interface AccountProps {
 }
 
 export function Account({ account }: AccountProps): JSX.Element {
-  const { name, wallets } = account;
+  const { wallets } = account;
   const savings = wallets.find((wallet) => wallet.name === 'savings');
-  const others = wallets.filter((wallet) => wallet.name !== 'savings');
-  const ordered = savings ? [savings, ...others] : others;
+  const otherWallets = wallets.filter((wallet) => wallet.name !== 'savings');
+  const savingsFirst = savings ? [savings, ...otherWallets] : otherWallets;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
     <Screen align="top">
       <Column>
-        <Header title={name} account={account} />
-        <BalanceBreakdown key={account.id} wallets={ordered} />
-        <WalletList wallets={ordered} />
+        <Header title={account.name} account={account} />
+        <BalanceBreakdown key={account.id} wallets={savingsFirst} />
+        <WalletList wallets={savingsFirst} />
         <PrimaryButton
           type="button"
           data-testid={ACCOUNT_TEST_IDS.newTransaction}

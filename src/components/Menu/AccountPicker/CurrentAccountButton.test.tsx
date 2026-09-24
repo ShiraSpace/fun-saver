@@ -2,14 +2,14 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import { mockDerivedAccount } from '@/test-utils/fixtures';
 import { totalBalance } from '@/lib/derivations';
 import { agorotToWholeShekels } from '@/lib/money';
-import { AccountTrigger } from './AccountTrigger';
+import { CurrentAccountButton } from './CurrentAccountButton';
 import { ACCOUNT_PICKER_CONTENT, ACCOUNT_PICKER_TEST_IDS } from './constants';
 
 const mockOnToggle = jest.fn();
 
 function renderTrigger(isOpen: boolean): void {
   render(
-    <AccountTrigger
+    <CurrentAccountButton
       account={mockDerivedAccount}
       isOpen={isOpen}
       onToggle={mockOnToggle}
@@ -17,7 +17,7 @@ function renderTrigger(isOpen: boolean): void {
   );
 }
 
-describe('AccountTrigger', () => {
+describe('CurrentAccountButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -29,7 +29,7 @@ describe('AccountTrigger', () => {
 
     it('shows what the account holds in total', () => {
       expect(
-        screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.triggerTotal)
+        screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.currentTotalBalance)
       ).toHaveTextContent(
         String(agorotToWholeShekels(totalBalance(mockDerivedAccount.wallets)))
       );

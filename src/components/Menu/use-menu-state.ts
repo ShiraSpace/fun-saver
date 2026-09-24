@@ -6,7 +6,7 @@ import { createRequiredContext } from '@/hooks/create-required-context';
 export interface MenuState {
   isOpen: boolean;
   toggle: () => void;
-  close: () => void;
+  closeMenu: () => void;
 }
 
 export const [MenuProvider, useMenu] =
@@ -19,11 +19,14 @@ export function useMenuState(): MenuState {
     setIsOpen((wasOpen) => !wasOpen);
   }, []);
 
-  const close = useCallback((): void => {
+  const closeMenu = useCallback((): void => {
     setIsOpen(false);
   }, []);
 
-  return useMemo(() => ({ isOpen, toggle, close }), [isOpen, toggle, close]);
+  return useMemo(
+    () => ({ isOpen, toggle, closeMenu }),
+    [isOpen, toggle, closeMenu]
+  );
 }
 
 export function useOnMenuClose(onMenuClose: () => void): void {

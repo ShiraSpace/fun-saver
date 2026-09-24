@@ -22,7 +22,7 @@ describe('MenuBody', () => {
     it('offers to start an account where the picker would stand', () => {
       expect(
         screen.getByTestId(MENU_GLOBAL_SCOPE_TEST_IDS.block)
-      ).toContainElement(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
+      ).toContainElement(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addAccount));
     });
 
     it('shows nothing that belongs to an account, there being none', () => {

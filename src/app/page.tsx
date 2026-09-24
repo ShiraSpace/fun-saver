@@ -10,7 +10,7 @@ import { signedInAccounts } from './signed-in-accounts';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage(): Promise<JSX.Element> {
-  const { user, accounts, selectedAccountId, themeId } =
+  const { user, accounts, currentAccountId, themeId } =
     await signedInAccounts();
   const derived = await withDerivedWallets({
     store: getStore(),
@@ -21,7 +21,7 @@ export default async function HomePage(): Promise<JSX.Element> {
   return (
     <ThemedPage themeId={themeId}>
       <SignedInUserProvider value={user}>
-        <Home accounts={derived} initialAccountId={selectedAccountId} />
+        <Home accounts={derived} initialAccountId={currentAccountId} />
       </SignedInUserProvider>
     </ThemedPage>
   );

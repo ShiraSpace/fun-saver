@@ -17,7 +17,7 @@ const onClose = jest.fn();
 function renderOverlay(): void {
   onClose.mockClear();
   render(
-    <WithMenu close={onClose}>
+    <WithMenu closeMenu={onClose}>
       <MenuOverlay />
     </WithMenu>,
     { accounts: mockAccountsContext, user: mockUser }

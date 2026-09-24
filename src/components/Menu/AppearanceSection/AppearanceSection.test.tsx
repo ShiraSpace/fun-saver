@@ -64,7 +64,7 @@ describe('AppearanceSection', () => {
       expect(swatches()[0]).toHaveAttribute('data-selected', 'false');
     });
 
-    it('saves it on the selected account', () => {
+    it('saves it on the current account', () => {
       const accountThemeUrl = `/api/accounts/${mockDerivedAccount.id}/theme`;
       const [url, options] = (global.fetch as jest.Mock).mock.calls[0];
 
