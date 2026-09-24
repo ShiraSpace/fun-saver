@@ -10,7 +10,7 @@ describe('Money', () => {
 
     it('shows the currency mark', () => {
       expect(screen.getByTestId('amount')).toHaveTextContent(
-        MONEY_COPY.currency
+        MONEY_COPY.currencySign
       );
     });
 
@@ -36,7 +36,7 @@ describe('Money', () => {
   it('gives the currency mark the size of its digits when asked', () => {
     render(<Money amountAgorot={8500} testId="amount" fullSizeCurrency />);
 
-    expect(screen.getByText(MONEY_COPY.currency)).toHaveAttribute(
+    expect(screen.getByText(MONEY_COPY.currencySign)).toHaveAttribute(
       'data-full-size',
       'true'
     );

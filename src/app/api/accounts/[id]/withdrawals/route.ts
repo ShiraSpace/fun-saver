@@ -28,7 +28,7 @@ export const POST = withAccountEditor(async (request, id) => {
       store,
       account,
       walletId: withdrawal.walletId,
-      amountAgorot: shekelsToAgorot(withdrawal.amount),
+      amountAgorot: shekelsToAgorot(withdrawal.amountShekels),
       asOf: today(),
     });
 

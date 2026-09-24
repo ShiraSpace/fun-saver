@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { Account } from './Account';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
-import { OVERVIEW_CARD_TEST_IDS } from './OverviewCard/constants';
+import { BALANCE_BREAKDOWN_TEST_IDS } from './BalanceBreakdown/constants';
 import { WALLET_LIST_TEST_IDS } from './WalletList/constants';
 import { WALLET_CARD_TEST_IDS } from './WalletCard/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from './TransactionDrawer/constants';
@@ -41,8 +41,10 @@ describe('Account', () => {
     );
   });
 
-  it('shows the overview card', () => {
-    expect(screen.getByTestId(OVERVIEW_CARD_TEST_IDS.card)).toBeInTheDocument();
+  it('shows the balance breakdown', () => {
+    expect(
+      screen.getByTestId(BALANCE_BREAKDOWN_TEST_IDS.card)
+    ).toBeInTheDocument();
   });
 
   it('shows every wallet as a wallet card', () => {

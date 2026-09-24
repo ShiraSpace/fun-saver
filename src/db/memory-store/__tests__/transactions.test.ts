@@ -35,7 +35,7 @@ describe('InMemoryStore transactions', () => {
     expect(new Set(listedTransactions)).toEqual(new Set(mockTransactions));
   });
 
-  it('tells the history in the order it happened, same-day entries in the order they were made', async () => {
+  it('tells the history in the order it happened, same-day transactions in the order they were made', async () => {
     const evening = createMockTransaction({
       id: 'evening',
       createdAt: '2026-01-01T09:00:00.000Z',

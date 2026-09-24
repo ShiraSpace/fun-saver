@@ -24,7 +24,7 @@ export function WithdrawalAlert({
   if (isOverdraft) {
     return (
       <Overdraft data-testid={WITHDRAWAL_FORM_TEST_IDS.overdraft}>
-        {WITHDRAWAL_FORM_COPY.overdraftPrefix} {MONEY_COPY.currency}
+        {WITHDRAWAL_FORM_COPY.overdraftPrefix} {MONEY_COPY.currencySign}
         {balanceShekels}
       </Overdraft>
     );

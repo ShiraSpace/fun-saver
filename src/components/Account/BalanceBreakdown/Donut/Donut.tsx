@@ -8,8 +8,8 @@ import {
   DONUT_ANIMATION,
   DONUT_CIRCUMFERENCE,
   DONUT_STYLE,
-  OVERVIEW_CARD_TEST_IDS,
-  WALLET_ARC_COLOR,
+  BALANCE_BREAKDOWN_TEST_IDS,
+  WALLET_COLOR,
 } from '../constants';
 import { ArcCircle, Svg } from './Donut.styles';
 
@@ -54,11 +54,11 @@ export function Donut({ segments }: DonutProps): JSX.Element {
   const arcs = toArcs(segments).map((arc) => (
     <ArcCircle
       key={arc.name}
-      data-testid={OVERVIEW_CARD_TEST_IDS.arc}
+      data-testid={BALANCE_BREAKDOWN_TEST_IDS.arc}
       cx={DONUT_STYLE.center}
       cy={DONUT_STYLE.center}
       r={DONUT_STYLE.radius}
-      stroke={theme.colors[WALLET_ARC_COLOR[arc.name]]}
+      stroke={theme.colors[WALLET_COLOR[arc.name]]}
       strokeDasharray={`${arc.length} ${DONUT_CIRCUMFERENCE - arc.length}`}
       strokeDashoffset={arc.offset}
       durationMs={arc.durationMs}
@@ -71,7 +71,7 @@ export function Donut({ segments }: DonutProps): JSX.Element {
       width={DONUT_STYLE.size}
       height={DONUT_STYLE.size}
       viewBox={`0 0 ${DONUT_STYLE.viewBox} ${DONUT_STYLE.viewBox}`}
-      data-testid={OVERVIEW_CARD_TEST_IDS.donut}
+      data-testid={BALANCE_BREAKDOWN_TEST_IDS.donut}
     >
       <circle
         cx={DONUT_STYLE.center}

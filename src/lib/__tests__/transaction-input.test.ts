@@ -20,7 +20,7 @@ describe('validWithdrawal', () => {
   it('returns the wallet and the amount from a well formed body', () => {
     expect(validWithdrawal({ walletId: 'w1', amount: 20 })).toEqual({
       walletId: 'w1',
-      amount: 20,
+      amountShekels: 20,
     });
   });
 

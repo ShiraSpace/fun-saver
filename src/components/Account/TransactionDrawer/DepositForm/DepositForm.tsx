@@ -25,7 +25,7 @@ export function DepositForm({
   const form = useDepositForm(account.id, onClose);
   const submitLabel = form.isSubmitting
     ? TRANSACTION_DRAWER_COPY.submitting
-    : `${TRANSACTION_DRAWER_COPY.submit} ${MONEY_COPY.currency}${form.amountShekels}`;
+    : `${TRANSACTION_DRAWER_COPY.submit} ${MONEY_COPY.currencySign}${form.amountShekels}`;
 
   return (
     <>

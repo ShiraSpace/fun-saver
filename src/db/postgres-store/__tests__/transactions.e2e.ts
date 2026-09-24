@@ -78,7 +78,7 @@ describe('PostgresTransactions', () => {
     expect(new Set(listedTransactions)).toEqual(new Set(accountATransactions));
   });
 
-  it('tells the history in the order it happened, same-day entries in the order they were made', async () => {
+  it('tells the history in the order it happened, same-day transactions in the order they were made', async () => {
     await store.insertTransactions([
       createMockTransaction({
         id: transactionId('evening'),
