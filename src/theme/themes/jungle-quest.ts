@@ -1,17 +1,17 @@
-import { buildGradients } from '../gradients';
+import { themeGradients } from '../gradients';
 import { SHADOW_SCALE } from '../shadows';
 import { TINT_SCALE } from '../tints';
 import { TYPE_SCALE } from '../typography';
-import type { ThemeStops, ThemeTokens } from '../theme-tokens';
+import type { ThemeGradientStops, ThemeTokens } from '../theme-tokens';
 
-const STOPS = {
+const GRADIENT_STOPS = {
   screen: ['#2A9D8F', '#43AA8B', '#90BE6D'],
   primaryButton: ['#1B7A6B', '#12564B'],
-  sunnyTile: ['#52B69A', '#2A9D8F'],
+  avatarBadge: ['#52B69A', '#2A9D8F'],
   walletSavings: ['#52B69A', '#2A9D8F'],
   walletSpending: ['#B5D94C', '#90BE6D'],
   walletGoodDeeds: ['#F4A261', '#E76F51'],
-} as const satisfies ThemeStops;
+} as const satisfies ThemeGradientStops;
 
 export const jungleQuest: ThemeTokens = {
   colors: {
@@ -48,7 +48,7 @@ export const jungleQuest: ThemeTokens = {
     chartSpending: '#6E9B22',
     chartGoodDeeds: '#E76F51',
   },
-  gradients: buildGradients(STOPS),
+  gradients: themeGradients(GRADIENT_STOPS),
   shadows: SHADOW_SCALE,
   tints: TINT_SCALE,
   typography: TYPE_SCALE,

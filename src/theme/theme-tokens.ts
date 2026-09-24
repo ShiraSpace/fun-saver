@@ -37,10 +37,10 @@ export interface ThemeColors {
   readonly chartGoodDeeds: string;
 }
 
-export interface ThemeStops {
+export interface ThemeGradientStops {
   readonly screen: readonly [string, string, string];
   readonly primaryButton: readonly [string, string];
-  readonly sunnyTile: readonly [string, string];
+  readonly avatarBadge: readonly [string, string];
   readonly walletSavings: readonly [string, string];
   readonly walletSpending: readonly [string, string];
   readonly walletGoodDeeds: readonly [string, string];
@@ -49,7 +49,7 @@ export interface ThemeStops {
 export interface ThemeGradients {
   readonly screen: string;
   readonly primaryButton: string;
-  readonly sunnyTile: string;
+  readonly avatarBadge: string;
   readonly walletSavings: string;
   readonly walletSpending: string;
   readonly walletGoodDeeds: string;

@@ -6,7 +6,7 @@ const TOKEN_GROUPS = ['colors', 'gradients', 'shadows', 'tints'] as const;
 
 type TokenGroup = (typeof TOKEN_GROUPS)[number];
 
-const PREFIX_OF = {
+const CSS_VAR_PREFIX = {
   colors: 'color',
   gradients: 'gradient',
   shadows: 'shadow',
@@ -16,10 +16,11 @@ const PREFIX_OF = {
 const customProperty = (prefix: string, name: string): string =>
   `--fs-${prefix}-${name}`;
 
-const tokensOf = (theme: ThemeTokens): string =>
+const themeDeclarations = (theme: ThemeTokens): string =>
   TOKEN_GROUPS.flatMap((group) =>
     Object.entries(theme[group]).map(
-      ([name, value]) => `${customProperty(PREFIX_OF[group], name)}:${value}`
+      ([name, value]) =>
+        `${customProperty(CSS_VAR_PREFIX[group], name)}:${value}`
     )
   ).join(';');
 
@@ -27,17 +28,20 @@ export function themeVar<Group extends TokenGroup>(
   group: Group,
   name: keyof ThemeTokens[Group] & string
 ): string {
-  return `var(${customProperty(PREFIX_OF[group], name)})`;
+  return `var(${customProperty(CSS_VAR_PREFIX[group], name)})`;
 }
 
-const scopeFor = (id: string): string =>
-  id === DEFAULT_THEME_ID
-    ? `:root,:root[data-theme='${id}']`
-    : `:root[data-theme='${id}']`;
+const themeSelector = (themeId: string): string =>
+  themeId === DEFAULT_THEME_ID
+    ? `:root,:root[data-theme='${themeId}']`
+    : `:root[data-theme='${themeId}']`;
 
 export function everyThemeAsCss(): string {
   return Object.entries(THEMES)
-    .map(([id, theme]) => `${scopeFor(id)}{${tokensOf(theme)}}`)
+    .map(
+      ([themeId, theme]) =>
+        `${themeSelector(themeId)}{${themeDeclarations(theme)}}`
+    )
     .join('');
 }
 

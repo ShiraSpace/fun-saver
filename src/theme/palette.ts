@@ -1,6 +1,6 @@
 import type { ThemeColors } from './theme-tokens';
 
-export const COLORS = {
+export const SUNSHINE_QUEST_COLORS = {
   primary: '#6B2C8E',
   primaryText: '#6B2C8E',
   primaryShadow: '#4A1A6E',

@@ -19,11 +19,13 @@ export type ThemeId = keyof typeof THEMES;
 
 export const DEFAULT_THEME_ID: ThemeId = THEME_ID.sunshineQuest;
 
-export function getThemeTokens(id: string = DEFAULT_THEME_ID): ThemeTokens {
-  const tokens = (THEMES as Record<string, ThemeTokens>)[id];
+export function getThemeTokens(
+  themeId: string = DEFAULT_THEME_ID
+): ThemeTokens {
+  const tokens = (THEMES as Record<string, ThemeTokens>)[themeId];
 
   if (!tokens) {
-    throw new Error(`unknown theme id "${id}"`);
+    throw new Error(`unknown theme id "${themeId}"`);
   }
 
   return tokens;
@@ -33,6 +35,6 @@ export function isThemeId(value: unknown): value is ThemeId {
   return typeof value === 'string' && value in THEMES;
 }
 
-export function resolveThemeId(raw: string | undefined): ThemeId {
-  return isThemeId(raw) ? raw : DEFAULT_THEME_ID;
+export function resolveThemeId(storedThemeId: string | undefined): ThemeId {
+  return isThemeId(storedThemeId) ? storedThemeId : DEFAULT_THEME_ID;
 }

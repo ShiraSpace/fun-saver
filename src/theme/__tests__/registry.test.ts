@@ -130,16 +130,16 @@ describe('theme registry', () => {
   });
 
   it('resolves jungle-quest with full tokens', () => {
-    const t = getThemeTokens('jungle-quest');
-    expect(t.colors.primary).toBe('#2A9D8F');
-    expect(t.colors.surface).toBe('#FFFDF5');
-    expect(t.gradients.walletGoodDeeds).toContain('linear-gradient');
+    const tokens = getThemeTokens('jungle-quest');
+    expect(tokens.colors.primary).toBe('#2A9D8F');
+    expect(tokens.colors.surface).toBe('#FFFDF5');
+    expect(tokens.gradients.walletGoodDeeds).toContain('linear-gradient');
   });
 
   it('resolves midnight-blue with full tokens', () => {
-    const t = getThemeTokens('midnight-blue');
-    expect(t.colors.primary).toBe('#3B82F6');
-    expect(t.colors.surface).toBe('#141B24');
+    const tokens = getThemeTokens('midnight-blue');
+    expect(tokens.colors.primary).toBe('#3B82F6');
+    expect(tokens.colors.surface).toBe('#141B24');
   });
 
   describe('resolveThemeId', () => {
