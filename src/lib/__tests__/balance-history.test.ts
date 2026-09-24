@@ -1,4 +1,5 @@
 import { balanceHistory } from '../balance-history';
+import { TRANSACTION_TYPE } from '../constants';
 import { eachDayInclusive } from '../dates';
 import {
   createMockTransaction,
@@ -29,7 +30,7 @@ describe('the balance history', () => {
     });
     const mockSameDayWithdrawal = createMockTransaction({
       id: 'withdrawal',
-      type: 'withdrawal',
+      type: TRANSACTION_TYPE.withdrawal,
       amount: 200,
       occurredAt: '2026-01-02',
     });
@@ -94,7 +95,7 @@ describe('the balance history', () => {
       const mockSpendingWithdrawal = createMockTransaction({
         id: 'purchase',
         walletId: 'w2',
-        type: 'withdrawal',
+        type: TRANSACTION_TYPE.withdrawal,
         amount: 200,
       });
       const accountBalanceHistory = balanceHistory({
