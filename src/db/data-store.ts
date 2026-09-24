@@ -8,7 +8,7 @@ import type {
 } from '@/lib/types';
 import type { ThemeId } from '@/theme/registry';
 
-export interface StoreData {
+export interface StoreContents {
   accounts: Account[];
   transactions: Transaction[];
   users: User[];
@@ -52,7 +52,10 @@ export interface DataStore {
   insertAccount(account: Account): Promise<void>;
   getAccount(id: string): Promise<Account | undefined>;
   setAccountTheme(id: string, themeId: ThemeId): Promise<Account | undefined>;
-  updateAccount(id: string, edits: AccountEdits): Promise<Account | undefined>;
+  updateAccount(
+    accountId: string,
+    edits: AccountEdits
+  ): Promise<Account | undefined>;
   insertTransactions(transactions: Transaction[]): Promise<void>;
   listTransactionsByWallet(
     accountId: string,

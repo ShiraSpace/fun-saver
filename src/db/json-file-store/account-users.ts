@@ -14,33 +14,33 @@ export class JsonAccountUsers implements AccountUserRepository {
   constructor(private readonly session: FileSession) {}
 
   get(accountId: string, userId: string): Promise<AccountUser | undefined> {
-    return this.session.read((data): AccountUser | undefined =>
-      findAccountUser(data.accountUsers, accountId, userId)
+    return this.session.read((contents): AccountUser | undefined =>
+      findAccountUser(contents.accountUsers, accountId, userId)
     );
   }
 
   listAccountsForUser(userId: string): Promise<Account[]> {
-    return this.session.read((data): Account[] =>
-      accountsForUser(data.accountUsers, data.accounts, userId)
+    return this.session.read((contents): Account[] =>
+      accountsForUser(contents.accountUsers, contents.accounts, userId)
     );
   }
 
   insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void> {
-    return this.session.write(async (data, save): Promise<void> => {
-      const accountExists = Boolean(findAccount(data, account.id));
+    return this.session.write(async (contents, save): Promise<void> => {
+      const accountExists = Boolean(findAccount(contents, account.id));
 
       if (accountExists) {
         throw new DuplicateAccountError(account.id);
       }
 
-      const ownerIsKnownUser = isKnownUser(data.users, owner.userId);
+      const ownerIsKnownUser = isKnownUser(contents.users, owner.userId);
 
       if (!ownerIsKnownUser) {
         throw new UnknownOwnerError(owner.userId);
       }
 
-      data.accounts.push(account);
-      data.accountUsers.push(ownerAccountUser(account.id, owner));
+      contents.accounts.push(account);
+      contents.accountUsers.push(ownerAccountUser(account.id, owner));
       await save();
     });
   }

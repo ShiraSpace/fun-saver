@@ -4,10 +4,10 @@
 import { DuplicateAccountError } from '@/lib/errors';
 import { THEME_ID } from '@/theme/registry';
 import { createMockAccount, mockAccountEdit } from '@/test-utils/fixtures';
-import { withLiveStore } from './live-store';
+import { withTestDatabase } from './test-database';
 
 describe('PostgresAccounts', () => {
-  const { store, accountId } = withLiveStore();
+  const { store, accountId } = withTestDatabase();
 
   it('round-trips an account with embedded wallets through JSONB', async () => {
     const account = createMockAccount({

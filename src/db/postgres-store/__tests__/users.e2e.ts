@@ -4,10 +4,10 @@
 import type { User } from '@/lib/types';
 import { createMockUser } from '@/test-utils/fixtures';
 import { DuplicateUserError } from '@/lib/errors';
-import { withLiveStore } from './live-store';
+import { withTestDatabase } from './test-database';
 
 describe('PostgresUsers', () => {
-  const { store, userId } = withLiveStore();
+  const { store, userId } = withTestDatabase();
   let mockUser: User;
 
   beforeEach(async () => {

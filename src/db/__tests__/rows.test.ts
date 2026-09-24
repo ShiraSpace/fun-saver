@@ -1,13 +1,13 @@
 import {
-  toAccount,
-  toAccountUser,
-  toTransaction,
-  toUser,
+  accountFromRow,
+  accountUserFromRow,
+  transactionFromRow,
+  userFromRow,
   type AccountUserRow,
   type AccountRow,
   type TransactionRow,
   type UserRow,
-} from '../row-mappers';
+} from '../rows';
 import {
   createMockTransaction,
   createMockWallets,
@@ -52,21 +52,21 @@ const accountUserRow: AccountUserRow = {
   added_at: '2026-01-01T00:00:00.000Z',
 };
 
-describe('toAccount', () => {
+describe('accountFromRow', () => {
   it('maps an account row to an Account', () => {
-    expect(toAccount(accountRow)).toEqual(mockAccount);
+    expect(accountFromRow(accountRow)).toEqual(mockAccount);
   });
 });
 
-describe('toTransaction', () => {
+describe('transactionFromRow', () => {
   it('maps a transaction row to a Transaction', () => {
-    expect(toTransaction(transactionRow)).toEqual(transaction);
+    expect(transactionFromRow(transactionRow)).toEqual(transaction);
   });
 });
 
-describe('toUser', () => {
+describe('userFromRow', () => {
   it('maps a user row to a User', () => {
-    expect(toUser(userRow)).toEqual({
+    expect(userFromRow(userRow)).toEqual({
       id: 'u1',
       provider: 'google',
       providerAccountId: 'google-sub-1',
@@ -77,9 +77,9 @@ describe('toUser', () => {
   });
 });
 
-describe('toAccountUser', () => {
+describe('accountUserFromRow', () => {
   it('maps an account user row to an AccountUser', () => {
-    expect(toAccountUser(accountUserRow)).toEqual({
+    expect(accountUserFromRow(accountUserRow)).toEqual({
       accountId: mockAccount.id,
       userId: 'u1',
       role: 'owner',

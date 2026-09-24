@@ -9,13 +9,13 @@ import { balance } from '@/lib/derivations';
 import type { Account } from '@/lib/types';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
-import { withTempDataPath } from '@/test-utils/test-utils';
+import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
 jest.mock('@/auth');
 
 describe('POST /api/accounts/[id]/withdrawals', () => {
-  withTempDataPath();
+  withTempStoreEnv();
 
   let account: Account;
   let savingsId: string;
