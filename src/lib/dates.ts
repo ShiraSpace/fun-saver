@@ -28,3 +28,9 @@ export function eachDayInclusive(start: string, end: string): string[] {
 
   return days;
 }
+
+const MONTH_LENGTH = 7;
+
+export function calendarMonth(iso: string): string {
+  return iso.slice(0, MONTH_LENGTH);
+}
