@@ -54,7 +54,7 @@ For technical details (commands, architecture, dependencies), see [DEVELOPMENT.m
 ### Phase 2: Implementation (Per Phase/Step)
 5. Outline the specific phase/step plan
 6. **STOP** - Wait for user approval to start implementation
-7. Implement production code only (no tests yet). Before writing it, name every new export in the glossary's words and its nearest existing sibling's — a name the plan hands you is a proposal, re-checked like your own; the glossary wins over the plan, and when in doubt ask the user
+7. Implement production code only (no tests yet). Before writing it, name every new export in the glossary's words and its nearest existing sibling's. Use simple and clear domain language that explains the what and why, not the how. A name the plan hands you is a proposal, re-checked like your own; the glossary wins over the plan, and when in doubt ask the user
 8. **STOP** - Wait for user review and refactoring feedback
 9. **STOP** - Wait for explicit approval: "commit" or "approved to commit"
 10. Commit the production code
