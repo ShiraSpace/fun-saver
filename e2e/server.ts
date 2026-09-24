@@ -46,11 +46,11 @@ export async function startServer(): Promise<RunningServer> {
 
 function getFreePort(): Promise<number> {
   return new Promise((resolve, reject) => {
-    const probe = createServer();
-    probe.once('error', reject);
-    probe.listen(0, () => {
-      const { port } = probe.address() as { port: number };
-      probe.close(() => resolve(port));
+    const portFinder = createServer();
+    portFinder.once('error', reject);
+    portFinder.listen(0, () => {
+      const { port } = portFinder.address() as { port: number };
+      portFinder.close(() => resolve(port));
     });
   });
 }

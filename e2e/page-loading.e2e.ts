@@ -23,7 +23,7 @@ const SIGNS_OF_WAITING = [
 ] as const;
 
 describe('waiting for a page', () => {
-  const { session, menu, header, loadingShell } = useDriver({
+  const { appBrowser, menu, header, loadingShell } = useDriver({
     accounts: [mockAccount],
   });
 
@@ -42,7 +42,7 @@ describe('waiting for a page', () => {
     });
 
     it('turns a bad session away with a redirect, before any shell is sent', async () => {
-      const response = await session.rawResponse(
+      const response = await appBrowser.rawResponse(
         HOME_ROUTE,
         `${SESSION_COOKIE_NAME}=not-a-session`
       );
@@ -65,7 +65,7 @@ describe('waiting for a page', () => {
     });
 
     it('paints the theme the document carries, not the default', async () => {
-      await session.setDocumentTheme(THEME_ID.midnightBlue);
+      await appBrowser.setDocumentTheme(THEME_ID.midnightBlue);
 
       assert.equal(
         await loadingShell.cardBackground(),
@@ -96,13 +96,13 @@ describe('waiting for a page', () => {
 
   describe('tapping home twice before the page lands', () => {
     beforeEach(async () => {
-      await session.visit(METHOD_ROUTE);
-      const nextPage = await session.holdNextPage();
+      await appBrowser.visit(METHOD_ROUTE);
+      const nextPage = await appBrowser.holdNextPage();
 
       await menu.open();
       await menu.tapHomeTab();
-      await nextPage.waiting;
-      await session.waitForTestId(HEADER_TEST_IDS.progress);
+      await nextPage.requested;
+      await appBrowser.waitForTestId(HEADER_TEST_IDS.progress);
       await header.tapHomeLink();
       await nextPage.settle();
     });
@@ -117,16 +117,16 @@ describe('waiting for a page', () => {
       let nextPage: HeldPage;
 
       beforeEach(async () => {
-        await session.visit(journey.start);
-        nextPage = await session.holdNextPage();
+        await appBrowser.visit(journey.start);
+        nextPage = await appBrowser.holdNextPage();
 
         await journey.leave();
-        await nextPage.waiting;
-        await session.waitForAnyTestId(SIGNS_OF_WAITING);
+        await nextPage.requested;
+        await appBrowser.waitForAnyTestId(SIGNS_OF_WAITING);
       });
 
       it('keeps the page it is leaving on screen', async () => {
-        assert.equal(await session.exists(journey.leavingPage), true);
+        assert.equal(await appBrowser.exists(journey.leavingPage), true);
       });
 
       it('does not put the shell in its place', async () => {
@@ -139,7 +139,7 @@ describe('waiting for a page', () => {
 
       it('takes the line away once the page lands', async () => {
         nextPage.release();
-        await header.waitForName(journey.arrivingTitle);
+        await header.waitForTitle(journey.arrivingTitle);
 
         assert.equal(await header.hasProgressLine(), false);
       });

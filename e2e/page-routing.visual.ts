@@ -48,12 +48,12 @@ describe('page routing', () => {
   });
 
   describe('the method page with no account to show', () => {
-    const { session } = useDriver();
+    const { appBrowser } = useDriver();
 
     it('sends the parent home, where the empty state asks for one', async () => {
-      await session.visit(METHOD_ROUTE);
+      await appBrowser.visit(METHOD_ROUTE);
 
-      assert.equal(session.currentPath(), HOME_ROUTE);
+      assert.equal(appBrowser.currentPath(), HOME_ROUTE);
     });
   });
 });

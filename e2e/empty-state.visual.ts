@@ -5,7 +5,7 @@ import { gradientToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
 describe('empty state', () => {
-  const { emptyState, session } = useDriver();
+  const { emptyState, appBrowser } = useDriver();
   const expectedGradient = gradientToRgb(getThemeTokens().gradients.screen);
   const expectedCtaGradient = gradientToRgb(
     getThemeTokens().gradients.primaryButton
@@ -13,7 +13,7 @@ describe('empty state', () => {
 
   describe('the screen', () => {
     it('fits within the viewport', async () => {
-      assert.equal(await session.hasVerticalScroll(), false);
+      assert.equal(await appBrowser.hasVerticalScroll(), false);
     });
 
     it('is painted with the sunset gradient', async () => {
@@ -32,7 +32,7 @@ describe('empty state', () => {
     });
 
     it('makes the pig oink when clicked', async () => {
-      await emptyState.clickCreateAccount();
+      await emptyState.tapCreateAccount();
       await emptyState.waitForPigToOink();
     });
   });

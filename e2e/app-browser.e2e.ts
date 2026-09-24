@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import { mockUser } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
-describe('the driver session', () => {
-  const { session } = useDriver();
+describe('the app browser', () => {
+  const { appBrowser } = useDriver();
 
   it('opens the app signed in as the seeded owner', async () => {
-    assert.equal(await session.signedInUserId(), mockUser.id);
+    assert.equal(await appBrowser.signedInUserId(), mockUser.id);
   });
 });

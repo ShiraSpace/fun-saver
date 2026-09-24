@@ -5,19 +5,19 @@ import {
 import { SOURCE_LIST_TEST_IDS } from '@/components/Method/SourceList/constants';
 import { SOURCE_MARKER_TEST_IDS } from '@/components/Method/SourceMarker/constants';
 import { METHOD_ROUTE, SECTION_NUMBER } from '@/components/Method/constants';
-import { Session } from './session';
+import { AppBrowser } from './app-browser';
 
 type SectionKey = keyof typeof SECTION_NUMBER;
 
 export class MethodDriver {
-  constructor(private readonly session: Session) {}
+  constructor(private readonly appBrowser: AppBrowser) {}
 
   open(): Promise<void> {
-    return this.session.visit(METHOD_ROUTE);
+    return this.appBrowser.visit(METHOD_ROUTE);
   }
 
   expand(id: MethodSectionId): Promise<void> {
-    return this.session.click(METHOD_SECTION_TEST_IDS.summary(id));
+    return this.appBrowser.click(METHOD_SECTION_TEST_IDS.summary(id));
   }
 
   sectionNumber(section: SectionKey): number {
@@ -25,24 +25,24 @@ export class MethodDriver {
   }
 
   chevronRotation(id: MethodSectionId): Promise<string> {
-    return this.session.computedStyle(
+    return this.appBrowser.computedStyle(
       METHOD_SECTION_TEST_IDS.chevron(id),
       'transform'
     );
   }
 
   sourceNumbering(): Promise<string> {
-    return this.session.computedStyle(
+    return this.appBrowser.computedStyle(
       SOURCE_LIST_TEST_IDS.list,
       'list-style-type'
     );
   }
 
   markerNumbers(): Promise<string[]> {
-    return this.session.texts(SOURCE_MARKER_TEST_IDS.marker);
+    return this.appBrowser.texts(SOURCE_MARKER_TEST_IDS.marker);
   }
 
   citationCount(): Promise<number> {
-    return this.session.count(SOURCE_LIST_TEST_IDS.citation);
+    return this.appBrowser.count(SOURCE_LIST_TEST_IDS.citation);
   }
 }

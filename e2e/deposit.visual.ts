@@ -7,7 +7,7 @@ import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { useDriver } from './driver/use-driver';
 
 describe('deposit', () => {
-  const { dashboard } = useDriver({ accounts: [mockAccount] });
+  const { account } = useDriver({ accounts: [mockAccount] });
 
   it('splits a deposit across the wallets and updates the savings principal', async () => {
     const amount = 50;
@@ -15,10 +15,10 @@ describe('deposit', () => {
       splitDeposit(amount * AGOROT_PER_SHEKEL).savings
     );
 
-    assert.match(await dashboard.savingsPrincipal(), /0/);
+    assert.match(await account.savingsPrincipal(), /0/);
 
-    await dashboard.deposit(amount);
+    await account.deposit(amount);
 
-    await dashboard.waitForSavingsPrincipal(String(expectedSavings));
+    await account.waitForSavingsPrincipal(String(expectedSavings));
   });
 });

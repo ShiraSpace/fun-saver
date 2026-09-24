@@ -42,10 +42,10 @@ export async function waitForStyle({
   value,
 }: StyleWait): Promise<void> {
   await page.waitForFunction(
-    (candidate, name, wanted) =>
+    (selector, property, expected) =>
       getComputedStyle(
-        document.querySelector(candidate) as Element
-      ).getPropertyValue(name) === wanted,
+        document.querySelector(selector) as Element
+      ).getPropertyValue(property) === expected,
     {},
     selector,
     property,
@@ -59,9 +59,9 @@ export async function waitForText({
   expected,
 }: ContentWait): Promise<void> {
   await page.waitForFunction(
-    (id, part) => {
-      const element = document.querySelector(`[data-testid="${id}"]`);
-      return element !== null && (element.textContent ?? '').includes(part);
+    (testId, expected) => {
+      const element = document.querySelector(`[data-testid="${testId}"]`);
+      return element !== null && (element.textContent ?? '').includes(expected);
     },
     {},
     testId,
@@ -75,13 +75,13 @@ export async function waitForImageSource({
   expected,
 }: ContentWait): Promise<void> {
   await page.waitForFunction(
-    (id, part) => {
-      const node = document.querySelector(`[data-testid="${id}"]`);
+    (testId, expected) => {
+      const node = document.querySelector(`[data-testid="${testId}"]`);
       const source =
         node?.getAttribute('src') ??
         node?.querySelector('img')?.getAttribute('src') ??
         '';
-      return source.includes(part);
+      return source.includes(expected);
     },
     {},
     testId,
