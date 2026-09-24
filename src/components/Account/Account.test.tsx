@@ -11,7 +11,7 @@ import {
   mockAccountsContext,
   mockWalletSummaries,
   mockUser,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import type { AccountSummary } from '@/lib/types';
 
 describe('Account', () => {

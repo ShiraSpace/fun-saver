@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { mockWalletSummaries } from '@/test-utils/fixtures';
+import { mockWalletSummaries } from '@/test-utils/mocks/general.mocks';
 import { prefersReducedMotion } from '@/test-utils/motion';
 import { BalanceBreakdown } from './BalanceBreakdown';
 import {

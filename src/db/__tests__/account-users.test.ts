@@ -7,7 +7,7 @@ import {
   mockAccountUser,
   mockSiblingAccount,
   mockUser,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 
 const mockParentId = mockUser.id;
 const mockUnrelatedParentId = 'u2';

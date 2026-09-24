@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockAccount } from '@/test-utils/fixtures';
+import { mockAccount } from '@/test-utils/mocks/general.mocks';
 import { THEME_ID } from '@/theme/registry';
 import { useDriver } from './driver/use-driver';
 

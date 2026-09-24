@@ -9,7 +9,7 @@ import {
   createMockTransaction,
   createMockWallets,
   mockOpeningDeposit,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 
 describe('the balance over a range', () => {
   const mockWallets = createMockWallets();

@@ -3,7 +3,7 @@
  */
 import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
-import { mockCoParent, mockUser } from '@/test-utils/fixtures';
+import { mockCoParent, mockUser } from '@/test-utils/mocks/general.mocks';
 import { splitDeposit } from '@/lib/transactions';
 import type { Transaction } from '@/lib/types';
 import { createOwnedAccount } from '@/test-utils/owned-account';

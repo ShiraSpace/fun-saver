@@ -1,7 +1,10 @@
 import { summarizeWallet } from '../summarize-wallet';
 import { TRANSACTION_TYPE } from '../constants';
 import type { WalletSummary } from '../types';
-import { createMockTransaction, createMockWallet } from '@/test-utils/fixtures';
+import {
+  createMockTransaction,
+  createMockWallet,
+} from '@/test-utils/mocks/general.mocks';
 
 const mockWallet = createMockWallet({ lastInterestDate: '2026-01-03' });
 

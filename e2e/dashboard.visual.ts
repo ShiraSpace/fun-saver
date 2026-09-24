@@ -4,7 +4,7 @@ import {
   mockAccount,
   mockWalletSummaries,
   mockTransactions,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { WALLET_LIST_COPY } from '@/components/Account/WalletList/constants';
 import { WALLET_CARD_COPY } from '@/components/Account/WalletCard/constants';
 import { useDriver } from './driver/use-driver';

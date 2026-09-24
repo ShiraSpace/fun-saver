@@ -10,7 +10,7 @@ import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
 import { METHOD_SECTION_TEST_IDS } from '@/components/Method/MethodSection/constants';
-import { mockAccount } from '@/test-utils/fixtures';
+import { mockAccount } from '@/test-utils/mocks/general.mocks';
 import { hexToRgb } from '@/test-utils/css-color';
 import { THEMES, THEME_ID } from '@/theme/registry';
 import type { HeldPage } from './driver/hold-next-page';

@@ -6,7 +6,7 @@ import {
   mockAccountUser,
   mockOwner,
   mockUser,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 describe('FileSession write queue', () => {

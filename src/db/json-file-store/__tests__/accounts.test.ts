@@ -5,7 +5,7 @@ import {
   mockAccount,
   mockAccountEdits,
   mockSiblingAccount,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 describe('JsonFileStore accounts', () => {

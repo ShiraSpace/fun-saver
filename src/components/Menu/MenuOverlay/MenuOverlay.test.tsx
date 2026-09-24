@@ -1,6 +1,9 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { openAccountPicker } from '@/test-utils/account-picker';
-import { mockAccountsContext, mockUser } from '@/test-utils/fixtures';
+import {
+  mockAccountsContext,
+  mockUser,
+} from '@/test-utils/mocks/general.mocks';
 import { WithMenu } from '@/test-utils/menu';
 import { MenuOverlay } from './MenuOverlay';
 import { MENU_OVERLAY_COPY } from './constants';

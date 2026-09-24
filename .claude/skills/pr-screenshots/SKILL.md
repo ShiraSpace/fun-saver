@@ -25,7 +25,7 @@ PR is up.
 
 ```ts
 // e2e/shots/<topic>.shot.mts
-import { mockAccount, mockSiblingAccount, mockTransactions } from '@/test-utils/fixtures';
+import { mockAccount, mockSiblingAccount, mockTransactions } from '@/test-utils/mocks/general.mocks';
 import { withShots } from '../shot';
 
 await withShots(

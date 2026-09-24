@@ -7,7 +7,7 @@ import { today } from '@/lib/clock';
 import { addDeposit } from '@/lib/transactions';
 import { balance } from '@/lib/wallet-totals';
 import type { Account } from '@/lib/types';
-import { mockCoParent, mockUser } from '@/test-utils/fixtures';
+import { mockCoParent, mockUser } from '@/test-utils/mocks/general.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { POST } from '../route';

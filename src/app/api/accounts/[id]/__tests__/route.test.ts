@@ -8,7 +8,7 @@ import {
   mockCreateAccountInput,
   mockCoParent,
   mockUser,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { THEME_ID } from '@/theme/registry';
 import { createOwnedAccount } from '@/test-utils/owned-account';

@@ -3,7 +3,7 @@ import { openAccountPicker } from '@/test-utils/account-picker';
 import {
   mockAccountSummary,
   mockSiblingAccountSummary,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { AccountPicker } from './AccountPicker';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';

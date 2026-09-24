@@ -1,5 +1,8 @@
 import { render, screen } from '@/test-utils/render';
-import { mockWalletSummaries, mockWalletShares } from '@/test-utils/fixtures';
+import {
+  mockWalletSummaries,
+  mockWalletShares,
+} from '@/test-utils/mocks/general.mocks';
 import { Legend } from './Legend';
 import {
   LEGEND_ANIMATION,

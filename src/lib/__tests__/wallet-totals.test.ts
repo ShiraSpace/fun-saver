@@ -10,7 +10,7 @@ import {
 } from '../wallet-totals';
 import { TRANSACTION_TYPE } from '../constants';
 import type { Transaction } from '../types';
-import { createMockTransaction } from '@/test-utils/fixtures';
+import { createMockTransaction } from '@/test-utils/mocks/general.mocks';
 
 const transaction = (
   type: Transaction['type'],

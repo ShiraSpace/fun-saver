@@ -1,5 +1,8 @@
 import { render, screen } from '@/test-utils/render';
-import { mockWalletSummaries, mockWalletShares } from '@/test-utils/fixtures';
+import {
+  mockWalletSummaries,
+  mockWalletShares,
+} from '@/test-utils/mocks/general.mocks';
 import { getThemeTokens } from '@/theme/registry';
 import { Donut, type DonutSegment } from './Donut';
 import { BALANCE_BREAKDOWN_TEST_IDS } from '../constants';

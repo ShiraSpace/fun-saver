@@ -1,6 +1,9 @@
 import { renderHook } from '@testing-library/react';
 import type { Account } from '@/lib/types';
-import { mockAccount, mockAccountEdits } from '@/test-utils/fixtures';
+import {
+  mockAccount,
+  mockAccountEdits,
+} from '@/test-utils/mocks/general.mocks';
 import { useUpdateAccount } from './use-update-account';
 
 describe('useUpdateAccount', () => {

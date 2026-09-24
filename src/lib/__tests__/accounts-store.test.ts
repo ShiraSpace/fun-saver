@@ -7,7 +7,7 @@ import {
   mockCreateAccountInput,
   mockAccountEdits,
   mockUser,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import type { Account } from '@/lib/types';
 
 describe('AccountsStore', () => {

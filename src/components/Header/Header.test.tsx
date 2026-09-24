@@ -1,5 +1,8 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { mockAccountsContext, mockUser } from '@/test-utils/fixtures';
+import {
+  mockAccountsContext,
+  mockUser,
+} from '@/test-utils/mocks/general.mocks';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';

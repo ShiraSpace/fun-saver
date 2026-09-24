@@ -5,7 +5,7 @@ import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { cancelForm, nameInput } from '@/test-utils/account-form';
 import { openAccountPicker } from '@/test-utils/account-picker';
-import { mockAccount } from '@/test-utils/fixtures';
+import { mockAccount } from '@/test-utils/mocks/general.mocks';
 import {
   createdAccount,
   openMenu,

@@ -2,7 +2,7 @@ import type { DataStore } from '@/db/data-store';
 import type { CreateAccountInput } from '@/lib/accounts-store';
 import { AccountsStore } from '@/lib/accounts-store';
 import type { Account, User } from '@/lib/types';
-import { mockCreateAccountInput, mockUser } from './fixtures';
+import { mockCreateAccountInput, mockUser } from './mocks/general.mocks';
 
 export interface CreateOwnedAccountOptions {
   input?: CreateAccountInput;

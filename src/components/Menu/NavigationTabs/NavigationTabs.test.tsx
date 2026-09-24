@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import { mockAccountsContext } from '@/test-utils/fixtures';
+import { mockAccountsContext } from '@/test-utils/mocks/general.mocks';
 import { NavigationTabs } from './NavigationTabs';
 import {
   NAVIGATION_DESTINATIONS,

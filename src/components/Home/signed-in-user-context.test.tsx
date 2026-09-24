@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 import { render, screen } from '@/test-utils/render';
-import { mockUser } from '@/test-utils/fixtures';
+import { mockUser } from '@/test-utils/mocks/general.mocks';
 import { captureCookies } from '@/test-utils/cookies';
 import { THEME_COOKIE } from '@/lib/cookies';
 import { THEME_ID } from '@/theme/registry';

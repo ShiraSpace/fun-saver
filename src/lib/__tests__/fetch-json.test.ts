@@ -1,5 +1,5 @@
 import { API_ERRORS } from '@/app/api/constants';
-import { mockAccount } from '@/test-utils/fixtures';
+import { mockAccount } from '@/test-utils/mocks/general.mocks';
 import { SIGN_IN_PATH } from '../constants';
 import { goTo } from '../navigate';
 import { fetchJson } from '../fetch-json';

@@ -1,5 +1,5 @@
 import { InMemoryStore } from '../index';
-import { mockUser, createMockUser } from '@/test-utils/fixtures';
+import { mockUser, createMockUser } from '@/test-utils/mocks/general.mocks';
 import { DuplicateUserError } from '@/lib/errors';
 
 describe('InMemoryStore users', () => {

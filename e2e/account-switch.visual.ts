@@ -1,7 +1,10 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { sortedByName } from '@/db/account-users';
-import { mockAccount, mockSiblingAccount } from '@/test-utils/fixtures';
+import {
+  mockAccount,
+  mockSiblingAccount,
+} from '@/test-utils/mocks/general.mocks';
 import { useDriver } from './driver/use-driver';
 
 describe('account switching', () => {
