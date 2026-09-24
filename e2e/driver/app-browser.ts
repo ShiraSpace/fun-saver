@@ -91,6 +91,14 @@ export class AppBrowser {
     return actions.setDocumentTheme(this.page, themeId);
   }
 
+  storeTheme(themeId: string): Promise<void> {
+    return actions.storeTheme({ page: this.page, url: this.baseUrl, themeId });
+  }
+
+  firstPaintThemeId(): Promise<unknown> {
+    return queries.firstPaintThemeId(this.page);
+  }
+
   holdNextPage(): Promise<HeldPage> {
     return holdNextPage(this.page);
   }
