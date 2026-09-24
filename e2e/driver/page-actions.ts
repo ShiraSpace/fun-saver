@@ -99,5 +99,10 @@ export async function storeTheme({
   url,
   themeId,
 }: StoredTheme): Promise<void> {
-  await page.setCookie({ name: THEME_COOKIE, value: themeId, url });
+  await page.browser().setCookie({
+    name: THEME_COOKIE,
+    value: themeId,
+    domain: new URL(url).hostname,
+    path: '/',
+  });
 }
