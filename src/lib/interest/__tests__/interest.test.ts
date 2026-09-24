@@ -1,5 +1,5 @@
 import { addDailyInterest, dailyRate, interestForDay } from '../index';
-import { DAYS_PER_MONTH } from '@/lib/constants';
+import { DAYS_PER_MONTH, TRANSACTION_TYPE } from '@/lib/constants';
 import type { Transaction } from '@/lib/types';
 import { createMockTransaction, createMockWallet } from '@/test-utils/fixtures';
 
@@ -16,7 +16,7 @@ const deposit = (amount: number, occurredAt: string): Transaction =>
 const withdrawal = (amount: number, occurredAt: string): Transaction =>
   createMockTransaction({
     id: `w-${occurredAt}`,
-    type: 'withdrawal',
+    type: TRANSACTION_TYPE.withdrawal,
     amount,
     occurredAt,
   });
@@ -24,7 +24,7 @@ const withdrawal = (amount: number, occurredAt: string): Transaction =>
 const interest = (amount: number, occurredAt: string): Transaction =>
   createMockTransaction({
     id: `i-${occurredAt}`,
-    type: 'interest',
+    type: TRANSACTION_TYPE.interest,
     amount,
     occurredAt,
   });
@@ -106,7 +106,7 @@ describe('addDailyInterest', () => {
 
     it('creates only interest transactions', () => {
       const everyTransactionIsInterest = actualTransactions.every(
-        (transaction) => transaction.type === 'interest'
+        (transaction) => transaction.type === TRANSACTION_TYPE.interest
       );
 
       expect(everyTransactionIsInterest).toBe(true);

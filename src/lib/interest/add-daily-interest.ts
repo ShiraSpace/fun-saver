@@ -1,4 +1,5 @@
 import type { Transaction, Wallet } from '../types';
+import { TRANSACTION_TYPE } from '../constants';
 import { addDays, eachDayInclusive } from '../dates';
 import { newId } from '../ids';
 import { balanceChange } from '../wallet-totals';
@@ -11,9 +12,15 @@ export interface AddDailyInterestParams {
   accountId: string;
 }
 
+function balanceChange(transaction: Transaction): number {
+  return transaction.type === TRANSACTION_TYPE.withdrawal
+    ? -transaction.amount
+    : transaction.amount;
+}
+
 function settledThrough(wallet: Wallet, transactions: Transaction[]): string {
   return transactions
-    .filter((transaction) => transaction.type === 'interest')
+    .filter((transaction) => transaction.type === TRANSACTION_TYPE.interest)
     .reduce(
       (latest, transaction) =>
         transaction.occurredAt > latest ? transaction.occurredAt : latest,
@@ -34,7 +41,10 @@ function principalChangeByDay(
   const changeByDay = new Map<string, number>();
 
   for (const transaction of transactions) {
-    if (transaction.type === 'interest' || transaction.occurredAt < firstDay) {
+    if (
+      transaction.type === TRANSACTION_TYPE.interest ||
+      transaction.occurredAt < firstDay
+    ) {
       continue;
     }
 
@@ -73,7 +83,7 @@ export function addDailyInterest({
         id: newId(),
         walletId: wallet.id,
         accountId,
-        type: 'interest',
+        type: TRANSACTION_TYPE.interest,
         amount: dayInterest,
         occurredAt: day,
         createdAt: new Date().toISOString(),

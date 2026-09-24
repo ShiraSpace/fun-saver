@@ -16,6 +16,12 @@ export const DAYS_PER_MONTH = 30;
 
 export const SAVINGS_MONTHLY_RATE = 0.15;
 
+export const TRANSACTION_TYPE = {
+  deposit: 'deposit',
+  withdrawal: 'withdrawal',
+  interest: 'interest',
+} as const;
+
 export const DEPOSIT_SHARES: Record<WalletName, number> = {
   savings: 0.4,
   spending: 0.5,

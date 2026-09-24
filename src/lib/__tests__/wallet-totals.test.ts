@@ -8,6 +8,7 @@ import {
   totalBalance,
   walletShares,
 } from '../wallet-totals';
+import { TRANSACTION_TYPE } from '../constants';
 import type { Transaction } from '../types';
 import { createMockTransaction } from '@/test-utils/fixtures';
 
@@ -25,10 +26,10 @@ const transaction = (
 
 describe('wallet totals', () => {
   const transactions: Transaction[] = [
-    transaction('deposit', 8000, '2026-01-01'),
-    transaction('interest', 53, '2026-01-02'),
-    transaction('withdrawal', 1000, '2026-01-03'),
-    transaction('interest', 47, '2026-01-03'),
+    transaction(TRANSACTION_TYPE.deposit, 8000, '2026-01-01'),
+    transaction(TRANSACTION_TYPE.interest, 53, '2026-01-02'),
+    transaction(TRANSACTION_TYPE.withdrawal, 1000, '2026-01-03'),
+    transaction(TRANSACTION_TYPE.interest, 47, '2026-01-03'),
   ];
 
   it('counts a withdrawal against the balance and everything else for it', () => {
