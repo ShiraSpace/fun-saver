@@ -11,6 +11,11 @@ the domain from the names alone, so new code takes its words from this table.
 - **One word per concept.** When a type names a concept (`Transaction`, `Wallet`,
   `Account`), every function, prop, param and local uses that word.
 - **Name a value after the thing that changed:** `balanceChange`, not `delta`.
+- **Name a component after what it shows, not what it is drawn as:**
+  `BalanceBreakdown`, not `DonutCard`; `BalanceChange`, not `SignedAmount` or
+  `ChangePill`. Before naming one, look at how its nearest sibling is named.
+- **Money stays numbers in `src/lib/money.ts`.** Turning an amount into display
+  text lives with the component that draws it.
 - **A parameter takes its type's name:** `balanceHistory: BalanceHistory`.
 - **No collisions.** Names that read alike mean alike. Client code never shadows a
   browser or JS global (`window`, `history`, `name`, `event`, `location`,
@@ -39,8 +44,8 @@ the domain from the names alone, so new code takes its words from this table.
 | Interest                             | ריבית · רווח מריבית            | `interest`, `interestEarned`, `interestEarnedToday`                       | gain, `todayInterest`                               |
 | Paying the interest owed up to today | —                              | `settle`, `settleInterest`, `SettledAccount`                              | pay, payout, ledger                                 |
 | Money in a jar                       | יתרה                           | `balance`; for the whole account `totalBalance`                           | overview, walletTotal, value                        |
-| What a day changed                   | שינוי                          | `balanceChange`                                                           | delta, netChange                                    |
-| The balance over time                | —                              | `balanceHistory`                                                          | series                                              |
+| What a day changed                   | שינוי                          | `balanceChange`, `BalanceChange`                                          | delta, netChange, signed amount, change pill        |
+| The balance over time                | —                              | `balanceHistory`, `BalanceOverTime`                                       | series, chart card                                  |
 | The child's own money, not interest  | הכסף שלך                       | `principal`: deposits less withdrawals                                    | deposits, deposited, ownMoney                       |
 | An amount of money                   | ₪                              | agorot unless the name ends `…Shekels`                                    | a bare `amount` holding shekels                     |
 | The account being viewed             | —                              | `currentAccount`                                                          | selected, target                                    |

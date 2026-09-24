@@ -1,4 +1,5 @@
 @AGENTS.md
+@docs/glossary.md
 
 ## Skill Usage
 
@@ -53,13 +54,13 @@ For technical details (commands, architecture, dependencies), see [DEVELOPMENT.m
 ### Phase 2: Implementation (Per Phase/Step)
 5. Outline the specific phase/step plan
 6. **STOP** - Wait for user approval to start implementation
-7. Implement production code only (no tests yet)
+7. Implement production code only (no tests yet). Before writing it, name every new export in the glossary's words and its nearest existing sibling's. Use simple and clear domain language that explains the what and why, not the how. A name the plan hands you is a proposal, re-checked like your own; the glossary wins over the plan, and when in doubt ask the user
 8. **STOP** - Wait for user review and refactoring feedback
 9. **STOP** - Wait for explicit approval: "commit" or "approved to commit"
 10. Commit the production code
 
 ### Phase 3: Testing (Per Phase/Step)
-11. Write the first THREE test cases
+11. Write the first THREE test cases (they should belong to the same file, less if no file needs three or more)
 12. Run them, make them pass, and watch **each one fail against its own deliberate break** — break the implementation, read *which* test reddens, restore. A test that has never failed proves nothing
 13. **STOP** - Wait for user approval; refactor on feedback
 14. Write the remaining test cases in bulk, each one watched failing against its own break the same way
@@ -79,7 +80,7 @@ agreed before the volume. Once they are approved, the rest follow in one go.
 
 - **NEVER** commit without explicit "commit" approval
 - **NEVER** write tests before production code is approved and committed
-- **NEVER** write more than the first three tests before approval — three, approval, then the rest in bulk
+- **NEVER** write more than the first three tests before approval — (up to) three (in the same file), approval, then the rest in bulk
 - **NEVER** count a test that has not been watched failing against a deliberate break
 - **NEVER** move to next phase without explicit approval
 - **NEVER** push to remote unless explicitly requested
@@ -97,7 +98,7 @@ agreed before the volume. Once they are approved, the rest follow in one go.
 2. **Exports**: Use named exports ONLY (no default exports)
 3. **Return Types**: Add explicit return types to ALL functions
 4. **Component Composition**: Extract to small, focused components when needed
-4a. **Styles live in `<Component>.styles.ts`**: no `styled.*` / `keyframes` / `css` declarations inside a `.tsx`. Style-only helpers (`({ theme }) => theme.colors.x`) go there too. A style shared by several components in a folder goes in a sibling `*-parts.ts` (e.g. `drawer-parts.ts`). Exempt: a component that *is* a styled component and nothing else (`PrimaryButton.tsx`, `Screen.tsx`) — the `.tsx` is already the style module, so no `.styles.ts` sibling.
+4a. **Styles live in `<Component>.styles.ts`**: no `styled.*` / `keyframes` / `css` declarations inside a `.tsx`. Style-only helpers (`({ theme }) => theme.colors.x`) go there too. A style shared by several components in a folder goes in a sibling `*-parts.ts` (e.g. `drawer-parts.ts`); a style with one user stays in that component's `.styles.ts`. Exempt: a component that *is* a styled component and nothing else (`PrimaryButton.tsx`, `Screen.tsx`) — the `.tsx` is already the style module, so no `.styles.ts` sibling.
 5. **ESLint Rules**: Never modify ESLint configuration to suppress warnings or errors — always fix the code itself
 6. **Size limits (enforced by ESLint)**: a file may not exceed 200 lines and a function may not exceed 40 lines (`max-lines`, `max-lines-per-function`; blank lines and comments are not counted, and `describe`/`it` callbacks in test files are exempt). When you hit a limit, **refactor**: extract a hook, a sub-component, a `.styles.ts`, or a helper — and prefer reusing something that already exists over writing a new one. **Never** get under the limit by deleting blank lines, collapsing statements onto one line, shortening names, or stripping formatting. Those make the code worse while the rule reports success, which is the opposite of the point. If nothing can honestly be extracted, stop and ask.
 7. Hard coded values should be a dedicated constant file.
