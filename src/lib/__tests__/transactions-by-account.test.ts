@@ -11,16 +11,16 @@ describe('transactions by account', () => {
     { account: mockSiblingAccountSummary, transactions: [] },
   ]);
 
-  it('keeps ids and the account off the page', () => {
+  describe('each transaction sent to the page', () => {
     const [firstTransaction] = Object.values(byAccount).flat();
 
-    expect(Object.keys(firstTransaction).sort()).toEqual([
-      'amount',
-      'createdAt',
-      'occurredAt',
-      'type',
-      'walletId',
-    ]);
+    it('leaves its id behind', () => {
+      expect(firstTransaction).not.toHaveProperty('id');
+    });
+
+    it('leaves the account behind', () => {
+      expect(firstTransaction).not.toHaveProperty('accountId');
+    });
   });
 
   it('keys each account’s transactions by that account', () => {

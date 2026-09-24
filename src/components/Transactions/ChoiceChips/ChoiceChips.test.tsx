@@ -32,11 +32,9 @@ describe('choice chips', () => {
   });
 
   it('checks exactly the selected choice', () => {
-    const checked = mockChoices.filter(
-      (choice) => (option(choice.id) as HTMLInputElement).checked
-    );
-
-    expect(checked).toEqual([mockSelected]);
+    expect(screen.getAllByRole('radio', { checked: true })).toEqual([
+      option(mockSelected.id),
+    ]);
   });
 
   it('tells its parent which choice was picked', () => {
