@@ -28,9 +28,11 @@ describe('InMemoryStore transactions', () => {
       createMockTransaction({ id: 't7', accountId: mockSecondAccount.id }),
     ]);
 
-    const rows = await store.listTransactionsByAccount(mockAccount.id);
+    const listedTransactions = await store.listTransactionsByAccount(
+      mockAccount.id
+    );
 
-    expect(new Set(rows)).toEqual(new Set(mockTransactions));
+    expect(new Set(listedTransactions)).toEqual(new Set(mockTransactions));
   });
 
   it('tells the history in the order it happened, same-day entries in the order they were made', async () => {
