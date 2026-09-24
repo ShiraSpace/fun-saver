@@ -21,13 +21,13 @@ describe('header', () => {
     describe('layout', () => {
       let bar: BoundingBox;
       let menuButton: BoundingBox;
-      let name: BoundingBox;
+      let title: BoundingBox;
       let avatar: BoundingBox;
 
       beforeEach(async () => {
         bar = await header.box();
         menuButton = await menu.buttonBox();
-        name = await header.nameBox();
+        title = await header.titleBox();
         avatar = await header.avatarBox();
       });
 
@@ -44,17 +44,17 @@ describe('header', () => {
 
       it('anchors the account name to the start, beside the menu', () => {
         assert.ok(
-          Math.abs(name.x + name.width - menuButton.x) <= EDGE_TOLERANCE
+          Math.abs(title.x + title.width - menuButton.x) <= EDGE_TOLERANCE
         );
       });
 
       it('places the avatar after the name', () => {
-        assert.ok(avatar.x + avatar.width <= name.x + EDGE_TOLERANCE);
+        assert.ok(avatar.x + avatar.width <= title.x + EDGE_TOLERANCE);
       });
 
       it('keeps the menu, name and avatar on the top row', () => {
         const onNameRow = (box: BoundingBox): boolean =>
-          box.y < name.y + name.height && box.y + box.height > name.y;
+          box.y < title.y + title.height && box.y + box.height > title.y;
 
         assert.ok(onNameRow(menuButton));
         assert.ok(onNameRow(avatar));
@@ -63,7 +63,7 @@ describe('header', () => {
 
     describe('typography', () => {
       it('renders the account name at the heading size from the type scale', async () => {
-        assert.equal(await header.nameFontSize(), HEADING_FONT_SIZE);
+        assert.equal(await header.titleFontSize(), HEADING_FONT_SIZE);
       });
     });
   });
@@ -71,12 +71,12 @@ describe('header', () => {
   describe('under a name long enough to wrap', () => {
     const { header, menu } = useDriver({ accounts: [longNamedAccount] });
 
-    it('stays one row rather than growing past the menu sheet', async () => {
+    it('stays one row rather than growing past the menu overlay', async () => {
       const bar = await header.box();
 
       assert.ok(
         bar.height <= HEADER_LAYOUT.height,
-        `bar is ${bar.height}px tall against a ${HEADER_LAYOUT.height}px sheet`
+        `bar is ${bar.height}px tall against a ${HEADER_LAYOUT.height}px backdrop`
       );
     });
 
@@ -84,17 +84,17 @@ describe('header', () => {
       await menu.open();
 
       const bar = await header.box();
-      const panel = await menu.panelBox();
+      const overlay = await menu.overlayBox();
 
       assert.ok(
-        bar.y + bar.height <= panel.y,
-        `bar reaches ${bar.y + bar.height}px, panel starts at ${panel.y}px`
+        bar.y + bar.height <= overlay.y,
+        `bar reaches ${bar.y + bar.height}px, overlay starts at ${overlay.y}px`
       );
     });
   });
 
   describe('on a screen that is not home', () => {
-    const { header, menu, method, session } = useDriver({
+    const { header, menu, method, appBrowser } = useDriver({
       accounts: [mockAccount],
     });
 
@@ -102,14 +102,14 @@ describe('header', () => {
       await method.open();
     });
 
-    it('carries the way home without growing the bar the sheet is sized to', async () => {
+    it('carries the way home without growing the bar the backdrop is sized to', async () => {
       assert.equal(await header.homeLinkExists(), true);
 
       const bar = await header.box();
 
       assert.ok(
         bar.height <= HEADER_LAYOUT.height,
-        `bar is ${bar.height}px tall against a ${HEADER_LAYOUT.height}px sheet`
+        `bar is ${bar.height}px tall against a ${HEADER_LAYOUT.height}px backdrop`
       );
     });
 
@@ -126,7 +126,7 @@ describe('header', () => {
 
       await menu.open();
 
-      const takesTap = await session.receivesTapAt({
+      const takesTap = await appBrowser.receivesTapAt({
         testId: HEADER_TEST_IDS.homeLink,
         x: homeLink.x + homeLink.width / 2,
         y: homeLink.y + homeLink.height / 2,
@@ -140,7 +140,7 @@ describe('header', () => {
 
       await menu.startOpening();
 
-      const takesTap = await session.receivesTapAt({
+      const takesTap = await appBrowser.receivesTapAt({
         testId: HEADER_TEST_IDS.homeLink,
         x: homeLink.x + homeLink.width / 2,
         y: homeLink.y + homeLink.height / 2,

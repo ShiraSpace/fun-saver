@@ -8,10 +8,10 @@ const ARCS_PER_RING = 3;
 const STILL = 'none';
 
 describe('donut sweep', () => {
-  const { dashboard } = useDriver(seed, 'no-preference');
+  const { account } = useDriver(seed, 'no-preference');
 
   it('draws every arc of the ring', async () => {
-    const animations = await dashboard.arcAnimations();
+    const animations = await account.walletShareAnimations();
     const actualAnimationsLength = animations.filter(
       (animation) => animation !== STILL
     ).length;
@@ -21,10 +21,10 @@ describe('donut sweep', () => {
 });
 
 describe('donut sweep under reduced motion', () => {
-  const { dashboard } = useDriver(seed);
+  const { account } = useDriver(seed);
 
   it('leaves every arc of the ring still', async () => {
-    const animations = await dashboard.arcAnimations();
+    const animations = await account.walletShareAnimations();
     const actualNonAnimatedArcs = animations.filter(
       (animation) => animation === STILL
     ).length;

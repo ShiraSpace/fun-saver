@@ -5,18 +5,18 @@ import { mockAccount } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
 describe('the menu while it is closed', () => {
-  const { menu, session } = useDriver({ accounts: [mockAccount] });
+  const { menu, appBrowser } = useDriver({ accounts: [mockAccount] });
 
   it('keeps sign out away from the keyboard until the menu is opened', async () => {
     assert.equal(
-      await session.canTakeFocus(SIGNED_IN_USER_SECTION_TEST_IDS.signOut),
+      await appBrowser.canTakeFocus(SIGNED_IN_USER_SECTION_TEST_IDS.signOut),
       false
     );
 
     await menu.open();
 
     assert.equal(
-      await session.canTakeFocus(SIGNED_IN_USER_SECTION_TEST_IDS.signOut),
+      await appBrowser.canTakeFocus(SIGNED_IN_USER_SECTION_TEST_IDS.signOut),
       true
     );
   });

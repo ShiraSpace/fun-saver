@@ -12,7 +12,7 @@ describe('create account', () => {
   const expectedGradient = gradientToRgb(getThemeTokens().gradients.screen);
 
   beforeEach(async () => {
-    await emptyState.clickCreateAccount();
+    await emptyState.tapCreateAccount();
     await createAccount.isOpen();
   });
 

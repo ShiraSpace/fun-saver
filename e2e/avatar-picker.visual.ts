@@ -10,7 +10,7 @@ describe('avatar picker', () => {
   const { emptyState, createAccount, avatarPicker } = useDriver();
 
   beforeEach(async () => {
-    await emptyState.clickCreateAccount();
+    await emptyState.tapCreateAccount();
     await createAccount.isOpen();
   });
 
@@ -22,7 +22,7 @@ describe('avatar picker', () => {
   });
 
   it('paints each option as a circle in its avatar colour', async () => {
-    const option = await avatarPicker.firstOption();
+    const option = await avatarPicker.firstAvatar();
 
     assert.equal(option.background, hexToRgb(AVATARS[0].background));
     assert.ok(
@@ -34,14 +34,14 @@ describe('avatar picker', () => {
 
   it('caps the picker width so the avatars stay small', async () => {
     assert.equal(
-      await avatarPicker.containerWidth(),
+      await avatarPicker.pickerWidth(),
       AVATAR_PICKER_LAYOUT.maxWidth
     );
   });
 
   it('rings the selected option in a colour the gradient does not hide', async () => {
     await avatarPicker.selectFirst();
-    const option = await avatarPicker.selectedOption();
+    const option = await avatarPicker.selectedAvatar();
 
     assert.equal(option.borderColor, hexToRgb(COLORS.textOnPrimary));
     assert.ok(
@@ -52,6 +52,6 @@ describe('avatar picker', () => {
 
   it('lifts an option on hover', async () => {
     await avatarPicker.hoverFirst();
-    await avatarPicker.waitForOptionToLift();
+    await avatarPicker.waitForAvatarToLift();
   });
 });

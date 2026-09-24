@@ -10,86 +10,86 @@ import {
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import { sessionCookie } from './auth-session';
-import { Session } from './session';
+import { AppBrowser } from './app-browser';
 import type { MotionPreference } from './page-queries';
 import { MenuDriver } from './menu-driver';
 import { HeaderDriver } from './header-driver';
 import { EmptyStateDriver } from './empty-state-driver';
 import { AccountFormDriver } from './account-form-driver';
 import { AvatarPickerDriver } from './avatar-picker-driver';
-import { DashboardDriver } from './dashboard-driver';
+import { AccountDriver } from './account-driver';
 import { MethodDriver } from './method-driver';
 import { LoadingShellDriver } from './loading-shell-driver';
 import { startServer, type RunningServer } from '../server';
 
 interface OpenAppOptions {
-  session: Session;
+  appBrowser: AppBrowser;
   server: RunningServer;
-  state: Partial<StoreContents>;
+  initialStore: Partial<StoreContents>;
   motion: MotionPreference;
 }
 
 export interface AppDriver {
-  session: Session;
+  appBrowser: AppBrowser;
   menu: MenuDriver;
   header: HeaderDriver;
   emptyState: EmptyStateDriver;
   createAccount: AccountFormDriver;
   editAccount: AccountFormDriver;
   avatarPicker: AvatarPickerDriver;
-  dashboard: DashboardDriver;
+  account: AccountDriver;
   method: MethodDriver;
   loadingShell: LoadingShellDriver;
 }
 
-export function createDrivers(session: Session): AppDriver {
+export function createAppDriver(appBrowser: AppBrowser): AppDriver {
   return {
-    session,
-    menu: new MenuDriver(session),
-    header: new HeaderDriver(session),
-    emptyState: new EmptyStateDriver(session),
+    appBrowser,
+    menu: new MenuDriver(appBrowser),
+    header: new HeaderDriver(appBrowser),
+    emptyState: new EmptyStateDriver(appBrowser),
     createAccount: new AccountFormDriver(
-      session,
+      appBrowser,
       CREATE_ACCOUNT_TEST_IDS.container
     ),
     editAccount: new AccountFormDriver(
-      session,
+      appBrowser,
       EDIT_ACCOUNT_TEST_IDS.container
     ),
-    avatarPicker: new AvatarPickerDriver(session),
-    dashboard: new DashboardDriver(session),
-    method: new MethodDriver(session),
-    loadingShell: new LoadingShellDriver(session),
+    avatarPicker: new AvatarPickerDriver(appBrowser),
+    account: new AccountDriver(appBrowser),
+    method: new MethodDriver(appBrowser),
+    loadingShell: new LoadingShellDriver(appBrowser),
   };
 }
 
-export async function startApp(session: Session): Promise<RunningServer> {
-  const [server] = await Promise.all([startServer(), session.start()]);
+export async function startApp(appBrowser: AppBrowser): Promise<RunningServer> {
+  const [server] = await Promise.all([startServer(), appBrowser.start()]);
 
   return server;
 }
 
 export async function openApp({
-  session,
+  appBrowser,
   server,
-  state,
+  initialStore,
   motion,
 }: OpenAppOptions): Promise<void> {
-  await seedStore(server.storePath, state);
-  await session.open({
+  await writeInitialStore(server.storePath, initialStore);
+  await appBrowser.open({
     baseUrl: server.baseUrl,
     motion,
     cookie: await sessionCookie(mockUser, server.authSecret),
   });
 }
 
-async function seedStore(
+async function writeInitialStore(
   storePath: string,
-  state: Partial<StoreContents>
+  initialStore: Partial<StoreContents>
 ): Promise<void> {
-  const accounts = state.accounts ?? [];
-  const data: StoreContents = {
-    users: [mockUser, ...(state.users ?? [])],
+  const accounts = initialStore.accounts ?? [];
+  const contents: StoreContents = {
+    users: [mockUser, ...(initialStore.users ?? [])],
     accounts,
     accountUsers: accounts.map((account) =>
       createMockAccountUser({
@@ -98,41 +98,41 @@ async function seedStore(
         addedAt: mockOwner.addedAt,
       })
     ),
-    transactions: state.transactions ?? [],
+    transactions: initialStore.transactions ?? [],
   };
 
   await mkdir(dirname(storePath), { recursive: true });
 
   const temporaryPath = `${storePath}.seed.tmp`;
 
-  await writeFile(temporaryPath, JSON.stringify(data, null, 2), 'utf8');
+  await writeFile(temporaryPath, JSON.stringify(contents, null, 2), 'utf8');
   await rename(temporaryPath, storePath);
 }
 
 export function useDriver(
-  state: Partial<StoreContents> = {},
+  initialStore: Partial<StoreContents> = {},
   motion: MotionPreference = 'reduce'
 ): AppDriver {
-  const session = Session.create();
-  const drivers = createDrivers(session);
+  const appBrowser = AppBrowser.create();
+  const appDriver = createAppDriver(appBrowser);
   let server: RunningServer;
 
   before(async () => {
-    server = await startApp(session);
+    server = await startApp(appBrowser);
   });
 
   beforeEach(async () => {
-    await openApp({ session, server, state, motion });
+    await openApp({ appBrowser, server, initialStore, motion });
   });
 
   afterEach(async () => {
-    await session.closePage();
+    await appBrowser.closePage();
   });
 
   after(async () => {
-    await session.stop();
+    await appBrowser.stop();
     await server.stop();
   });
 
-  return drivers;
+  return appDriver;
 }
