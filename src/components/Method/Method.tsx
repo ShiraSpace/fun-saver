@@ -7,7 +7,7 @@ import { Column, Screen } from '@/components/Screen';
 import { AccountManagement } from '@/components/AccountManagement';
 import { AccountsProvider } from '@/components/Home/accounts-context';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
-import { ActionsSection } from './ActionsSection';
+import { SetupSection } from './SetupSection';
 import { LimitsSection } from './LimitsSection';
 import { MethodIntro } from './MethodIntro';
 import { PromiseSection } from './PromiseSection';
@@ -45,7 +45,7 @@ export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
             <WhySection />
             <WalletsSection />
             <PromiseSection />
-            <ActionsSection />
+            <SetupSection />
             <ScriptsSection />
             <LimitsSection />
             <SourcesSection />

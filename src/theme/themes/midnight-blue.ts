@@ -6,7 +6,7 @@ import type { ThemeStops, ThemeTokens } from '../theme-tokens';
 
 const STOPS = {
   screen: ['#0A0E14', '#0F1620', '#122036'],
-  actionButton: ['#1D4ED8', '#1E3A8A'],
+  primaryButton: ['#1D4ED8', '#1E3A8A'],
   sunnyTile: ['#1E40AF', '#172554'],
   potSavings: ['#1E40AF', '#172554'],
   potSpending: ['#2563EB', '#1E40AF'],

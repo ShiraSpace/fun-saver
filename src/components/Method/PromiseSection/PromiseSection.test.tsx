@@ -1,7 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { SECTION_NUMBER } from '../constants';
 import { METHOD_COPY } from '../copy';
-import { ACTION_LIST_TEST_IDS } from '../ActionList/constants';
+import { CHECKLIST_TEST_IDS } from '../Checklist/constants';
 import { GOAL_OUTCOME_TEST_IDS } from '../GoalOutcome/constants';
 import { METHOD_SECTION_TEST_IDS } from '../MethodSection/constants';
 import { PromiseSection } from './PromiseSection';
@@ -24,6 +24,6 @@ describe('the section on the promise the parent has to keep', () => {
   });
 
   it('closes on the one decision it needs — which day the money arrives', () => {
-    expect(screen.getByTestId(ACTION_LIST_TEST_IDS.group)).toBeInTheDocument();
+    expect(screen.getByTestId(CHECKLIST_TEST_IDS.group)).toBeInTheDocument();
   });
 });

@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { ActionButton } from '@/components/ActionButton';
+import { PrimaryButton } from '@/components/PrimaryButton';
 import { AmountKeypad } from '../AmountKeypad';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import type { AmountEntry } from '../use-amount-entry';
@@ -24,14 +24,14 @@ export function AmountKeypadWithSubmit({
         onClear={entry.onClear}
         onBackspace={entry.onBackspace}
       />
-      <ActionButton
+      <PrimaryButton
         type="button"
         data-testid={TRANSACTION_DRAWER_TEST_IDS.submit}
         disabled={!canSubmit}
         onClick={entry.onSubmit}
       >
         {submitLabel}
-      </ActionButton>
+      </PrimaryButton>
     </>
   );
 }

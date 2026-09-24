@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { ActionButton } from '@/components/ActionButton';
+import { PrimaryButton } from '@/components/PrimaryButton';
 import { TYPE_SCALE } from '@/theme/typography';
 import type { Themed } from '@/theme/themed';
 import { GOOGLE_BRAND_WHITE, SIGN_IN_LAYOUT } from './constants';
@@ -53,7 +53,7 @@ export const CardBody = styled.p`
   line-height: 1.6;
 `;
 
-export const GoogleButton = styled(ActionButton)`
+export const GoogleButton = styled(PrimaryButton)`
   display: flex;
   align-items: center;
   justify-content: center;

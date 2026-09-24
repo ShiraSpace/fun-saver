@@ -39,7 +39,7 @@ export interface ThemeColors {
 
 export interface ThemeStops {
   readonly screen: readonly [string, string, string];
-  readonly actionButton: readonly [string, string];
+  readonly primaryButton: readonly [string, string];
   readonly sunnyTile: readonly [string, string];
   readonly potSavings: readonly [string, string];
   readonly potSpending: readonly [string, string];
@@ -48,7 +48,7 @@ export interface ThemeStops {
 
 export interface ThemeGradients {
   readonly screen: string;
-  readonly actionButton: string;
+  readonly primaryButton: string;
   readonly sunnyTile: string;
   readonly potSavings: string;
   readonly potSpending: string;

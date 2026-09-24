@@ -48,7 +48,7 @@ export class DashboardDriver {
   }
 
   async deposit(amountShekels: number): Promise<void> {
-    await this.session.click(ACCOUNT_TEST_IDS.actionCta);
+    await this.session.click(ACCOUNT_TEST_IDS.newTransaction);
     for (const digit of String(amountShekels)) {
       await this.session.click(AMOUNT_KEYPAD_TEST_IDS.key(digit));
     }
@@ -56,7 +56,7 @@ export class DashboardDriver {
   }
 
   async withdraw(walletName: string, amountShekels: number): Promise<void> {
-    await this.session.click(ACCOUNT_TEST_IDS.actionCta);
+    await this.session.click(ACCOUNT_TEST_IDS.newTransaction);
     await this.session.click(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal);
     await this.session.click(WALLET_PICKER_TEST_IDS.wallet(walletName));
 

@@ -4,7 +4,7 @@ import { JSX, useState } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
-import { ActionButton } from '@/components/ActionButton';
+import { PrimaryButton } from '@/components/PrimaryButton';
 import { OverviewCard } from './OverviewCard';
 import { WalletList } from './WalletList/WalletList';
 import { TransactionDrawer } from './TransactionDrawer';
@@ -27,13 +27,13 @@ export function Account({ account }: AccountProps): JSX.Element {
         <Header title={name} account={account} />
         <OverviewCard key={account.id} wallets={ordered} />
         <WalletList wallets={ordered} />
-        <ActionButton
+        <PrimaryButton
           type="button"
-          data-testid={ACCOUNT_TEST_IDS.actionCta}
+          data-testid={ACCOUNT_TEST_IDS.newTransaction}
           onClick={() => setIsDrawerOpen(true)}
         >
-          {ACCOUNT_COPY.actionCta}
-        </ActionButton>
+          {ACCOUNT_COPY.newTransaction}
+        </PrimaryButton>
       </Column>
       {isDrawerOpen && (
         <TransactionDrawer

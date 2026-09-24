@@ -18,7 +18,7 @@ function amountsPerPeriod(): (string | null)[] {
 }
 
 describe('what one wallet gets out of the weekly allowance', () => {
-  const { headers, rows } = METHOD_COPY.actions.example.table;
+  const { headers, rows } = METHOD_COPY.setup.example.table;
   const [wallet] = rows;
 
   beforeEach(() => {

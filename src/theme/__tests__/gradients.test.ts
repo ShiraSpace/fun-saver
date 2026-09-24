@@ -3,7 +3,7 @@ import type { ThemeStops } from '../theme-tokens';
 
 const STOPS = {
   screen: ['#111111', '#222222', '#333333'],
-  actionButton: ['#444444', '#555555'],
+  primaryButton: ['#444444', '#555555'],
   sunnyTile: ['#666666', '#777777'],
   potSavings: ['#888888', '#999999'],
   potSpending: ['#AAAAAA', '#BBBBBB'],
@@ -14,7 +14,7 @@ describe('buildGradients', () => {
   it('runs the screen down one diagonal and every tile down another', () => {
     expect(buildGradients(STOPS)).toEqual({
       screen: 'linear-gradient(160deg, #111111, #222222, #333333)',
-      actionButton: 'linear-gradient(#444444, #555555)',
+      primaryButton: 'linear-gradient(#444444, #555555)',
       sunnyTile: 'linear-gradient(135deg, #666666, #777777)',
       potSavings: 'linear-gradient(135deg, #888888, #999999)',
       potSpending: 'linear-gradient(135deg, #AAAAAA, #BBBBBB)',

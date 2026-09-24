@@ -33,7 +33,7 @@ export const Item = styled.li`
   }
 `;
 
-export const Status = styled.span`
+export const Checkbox = styled.span`
   position: relative;
   flex: none;
   width: 19px;

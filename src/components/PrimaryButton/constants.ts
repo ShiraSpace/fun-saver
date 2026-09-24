@@ -1,4 +1,4 @@
-export const ACTION_BUTTON = {
+export const PRIMARY_BUTTON = {
   paddingY: 14,
   paddingX: 32,
   radius: 999,
