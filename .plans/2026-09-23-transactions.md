@@ -76,6 +76,9 @@ no PR waits on the user for a decision.
 - Hebrew only, RTL, inherited from the root layout's `dir="rtl"`. No English copy.
 - No new dependency. No new API route. No migration, no new index.
 - Amounts are integer agorot everywhere below the component layer.
+- A transaction's type is read from `TRANSACTION_TYPE` in `src/lib/constants.ts`
+  (#153) — `TRANSACTION_TYPE.deposit`, never the string `'deposit'` — in
+  production code, tests and filter options alike.
 - Days are UTC `YYYY-MM-DD` strings, as `today()` and `occurredAt` already are.
 - No colour literal (`#hex`, `rgba(`, `hsla(`) in any `.tsx`, `.styles.ts`,
   `constants.ts` or `-parts.ts` under `src/components` — `no-color-leaks.test.ts`.
@@ -1029,6 +1032,7 @@ export function calendarMonth(iso: string): string {
 import { totalBalanceByDay, type BalanceHistory } from './balance-history';
 import { calendarMonth } from './dates';
 import { balanceChange } from './wallet-totals';
+import { TRANSACTION_TYPE } from './constants';
 import type { Transaction, TransactionType, Wallet, WalletName } from './types';
 
 export type InterestMode = 'monthly' | 'daily';
@@ -1072,7 +1076,7 @@ function transactionsOfType(transactions: ListedTransaction[], type: Transaction
 function depositRows(transactions: ListedTransaction[]): RowWithoutBalance[] {
   const depositRowByCreatedAt = new Map<string, RowWithoutBalance>();
 
-  for (const transaction of transactionsOfType(transactions, 'deposit')) {
+  for (const transaction of transactionsOfType(transactions, TRANSACTION_TYPE.deposit)) {
     const row = depositRowByCreatedAt.get(transaction.createdAt);
 
     if (row) {
@@ -1082,7 +1086,7 @@ function depositRows(transactions: ListedTransaction[]): RowWithoutBalance[] {
 
     depositRowByCreatedAt.set(transaction.createdAt, {
       key: `deposit:${transaction.createdAt}`,
-      type: 'deposit',
+      type: TRANSACTION_TYPE.deposit,
       day: transaction.occurredAt,
       amount: transaction.amount,
       createdAt: transaction.createdAt,
@@ -1093,9 +1097,9 @@ function depositRows(transactions: ListedTransaction[]): RowWithoutBalance[] {
 }
 
 function withdrawalRows(transactions: ListedTransaction[], walletNameById: WalletNameById): RowWithoutBalance[] {
-  return transactionsOfType(transactions, 'withdrawal').map((transaction) => ({
+  return transactionsOfType(transactions, TRANSACTION_TYPE.withdrawal).map((transaction) => ({
     key: `withdrawal:${transaction.walletId}:${transaction.createdAt}`,
-    type: 'withdrawal',
+    type: TRANSACTION_TYPE.withdrawal,
     walletName: walletNameById.get(transaction.walletId),
     day: transaction.occurredAt,
     amount: -transaction.amount,
@@ -1104,9 +1108,9 @@ function withdrawalRows(transactions: ListedTransaction[], walletNameById: Walle
 }
 
 function dailyInterestRows(transactions: ListedTransaction[], walletNameById: WalletNameById): RowWithoutBalance[] {
-  return transactionsOfType(transactions, 'interest').map((transaction) => ({
+  return transactionsOfType(transactions, TRANSACTION_TYPE.interest).map((transaction) => ({
     key: `interest:${transaction.walletId}:${transaction.occurredAt}`,
-    type: 'interest',
+    type: TRANSACTION_TYPE.interest,
     walletName: walletNameById.get(transaction.walletId),
     day: transaction.occurredAt,
     amount: transaction.amount,
@@ -1138,7 +1142,7 @@ function dailyDepositsAndWithdrawals(transactions: ListedTransaction[]): Map<str
   const depositsAndWithdrawalsByDay = new Map<string, number>();
 
   for (const transaction of transactions) {
-    if (transaction.type === 'interest') {
+    if (transaction.type === TRANSACTION_TYPE.interest) {
       continue;
     }
 
@@ -1156,14 +1160,14 @@ function withBalances(rows: RowWithoutBalance[], input: TransactionListRowsInput
 
   return rows.map((row) => {
     const depositsAndWithdrawalsThatDay =
-      row.type === 'interest' ? (depositsAndWithdrawalsByDay.get(row.day) ?? 0) : 0;
+      row.type === TRANSACTION_TYPE.interest ? (depositsAndWithdrawalsByDay.get(row.day) ?? 0) : 0;
 
     return { ...row, balance: (endOfDayTotalBalance.get(row.day) ?? 0) - depositsAndWithdrawalsThatDay };
   });
 }
 
 function interestRank(row: TransactionListRow): number {
-  return row.type === 'interest' ? 1 : 0;
+  return row.type === TRANSACTION_TYPE.interest ? 1 : 0;
 }
 
 function newestFirst(a: TransactionListRow, b: TransactionListRow): number {
@@ -1227,7 +1231,7 @@ export function monthSections(rows: TransactionListRow[]): MonthSection[] {
     const rows = rowsFor(mockDepositTransactions, 'monthly', '2026-01-01');
 
     expect(rows).toHaveLength(1);
-    expect(rows[0]).toMatchObject({ type: 'deposit', amount: 600, walletName: undefined });
+    expect(rows[0]).toMatchObject({ type: TRANSACTION_TYPE.deposit, amount: 600, walletName: undefined });
   });
 
   it('keeps two deposits on different days apart', () => {
@@ -1245,11 +1249,11 @@ export function monthSections(rows: TransactionListRow[]): MonthSection[] {
 
   it('rolls a month of interest into one row that counts its days', () => {
     const mockInterest = ['2026-01-02', '2026-01-03', '2026-01-04'].map((occurredAt) =>
-      createMockTransaction({ id: occurredAt, type: 'interest', amount: 9, occurredAt })
+      createMockTransaction({ id: occurredAt, type: TRANSACTION_TYPE.interest, amount: 9, occurredAt })
     );
 
     const [row] = rowsFor([createMockTransaction(), ...mockInterest], 'monthly', '2026-01-04')
-      .filter((listedRow) => listedRow.type === 'interest');
+      .filter((listedRow) => listedRow.type === TRANSACTION_TYPE.interest);
 
     expect(row).toMatchObject({ amount: 27, interestDays: 3, day: '2026-01-04' });
   });
@@ -1276,7 +1280,7 @@ fixture without distinct `createdAt`s would silently do); never increment
     — two withdrawals on one day, fixture in ascending `createdAt`; expect
     descending. Break: drop the `createdAt` comparison.
   - `'names the wallet a withdrawal came out of'` — `walletName: 'spending'` for `w2`.
-  - `'keeps a filtered view’s balances true'` — `filterByTransactionType(rows, 'withdrawal')`
+  - `'keeps a filtered view’s balances true'` — `filterByTransactionType(rows, TRANSACTION_TYPE.withdrawal)`
     rows carry the same `balance` as they do in the unfiltered list. Break:
     make `withBalances` accumulate `amount` down the sorted list instead of
     reading the history — the filtered and unfiltered balances then disagree.
@@ -2163,9 +2167,9 @@ export const TRANSACTION_LIST_COPY = {
 
 export const TRANSACTION_TYPE_FILTERS: readonly Choice<TransactionTypeFilter>[] = [
   { id: 'all', label: 'הכל' },
-  { id: 'deposit', label: 'הפקדות' },
-  { id: 'withdrawal', label: 'משיכות' },
-  { id: 'interest', label: 'ריבית' },
+  { id: TRANSACTION_TYPE.deposit, label: 'הפקדות' },
+  { id: TRANSACTION_TYPE.withdrawal, label: 'משיכות' },
+  { id: TRANSACTION_TYPE.interest, label: 'ריבית' },
 ];
 
 export const INTEREST_MODES: readonly Choice<InterestMode>[] = [
