@@ -197,4 +197,33 @@ describe('the balance history', () => {
       expect(totalBalanceChange(history, 7)).toBe(bothDeposits);
     });
   });
+
+  describe('at the edge of the range', () => {
+    it('counts from the day before the range for an account one day older than it', () => {
+      const mockSecondDayDeposit = createMockTransaction({
+        id: 'second-day',
+        amount: 100,
+        occurredAt: '2026-01-02',
+      });
+      const history = historyOf(
+        [mockOpeningDeposit, mockSecondDayDeposit],
+        '2026-01-08'
+      );
+
+      expect(totalBalanceChange(history, 7)).toBe(mockSecondDayDeposit.amount);
+    });
+
+    it('counts from nothing for an account exactly as old as the range', () => {
+      const history = historyOf([mockOpeningDeposit], '2026-01-07');
+
+      expect(totalBalanceChange(history, 7)).toBe(mockOpeningDeposit.amount);
+    });
+
+    it('has no change and no days for an account with no transactions', () => {
+      const history = historyOf([], '2026-01-07');
+
+      expect(totalBalanceChange(history, 7)).toBe(0);
+      expect(balanceOverRange(history, 7)).toEqual(history);
+    });
+  });
 });
