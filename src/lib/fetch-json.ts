@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { LOGIN_PATH } from './constants';
+import { SIGN_IN_PATH } from './constants';
 import { goTo } from './navigate';
 
 interface JsonRequest {
@@ -21,7 +21,7 @@ export async function fetchJson<Result>({
   });
 
   if (response.status === StatusCodes.UNAUTHORIZED) {
-    goTo(LOGIN_PATH);
+    goTo(SIGN_IN_PATH);
   }
 
   if (!response.ok) {

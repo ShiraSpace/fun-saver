@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, ReactNode } from 'react';
-import { ProfileSection } from '../ProfileSection';
+import { SignedInUserSection } from '../SignedInUserSection';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from './constants';
 import { GlobalBlock } from './MenuGlobalScope.styles';
 
@@ -14,7 +14,7 @@ export function MenuGlobalScope({
 }: MenuGlobalScopeProps): JSX.Element {
   return (
     <GlobalBlock data-testid={MENU_GLOBAL_SCOPE_TEST_IDS.block}>
-      <ProfileSection />
+      <SignedInUserSection />
       {children}
     </GlobalBlock>
   );

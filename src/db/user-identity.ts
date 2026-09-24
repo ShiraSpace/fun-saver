@@ -1,6 +1,6 @@
 import type { AuthProvider, User } from '@/lib/types';
 
-export function findUserByIdentity(
+export function userWithIdentity(
   users: User[],
   provider: AuthProvider,
   providerAccountId: string
@@ -18,6 +18,6 @@ export function isKnownUser(users: User[], userId: string): boolean {
 export function isDuplicateUser(users: User[], user: User): boolean {
   return (
     isKnownUser(users, user.id) ||
-    Boolean(findUserByIdentity(users, user.provider, user.providerAccountId))
+    Boolean(userWithIdentity(users, user.provider, user.providerAccountId))
   );
 }

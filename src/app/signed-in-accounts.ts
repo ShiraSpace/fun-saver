@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
-import { LOGIN_PATH } from '@/lib/constants';
+import { SIGN_IN_PATH } from '@/lib/constants';
 import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { findCurrentAccount } from '@/lib/current-account';
 import type { Account, SignedInUser } from '@/lib/types';
@@ -19,7 +19,7 @@ export async function signedInAccounts(): Promise<SignedInAccounts> {
   const [user, cookieStore] = await Promise.all([signedInUser(), cookies()]);
 
   if (!user) {
-    redirect(LOGIN_PATH);
+    redirect(SIGN_IN_PATH);
   }
 
   const accounts = await getStore().listAccountsForUser(user.id);

@@ -55,11 +55,11 @@ export class BaseStore implements DataStore {
     return this.transactions.listByAccount(accountId);
   }
 
-  findUserByProvider(
+  findUserByIdentity(
     provider: AuthProvider,
     providerAccountId: string
   ): Promise<User | undefined> {
-    return this.users.findByProvider(provider, providerAccountId);
+    return this.users.findByIdentity(provider, providerAccountId);
   }
 
   insertUser(user: User): Promise<void> {

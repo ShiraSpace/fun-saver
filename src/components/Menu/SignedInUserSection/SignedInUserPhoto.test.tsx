@@ -4,23 +4,23 @@ import {
   renderInOpenMenu,
   WithMenu,
 } from '@/test-utils/menu';
-import { ProfilePhoto } from './ProfilePhoto';
-import { PROFILE_SECTION_TEST_IDS } from './constants';
+import { SignedInUserPhoto } from './SignedInUserPhoto';
+import { SIGNED_IN_USER_SECTION_TEST_IDS } from './constants';
 
 const GOOGLE_PHOTO = 'https://lh3.googleusercontent.com/a/photo';
 
 const photo = (): HTMLElement | null =>
-  screen.queryByTestId(PROFILE_SECTION_TEST_IDS.photo);
+  screen.queryByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.photo);
 
 const mark = (): HTMLElement | null =>
-  screen.queryByTestId(PROFILE_SECTION_TEST_IDS.mark);
+  screen.queryByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.photoPlaceholder);
 
-describe('ProfilePhoto', () => {
+describe('SignedInUserPhoto', () => {
   describe('when the user has a photo', () => {
     beforeEach(() => {
       render(
         <WithMenu>
-          <ProfilePhoto image={GOOGLE_PHOTO} />
+          <SignedInUserPhoto image={GOOGLE_PHOTO} />
         </WithMenu>
       );
     });
@@ -46,7 +46,7 @@ describe('ProfilePhoto', () => {
     beforeEach(() => {
       render(
         <WithMenu>
-          <ProfilePhoto />
+          <SignedInUserPhoto />
         </WithMenu>
       );
     });
@@ -59,7 +59,7 @@ describe('ProfilePhoto', () => {
 
   describe('when the menu is closed and reopened after the photo failed', () => {
     beforeEach(() => {
-      renderInOpenMenu(<ProfilePhoto image={GOOGLE_PHOTO} />);
+      renderInOpenMenu(<SignedInUserPhoto image={GOOGLE_PHOTO} />);
       fireEvent.error(photo() as HTMLElement);
       closeAndReopenMenu();
     });

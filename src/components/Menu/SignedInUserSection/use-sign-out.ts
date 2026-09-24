@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { signOut } from 'next-auth/react';
-import { LOGIN_PATH } from '@/lib/constants';
+import { SIGN_IN_PATH } from '@/lib/constants';
 import { goTo } from '@/lib/navigate';
 import { useOnMenuClose } from '../use-menu-state';
 
@@ -15,20 +15,20 @@ export const SIGN_OUT_STATUS = {
 export type SignOutStatus =
   (typeof SIGN_OUT_STATUS)[keyof typeof SIGN_OUT_STATUS];
 
-interface AccountSignOut {
+interface UserSignOut {
   signOutStatus: SignOutStatus;
-  signOutOfAccount: () => Promise<void>;
+  signOutUser: () => Promise<void>;
 }
 
-function landsOnLogin(url: string | undefined): boolean {
+function landsOnSignIn(url: string | undefined): boolean {
   if (!url) {
     return false;
   }
 
-  return new URL(url, window.location.origin).pathname === LOGIN_PATH;
+  return new URL(url, window.location.origin).pathname === SIGN_IN_PATH;
 }
 
-export function useSignOut(): AccountSignOut {
+export function useSignOut(): UserSignOut {
   const [signOutStatus, setSignOutStatus] = useState<SignOutStatus>(
     SIGN_OUT_STATUS.idle
   );
@@ -39,25 +39,25 @@ export function useSignOut(): AccountSignOut {
     )
   );
 
-  const signOutOfAccount = async (): Promise<void> => {
+  const signOutUser = async (): Promise<void> => {
     setSignOutStatus(SIGN_OUT_STATUS.signingOut);
 
     try {
       const ended = await signOut({
         redirect: false,
-        redirectTo: LOGIN_PATH,
+        redirectTo: SIGN_IN_PATH,
       });
 
-      if (!landsOnLogin(ended?.url)) {
+      if (!landsOnSignIn(ended?.url)) {
         setSignOutStatus(SIGN_OUT_STATUS.failed);
         return;
       }
 
-      goTo(LOGIN_PATH);
+      goTo(SIGN_IN_PATH);
     } catch {
       setSignOutStatus(SIGN_OUT_STATUS.failed);
     }
   };
 
-  return { signOutStatus, signOutOfAccount };
+  return { signOutStatus, signOutUser };
 }

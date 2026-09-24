@@ -2,10 +2,13 @@ import { signOut } from 'next-auth/react';
 import { fireEvent, screen, waitFor } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/fixtures';
 import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
-import { LOGIN_PATH } from '@/lib/constants';
+import { SIGN_IN_PATH } from '@/lib/constants';
 import { goTo } from '@/lib/navigate';
-import { ProfileSection } from './ProfileSection';
-import { PROFILE_SECTION_CONTENT, PROFILE_SECTION_TEST_IDS } from './constants';
+import { SignedInUserSection } from './SignedInUserSection';
+import {
+  SIGNED_IN_USER_SECTION_COPY,
+  SIGNED_IN_USER_SECTION_TEST_IDS,
+} from './constants';
 
 jest.mock('@/lib/navigate', () => ({ goTo: jest.fn() }));
 
@@ -14,28 +17,28 @@ const mockedSignOut = signOut as unknown as jest.Mock<
 >;
 
 const signOutButton = (): HTMLElement =>
-  screen.getByTestId(PROFILE_SECTION_TEST_IDS.signOut);
+  screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.signOut);
 
 const signOutError = (): HTMLElement | null =>
-  screen.queryByTestId(PROFILE_SECTION_TEST_IDS.signOutError);
+  screen.queryByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.signOutError);
 
-describe('ProfileSection', () => {
+describe('SignedInUserSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedSignOut.mockResolvedValue({ url: `http://localhost${LOGIN_PATH}` });
-    renderInOpenMenu(<ProfileSection />, { user: mockUser });
+    mockedSignOut.mockResolvedValue({ url: `http://localhost${SIGN_IN_PATH}` });
+    renderInOpenMenu(<SignedInUserSection />, { user: mockUser });
   });
 
   describe('before anything is tapped', () => {
     it('names the signed-in user', () => {
       expect(
-        screen.getByTestId(PROFILE_SECTION_TEST_IDS.name)
+        screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.name)
       ).toHaveTextContent(mockUser.name);
     });
 
     it('shows the address that says which account is signed in', () => {
       expect(
-        screen.getByTestId(PROFILE_SECTION_TEST_IDS.email)
+        screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.email)
       ).toHaveTextContent(mockUser.email);
     });
 
@@ -53,13 +56,13 @@ describe('ProfileSection', () => {
     it('asks for the sign-out without letting it navigate on its own', () => {
       expect(mockedSignOut).toHaveBeenCalledWith({
         redirect: false,
-        redirectTo: LOGIN_PATH,
+        redirectTo: SIGN_IN_PATH,
       });
     });
 
-    it('leaves for the login page only once the sign-out came back', async () => {
+    it('leaves for the sign-in page only once the sign-out came back', async () => {
       await waitFor(() => {
-        expect(goTo).toHaveBeenCalledWith(LOGIN_PATH);
+        expect(goTo).toHaveBeenCalledWith(SIGN_IN_PATH);
       });
     });
 
@@ -87,7 +90,7 @@ describe('ProfileSection', () => {
       });
 
       fireEvent.click(signOutButton());
-      await screen.findByTestId(PROFILE_SECTION_TEST_IDS.signOutError);
+      await screen.findByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.signOutError);
     });
 
     it('does not follow it, since the session is still alive', () => {
@@ -96,7 +99,7 @@ describe('ProfileSection', () => {
 
     it('says the sign-out did not happen', () => {
       expect(signOutError()).toHaveTextContent(
-        PROFILE_SECTION_CONTENT.signOutFailed
+        SIGNED_IN_USER_SECTION_COPY.signOutFailed
       );
     });
   });
@@ -106,7 +109,7 @@ describe('ProfileSection', () => {
       mockedSignOut.mockResolvedValue(undefined);
 
       fireEvent.click(signOutButton());
-      await screen.findByTestId(PROFILE_SECTION_TEST_IDS.signOutError);
+      await screen.findByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.signOutError);
     });
 
     it('stays where it is rather than pretending it worked', () => {
@@ -115,7 +118,7 @@ describe('ProfileSection', () => {
 
     it('says so, so the session is not believed to be over', () => {
       expect(signOutError()).toHaveTextContent(
-        PROFILE_SECTION_CONTENT.signOutFailed
+        SIGNED_IN_USER_SECTION_COPY.signOutFailed
       );
     });
 
@@ -148,12 +151,12 @@ describe('ProfileSection', () => {
       mockedSignOut.mockRejectedValue(new Error('offline'));
 
       fireEvent.click(signOutButton());
-      await screen.findByTestId(PROFILE_SECTION_TEST_IDS.signOutError);
+      await screen.findByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.signOutError);
     });
 
     it('says so', () => {
       expect(signOutError()).toHaveTextContent(
-        PROFILE_SECTION_CONTENT.signOutFailed
+        SIGNED_IN_USER_SECTION_COPY.signOutFailed
       );
     });
 
