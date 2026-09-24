@@ -9,6 +9,9 @@
 **Goal:** Ship `/transactions` — a per-account balance chart and a movement
 list — and turn the inert `תנועות` tab on.
 
+**Reference:**
+![img.png](img.png)
+
 **Architecture:** One server read (`settledLedgers`) settles interest and
 returns every visible account's wallets *and* ledger; the page ships a
 five-field projection to a client shell. Two pure derivations in `src/lib`
