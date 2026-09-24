@@ -60,7 +60,7 @@ For technical details (commands, architecture, dependencies), see [DEVELOPMENT.m
 10. Commit the production code
 
 ### Phase 3: Testing (Per Phase/Step)
-11. Write the first THREE test cases
+11. Write the first THREE test cases (they should belong to the same file, less if no file needs three or more)
 12. Run them, make them pass, and watch **each one fail against its own deliberate break** — break the implementation, read *which* test reddens, restore. A test that has never failed proves nothing
 13. **STOP** - Wait for user approval; refactor on feedback
 14. Write the remaining test cases in bulk, each one watched failing against its own break the same way
@@ -80,7 +80,7 @@ agreed before the volume. Once they are approved, the rest follow in one go.
 
 - **NEVER** commit without explicit "commit" approval
 - **NEVER** write tests before production code is approved and committed
-- **NEVER** write more than the first three tests before approval — three, approval, then the rest in bulk
+- **NEVER** write more than the first three tests before approval — (up to) three (in the same file), approval, then the rest in bulk
 - **NEVER** count a test that has not been watched failing against a deliberate break
 - **NEVER** move to next phase without explicit approval
 - **NEVER** push to remote unless explicitly requested
