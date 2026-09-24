@@ -24,7 +24,7 @@ interface MethodProps {
 
 export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
   const navigation = useAccountNavigation(accounts, initialAccount.id);
-  const { currentAccount, selectAccount } = navigation;
+  const { currentAccount, switchAccount } = navigation;
 
   return (
     <AccountManagement navigation={navigation}>
@@ -32,7 +32,7 @@ export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
         value={{
           accounts,
           currentAccount: currentAccount ?? initialAccount,
-          selectAccount,
+          switchAccount,
         }}
       >
         <Screen align="top">

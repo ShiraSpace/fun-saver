@@ -3,7 +3,7 @@
 import { JSX, useCallback, useRef, useState } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
 import { AccountList } from '../AccountList';
-import { AccountTrigger } from './AccountTrigger';
+import { CurrentAccountButton } from './CurrentAccountButton';
 import { useCloseOnOutsideClick } from './use-close-on-outside-click';
 import { useEscapeKey } from '../use-escape-key';
 import { useOnMenuClose } from '../use-menu-state';
@@ -23,15 +23,19 @@ export function AccountPicker({
 }: AccountPickerProps): JSX.Element {
   const pickerRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const close = useCallback((): void => setIsOpen(false), []);
+  const closeAccountList = useCallback((): void => setIsOpen(false), []);
 
-  useCloseOnOutsideClick({ ref: pickerRef, isOpen, onClose: close });
-  useEscapeKey({ isListening: isOpen, onEscape: close, takesPrecedence: true });
-  useOnMenuClose(close);
+  useCloseOnOutsideClick({ ref: pickerRef, isOpen, onClose: closeAccountList });
+  useEscapeKey({
+    isListening: isOpen,
+    onEscape: closeAccountList,
+    takesPrecedence: true,
+  });
+  useOnMenuClose(closeAccountList);
 
   return (
     <Picker ref={pickerRef} data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>
-      <AccountTrigger
+      <CurrentAccountButton
         account={currentAccount}
         isOpen={isOpen}
         onToggle={setIsOpen}
@@ -39,7 +43,7 @@ export function AccountPicker({
       {isOpen && (
         <AccountList
           accounts={accounts}
-          selectedAccountId={currentAccount.id}
+          currentAccountId={currentAccount.id}
           onSelect={onSelect}
         />
       )}

@@ -18,7 +18,7 @@ function renderManagement(
     mode: APP_MODE.viewing,
     setMode: () => {},
     currentAccount: mockDerivedAccount,
-    selectAccount: () => {},
+    switchAccount: () => {},
     showNewAccount: () => {},
     finishEditing: () => {},
     cancel: () => {},

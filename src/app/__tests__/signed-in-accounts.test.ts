@@ -12,15 +12,15 @@ import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempDataPath } from '@/test-utils/test-utils';
 import { signedInAccounts } from '../signed-in-accounts';
 
-interface SelectedAccountCookie {
+interface CurrentAccountCookie {
   value: string;
 }
 
 interface CookieStore {
-  get: () => SelectedAccountCookie | undefined;
+  get: () => CurrentAccountCookie | undefined;
 }
 
-let mockSelectedAccountCookie: SelectedAccountCookie | undefined;
+let mockCurrentAccountCookie: CurrentAccountCookie | undefined;
 
 jest.mock('@/auth', () => ({ signedInUser: jest.fn() }));
 jest.mock('next/navigation', () => ({
@@ -30,7 +30,7 @@ jest.mock('next/navigation', () => ({
 }));
 jest.mock('next/headers', () => ({
   cookies: async (): Promise<CookieStore> => ({
-    get: (): SelectedAccountCookie | undefined => mockSelectedAccountCookie,
+    get: (): CurrentAccountCookie | undefined => mockCurrentAccountCookie,
   }),
 }));
 
@@ -40,7 +40,7 @@ describe('signedInAccounts', () => {
   let owned: Account[];
 
   beforeEach(async () => {
-    mockSelectedAccountCookie = undefined;
+    mockCurrentAccountCookie = undefined;
     jest.mocked(signedInUser).mockResolvedValue(mockUser);
 
     owned = byAccountName([
@@ -64,18 +64,18 @@ describe('signedInAccounts', () => {
   });
 
   it('selects the account the cookie names', async () => {
-    mockSelectedAccountCookie = { value: owned[1].id };
+    mockCurrentAccountCookie = { value: owned[1].id };
 
     expect(await signedInAccounts()).toMatchObject({
-      selectedAccountId: owned[1].id,
+      currentAccountId: owned[1].id,
       themeId: owned[1].themeId,
     });
   });
 
   it('falls back to the first account when the cookie names nothing', async () => {
-    mockSelectedAccountCookie = { value: 'not-an-account' };
+    mockCurrentAccountCookie = { value: 'not-an-account' };
 
-    expect((await signedInAccounts()).selectedAccountId).toBe(owned[0].id);
+    expect((await signedInAccounts()).currentAccountId).toBe(owned[0].id);
   });
 
   it('leaves out an account belonging to somebody else', async () => {

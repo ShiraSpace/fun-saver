@@ -6,7 +6,7 @@ const MENU_TOGGLE_TESTID = 'toggle-menu';
 
 interface WithMenuProps {
   children: ReactNode;
-  close?: () => void;
+  closeMenu?: () => void;
 }
 
 interface WithToggleableMenuProps {
@@ -15,10 +15,10 @@ interface WithToggleableMenuProps {
 
 export function WithMenu({
   children,
-  close = (): void => {},
+  closeMenu = (): void => {},
 }: WithMenuProps): JSX.Element {
   return (
-    <MenuProvider value={{ isOpen: true, toggle: (): void => {}, close }}>
+    <MenuProvider value={{ isOpen: true, toggle: (): void => {}, closeMenu }}>
       {children}
     </MenuProvider>
   );

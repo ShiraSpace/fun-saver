@@ -15,7 +15,7 @@ import {
   mockUser,
 } from '@/test-utils/fixtures';
 import type { AccountWithDerivedWallets } from '@/lib/types';
-import { SELECTED_ACCOUNT_COOKIE } from '@/lib/cookies';
+import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { openMenu, renderHome } from './home-test-helpers';
 
@@ -79,7 +79,7 @@ describe('Home', () => {
         mockSecondAccount.name
       );
       expect(mockPersist).toHaveBeenCalledWith(
-        SELECTED_ACCOUNT_COOKIE,
+        CURRENT_ACCOUNT_COOKIE,
         mockSecondAccount.id
       );
       expect(screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)).toHaveAttribute(

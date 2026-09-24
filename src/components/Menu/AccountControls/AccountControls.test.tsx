@@ -10,7 +10,7 @@ const mockOnLeaveMenu = jest.fn();
 
 function renderControls(): void {
   render(
-    <WithMenu close={mockOnLeaveMenu}>
+    <WithMenu closeMenu={mockOnLeaveMenu}>
       <AccountControls />
     </WithMenu>,
     { accounts: mockAccountsContext }
@@ -34,8 +34,8 @@ describe('AccountControls', () => {
       openAccountPicker();
     });
 
-    it('leaves the menu when the add row is tapped', () => {
-      fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
+    it('leaves the menu when the add-account button is tapped', () => {
+      fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addAccount));
 
       expect(mockOnLeaveMenu).toHaveBeenCalled();
     });

@@ -9,26 +9,26 @@ import {
   ACCOUNT_LIST_CONTENT,
   ACCOUNT_LIST_TEST_IDS,
 } from '../AccountList/constants';
-import { AddRow } from '../row-parts';
+import { AddButton } from '../row-parts';
 import { useMenu } from '../use-menu-state';
 
-export function AddAccountRow(): JSX.Element {
+export function AddAccountButton(): JSX.Element {
   const { setMode } = useAppMode();
-  const { close } = useMenu();
+  const { closeMenu } = useMenu();
 
-  const handleAddAccount = (): void => {
-    close();
+  const startCreatingAccount = (): void => {
+    closeMenu();
     setMode(APP_MODE.creatingAccount);
   };
 
   return (
-    <AddRow
+    <AddButton
       type="button"
       aria-label={ACCOUNT_LIST_CONTENT.addAccessibleLabel}
-      data-testid={ACCOUNT_LIST_TEST_IDS.addRow}
-      onClick={handleAddAccount}
+      data-testid={ACCOUNT_LIST_TEST_IDS.addAccount}
+      onClick={startCreatingAccount}
     >
       {ACCOUNT_LIST_CONTENT.addLabel}
-    </AddRow>
+    </AddButton>
   );
 }

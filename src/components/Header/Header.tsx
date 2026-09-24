@@ -13,7 +13,7 @@ import {
 import { MENU_HEADER_SHEET_TEST_IDS } from '../Menu/MenuHeaderSheet/constants';
 import { HOME_ROUTE } from '../Home/constants';
 import { Title } from './CrossfadeTitle';
-import { HeaderEndSlot } from './HeaderEndSlot';
+import { HeaderAccountAvatar } from './HeaderAccountAvatar';
 import { HEADER_TEST_IDS } from './constants';
 import { Bar } from './Header.styles';
 import { ProgressLine } from './ProgressLine';
@@ -40,7 +40,7 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
         <MenuToggle isOpen={menu.isOpen} onToggle={menu.toggle} />
         <Title text={title} />
         {account && (
-          <HeaderEndSlot
+          <HeaderAccountAvatar
             account={account}
             isHome={isHome}
             isHidden={menu.isOpen}

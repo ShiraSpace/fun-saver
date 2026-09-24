@@ -6,7 +6,7 @@ import type { AccountWithDerivedWallets } from '@/lib/types';
 export interface AccountsContextValue {
   accounts: AccountWithDerivedWallets[];
   currentAccount: AccountWithDerivedWallets;
-  selectAccount: (id: string) => void;
+  switchAccount: (id: string) => void;
 }
 
 export const [AccountsProvider, useAccounts, useOptionalAccounts] =

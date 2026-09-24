@@ -17,9 +17,9 @@ import {
 
 export function ProfileSection(): JSX.Element {
   const user = useSignedInUser();
-  const { status, signOutOfAccount } = useSignOut();
-  const isSigningOut = status === SIGN_OUT_STATUS.signingOut;
-  const hasSignOutFailed = status === SIGN_OUT_STATUS.failed;
+  const { signOutStatus, signOutOfAccount } = useSignOut();
+  const isSigningOut = signOutStatus === SIGN_OUT_STATUS.signingOut;
+  const hasSignOutFailed = signOutStatus === SIGN_OUT_STATUS.failed;
 
   return (
     <Block data-testid={PROFILE_SECTION_TEST_IDS.strip}>

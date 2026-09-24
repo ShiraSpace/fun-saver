@@ -6,17 +6,17 @@ import { HomeAvatarLink } from '../HomeAvatarLink';
 import { HEADER_AVATAR_PROPS, HEADER_TEST_IDS } from '../constants';
 import { HeaderAvatar } from '../header-parts';
 
-interface HeaderEndSlotProps {
+interface HeaderAccountAvatarProps {
   account: Pick<Account, 'name' | 'avatarId'>;
   isHome: boolean;
   isHidden: boolean;
 }
 
-export function HeaderEndSlot({
+export function HeaderAccountAvatar({
   account,
   isHome,
   isHidden,
-}: HeaderEndSlotProps): JSX.Element {
+}: HeaderAccountAvatarProps): JSX.Element {
   if (isHome) {
     return (
       <HeaderAvatar
@@ -32,7 +32,7 @@ export function HeaderEndSlot({
   return (
     <HomeAvatarLink
       avatarId={account.avatarId}
-      name={account.name}
+      accountName={account.name}
       isHidden={isHidden}
     />
   );

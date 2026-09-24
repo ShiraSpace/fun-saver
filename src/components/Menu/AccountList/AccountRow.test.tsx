@@ -7,11 +7,11 @@ import { ACCOUNT_LIST_TEST_IDS } from './constants';
 
 const mockOnSelect = jest.fn();
 
-function renderRow(isSelected: boolean): void {
+function renderRow(isCurrent: boolean): void {
   render(
     <AccountRow
       account={mockDerivedAccount}
-      isSelected={isSelected}
+      isCurrent={isCurrent}
       onSelect={mockOnSelect}
     />
   );
@@ -53,7 +53,7 @@ describe('AccountRow', () => {
     });
   });
 
-  describe('when it is the selected account', () => {
+  describe('when it is the current account', () => {
     beforeEach(() => {
       renderRow(true);
     });

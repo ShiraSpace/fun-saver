@@ -13,25 +13,25 @@ import { HouseBadge, Ring } from './HomeAvatarLink.styles';
 
 interface HomeAvatarLinkProps {
   avatarId: string;
-  name: string;
+  accountName: string;
   isHidden: boolean;
 }
 
 export function HomeAvatarLink({
   avatarId,
-  name,
+  accountName,
   isHidden,
 }: HomeAvatarLinkProps): JSX.Element {
   return (
     <Ring
       href={HOME_ROUTE}
-      aria-label={HEADER_CONTENT.homeLabel(name)}
+      aria-label={HEADER_CONTENT.homeLabel(accountName)}
       data-testid={HEADER_TEST_IDS.homeLink}
       data-hidden={isHidden}
     >
       <HeaderAvatar
         avatarId={avatarId}
-        alt={name}
+        alt={accountName}
         size={HEADER_AVATAR_PROPS.size}
         testId={HEADER_TEST_IDS.avatar}
         isHidden={false}
