@@ -1,20 +1,20 @@
 import { JSX } from 'react';
 import type { WalletWithDerived } from '@/lib/types';
-import { StatStrip } from '../../WalletCard/StatStrip';
+import { InterestStats } from '../../WalletCard/InterestStats';
 
-interface SavingsStatStripProps {
+interface SavingsInterestStatsProps {
   wallet: WalletWithDerived;
 }
 
-export function SavingsStatStrip({
+export function SavingsInterestStats({
   wallet,
-}: SavingsStatStripProps): JSX.Element | null {
+}: SavingsInterestStatsProps): JSX.Element | null {
   if (wallet.name !== 'savings') {
     return null;
   }
 
   return (
-    <StatStrip
+    <InterestStats
       principal={wallet.principal}
       interestGain={wallet.interestGain}
       todayInterest={wallet.todayInterest}

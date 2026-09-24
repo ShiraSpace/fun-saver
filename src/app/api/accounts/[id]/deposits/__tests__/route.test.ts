@@ -54,7 +54,7 @@ describe('POST /api/accounts/[id]/deposits', () => {
     return getStore().listTransactionsByWallet(id, savings.id);
   }
 
-  it('splits a deposit across the pots and persists it', async () => {
+  it('splits a deposit across the wallets and persists it', async () => {
     const response = await postDeposit(20, accountId);
 
     expect(response.status).toBe(200);

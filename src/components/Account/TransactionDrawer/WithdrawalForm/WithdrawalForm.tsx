@@ -38,7 +38,7 @@ export function WithdrawalForm({
       </AmountValue>
       <WalletPicker
         wallets={wallets}
-        selectedId={form.selectedId}
+        selectedWalletId={form.selectedWalletId}
         onSelect={form.onSelectWallet}
       />
       <WithdrawalAlert

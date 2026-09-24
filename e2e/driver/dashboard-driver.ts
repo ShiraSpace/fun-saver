@@ -1,5 +1,5 @@
 import { OVERVIEW_CARD_TEST_IDS } from '@/components/Account/OverviewCard/constants';
-import { STAT_STRIP_TEST_IDS } from '@/components/Account/WalletCard/StatStrip/constants';
+import { INTEREST_STATS_TEST_IDS } from '@/components/Account/WalletCard/InterestStats/constants';
 import { WALLET_LIST_TEST_IDS } from '@/components/Account/WalletList/constants';
 import { WALLET_CARD_TEST_IDS } from '@/components/Account/WalletCard/constants';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
@@ -17,7 +17,7 @@ export class DashboardDriver {
   }
 
   savingsTodayInterest(): Promise<string> {
-    return this.session.text(STAT_STRIP_TEST_IDS.todayInterest);
+    return this.session.text(INTEREST_STATS_TEST_IDS.todayInterest);
   }
 
   supportingLabel(): Promise<string> {
@@ -35,16 +35,16 @@ export class DashboardDriver {
     );
   }
 
-  walletSubLines(): Promise<string[]> {
-    return this.session.texts(WALLET_CARD_TEST_IDS.subLine);
+  walletSummaries(): Promise<string[]> {
+    return this.session.texts(WALLET_CARD_TEST_IDS.summary);
   }
 
   walletBalances(): Promise<string[]> {
     return this.session.texts(WALLET_CARD_TEST_IDS.balance);
   }
 
-  savingsDeposits(): Promise<string> {
-    return this.session.text(STAT_STRIP_TEST_IDS.deposits);
+  savingsPrincipal(): Promise<string> {
+    return this.session.text(INTEREST_STATS_TEST_IDS.principal);
   }
 
   async deposit(amountShekels: number): Promise<void> {
@@ -67,7 +67,7 @@ export class DashboardDriver {
     await this.session.click(TRANSACTION_DRAWER_TEST_IDS.submit);
   }
 
-  waitForSavingsDeposits(value: string): Promise<void> {
-    return this.session.waitForText(STAT_STRIP_TEST_IDS.deposits, value);
+  waitForSavingsPrincipal(value: string): Promise<void> {
+    return this.session.waitForText(INTEREST_STATS_TEST_IDS.principal, value);
   }
 }

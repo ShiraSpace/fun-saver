@@ -3,26 +3,26 @@ import type { WalletName } from '@/lib/types';
 import { DEPOSIT_SPLIT, WALLET_ICON, WALLET_NAME } from '@/lib/constants';
 import { share } from '../constants';
 import { WALLET_TRIO_TEST_IDS } from './constants';
-import { Icon, Name, Pot, Share, Trio } from './WalletTrio.styles';
+import { Icon, Name, TrioWallet, Share, Trio } from './WalletTrio.styles';
 
 interface WalletTrioProps {
-  pots: readonly WalletName[];
+  walletNames: readonly WalletName[];
 }
 
-export function WalletTrio({ pots }: WalletTrioProps): JSX.Element {
-  const blocks = pots.map((wallet) => (
-    <Pot
-      key={wallet}
-      walletName={wallet}
-      data-testid={WALLET_TRIO_TEST_IDS.pot}
+export function WalletTrio({ walletNames }: WalletTrioProps): JSX.Element {
+  const trioWallets = walletNames.map((walletName) => (
+    <TrioWallet
+      key={walletName}
+      walletName={walletName}
+      data-testid={WALLET_TRIO_TEST_IDS.wallet}
     >
-      <Icon aria-hidden="true">{WALLET_ICON[wallet]}</Icon>
-      <Name>{WALLET_NAME[wallet]}</Name>
+      <Icon aria-hidden="true">{WALLET_ICON[walletName]}</Icon>
+      <Name>{WALLET_NAME[walletName]}</Name>
       <Share data-testid={WALLET_TRIO_TEST_IDS.share}>
-        {share(DEPOSIT_SPLIT[wallet])}
+        {share(DEPOSIT_SPLIT[walletName])}
       </Share>
-    </Pot>
+    </TrioWallet>
   ));
 
-  return <Trio data-testid={WALLET_TRIO_TEST_IDS.trio}>{blocks}</Trio>;
+  return <Trio data-testid={WALLET_TRIO_TEST_IDS.trio}>{trioWallets}</Trio>;
 }

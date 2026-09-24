@@ -4,45 +4,45 @@ import { JSX } from 'react';
 import type { WalletName } from '@/lib/types';
 import { Money } from '@/components/Money';
 import { WALLET_CARD_COPY } from '../../WalletCard/constants';
-import { Tile, Head, IconTile, Name, Value } from './WalletTile.styles';
+import { Tile, Head, WalletIcon, Name, Amount } from './WalletTile.styles';
 
 interface WalletTileProps {
-  name: WalletName;
+  walletName: WalletName;
   icon: string;
   amountAgorot: number;
-  valueTestId: string;
-  tileTestId?: string;
+  amountTestId: string;
+  testId?: string;
   selected?: boolean;
   onSelect?: () => void;
 }
 
 export function WalletTile({
-  name,
+  walletName,
   icon,
   amountAgorot,
-  valueTestId,
-  tileTestId,
+  amountTestId,
+  testId,
   selected = false,
   onSelect,
 }: WalletTileProps): JSX.Element {
-  const interactive = Boolean(onSelect);
+  const isSelectable = Boolean(onSelect);
 
   return (
     <Tile
       type="button"
-      data-testid={tileTestId}
-      disabled={!interactive}
-      aria-pressed={interactive ? selected : undefined}
+      data-testid={testId}
+      disabled={!isSelectable}
+      aria-pressed={isSelectable ? selected : undefined}
       selected={selected}
       onClick={onSelect}
     >
       <Head>
-        <IconTile name={name}>{icon}</IconTile>
-        <Name>{WALLET_CARD_COPY.name[name]}</Name>
+        <WalletIcon walletName={walletName}>{icon}</WalletIcon>
+        <Name>{WALLET_CARD_COPY.name[walletName]}</Name>
       </Head>
-      <Value>
-        <Money amountAgorot={amountAgorot} testId={valueTestId} />
-      </Value>
+      <Amount>
+        <Money amountAgorot={amountAgorot} testId={amountTestId} />
+      </Amount>
     </Tile>
   );
 }

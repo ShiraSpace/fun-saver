@@ -46,7 +46,11 @@ describe('theme registry', () => {
       ] as const) {
         expect(colors[key]).toMatch(/^#|rgb/);
       }
-      for (const key of ['potSavings', 'potSpending', 'potGood'] as const) {
+      for (const key of [
+        'walletSavings',
+        'walletSpending',
+        'walletGoodDeeds',
+      ] as const) {
         expect(gradients[key]).toContain('linear-gradient');
       }
     });
@@ -62,7 +66,7 @@ describe('theme registry', () => {
     it('has a colour for each contrast token', () => {
       const contrastTokens = themes.map(({ colors }) => [
         colors.primaryText,
-        colors.textOnPot,
+        colors.textOnWallet,
         colors.labelShade,
         colors.alertText,
         colors.selectionRing,
@@ -129,7 +133,7 @@ describe('theme registry', () => {
     const t = getThemeTokens('jungle-quest');
     expect(t.colors.primary).toBe('#2A9D8F');
     expect(t.colors.surface).toBe('#FFFDF5');
-    expect(t.gradients.potGood).toContain('linear-gradient');
+    expect(t.gradients.walletGoodDeeds).toContain('linear-gradient');
   });
 
   it('resolves midnight-blue with full tokens', () => {

@@ -37,7 +37,7 @@ describe('useWithdrawalForm', () => {
   it('selects the first wallet by default', () => {
     const { result } = setup();
 
-    expect(result.current.selectedId).toBe(savings.id);
+    expect(result.current.selectedWalletId).toBe(savings.id);
     expect(result.current.amountShekels).toBe(0);
     expect(result.current.canSubmit).toBe(false);
   });
@@ -68,7 +68,7 @@ describe('useWithdrawalForm', () => {
 
     act(() => result.current.onSelectWallet(goodDeeds.id));
 
-    expect(result.current.selectedId).toBe(goodDeeds.id);
+    expect(result.current.selectedWalletId).toBe(goodDeeds.id);
     expect(result.current.isDonation).toBe(true);
   });
 

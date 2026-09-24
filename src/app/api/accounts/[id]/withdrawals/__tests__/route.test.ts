@@ -65,7 +65,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
     );
   }
 
-  it('withdraws from the chosen pot and persists it', async () => {
+  it('withdraws from the chosen wallet and persists it', async () => {
     const before = await savingsBalance();
 
     const response = await postWithdraw(savingsId, 20, account.id);
