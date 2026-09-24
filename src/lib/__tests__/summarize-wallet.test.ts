@@ -15,7 +15,7 @@ const mockTransactions = [
   createMockTransaction({ id: 'w', type: 'withdrawal', amount: 2000 }),
 ];
 
-describe('deriveWallet', () => {
+describe('summarizeWallet', () => {
   let walletSummary: WalletSummary;
 
   beforeEach(() => {
