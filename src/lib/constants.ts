@@ -22,7 +22,7 @@ export const DEPOSIT_SPLIT: Record<WalletName, number> = {
   goodDeeds: 0.1,
 };
 
-export interface WalletSeed {
+export interface WalletConfig {
   name: WalletName;
   icon: string;
   monthlyInterestRate: number;
@@ -40,7 +40,7 @@ export const WALLET_ICON: Record<WalletName, string> = {
   goodDeeds: '💛',
 };
 
-export const DEFAULT_WALLETS: readonly WalletSeed[] = [
+export const DEFAULT_WALLETS: readonly WalletConfig[] = [
   {
     name: 'savings',
     icon: WALLET_ICON.savings,

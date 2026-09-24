@@ -11,6 +11,14 @@ function deposits(transactions: Transaction[]): number {
   return sumOf(transactions, 'deposit');
 }
 
+export function signedAmount(
+  transaction: Pick<Transaction, 'type' | 'amount'>
+): number {
+  return transaction.type === 'withdrawal'
+    ? -transaction.amount
+    : transaction.amount;
+}
+
 export function withdrawals(transactions: Transaction[]): number {
   return sumOf(transactions, 'withdrawal');
 }

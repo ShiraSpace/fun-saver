@@ -1,6 +1,7 @@
 import type { Transaction, Wallet } from '../types';
 import { addDays, eachDayInclusive } from '../dates';
 import { newId } from '../ids';
+import { signedAmount } from '../derivations';
 import { interestForDay } from './interest-for-day';
 
 export interface AddDailyInterestParams {
@@ -8,12 +9,6 @@ export interface AddDailyInterestParams {
   transactions: Transaction[];
   asOf: string;
   accountId: string;
-}
-
-function balanceDelta(transaction: Transaction): number {
-  return transaction.type === 'withdrawal'
-    ? -transaction.amount
-    : transaction.amount;
 }
 
 function settledThrough(wallet: Wallet, transactions: Transaction[]): string {
@@ -29,7 +24,7 @@ function settledThrough(wallet: Wallet, transactions: Transaction[]): string {
 function openingBalance(transactions: Transaction[], firstDay: string): number {
   return transactions
     .filter((transaction) => transaction.occurredAt < firstDay)
-    .reduce((balance, transaction) => balance + balanceDelta(transaction), 0);
+    .reduce((balance, transaction) => balance + signedAmount(transaction), 0);
 }
 
 function principalChangeByDay(
@@ -46,7 +41,7 @@ function principalChangeByDay(
     const changeSoFar = changeByDay.get(transaction.occurredAt) ?? 0;
     changeByDay.set(
       transaction.occurredAt,
-      changeSoFar + balanceDelta(transaction)
+      changeSoFar + signedAmount(transaction)
     );
   }
 
