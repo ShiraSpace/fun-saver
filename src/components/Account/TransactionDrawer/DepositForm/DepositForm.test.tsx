@@ -5,7 +5,7 @@ import { AMOUNT_KEYPAD_TEST_IDS } from '../AmountKeypad/constants';
 import { splitDeposit } from '@/lib/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import { mockAccountSummary } from '@/test-utils/fixtures';
+import { mockAccountSummary } from '@/test-utils/mocks/general.mocks';
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddDeposit = jest.fn();

@@ -6,7 +6,7 @@ import {
   createMockWallet,
   createMockWallets,
   mockSiblingAccount,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { TRANSACTION_TYPE } from '../constants';
 import type { Account, WalletSummary } from '../types';
 

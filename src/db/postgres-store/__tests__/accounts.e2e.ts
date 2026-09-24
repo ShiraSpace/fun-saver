@@ -3,7 +3,10 @@
  */
 import { DuplicateAccountError } from '@/lib/errors';
 import { THEME_ID } from '@/theme/registry';
-import { createMockAccount, mockAccountEdits } from '@/test-utils/fixtures';
+import {
+  createMockAccount,
+  mockAccountEdits,
+} from '@/test-utils/mocks/general.mocks';
 import { withTestDatabase } from './test-database';
 
 describe('PostgresAccounts', () => {

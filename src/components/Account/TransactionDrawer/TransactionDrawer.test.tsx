@@ -3,7 +3,7 @@ import { TransactionDrawer } from './TransactionDrawer';
 import { TRANSACTION_DRAWER_TEST_IDS } from './constants';
 import { TRANSACTION_TYPE_TOGGLE_TEST_IDS } from './TransactionTypeToggle/constants';
 import { WALLET_PICKER_TEST_IDS } from './WalletPicker/constants';
-import { mockAccountSummary } from '@/test-utils/fixtures';
+import { mockAccountSummary } from '@/test-utils/mocks/general.mocks';
 import { mockRouter } from '@mocks/next/navigation';
 import { getThemeTokens } from '@/theme/registry';
 

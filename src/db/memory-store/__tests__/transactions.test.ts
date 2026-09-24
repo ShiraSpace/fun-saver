@@ -4,7 +4,7 @@ import {
   mockAccount,
   mockSiblingAccount,
   mockTransactions,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 
 const mockDeposit = createMockTransaction();
 

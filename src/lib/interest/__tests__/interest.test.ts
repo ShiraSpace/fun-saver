@@ -1,7 +1,10 @@
 import { addDailyInterest, dailyRate, interestForDay } from '../index';
 import { DAYS_PER_MONTH, TRANSACTION_TYPE } from '@/lib/constants';
 import type { Transaction } from '@/lib/types';
-import { createMockTransaction, createMockWallet } from '@/test-utils/fixtures';
+import {
+  createMockTransaction,
+  createMockWallet,
+} from '@/test-utils/mocks/general.mocks';
 
 const mockMonthlyRate = 0.2;
 const mockAccountId = 'a1';

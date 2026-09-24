@@ -1,6 +1,9 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockAccount, mockTransactions } from '@/test-utils/fixtures';
+import {
+  mockAccount,
+  mockTransactions,
+} from '@/test-utils/mocks/general.mocks';
 import { useDriver } from './driver/use-driver';
 
 const mockInitialStore = {

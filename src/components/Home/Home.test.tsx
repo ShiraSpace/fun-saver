@@ -13,7 +13,7 @@ import {
   mockWalletSummaries,
   mockSiblingAccount,
   mockUser,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import type { AccountSummary } from '@/lib/types';
 import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { openAccountPicker } from '@/test-utils/account-picker';

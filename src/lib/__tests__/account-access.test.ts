@@ -3,7 +3,7 @@ import {
   createMockAccountUser,
   mockCoParent,
   mockUser,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import type { AccountUser } from '../types';
 import { canEditAccount } from '../account-access';

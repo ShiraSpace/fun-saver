@@ -11,7 +11,10 @@ import {
   submitForm,
   fillName,
 } from '@/test-utils/account-form';
-import { mockAccount, mockAccountEdits } from '@/test-utils/fixtures';
+import {
+  mockAccount,
+  mockAccountEdits,
+} from '@/test-utils/mocks/general.mocks';
 import { EditAccount } from './EditAccount';
 import { EDIT_ACCOUNT_COPY, EDIT_ACCOUNT_TEST_IDS } from './constants';
 

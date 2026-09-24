@@ -7,7 +7,7 @@ import {
   mockSiblingAccount,
   mockStrangerOwner,
   mockUser,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 describe('JsonFileStore creating an account with an owner', () => {

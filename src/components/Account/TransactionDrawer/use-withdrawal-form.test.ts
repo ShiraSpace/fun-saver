@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useWithdrawalForm } from './use-withdrawal-form';
-import { mockWalletSummaries } from '@/test-utils/fixtures';
+import { mockWalletSummaries } from '@/test-utils/mocks/general.mocks';
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddWithdrawal = jest.fn();

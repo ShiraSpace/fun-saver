@@ -1,5 +1,5 @@
 import { JsonFileStore } from '../index';
-import { mockUser, createMockUser } from '@/test-utils/fixtures';
+import { mockUser, createMockUser } from '@/test-utils/mocks/general.mocks';
 import { DuplicateUserError } from '@/lib/errors';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 

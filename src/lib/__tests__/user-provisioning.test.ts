@@ -1,5 +1,5 @@
 import { InMemoryStore } from '@/db/memory-store';
-import { mockUser } from '@/test-utils/fixtures';
+import { mockUser } from '@/test-utils/mocks/general.mocks';
 import { provisionUser, googleIdentity } from '../user-provisioning';
 
 const { providerAccountId, email, name } = mockUser;

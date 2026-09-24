@@ -2,7 +2,10 @@
  * @jest-environment node
  */
 import type { Account, User } from '@/lib/types';
-import { createMockAccount, createMockUser } from '@/test-utils/fixtures';
+import {
+  createMockAccount,
+  createMockUser,
+} from '@/test-utils/mocks/general.mocks';
 import { withTestDatabase } from './test-database';
 
 const mockAddedAt = '2026-01-01T00:00:00.000Z';

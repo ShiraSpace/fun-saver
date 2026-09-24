@@ -7,7 +7,7 @@ import {
   createMockAccount,
   createMockUser,
   mockAccountUser,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { withTestDatabase } from './test-database';
 
 describe('PostgresAccountUsers creating an account with an owner', () => {

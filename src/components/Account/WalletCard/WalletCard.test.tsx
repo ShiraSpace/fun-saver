@@ -1,7 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { WalletCard } from './WalletCard';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
-import { createMockWalletSummary } from '@/test-utils/fixtures';
+import { createMockWalletSummary } from '@/test-utils/mocks/general.mocks';
 
 const mockSavingsSubLine = 'צובר 15% בחודש · פעיל מאז 1 בינואר';
 

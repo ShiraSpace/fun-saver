@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { JsonFileStore } from '../index';
-import { mockAccount } from '@/test-utils/fixtures';
+import { mockAccount } from '@/test-utils/mocks/general.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 describe('JsonFileStore file handling', () => {

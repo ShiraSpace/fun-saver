@@ -1,3 +1,9 @@
+/*
+ * Legacy catch-all, being split up. Do not add new mocks here.
+ * Create a dedicated `<domain>.mocks.ts` beside this file (for example
+ * `transaction.mocks.ts`), put new mocks there, and move over any
+ * mocks from this file that belong to that domain.
+ */
 import type {
   Account,
   AccountUser,

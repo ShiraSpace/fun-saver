@@ -5,7 +5,7 @@ import {
   createMockAccount,
   createMockTransaction,
   mockTransactions,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { withTestDatabase } from './test-database';
 
 describe('PostgresTransactions', () => {

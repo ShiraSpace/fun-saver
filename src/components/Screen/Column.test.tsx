@@ -9,7 +9,7 @@ import {
   mockAccountSummary,
   mockSiblingAccountSummary,
   mockUser,
-} from '@/test-utils/fixtures';
+} from '@/test-utils/mocks/general.mocks';
 import { Column } from './Column';
 
 interface ColumnShape {

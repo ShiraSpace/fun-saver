@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { SIGNED_IN_USER_SECTION_TEST_IDS } from '@/components/Menu/SignedInUserSection/constants';
-import { mockAccount } from '@/test-utils/fixtures';
+import { mockAccount } from '@/test-utils/mocks/general.mocks';
 import { useDriver } from './driver/use-driver';
 
 describe('the menu while it is closed', () => {
