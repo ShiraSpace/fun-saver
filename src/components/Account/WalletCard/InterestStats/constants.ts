@@ -6,7 +6,7 @@ export const INTEREST_STATS_TEST_IDS = {
 } as const;
 
 export const INTEREST_STATS_COPY = {
-  principalLabel: 'הפקדת',
+  principalLabel: 'הכסף שלך',
   interestEarnedLabel: 'רווח מריבית',
   interestEarnedTodayLabel: 'היום',
 } as const;
