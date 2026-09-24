@@ -17,7 +17,7 @@ function deposited(transactions: Transaction[]): number {
 export function balanceChange(
   transaction: Pick<Transaction, 'type' | 'amount'>
 ): number {
-  return transaction.type === 'withdrawal'
+  return transaction.type === TRANSACTION_TYPE.withdrawal
     ? -transaction.amount
     : transaction.amount;
 }

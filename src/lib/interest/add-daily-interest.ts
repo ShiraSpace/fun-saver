@@ -12,12 +12,6 @@ export interface AddDailyInterestParams {
   accountId: string;
 }
 
-function balanceChange(transaction: Transaction): number {
-  return transaction.type === TRANSACTION_TYPE.withdrawal
-    ? -transaction.amount
-    : transaction.amount;
-}
-
 function settledThrough(wallet: Wallet, transactions: Transaction[]): string {
   return transactions
     .filter((transaction) => transaction.type === TRANSACTION_TYPE.interest)
