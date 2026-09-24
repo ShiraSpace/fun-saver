@@ -1,10 +1,17 @@
 import { type Page } from 'puppeteer';
+import { THEME_COOKIE } from '@/lib/cookies';
 import { findByTest, requireMatch } from './page-element';
 
 interface TypedInput {
   page: Page;
   testId: string;
   value: string;
+}
+
+interface StoredTheme {
+  page: Page;
+  url: string;
+  themeId: string;
 }
 
 interface NthMatch {
@@ -85,4 +92,17 @@ export async function setDocumentTheme(
   await page.evaluate((id: string): void => {
     document.documentElement.dataset.theme = id;
   }, themeId);
+}
+
+export async function storeTheme({
+  page,
+  url,
+  themeId,
+}: StoredTheme): Promise<void> {
+  await page.browser().setCookie({
+    name: THEME_COOKIE,
+    value: themeId,
+    domain: new URL(url).hostname,
+    path: '/',
+  });
 }

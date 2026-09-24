@@ -92,4 +92,40 @@ describe('the theme at first paint', () => {
       );
     });
   });
+
+  describe('what the script leaves on the page', () => {
+    const mockUnknownTheme = 'not-a-theme';
+    let script: HTMLScriptElement;
+
+    beforeEach(() => {
+      document.cookie = `${THEME_COOKIE}=${mockUnknownTheme}`;
+      script = document.createElement('script');
+      script.textContent = applyStoredThemeScript();
+      document.head.append(script);
+    });
+
+    afterEach(() => {
+      script.remove();
+      Reflect.deleteProperty(window, 'funSaverThemeCookie');
+      Reflect.deleteProperty(window, 'funSaverThemeId');
+      document.cookie = `${THEME_COOKIE}=; max-age=0`;
+      delete document.documentElement.dataset.theme;
+    });
+
+    it('names the stored cookie funSaverThemeCookie, even when it holds no theme', () => {
+      expect(Reflect.get(window, 'funSaverThemeCookie')).toBe(mockUnknownTheme);
+    });
+
+    it('names the theme it applied funSaverThemeId', () => {
+      expect(Reflect.get(window, 'funSaverThemeId')).toBe(DEFAULT_THEME_ID);
+    });
+
+    it('leaves no name on the page that another script might also use', () => {
+      const genericNames = ['c', 't', 'themeCookie', 'themeId'];
+
+      expect(genericNames.filter((name) => Reflect.has(window, name))).toEqual(
+        []
+      );
+    });
+  });
 });
