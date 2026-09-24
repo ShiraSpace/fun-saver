@@ -11,6 +11,7 @@ list — and turn the inert `תנועות` tab on.
 
 **Reference:**
 ![img.png](img.png)
+![img_1.png](img_1.png)
 
 **Architecture:** One server read (`settledLedgers`) settles interest and
 returns every visible account's wallets *and* ledger; the page ships a
