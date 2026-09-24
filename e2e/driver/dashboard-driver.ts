@@ -4,9 +4,9 @@ import { WALLET_LIST_TEST_IDS } from '@/components/Account/WalletList/constants'
 import { WALLET_CARD_TEST_IDS } from '@/components/Account/WalletCard/constants';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '@/components/Account/TransactionDrawer/constants';
-import { MODE_TOGGLE_TEST_IDS } from '@/components/Account/TransactionDrawer/ModeToggle/constants';
+import { TRANSACTION_TYPE_TOGGLE_TEST_IDS } from '@/components/Account/TransactionDrawer/TransactionTypeToggle/constants';
 import { WALLET_PICKER_TEST_IDS } from '@/components/Account/TransactionDrawer/WalletPicker/constants';
-import { AMOUNT_PAD_TEST_IDS } from '@/components/Account/TransactionDrawer/AmountPad/constants';
+import { AMOUNT_KEYPAD_TEST_IDS } from '@/components/Account/TransactionDrawer/AmountKeypad/constants';
 import { Session } from './session';
 
 export class DashboardDriver {
@@ -50,21 +50,21 @@ export class DashboardDriver {
   async deposit(amountShekels: number): Promise<void> {
     await this.session.click(ACCOUNT_TEST_IDS.actionCta);
     for (const digit of String(amountShekels)) {
-      await this.session.click(AMOUNT_PAD_TEST_IDS.key(digit));
+      await this.session.click(AMOUNT_KEYPAD_TEST_IDS.key(digit));
     }
-    await this.session.click(TRANSACTION_DRAWER_TEST_IDS.confirm);
+    await this.session.click(TRANSACTION_DRAWER_TEST_IDS.submit);
   }
 
   async withdraw(walletName: string, amountShekels: number): Promise<void> {
     await this.session.click(ACCOUNT_TEST_IDS.actionCta);
-    await this.session.click(MODE_TOGGLE_TEST_IDS.withdraw);
+    await this.session.click(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal);
     await this.session.click(WALLET_PICKER_TEST_IDS.wallet(walletName));
 
     for (const digit of String(amountShekels)) {
-      await this.session.click(AMOUNT_PAD_TEST_IDS.key(digit));
+      await this.session.click(AMOUNT_KEYPAD_TEST_IDS.key(digit));
     }
 
-    await this.session.click(TRANSACTION_DRAWER_TEST_IDS.confirm);
+    await this.session.click(TRANSACTION_DRAWER_TEST_IDS.submit);
   }
 
   waitForSavingsDeposits(value: string): Promise<void> {

@@ -2,12 +2,12 @@
 
 import { JSX, useState } from 'react';
 import type { AccountWithDerivedWallets } from '@/lib/types';
-import { ModeToggle } from './ModeToggle';
-import { DepositBody } from './DepositBody';
-import { WithdrawBody } from './WithdrawBody';
+import { TransactionTypeToggle } from './TransactionTypeToggle';
+import { DepositForm } from './DepositForm';
+import { WithdrawalForm } from './WithdrawalForm';
 import { useCloseOnBack } from './use-close-on-back';
 import { useSwipeToClose } from './use-swipe-to-close';
-import type { TransactionMode } from './constants';
+import type { EnteredTransactionType } from './constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from './constants';
 import { Scrim, Sheet, Handle, Body } from './TransactionDrawer.styles';
 
@@ -20,16 +20,17 @@ export function TransactionDrawer({
   account,
   onClose,
 }: TransactionDrawerProps): JSX.Element {
-  const [mode, setMode] = useState<TransactionMode>('deposit');
+  const [transactionType, setTransactionType] =
+    useState<EnteredTransactionType>('deposit');
   const swipe = useSwipeToClose(onClose);
 
   useCloseOnBack(onClose);
 
-  const withdrawOrDepositBody =
-    mode === 'deposit' ? (
-      <DepositBody account={account} onClose={onClose} />
+  const transactionForm =
+    transactionType === 'deposit' ? (
+      <DepositForm account={account} onClose={onClose} />
     ) : (
-      <WithdrawBody account={account} onClose={onClose} />
+      <WithdrawalForm account={account} onClose={onClose} />
     );
 
   return (
@@ -49,8 +50,11 @@ export function TransactionDrawer({
           onPointerMove={swipe.onPointerMove}
           onPointerUp={swipe.onPointerUp}
         />
-        <ModeToggle mode={mode} onChange={setMode} />
-        <Body key={mode}>{withdrawOrDepositBody}</Body>
+        <TransactionTypeToggle
+          transactionType={transactionType}
+          onChange={setTransactionType}
+        />
+        <Body key={transactionType}>{transactionForm}</Body>
       </Sheet>
     </>
   );

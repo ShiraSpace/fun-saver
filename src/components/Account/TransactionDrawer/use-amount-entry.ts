@@ -3,21 +3,21 @@ import { useRouter } from 'next/navigation';
 import { pushDigit, popDigit } from './amount-keypad';
 
 export interface AmountEntry {
-  amount: number;
+  amountShekels: number;
   isSubmitting: boolean;
   hasError: boolean;
   onDigit: (digit: number) => void;
   onClear: () => void;
   onBackspace: () => void;
-  onConfirm: () => void;
+  onSubmit: () => void;
 }
 
 export function useAmountEntry(
-  commit: (amountShekels: number) => Promise<void>,
+  saveTransaction: (amountShekels: number) => Promise<void>,
   onClose: () => void
 ): AmountEntry {
   const router = useRouter();
-  const [amount, setAmount] = useState(0);
+  const [amountShekels, setAmountShekels] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -26,7 +26,7 @@ export function useAmountEntry(
     setHasError(false);
 
     try {
-      await commit(amount);
+      await saveTransaction(amountShekels);
       router.refresh();
       onClose();
     } catch {
@@ -36,12 +36,13 @@ export function useAmountEntry(
   };
 
   return {
-    amount,
+    amountShekels,
     isSubmitting,
     hasError,
-    onDigit: (digit) => setAmount((current) => pushDigit(current, digit)),
-    onClear: () => setAmount(0),
-    onBackspace: () => setAmount((current) => popDigit(current)),
-    onConfirm: () => void submit(),
+    onDigit: (digit) =>
+      setAmountShekels((current) => pushDigit(current, digit)),
+    onClear: () => setAmountShekels(0),
+    onBackspace: () => setAmountShekels((current) => popDigit(current)),
+    onSubmit: () => void submit(),
   };
 }
