@@ -3,10 +3,10 @@
 import { JSX } from 'react';
 import { halfShekelAmount } from '@/lib/money';
 import { Money } from '@/components/Money';
-import { STAT_STRIP_COPY, STAT_STRIP_TEST_IDS } from './constants';
-import { Amount, Cell, Label, Strip } from './StatStrip.styles';
+import { INTEREST_STATS_COPY, INTEREST_STATS_TEST_IDS } from './constants';
+import { Amount, Cell, Label, Stats } from './InterestStats.styles';
 
-export type StatTone = 'deposits' | 'gain';
+export type StatTone = 'principal' | 'interest';
 
 interface StatProps {
   tone: StatTone;
@@ -16,7 +16,7 @@ interface StatProps {
   allowHalf?: boolean;
 }
 
-interface StatStripProps {
+interface InterestStatsProps {
   principal: number;
   interestGain: number;
   todayInterest: number;
@@ -43,36 +43,36 @@ function Stat({
   );
 }
 
-export function StatStrip({
+export function InterestStats({
   principal,
   interestGain,
   todayInterest,
-}: StatStripProps): JSX.Element {
+}: InterestStatsProps): JSX.Element {
   const hasTodayInterest = halfShekelAmount(todayInterest) !== null;
 
   return (
-    <Strip data-testid={STAT_STRIP_TEST_IDS.strip}>
+    <Stats data-testid={INTEREST_STATS_TEST_IDS.stats}>
       <Stat
-        tone="deposits"
-        label={STAT_STRIP_COPY.depositsLabel}
+        tone="principal"
+        label={INTEREST_STATS_COPY.principalLabel}
         amountAgorot={principal}
-        testId={STAT_STRIP_TEST_IDS.deposits}
+        testId={INTEREST_STATS_TEST_IDS.principal}
       />
       <Stat
-        tone="gain"
-        label={STAT_STRIP_COPY.interestGainLabel}
+        tone="interest"
+        label={INTEREST_STATS_COPY.interestGainLabel}
         amountAgorot={interestGain}
-        testId={STAT_STRIP_TEST_IDS.interestGain}
+        testId={INTEREST_STATS_TEST_IDS.interestGain}
       />
       {hasTodayInterest && (
         <Stat
-          tone="gain"
-          label={STAT_STRIP_COPY.todayLabel}
+          tone="interest"
+          label={INTEREST_STATS_COPY.todayInterestLabel}
           amountAgorot={todayInterest}
-          testId={STAT_STRIP_TEST_IDS.todayInterest}
+          testId={INTEREST_STATS_TEST_IDS.todayInterest}
           allowHalf
         />
       )}
-    </Strip>
+    </Stats>
   );
 }

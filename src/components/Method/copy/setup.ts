@@ -2,7 +2,7 @@ import { DEPOSIT_SPLIT } from '@/lib/constants';
 import { share } from '../constants';
 import { WALLETS_COPY } from './wallets';
 
-const APP_SPLIT = WALLETS_COPY.pots
+const APP_SPLIT = WALLETS_COPY.walletNames
   .map((wallet) => share(DEPOSIT_SPLIT[wallet]))
   .join(' / ');
 

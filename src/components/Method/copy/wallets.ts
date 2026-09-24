@@ -1,6 +1,6 @@
 export const WALLETS_COPY = {
   title: 'שלוש הקופות',
-  pots: ['spending', 'savings', 'goodDeeds'],
+  walletNames: ['spending', 'savings', 'goodDeeds'],
   spending: {
     kind: 'text',
     body: '**🛍️ בזבוזים — הכסף של עכשיו.** חטיף, מדבקות, משהו קטן בקיוסק. מותר לבזבז בלי לשאול, וזה הכסף שנגמר. **הלקח נמצא בדיוק ברגע שהוא נגמר** — ולכן לא ממלאים אותו מראש.',

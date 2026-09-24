@@ -21,12 +21,13 @@ export const OVERVIEW_CARD_COPY = {
   share: (percent: number): string => `${percent}%`,
 } as const;
 
-export type WalletArcColor = 'walletSavings' | 'walletSpending' | 'walletGood';
+export type WalletArcColor =
+  'walletSavings' | 'walletSpending' | 'walletGoodDeeds';
 
 export const WALLET_ARC_COLOR: Record<WalletName, WalletArcColor> = {
   savings: 'walletSavings',
   spending: 'walletSpending',
-  goodDeeds: 'walletGood',
+  goodDeeds: 'walletGoodDeeds',
 };
 
 export const DONUT_STYLE = {

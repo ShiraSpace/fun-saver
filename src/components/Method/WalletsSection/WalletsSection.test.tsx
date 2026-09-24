@@ -8,7 +8,7 @@ describe('the section on the three wallets', () => {
     render(<WalletsSection />);
   });
 
-  it('opens with the pots, so the shape is seen before it is explained', () => {
+  it('opens with the wallets, so the shape is seen before it is explained', () => {
     const trio = screen.getByTestId(WALLET_TRIO_TEST_IDS.trio);
 
     expect(trio.parentElement?.firstElementChild).toBe(trio);

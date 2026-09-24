@@ -32,9 +32,9 @@ describe('dashboard', () => {
   });
 
   it('shows what the spending and good-deeds wallets have spent', async () => {
-    const subLines = await dashboard.walletSubLines();
+    const summaries = await dashboard.walletSummaries();
 
-    assert.ok(subLines.includes(WALLET_CARD_COPY.spendingSubLine(spending)));
-    assert.ok(subLines.includes(WALLET_CARD_COPY.goodDeedsSubLine(goodDeeds)));
+    assert.ok(summaries.includes(WALLET_CARD_COPY.spendingSummary(spending)));
+    assert.ok(summaries.includes(WALLET_CARD_COPY.goodDeedsSummary(goodDeeds)));
   });
 });

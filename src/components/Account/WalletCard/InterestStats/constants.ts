@@ -1,17 +1,17 @@
-export const STAT_STRIP_TEST_IDS = {
-  strip: 'wallet-stat-strip',
-  deposits: 'wallet-deposits',
+export const INTEREST_STATS_TEST_IDS = {
+  stats: 'wallet-stat-strip',
+  principal: 'wallet-deposits',
   interestGain: 'wallet-interest-gain',
   todayInterest: 'wallet-today-interest',
 } as const;
 
-export const STAT_STRIP_COPY = {
-  depositsLabel: 'הפקדת',
+export const INTEREST_STATS_COPY = {
+  principalLabel: 'הפקדת',
   interestGainLabel: 'רווח מריבית',
-  todayLabel: 'היום',
+  todayInterestLabel: 'היום',
 } as const;
 
-export const STAT_STRIP_STYLE = {
+export const INTEREST_STATS_STYLE = {
   gap: 8,
   marginTop: 10,
   paddingTop: 10,
