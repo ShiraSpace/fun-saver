@@ -18,7 +18,7 @@ export class AccountDriver {
   }
 
   savingsTodayInterest(): Promise<string> {
-    return this.appBrowser.text(INTEREST_STATS_TEST_IDS.todayInterest);
+    return this.appBrowser.text(INTEREST_STATS_TEST_IDS.interestEarnedToday);
   }
 
   walletListLabel(): Promise<string> {

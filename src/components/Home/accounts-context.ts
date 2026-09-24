@@ -1,11 +1,11 @@
 'use client';
 
 import { createRequiredContext } from '@/hooks/create-required-context';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 
 export interface AccountsContextValue {
-  accounts: AccountWithDerivedWallets[];
-  currentAccount: AccountWithDerivedWallets;
+  accounts: AccountSummary[];
+  currentAccount: AccountSummary;
   switchAccount: (id: string) => void;
 }
 

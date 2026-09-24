@@ -10,16 +10,16 @@ import {
 import {
   createMockAccount,
   mockAccount,
-  mockDerivedWallets,
+  mockWalletSummaries,
   mockSiblingAccount,
   mockUser,
 } from '@/test-utils/fixtures';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { Home } from './Home';
 
-export const accounts: AccountWithDerivedWallets[] = [
-  { ...mockAccount, wallets: mockDerivedWallets },
-  { ...mockSiblingAccount, wallets: mockDerivedWallets },
+export const accounts: AccountSummary[] = [
+  { ...mockAccount, wallets: mockWalletSummaries },
+  { ...mockSiblingAccount, wallets: mockWalletSummaries },
 ];
 
 export const createdAccount = createMockAccount({
@@ -32,7 +32,7 @@ export const renamedAccount = createMockAccount({
 });
 
 interface RenderHomeParams {
-  accounts?: AccountWithDerivedWallets[];
+  accounts?: AccountSummary[];
   initialAccountId?: string;
 }
 

@@ -1,5 +1,5 @@
-import type { WalletWithDerived } from '@/lib/types';
-import { PERCENT_TOTAL, WALLET_NAME } from '@/lib/constants';
+import type { WalletSummary } from '@/lib/types';
+import { PERCENT_TOTAL, WALLET_LABEL } from '@/lib/constants';
 import { dayMonth } from '@/lib/dates';
 import { agorotToWholeShekels } from '@/lib/money';
 
@@ -10,15 +10,15 @@ export const WALLET_CARD_TEST_IDS = {
 } as const;
 
 export const WALLET_CARD_COPY = {
-  name: WALLET_NAME,
+  name: WALLET_LABEL,
   savingsSummary: (
-    wallet: Pick<WalletWithDerived, 'monthlyInterestRate' | 'openedAt'>
+    wallet: Pick<WalletSummary, 'monthlyInterestRate' | 'openedAt'>
   ): string =>
     `צובר ${Math.round(wallet.monthlyInterestRate * PERCENT_TOTAL)}% בחודש · פעיל מאז ${dayMonth(wallet.openedAt)}`,
-  spendingSummary: (wallet: Pick<WalletWithDerived, 'withdrawals'>): string =>
-    `כבר ביזבזת ₪${agorotToWholeShekels(wallet.withdrawals)}`,
-  goodDeedsSummary: (wallet: Pick<WalletWithDerived, 'withdrawals'>): string =>
-    `תרמת ₪${agorotToWholeShekels(wallet.withdrawals)} עד היום`,
+  spendingSummary: (wallet: Pick<WalletSummary, 'withdrawn'>): string =>
+    `כבר ביזבזת ₪${agorotToWholeShekels(wallet.withdrawn)}`,
+  goodDeedsSummary: (wallet: Pick<WalletSummary, 'withdrawn'>): string =>
+    `תרמת ₪${agorotToWholeShekels(wallet.withdrawn)} עד היום`,
 } as const;
 
 export const WALLET_CARD_STYLE = {

@@ -9,23 +9,23 @@ import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
 import {
   createMockAccount,
   mockAccountsContext,
-  mockDerivedWallets,
+  mockWalletSummaries,
   mockUser,
 } from '@/test-utils/fixtures';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 
 describe('Account', () => {
   const mockAccountId = 'account-1';
   const mockAccountName = 'יעל';
   const mockAvatarId = 'kid-01';
 
-  const mockAccount: AccountWithDerivedWallets = {
+  const mockAccount: AccountSummary = {
     ...createMockAccount({
       id: mockAccountId,
       name: mockAccountName,
       avatarId: mockAvatarId,
     }),
-    wallets: mockDerivedWallets,
+    wallets: mockWalletSummaries,
   };
 
   beforeEach(() => {

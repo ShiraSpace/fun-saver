@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, useState } from 'react';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -11,7 +11,7 @@ import { TransactionDrawer } from './TransactionDrawer';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
 
 interface AccountProps {
-  account: AccountWithDerivedWallets;
+  account: AccountSummary;
 }
 
 export function Account({ account }: AccountProps): JSX.Element {

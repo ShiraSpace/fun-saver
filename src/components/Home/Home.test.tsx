@@ -10,11 +10,11 @@ import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import {
   mockAccount,
-  mockDerivedWallets,
+  mockWalletSummaries,
   mockSiblingAccount,
   mockUser,
 } from '@/test-utils/fixtures';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { openMenu, renderHome } from './home-test-helpers';
@@ -98,16 +98,16 @@ describe('Home', () => {
     }
 
     it('applies the tapped account theme', () => {
-      const themedAccounts: AccountWithDerivedWallets[] = [
+      const themedAccounts: AccountSummary[] = [
         {
           ...mockAccount,
           themeId: THEME_ID.sunshineQuest,
-          wallets: mockDerivedWallets,
+          wallets: mockWalletSummaries,
         },
         {
           ...mockSiblingAccount,
           themeId: THEME_ID.midnightBlue,
-          wallets: mockDerivedWallets,
+          wallets: mockWalletSummaries,
         },
       ];
 

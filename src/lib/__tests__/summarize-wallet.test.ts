@@ -1,5 +1,5 @@
-import { deriveWallet } from '../derive-wallet';
-import type { WalletWithDerived } from '../types';
+import { summarizeWallet } from '../summarize-wallet';
+import type { WalletSummary } from '../types';
 import { createMockTransaction, createMockWallet } from '@/test-utils/fixtures';
 
 const mockWallet = createMockWallet({ lastInterestDate: '2026-01-03' });
@@ -16,10 +16,10 @@ const mockTransactions = [
 ];
 
 describe('deriveWallet', () => {
-  let derived: WalletWithDerived;
+  let walletSummary: WalletSummary;
 
   beforeEach(() => {
-    derived = deriveWallet({
+    walletSummary = summarizeWallet({
       wallet: mockWallet,
       transactions: mockTransactions,
       asOf: '2026-01-03',
@@ -27,26 +27,26 @@ describe('deriveWallet', () => {
   });
 
   it('keeps the wallet it was given', () => {
-    expect(derived).toMatchObject(mockWallet);
+    expect(walletSummary).toMatchObject(mockWallet);
   });
 
   it('nets the balance across every transaction', () => {
-    expect(derived.balance).toBe(6500);
+    expect(walletSummary.balance).toBe(6500);
   });
 
   it('nets the principal without the interest', () => {
-    expect(derived.principal).toBe(6000);
+    expect(walletSummary.principal).toBe(6000);
   });
 
   it('sums what has been withdrawn', () => {
-    expect(derived.withdrawals).toBe(2000);
+    expect(walletSummary.withdrawn).toBe(2000);
   });
 
   it('sums the interest earned', () => {
-    expect(derived.interestGain).toBe(500);
+    expect(walletSummary.interestEarned).toBe(500);
   });
 
   it('picks out the interest dated today', () => {
-    expect(derived.todayInterest).toBe(500);
+    expect(walletSummary.interestEarnedToday).toBe(500);
   });
 });

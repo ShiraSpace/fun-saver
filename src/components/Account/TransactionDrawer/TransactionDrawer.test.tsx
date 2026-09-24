@@ -3,7 +3,7 @@ import { TransactionDrawer } from './TransactionDrawer';
 import { TRANSACTION_DRAWER_TEST_IDS } from './constants';
 import { TRANSACTION_TYPE_TOGGLE_TEST_IDS } from './TransactionTypeToggle/constants';
 import { WALLET_PICKER_TEST_IDS } from './WalletPicker/constants';
-import { mockDerivedAccount } from '@/test-utils/fixtures';
+import { mockAccountSummary } from '@/test-utils/fixtures';
 import { mockRouter } from '@mocks/next/navigation';
 import { getThemeTokens } from '@/theme/registry';
 
@@ -21,7 +21,7 @@ describe('TransactionDrawer', () => {
   beforeEach(() => {
     mockRouter.refresh.mockClear();
     render(
-      <TransactionDrawer account={mockDerivedAccount} onClose={jest.fn()} />
+      <TransactionDrawer account={mockAccountSummary} onClose={jest.fn()} />
     );
   });
 

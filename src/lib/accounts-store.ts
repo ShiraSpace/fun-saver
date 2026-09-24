@@ -29,7 +29,7 @@ export class AccountsStore {
       avatarId,
       isActive: true,
       themeId: DEFAULT_THEME_ID,
-      wallets: this.buildDefaultWallets(),
+      wallets: this.openDefaultWallets(),
     };
 
     await this.store.insertAccountWithOwner(account, {
@@ -47,14 +47,14 @@ export class AccountsStore {
     return this.store.updateAccount(id, edits);
   }
 
-  private buildDefaultWallets(): Wallet[] {
+  private openDefaultWallets(): Wallet[] {
     const openedAt = today();
 
-    return DEFAULT_WALLETS.map((seed) => ({
-      id: seed.name,
-      name: seed.name,
-      icon: seed.icon,
-      monthlyInterestRate: seed.monthlyInterestRate,
+    return DEFAULT_WALLETS.map((defaultWallet) => ({
+      id: defaultWallet.name,
+      name: defaultWallet.name,
+      icon: defaultWallet.icon,
+      monthlyInterestRate: defaultWallet.monthlyInterestRate,
       openedAt,
       lastInterestDate: openedAt,
     }));

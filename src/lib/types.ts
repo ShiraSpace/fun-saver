@@ -36,16 +36,16 @@ export interface Transaction {
   createdAt: string;
 }
 
-export interface WalletWithDerived extends Wallet {
+export interface WalletSummary extends Wallet {
   balance: number;
   principal: number;
-  withdrawals: number;
-  interestGain: number;
-  todayInterest: number;
+  withdrawn: number;
+  interestEarned: number;
+  interestEarnedToday: number;
 }
 
-export interface AccountWithDerivedWallets extends Account {
-  wallets: WalletWithDerived[];
+export interface AccountSummary extends Account {
+  wallets: WalletSummary[];
 }
 
 export type AuthProvider = 'google';

@@ -1,11 +1,11 @@
 import { render, screen } from '@/test-utils/render';
-import { createMockDerivedWallet } from '@/test-utils/fixtures';
+import { createMockWalletSummary } from '@/test-utils/fixtures';
 import { SavingsInterestStats } from './SavingsInterestStats';
 import { INTEREST_STATS_TEST_IDS } from '../../WalletCard/InterestStats/constants';
 
 describe('SavingsInterestStats', () => {
   it('shows the interest stats for the savings wallet', () => {
-    render(<SavingsInterestStats wallet={createMockDerivedWallet()} />);
+    render(<SavingsInterestStats wallet={createMockWalletSummary()} />);
 
     expect(
       screen.getByTestId(INTEREST_STATS_TEST_IDS.stats)
@@ -15,7 +15,7 @@ describe('SavingsInterestStats', () => {
   it('shows nothing for the spending wallet', () => {
     render(
       <SavingsInterestStats
-        wallet={createMockDerivedWallet({ name: 'spending' })}
+        wallet={createMockWalletSummary({ name: 'spending' })}
       />
     );
 
@@ -27,7 +27,7 @@ describe('SavingsInterestStats', () => {
   it('shows nothing for the good-deeds wallet', () => {
     render(
       <SavingsInterestStats
-        wallet={createMockDerivedWallet({ name: 'goodDeeds' })}
+        wallet={createMockWalletSummary({ name: 'goodDeeds' })}
       />
     );
 

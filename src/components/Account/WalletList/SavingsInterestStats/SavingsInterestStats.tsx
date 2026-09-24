@@ -1,9 +1,9 @@
 import { JSX } from 'react';
-import type { WalletWithDerived } from '@/lib/types';
+import type { WalletSummary } from '@/lib/types';
 import { InterestStats } from '../../WalletCard/InterestStats';
 
 interface SavingsInterestStatsProps {
-  wallet: WalletWithDerived;
+  wallet: WalletSummary;
 }
 
 export function SavingsInterestStats({
@@ -16,8 +16,8 @@ export function SavingsInterestStats({
   return (
     <InterestStats
       principal={wallet.principal}
-      interestGain={wallet.interestGain}
-      todayInterest={wallet.todayInterest}
+      interestEarned={wallet.interestEarned}
+      interestEarnedToday={wallet.interestEarnedToday}
     />
   );
 }

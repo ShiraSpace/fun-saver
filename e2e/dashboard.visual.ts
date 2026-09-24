@@ -2,14 +2,14 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   mockAccount,
-  mockDerivedWallets,
+  mockWalletSummaries,
   mockTransactions,
 } from '@/test-utils/fixtures';
 import { WALLET_LIST_COPY } from '@/components/Account/WalletList/constants';
 import { WALLET_CARD_COPY } from '@/components/Account/WalletCard/constants';
 import { useDriver } from './driver/use-driver';
 
-const [, spending, goodDeeds] = mockDerivedWallets;
+const [, spending, goodDeeds] = mockWalletSummaries;
 
 describe('the account screen', () => {
   const { header, account } = useDriver({

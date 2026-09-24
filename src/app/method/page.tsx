@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { Method } from '@/components/Method';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { getStore } from '@/db';
-import { withDerivedWallets } from '@/lib/interest-settlement';
+import { summarizeAccounts } from '@/lib/interest-settlement';
 import { today } from '@/lib/clock';
 import { findCurrentAccount } from '@/lib/current-account';
 import { ThemedPage } from '@/theme/ThemedPage';
@@ -15,12 +15,12 @@ export const dynamic = 'force-dynamic';
 export default async function MethodPage(): Promise<JSX.Element> {
   const { user, accounts, currentAccountId, themeId } =
     await signedInAccounts();
-  const derived = await withDerivedWallets({
+  const accountSummaries = await summarizeAccounts({
     store: getStore(),
     accounts,
     asOf: today(),
   });
-  const initialAccount = findCurrentAccount(derived, currentAccountId);
+  const initialAccount = findCurrentAccount(accountSummaries, currentAccountId);
 
   if (!initialAccount) {
     redirect(HOME_ROUTE);
@@ -29,7 +29,7 @@ export default async function MethodPage(): Promise<JSX.Element> {
   return (
     <ThemedPage themeId={themeId}>
       <SignedInUserProvider value={user}>
-        <Method accounts={derived} initialAccount={initialAccount} />
+        <Method accounts={accountSummaries} initialAccount={initialAccount} />
       </SignedInUserProvider>
     </ThemedPage>
   );

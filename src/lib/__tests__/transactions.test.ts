@@ -1,8 +1,8 @@
 import { InMemoryStore } from '@/db/memory-store';
 import { today } from '../clock';
 import { addDeposit, addWithdrawal, splitDeposit } from '../transactions';
-import { balance } from '../derivations';
-import { DEPOSIT_SPLIT } from '../constants';
+import { balance } from '../wallet-totals';
+import { DEPOSIT_SHARES } from '../constants';
 import { OverdraftError, ValidationError } from '../errors';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import type { Account, WalletName } from '../types';
@@ -190,8 +190,8 @@ describe('splitDeposit', () => {
     const total = 2000;
     const split = splitDeposit(total);
 
-    expect(split.spending).toBe(Math.floor(total * DEPOSIT_SPLIT.spending));
-    expect(split.goodDeeds).toBe(Math.floor(total * DEPOSIT_SPLIT.goodDeeds));
+    expect(split.spending).toBe(Math.floor(total * DEPOSIT_SHARES.spending));
+    expect(split.goodDeeds).toBe(Math.floor(total * DEPOSIT_SHARES.goodDeeds));
     expect(split.savings).toBe(total - split.spending - split.goodDeeds);
   });
 
@@ -213,13 +213,13 @@ describe('splitDeposit', () => {
 
 describe('DEPOSIT_SPLIT config', () => {
   it('is the single source of truth for the deposit ratios', () => {
-    expect(DEPOSIT_SPLIT).toEqual({
+    expect(DEPOSIT_SHARES).toEqual({
       savings: 0.4,
       spending: 0.5,
       goodDeeds: 0.1,
     });
 
-    const total = Object.values(DEPOSIT_SPLIT).reduce((sum, r) => sum + r, 0);
+    const total = Object.values(DEPOSIT_SHARES).reduce((sum, r) => sum + r, 0);
     expect(total).toBeCloseTo(1);
   });
 });

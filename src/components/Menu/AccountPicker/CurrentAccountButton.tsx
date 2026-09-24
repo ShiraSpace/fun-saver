@@ -1,10 +1,10 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { Avatar } from '@/components/Avatar/Avatar';
 import { Money } from '@/components/Money';
-import { totalBalance } from '@/lib/derivations';
+import { totalBalance } from '@/lib/wallet-totals';
 import { ACCOUNT_LIST_DOM_ID } from '../AccountList/constants';
 import {
   ACCOUNT_PICKER_COPY,
@@ -14,7 +14,7 @@ import {
 import { Trigger, Naming, Name, Current, Caret } from './AccountPicker.styles';
 
 interface CurrentAccountButtonProps {
-  account: AccountWithDerivedWallets;
+  account: AccountSummary;
   isOpen: boolean;
   onToggle: (isOpen: boolean) => void;
 }

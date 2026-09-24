@@ -3,7 +3,7 @@ import { MenuAccountSettings } from './MenuAccountSettings';
 import { MENU_ACCOUNT_SETTINGS_TEST_IDS } from './constants';
 import {
   mockAccountsContext,
-  mockSecondDerivedAccount,
+  mockSiblingAccountSummary,
 } from '@/test-utils/fixtures';
 
 describe('MenuAccountSettings', () => {
@@ -11,7 +11,7 @@ describe('MenuAccountSettings', () => {
     render(<MenuAccountSettings>{null}</MenuAccountSettings>, {
       accounts: {
         ...mockAccountsContext,
-        currentAccount: mockSecondDerivedAccount,
+        currentAccount: mockSiblingAccountSummary,
       },
     });
   });
@@ -19,6 +19,6 @@ describe('MenuAccountSettings', () => {
   it('heads the block with the account the settings belong to', () => {
     expect(
       screen.getByTestId(MENU_ACCOUNT_SETTINGS_TEST_IDS.heading)
-    ).toHaveTextContent(mockSecondDerivedAccount.name);
+    ).toHaveTextContent(mockSiblingAccountSummary.name);
   });
 });
