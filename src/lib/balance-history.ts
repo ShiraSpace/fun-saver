@@ -110,12 +110,20 @@ export function balanceHistory(input: BalanceHistoryInput): BalanceHistory {
   return { days, totalBalance: totalBalances(wallets, days), wallets };
 }
 
+function carriedInDayIndex(
+  history: BalanceHistory,
+  rangeInDays: number
+): number {
+  const todayIndex = history.days.length - 1;
+
+  return todayIndex - rangeInDays;
+}
+
 export function balanceOverRange(
   history: BalanceHistory,
   rangeInDays: number
 ): BalanceHistory {
-  const todayIndex = history.days.length - 1;
-  const rangeStartIndex = Math.max(0, todayIndex - rangeInDays);
+  const rangeStartIndex = Math.max(0, carriedInDayIndex(history, rangeInDays));
   const fromRangeStart = <T>(values: T[]): T[] => values.slice(rangeStartIndex);
 
   return {
@@ -131,18 +139,21 @@ function closingBalance(values: number[]): number {
   return values[values.length - 1] ?? 0;
 }
 
-function openingBalance(values: number[]): number {
-  return values[0] ?? 0;
-}
-
 export function todaysTotalBalance(history: BalanceHistory): number {
   return closingBalance(history.totalBalance);
 }
 
-export function totalBalanceChange(range: BalanceHistory): number {
-  return (
-    closingBalance(range.totalBalance) - openingBalance(range.totalBalance)
-  );
+export function totalBalanceChange(
+  history: BalanceHistory,
+  rangeInDays: number
+): number {
+  const carriedInDay = carriedInDayIndex(history, rangeInDays);
+  const accountIsYoungerThanRange = carriedInDay < 0;
+  const carriedInTotalBalance = accountIsYoungerThanRange
+    ? 0
+    : history.totalBalance[carriedInDay];
+
+  return todaysTotalBalance(history) - carriedInTotalBalance;
 }
 
 export function totalBalanceByDay(

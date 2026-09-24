@@ -658,11 +658,12 @@ export interface BalanceHistoryInput {
 export function balanceHistory(input: BalanceHistoryInput): BalanceHistory;
 export function balanceOverRange(history: BalanceHistory, rangeInDays: number): BalanceHistory;
 export function todaysTotalBalance(history: BalanceHistory): number;
-export function totalBalanceChange(range: BalanceHistory): number;
+export function totalBalanceChange(history: BalanceHistory, rangeInDays: number): number;
 export function totalBalanceByDay(history: BalanceHistory): Map<string, number>;
 ```
 
-`rangeInDays` takes `Infinity` for `הכל`. `totalBalance[i]` is the account's
+`rangeInDays` takes `Infinity` for `הכל`. `totalBalanceChange` takes the whole history, not the range,
+because an account younger than the range carries in a balance of 0, which the range itself cannot show. `totalBalance[i]` is the account's
 total balance at the **end** of `days[i]`. The transactions are the page's
 projection: any object with those four fields, so a whole `Transaction` fits too.
 
@@ -790,12 +791,20 @@ export function balanceHistory(input: BalanceHistoryInput): BalanceHistory {
   return { days, totalBalance: totalBalances(wallets, days), wallets };
 }
 
+function carriedInDayIndex(
+  history: BalanceHistory,
+  rangeInDays: number
+): number {
+  const todayIndex = history.days.length - 1;
+
+  return todayIndex - rangeInDays;
+}
+
 export function balanceOverRange(
   history: BalanceHistory,
   rangeInDays: number
 ): BalanceHistory {
-  const todayIndex = history.days.length - 1;
-  const rangeStartIndex = Math.max(0, todayIndex - rangeInDays);
+  const rangeStartIndex = Math.max(0, carriedInDayIndex(history, rangeInDays));
   const fromRangeStart = <T>(values: T[]): T[] => values.slice(rangeStartIndex);
 
   return {
@@ -811,18 +820,21 @@ function closingBalance(values: number[]): number {
   return values[values.length - 1] ?? 0;
 }
 
-function openingBalance(values: number[]): number {
-  return values[0] ?? 0;
-}
-
 export function todaysTotalBalance(history: BalanceHistory): number {
   return closingBalance(history.totalBalance);
 }
 
-export function totalBalanceChange(range: BalanceHistory): number {
-  return (
-    closingBalance(range.totalBalance) - openingBalance(range.totalBalance)
-  );
+export function totalBalanceChange(
+  history: BalanceHistory,
+  rangeInDays: number
+): number {
+  const carriedInDay = carriedInDayIndex(history, rangeInDays);
+  const accountIsYoungerThanRange = carriedInDay < 0;
+  const carriedInTotalBalance = accountIsYoungerThanRange
+    ? 0
+    : history.totalBalance[carriedInDay];
+
+  return todaysTotalBalance(history) - carriedInTotalBalance;
 }
 
 export function totalBalanceByDay(
@@ -940,8 +952,12 @@ the very failure the spec names (third).
     five-day history over a range of 7 equals the history, and so does
     `balanceOverRange(history, Infinity)`. Break: remove `Math.max(0, …)` —
     `rangeStartIndex` goes to `-3` and `slice` quietly keeps the last three days.
-  - `'reports how much the total balance changed across the range'` — `totalBalanceChange`
-    of the 7-day range above is `100`. Break: `closingBalance(range.totalBalance) - range.totalBalance[1]`.
+  - `'reports how much the total balance changed across the range'` — `totalBalanceChange(history, 7)`
+    of the ten-day history above is `100`. Break: carry in `0` instead of the balance before the range.
+  - `'counts the deposit as growth, for the week and since the beginning'` and
+    `'counts every deposit since the account opened'` — an account younger than the range: five
+    days after a 500 deposit the change is 500 for `7` and for `Infinity`, and a second deposit
+    adds to it. Break: carry in the first day's balance, which already holds the first deposit.
   - `'reads the total balance a day ended on'` — `totalBalanceByDay(history).get('2026-01-10')` is `600`.
   - `wallet-totals.test.ts`: `'counts a withdrawal against the balance and everything else for it'`
     — `balanceChange` of a withdrawal of 200 is `-200`, of interest 5 is `5`.
@@ -1541,7 +1557,7 @@ export function ChartCard({ balanceHistory, view }: ChartCardProps): JSX.Element
     <Card data-testid={CHART_CARD_TEST_IDS.card}>
       <TotalBalanceHeader
         totalBalance={todaysTotalBalance(balanceHistory)}
-        totalBalanceChange={totalBalanceChange(balanceHistoryInRange)}
+        totalBalanceChange={totalBalanceChange(balanceHistory, range.lengthInDays)}
         changeLabel={range.changeLabel}
       />
       <RangeRow>

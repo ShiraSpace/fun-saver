@@ -19,11 +19,6 @@ describe('the balance history', () => {
     amount: 500,
     occurredAt: '2026-01-01',
   });
-  const mockLaterDeposit = createMockTransaction({
-    id: 'later',
-    amount: 100,
-    occurredAt: '2026-01-10',
-  });
 
   const historyOf = (
     transactions: Transaction[],
@@ -65,18 +60,6 @@ describe('the balance history', () => {
     );
   });
 
-  it('starts a narrow range at the balance carried into it, not at zero', () => {
-    const history = historyOf(
-      [mockOpeningDeposit, mockLaterDeposit],
-      '2026-01-10'
-    );
-
-    const lastWeek = balanceOverRange(history, 7);
-    const openingBalance = lastWeek.totalBalance[0];
-
-    expect(openingBalance).toBe(mockOpeningDeposit.amount);
-  });
-
   it('has no days for an account with no transactions', () => {
     const history = historyOf([], '2026-01-03');
 
@@ -99,24 +82,10 @@ describe('the balance history', () => {
   });
 
   describe('each wallet’s balance', () => {
-    const mockSavingsDeposit = createMockTransaction({
-      id: 'savings',
-      walletId: 'w1',
-      amount: 500,
-    });
     const mockSpendingDeposit = createMockTransaction({
       id: 'spending',
       walletId: 'w2',
       amount: 300,
-    });
-
-    it('holds only what went into that wallet', () => {
-      const history = historyOf(
-        [mockSavingsDeposit, mockSpendingDeposit],
-        '2026-01-01'
-      );
-
-      expect(history.wallets.savings).toEqual([mockSavingsDeposit.amount]);
     });
 
     it('takes a withdrawal off the wallet it came out of', () => {
@@ -136,55 +105,96 @@ describe('the balance history', () => {
       expect(history.wallets.spending).toEqual([spendingLeft]);
     });
 
-    it('stays at zero for a wallet nothing went into', () => {
+    describe('when savings and spending each had a deposit', () => {
+      const mockSavingsDeposit = createMockTransaction({
+        id: 'savings',
+        walletId: 'w1',
+        amount: 500,
+      });
       const history = historyOf(
         [mockSavingsDeposit, mockSpendingDeposit],
         '2026-01-01'
       );
 
-      expect(history.wallets.goodDeeds).toEqual([0]);
+      it('holds only what went into that wallet', () => {
+        expect(history.wallets.savings).toEqual([mockSavingsDeposit.amount]);
+      });
+
+      it('stays at zero for a wallet nothing went into', () => {
+        expect(history.wallets.goodDeeds).toEqual([0]);
+      });
+
+      it('adds the three wallets up to the total balance', () => {
+        const { savings, spending, goodDeeds } = history.wallets;
+
+        expect(history.totalBalance).toEqual([
+          savings[0] + spending[0] + goodDeeds[0],
+        ]);
+      });
+    });
+  });
+
+  describe('an account ten days old, with a second deposit today', () => {
+    const mockLaterDeposit = createMockTransaction({
+      id: 'later',
+      amount: 100,
+      occurredAt: '2026-01-10',
+    });
+    const history = historyOf(
+      [mockOpeningDeposit, mockLaterDeposit],
+      '2026-01-10'
+    );
+
+    it('starts a narrow range at the balance carried into it, not at zero', () => {
+      const lastWeek = balanceOverRange(history, 7);
+      const openingBalance = lastWeek.totalBalance[0];
+
+      expect(openingBalance).toBe(mockOpeningDeposit.amount);
     });
 
-    it('adds the three wallets up to the total balance', () => {
-      const history = historyOf(
-        [mockSavingsDeposit, mockSpendingDeposit],
-        '2026-01-01'
+    it('reports how much the total balance changed across the range', () => {
+      expect(totalBalanceChange(history, 7)).toBe(mockLaterDeposit.amount);
+    });
+
+    it('reads the total balance a day ended on', () => {
+      const bothDeposits = mockOpeningDeposit.amount + mockLaterDeposit.amount;
+
+      expect(totalBalanceByDay(history).get(mockLaterDeposit.occurredAt)).toBe(
+        bothDeposits
       );
-      const { savings, spending, goodDeeds } = history.wallets;
-
-      expect(history.totalBalance).toEqual([
-        savings[0] + spending[0] + goodDeeds[0],
-      ]);
     });
   });
 
-  it('shows the whole history when the account is younger than the range', () => {
-    const fiveDayHistory = historyOf([mockOpeningDeposit], '2026-01-05');
+  describe('an account younger than the range', () => {
+    describe('five days after its only deposit', () => {
+      const history = historyOf([mockOpeningDeposit], '2026-01-05');
 
-    expect(balanceOverRange(fiveDayHistory, 7)).toEqual(fiveDayHistory);
-    expect(balanceOverRange(fiveDayHistory, Infinity)).toEqual(fiveDayHistory);
-  });
+      it('shows its whole history', () => {
+        expect(balanceOverRange(history, 7)).toEqual(history);
+        expect(balanceOverRange(history, Infinity)).toEqual(history);
+      });
 
-  it('reports how much the total balance changed across the range', () => {
-    const history = historyOf(
-      [mockOpeningDeposit, mockLaterDeposit],
-      '2026-01-10'
-    );
+      it('counts the deposit as growth, for the week and since the beginning', () => {
+        expect(totalBalanceChange(history, 7)).toBe(mockOpeningDeposit.amount);
+        expect(totalBalanceChange(history, Infinity)).toBe(
+          mockOpeningDeposit.amount
+        );
+      });
+    });
 
-    const lastWeek = balanceOverRange(history, 7);
+    it('counts every deposit since the account opened', () => {
+      const mockSecondDeposit = createMockTransaction({
+        id: 'second',
+        amount: 100,
+        occurredAt: '2026-01-03',
+      });
+      const history = historyOf(
+        [mockOpeningDeposit, mockSecondDeposit],
+        '2026-01-05'
+      );
+      const bothDeposits = mockOpeningDeposit.amount + mockSecondDeposit.amount;
 
-    expect(totalBalanceChange(lastWeek)).toBe(mockLaterDeposit.amount);
-  });
-
-  it('reads the total balance a day ended on', () => {
-    const history = historyOf(
-      [mockOpeningDeposit, mockLaterDeposit],
-      '2026-01-10'
-    );
-    const bothDeposits = mockOpeningDeposit.amount + mockLaterDeposit.amount;
-
-    expect(totalBalanceByDay(history).get(mockLaterDeposit.occurredAt)).toBe(
-      bothDeposits
-    );
+      expect(totalBalanceChange(history, 7)).toBe(bothDeposits);
+    });
   });
 });
