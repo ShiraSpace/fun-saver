@@ -1,7 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
-import { DEPOSIT_SPLIT } from '@/lib/constants';
+import { DEPOSIT_SHARES } from '@/lib/constants';
 import { METHOD_COPY } from '../copy';
 import { WalletTrio } from './WalletTrio';
 import { percentLabel } from '../constants';
@@ -36,7 +36,7 @@ describe('the three wallets drawn side by side', () => {
       .map((shareLabel) => shareLabel.textContent);
 
     expect(shown).toEqual(
-      walletNames.map((walletName) => percentLabel(DEPOSIT_SPLIT[walletName]))
+      walletNames.map((walletName) => percentLabel(DEPOSIT_SHARES[walletName]))
     );
   });
 });

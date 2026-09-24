@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import type { WalletWithDerived } from '@/lib/types';
+import type { WalletSummary } from '@/lib/types';
 import { useAddTransaction } from './use-add-transaction';
 import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 
@@ -15,7 +15,7 @@ interface WithdrawalFormState extends AmountEntry {
 
 export function useWithdrawalForm(
   accountId: string,
-  wallets: WalletWithDerived[],
+  wallets: WalletSummary[],
   onClose: () => void
 ): WithdrawalFormState {
   const { addWithdrawal } = useAddTransaction(accountId);

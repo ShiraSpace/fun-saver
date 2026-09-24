@@ -1,12 +1,12 @@
 import {
   balance,
-  interestGain,
-  withdrawals,
+  interestEarned,
+  withdrawn,
   principal,
-  todayInterest,
+  interestEarnedToday,
   totalBalance,
   walletShares,
-} from '../derivations';
+} from '../wallet-totals';
 import type { Transaction } from '../types';
 import { createMockTransaction } from '@/test-utils/fixtures';
 
@@ -35,7 +35,7 @@ describe('derivations', () => {
   });
 
   it('withdrawals = sum of withdrawal transactions', () => {
-    expect(withdrawals(transactions)).toBe(1000);
+    expect(withdrawn(transactions)).toBe(1000);
   });
 
   it('principal = deposits - withdrawals', () => {
@@ -43,12 +43,12 @@ describe('derivations', () => {
   });
 
   it('interestGain = sum of interest', () => {
-    expect(interestGain(transactions)).toBe(100);
+    expect(interestEarned(transactions)).toBe(100);
   });
 
   it('todayInterest = interest dated asOf only', () => {
-    expect(todayInterest(transactions, '2026-01-03')).toBe(47);
-    expect(todayInterest(transactions, '2026-01-10')).toBe(0);
+    expect(interestEarnedToday(transactions, '2026-01-03')).toBe(47);
+    expect(interestEarnedToday(transactions, '2026-01-10')).toBe(0);
   });
 
   it('totalBalance = sum of every wallet balance', () => {

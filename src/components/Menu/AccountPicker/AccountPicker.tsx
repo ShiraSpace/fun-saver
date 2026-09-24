@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, useCallback, useRef, useState } from 'react';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { AccountList } from '../AccountList';
 import { CurrentAccountButton } from './CurrentAccountButton';
 import { useCloseOnOutsideClick } from './use-close-on-outside-click';
@@ -11,8 +11,8 @@ import { ACCOUNT_PICKER_TEST_IDS } from './constants';
 import { Picker } from './AccountPicker.styles';
 
 interface AccountPickerProps {
-  accounts: AccountWithDerivedWallets[];
-  currentAccount: AccountWithDerivedWallets;
+  accounts: AccountSummary[];
+  currentAccount: AccountSummary;
   onSelect: (id: string) => void;
 }
 

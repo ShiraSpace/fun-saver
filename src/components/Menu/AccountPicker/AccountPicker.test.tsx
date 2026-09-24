@@ -1,22 +1,22 @@
 import { fireEvent, screen } from '@/test-utils/render';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import {
-  mockDerivedAccount,
-  mockSecondDerivedAccount,
+  mockAccountSummary,
+  mockSiblingAccountSummary,
 } from '@/test-utils/fixtures';
 import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { AccountPicker } from './AccountPicker';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from './constants';
 
-const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
+const accounts = [mockAccountSummary, mockSiblingAccountSummary];
 
 describe('AccountPicker', () => {
   beforeEach(() => {
     renderInOpenMenu(
       <AccountPicker
         accounts={accounts}
-        currentAccount={mockSecondDerivedAccount}
+        currentAccount={mockSiblingAccountSummary}
         onSelect={(): void => {}}
       />
     );
@@ -37,7 +37,7 @@ describe('AccountPicker', () => {
   it('names the account in view on its button', () => {
     expect(
       screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)
-    ).toHaveTextContent(mockSecondDerivedAccount.name);
+    ).toHaveTextContent(mockSiblingAccountSummary.name);
   });
 
   it('puts the accounts away again when the current account is tapped twice', () => {

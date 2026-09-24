@@ -105,7 +105,7 @@ re-researching.
 
 ## 3. Configurable split presets
 
-`DEPOSIT_SPLIT` is a module constant (`src/lib/constants.ts`) at 50/40/10.
+`DEPOSIT_SHARES` is a module constant (`src/lib/constants.ts`) at 50/40/10.
 There is **no evidence for any particular split** (research §1.4) — it is a
 values choice, so it should be the family's.
 

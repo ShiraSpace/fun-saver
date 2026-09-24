@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { hexToRgb } from '@/test-utils/css-color';
 import { THEME_ID, getThemeTokens } from '@/theme/registry';
-import { mockAccountsContext, mockDerivedAccount } from '@/test-utils/fixtures';
+import { mockAccountsContext, mockAccountSummary } from '@/test-utils/fixtures';
 import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { AppearanceSection } from './AppearanceSection';
 import {
@@ -23,7 +23,7 @@ describe('AppearanceSection', () => {
     jest.clearAllMocks();
     global.fetch = jest
       .fn()
-      .mockResolvedValue({ ok: true, json: async () => mockDerivedAccount });
+      .mockResolvedValue({ ok: true, json: async () => mockAccountSummary });
   });
 
   describe('the swatch row', () => {
@@ -65,7 +65,7 @@ describe('AppearanceSection', () => {
     });
 
     it('saves it on the current account', () => {
-      const accountThemeUrl = `/api/accounts/${mockDerivedAccount.id}/theme`;
+      const accountThemeUrl = `/api/accounts/${mockAccountSummary.id}/theme`;
       const [url, options] = (global.fetch as jest.Mock).mock.calls[0];
 
       expect(url).toBe(accountThemeUrl);

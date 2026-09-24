@@ -1,14 +1,14 @@
 'use client';
 
 import { JSX } from 'react';
-import type { WalletWithDerived } from '@/lib/types';
+import type { WalletSummary } from '@/lib/types';
 import { WalletCard } from '../WalletCard/WalletCard';
 import { SavingsInterestStats } from './SavingsInterestStats';
 import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
 import { List, Label } from './WalletList.styles';
 
 interface WalletListProps {
-  wallets: WalletWithDerived[];
+  wallets: WalletSummary[];
 }
 
 export function WalletList({ wallets }: WalletListProps): JSX.Element {

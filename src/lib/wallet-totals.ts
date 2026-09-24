@@ -1,34 +1,37 @@
-import type { Transaction, TransactionType, WalletWithDerived } from './types';
+import type { Transaction, TransactionType, WalletSummary } from './types';
 import { PERCENT_TOTAL } from './constants';
 
-function sumOf(transactions: Transaction[], type: TransactionType): number {
+function totalAmount(
+  transactions: Transaction[],
+  type: TransactionType
+): number {
   return transactions
     .filter((transaction) => transaction.type === type)
     .reduce((total, transaction) => total + transaction.amount, 0);
 }
 
-function deposits(transactions: Transaction[]): number {
-  return sumOf(transactions, 'deposit');
+function deposited(transactions: Transaction[]): number {
+  return totalAmount(transactions, 'deposit');
 }
 
-export function withdrawals(transactions: Transaction[]): number {
-  return sumOf(transactions, 'withdrawal');
+export function withdrawn(transactions: Transaction[]): number {
+  return totalAmount(transactions, 'withdrawal');
 }
 
 export function principal(transactions: Transaction[]): number {
-  return deposits(transactions) - withdrawals(transactions);
+  return deposited(transactions) - withdrawn(transactions);
 }
 
-export function interestGain(transactions: Transaction[]): number {
-  return sumOf(transactions, 'interest');
+export function interestEarned(transactions: Transaction[]): number {
+  return totalAmount(transactions, 'interest');
 }
 
 export function balance(transactions: Transaction[]): number {
-  return principal(transactions) + interestGain(transactions);
+  return principal(transactions) + interestEarned(transactions);
 }
 
 export function totalBalance(
-  wallets: Pick<WalletWithDerived, 'balance'>[]
+  wallets: Pick<WalletSummary, 'balance'>[]
 ): number {
   return wallets.reduce((sum, wallet) => sum + wallet.balance, 0);
 }
@@ -45,11 +48,11 @@ function pointsLostToRounding(roundedShares: number[]): number {
   return PERCENT_TOTAL - roundedShares.reduce((sum, share) => sum + share, 0);
 }
 
-function walletsRoundedDownMost(exactShares: number[]): number[] {
+function walletIndexesRoundedDownMost(exactShares: number[]): number[] {
   return exactShares
-    .map((share, wallet) => ({ wallet, lostToRounding: share % 1 }))
+    .map((share, walletIndex) => ({ walletIndex, lostToRounding: share % 1 }))
     .sort((a, b) => b.lostToRounding - a.lostToRounding)
-    .map(({ wallet }) => wallet);
+    .map(({ walletIndex }) => walletIndex);
 }
 
 export function walletShares(balances: number[]): number[] {
@@ -62,19 +65,18 @@ export function walletShares(balances: number[]): number[] {
   const exactShares = exactShareOfTotal(balances, total);
   const shares = exactShares.map((share) => Math.floor(share));
   const unclaimedPoints = pointsLostToRounding(shares);
-  const walletsOwedAPoint = walletsRoundedDownMost(exactShares).slice(
-    0,
-    unclaimedPoints
-  );
+  const walletIndexesOwedAPoint = walletIndexesRoundedDownMost(
+    exactShares
+  ).slice(0, unclaimedPoints);
 
-  for (const wallet of walletsOwedAPoint) {
-    shares[wallet] += 1;
+  for (const walletIndex of walletIndexesOwedAPoint) {
+    shares[walletIndex] += 1;
   }
 
   return shares;
 }
 
-export function todayInterest(
+export function interestEarnedToday(
   transactions: Transaction[],
   asOf: string
 ): number {

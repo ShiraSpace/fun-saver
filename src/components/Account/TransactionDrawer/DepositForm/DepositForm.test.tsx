@@ -5,7 +5,7 @@ import { AMOUNT_KEYPAD_TEST_IDS } from '../AmountKeypad/constants';
 import { splitDeposit } from '@/lib/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import { mockDerivedAccount } from '@/test-utils/fixtures';
+import { mockAccountSummary } from '@/test-utils/fixtures';
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddDeposit = jest.fn();
@@ -26,7 +26,7 @@ describe('DepositForm', () => {
     mockAddDeposit.mockReset().mockResolvedValue(undefined);
     mockRouter.refresh.mockClear();
     mockOnClose.mockClear();
-    render(<DepositForm account={mockDerivedAccount} onClose={mockOnClose} />);
+    render(<DepositForm account={mockAccountSummary} onClose={mockOnClose} />);
   });
 
   it('shows a zero amount by default', () => {

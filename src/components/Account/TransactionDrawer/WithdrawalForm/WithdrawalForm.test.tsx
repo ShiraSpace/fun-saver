@@ -4,7 +4,7 @@ import { WITHDRAWAL_FORM_COPY, WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { WALLET_PICKER_TEST_IDS } from '../WalletPicker/constants';
 import { AMOUNT_KEYPAD_TEST_IDS } from '../AmountKeypad/constants';
-import { mockDerivedAccount, mockDerivedWallets } from '@/test-utils/fixtures';
+import { mockAccountSummary, mockWalletSummaries } from '@/test-utils/fixtures';
 import { agorotToShekels } from '@/lib/money';
 import { mockRouter } from '@mocks/next/navigation';
 
@@ -21,7 +21,7 @@ jest.mock('../use-add-transaction', () => ({
   }),
 }));
 
-const [savings, spending, goodDeeds] = mockDerivedWallets;
+const [savings, spending, goodDeeds] = mockWalletSummaries;
 
 function type(...digits: string[]): void {
   for (const digit of digits) {
@@ -35,7 +35,7 @@ describe('WithdrawalForm', () => {
     mockRouter.refresh.mockClear();
     mockOnClose.mockClear();
     render(
-      <WithdrawalForm account={mockDerivedAccount} onClose={mockOnClose} />
+      <WithdrawalForm account={mockAccountSummary} onClose={mockOnClose} />
     );
   });
 

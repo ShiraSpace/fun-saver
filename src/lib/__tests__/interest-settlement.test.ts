@@ -1,5 +1,5 @@
 import { InMemoryStore } from '@/db/memory-store';
-import { settleInterest, withDerivedWallets } from '../interest-settlement';
+import { settleInterest, summarizeAccounts } from '../interest-settlement';
 import {
   createMockAccount,
   createMockTransaction,
@@ -7,7 +7,7 @@ import {
   createMockWallets,
   mockSiblingAccount,
 } from '@/test-utils/fixtures';
-import type { Account, WalletWithDerived } from '../types';
+import type { Account, WalletSummary } from '../types';
 
 const [mockSavings, mockSpending] = createMockWallets();
 
@@ -36,7 +36,7 @@ describe('settleInterest', () => {
   async function settleWallets(
     unsettledAccount: Account,
     asOf: string
-  ): Promise<WalletWithDerived[]> {
+  ): Promise<WalletSummary[]> {
     const [settledAccount] = await settleInterest({
       store,
       accounts: [unsettledAccount],
@@ -56,7 +56,7 @@ describe('settleInterest', () => {
       'spending',
     ]);
     expect(wallets[0].balance).toBe(8500);
-    expect(wallets[0].todayInterest).toBe(500);
+    expect(wallets[0].interestEarnedToday).toBe(500);
     expect(wallets[1].balance).toBe(5000);
   });
 
@@ -103,7 +103,7 @@ describe('settleInterest', () => {
       wallets: [createMockWallet()],
     });
 
-    let savingsWallet: WalletWithDerived;
+    let savingsWallet: WalletSummary;
 
     beforeEach(async () => {
       await store.insertTransactions([createMockTransaction()]);
@@ -117,7 +117,7 @@ describe('settleInterest', () => {
     });
 
     it('pays each missed day’s interest on top of the day before', () => {
-      expect(savingsWallet.interestGain).toBe(80);
+      expect(savingsWallet.interestEarned).toBe(80);
     });
 
     it('counts the interest just paid in as part of the balance', () => {
@@ -125,7 +125,7 @@ describe('settleInterest', () => {
     });
 
     it('shows the interest earned today as today’s interest', () => {
-      expect(savingsWallet.todayInterest).toBe(40);
+      expect(savingsWallet.interestEarnedToday).toBe(40);
     });
 
     it('pays missed interest once, however often the page is opened', async () => {
@@ -167,20 +167,20 @@ describe('withDerivedWallets', () => {
   });
 
   it('keeps every account it was handed', async () => {
-    const derived = await withDerivedWallets({
+    const accountSummaries = await summarizeAccounts({
       store,
       accounts: [mockAccount, mockSiblingAccountWithoutInterest],
       asOf: '2026-01-03',
     });
 
-    expect(derived.map((each) => each.id)).toEqual([
+    expect(accountSummaries.map((each) => each.id)).toEqual([
       mockAccount.id,
       mockSiblingAccountWithoutInterest.id,
     ]);
   });
 
   it('gives each account the balances of its own wallets', async () => {
-    const [first, second] = await withDerivedWallets({
+    const [first, second] = await summarizeAccounts({
       store,
       accounts: [mockAccount, mockSiblingAccountWithoutInterest],
       asOf: '2026-01-03',
@@ -197,7 +197,7 @@ describe('withDerivedWallets', () => {
 
   it('has nothing to derive for nobody', async () => {
     expect(
-      await withDerivedWallets({ store, accounts: [], asOf: '2026-01-03' })
+      await summarizeAccounts({ store, accounts: [], asOf: '2026-01-03' })
     ).toEqual([]);
   });
 });

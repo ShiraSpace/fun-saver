@@ -1,15 +1,15 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import {
-  mockDerivedAccount,
-  mockSecondDerivedAccount,
+  mockAccountSummary,
+  mockSiblingAccountSummary,
 } from '@/test-utils/fixtures';
 import { WithMenu } from '@/test-utils/menu';
-import { totalBalance } from '@/lib/derivations';
+import { totalBalance } from '@/lib/wallet-totals';
 import { agorotToWholeShekels } from '@/lib/money';
 import { AccountList } from './AccountList';
 import { ACCOUNT_LIST_COPY, ACCOUNT_LIST_TEST_IDS } from './constants';
 
-const accounts = [mockDerivedAccount, mockSecondDerivedAccount];
+const accounts = [mockAccountSummary, mockSiblingAccountSummary];
 
 const shekelsOf = (account: (typeof accounts)[number]): string =>
   String(agorotToWholeShekels(totalBalance(account.wallets)));
@@ -24,7 +24,7 @@ describe('AccountList', () => {
       <WithMenu closeMenu={mockCloseMenu}>
         <AccountList
           accounts={accounts}
-          currentAccountId={mockSecondDerivedAccount.id}
+          currentAccountId={mockSiblingAccountSummary.id}
           onSelect={mockOnSelect}
         />
       </WithMenu>
@@ -40,8 +40,8 @@ describe('AccountList', () => {
   it('shows each account its own total', () => {
     const totals = screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.total);
 
-    expect(totals[0]).toHaveTextContent(shekelsOf(mockDerivedAccount));
-    expect(totals[1]).toHaveTextContent(shekelsOf(mockSecondDerivedAccount));
+    expect(totals[0]).toHaveTextContent(shekelsOf(mockAccountSummary));
+    expect(totals[1]).toHaveTextContent(shekelsOf(mockSiblingAccountSummary));
   });
 
   it('marks the row matching the current account', () => {

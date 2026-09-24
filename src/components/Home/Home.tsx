@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { Account } from '@/components/Account';
 import { AccountManagement } from '@/components/AccountManagement';
 import { APP_MODE } from '@/components/AccountManagement/app-mode-context';
@@ -10,7 +10,7 @@ import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { AccountsProvider } from './accounts-context';
 
 interface HomeProps {
-  accounts: AccountWithDerivedWallets[];
+  accounts: AccountSummary[];
   initialAccountId: string;
 }
 

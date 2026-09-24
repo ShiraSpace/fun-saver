@@ -10,7 +10,7 @@ export interface AddDailyInterestParams {
   accountId: string;
 }
 
-function balanceDelta(transaction: Transaction): number {
+function balanceChange(transaction: Transaction): number {
   return transaction.type === 'withdrawal'
     ? -transaction.amount
     : transaction.amount;
@@ -29,7 +29,7 @@ function settledThrough(wallet: Wallet, transactions: Transaction[]): string {
 function openingBalance(transactions: Transaction[], firstDay: string): number {
   return transactions
     .filter((transaction) => transaction.occurredAt < firstDay)
-    .reduce((balance, transaction) => balance + balanceDelta(transaction), 0);
+    .reduce((balance, transaction) => balance + balanceChange(transaction), 0);
 }
 
 function principalChangeByDay(
@@ -46,7 +46,7 @@ function principalChangeByDay(
     const changeSoFar = changeByDay.get(transaction.occurredAt) ?? 0;
     changeByDay.set(
       transaction.occurredAt,
-      changeSoFar + balanceDelta(transaction)
+      changeSoFar + balanceChange(transaction)
     );
   }
 
@@ -71,22 +71,19 @@ export function addDailyInterest({
   let balance = openingBalance(transactions, firstUnsettledDay);
 
   for (const day of eachDayInclusive(firstUnsettledDay, asOf)) {
-    const interestForToday = interestForDay(
-      balance,
-      wallet.monthlyInterestRate
-    );
+    const dayInterest = interestForDay(balance, wallet.monthlyInterestRate);
 
-    if (interestForToday > 0) {
+    if (dayInterest > 0) {
       accruedInterest.push({
         id: newId(),
         walletId: wallet.id,
         accountId,
         type: 'interest',
-        amount: interestForToday,
+        amount: dayInterest,
         occurredAt: day,
         createdAt: new Date().toISOString(),
       });
-      balance += interestForToday;
+      balance += dayInterest;
     }
 
     balance += principalChange.get(day) ?? 0;

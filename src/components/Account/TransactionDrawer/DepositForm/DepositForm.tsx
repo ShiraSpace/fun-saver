@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { DepositAmount } from '../DepositAmount';
 import { DepositSplitPreview } from '../DepositSplitPreview';
@@ -14,7 +14,7 @@ import {
 } from '../constants';
 
 interface DepositFormProps {
-  account: AccountWithDerivedWallets;
+  account: AccountSummary;
   onClose: () => void;
 }
 

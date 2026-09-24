@@ -1,16 +1,16 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { WalletPicker } from './WalletPicker';
 import { WALLET_PICKER_TEST_IDS } from './constants';
-import { mockDerivedWallets } from '@/test-utils/fixtures';
+import { mockWalletSummaries } from '@/test-utils/fixtures';
 import { agorotToShekels } from '@/lib/money';
 
 const mockOnSelect = jest.fn();
-const [savings, spending] = mockDerivedWallets;
+const [savings, spending] = mockWalletSummaries;
 
 function renderPicker(selectedWalletId: string): void {
   render(
     <WalletPicker
-      wallets={mockDerivedWallets}
+      wallets={mockWalletSummaries}
       selectedWalletId={selectedWalletId}
       onSelect={mockOnSelect}
     />
@@ -26,7 +26,7 @@ describe('WalletPicker', () => {
     renderPicker(savings.id);
 
     expect(screen.getAllByTestId(/^wallet-picker-(?!balance)/)).toHaveLength(
-      mockDerivedWallets.length
+      mockWalletSummaries.length
     );
     expect(
       screen.getByTestId(WALLET_PICKER_TEST_IDS.balance(savings.name))

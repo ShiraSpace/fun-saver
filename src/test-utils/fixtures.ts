@@ -1,11 +1,11 @@
 import type {
   Account,
   AccountUser,
-  AccountWithDerivedWallets,
+  AccountSummary,
   Transaction,
   User,
   Wallet,
-  WalletWithDerived,
+  WalletSummary,
 } from '@/lib/types';
 import type { AccountOwner } from '@/db/data-store';
 import { DEFAULT_WALLETS } from '@/lib/constants';
@@ -25,12 +25,12 @@ export function createMockWallet(overrides: Partial<Wallet> = {}): Wallet {
 }
 
 export function createMockWallets(): Wallet[] {
-  return DEFAULT_WALLETS.map((seed, index) =>
+  return DEFAULT_WALLETS.map((defaultWallet, index) =>
     createMockWallet({
       id: `w${index + 1}`,
-      name: seed.name,
-      icon: seed.icon,
-      monthlyInterestRate: seed.monthlyInterestRate,
+      name: defaultWallet.name,
+      icon: defaultWallet.icon,
+      monthlyInterestRate: defaultWallet.monthlyInterestRate,
     })
   );
 }
@@ -74,16 +74,16 @@ export function createMockUser(overrides: Partial<User> = {}): User {
   };
 }
 
-export function createMockDerivedWallet(
-  overrides: Partial<WalletWithDerived> = {}
-): WalletWithDerived {
+export function createMockWalletSummary(
+  overrides: Partial<WalletSummary> = {}
+): WalletSummary {
   return {
     ...createMockWallet(),
     balance: 8500,
     principal: 8000,
-    withdrawals: 0,
-    interestGain: 500,
-    todayInterest: 150,
+    withdrawn: 0,
+    interestEarned: 500,
+    interestEarnedToday: 150,
     ...overrides,
   };
 }
@@ -159,52 +159,56 @@ export const mockTransactions: Transaction[] = [
   }),
 ];
 
-const MOCK_DERIVED_VALUES: Pick<
-  WalletWithDerived,
-  'balance' | 'principal' | 'withdrawals' | 'interestGain' | 'todayInterest'
+const mockWalletTotals: Pick<
+  WalletSummary,
+  | 'balance'
+  | 'principal'
+  | 'withdrawn'
+  | 'interestEarned'
+  | 'interestEarnedToday'
 >[] = [
   {
     balance: 8500,
     principal: 8000,
-    withdrawals: 0,
-    interestGain: 500,
-    todayInterest: 150,
+    withdrawn: 0,
+    interestEarned: 500,
+    interestEarnedToday: 150,
   },
   {
     balance: 5000,
     principal: 5000,
-    withdrawals: 4500,
-    interestGain: 0,
-    todayInterest: 0,
+    withdrawn: 4500,
+    interestEarned: 0,
+    interestEarnedToday: 0,
   },
   {
     balance: 2500,
     principal: 2500,
-    withdrawals: 1800,
-    interestGain: 0,
-    todayInterest: 0,
+    withdrawn: 1800,
+    interestEarned: 0,
+    interestEarnedToday: 0,
   },
 ];
 
-export const mockDerivedWallets: WalletWithDerived[] = createMockWallets().map(
+export const mockWalletSummaries: WalletSummary[] = createMockWallets().map(
   (wallet, index) =>
-    createMockDerivedWallet({ ...wallet, ...MOCK_DERIVED_VALUES[index] })
+    createMockWalletSummary({ ...wallet, ...mockWalletTotals[index] })
 );
 
 export const mockWalletShares: number[] = [53, 31, 16];
 
-export const mockDerivedAccount: AccountWithDerivedWallets = {
+export const mockAccountSummary: AccountSummary = {
   ...createMockAccount(),
-  wallets: mockDerivedWallets,
+  wallets: mockWalletSummaries,
 };
 
-export const mockSecondDerivedAccount: AccountWithDerivedWallets = {
+export const mockSiblingAccountSummary: AccountSummary = {
   ...mockSiblingAccount,
-  wallets: [createMockDerivedWallet({ id: 'w4', balance: 4200 })],
+  wallets: [createMockWalletSummary({ id: 'w4', balance: 4200 })],
 };
 
 export const mockAccountsContext: AccountsContextValue = {
-  accounts: [mockDerivedAccount, mockSecondDerivedAccount],
-  currentAccount: mockDerivedAccount,
+  accounts: [mockAccountSummary, mockSiblingAccountSummary],
+  currentAccount: mockAccountSummary,
   switchAccount: () => {},
 };

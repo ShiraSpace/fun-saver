@@ -1,9 +1,9 @@
-import { DEPOSIT_SPLIT } from '@/lib/constants';
+import { DEPOSIT_SHARES } from '@/lib/constants';
 import { percentLabel } from '../constants';
 import { WALLETS_COPY } from './wallets';
 
 const APP_SPLIT = WALLETS_COPY.walletNames
-  .map((walletName) => percentLabel(DEPOSIT_SPLIT[walletName]))
+  .map((walletName) => percentLabel(DEPOSIT_SHARES[walletName]))
   .join(' / ');
 
 export const SETUP_COPY = {

@@ -4,11 +4,11 @@ import { getThemeTokens } from '@/theme/registry';
 import { WalletList } from './WalletList';
 import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
 import { WALLET_CARD_TEST_IDS } from '../WalletCard/constants';
-import { mockDerivedWallets } from '@/test-utils/fixtures';
+import { mockWalletSummaries } from '@/test-utils/fixtures';
 
 describe('WalletList', () => {
   beforeEach(() => {
-    render(<WalletList wallets={mockDerivedWallets} />);
+    render(<WalletList wallets={mockWalletSummaries} />);
   });
 
   it('shows the supporting label', () => {

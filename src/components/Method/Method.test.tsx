@@ -1,7 +1,7 @@
 import { render, screen, within } from '@/test-utils/render';
 import {
-  mockDerivedAccount,
-  mockSecondDerivedAccount,
+  mockAccountSummary,
+  mockSiblingAccountSummary,
   mockUser,
 } from '@/test-utils/fixtures';
 import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
@@ -26,8 +26,8 @@ describe('the method page', () => {
   beforeEach(() => {
     render(
       <Method
-        accounts={[mockDerivedAccount, mockSecondDerivedAccount]}
-        initialAccount={mockDerivedAccount}
+        accounts={[mockAccountSummary, mockSiblingAccountSummary]}
+        initialAccount={mockAccountSummary}
       />,
       { route: METHOD_ROUTE, user: mockUser }
     );
@@ -46,7 +46,7 @@ describe('the method page', () => {
       screen.getByTestId(HEADER_TEST_IDS.avatar)
     );
     expect(homeLink).toHaveAccessibleName(
-      expect.stringContaining(mockDerivedAccount.name)
+      expect.stringContaining(mockAccountSummary.name)
     );
   });
 

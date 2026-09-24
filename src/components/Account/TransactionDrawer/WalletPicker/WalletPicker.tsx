@@ -1,12 +1,12 @@
 'use client';
 
 import { JSX } from 'react';
-import type { WalletWithDerived } from '@/lib/types';
+import type { WalletSummary } from '@/lib/types';
 import { WalletTile } from '../WalletTile';
 import { WALLET_PICKER_TEST_IDS } from './constants';
 import { Wallets } from './WalletPicker.styles';
 
-type WalletOption = Pick<WalletWithDerived, 'id' | 'name' | 'icon' | 'balance'>;
+type WalletOption = Pick<WalletSummary, 'id' | 'name' | 'icon' | 'balance'>;
 
 interface WalletPickerProps {
   wallets: WalletOption[];

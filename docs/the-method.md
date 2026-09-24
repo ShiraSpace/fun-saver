@@ -41,7 +41,7 @@ Instead of putting allowance into a single wallet, the money is divided into thr
 | Save  | 40%   |
 | Share | 10%   |
 
-> **In the app:** this split **is** implemented. `DEPOSIT_SPLIT` in
+> **In the app:** this split **is** implemented. `DEPOSIT_SHARES` in
 > `src/lib/constants.ts` holds `{spending: 0.5, savings: 0.4, goodDeeds: 0.1}`,
 > and `splitDeposit()` in `src/lib/transactions.ts` applies it to every deposit.
 > Making the split configurable per account is on the roadmap — see

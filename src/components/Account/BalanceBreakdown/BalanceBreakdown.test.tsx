@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { mockDerivedWallets } from '@/test-utils/fixtures';
+import { mockWalletSummaries } from '@/test-utils/fixtures';
 import { prefersReducedMotion } from '@/test-utils/motion';
 import { BalanceBreakdown } from './BalanceBreakdown';
 import {
@@ -10,7 +10,7 @@ import {
 describe('BalanceBreakdown', () => {
   beforeEach(() => {
     prefersReducedMotion();
-    render(<BalanceBreakdown wallets={mockDerivedWallets} />);
+    render(<BalanceBreakdown wallets={mockWalletSummaries} />);
   });
 
   it('shows the total across every wallet', () => {
@@ -34,7 +34,7 @@ describe('BalanceBreakdown', () => {
   it('lists every wallet in the legend', () => {
     expect(
       screen.getAllByTestId(BALANCE_BREAKDOWN_TEST_IDS.legendRow)
-    ).toHaveLength(mockDerivedWallets.length);
+    ).toHaveLength(mockWalletSummaries.length);
   });
 
   it('gives each wallet its share of the total', () => {

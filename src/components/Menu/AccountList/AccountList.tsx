@@ -1,14 +1,14 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { ACCOUNT_LIST_DOM_ID, ACCOUNT_LIST_TEST_IDS } from './constants';
 import { AccountRow } from './AccountRow';
 import { List } from './AccountList.styles';
 import { AddAccountButton } from '../AddAccountButton';
 
 interface AccountListProps {
-  accounts: AccountWithDerivedWallets[];
+  accounts: AccountSummary[];
   currentAccountId: string;
   onSelect: (id: string) => void;
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, useState } from 'react';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { TransactionTypeToggle } from './TransactionTypeToggle';
 import { DepositForm } from './DepositForm';
 import { WithdrawalForm } from './WithdrawalForm';
@@ -12,7 +12,7 @@ import { TRANSACTION_DRAWER_TEST_IDS } from './constants';
 import { Scrim, Sheet, Handle, Body } from './TransactionDrawer.styles';
 
 interface TransactionDrawerProps {
-  account: AccountWithDerivedWallets;
+  account: AccountSummary;
   onClose: () => void;
 }
 

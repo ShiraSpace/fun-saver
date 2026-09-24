@@ -3,12 +3,15 @@ import assert from 'node:assert/strict';
 import { mockAccount, mockTransactions } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
-const seed = { accounts: [mockAccount], transactions: mockTransactions };
+const mockInitialStore = {
+  accounts: [mockAccount],
+  transactions: mockTransactions,
+};
 const ARCS_PER_RING = 3;
 const STILL = 'none';
 
 describe('donut sweep', () => {
-  const { account } = useDriver(seed, 'no-preference');
+  const { account } = useDriver(mockInitialStore, 'no-preference');
 
   it('draws every arc of the ring', async () => {
     const animations = await account.walletShareAnimations();
@@ -21,7 +24,7 @@ describe('donut sweep', () => {
 });
 
 describe('donut sweep under reduced motion', () => {
-  const { account } = useDriver(seed);
+  const { account } = useDriver(mockInitialStore);
 
   it('leaves every arc of the ring still', async () => {
     const animations = await account.walletShareAnimations();

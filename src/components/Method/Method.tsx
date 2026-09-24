@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { Header } from '@/components/Header';
 import { Column, Screen } from '@/components/Screen';
 import { AccountManagement } from '@/components/AccountManagement';
@@ -18,8 +18,8 @@ import { WhySection } from './WhySection';
 import { METHOD_COPY } from './copy';
 
 interface MethodProps {
-  accounts: AccountWithDerivedWallets[];
-  initialAccount: AccountWithDerivedWallets;
+  accounts: AccountSummary[];
+  initialAccount: AccountSummary;
 }
 
 export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
