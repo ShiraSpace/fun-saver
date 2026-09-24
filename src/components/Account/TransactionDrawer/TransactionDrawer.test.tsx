@@ -1,16 +1,19 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { TransactionDrawer } from './TransactionDrawer';
 import { TRANSACTION_DRAWER_TEST_IDS } from './constants';
-import { MODE_TOGGLE_TEST_IDS } from './ModeToggle/constants';
+import { TRANSACTION_TYPE_TOGGLE_TEST_IDS } from './TransactionTypeToggle/constants';
 import { WALLET_PICKER_TEST_IDS } from './WalletPicker/constants';
 import { mockDerivedAccount } from '@/test-utils/fixtures';
 import { mockRouter } from '@mocks/next/navigation';
 import { getThemeTokens } from '@/theme/registry';
 
 jest.mock('./use-add-transaction', () => ({
-  useAddTransaction: (): { addDeposit: jest.Mock; withdraw: jest.Mock } => ({
+  useAddTransaction: (): {
+    addDeposit: jest.Mock;
+    addWithdrawal: jest.Mock;
+  } => ({
     addDeposit: jest.fn(),
-    withdraw: jest.fn(),
+    addWithdrawal: jest.fn(),
   }),
 }));
 
@@ -22,11 +25,10 @@ describe('TransactionDrawer', () => {
     );
   });
 
-  it('opens in deposit mode with the split visible', () => {
-    expect(screen.getByTestId(MODE_TOGGLE_TEST_IDS.deposit)).toHaveAttribute(
-      'aria-pressed',
-      'true'
-    );
+  it('opens on a deposit with the split visible', () => {
+    expect(
+      screen.getByTestId(TRANSACTION_TYPE_TOGGLE_TEST_IDS.deposit)
+    ).toHaveAttribute('aria-pressed', 'true');
     expect(
       screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.split)
     ).toBeInTheDocument();
@@ -40,8 +42,10 @@ describe('TransactionDrawer', () => {
     );
   });
 
-  it('switches to the withdraw wallet picker when the withdraw mode is chosen', () => {
-    fireEvent.click(screen.getByTestId(MODE_TOGGLE_TEST_IDS.withdraw));
+  it('switches to the wallet picker when a withdrawal is chosen', () => {
+    fireEvent.click(
+      screen.getByTestId(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal)
+    );
 
     expect(
       screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet('savings'))

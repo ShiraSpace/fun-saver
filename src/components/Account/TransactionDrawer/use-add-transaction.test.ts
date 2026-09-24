@@ -37,7 +37,7 @@ describe('useAddTransaction', () => {
   });
 
   it('posts the wallet and amount to the account withdrawals endpoint', async () => {
-    await hook().withdraw('w2', 15);
+    await hook().addWithdrawal('w2', 15);
 
     const [url, init] = fetchMock.mock.calls[0];
 
@@ -50,6 +50,6 @@ describe('useAddTransaction', () => {
   it('throws when the withdrawal request fails', async () => {
     fetchMock.mockResolvedValue({ ok: false });
 
-    await expect(hook().withdraw('w2', 15)).rejects.toThrow();
+    await expect(hook().addWithdrawal('w2', 15)).rejects.toThrow();
   });
 });
