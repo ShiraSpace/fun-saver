@@ -10,7 +10,7 @@ describe('JsonFileStore users', () => {
     await new JsonFileStore(file.path).insertUser(mockUser);
 
     expect(
-      await new JsonFileStore(file.path).findUserByProvider(
+      await new JsonFileStore(file.path).findUserByIdentity(
         'google',
         mockUser.providerAccountId
       )

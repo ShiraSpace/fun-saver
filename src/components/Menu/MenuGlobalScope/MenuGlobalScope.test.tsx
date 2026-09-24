@@ -3,7 +3,7 @@ import { mockUser } from '@/test-utils/fixtures';
 import { WithMenu } from '@/test-utils/menu';
 import { MenuGlobalScope } from './MenuGlobalScope';
 import { MENU_GLOBAL_SCOPE_TEST_IDS } from './constants';
-import { PROFILE_SECTION_TEST_IDS } from '../ProfileSection/constants';
+import { SIGNED_IN_USER_SECTION_TEST_IDS } from '../SignedInUserSection/constants';
 
 const BELOW_THE_STRIP = 'below-the-profile-strip';
 
@@ -25,7 +25,7 @@ describe('MenuGlobalScope', () => {
 
   it('names the signed-in parent, who belongs to no one account', () => {
     expect(block).toContainElement(
-      screen.getByTestId(PROFILE_SECTION_TEST_IDS.strip)
+      screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.section)
     );
   });
 

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import Image from 'next/image';
 import type { Theme } from '@emotion/react';
 import { MENU_ROW_STYLE } from '../constants';
-import { PROFILE_SECTION_PHOTO_SIZE } from './constants';
+import { SIGNED_IN_USER_SECTION_PHOTO_SIZE } from './constants';
 
 const mutedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textMuted;
@@ -36,13 +36,13 @@ export const Strip = styled.div`
   gap: 9px;
 `;
 
-export const UserMark = styled.span`
+export const PhotoPlaceholder = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: ${PROFILE_SECTION_PHOTO_SIZE}px;
-  height: ${PROFILE_SECTION_PHOTO_SIZE}px;
+  width: ${SIGNED_IN_USER_SECTION_PHOTO_SIZE}px;
+  height: ${SIGNED_IN_USER_SECTION_PHOTO_SIZE}px;
   border: ${MENU_ROW_STYLE.borderWidth}px solid ${softEdge};
   border-radius: 50%;
   background: ${softFill};

@@ -3,7 +3,7 @@
  */
 import { NextRequest } from 'next/server';
 import type { Session } from 'next-auth';
-import { LOGIN_PATH } from '@/lib/constants';
+import { SIGN_IN_PATH } from '@/lib/constants';
 import { mockUser } from '@/test-utils/fixtures';
 import { config, proxy } from '../proxy';
 
@@ -17,15 +17,15 @@ const GATED_PATHS = [
   '/',
   '/method',
   '/nope',
-  `${LOGIN_PATH}x`,
+  `${SIGN_IN_PATH}x`,
   '/apikeys',
   '/account/v1.2/edit',
   '/inspiration/idea.png',
   '/avatarsx',
 ];
 const REACHABLE_PATHS = [
-  LOGIN_PATH,
-  `${LOGIN_PATH}/`,
+  SIGN_IN_PATH,
+  `${SIGN_IN_PATH}/`,
   '/api/auth/callback/google',
   '/_next/static/chunk.js',
   '/_next/image',
@@ -63,9 +63,9 @@ describe('proxy', () => {
       response = await proxyAnswerFor(undefined);
     });
 
-    it('is sent to the login page', () => {
+    it('is sent to the sign-in page', () => {
       expect(response?.headers.get('location')).toBe(
-        `${APP_ORIGIN}${LOGIN_PATH}`
+        `${APP_ORIGIN}${SIGN_IN_PATH}`
       );
     });
   });
@@ -93,9 +93,9 @@ describe('proxy', () => {
       response = await proxyAnswerFor({ id: mockUser.id, name: mockUser.name });
     });
 
-    it('is sent to the login page', () => {
+    it('is sent to the sign-in page', () => {
       expect(response?.headers.get('location')).toBe(
-        `${APP_ORIGIN}${LOGIN_PATH}`
+        `${APP_ORIGIN}${SIGN_IN_PATH}`
       );
     });
   });

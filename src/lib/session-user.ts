@@ -1,10 +1,8 @@
 import type { Session } from 'next-auth';
-import { toDisplayName } from './user-provisioning';
+import { displayName } from './user-provisioning';
 import type { SignedInUser } from './types';
 
-export function toSignedInUser(
-  session: Session | null
-): SignedInUser | undefined {
+export function sessionUser(session: Session | null): SignedInUser | undefined {
   const user = session?.user;
 
   if (!user?.id || !user.email) {
@@ -13,7 +11,7 @@ export function toSignedInUser(
 
   return {
     id: user.id,
-    name: toDisplayName(user.name, user.email),
+    name: displayName(user.name, user.email),
     email: user.email,
     image: user.image ?? undefined,
   };

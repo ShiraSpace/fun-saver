@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { signedInUser } from '@/auth';
 import { byAccountName } from '@/db/account-users';
 import { getStore } from '@/db';
-import { LOGIN_PATH } from '@/lib/constants';
+import { SIGN_IN_PATH } from '@/lib/constants';
 import type { Account } from '@/lib/types';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
@@ -53,13 +53,13 @@ describe('signedInAccounts', () => {
     ]);
   });
 
-  it('sends a visitor with no session to the login page', async () => {
+  it('sends a visitor with no session to the sign-in page', async () => {
     jest.mocked(signedInUser).mockResolvedValue(undefined);
     const listAccountsForUser = jest.spyOn(getStore(), 'listAccountsForUser');
 
     await expect(signedInAccounts()).rejects.toThrow();
 
-    expect(redirect).toHaveBeenCalledWith(LOGIN_PATH);
+    expect(redirect).toHaveBeenCalledWith(SIGN_IN_PATH);
     expect(listAccountsForUser).not.toHaveBeenCalled();
   });
 

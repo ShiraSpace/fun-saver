@@ -7,7 +7,7 @@ import { selectRows, type QueryParam, type Sql } from './query';
 export class PostgresUsers implements UserRepository {
   constructor(private readonly sql: Sql) {}
 
-  async findByProvider(
+  async findByIdentity(
     provider: AuthProvider,
     providerAccountId: string
   ): Promise<User | undefined> {

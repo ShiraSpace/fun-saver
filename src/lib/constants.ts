@@ -2,7 +2,7 @@ import type { AccountUserRole, AuthProvider, WalletName } from './types';
 
 export const GOOGLE_PROVIDER: AuthProvider = 'google';
 
-export const LOGIN_PATH = '/login';
+export const SIGN_IN_PATH = '/login';
 
 export const EDITING_ROLES: readonly AccountUserRole[] = ['owner', 'editor'];
 
