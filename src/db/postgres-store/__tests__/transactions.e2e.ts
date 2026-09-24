@@ -9,7 +9,7 @@ import {
 import { withLiveStore } from './live-store';
 
 describe('PostgresTransactions', () => {
-  const { store, accountId, txId } = withLiveStore();
+  const { store, accountId, transactionId } = withLiveStore();
   const accountA = createMockAccount({ id: accountId('a') });
   const accountB = createMockAccount({ id: accountId('b') });
 
@@ -21,67 +21,84 @@ describe('PostgresTransactions', () => {
   it('scopes listByWallet by accountId so two accounts never mix', async () => {
     await store.insertTransactions([
       createMockTransaction({
-        id: txId('a1'),
+        id: transactionId('a1'),
         accountId: accountA.id,
         walletId: 'savings',
         amount: 100,
       }),
       createMockTransaction({
-        id: txId('a2'),
+        id: transactionId('a2'),
         accountId: accountA.id,
         walletId: 'savings',
         amount: 200,
       }),
       createMockTransaction({
-        id: txId('b1'),
+        id: transactionId('b1'),
         accountId: accountB.id,
         walletId: 'savings',
         amount: 999,
       }),
     ]);
 
-    const aRows = await store.listTransactionsByWallet(accountA.id, 'savings');
-    const bRows = await store.listTransactionsByWallet(accountB.id, 'savings');
+    const accountATransactions = await store.listTransactionsByWallet(
+      accountA.id,
+      'savings'
+    );
+    const accountBTransactions = await store.listTransactionsByWallet(
+      accountB.id,
+      'savings'
+    );
 
-    expect(aRows.map((row) => row.id).sort()).toEqual([txId('a1'), txId('a2')]);
-    expect(bRows.map((row) => row.id)).toEqual([txId('b1')]);
+    expect(
+      accountATransactions.map((transaction) => transaction.id).sort()
+    ).toEqual([transactionId('a1'), transactionId('a2')]);
+    expect(accountBTransactions.map((transaction) => transaction.id)).toEqual([
+      transactionId('b1'),
+    ]);
   });
 
   it('gathers every wallet of one child’s history, and none of another child’s', async () => {
-    const ledger = mockTransactions.map((row) => ({
-      ...row,
-      id: txId(row.id),
+    const accountATransactions = mockTransactions.map((transaction) => ({
+      ...transaction,
+      id: transactionId(transaction.id),
       accountId: accountA.id,
     }));
     await store.insertTransactions([
-      ...ledger,
-      createMockTransaction({ id: txId('b1'), accountId: accountB.id }),
+      ...accountATransactions,
+      createMockTransaction({
+        id: transactionId('b1'),
+        accountId: accountB.id,
+      }),
     ]);
 
-    const rows = await store.listTransactionsByAccount(accountA.id);
+    const listedTransactions = await store.listTransactionsByAccount(
+      accountA.id
+    );
 
-    expect(new Set(rows)).toEqual(new Set(ledger));
+    expect(new Set(listedTransactions)).toEqual(new Set(accountATransactions));
   });
 
   it('tells the history in the order it happened, same-day entries in the order they were made', async () => {
     await store.insertTransactions([
       createMockTransaction({
-        id: txId('evening'),
+        id: transactionId('evening'),
         accountId: accountA.id,
         createdAt: '2026-01-01T09:00:00.000Z',
       }),
       createMockTransaction({
-        id: txId('morning'),
+        id: transactionId('morning'),
         accountId: accountA.id,
         createdAt: '2026-01-01T08:00:00.000Z',
       }),
     ]);
 
-    const rows = await store.listTransactionsByAccount(accountA.id);
+    const listedTransactions = await store.listTransactionsByAccount(
+      accountA.id
+    );
 
-    expect(rows.map((row) => row.id)).toEqual([
-      txId('morning'),
-      txId('evening'),
+    expect(listedTransactions.map((transaction) => transaction.id)).toEqual([
+      transactionId('morning'),
+      transactionId('evening'),
     ]);
   });
 });

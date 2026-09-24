@@ -1,5 +1,5 @@
 import { InMemoryStore } from '@/db/memory-store';
-import { settledLedgers, withDerivedWallets } from '../account-ledgers';
+import { settleInterest, withDerivedWallets } from '../interest-settlement';
 import {
   createMockAccount,
   createMockTransaction,
@@ -26,30 +26,30 @@ const transactions = [
   createMockTransaction({ id: 'd2', walletId: 'w2', amount: 5000 }),
 ];
 
-describe('settledLedgers', () => {
+describe('settleInterest', () => {
   let store: InMemoryStore;
 
   beforeEach(() => {
     store = new InMemoryStore();
   });
 
-  async function walletsOf(
-    ledgerAccount: Account,
+  async function settleWallets(
+    unsettledAccount: Account,
     asOf: string
   ): Promise<WalletWithDerived[]> {
-    const [ledger] = await settledLedgers({
+    const [settledAccount] = await settleInterest({
       store,
-      accounts: [ledgerAccount],
+      accounts: [unsettledAccount],
       asOf,
     });
 
-    return ledger.account.wallets;
+    return settledAccount.account.wallets;
   }
 
   it('lists savings before spending, the order the dashboard lays its wallets out in', async () => {
     await store.insertTransactions(transactions);
 
-    const wallets = await walletsOf(account, '2026-01-03');
+    const wallets = await settleWallets(account, '2026-01-03');
 
     expect(wallets.map((wallet) => wallet.name)).toEqual([
       'savings',
@@ -61,7 +61,7 @@ describe('settledLedgers', () => {
   });
 
   it('shows a brand-new child’s wallets at zero', async () => {
-    const wallets = await walletsOf(account, '2026-01-03');
+    const wallets = await settleWallets(account, '2026-01-03');
 
     expect(wallets.map((wallet) => wallet.balance)).toEqual([0, 0]);
   });
@@ -77,21 +77,21 @@ describe('settledLedgers', () => {
       }),
     ]);
 
-    const [ledger] = await settledLedgers({
+    const [settledAccount] = await settleInterest({
       store,
       accounts: [owing],
       asOf: '2026-01-03',
     });
     const saved = await store.listTransactionsByAccount(owing.id);
 
-    expect(ledger.transactions).toEqual(saved);
+    expect(settledAccount.transactions).toEqual(saved);
   });
 
   it('writes nothing when no interest is owed, so opening a page never rewrites the saved data', async () => {
     await store.insertTransactions([createMockTransaction()]);
     const insert = jest.spyOn(store, 'insertTransactions');
 
-    await walletsOf(account, '2026-01-03');
+    await settleWallets(account, '2026-01-03');
 
     expect(insert).not.toHaveBeenCalled();
   });
@@ -106,7 +106,7 @@ describe('settledLedgers', () => {
     beforeEach(async () => {
       await store.insertTransactions([createMockTransaction()]);
 
-      const wallets = await walletsOf(
+      const wallets = await settleWallets(
         accountWithUnsettledInterest,
         '2026-01-03'
       );
@@ -127,7 +127,7 @@ describe('settledLedgers', () => {
     });
 
     it('pays missed interest once, however often the page is opened', async () => {
-      const reread = await walletsOf(
+      const reread = await settleWallets(
         accountWithUnsettledInterest,
         '2026-01-03'
       );
