@@ -26,7 +26,7 @@ picking a different child in the menu changes graph, list and theme together.
 
 ## Scope
 
-**In:** one route, `/transactions`. The chart card with its total, delta pill,
+**In:** one route, `/transactions`. The chart card with its total, change pill,
 total/per-wallet chips and four ranges. The transaction list with month sections,
 type filters and a monthly/daily interest rollup. Hebrew only, RTL. Plus five
 things outside the route that the screen cannot ship without:
@@ -34,12 +34,12 @@ things outside the route that the screen cannot ship without:
 - three new chart-line colour tokens across all three themes;
 - turning `getWalletsForAccount` inside out so one read serves both the wallets
   and the ledger;
-- `listByAccount` on `TransactionRepository`, `DataStore`, `BaseStore` and all
+- `listByAccount` on `TransactionRepository`, `DataStore`, `RepositoryStore` and all
   three repositories;
-- `WALLET_SHORT_NAME` hoisted out of `OverviewCard` into `src/lib/constants.ts`,
+- `WALLET_SHORT_LABEL` hoisted out of `BalanceBreakdown` into `src/lib/constants.ts`,
   which edits a shipped screen's constants;
-- `monthYear()` in `src/lib/dates.ts`, and an `href` on the `transactions` entry
-  of `MENU_SCREENS`.
+- `monthLabel()` in `src/lib/dates.ts`, and an `href` on the `transactions` entry
+  of `NAVIGATION_DESTINATIONS`.
 
 **Out (deliberate):**
 - **No new API route.** Every read in this app is a server component. The only
@@ -66,13 +66,13 @@ screen's; `תנועות בחשבון · {name}` would be a third pattern, and at
 name, truncating the one part that would have justified it. The child is already
 named by the avatar, by the menu's account trigger, and by the theme.
 
-The `transactions` entry in the `MENU_SCREENS` array
-(`src/components/Menu/NavTabs/constants.ts`) has no `href` today — the menu epic
+The `transactions` entry in the `NAVIGATION_DESTINATIONS` array
+(`src/components/Menu/NavigationTabs/constants.ts`) has no `href` today — the menu epic
 shipped it inert precisely because this screen did not exist. It gains an `href`
 of `TRANSACTIONS_ROUTE` once the route renders (see "Delivery order"); the
 constant lives in `src/components/Transactions/constants.ts`, its own screen's
 folder, where `HOME_ROUTE` and `METHOD_ROUTE` each live in theirs, and
-`MENU_SCREENS` imports it the way it already imports those two. The header's house control from menu-epic
+`NAVIGATION_DESTINATIONS` imports it the way it already imports those two. The header's house control from menu-epic
 PR 10 already covers the way home — `Header` swaps the avatar for `HomeAvatarLink`
 on any non-home path — and `usePathname()` already drives `aria-current`, so
 neither needs work here.
@@ -83,7 +83,7 @@ neither needs work here.
 
 `DataStore` exposes only `listTransactionsByWallet(accountId, walletId)`.
 `getWalletsForAccount` loops the three wallets, calls it once each, settles
-interest, inserts accrued rows, derives a `WalletWithDerived`, and **discards the
+interest, inserts accrued rows, derives a `WalletSummary`, and **discards the
 transactions**. The transactions screen needs exactly those rows, and needs the
 settlement to have happened or it renders stale history.
 
@@ -93,10 +93,10 @@ Rather than adding a second path beside `getWalletsForAccount`, the existing one
 is turned inside out:
 
 ```
-settledLedgers({ store, accounts, asOf })
-  -> { account: AccountWithDerivedWallets, transactions: Transaction[] }[]
+settleInterest({ store, accounts, asOf })
+  -> { account: AccountSummary, transactions: Transaction[] }[]
 
-withDerivedWallets = settledLedgers(...).map((ledger) => ledger.account)
+summarizeAccounts = settleInterest(...).map((settledAccount) => settledAccount.account)
 ```
 
 One `listTransactionsByAccount` call per account, grouped by `walletId`, each
@@ -107,20 +107,20 @@ They come back oldest first, the rows just accrued sorted in, so the first visit
 reads in the same order as every later one.
 `/` and `/method` keep their current signature and get faster: per account, 3
 queries become 1 and 3 inserts become 1. It stays one insert **per account** —
-`withDerivedWallets` still maps over accounts — because batching the settlement
+`summarizeAccounts` still maps over accounts — because batching the settlement
 of unrelated accounts into one write buys nothing at three children.
-`getWalletsForAccount` has no caller outside `withDerivedWallets` and its own
+`getWalletsForAccount` has no caller outside `summarizeAccounts` and its own
 tests, so the refactor is contained: it stops being exported, and its body becomes
-`settledLedgers`' per-account branch. The one existing test file it rewrites
+`settleInterest`' per-account branch. The one existing test file it rewrites
 exercised `getWalletsForAccount` directly; it moves with the code, from
-`account-dashboard` to `src/lib/__tests__/account-ledgers.test.ts`.
+`account-dashboard` to `src/lib/__tests__/interest-settlement.test.ts`.
 
 Three details the grouping has to get right that the current per-wallet loop
 cannot get wrong:
 
 - **A wallet with no transactions must still derive.** Today each wallet is
   queried on its own, so an empty result is an empty array. Grouped, a wallet
-  absent from the map reads `undefined` and `deriveWallet` throws on it. Every
+  absent from the map reads `undefined` and `summarizeWallet` throws on it. Every
   brand-new account is exactly that case, and it is the case this screen exists
   to render. The grouping therefore seeds a bucket per wallet in
   `account.wallets`, not per `walletId` present in the rows.
@@ -131,15 +131,15 @@ cannot get wrong:
   "Deliberate simplifications" — the page ships five fields per row, not a
   `Transaction`, and both derivations take the projection.
 
-`/transactions/page.tsx` hands the client shell the `AccountWithDerivedWallets[]`
-that `useAccountNavigation` already takes, plus the projected ledgers keyed by
+`/transactions/page.tsx` hands the client shell the `AccountSummary[]`
+that `useAccountNavigation` already takes, plus the projected transactions keyed by
 account id. Switching child reads the new key; nothing about `useAccountNavigation`
 changes.
 
 ### Store contract
 
 `TransactionRepository` gains `listByAccount(accountId): Promise<Transaction[]>`,
-surfaced on `DataStore` as `listTransactionsByAccount`, delegated in `BaseStore`,
+surfaced on `DataStore` as `listTransactionsByAccount`, delegated in `RepositoryStore`,
 and implemented in the memory, json-file and postgres stores. Postgres orders by `occurred_at, created_at, id` —
 the same three keys `listByWallet` already uses, `id` included, because interest
 rows accrued in one settlement run can share `created_at` to the millisecond. The
@@ -151,7 +151,7 @@ and has no reason to read the whole account.
 
 **Every store returns the same order: oldest first.** `listByAccount` and
 `listByWallet` both sort by `occurred_at, created_at, id` — postgres in SQL, the
-memory and json-file repositories through one shared `oldestFirst`
+memory and json-file repositories through one shared `inOrderOfOccurrence`
 (`src/db/transaction-order.ts`) — so dev (json-file) and prod (postgres) hand back the
 same rows in the same order. The derivations still do not lean on it:
 `balance-history` is independent of order and `transaction-rows` sorts newest
@@ -185,7 +185,7 @@ and direct labels.
 one-point history: a `M x y` path with no `L` draws nothing, and the extent
 collapses so the vertical scale divides by a zero span. One point renders as a
 dot at mid-height with its direct label, and zero points falls through to the
-no-history state below — neither is left to the path builder.
+no-transactions state below — neither is left to the path builder.
 
 **Ranges slice the history, never the transactions.** A range selects a slice of
 the already-built balance history. Deriving a history from transactions filtered to the
@@ -194,7 +194,7 @@ into the range.
 
 **The vertical scale is relative, not zero-based.** It runs from the minimum to
 the maximum of the *currently visible lines* within the *current range*, as the
-mockup's `extentOf` does. Two consequences the port must keep deliberately:
+mockup's `balanceExtent` does. Two consequences the port must keep deliberately:
 turning off `סך הכל` re-scales the chart, so a savings line that looked flat
 beneath the total becomes a mountain; and narrowing the range re-scales it again.
 This is what makes a seven-day range readable at all — a zero-based axis would
@@ -239,10 +239,10 @@ itself 430 days of synthetic history. Both chips ship anyway rather than
 appearing later, because a range strip that grows a button on an account's first
 birthday is stranger than two chips that agree for a while.
 
-**Headline and delta.** The headline total is always today's account total, in
-whole shekels, independent of range. The delta pill is
+**Headline and change.** The headline total is always today's account total, in
+whole shekels, independent of range. The change pill is
 `total(today) − total(range start)` in whole shekels, labelled by the selected
-range: `השבוע` · `החודש` · `השנה` · `מאז ההתחלה`. Negative takes `withdrawText`,
+range: `השבוע` · `החודש` · `השנה` · `מאז ההתחלה`. Negative takes `withdrawalText`,
 non-negative `gainText`.
 
 **Chips:** `סך הכל` toggles independently, each wallet toggles independently, and
@@ -258,20 +258,20 @@ the line's colour and the label stays a text token, pressed or not. The default 
 "pick at least one line" message rather than an empty frame.
 
 The chips carry short wallet names so total plus three wallets fit one row —
-`WALLET_NAME.goodDeeds` is `מעשים טובים` and does not. Those short names already
-exist as `OVERVIEW_CARD_COPY.name` in
-`src/components/Account/OverviewCard/constants.ts`, where the donut legend uses
+`WALLET_LABEL.goodDeeds` is `מעשים טובים` and does not. Those short names already
+exist as `BALANCE_BREAKDOWN_COPY.shortWalletLabel` in
+`src/components/Account/BalanceBreakdown/constants.ts`, where the donut legend uses
 them, and they are exactly the mockup's: `חיסכון` · `בזבוזים` · `מעשים`. They move
-to `WALLET_SHORT_NAME` beside `WALLET_NAME` in `src/lib/constants.ts` and both
+to `WALLET_SHORT_LABEL` beside `WALLET_LABEL` in `src/lib/constants.ts` and both
 screens read them from there. A second copy is not written.
 
 **Colours** come from the emotion theme: `textStrong` for the total line and its
 fill, and three chart-line tokens for the wallets. Those three tokens do not
 exist yet, and adding them is a **prerequisite of the chart PR, not a follow-up**.
 
-`walletSavings`, `walletSpending` and `walletGood` are the obvious candidates and
-are the wrong ones. They are not pot gradients — `potSavings` and friends are
-separate `ThemeStops` — they are flat arc tokens whose only consumer is `Donut`,
+`walletSavings`, `walletSpending` and `walletGoodDeeds` are the obvious candidates and
+are the wrong ones. They are not the wallet gradients — `theme.gradients.walletSavings` and friends are
+separate `ThemeGradientStops` — they are flat arc tokens whose only consumer is `Donut`,
 which already strokes them onto `surface` at 14px. A 2.25px hairline is not a
 14px arc, and the mockup, which is the specification of record, replaced at least
 one of the three in every theme:
@@ -325,7 +325,7 @@ So the port departs from what the mockup drew, twice:
 
 What ships, measured against each theme's `surface`:
 
-| theme | `chartSavings` | `chartSpending` | `chartGood` |
+| theme | `chartSavings` | `chartSpending` | `chartGoodDeeds` |
 | --- | --- | --- | --- |
 | `sunshine-quest` | `#276E2C` 6.26 | `#2563EB` 5.17 | `#E94E89` 3.55 |
 | `jungle-quest` | `#2A9D8F` 3.26 | `#6E9B22` 3.23 | `#E76F51` 3.04 |
@@ -363,14 +363,14 @@ Two further constraints on the port:
   If it reads wrong against the card, it joins the same theme PR.
 
 CSS custom properties (menu-epic PR 11a) are for the pre-hydration loading shell
-only; this chart lives inside `ThemeController` and reads the theme like every
+only; this chart lives inside `ThemedPage` and reads the theme like every
 component.
 
 ## The list
 
 The list shows the account's whole history. **The ranges belong to the chart
 alone** — selecting `שבוע` does not shorten the list, and the count line beneath
-the title reads the row count and the span of the whole ledger.
+the title reads the row count and the span of the account's whole history.
 
 ### Deposits are three transactions and one row
 
@@ -450,7 +450,7 @@ Rows are grouped into one `<section>` per month with a sticky header, so headers
 replace each other instead of stacking. The header carries the month label and
 the two column headings (`שינוי` · `יתרה`), so the columns stay named while
 scrolling. The month label omits the year when it is the current year — a new
-`monthYear()` beside `dayMonth()` in `src/lib/dates.ts`; `Intl` in `he` gives
+`monthLabel()` beside `dayMonth()` in `src/lib/dates.ts`; `Intl` in `he` gives
 `ספטמבר` and `ספטמבר 2026` directly.
 
 The list scrolls with the page rather than inside its own scroller, and the month
@@ -473,7 +473,7 @@ has not had pocket money yet is the wrong action, and the component cannot sit
 inside the list card in any case. The route already redirects to `HOME_ROUTE`
 when there is no selected account, which covers the no-account case; a selected
 account with zero transactions renders the chart card's "pick at least one line"
-frame replaced by a no-history message and the list replaced by its own, both new
+frame replaced by a no-transactions message and the list replaced by its own, both new
 copy on this screen.
 
 Icons use the **corner-badge** variant (`תג בפינה`), decided 2026-09-15: the
@@ -497,14 +497,16 @@ src/lib/balance-history.ts      pure, graph: per-day balance per wallet + total
 src/lib/transaction-rows.ts     pure, list: grouping, rollup, ordering; reads the history for balances
 src/components/Transactions/
   Transactions.tsx              client shell, account navigation
-  use-transactions-view.ts      range, line chips, type filter, interest mode
+  use-transactions-view.ts      range, shown balances, transaction type filter, interest mode
+  use-balance-history.ts        the current account's balance history, memoised
   constants.ts                  TRANSACTIONS_ROUTE, TRANSACTIONS_COPY, test ids
   index.ts
   ChartCard/                    card shell, chips, ranges
-    TotalHeader/                headline total + delta pill
+    TotalBalanceHeader/         headline total balance + change pill
     BalanceChart/               svg: scales, paths, both axes, direct labels
-  TransactionList/              list shell, count line, no-history state
-    MonthGroup/ TransactionRow/ TypeFilters/ InterestMode/
+    BalanceChips/               which balances the chart shows
+  TransactionList/              list shell, count line, no-transactions state
+    TransactionMonth/ TransactionRow/ TypeFilters/ InterestMode/
 ```
 
 Every folder carries the `index.ts`, `constants.ts` and `.styles.ts` siblings
@@ -524,17 +526,17 @@ with their setters do not fit in the 40 lines left.
 | Need | Already exists |
 | --- | --- |
 | wallet icons | `WALLET_ICON` in `src/lib/constants.ts` |
-| wallet labels (rows) | `WALLET_NAME` in `src/lib/constants.ts` |
-| short wallet labels (chips, direct labels) | `OVERVIEW_CARD_COPY.name`, hoisted to `WALLET_SHORT_NAME` in `src/lib/constants.ts` |
-| whole-shekel formatting (headline, delta, balances) | `agorotToWholeShekels()` in `src/lib/money.ts` |
+| wallet labels (rows) | `WALLET_LABEL` in `src/lib/constants.ts` |
+| short wallet labels (chips, direct labels) | `BALANCE_BREAKDOWN_COPY.shortWalletLabel`, hoisted to `WALLET_SHORT_LABEL` in `src/lib/constants.ts` |
+| whole-shekel formatting (headline, change, balances) | `agorotToWholeShekels()` in `src/lib/money.ts` |
 | row date (`14 בספטמבר`) | `dayMonth()` in `src/lib/dates.ts` |
 | amount rendering | `Money` |
-| gain / loss colours | `gainText`, `withdrawText` |
+| gain / loss colours | `gainText`, `withdrawalText` |
 | page column, header, menu | `Screen`, `Column`, `Header` |
 | account switching | `useAccountNavigation` |
-| wallet → colour-token map | `WALLET_ARC_COLOR` in `OverviewCard/constants.ts`; the chart's `WALLET_CHART_COLOR` is its twin, not a new idea |
+| wallet → colour-token map | `WALLET_COLOR` in `BalanceBreakdown/constants.ts`; the chart's `WALLET_CHART_COLOR` is its twin, not a new idea |
 
-New, small, and not reusable from anything: `monthYear()` in `src/lib/dates.ts`
+New, small, and not reusable from anything: `monthLabel()` in `src/lib/dates.ts`
 for section headers.
 
 **The change column does not go through `Money`, and the reason is not only
@@ -556,7 +558,7 @@ always-signed, sign then `₪` then the number, `dir="ltr"`, tabular numerals, a
 the mockup's precision rule exactly — show agorot when `|amount| < ₪10` **and**
 the amount is not a whole shekel, otherwise whole shekels. `Money` is not
 touched, which also means the `allowHalf` / `fullSizeCurrency` pair does not grow
-into a three-way pile of mutually exclusive props. The headline total, the delta
+into a three-way pile of mutually exclusive props. The headline total, the change
 pill and the balance column keep `Money` and whole shekels.
 
 ## RTL / mobile / accessibility
@@ -592,7 +594,7 @@ day resolving to one balance, ordering within a day, filters, and the empty
 cases. The one-day and zero-day histories get their own tests, since the path
 builder and the extent both degenerate there. Store tests cover `listByAccount`
 in all three implementations, with the live-database ones as `*.e2e.ts`; the
-`settledLedgers` refactor rewrites `src/lib/__tests__/account-ledgers.test.ts`,
+`settleInterest` refactor rewrites `src/lib/__tests__/interest-settlement.test.ts`,
 the only existing test file it touches.
 
 Four of those are not obvious from the list, and are named because they are the
@@ -619,8 +621,8 @@ ignores the theme.
 The route also gets an `e2e/transactions.visual.ts` and a
 `TransactionsDriver` in `e2e/driver/`, like every other screen, and
 `e2e/page-routing.visual.ts` grows the third tab. `useDriver` already seeds
-`Partial<StoreData>`, which carries `transactions`, so the suite can stand up a
-ledger without new plumbing. A hand-rolled SVG is the one thing in this app that
+`Partial<StoreContents>`, which carries `transactions`, so the suite can stand up an
+account's transactions without new plumbing. A hand-rolled SVG is the one thing in this app that
 unit tests cannot keep honest — and the chart-line colours are exactly what a
 unit test cannot see, so the visual suite covers all three themes.
 
@@ -634,17 +636,17 @@ Three orderings are load-bearing; the rest of the sequence is the implementation
 plan's to choose.
 
 1. **The chart-line theme tokens come first.** `chartSavings` · `chartSpending` ·
-   `chartGood` across all three themes — nine values, six of them different from
+   `chartGoodDeeds` across all three themes — nine values, six of them different from
    the wallet token beside them, two of them re-derived against the 3:1 bar rather
    than copied from the mockup. The PR carries its measurements the way the two AA
    passes do: a ratio per token per surface in the body. The chart PR cannot ship a
    readable line without them, and they cannot land one at a time without
    `midnight-blue` drawing two lines the same colour.
-2. **The `settledLedgers` refactor comes before anything that reads a ledger.**
-   It changes `src/lib/account-ledgers.ts` and the store contract under `/` and
+2. **The `settleInterest` refactor comes before anything that reads a ledger.**
+   It changes `src/lib/interest-settlement.ts` and the store contract under `/` and
    `/method`, which both keep their behaviour; landing it alone keeps that
    regression surface separate from the new screen.
-3. **`TRANSACTIONS_ROUTE` reaches `MENU_SCREENS` only once the route renders.**
+3. **`TRANSACTIONS_ROUTE` reaches `NAVIGATION_DESTINATIONS` only once the route renders.**
    The menu epic shipped the tab inert on purpose; giving it an `href` before
    `/transactions` exists trades an inert tab for a broken one.
 
@@ -661,7 +663,7 @@ comment in the source.
 
 - **The payload is bounded by accounts × history, not by family size.**
   `listTransactionsByAccount` reads all history, and `/transactions` ships every
-  visible account's ledger to the client so switching stays free. The arithmetic,
+  visible account's transactions to the client so switching stays free. The arithmetic,
   measured rather than guessed:
 
   - A `Transaction` carries **three** 36-character uuids (`id`, `walletId`,
@@ -676,7 +678,7 @@ comment in the source.
     screen has no deposit drawer, so the refreshes that reach it come from the
     menu: **every tap on a theme in `AppearanceSection` calls `router.refresh()`**,
     and so does finishing an account edit. A child paging through three themes
-    re-sends the whole ledger three times and re-runs settlement for every visible
+    re-sends every transaction three times and re-runs settlement for every visible
     account three times.
 
   **One response is taken now and one is deferred.**
@@ -731,7 +733,7 @@ comment in the source.
   a copy decision before the list PR.
 - **The rolled-up interest row's name.** `ריבית`, letting the month come from the
   section header, versus the mockup's `ריבית ספטמבר`. Same PR as the one above.
-- **The no-history copy**, for the chart frame and the list, on an account that
+- **The no-transactions copy**, for the chart frame and the list, on an account that
   exists but has never had a transaction. Also the same PR.
 
 (The graph needs no loading state: it is server-rendered. The shell it arrives
