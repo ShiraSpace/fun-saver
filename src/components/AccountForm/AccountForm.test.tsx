@@ -2,11 +2,11 @@ import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
 import {
-  chosenAvatars,
+  selectedAvatars,
   nameInput,
-  pickFirstAvatar,
+  selectFirstAvatar,
   submitForm,
-  typeName,
+  fillName,
 } from '@/test-utils/account-form';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { AVATARS } from '@/lib/avatars';
@@ -27,8 +27,8 @@ const mockOnSubmit = jest.fn();
 const mockOnCancel = jest.fn();
 
 function failASave(): Promise<HTMLElement> {
-  typeName(mockForm.name);
-  pickFirstAvatar();
+  fillName(mockForm.name);
+  selectFirstAvatar();
   submitForm();
 
   return screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError);
@@ -80,22 +80,22 @@ describe('AccountForm', () => {
       const submitButton = screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit);
       expect(submitButton).toBeDisabled();
 
-      typeName(mockForm.name);
+      fillName(mockForm.name);
       expect(submitButton).toBeDisabled();
 
-      pickFirstAvatar();
+      selectFirstAvatar();
       expect(submitButton).toBeEnabled();
     });
 
     it('keeps submit disabled for a blank name', () => {
-      typeName('   ');
-      pickFirstAvatar();
+      fillName('   ');
+      selectFirstAvatar();
 
       expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit)).toBeDisabled();
     });
 
     it('ignores a submit that beats the avatar choice', () => {
-      typeName(mockForm.name);
+      fillName(mockForm.name);
       fireEvent.submit(
         screen
           .getByTestId(mockForm.testId)
@@ -106,8 +106,8 @@ describe('AccountForm', () => {
     });
 
     it('submits the typed name and the chosen avatar', () => {
-      typeName(mockForm.name);
-      pickFirstAvatar();
+      fillName(mockForm.name);
+      selectFirstAvatar();
       submitForm();
 
       expect(mockOnSubmit).toHaveBeenCalledWith({
@@ -117,8 +117,8 @@ describe('AccountForm', () => {
     });
 
     it('submits the name without the padding around it', () => {
-      typeName(`  ${mockForm.name}  `);
-      pickFirstAvatar();
+      fillName(`  ${mockForm.name}  `);
+      selectFirstAvatar();
       submitForm();
 
       expect(mockOnSubmit).toHaveBeenCalledWith({
@@ -192,7 +192,7 @@ describe('AccountForm', () => {
     });
 
     it('marks the initial avatar as the selected one', () => {
-      const selected = chosenAvatars();
+      const selected = selectedAvatars();
 
       expect(selected).toHaveLength(1);
       expect(

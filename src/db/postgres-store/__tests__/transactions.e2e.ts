@@ -10,42 +10,42 @@ import { withTestDatabase } from './test-database';
 
 describe('PostgresTransactions', () => {
   const { store, accountId, transactionId } = withTestDatabase();
-  const accountA = createMockAccount({ id: accountId('a') });
-  const accountB = createMockAccount({ id: accountId('b') });
+  const mockAccountA = createMockAccount({ id: accountId('a') });
+  const mockAccountB = createMockAccount({ id: accountId('b') });
 
   beforeEach(async () => {
-    await store.insertAccount(accountA);
-    await store.insertAccount(accountB);
+    await store.insertAccount(mockAccountA);
+    await store.insertAccount(mockAccountB);
   });
 
   it('scopes listByWallet by accountId so two accounts never mix', async () => {
     await store.insertTransactions([
       createMockTransaction({
         id: transactionId('a1'),
-        accountId: accountA.id,
+        accountId: mockAccountA.id,
         walletId: 'savings',
         amount: 100,
       }),
       createMockTransaction({
         id: transactionId('a2'),
-        accountId: accountA.id,
+        accountId: mockAccountA.id,
         walletId: 'savings',
         amount: 200,
       }),
       createMockTransaction({
         id: transactionId('b1'),
-        accountId: accountB.id,
+        accountId: mockAccountB.id,
         walletId: 'savings',
         amount: 999,
       }),
     ]);
 
     const accountATransactions = await store.listTransactionsByWallet(
-      accountA.id,
+      mockAccountA.id,
       'savings'
     );
     const accountBTransactions = await store.listTransactionsByWallet(
-      accountB.id,
+      mockAccountB.id,
       'savings'
     );
 
@@ -61,18 +61,18 @@ describe('PostgresTransactions', () => {
     const accountATransactions = mockTransactions.map((transaction) => ({
       ...transaction,
       id: transactionId(transaction.id),
-      accountId: accountA.id,
+      accountId: mockAccountA.id,
     }));
     await store.insertTransactions([
       ...accountATransactions,
       createMockTransaction({
         id: transactionId('b1'),
-        accountId: accountB.id,
+        accountId: mockAccountB.id,
       }),
     ]);
 
     const listedTransactions = await store.listTransactionsByAccount(
-      accountA.id
+      mockAccountA.id
     );
 
     expect(new Set(listedTransactions)).toEqual(new Set(accountATransactions));
@@ -82,18 +82,18 @@ describe('PostgresTransactions', () => {
     await store.insertTransactions([
       createMockTransaction({
         id: transactionId('evening'),
-        accountId: accountA.id,
+        accountId: mockAccountA.id,
         createdAt: '2026-01-01T09:00:00.000Z',
       }),
       createMockTransaction({
         id: transactionId('morning'),
-        accountId: accountA.id,
+        accountId: mockAccountA.id,
         createdAt: '2026-01-01T08:00:00.000Z',
       }),
     ]);
 
     const listedTransactions = await store.listTransactionsByAccount(
-      accountA.id
+      mockAccountA.id
     );
 
     expect(listedTransactions.map((transaction) => transaction.id)).toEqual([

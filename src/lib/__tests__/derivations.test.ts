@@ -10,7 +10,7 @@ import {
 import type { Transaction } from '../types';
 import { createMockTransaction } from '@/test-utils/fixtures';
 
-const transactionOf = (
+const transaction = (
   type: Transaction['type'],
   amount: number,
   occurredAt: string
@@ -24,10 +24,10 @@ const transactionOf = (
 
 describe('derivations', () => {
   const transactions: Transaction[] = [
-    transactionOf('deposit', 8000, '2026-01-01'),
-    transactionOf('interest', 53, '2026-01-02'),
-    transactionOf('withdrawal', 1000, '2026-01-03'),
-    transactionOf('interest', 47, '2026-01-03'),
+    transaction('deposit', 8000, '2026-01-01'),
+    transaction('interest', 53, '2026-01-02'),
+    transaction('withdrawal', 1000, '2026-01-03'),
+    transaction('interest', 47, '2026-01-03'),
   ];
 
   it('balance = deposits - withdrawals + interest', () => {

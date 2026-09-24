@@ -2,26 +2,28 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import { AmountEditKeys } from './AmountEditKeys';
 import { AMOUNT_KEYPAD_COPY, AMOUNT_KEYPAD_TEST_IDS } from '../constants';
 
-const onClear = jest.fn();
-const onBackspace = jest.fn();
+const mockOnClear = jest.fn();
+const mockOnBackspace = jest.fn();
 
 describe('AmountEditKeys', () => {
   beforeEach(() => {
-    onClear.mockClear();
-    onBackspace.mockClear();
-    render(<AmountEditKeys onClear={onClear} onBackspace={onBackspace} />);
+    mockOnClear.mockClear();
+    mockOnBackspace.mockClear();
+    render(
+      <AmountEditKeys onClear={mockOnClear} onBackspace={mockOnBackspace} />
+    );
   });
 
   it('clears when the clear key is tapped', () => {
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.clear));
 
-    expect(onClear).toHaveBeenCalledTimes(1);
+    expect(mockOnClear).toHaveBeenCalledTimes(1);
   });
 
   it('backspaces when the delete key is tapped', () => {
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.backspace));
 
-    expect(onBackspace).toHaveBeenCalledTimes(1);
+    expect(mockOnBackspace).toHaveBeenCalledTimes(1);
   });
 
   it('labels the keys with their copy', () => {

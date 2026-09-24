@@ -4,7 +4,7 @@ import { WALLET_PICKER_TEST_IDS } from './constants';
 import { mockDerivedWallets } from '@/test-utils/fixtures';
 import { agorotToShekels } from '@/lib/money';
 
-const onSelect = jest.fn();
+const mockOnSelect = jest.fn();
 const [savings, spending] = mockDerivedWallets;
 
 function renderPicker(selectedWalletId: string): void {
@@ -12,14 +12,14 @@ function renderPicker(selectedWalletId: string): void {
     <WalletPicker
       wallets={mockDerivedWallets}
       selectedWalletId={selectedWalletId}
-      onSelect={onSelect}
+      onSelect={mockOnSelect}
     />
   );
 }
 
 describe('WalletPicker', () => {
   beforeEach(() => {
-    onSelect.mockClear();
+    mockOnSelect.mockClear();
   });
 
   it('renders a tile with its balance for each wallet', () => {
@@ -51,6 +51,6 @@ describe('WalletPicker', () => {
       screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(spending.name))
     );
 
-    expect(onSelect).toHaveBeenCalledWith(spending.id);
+    expect(mockOnSelect).toHaveBeenCalledWith(spending.id);
   });
 });

@@ -4,9 +4,9 @@ import {
   mockAccount,
   mockAccountUser,
   mockOwner,
-  mockSecondAccount,
-  mockSecondUser,
-  mockUnknownOwner,
+  mockSiblingAccount,
+  mockCoParent,
+  mockStrangerOwner,
   mockUser,
 } from '@/test-utils/fixtures';
 
@@ -16,7 +16,7 @@ describe('InMemoryStore account users', () => {
   beforeEach(async () => {
     store = new InMemoryStore();
     await store.insertUser(mockUser);
-    await store.insertUser(mockSecondUser);
+    await store.insertUser(mockCoParent);
     await store.insertAccountWithOwner(mockAccount, mockOwner);
   });
 
@@ -35,7 +35,7 @@ describe('InMemoryStore account users', () => {
   });
 
   it('does not list the account for anyone else', async () => {
-    expect(await store.listAccountsForUser(mockSecondUser.id)).toEqual([]);
+    expect(await store.listAccountsForUser(mockCoParent.id)).toEqual([]);
   });
 
   it('rejects a second account with the same id', async () => {
@@ -46,19 +46,19 @@ describe('InMemoryStore account users', () => {
 
   it('rejects an owner that has no user row', async () => {
     await expect(
-      store.insertAccountWithOwner(mockSecondAccount, mockUnknownOwner)
+      store.insertAccountWithOwner(mockSiblingAccount, mockStrangerOwner)
     ).rejects.toThrow(UnknownOwnerError);
   });
 
   it('reports the duplicate account when the owner is also unknown', async () => {
     await expect(
-      store.insertAccountWithOwner(mockAccount, mockUnknownOwner)
+      store.insertAccountWithOwner(mockAccount, mockStrangerOwner)
     ).rejects.toThrow(DuplicateAccountError);
   });
 
   it('keeps accounts owned by different users apart', async () => {
-    await store.insertAccountWithOwner(mockSecondAccount, {
-      userId: mockSecondUser.id,
+    await store.insertAccountWithOwner(mockSiblingAccount, {
+      userId: mockCoParent.id,
       addedAt: mockAccountUser.addedAt,
     });
 

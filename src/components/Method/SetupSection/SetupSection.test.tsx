@@ -7,7 +7,7 @@ import { EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS } from '../ExampleWalletSplitTable/
 import { METHOD_SECTION_TEST_IDS } from '../MethodSection/constants';
 import { SetupSection } from './SetupSection';
 
-const LANDMARKS = [
+const mockLandmarks = [
   EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.table,
   EVIDENCE_QUOTE_TEST_IDS.quote,
   CHECKLIST_TEST_IDS.group,
@@ -17,7 +17,7 @@ function inReadingOrder(): (string | null)[] {
   const section = screen.getByTestId(
     METHOD_SECTION_TEST_IDS.section(SECTION_NUMBER.setup)
   );
-  const selector = LANDMARKS.map((id) => `[data-testid="${id}"]`).join(',');
+  const selector = mockLandmarks.map((id) => `[data-testid="${id}"]`).join(',');
 
   return Array.from(section.querySelectorAll(selector)).map((landmark) =>
     landmark.getAttribute('data-testid')

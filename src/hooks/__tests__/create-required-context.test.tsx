@@ -2,21 +2,21 @@ import { JSX, ReactNode } from 'react';
 import { renderHook } from '@testing-library/react';
 import { createRequiredContext } from '../create-required-context';
 
-const PROVIDER_NAME = 'NameProvider';
-const NAME = 'Noa';
+const mockProviderName = 'NameProvider';
+const mockName = 'Noa';
 
 const [NameProvider, useName, useOptionalName] =
-  createRequiredContext<string>(PROVIDER_NAME);
+  createRequiredContext<string>(mockProviderName);
 
 function WithName({ children }: { children: ReactNode }): JSX.Element {
-  return <NameProvider value={NAME}>{children}</NameProvider>;
+  return <NameProvider value={mockName}>{children}</NameProvider>;
 }
 
 describe('a context that must have a provider', () => {
   it('hands the provided value to whoever asks', () => {
     const { result } = renderHook(() => useName(), { wrapper: WithName });
 
-    expect(result.current).toBe(NAME);
+    expect(result.current).toBe(mockName);
   });
 
   it('refuses to guess, naming the provider it needs, when no provider is above it', () => {
@@ -36,6 +36,6 @@ describe('a context that must have a provider', () => {
       wrapper: WithName,
     });
 
-    expect(result.current).toBe(NAME);
+    expect(result.current).toBe(mockName);
   });
 });

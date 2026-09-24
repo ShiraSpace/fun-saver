@@ -4,7 +4,7 @@ import {
   createMockAccountUser,
   mockAccount,
   mockAccountUser,
-  mockSecondAccount,
+  mockSiblingAccount,
   mockUser,
 } from '@/test-utils/fixtures';
 import { withTempStoreFile } from '@/test-utils/test-utils';
@@ -19,11 +19,11 @@ describe('JsonFileStore account users', () => {
     writeFileSync(
       file.path,
       JSON.stringify({
-        accounts: [mockAccount, mockSecondAccount],
+        accounts: [mockAccount, mockSiblingAccount],
         accountUsers: [
           mockAccountUser,
           createMockAccountUser({
-            accountId: mockSecondAccount.id,
+            accountId: mockSiblingAccount.id,
             userId: mockOtherUserId,
           }),
         ],

@@ -16,8 +16,8 @@ the domain from the names alone, so new code takes its words from this table.
   browser or JS global (`window`, `history`, `name`, `event`, `location`,
   `status`, `screen`, `close`, `Number`).
 - **Whole words.** `Navigation`, not `Nav`; `transactionId`, not `txId`.
-- **Test stand-ins take a `mock` prefix in camelCase.** Fixtures and jest mocks are
-  `mockAccountId` and `mockOnClose`. `SCREAMING_SNAKE_CASE` is for actual constants:
+- **Test stand-ins take a `mock` prefix in camelCase.** Fixtures, values built by a
+  `createMock…` helper and jest mocks are `mockAccountId`, `mockAccount` and `mockOnClose`. `SCREAMING_SNAKE_CASE` is for actual constants:
   env and URLs, cookie names, viewports, timings, selectors, `*_TEST_IDS`, `*_COPY`.
 
 ## Terms

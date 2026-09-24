@@ -10,7 +10,7 @@ import { useDriver } from './driver/use-driver';
 const EDGE_TOLERANCE = 24;
 const HEADING_FONT_SIZE = `${TYPE_SCALE.title}px`;
 
-const longNamedAccount = createMockAccount({
+const mockLongNamedAccount = createMockAccount({
   name: 'נועה '.repeat(20).trim().slice(0, MAX_ACCOUNT_NAME_LENGTH),
 });
 
@@ -69,7 +69,7 @@ describe('header', () => {
   });
 
   describe('under a name long enough to wrap', () => {
-    const { header, menu } = useDriver({ accounts: [longNamedAccount] });
+    const { header, menu } = useDriver({ accounts: [mockLongNamedAccount] });
 
     it('stays one row rather than growing past the menu overlay', async () => {
       const bar = await header.box();

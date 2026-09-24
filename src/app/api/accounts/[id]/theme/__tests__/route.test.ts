@@ -5,7 +5,7 @@ import { signedInUser } from '@/auth';
 import { API_ERRORS } from '@/app/api/constants';
 import { THEME_ID } from '@/theme/registry';
 import { getStore } from '@/db';
-import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
+import { mockCoParent, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { PUT } from '../route';
@@ -69,7 +69,7 @@ describe('PUT /api/accounts/[id]/theme', () => {
   });
 
   it('refuses a stranger with 403 and leaves the theme alone', async () => {
-    jest.mocked(signedInUser).mockResolvedValue(mockSecondUser);
+    jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
 
     const response = await putTheme(THEME_ID.midnightBlue, accountId);
 

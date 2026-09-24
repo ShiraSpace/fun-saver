@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import type { Account } from '@/lib/types';
-import { mockAccount, mockAccountEdit } from '@/test-utils/fixtures';
+import { mockAccount, mockAccountEdits } from '@/test-utils/fixtures';
 import { useUpdateAccount } from './use-update-account';
 
 describe('useUpdateAccount', () => {
@@ -21,7 +21,7 @@ describe('useUpdateAccount', () => {
 
     function updateAccount(): Promise<Account> {
       const { result } = renderHook(() => useUpdateAccount());
-      return result.current.updateAccount(mockAccount.id, mockAccountEdit);
+      return result.current.updateAccount(mockAccount.id, mockAccountEdits);
     }
 
     it('puts to the endpoint for that account', async () => {
@@ -36,7 +36,7 @@ describe('useUpdateAccount', () => {
       await updateAccount();
 
       const [, init] = fetchMock.mock.calls[0];
-      expect(JSON.parse(init.body)).toEqual(mockAccountEdit);
+      expect(JSON.parse(init.body)).toEqual(mockAccountEdits);
       expect(init.cache).toBe('no-store');
     });
 
@@ -53,7 +53,7 @@ describe('useUpdateAccount', () => {
     const { result } = renderHook(() => useUpdateAccount());
 
     await expect(
-      result.current.updateAccount(mockAccount.id, mockAccountEdit)
+      result.current.updateAccount(mockAccount.id, mockAccountEdits)
     ).rejects.toThrow();
   });
 });

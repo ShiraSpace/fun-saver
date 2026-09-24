@@ -21,30 +21,30 @@ const dragBy = (
 
 describe('useSwipeToClose', () => {
   it('closes when dragged past the threshold', () => {
-    const onClose = jest.fn();
-    const { result } = renderHook(() => useSwipeToClose(onClose));
+    const mockOnClose = jest.fn();
+    const { result } = renderHook(() => useSwipeToClose(mockOnClose));
 
     dragBy(result, SWIPE_TO_CLOSE.closeThreshold + 1);
 
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
   it('does not close when dragged less than the threshold', () => {
-    const onClose = jest.fn();
-    const { result } = renderHook(() => useSwipeToClose(onClose));
+    const mockOnClose = jest.fn();
+    const { result } = renderHook(() => useSwipeToClose(mockOnClose));
 
     dragBy(result, SWIPE_TO_CLOSE.closeThreshold - 1);
 
-    expect(onClose).not.toHaveBeenCalled();
+    expect(mockOnClose).not.toHaveBeenCalled();
   });
 
   it('ignores upward drags', () => {
-    const onClose = jest.fn();
-    const { result } = renderHook(() => useSwipeToClose(onClose));
+    const mockOnClose = jest.fn();
+    const { result } = renderHook(() => useSwipeToClose(mockOnClose));
 
     dragBy(result, -200);
 
-    expect(onClose).not.toHaveBeenCalled();
+    expect(mockOnClose).not.toHaveBeenCalled();
   });
 
   it('snaps the offset back to zero after release', () => {

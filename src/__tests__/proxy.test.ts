@@ -12,7 +12,7 @@ jest.mock('@/auth');
 type ProxyAnswer = Awaited<ReturnType<typeof proxy>>;
 
 const APP_ORIGIN = 'https://fun-saver.vercel.app';
-const SESSION_EXPIRY = '2099-01-01T00:00:00.000Z';
+const mockSessionExpiry = '2099-01-01T00:00:00.000Z';
 const GATED_PATHS = [
   '/',
   '/method',
@@ -49,7 +49,7 @@ describe('the matcher', () => {
 async function proxyAnswerFor(
   user: Partial<Session['user']> | undefined
 ): Promise<ProxyAnswer> {
-  const auth = user ? { user, expires: SESSION_EXPIRY } : null;
+  const auth = user ? { user, expires: mockSessionExpiry } : null;
   const request = Object.assign(new NextRequest(APP_ORIGIN), { auth });
 
   return proxy(request, { params: Promise.resolve({}) });

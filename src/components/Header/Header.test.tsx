@@ -12,21 +12,21 @@ import { ACCOUNT_LIST_TEST_IDS } from '../Menu/AccountList/constants';
 import { HOME_ROUTE } from '../Home/constants';
 import { openAccountPicker } from '@/test-utils/account-picker';
 
-const ACCOUNT_NAME = 'יעל';
-const AVATAR_ID = 'kid-01';
-const headerAccount = { name: ACCOUNT_NAME, avatarId: AVATAR_ID };
+const mockAccountName = 'יעל';
+const mockAvatarId = 'kid-01';
+const headerAccount = { name: mockAccountName, avatarId: mockAvatarId };
 
-const GREETING = 'שלום';
+const mockGreeting = 'שלום';
 
 function renderHeaderWithoutAccount(): void {
-  render(<Header title={GREETING} />, {
+  render(<Header title={mockGreeting} />, {
     route: HOME_ROUTE,
     user: mockUser,
   });
 }
 
 function renderHeader(route: string): void {
-  render(<Header title={ACCOUNT_NAME} account={headerAccount} />, {
+  render(<Header title={mockAccountName} account={headerAccount} />, {
     route,
     accounts: mockAccountsContext,
     user: mockUser,
@@ -49,7 +49,7 @@ describe('Header', () => {
 
     it('shows the account name', () => {
       expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-        ACCOUNT_NAME
+        mockAccountName
       );
     });
 
@@ -59,7 +59,10 @@ describe('Header', () => {
 
     it('shows the account avatar', () => {
       const avatar = screen.getByTestId(HEADER_TEST_IDS.avatar);
-      expect(avatar).toHaveAttribute('src', expect.stringContaining(AVATAR_ID));
+      expect(avatar).toHaveAttribute(
+        'src',
+        expect.stringContaining(mockAvatarId)
+      );
     });
 
     it('offers no way home, this being home', () => {
@@ -106,7 +109,7 @@ describe('Header', () => {
       it('keeps the account name rather than swapping in a menu title', () => {
         expect(
           screen.getByTestId(HEADER_TITLE_TEST_IDS.title)
-        ).toHaveTextContent(ACCOUNT_NAME);
+        ).toHaveTextContent(mockAccountName);
       });
 
       it('takes the avatar away, the picker below already showing it', () => {
@@ -193,7 +196,7 @@ describe('Header', () => {
 
     it('greets the parent where an account screen names the account', () => {
       expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-        GREETING
+        mockGreeting
       );
     });
 
