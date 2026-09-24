@@ -16,7 +16,7 @@ import type {
   UserRepository,
 } from './data-store';
 
-export class BaseStore implements DataStore {
+export class RepositoryStore implements DataStore {
   constructor(
     private readonly accounts: AccountRepository,
     private readonly transactions: TransactionRepository,
@@ -36,8 +36,11 @@ export class BaseStore implements DataStore {
     return this.accounts.setTheme(id, themeId);
   }
 
-  updateAccount(id: string, edits: AccountEdits): Promise<Account | undefined> {
-    return this.accounts.update(id, edits);
+  updateAccount(
+    accountId: string,
+    edits: AccountEdits
+  ): Promise<Account | undefined> {
+    return this.accounts.update(accountId, edits);
   }
 
   insertTransactions(transactions: Transaction[]): Promise<void> {

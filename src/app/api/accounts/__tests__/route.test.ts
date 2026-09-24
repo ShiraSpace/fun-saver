@@ -5,13 +5,13 @@ import { mockCreateAccountInput, mockUser } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { getStore } from '@/db';
 import { signedInUser } from '@/auth';
-import { withTempDataPath } from '@/test-utils/test-utils';
+import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { POST } from '../route';
 
 jest.mock('@/auth');
 
 describe('POST /api/accounts', () => {
-  withTempDataPath();
+  withTempStoreEnv();
 
   beforeEach(async () => {
     await getStore().insertUser(mockUser);

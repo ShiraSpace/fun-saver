@@ -1,9 +1,9 @@
 import type { Account, AccountEdits } from '@/lib/types';
 import type { ThemeId } from '@/theme/registry';
 import type { AccountRepository } from '../data-store';
-import { toAccount, type AccountRow } from '../row-mappers';
-import { toAccountWriteError } from './errors';
-import { selectRows, type QueryParam, type Sql } from './query';
+import { accountFromRow, type AccountRow } from '../rows';
+import { accountWriteError } from './errors';
+import { queryRows, type QueryParam, type Sql } from './query';
 
 interface EditedColumns {
   assignments: string;
@@ -53,31 +53,29 @@ export class PostgresAccounts implements AccountRepository {
     try {
       await this.insertStatement(account);
     } catch (error) {
-      throw toAccountWriteError(error, { accountId: account.id });
+      throw accountWriteError(error, { accountId: account.id });
     }
   }
 
   async list(): Promise<Account[]> {
-    const rows = await this.select('SELECT * FROM accounts ORDER BY name');
+    const rows = await this.query('SELECT * FROM accounts ORDER BY name');
 
-    return rows.map(toAccount);
+    return rows.map(accountFromRow);
   }
 
   async get(id: string): Promise<Account | undefined> {
-    const rows = await this.select('SELECT * FROM accounts WHERE id = $1', [
-      id,
-    ]);
+    const rows = await this.query('SELECT * FROM accounts WHERE id = $1', [id]);
 
-    return rows[0] ? toAccount(rows[0]) : undefined;
+    return rows[0] ? accountFromRow(rows[0]) : undefined;
   }
 
   async setTheme(id: string, themeId: ThemeId): Promise<Account | undefined> {
-    const rows = await this.select(
+    const rows = await this.query(
       'UPDATE accounts SET theme_id = $1 WHERE id = $2 RETURNING *',
       [themeId, id]
     );
 
-    return rows[0] ? toAccount(rows[0]) : undefined;
+    return rows[0] ? accountFromRow(rows[0]) : undefined;
   }
 
   async update(id: string, edits: AccountEdits): Promise<Account | undefined> {
@@ -87,15 +85,15 @@ export class PostgresAccounts implements AccountRepository {
       return this.get(id);
     }
 
-    const rows = await this.select(
+    const rows = await this.query(
       `UPDATE accounts SET ${assignments} WHERE id = $${values.length + 1} RETURNING *`,
       [...values, id]
     );
 
-    return rows[0] ? toAccount(rows[0]) : undefined;
+    return rows[0] ? accountFromRow(rows[0]) : undefined;
   }
 
-  private select(text: string, params?: QueryParam[]): Promise<AccountRow[]> {
-    return selectRows<AccountRow>(this.sql, text, params);
+  private query(text: string, params?: QueryParam[]): Promise<AccountRow[]> {
+    return queryRows<AccountRow>(this.sql, text, params);
   }
 }

@@ -1,7 +1,7 @@
 import { mkdir, rename, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { after, afterEach, before, beforeEach } from 'node:test';
-import type { StoreData } from '@/db/data-store';
+import type { StoreContents } from '@/db/data-store';
 import {
   createMockAccountUser,
   mockOwner,
@@ -25,7 +25,7 @@ import { startServer, type RunningServer } from '../server';
 interface OpenAppOptions {
   session: Session;
   server: RunningServer;
-  state: Partial<StoreData>;
+  state: Partial<StoreContents>;
   motion: MotionPreference;
 }
 
@@ -75,7 +75,7 @@ export async function openApp({
   state,
   motion,
 }: OpenAppOptions): Promise<void> {
-  await seedStore(server.dataPath, state);
+  await seedStore(server.storePath, state);
   await session.open({
     baseUrl: server.baseUrl,
     motion,
@@ -84,11 +84,11 @@ export async function openApp({
 }
 
 async function seedStore(
-  dataPath: string,
-  state: Partial<StoreData>
+  storePath: string,
+  state: Partial<StoreContents>
 ): Promise<void> {
   const accounts = state.accounts ?? [];
-  const data: StoreData = {
+  const data: StoreContents = {
     users: [mockUser, ...(state.users ?? [])],
     accounts,
     accountUsers: accounts.map((account) =>
@@ -101,16 +101,16 @@ async function seedStore(
     transactions: state.transactions ?? [],
   };
 
-  await mkdir(dirname(dataPath), { recursive: true });
+  await mkdir(dirname(storePath), { recursive: true });
 
-  const temporaryPath = `${dataPath}.seed.tmp`;
+  const temporaryPath = `${storePath}.seed.tmp`;
 
   await writeFile(temporaryPath, JSON.stringify(data, null, 2), 'utf8');
-  await rename(temporaryPath, dataPath);
+  await rename(temporaryPath, storePath);
 }
 
 export function useDriver(
-  state: Partial<StoreData> = {},
+  state: Partial<StoreContents> = {},
   motion: MotionPreference = 'reduce'
 ): AppDriver {
   const session = Session.create();

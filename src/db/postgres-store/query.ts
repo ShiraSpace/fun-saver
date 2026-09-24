@@ -4,7 +4,7 @@ export type Sql = NeonQueryFunction<false, false>;
 
 export type QueryParam = string | number | boolean | null;
 
-export async function selectRows<Row>(
+export async function queryRows<Row>(
   sql: Sql,
   text: string,
   params?: QueryParam[]

@@ -12,13 +12,13 @@ import {
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { THEME_ID } from '@/theme/registry';
 import { createOwnedAccount } from '@/test-utils/owned-account';
-import { withTempDataPath } from '@/test-utils/test-utils';
+import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { PUT } from '../route';
 
 jest.mock('@/auth');
 
 describe('PUT /api/accounts/[id]', () => {
-  withTempDataPath();
+  withTempStoreEnv();
 
   let accountId: string;
 

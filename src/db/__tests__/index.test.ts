@@ -31,17 +31,17 @@ describe('getStore', () => {
   });
 
   describe('with FUNSAVER_DATA_PATH', () => {
-    let dataPath: string;
+    let storePath: string;
 
     beforeEach(() => {
-      dataPath = join(directory, 'data.json');
-      mutableEnv.FUNSAVER_DATA_PATH = dataPath;
+      storePath = join(directory, 'data.json');
+      mutableEnv.FUNSAVER_DATA_PATH = storePath;
     });
 
     it('returns a file-backed store at that path', async () => {
       await getStore().insertAccount(mockAccount);
 
-      expect(existsSync(dataPath)).toBe(true);
+      expect(existsSync(storePath)).toBe(true);
       expect((await getStore().getAccount(mockAccount.id))?.id).toBe(
         mockAccount.id
       );

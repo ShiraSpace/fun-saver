@@ -14,7 +14,7 @@ function requiredDatabaseUrl(): string {
   return url;
 }
 
-export interface LiveStore {
+export interface TestDatabase {
   store: PostgresStore;
   sql: Sql;
   accountId: (suffix: string) => string;
@@ -22,7 +22,7 @@ export interface LiveStore {
   userId: (suffix: string) => string;
 }
 
-export function withLiveStore(): LiveStore {
+export function withTestDatabase(): TestDatabase {
   const url = requiredDatabaseUrl();
   const runPrefix = `it-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const store = new PostgresStore(url);

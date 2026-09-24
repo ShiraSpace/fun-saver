@@ -1,16 +1,19 @@
 import { neon } from '@neondatabase/serverless';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { requireTargetUrl, resolveTarget } from './migration-target';
+import {
+  requireEnvironmentUrl,
+  chosenEnvironment,
+} from './migration-environment';
 
 async function main(): Promise<void> {
-  const target = resolveTarget();
-  const sql = neon(requireTargetUrl(target));
+  const environment = chosenEnvironment();
+  const sql = neon(requireEnvironmentUrl(environment));
   const schema = await readFile(resolve('src/db/schema.sql'), 'utf8');
   const statements = splitStatements(schema);
 
   await sql.transaction(statements.map((statement) => sql.query(statement)));
-  console.log(`Migration complete (${target.name} branch).`);
+  console.log(`Migration complete (${environment.name} branch).`);
 }
 
 const SQL_BLOCK_COMMENT = /\/\*[\s\S]*?\*\//g;

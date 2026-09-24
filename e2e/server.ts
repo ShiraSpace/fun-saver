@@ -7,20 +7,20 @@ import { TEST_AUTH_SECRET } from './driver/auth-session';
 
 export interface RunningServer {
   baseUrl: string;
-  dataPath: string;
+  storePath: string;
   authSecret: string;
   stop: () => Promise<void>;
 }
 
 export async function startServer(): Promise<RunningServer> {
   const port = await getFreePort();
-  const dataDir = await mkdtemp(join(tmpdir(), 'funsaver-e2e-'));
-  const dataPath = join(dataDir, 'data.json');
+  const storeDir = await mkdtemp(join(tmpdir(), 'funsaver-e2e-'));
+  const storePath = join(storeDir, 'data.json');
 
   const env: NodeJS.ProcessEnv = {
     ...process.env,
     PORT: String(port),
-    FUNSAVER_DATA_PATH: dataPath,
+    FUNSAVER_DATA_PATH: storePath,
     FUNSAVER_NOW: '2026-01-01',
     AUTH_SECRET: TEST_AUTH_SECRET,
     AUTH_TRUST_HOST: 'true',
@@ -35,11 +35,11 @@ export async function startServer(): Promise<RunningServer> {
 
   return {
     baseUrl,
-    dataPath,
+    storePath,
     authSecret: TEST_AUTH_SECRET,
     stop: async (): Promise<void> => {
       server.kill('SIGTERM');
-      await rm(dataDir, { recursive: true, force: true });
+      await rm(storeDir, { recursive: true, force: true });
     },
   };
 }

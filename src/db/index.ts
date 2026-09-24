@@ -10,65 +10,65 @@ interface CachedStore {
   store: DataStore;
 }
 
-type Target =
+type StoreBackend =
   { kind: 'json'; path: string } | { kind: 'postgres'; url: string };
 
 let cached: CachedStore | null = null;
 
 export function getStore(): DataStore {
-  const target = resolveTarget();
-  const key = keyOf(target);
+  const backend = configuredBackend();
+  const key = backendKey(backend);
 
   if (cached?.key !== key) {
-    cached = { key, store: buildStore(target) };
+    cached = { key, store: storeFor(backend) };
   }
 
   return cached.store;
 }
 
-function resolveTarget(): Target {
-  return explicitJsonTarget() ?? postgresTarget() ?? defaultJsonTarget();
+function configuredBackend(): StoreBackend {
+  return jsonFileBackend() ?? postgresBackend() ?? defaultJsonFileBackend();
 }
 
-function explicitJsonTarget(): Target | undefined {
+function jsonFileBackend(): StoreBackend | undefined {
   const path = process.env.FUNSAVER_DATA_PATH;
 
   return path ? { kind: 'json', path } : undefined;
 }
 
-function postgresTarget(): Target | undefined {
-  const url = resolveDatabaseUrl();
+function postgresBackend(): StoreBackend | undefined {
+  const url = databaseUrl();
 
   return url ? { kind: 'postgres', url } : undefined;
 }
 
-function defaultJsonTarget(): Target {
+function defaultJsonFileBackend(): StoreBackend {
   if (process.env.NODE_ENV === 'test') {
     throw new ValidationError(
-      `no store configured: set FUNSAVER_DATA_PATH, or call withTempDataPath(), rather than writing to ${DEFAULT_PATH}`
+      `no store configured: set FUNSAVER_DATA_PATH, or call withTempStoreEnv(), rather than writing to ${DEFAULT_PATH}`
     );
   }
 
   return { kind: 'json', path: DEFAULT_PATH };
 }
 
-function keyOf(target: Target): string {
-  if (target.kind === 'json') {
-    return `json:${target.path}`;
+function backendKey(backend: StoreBackend): string {
+  if (backend.kind === 'json') {
+    return `json:${backend.path}`;
   }
 
-  return `postgres:${target.url}`;
+  return `postgres:${backend.url}`;
 }
 
-function buildStore(target: Target): DataStore {
-  if (target.kind === 'json') {
-    return new JsonFileStore(target.path);
+function storeFor(backend: StoreBackend): DataStore {
+  if (backend.kind === 'json') {
+    return new JsonFileStore(backend.path);
   }
 
-  return new PostgresStore(target.url);
+  return new PostgresStore(backend.url);
 }
 
-function resolveDatabaseUrl(): string | undefined {
+function databaseUrl(): string | undefined {
   if (process.env.NODE_ENV === 'development') {
     return process.env.DEV_DATABASE_URL;
   }

@@ -28,7 +28,7 @@ export interface TransactionRow {
   created_at: string;
 }
 
-export function toAccount(row: AccountRow): Account {
+export function accountFromRow(row: AccountRow): Account {
   return {
     id: row.id,
     name: row.name,
@@ -39,7 +39,7 @@ export function toAccount(row: AccountRow): Account {
   };
 }
 
-export function toTransaction(row: TransactionRow): Transaction {
+export function transactionFromRow(row: TransactionRow): Transaction {
   return {
     id: row.id,
     walletId: row.wallet_id,
@@ -67,7 +67,7 @@ export interface AccountUserRow {
   added_at: string;
 }
 
-export function toUser(row: UserRow): User {
+export function userFromRow(row: UserRow): User {
   return {
     id: row.id,
     provider: row.provider as AuthProvider,
@@ -78,7 +78,7 @@ export function toUser(row: UserRow): User {
   };
 }
 
-export function toAccountUser(row: AccountUserRow): AccountUser {
+export function accountUserFromRow(row: AccountUserRow): AccountUser {
   return {
     accountId: row.account_id,
     userId: row.user_id,

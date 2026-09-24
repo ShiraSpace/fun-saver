@@ -8,10 +8,10 @@ import {
   createMockUser,
   mockAccountUser,
 } from '@/test-utils/fixtures';
-import { withLiveStore } from './live-store';
+import { withTestDatabase } from './test-database';
 
 describe('PostgresAccountUsers creating an account with an owner', () => {
-  const { store, accountId, userId } = withLiveStore();
+  const { store, accountId, userId } = withTestDatabase();
   let mockNewAccount: Account;
   let mockOwner: User;
 

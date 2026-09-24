@@ -1,6 +1,6 @@
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { StoreData } from '@/db/data-store';
+import type { StoreContents } from '@/db/data-store';
 import { Session } from './driver/session';
 import { PHONE, RETINA_SCALE } from './driver/viewports';
 import {
@@ -17,7 +17,7 @@ export type Shoot = (name: string) => Promise<void>;
 export type TakeShots = (app: AppDriver, shoot: Shoot) => Promise<void>;
 
 export async function withShots(
-  state: Partial<StoreData>,
+  state: Partial<StoreContents>,
   takeShots: TakeShots
 ): Promise<void> {
   await mkdir(SHOT_DIR, { recursive: true });

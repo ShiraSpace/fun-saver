@@ -1,8 +1,8 @@
 import type { AuthProvider, User } from '@/lib/types';
 import { DuplicateUserError } from '@/lib/errors';
 import type { UserRepository } from '../data-store';
-import { toUser, type UserRow } from '../row-mappers';
-import { selectRows, type QueryParam, type Sql } from './query';
+import { userFromRow, type UserRow } from '../rows';
+import { queryRows, type QueryParam, type Sql } from './query';
 
 export class PostgresUsers implements UserRepository {
   constructor(private readonly sql: Sql) {}
@@ -11,12 +11,12 @@ export class PostgresUsers implements UserRepository {
     provider: AuthProvider,
     providerAccountId: string
   ): Promise<User | undefined> {
-    const rows = await this.select(
+    const rows = await this.query(
       'SELECT * FROM users WHERE provider = $1 AND provider_account_id = $2',
       [provider, providerAccountId]
     );
 
-    return rows[0] ? toUser(rows[0]) : undefined;
+    return rows[0] ? userFromRow(rows[0]) : undefined;
   }
 
   async insert(user: User): Promise<void> {
@@ -39,7 +39,7 @@ export class PostgresUsers implements UserRepository {
     }
   }
 
-  private select(text: string, params?: QueryParam[]): Promise<UserRow[]> {
-    return selectRows<UserRow>(this.sql, text, params);
+  private query(text: string, params?: QueryParam[]): Promise<UserRow[]> {
+    return queryRows<UserRow>(this.sql, text, params);
   }
 }
