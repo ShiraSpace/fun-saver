@@ -36,11 +36,6 @@ export interface Transaction {
   createdAt: string;
 }
 
-export type LedgerEntry = Pick<
-  Transaction,
-  'walletId' | 'type' | 'amount' | 'occurredAt' | 'createdAt'
->;
-
 export interface WalletSummary extends Wallet {
   balance: number;
   principal: number;

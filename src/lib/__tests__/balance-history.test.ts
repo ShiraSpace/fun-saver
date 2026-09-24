@@ -4,7 +4,7 @@ import {
   type BalanceHistory,
 } from '../balance-history';
 import { eachDayInclusive } from '../dates';
-import type { LedgerEntry } from '../types';
+import type { Transaction } from '../types';
 import {
   createMockTransaction,
   createMockWallets,
@@ -18,18 +18,21 @@ describe('the balance history', () => {
     occurredAt: '2026-01-01',
   });
 
-  const historyOf = (entries: LedgerEntry[], asOf: string): BalanceHistory =>
-    balanceHistory({ wallets: mockWallets, entries, asOf });
+  const historyOf = (
+    transactions: Transaction[],
+    asOf: string
+  ): BalanceHistory =>
+    balanceHistory({ wallets: mockWallets, transactions, asOf });
 
   it('carries a balance across the days nothing happened', () => {
     const history = historyOf([mockOpeningDeposit], '2026-01-03');
     const firstThreeDays = eachDayInclusive('2026-01-01', '2026-01-03');
 
     expect(history.days).toEqual(firstThreeDays);
-    expect(history.total).toEqual([500, 500, 500]);
+    expect(history.totalBalance).toEqual([500, 500, 500]);
   });
 
-  it('draws the same line whichever order the store handed the rows in', () => {
+  it('gives the same history whichever order the store returned the transactions in', () => {
     const mockSameDayDeposit = createMockTransaction({
       id: 'deposit',
       amount: 300,
@@ -67,7 +70,7 @@ describe('the balance history', () => {
     );
 
     const lastWeek = balanceOverRange(history, 7);
-    const openingBalance = lastWeek.total[0];
+    const openingBalance = lastWeek.totalBalance[0];
 
     expect(openingBalance).toBe(mockOpeningDeposit.amount);
   });
