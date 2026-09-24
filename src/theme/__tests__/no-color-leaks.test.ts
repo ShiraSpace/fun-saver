@@ -31,9 +31,9 @@ it('no style home holds a colour literal', () => {
   expect(offenders).toEqual([]);
 });
 
-it('no component file imports from @/theme/palette', () => {
+it('no component file imports a theme of its own, bypassing the one in use', () => {
   const offenders = componentFiles(/\.(tsx|ts)$/).filter((file) =>
-    reads(file).includes('@/theme/palette')
+    reads(file).includes('@/theme/themes/')
   );
   expect(offenders).toEqual([]);
 });
