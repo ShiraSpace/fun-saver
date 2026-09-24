@@ -3,7 +3,7 @@ import { mockUser } from '@/test-utils/fixtures';
 import { PIG_EMOJI } from '@/components/Pig/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { TITLE_TEST_IDS } from '@/components/Header/CrossfadeTitle/constants';
-import { PROFILE_SECTION_TEST_IDS } from '@/components/Menu/ProfileSection/constants';
+import { SIGNED_IN_USER_SECTION_TEST_IDS } from '@/components/Menu/SignedInUserSection/constants';
 import { EmptyState } from './EmptyState';
 import { EMPTY_STATE_COPY, EMPTY_STATE_TEST_IDS } from './constants';
 
@@ -44,7 +44,7 @@ describe('EmptyState', () => {
 
   it('offers the way out of the app that a stranger used to be denied', () => {
     expect(
-      screen.getByTestId(PROFILE_SECTION_TEST_IDS.signOut)
+      screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.signOut)
     ).toBeInTheDocument();
   });
 });

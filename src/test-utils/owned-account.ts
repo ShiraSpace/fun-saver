@@ -16,7 +16,7 @@ export async function createOwnedAccount(
     owner = mockUser,
   }: CreateOwnedAccountOptions = {}
 ): Promise<Account> {
-  const existing = await store.findUserByProvider(
+  const existing = await store.findUserByIdentity(
     owner.provider,
     owner.providerAccountId
   );

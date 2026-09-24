@@ -21,10 +21,10 @@ describe('AccountList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     render(
-      <WithMenu close={mockOnLeaveMenu}>
+      <WithMenu closeMenu={mockOnLeaveMenu}>
         <AccountList
           accounts={accounts}
-          selectedAccountId={mockSecondDerivedAccount.id}
+          currentAccountId={mockSecondDerivedAccount.id}
           onSelect={mockOnSelect}
         />
       </WithMenu>
@@ -44,21 +44,21 @@ describe('AccountList', () => {
     expect(totals[1]).toHaveTextContent(shekelsOf(mockSecondDerivedAccount));
   });
 
-  it('marks the row matching the selected account', () => {
+  it('marks the row matching the current account', () => {
     const rows = screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row);
 
     expect(rows[0]).toHaveAttribute('aria-current', 'false');
     expect(rows[1]).toHaveAttribute('aria-current', 'true');
   });
 
-  it('labels the add row', () => {
-    expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow)).toHaveTextContent(
-      ACCOUNT_LIST_CONTENT.addLabel
-    );
+  it('labels the add-account button', () => {
+    expect(
+      screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addAccount)
+    ).toHaveTextContent(ACCOUNT_LIST_CONTENT.addLabel);
   });
 
-  it('leaves the menu when the add row is tapped, the form taking over', () => {
-    fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addRow));
+  it('leaves the menu when the add-account button is tapped, the form taking over', () => {
+    fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addAccount));
 
     expect(mockOnLeaveMenu).toHaveBeenCalled();
   });

@@ -21,7 +21,7 @@ describe('dashboard', () => {
     assert.equal(await header.exists(), true);
   });
 
-  it('shows the overview card with the savings daily interest', async () => {
+  it('shows the balance breakdown with the savings daily interest', async () => {
     assert.equal(await dashboard.overviewExists(), true);
     assert.match(await dashboard.savingsTodayInterest(), /₪\s*5/);
   });
@@ -32,9 +32,9 @@ describe('dashboard', () => {
   });
 
   it('shows what the spending and good-deeds wallets have spent', async () => {
-    const subLines = await dashboard.walletSubLines();
+    const summaries = await dashboard.walletSummaries();
 
-    assert.ok(subLines.includes(WALLET_CARD_COPY.spendingSubLine(spending)));
-    assert.ok(subLines.includes(WALLET_CARD_COPY.goodDeedsSubLine(goodDeeds)));
+    assert.ok(summaries.includes(WALLET_CARD_COPY.spendingSummary(spending)));
+    assert.ok(summaries.includes(WALLET_CARD_COPY.goodDeedsSummary(goodDeeds)));
   });
 });

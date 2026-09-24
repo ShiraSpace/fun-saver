@@ -1,5 +1,5 @@
 import { captureCookies } from '@/test-utils/cookies';
-import { SELECTED_ACCOUNT_COOKIE, THEME_COOKIE, writeCookie } from '../cookies';
+import { CURRENT_ACCOUNT_COOKIE, THEME_COOKIE, writeCookie } from '../cookies';
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 
@@ -18,7 +18,7 @@ describe('writeCookie', () => {
   });
 
   it('writes every cookie the app owns under that one policy', () => {
-    writeCookie(SELECTED_ACCOUNT_COOKIE, 'account-1');
+    writeCookie(CURRENT_ACCOUNT_COOKIE, 'account-1');
     writeCookie(THEME_COOKIE, 'jungle-quest');
 
     expect(new Set(written.map(policyOf)).size).toBe(1);
@@ -28,5 +28,11 @@ describe('writeCookie', () => {
     writeCookie(THEME_COOKIE, 'jungle-quest');
 
     expect(document.cookie).toBe('themeId=jungle-quest');
+  });
+
+  it('remembers the current account under the name returning browsers already hold it by', () => {
+    writeCookie(CURRENT_ACCOUNT_COOKIE, 'account-1');
+
+    expect(document.cookie).toBe('selectedAccountId=account-1');
   });
 });

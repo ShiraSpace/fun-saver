@@ -1,18 +1,18 @@
 import type { AuthProvider, User } from '@/lib/types';
 import { DuplicateUserError } from '@/lib/errors';
 import type { UserRepository } from '../data-store';
-import { findUserByIdentity, isDuplicateUser } from '../user-identity';
+import { userWithIdentity, isDuplicateUser } from '../user-identity';
 import type { FileSession } from './file-session';
 
 export class JsonUsers implements UserRepository {
   constructor(private readonly session: FileSession) {}
 
-  findByProvider(
+  findByIdentity(
     provider: AuthProvider,
     providerAccountId: string
   ): Promise<User | undefined> {
     return this.session.read((data): User | undefined =>
-      findUserByIdentity(data.users, provider, providerAccountId)
+      userWithIdentity(data.users, provider, providerAccountId)
     );
   }
 

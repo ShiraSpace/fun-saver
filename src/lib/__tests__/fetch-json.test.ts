@@ -1,6 +1,6 @@
 import { API_ERRORS } from '@/app/api/constants';
 import { mockAccount } from '@/test-utils/fixtures';
-import { LOGIN_PATH } from '../constants';
+import { SIGN_IN_PATH } from '../constants';
 import { goTo } from '../navigate';
 import { fetchJson } from '../fetch-json';
 
@@ -88,10 +88,10 @@ describe('fetchJson', () => {
       }) as unknown as typeof fetch;
     });
 
-    it('sends the browser to the login page', async () => {
+    it('sends the browser to the sign-in page', async () => {
       await expect(fetchJson(mockRequest)).rejects.toThrow();
 
-      expect(goTo).toHaveBeenCalledWith(LOGIN_PATH);
+      expect(goTo).toHaveBeenCalledWith(SIGN_IN_PATH);
     });
   });
 

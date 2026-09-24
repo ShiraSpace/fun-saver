@@ -8,14 +8,14 @@ export const Trio = styled.div`
   margin-bottom: 14px;
 `;
 
-export const Pot = styled.div<{ walletName: WalletName }>`
+export const TrioWallet = styled.div<{ walletName: WalletName }>`
   flex: 1;
   padding: 11px 9px;
   border-radius: 14px;
   text-align: center;
   background: ${({ walletName, theme }): string =>
     theme.gradients[WALLET_GRADIENT[walletName]]};
-  color: ${({ theme }): string => theme.colors.textOnPot};
+  color: ${({ theme }): string => theme.colors.textOnWallet};
 `;
 
 export const Icon = styled.span`

@@ -7,26 +7,26 @@ import { WalletTrio } from './WalletTrio';
 import { share } from '../constants';
 import { WALLET_TRIO_TEST_IDS } from './constants';
 
-describe('the three wallets drawn as pots', () => {
-  const { pots } = METHOD_COPY.wallets;
+describe('the three wallets drawn side by side', () => {
+  const { walletNames } = METHOD_COPY.wallets;
 
   beforeEach(() => {
-    render(<WalletTrio pots={pots} />);
+    render(<WalletTrio walletNames={walletNames} />);
   });
 
-  it('draws a pot per wallet, because the point of the page is that there are three', () => {
-    expect(screen.getAllByTestId(WALLET_TRIO_TEST_IDS.pot)).toHaveLength(
-      pots.length
+  it('draws each wallet, because the point of the page is that there are three', () => {
+    expect(screen.getAllByTestId(WALLET_TRIO_TEST_IDS.wallet)).toHaveLength(
+      walletNames.length
     );
   });
 
-  it('writes on the pots in the colour measured against them, not the page text colour', () => {
-    const potColours = screen
-      .getAllByTestId(WALLET_TRIO_TEST_IDS.pot)
-      .map((pot) => getComputedStyle(pot).color);
+  it('writes on the wallets in the colour measured against them, not the page text colour', () => {
+    const walletColours = screen
+      .getAllByTestId(WALLET_TRIO_TEST_IDS.wallet)
+      .map((trioWallet) => getComputedStyle(trioWallet).color);
 
-    expect(potColours).toEqual(
-      pots.map(() => hexToRgb(getThemeTokens().colors.textOnPot))
+    expect(walletColours).toEqual(
+      walletNames.map(() => hexToRgb(getThemeTokens().colors.textOnWallet))
     );
   });
 
@@ -35,6 +35,8 @@ describe('the three wallets drawn as pots', () => {
       .getAllByTestId(WALLET_TRIO_TEST_IDS.share)
       .map((share) => share.textContent);
 
-    expect(shown).toEqual(pots.map((wallet) => share(DEPOSIT_SPLIT[wallet])));
+    expect(shown).toEqual(
+      walletNames.map((wallet) => share(DEPOSIT_SPLIT[wallet]))
+    );
   });
 });

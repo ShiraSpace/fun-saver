@@ -49,7 +49,7 @@ describe('WalletCard', () => {
 
     it('stays silent', () => {
       expect(
-        screen.queryByTestId(WALLET_CARD_TEST_IDS.subLine)
+        screen.queryByTestId(WALLET_CARD_TEST_IDS.summary)
       ).not.toBeInTheDocument();
     });
   });
@@ -68,7 +68,7 @@ describe('WalletCard', () => {
 
     it('shows what has already been spent', () => {
       expect(
-        screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)
+        screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
       ).toHaveTextContent('כבר ביזבזת ₪45');
     });
   });
@@ -87,7 +87,7 @@ describe('WalletCard', () => {
 
     it('shows what has already been given', () => {
       expect(
-        screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)
+        screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
       ).toHaveTextContent('תרמת ₪18 עד היום');
     });
   });
@@ -99,7 +99,7 @@ describe('WalletCard', () => {
 
     it('shows the savings rate and opening date as a sub-line', () => {
       expect(
-        screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)
+        screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
       ).toHaveTextContent(SAVINGS_SUB_LINE);
     });
   });
@@ -118,7 +118,7 @@ describe('WalletCard', () => {
 
     it('keeps its own sub-line rather than the spent one', () => {
       expect(
-        screen.getByTestId(WALLET_CARD_TEST_IDS.subLine)
+        screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
       ).toHaveTextContent(SAVINGS_SUB_LINE);
     });
   });

@@ -1,7 +1,7 @@
 export const ACCOUNT_PICKER_TEST_IDS = {
   picker: 'menu-account-picker',
   trigger: 'menu-account-trigger',
-  triggerTotal: 'menu-account-trigger-total',
+  currentTotalBalance: 'menu-account-trigger-total',
   caret: 'menu-account-caret',
 } as const;
 

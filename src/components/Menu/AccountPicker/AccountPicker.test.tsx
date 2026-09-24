@@ -22,25 +22,25 @@ describe('AccountPicker', () => {
     );
   });
 
-  it('keeps the accounts out of sight until the trigger is tapped', () => {
+  it('keeps the accounts out of sight until the current account is tapped', () => {
     expect(
       screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
     ).not.toBeInTheDocument();
   });
 
-  it('shows the accounts when the trigger is tapped', () => {
+  it('shows the accounts when the current account is tapped', () => {
     openAccountPicker();
 
     expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.list)).toBeInTheDocument();
   });
 
-  it('names the account in view on the trigger', () => {
+  it('names the account in view on its button', () => {
     expect(
       screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)
     ).toHaveTextContent(mockSecondDerivedAccount.name);
   });
 
-  it('puts the accounts away again when the trigger is tapped twice', () => {
+  it('puts the accounts away again when the current account is tapped twice', () => {
     openAccountPicker();
     openAccountPicker();
 

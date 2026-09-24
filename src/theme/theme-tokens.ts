@@ -11,7 +11,7 @@ export interface ThemeColors {
   readonly surface: string;
   readonly textMuted: string;
   readonly textStrong: string;
-  readonly textOnPot: string;
+  readonly textOnWallet: string;
   readonly labelShade: string;
   readonly selectionRing: string;
   readonly star: string;
@@ -27,32 +27,32 @@ export interface ThemeColors {
   readonly alert: string;
   readonly alertText: string;
   readonly alertSoftBg: string;
-  readonly withdrawText: string;
+  readonly withdrawalText: string;
   readonly walletSavings: string;
   readonly walletSpending: string;
-  readonly walletGood: string;
+  readonly walletGoodDeeds: string;
   readonly walletTrack: string;
   readonly chartSavings: string;
   readonly chartSpending: string;
-  readonly chartGood: string;
+  readonly chartGoodDeeds: string;
 }
 
 export interface ThemeStops {
   readonly screen: readonly [string, string, string];
-  readonly actionButton: readonly [string, string];
+  readonly primaryButton: readonly [string, string];
   readonly sunnyTile: readonly [string, string];
-  readonly potSavings: readonly [string, string];
-  readonly potSpending: readonly [string, string];
-  readonly potGood: readonly [string, string];
+  readonly walletSavings: readonly [string, string];
+  readonly walletSpending: readonly [string, string];
+  readonly walletGoodDeeds: readonly [string, string];
 }
 
 export interface ThemeGradients {
   readonly screen: string;
-  readonly actionButton: string;
+  readonly primaryButton: string;
   readonly sunnyTile: string;
-  readonly potSavings: string;
-  readonly potSpending: string;
-  readonly potGood: string;
+  readonly walletSavings: string;
+  readonly walletSpending: string;
+  readonly walletGoodDeeds: string;
 }
 
 export interface ThemeTokens {

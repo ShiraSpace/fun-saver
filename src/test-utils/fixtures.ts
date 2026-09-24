@@ -206,5 +206,5 @@ export const mockSecondDerivedAccount: AccountWithDerivedWallets = {
 export const mockAccountsContext: AccountsContextValue = {
   accounts: [mockDerivedAccount, mockSecondDerivedAccount],
   currentAccount: mockDerivedAccount,
-  selectAccount: () => {},
+  switchAccount: () => {},
 };

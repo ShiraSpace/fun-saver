@@ -8,9 +8,9 @@ import { useEscapeKey } from '../use-escape-key';
 import { Panel, Content } from './MenuOverlay.styles';
 
 export const MenuOverlay = memo(function MenuOverlay(): JSX.Element {
-  const { isOpen, close } = useMenu();
+  const { isOpen, closeMenu } = useMenu();
 
-  useEscapeKey({ isListening: isOpen, onEscape: close });
+  useEscapeKey({ isListening: isOpen, onEscape: closeMenu });
 
   return (
     <Panel

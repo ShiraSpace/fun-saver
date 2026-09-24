@@ -7,7 +7,7 @@ import { Column, Screen } from '@/components/Screen';
 import { AccountManagement } from '@/components/AccountManagement';
 import { AccountsProvider } from '@/components/Home/accounts-context';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
-import { ActionsSection } from './ActionsSection';
+import { SetupSection } from './SetupSection';
 import { LimitsSection } from './LimitsSection';
 import { MethodIntro } from './MethodIntro';
 import { PromiseSection } from './PromiseSection';
@@ -24,7 +24,7 @@ interface MethodProps {
 
 export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
   const navigation = useAccountNavigation(accounts, initialAccount.id);
-  const { currentAccount, selectAccount } = navigation;
+  const { currentAccount, switchAccount } = navigation;
 
   return (
     <AccountManagement navigation={navigation}>
@@ -32,7 +32,7 @@ export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
         value={{
           accounts,
           currentAccount: currentAccount ?? initialAccount,
-          selectAccount,
+          switchAccount,
         }}
       >
         <Screen align="top">
@@ -45,7 +45,7 @@ export function Method({ accounts, initialAccount }: MethodProps): JSX.Element {
             <WhySection />
             <WalletsSection />
             <PromiseSection />
-            <ActionsSection />
+            <SetupSection />
             <ScriptsSection />
             <LimitsSection />
             <SourcesSection />

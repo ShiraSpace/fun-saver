@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { ActionList } from '../ActionList';
+import { Checklist } from '../Checklist';
 import { GoalOutcome } from '../GoalOutcome';
 import { MethodBlocks } from '../MethodBlocks';
 import { MethodSection } from '../MethodSection';
@@ -24,7 +24,7 @@ export function PromiseSection(): JSX.Element {
     >
       <MethodBlocks blocks={PROMISE_BLOCKS} />
       <Rules>{rules}</Rules>
-      <ActionList {...promise.action} />
+      <Checklist {...promise.checklist} />
     </MethodSection>
   );
 }

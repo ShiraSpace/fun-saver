@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { LOADING_SHELL_TEST_IDS } from '@/components/LoadingShell/constants';
-import { LOGIN_PATH } from '@/lib/constants';
+import { SIGN_IN_PATH } from '@/lib/constants';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
@@ -31,7 +31,7 @@ describe('waiting for a page', () => {
     it('sends the shell ahead of the page', async () => {
       const positions = await loadingShell.positionsOnFirstLoad(
         HOME_ROUTE,
-        ACCOUNT_TEST_IDS.actionCta
+        ACCOUNT_TEST_IDS.newTransaction
       );
 
       assert.ok(positions.shell >= 0, 'the first load carries no shell');
@@ -48,7 +48,7 @@ describe('waiting for a page', () => {
       );
 
       assert.equal(response.status, StatusCodes.TEMPORARY_REDIRECT);
-      assert.equal(response.redirectPath, LOGIN_PATH);
+      assert.equal(response.redirectPath, SIGN_IN_PATH);
     });
   });
 
@@ -78,7 +78,7 @@ describe('waiting for a page', () => {
     {
       name: 'from home to the method page',
       start: HOME_ROUTE,
-      leavingPage: ACCOUNT_TEST_IDS.actionCta,
+      leavingPage: ACCOUNT_TEST_IDS.newTransaction,
       arrivingTitle: METHOD_COPY.title,
       leave: async (): Promise<void> => {
         await menu.open();

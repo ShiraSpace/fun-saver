@@ -28,10 +28,10 @@ function assertPositiveAmount(amountAgorot: number): void {
   }
 }
 
-export function splitDeposit(totalAgorot: number): DepositSplit {
-  const spending = Math.floor(totalAgorot * DEPOSIT_SPLIT.spending);
-  const goodDeeds = Math.floor(totalAgorot * DEPOSIT_SPLIT.goodDeeds);
-  const savings = totalAgorot - spending - goodDeeds;
+export function splitDeposit(amountAgorot: number): DepositSplit {
+  const spending = Math.floor(amountAgorot * DEPOSIT_SPLIT.spending);
+  const goodDeeds = Math.floor(amountAgorot * DEPOSIT_SPLIT.goodDeeds);
+  const savings = amountAgorot - spending - goodDeeds;
 
   return { savings, spending, goodDeeds };
 }

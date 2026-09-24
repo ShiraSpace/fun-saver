@@ -5,8 +5,8 @@ import {
   APP_MODE,
   AppMode,
 } from '@/components/AccountManagement/app-mode-context';
-import { SELECTED_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
-import { selectedAccount } from '@/lib/selected-account';
+import { CURRENT_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
+import { findCurrentAccount } from '@/lib/current-account';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/AppThemeProvider';
 
@@ -14,7 +14,7 @@ export interface AccountNavigation {
   mode: AppMode;
   setMode: Dispatch<SetStateAction<AppMode>>;
   currentAccount?: AccountWithDerivedWallets;
-  selectAccount: (id: string) => void;
+  switchAccount: (id: string) => void;
   showNewAccount: (account: Account) => void;
   finishEditing: () => void;
   cancel: () => void;
@@ -30,14 +30,14 @@ export function useAccountNavigation(
   const setThemeId = useSetThemeId();
 
   const [mode, setMode] = useState<AppMode>(APP_MODE.viewing);
-  const [selectedAccountId, setSelectedAccountId] = useState(initialAccountId);
+  const [currentAccountId, setCurrentAccountId] = useState(initialAccountId);
 
-  const selectAccount = (id: string): void => {
-    setSelectedAccountId(id);
-    writeCookie(SELECTED_ACCOUNT_COOKIE, id);
+  const switchAccount = (id: string): void => {
+    setCurrentAccountId(id);
+    writeCookie(CURRENT_ACCOUNT_COOKIE, id);
 
-    const target = accounts.find((account) => account.id === id);
-    setThemeId(resolveThemeId(target?.themeId));
+    const nextAccount = accounts.find((account) => account.id === id);
+    setThemeId(resolveThemeId(nextAccount?.themeId));
   };
 
   const returnToViewing = (): void => setMode(APP_MODE.viewing);
@@ -47,16 +47,16 @@ export function useAccountNavigation(
     router.refresh();
   };
 
-  const currentAccount = selectedAccount(accounts, selectedAccountId);
+  const currentAccount = findCurrentAccount(accounts, currentAccountId);
   const isEditing = mode === APP_MODE.editingAccount;
 
   return {
     mode,
     setMode,
     currentAccount,
-    selectAccount,
+    switchAccount,
     showNewAccount: (account): void => {
-      selectAccount(account.id);
+      switchAccount(account.id);
       finishEditing();
     },
     finishEditing,

@@ -1,4 +1,4 @@
-import { ACTIONS_COPY } from './actions';
+import { SETUP_COPY } from './setup';
 import { BRIEF_COPY, GOAL_COPY } from './goal';
 import { LIMITS_COPY } from './limits';
 import { PROMISE_COPY } from './promise';
@@ -8,8 +8,8 @@ import { WALLETS_COPY } from './wallets';
 import { WHY_COPY } from './why';
 
 export type {
-  ActionGroup,
-  ActionItem,
+  ChecklistGroup,
+  ChecklistItem,
   ExampleRow,
   ExampleTable,
   IconLine,
@@ -27,7 +27,7 @@ export const METHOD_COPY = {
   why: WHY_COPY,
   wallets: WALLETS_COPY,
   promise: PROMISE_COPY,
-  actions: ACTIONS_COPY,
+  setup: SETUP_COPY,
   scripts: SCRIPTS_COPY,
   limits: LIMITS_COPY,
   sources: SOURCES_COPY,

@@ -56,7 +56,7 @@ describe('JsonFileStore file handling', () => {
 
     it('defaults the missing users', async () => {
       expect(
-        await store.findUserByProvider('google', 'any-sub')
+        await store.findUserByIdentity('google', 'any-sub')
       ).toBeUndefined();
     });
 

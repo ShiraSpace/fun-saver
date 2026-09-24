@@ -16,18 +16,18 @@ interface HomeProps {
 
 export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
   const navigation = useAccountNavigation(accounts, initialAccountId);
-  const { currentAccount, selectAccount, setMode } = navigation;
-  const startCreating = (): void => setMode(APP_MODE.creatingAccount);
+  const { currentAccount, switchAccount, setMode } = navigation;
+  const startCreatingAccount = (): void => setMode(APP_MODE.creatingAccount);
   const showsEmptyState = !currentAccount && !navigation.isCreating;
 
   return (
     <AccountManagement navigation={navigation}>
       {currentAccount && (
-        <AccountsProvider value={{ accounts, currentAccount, selectAccount }}>
+        <AccountsProvider value={{ accounts, currentAccount, switchAccount }}>
           <Account account={currentAccount} />
         </AccountsProvider>
       )}
-      {showsEmptyState && <EmptyState onCreate={startCreating} />}
+      {showsEmptyState && <EmptyState onCreate={startCreatingAccount} />}
     </AccountManagement>
   );
 }

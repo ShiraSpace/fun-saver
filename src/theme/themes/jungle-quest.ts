@@ -6,11 +6,11 @@ import type { ThemeStops, ThemeTokens } from '../theme-tokens';
 
 const STOPS = {
   screen: ['#2A9D8F', '#43AA8B', '#90BE6D'],
-  actionButton: ['#1B7A6B', '#12564B'],
+  primaryButton: ['#1B7A6B', '#12564B'],
   sunnyTile: ['#52B69A', '#2A9D8F'],
-  potSavings: ['#52B69A', '#2A9D8F'],
-  potSpending: ['#B5D94C', '#90BE6D'],
-  potGood: ['#F4A261', '#E76F51'],
+  walletSavings: ['#52B69A', '#2A9D8F'],
+  walletSpending: ['#B5D94C', '#90BE6D'],
+  walletGoodDeeds: ['#F4A261', '#E76F51'],
 } as const satisfies ThemeStops;
 
 export const jungleQuest: ThemeTokens = {
@@ -23,7 +23,7 @@ export const jungleQuest: ThemeTokens = {
     surface: '#FFFDF5',
     textMuted: '#4B655B',
     textStrong: '#1B4332',
-    textOnPot: '#2B1800',
+    textOnWallet: '#2B1800',
     labelShade: 'rgba(0, 0, 0, 0.35)',
     selectionRing: '#2B1800',
     star: '#F9C74F',
@@ -39,14 +39,14 @@ export const jungleQuest: ThemeTokens = {
     alert: '#E5484D',
     alertText: '#A83A21',
     alertSoftBg: '#FDECEC',
-    withdrawText: '#D9480F',
+    withdrawalText: '#D9480F',
     walletSavings: '#2A9D8F',
     walletSpending: '#90BE6D',
-    walletGood: '#E76F51',
+    walletGoodDeeds: '#E76F51',
     walletTrack: '#E8EFDC',
     chartSavings: '#2A9D8F',
     chartSpending: '#6E9B22',
-    chartGood: '#E76F51',
+    chartGoodDeeds: '#E76F51',
   },
   gradients: buildGradients(STOPS),
   shadows: SHADOW_SCALE,

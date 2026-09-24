@@ -6,13 +6,16 @@ function accountEndpoint(accountId: string): string {
 }
 
 interface AccountUpdater {
-  updateAccount: (id: string, edits: AccountEdits) => Promise<Account>;
+  updateAccount: (accountId: string, edits: AccountEdits) => Promise<Account>;
 }
 
 export function useUpdateAccount(): AccountUpdater {
-  const updateAccount = (id: string, edits: AccountEdits): Promise<Account> =>
+  const updateAccount = (
+    accountId: string,
+    edits: AccountEdits
+  ): Promise<Account> =>
     fetchJson<Account>({
-      url: accountEndpoint(id),
+      url: accountEndpoint(accountId),
       method: 'PUT',
       body: edits,
     });

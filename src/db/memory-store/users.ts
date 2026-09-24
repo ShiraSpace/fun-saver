@@ -2,7 +2,7 @@ import type { AuthProvider, User } from '@/lib/types';
 import { DuplicateUserError } from '@/lib/errors';
 import type { UserRepository } from '../data-store';
 import {
-  findUserByIdentity,
+  userWithIdentity,
   isDuplicateUser,
   isKnownUser,
 } from '../user-identity';
@@ -10,11 +10,11 @@ import {
 export class MemoryUsers implements UserRepository {
   private readonly users: User[] = [];
 
-  async findByProvider(
+  async findByIdentity(
     provider: AuthProvider,
     providerAccountId: string
   ): Promise<User | undefined> {
-    return findUserByIdentity(this.users, provider, providerAccountId);
+    return userWithIdentity(this.users, provider, providerAccountId);
   }
 
   isKnown(id: string): boolean {

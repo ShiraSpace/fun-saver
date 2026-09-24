@@ -1,7 +1,7 @@
 import {
   agorotToShekels,
   agorotToWholeShekels,
-  halfShekelAmount,
+  nearestHalfShekel,
   shekelsToAgorot,
 } from '../money';
 
@@ -26,30 +26,30 @@ describe('shekelsToAgorot', () => {
   });
 });
 
-describe('halfShekelAmount', () => {
+describe('nearestHalfShekel', () => {
   it('rounds to a whole shekel', () => {
-    expect(halfShekelAmount(102)).toBe(1);
+    expect(nearestHalfShekel(102)).toBe(1);
   });
 
   it('rounds to a half shekel', () => {
-    expect(halfShekelAmount(140)).toBe(1.5);
+    expect(nearestHalfShekel(140)).toBe(1.5);
   });
 
   it('rounds up to half a shekel', () => {
-    expect(halfShekelAmount(38)).toBe(0.5);
+    expect(nearestHalfShekel(38)).toBe(0.5);
   });
 
   it('rounds an exact midpoint down', () => {
-    expect(halfShekelAmount(525)).toBe(5);
+    expect(nearestHalfShekel(525)).toBe(5);
   });
 
   it('rounds up to two and a half shekels', () => {
-    expect(halfShekelAmount(238)).toBe(2.5);
+    expect(nearestHalfShekel(238)).toBe(2.5);
   });
 
   it('returns null when the amount rounds to zero', () => {
-    expect(halfShekelAmount(0)).toBeNull();
-    expect(halfShekelAmount(18)).toBeNull();
-    expect(halfShekelAmount(20)).toBeNull();
+    expect(nearestHalfShekel(0)).toBeNull();
+    expect(nearestHalfShekel(18)).toBeNull();
+    expect(nearestHalfShekel(20)).toBeNull();
   });
 });

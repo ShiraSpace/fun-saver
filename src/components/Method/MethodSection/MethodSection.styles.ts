@@ -36,7 +36,7 @@ export const Numeral = styled.span`
   width: 24px;
   height: 24px;
   border-radius: 999px;
-  background: ${({ theme }): string => theme.gradients.actionButton};
+  background: ${({ theme }): string => theme.gradients.primaryButton};
   color: ${({ theme }): string => theme.colors.textOnPrimary};
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 600;
