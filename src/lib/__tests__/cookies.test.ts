@@ -29,4 +29,10 @@ describe('writeCookie', () => {
 
     expect(document.cookie).toBe('themeId=jungle-quest');
   });
+
+  it('remembers the current account under the name returning browsers already hold it by', () => {
+    writeCookie(CURRENT_ACCOUNT_COOKIE, 'account-1');
+
+    expect(document.cookie).toBe('selectedAccountId=account-1');
+  });
 });
