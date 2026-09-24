@@ -199,6 +199,15 @@ Parent-facing page explaining the rationale and the six rules to set. Copy is
 in `docs/copy/method-page.he.md` (shipping, Hebrew) and
 `docs/copy/method-page.en.md` (parked for i18n).
 
+## 8. Deposit confirmation
+Show a nice deposit confirmation with sound and maybe the expected interest from that deposit over time
+
+## Research
+
+### Way to use real money
+- Deposit by API
+- Only spending wallet as V1
+
 ## Explicitly NOT doing
 
 - **Transfers between wallets.** The partition *is* the intervention — Soman &
