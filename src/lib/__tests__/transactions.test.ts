@@ -2,7 +2,7 @@ import { InMemoryStore } from '@/db/memory-store';
 import { today } from '../clock';
 import { addDeposit, addWithdrawal, splitDeposit } from '../transactions';
 import { balance } from '../wallet-totals';
-import { DEPOSIT_SHARES } from '../constants';
+import { DEPOSIT_SHARES, TRANSACTION_TYPE } from '../constants';
 import { OverdraftError, ValidationError } from '../errors';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import type { Account, WalletName } from '../types';
@@ -43,7 +43,9 @@ describe('addDeposit', () => {
     expect(amountFor('spending')).toBe(expected.spending);
     expect(amountFor('goodDeeds')).toBe(expected.goodDeeds);
     expect(
-      transactions.every((transaction) => transaction.type === 'deposit')
+      transactions.every(
+        (transaction) => transaction.type === TRANSACTION_TYPE.deposit
+      )
     ).toBe(true);
     expect(
       transactions.every((transaction) => transaction.occurredAt === mockToday)
@@ -97,7 +99,7 @@ describe('addWithdrawal', () => {
       asOf: mockToday,
     });
 
-    expect(transaction.type).toBe('withdrawal');
+    expect(transaction.type).toBe(TRANSACTION_TYPE.withdrawal);
     expect(transaction.walletId).toBe(savings);
     expect(transaction.amount).toBe(500);
 
