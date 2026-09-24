@@ -1,7 +1,7 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { getThemeTokens } from '@/theme/registry';
-import { COLORS } from '@/theme/palette';
+import { SUNSHINE_QUEST_COLORS } from '@/theme/palette';
 import { TYPE_SCALE } from '@/theme/typography';
 import { SCREEN_LAYOUT } from '@/components/Screen/constants';
 import { gradientToRgb, hexToRgb } from '@/test-utils/css-color';
@@ -47,7 +47,7 @@ describe('create account', () => {
   it('shows the title in white at the heading size', async () => {
     assert.equal(
       await createAccount.titleColor(),
-      hexToRgb(COLORS.textOnPrimary)
+      hexToRgb(SUNSHINE_QUEST_COLORS.textOnPrimary)
     );
     assert.equal(await createAccount.titleFontSize(), `${TYPE_SCALE.title}px`);
   });
@@ -55,15 +55,15 @@ describe('create account', () => {
   it('shows the name as a white card with a muted label and strong value', async () => {
     assert.equal(
       await createAccount.nameFieldBackground(),
-      hexToRgb(COLORS.surface)
+      hexToRgb(SUNSHINE_QUEST_COLORS.surface)
     );
     assert.equal(
       await createAccount.nameLabelColor(),
-      hexToRgb(COLORS.textMuted)
+      hexToRgb(SUNSHINE_QUEST_COLORS.textMuted)
     );
     assert.equal(
       await createAccount.nameInputColor(),
-      hexToRgb(COLORS.textStrong)
+      hexToRgb(SUNSHINE_QUEST_COLORS.textStrong)
     );
   });
 });

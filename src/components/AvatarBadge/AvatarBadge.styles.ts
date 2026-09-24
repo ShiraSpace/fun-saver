@@ -13,7 +13,7 @@ const badgeBackground = ({
   theme,
   background,
 }: BadgeStyle & { theme: Theme }): string =>
-  background ?? theme.gradients.sunnyTile;
+  background ?? theme.gradients.avatarBadge;
 
 export const Badge = styled.span<BadgeStyle>`
   position: relative;
