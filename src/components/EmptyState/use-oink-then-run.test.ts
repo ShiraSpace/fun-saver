@@ -3,21 +3,21 @@ import { useOinkThenRun } from './use-oink-then-run';
 
 describe('useOinkThenRun', () => {
   it('oinks on click without running the callback yet', () => {
-    const onDone = jest.fn();
-    const { result } = renderHook(() => useOinkThenRun(onDone));
+    const mockOnDone = jest.fn();
+    const { result } = renderHook(() => useOinkThenRun(mockOnDone));
 
     act(() => result.current.onCreateAccountClick());
 
     expect(result.current.isOinking).toBe(true);
-    expect(onDone).not.toHaveBeenCalled();
+    expect(mockOnDone).not.toHaveBeenCalled();
   });
 
   it('runs the callback once the pig is done oinking', () => {
-    const onDone = jest.fn();
-    const { result } = renderHook(() => useOinkThenRun(onDone));
+    const mockOnDone = jest.fn();
+    const { result } = renderHook(() => useOinkThenRun(mockOnDone));
 
     act(() => result.current.onPigDoneOinking());
 
-    expect(onDone).toHaveBeenCalled();
+    expect(mockOnDone).toHaveBeenCalled();
   });
 });

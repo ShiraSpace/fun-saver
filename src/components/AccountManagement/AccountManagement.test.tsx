@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { mockDerivedAccount } from '@/test-utils/fixtures';
+import { mockAccountSummary } from '@/test-utils/fixtures';
 import type { AccountNavigation } from '@/hooks/use-account-navigation';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
@@ -17,7 +17,7 @@ function renderManagement(
   const navigation: AccountNavigation = {
     mode: APP_MODE.viewing,
     setMode: () => {},
-    currentAccount: mockDerivedAccount,
+    currentAccount: mockAccountSummary,
     switchAccount: () => {},
     showNewAccount: () => {},
     finishEditing: () => {},
@@ -72,7 +72,7 @@ describe('AccountManagement', () => {
 
   describe('while editing an account', () => {
     beforeEach(() => {
-      renderManagement({ editingAccount: mockDerivedAccount });
+      renderManagement({ editingAccount: mockAccountSummary });
     });
 
     it('opens the edit form', () => {
@@ -83,7 +83,7 @@ describe('AccountManagement', () => {
 
     it('fills it with the account being edited', () => {
       expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(
-        mockDerivedAccount.name
+        mockAccountSummary.name
       );
     });
   });

@@ -5,13 +5,13 @@ import {
 } from '@/components/AccountForm/constants';
 import {
   cancelForm,
-  chosenAvatars,
+  selectedAvatars,
   nameInput,
-  pickAvatar,
+  selectAvatar,
   submitForm,
-  typeName,
+  fillName,
 } from '@/test-utils/account-form';
-import { mockAccount, mockAccountEdit } from '@/test-utils/fixtures';
+import { mockAccount, mockAccountEdits } from '@/test-utils/fixtures';
 import { EditAccount } from './EditAccount';
 import { EDIT_ACCOUNT_COPY, EDIT_ACCOUNT_TEST_IDS } from './constants';
 
@@ -62,7 +62,7 @@ describe('EditAccount', () => {
   });
 
   it('opens with the account avatar already chosen', () => {
-    const selected = chosenAvatars();
+    const selected = selectedAvatars();
 
     expect(selected).toHaveLength(1);
     expect(
@@ -71,13 +71,13 @@ describe('EditAccount', () => {
   });
 
   it('saves the edited values against the account id', () => {
-    typeName(mockAccountEdit.name);
-    pickAvatar(mockAccountEdit.avatarId);
+    fillName(mockAccountEdits.name);
+    selectAvatar(mockAccountEdits.avatarId);
     submitForm();
 
     expect(mockUpdateAccount).toHaveBeenCalledWith(mockAccount.id, {
-      name: mockAccountEdit.name,
-      avatarId: mockAccountEdit.avatarId,
+      name: mockAccountEdits.name,
+      avatarId: mockAccountEdits.avatarId,
     });
   });
 

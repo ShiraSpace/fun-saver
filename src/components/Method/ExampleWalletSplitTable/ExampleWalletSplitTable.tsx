@@ -24,7 +24,7 @@ export function ExampleWalletSplitTable({
     </th>
   ));
   const walletRows = table.rows.map((row) => (
-    <ExampleWalletSplitRow key={row.wallet} {...row} />
+    <ExampleWalletSplitRow key={row.walletName} {...row} />
   ));
 
   return (

@@ -5,11 +5,11 @@ import { AvatarPicker } from './AvatarPicker';
 import { AVATAR_PICKER_TEST_IDS } from './constants';
 
 describe('AvatarPicker', () => {
-  const onSelect = jest.fn();
+  const mockOnSelect = jest.fn();
 
   beforeEach(() => {
-    onSelect.mockClear();
-    render(<AvatarPicker selectedId={null} onSelect={onSelect} />);
+    mockOnSelect.mockClear();
+    render(<AvatarPicker selectedId={null} onSelect={mockOnSelect} />);
   });
 
   it('renders an option for every avatar', () => {
@@ -25,7 +25,7 @@ describe('AvatarPicker', () => {
 
       beforeEach(() => {
         render(
-          <AvatarPicker selectedId={AVATARS[0].id} onSelect={onSelect} />,
+          <AvatarPicker selectedId={AVATARS[0].id} onSelect={mockOnSelect} />,
           { themeId }
         );
       });

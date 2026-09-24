@@ -18,8 +18,8 @@ interface StatProps {
 
 interface InterestStatsProps {
   principal: number;
-  interestGain: number;
-  todayInterest: number;
+  interestEarned: number;
+  interestEarnedToday: number;
 }
 
 function Stat({
@@ -45,10 +45,10 @@ function Stat({
 
 export function InterestStats({
   principal,
-  interestGain,
-  todayInterest,
+  interestEarned,
+  interestEarnedToday,
 }: InterestStatsProps): JSX.Element {
-  const hasTodayInterest = nearestHalfShekel(todayInterest) !== null;
+  const hasTodayInterest = nearestHalfShekel(interestEarnedToday) !== null;
 
   return (
     <Stats data-testid={INTEREST_STATS_TEST_IDS.stats}>
@@ -60,16 +60,16 @@ export function InterestStats({
       />
       <Stat
         tone="interest"
-        label={INTEREST_STATS_COPY.interestGainLabel}
-        amountAgorot={interestGain}
-        testId={INTEREST_STATS_TEST_IDS.interestGain}
+        label={INTEREST_STATS_COPY.interestEarnedLabel}
+        amountAgorot={interestEarned}
+        testId={INTEREST_STATS_TEST_IDS.interestEarned}
       />
       {hasTodayInterest && (
         <Stat
           tone="interest"
-          label={INTEREST_STATS_COPY.todayInterestLabel}
-          amountAgorot={todayInterest}
-          testId={INTEREST_STATS_TEST_IDS.todayInterest}
+          label={INTEREST_STATS_COPY.interestEarnedTodayLabel}
+          amountAgorot={interestEarnedToday}
+          testId={INTEREST_STATS_TEST_IDS.interestEarnedToday}
           allowHalf
         />
       )}

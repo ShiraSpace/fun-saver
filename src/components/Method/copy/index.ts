@@ -12,7 +12,7 @@ export type {
   ChecklistItem,
   ExampleRow,
   ExampleTable,
-  IconLine,
+  KeyPointCopy,
   MethodBlock,
   Source,
   SourceId,

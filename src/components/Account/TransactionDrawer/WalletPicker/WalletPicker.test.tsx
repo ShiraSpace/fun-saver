@@ -1,32 +1,32 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { WalletPicker } from './WalletPicker';
 import { WALLET_PICKER_TEST_IDS } from './constants';
-import { mockDerivedWallets } from '@/test-utils/fixtures';
+import { mockWalletSummaries } from '@/test-utils/fixtures';
 import { agorotToShekels } from '@/lib/money';
 
-const onSelect = jest.fn();
-const [savings, spending] = mockDerivedWallets;
+const mockOnSelect = jest.fn();
+const [savings, spending] = mockWalletSummaries;
 
 function renderPicker(selectedWalletId: string): void {
   render(
     <WalletPicker
-      wallets={mockDerivedWallets}
+      wallets={mockWalletSummaries}
       selectedWalletId={selectedWalletId}
-      onSelect={onSelect}
+      onSelect={mockOnSelect}
     />
   );
 }
 
 describe('WalletPicker', () => {
   beforeEach(() => {
-    onSelect.mockClear();
+    mockOnSelect.mockClear();
   });
 
   it('renders a tile with its balance for each wallet', () => {
     renderPicker(savings.id);
 
     expect(screen.getAllByTestId(/^wallet-picker-(?!balance)/)).toHaveLength(
-      mockDerivedWallets.length
+      mockWalletSummaries.length
     );
     expect(
       screen.getByTestId(WALLET_PICKER_TEST_IDS.balance(savings.name))
@@ -51,6 +51,6 @@ describe('WalletPicker', () => {
       screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(spending.name))
     );
 
-    expect(onSelect).toHaveBeenCalledWith(spending.id);
+    expect(mockOnSelect).toHaveBeenCalledWith(spending.id);
   });
 });

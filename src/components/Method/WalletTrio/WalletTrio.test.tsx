@@ -1,10 +1,10 @@
 import { render, screen } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
-import { DEPOSIT_SPLIT } from '@/lib/constants';
+import { DEPOSIT_SHARES } from '@/lib/constants';
 import { METHOD_COPY } from '../copy';
 import { WalletTrio } from './WalletTrio';
-import { share } from '../constants';
+import { percentLabel } from '../constants';
 import { WALLET_TRIO_TEST_IDS } from './constants';
 
 describe('the three wallets drawn side by side', () => {
@@ -33,10 +33,10 @@ describe('the three wallets drawn side by side', () => {
   it('takes the shares from the split the app deposits, not from the deck', () => {
     const shown = screen
       .getAllByTestId(WALLET_TRIO_TEST_IDS.share)
-      .map((share) => share.textContent);
+      .map((shareLabel) => shareLabel.textContent);
 
     expect(shown).toEqual(
-      walletNames.map((wallet) => share(DEPOSIT_SPLIT[wallet]))
+      walletNames.map((walletName) => percentLabel(DEPOSIT_SHARES[walletName]))
     );
   });
 });

@@ -1,10 +1,10 @@
 import { render, screen } from '@/test-utils/render';
-import { mockDerivedWallets, mockWalletShares } from '@/test-utils/fixtures';
+import { mockWalletSummaries, mockWalletShares } from '@/test-utils/fixtures';
 import { getThemeTokens } from '@/theme/registry';
 import { Donut, type DonutSegment } from './Donut';
 import { BALANCE_BREAKDOWN_TEST_IDS } from '../constants';
 
-const walletSegments = mockDerivedWallets.map((wallet, index) => ({
+const walletSegments = mockWalletSummaries.map((wallet, index) => ({
   name: wallet.name,
   share: mockWalletShares[index],
 }));

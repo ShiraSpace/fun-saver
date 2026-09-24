@@ -4,11 +4,11 @@ import { THEME_ID } from '@/theme/registry';
 import {
   createMockAccount,
   mockAccount,
-  mockAccountEdit,
-  mockSecondAccount,
+  mockAccountEdits,
+  mockSiblingAccount,
 } from '@/test-utils/fixtures';
 
-const pristine = createMockAccount();
+const mockPristineAccount = createMockAccount();
 
 describe('InMemoryStore accounts', () => {
   let store: InMemoryStore;
@@ -33,7 +33,7 @@ describe('InMemoryStore accounts', () => {
 
   it('returns each account with its own embedded wallets', async () => {
     await store.insertAccount(mockAccount);
-    await store.insertAccount(mockSecondAccount);
+    await store.insertAccount(mockSiblingAccount);
 
     expect(
       (await store.getAccount('a1'))?.wallets.map((wallet) => wallet.id)
@@ -57,25 +57,25 @@ describe('InMemoryStore accounts', () => {
     });
 
     it('updates the name and avatar', async () => {
-      const updated = await store.updateAccount('a1', mockAccountEdit);
+      const updated = await store.updateAccount('a1', mockAccountEdits);
 
-      expect(updated).toMatchObject(mockAccountEdit);
-      expect(await store.getAccount('a1')).toMatchObject(mockAccountEdit);
+      expect(updated).toMatchObject(mockAccountEdits);
+      expect(await store.getAccount('a1')).toMatchObject(mockAccountEdits);
     });
 
     it('leaves untouched fields alone on a partial update', async () => {
-      await store.updateAccount('a1', { name: mockAccountEdit.name });
+      await store.updateAccount('a1', { name: mockAccountEdits.name });
 
       expect(await store.getAccount('a1')).toMatchObject({
-        name: mockAccountEdit.name,
-        avatarId: pristine.avatarId,
-        wallets: pristine.wallets,
+        name: mockAccountEdits.name,
+        avatarId: mockPristineAccount.avatarId,
+        wallets: mockPristineAccount.wallets,
       });
     });
 
     it('returns undefined for an unknown id', async () => {
       expect(
-        await store.updateAccount('missing', mockAccountEdit)
+        await store.updateAccount('missing', mockAccountEdits)
       ).toBeUndefined();
     });
   });

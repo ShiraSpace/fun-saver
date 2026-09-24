@@ -16,7 +16,7 @@ export const DAYS_PER_MONTH = 30;
 
 export const SAVINGS_MONTHLY_RATE = 0.15;
 
-export const DEPOSIT_SPLIT: Record<WalletName, number> = {
+export const DEPOSIT_SHARES: Record<WalletName, number> = {
   savings: 0.4,
   spending: 0.5,
   goodDeeds: 0.1,
@@ -28,7 +28,7 @@ export interface WalletConfig {
   monthlyInterestRate: number;
 }
 
-export const WALLET_NAME: Record<WalletName, string> = {
+export const WALLET_LABEL: Record<WalletName, string> = {
   savings: 'חיסכון',
   spending: 'בזבוזים',
   goodDeeds: 'מעשים טובים',

@@ -6,7 +6,7 @@ import { mockAccount } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
 describe('signing out', () => {
-  const { menu, session } = useDriver({ accounts: [mockAccount] });
+  const { menu, appBrowser } = useDriver({ accounts: [mockAccount] });
 
   it('leaves the app for the sign-in page', async () => {
     await menu.open();
@@ -18,8 +18,8 @@ describe('signing out', () => {
     await menu.open();
     await menu.signOut();
 
-    await session.visit(HOME_ROUTE);
+    await appBrowser.visit(HOME_ROUTE);
 
-    assert.equal(session.currentPath(), SIGN_IN_PATH);
+    assert.equal(appBrowser.currentPath(), SIGN_IN_PATH);
   });
 });

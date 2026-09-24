@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { type BoundingBox } from 'puppeteer';
 import { mockAccount } from '@/test-utils/fixtures';
-import { COLORS } from '@/theme/palette';
+import { getThemeTokens } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
@@ -20,11 +20,11 @@ const NO_TRANSFORM = 'none';
 const VISIBLE = '1';
 const HIDDEN = '0';
 const TRANSPARENT = 'rgba(0, 0, 0, 0)';
-const SHEET = hexToRgb(COLORS.softBg);
-const ON_SHEET = hexToRgb(COLORS.textStrong);
+const OVERLAY_BACKGROUND = hexToRgb(getThemeTokens().colors.softBg);
+const TEXT_ON_OVERLAY = hexToRgb(getThemeTokens().colors.textStrong);
 
 describe('menu morph', () => {
-  const { session, menu, header } = useDriver({ accounts: [mockAccount] });
+  const { appBrowser, menu, header } = useDriver({ accounts: [mockAccount] });
 
   describe('when closed', () => {
     it('shows a hamburger', async () => {
@@ -34,7 +34,7 @@ describe('menu morph', () => {
 
     it('shows the opaque header with the account name', async () => {
       assert.notEqual(await header.background(), TRANSPARENT);
-      assert.equal(await header.name(), mockAccount.name);
+      assert.equal(await header.title(), mockAccount.name);
     });
   });
 
@@ -51,19 +51,19 @@ describe('menu morph', () => {
     it('leaves the header card standing', async () => {
       assert.notEqual(await header.background(), TRANSPARENT);
       assert.notEqual(await header.shadow(), NO_TRANSFORM);
-      assert.equal(await header.name(), mockAccount.name);
-      assert.equal(await header.titleColor(), ON_SHEET);
+      assert.equal(await header.title(), mockAccount.name);
+      assert.equal(await header.titleColor(), TEXT_ON_OVERLAY);
     });
 
-    it('starts the panel below the header rather than over it', async () => {
+    it('starts the overlay below the header rather than over it', async () => {
       const bar = await header.box();
-      const panel = await menu.panelBox();
+      const overlay = await menu.overlayBox();
 
-      assert.equal(panel.y, bar.y + bar.height);
+      assert.equal(overlay.y, bar.y + bar.height);
     });
 
-    it('opens onto a soft sheet rather than the screen gradient', async () => {
-      assert.equal(await menu.panelBackground(), SHEET);
+    it('opens onto a soft overlay rather than the screen gradient', async () => {
+      assert.equal(await menu.overlayBackground(), OVERLAY_BACKGROUND);
     });
 
     it('leaves the appearance section where it was when the list opens', async () => {
@@ -114,7 +114,7 @@ describe('menu morph', () => {
 
   describe('on a window wider than the page column', () => {
     beforeEach(async () => {
-      await session.resize(DESKTOP);
+      await appBrowser.resize(DESKTOP);
       await menu.open();
     });
 

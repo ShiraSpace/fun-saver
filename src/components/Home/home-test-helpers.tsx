@@ -3,23 +3,23 @@ import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '@/components/Menu/EditAccountButton/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import {
-  pickFirstAvatar,
+  selectFirstAvatar,
   submitForm,
-  typeName,
+  fillName,
 } from '@/test-utils/account-form';
 import {
   createMockAccount,
   mockAccount,
-  mockDerivedWallets,
-  mockSecondAccount,
+  mockWalletSummaries,
+  mockSiblingAccount,
   mockUser,
 } from '@/test-utils/fixtures';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { Home } from './Home';
 
-export const accounts: AccountWithDerivedWallets[] = [
-  { ...mockAccount, wallets: mockDerivedWallets },
-  { ...mockSecondAccount, wallets: mockDerivedWallets },
+export const accounts: AccountSummary[] = [
+  { ...mockAccount, wallets: mockWalletSummaries },
+  { ...mockSiblingAccount, wallets: mockWalletSummaries },
 ];
 
 export const createdAccount = createMockAccount({
@@ -32,7 +32,7 @@ export const renamedAccount = createMockAccount({
 });
 
 interface RenderHomeParams {
-  accounts?: AccountWithDerivedWallets[];
+  accounts?: AccountSummary[];
   initialAccountId?: string;
 }
 
@@ -58,12 +58,12 @@ export function tapEditButton(): void {
 }
 
 export function submitEditForm(): void {
-  typeName(renamedAccount.name);
+  fillName(renamedAccount.name);
   submitForm();
 }
 
 export function submitCreateForm(): void {
-  typeName(createdAccount.name);
-  pickFirstAvatar();
+  fillName(createdAccount.name);
+  selectFirstAvatar();
   submitForm();
 }

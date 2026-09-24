@@ -2,17 +2,17 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   mockAccount,
-  mockDerivedWallets,
+  mockWalletSummaries,
   mockTransactions,
 } from '@/test-utils/fixtures';
 import { WALLET_LIST_COPY } from '@/components/Account/WalletList/constants';
 import { WALLET_CARD_COPY } from '@/components/Account/WalletCard/constants';
 import { useDriver } from './driver/use-driver';
 
-const [, spending, goodDeeds] = mockDerivedWallets;
+const [, spending, goodDeeds] = mockWalletSummaries;
 
-describe('dashboard', () => {
-  const { header, dashboard } = useDriver({
+describe('the account screen', () => {
+  const { header, account } = useDriver({
     accounts: [mockAccount],
     transactions: mockTransactions,
   });
@@ -22,17 +22,17 @@ describe('dashboard', () => {
   });
 
   it('shows the balance breakdown with the savings daily interest', async () => {
-    assert.equal(await dashboard.overviewExists(), true);
-    assert.match(await dashboard.savingsTodayInterest(), /₪\s*5/);
+    assert.equal(await account.overviewExists(), true);
+    assert.match(await account.savingsTodayInterest(), /₪\s*5/);
   });
 
   it('shows one card per wallet', async () => {
-    assert.equal(await dashboard.supportingLabel(), WALLET_LIST_COPY.label);
-    assert.equal(await dashboard.walletCardCount(), 3);
+    assert.equal(await account.walletListLabel(), WALLET_LIST_COPY.label);
+    assert.equal(await account.walletCardCount(), 3);
   });
 
   it('shows what the spending and good-deeds wallets have spent', async () => {
-    const summaries = await dashboard.walletSummaries();
+    const summaries = await account.walletSummaries();
 
     assert.ok(summaries.includes(WALLET_CARD_COPY.spendingSummary(spending)));
     assert.ok(summaries.includes(WALLET_CARD_COPY.goodDeedsSummary(goodDeeds)));

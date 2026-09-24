@@ -1,14 +1,14 @@
 export const INTEREST_STATS_TEST_IDS = {
   stats: 'wallet-stat-strip',
   principal: 'wallet-deposits',
-  interestGain: 'wallet-interest-gain',
-  todayInterest: 'wallet-today-interest',
+  interestEarned: 'wallet-interest-gain',
+  interestEarnedToday: 'wallet-today-interest',
 } as const;
 
 export const INTEREST_STATS_COPY = {
   principalLabel: 'הפקדת',
-  interestGainLabel: 'רווח מריבית',
-  todayInterestLabel: 'היום',
+  interestEarnedLabel: 'רווח מריבית',
+  interestEarnedTodayLabel: 'היום',
 } as const;
 
 export const INTEREST_STATS_STYLE = {

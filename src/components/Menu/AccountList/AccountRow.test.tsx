@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { mockDerivedAccount } from '@/test-utils/fixtures';
-import { totalBalance } from '@/lib/derivations';
+import { mockAccountSummary } from '@/test-utils/fixtures';
+import { totalBalance } from '@/lib/wallet-totals';
 import { agorotToWholeShekels } from '@/lib/money';
 import { AccountRow } from './AccountRow';
 import { ACCOUNT_LIST_TEST_IDS } from './constants';
@@ -10,7 +10,7 @@ const mockOnSelect = jest.fn();
 function renderRow(isCurrent: boolean): void {
   render(
     <AccountRow
-      account={mockDerivedAccount}
+      account={mockAccountSummary}
       isCurrent={isCurrent}
       onSelect={mockOnSelect}
     />
@@ -29,13 +29,13 @@ describe('AccountRow', () => {
 
     it('names the account', () => {
       expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.row)).toHaveTextContent(
-        mockDerivedAccount.name
+        mockAccountSummary.name
       );
     });
 
     it('shows what the account holds in total', () => {
       expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.total)).toHaveTextContent(
-        String(agorotToWholeShekels(totalBalance(mockDerivedAccount.wallets)))
+        String(agorotToWholeShekels(totalBalance(mockAccountSummary.wallets)))
       );
     });
 
@@ -49,7 +49,7 @@ describe('AccountRow', () => {
     it('reports its account when tapped', () => {
       fireEvent.click(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.row));
 
-      expect(mockOnSelect).toHaveBeenCalledWith(mockDerivedAccount.id);
+      expect(mockOnSelect).toHaveBeenCalledWith(mockAccountSummary.id);
     });
   });
 

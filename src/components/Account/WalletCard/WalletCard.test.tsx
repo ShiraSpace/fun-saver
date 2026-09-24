@@ -1,16 +1,16 @@
 import { render, screen } from '@/test-utils/render';
 import { WalletCard } from './WalletCard';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
-import { createMockDerivedWallet } from '@/test-utils/fixtures';
+import { createMockWalletSummary } from '@/test-utils/fixtures';
 
-const SAVINGS_SUB_LINE = 'צובר 15% בחודש · פעיל מאז 1 בינואר';
+const mockSavingsSubLine = 'צובר 15% בחודש · פעיל מאז 1 בינואר';
 
 describe('WalletCard', () => {
   describe('a spending wallet', () => {
     beforeEach(() => {
       render(
         <WalletCard
-          wallet={createMockDerivedWallet({
+          wallet={createMockWalletSummary({
             name: 'spending',
             icon: '🛍️',
             balance: 5000,
@@ -42,7 +42,7 @@ describe('WalletCard', () => {
     beforeEach(() => {
       render(
         <WalletCard
-          wallet={createMockDerivedWallet({ name: 'spending', withdrawals: 0 })}
+          wallet={createMockWalletSummary({ name: 'spending', withdrawn: 0 })}
         />
       );
     });
@@ -58,9 +58,9 @@ describe('WalletCard', () => {
     beforeEach(() => {
       render(
         <WalletCard
-          wallet={createMockDerivedWallet({
+          wallet={createMockWalletSummary({
             name: 'spending',
-            withdrawals: 4500,
+            withdrawn: 4500,
           })}
         />
       );
@@ -77,9 +77,9 @@ describe('WalletCard', () => {
     beforeEach(() => {
       render(
         <WalletCard
-          wallet={createMockDerivedWallet({
+          wallet={createMockWalletSummary({
             name: 'goodDeeds',
-            withdrawals: 1800,
+            withdrawn: 1800,
           })}
         />
       );
@@ -94,13 +94,13 @@ describe('WalletCard', () => {
 
   describe('a savings wallet', () => {
     beforeEach(() => {
-      render(<WalletCard wallet={createMockDerivedWallet()} />);
+      render(<WalletCard wallet={createMockWalletSummary()} />);
     });
 
     it('shows the savings rate and opening date as a sub-line', () => {
       expect(
         screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
-      ).toHaveTextContent(SAVINGS_SUB_LINE);
+      ).toHaveTextContent(mockSavingsSubLine);
     });
   });
 
@@ -108,9 +108,9 @@ describe('WalletCard', () => {
     beforeEach(() => {
       render(
         <WalletCard
-          wallet={createMockDerivedWallet({
+          wallet={createMockWalletSummary({
             name: 'savings',
-            withdrawals: 4500,
+            withdrawn: 4500,
           })}
         />
       );
@@ -119,14 +119,14 @@ describe('WalletCard', () => {
     it('keeps its own sub-line rather than the spent one', () => {
       expect(
         screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
-      ).toHaveTextContent(SAVINGS_SUB_LINE);
+      ).toHaveTextContent(mockSavingsSubLine);
     });
   });
 
   describe('given children', () => {
     beforeEach(() => {
       render(
-        <WalletCard wallet={createMockDerivedWallet()}>
+        <WalletCard wallet={createMockWalletSummary()}>
           <span data-testid="extra" />
         </WalletCard>
       );

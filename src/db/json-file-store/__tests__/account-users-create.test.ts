@@ -4,8 +4,8 @@ import {
   mockAccount,
   mockAccountUser,
   mockOwner,
-  mockSecondAccount,
-  mockUnknownOwner,
+  mockSiblingAccount,
+  mockStrangerOwner,
   mockUser,
 } from '@/test-utils/fixtures';
 import { withTempStoreFile } from '@/test-utils/test-utils';
@@ -29,13 +29,13 @@ describe('JsonFileStore creating an account with an owner', () => {
 
   it('rejects an owner that has no user row', async () => {
     await expect(
-      store.insertAccountWithOwner(mockSecondAccount, mockUnknownOwner)
+      store.insertAccountWithOwner(mockSiblingAccount, mockStrangerOwner)
     ).rejects.toThrow(UnknownOwnerError);
   });
 
   it('reports the duplicate account when the owner is also unknown', async () => {
     await expect(
-      store.insertAccountWithOwner(mockAccount, mockUnknownOwner)
+      store.insertAccountWithOwner(mockAccount, mockStrangerOwner)
     ).rejects.toThrow(DuplicateAccountError);
   });
 

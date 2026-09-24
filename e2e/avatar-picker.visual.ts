@@ -2,7 +2,7 @@ import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { AVATARS } from '@/lib/avatars';
 import { AVATAR_PICKER_LAYOUT } from '@/components/AvatarPicker/constants';
-import { COLORS } from '@/theme/palette';
+import { getThemeTokens } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 
@@ -10,7 +10,7 @@ describe('avatar picker', () => {
   const { emptyState, createAccount, avatarPicker } = useDriver();
 
   beforeEach(async () => {
-    await emptyState.clickCreateAccount();
+    await emptyState.tapCreateAccount();
     await createAccount.isOpen();
   });
 
@@ -22,7 +22,7 @@ describe('avatar picker', () => {
   });
 
   it('paints each option as a circle in its avatar colour', async () => {
-    const option = await avatarPicker.firstOption();
+    const option = await avatarPicker.firstAvatar();
 
     assert.equal(option.background, hexToRgb(AVATARS[0].background));
     assert.ok(
@@ -34,24 +34,29 @@ describe('avatar picker', () => {
 
   it('caps the picker width so the avatars stay small', async () => {
     assert.equal(
-      await avatarPicker.containerWidth(),
+      await avatarPicker.pickerWidth(),
       AVATAR_PICKER_LAYOUT.maxWidth
     );
   });
 
   it('rings the selected option in a colour the gradient does not hide', async () => {
     await avatarPicker.selectFirst();
-    const option = await avatarPicker.selectedOption();
+    const option = await avatarPicker.selectedAvatar();
 
-    assert.equal(option.borderColor, hexToRgb(COLORS.textOnPrimary));
+    assert.equal(
+      option.borderColor,
+      hexToRgb(getThemeTokens().colors.textOnPrimary)
+    );
     assert.ok(
-      option.boxShadow.includes(hexToRgb(COLORS.selectionRing)),
-      `expected ring colour ${hexToRgb(COLORS.selectionRing)} in "${option.boxShadow}"`
+      option.boxShadow.includes(
+        hexToRgb(getThemeTokens().colors.selectionRing)
+      ),
+      `expected ring colour ${hexToRgb(getThemeTokens().colors.selectionRing)} in "${option.boxShadow}"`
     );
   });
 
   it('lifts an option on hover', async () => {
     await avatarPicker.hoverFirst();
-    await avatarPicker.waitForOptionToLift();
+    await avatarPicker.waitForAvatarToLift();
   });
 });

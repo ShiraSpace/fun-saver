@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockAccount } from '@/test-utils/fixtures';
-import { COLORS } from '@/theme/palette';
+import { getThemeTokens } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
@@ -42,18 +42,18 @@ describe('page routing', () => {
 
       assert.equal(
         await menu.methodTabBackground(),
-        hexToRgb(COLORS.textStrong)
+        hexToRgb(getThemeTokens().colors.textStrong)
       );
     });
   });
 
   describe('the method page with no account to show', () => {
-    const { session } = useDriver();
+    const { appBrowser } = useDriver();
 
     it('sends the parent home, where the empty state asks for one', async () => {
-      await session.visit(METHOD_ROUTE);
+      await appBrowser.visit(METHOD_ROUTE);
 
-      assert.equal(session.currentPath(), HOME_ROUTE);
+      assert.equal(appBrowser.currentPath(), HOME_ROUTE);
     });
   });
 });

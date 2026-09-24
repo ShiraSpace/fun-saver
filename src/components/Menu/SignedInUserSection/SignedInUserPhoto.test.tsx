@@ -7,7 +7,7 @@ import {
 import { SignedInUserPhoto } from './SignedInUserPhoto';
 import { SIGNED_IN_USER_SECTION_TEST_IDS } from './constants';
 
-const GOOGLE_PHOTO = 'https://lh3.googleusercontent.com/a/photo';
+const mockGooglePhoto = 'https://lh3.googleusercontent.com/a/photo';
 
 const photo = (): HTMLElement | null =>
   screen.queryByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.photo);
@@ -20,7 +20,7 @@ describe('SignedInUserPhoto', () => {
     beforeEach(() => {
       render(
         <WithMenu>
-          <SignedInUserPhoto image={GOOGLE_PHOTO} />
+          <SignedInUserPhoto image={mockGooglePhoto} />
         </WithMenu>
       );
     });
@@ -59,7 +59,7 @@ describe('SignedInUserPhoto', () => {
 
   describe('when the menu is closed and reopened after the photo failed', () => {
     beforeEach(() => {
-      renderInOpenMenu(<SignedInUserPhoto image={GOOGLE_PHOTO} />);
+      renderInOpenMenu(<SignedInUserPhoto image={mockGooglePhoto} />);
       fireEvent.error(photo() as HTMLElement);
       closeAndReopenMenu();
     });

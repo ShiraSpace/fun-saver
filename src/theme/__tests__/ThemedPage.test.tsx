@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { ThemeDisplay, THEME_ID_TESTID } from '@/test-utils/theme-probe';
+import { CurrentThemeId, THEME_ID_TESTID } from '@/test-utils/current-theme-id';
 import { ThemedPage } from '../ThemedPage';
 import { THEME_ID } from '../registry';
 
@@ -7,7 +7,7 @@ describe('ThemedPage', () => {
   beforeEach(() => {
     render(
       <ThemedPage themeId={THEME_ID.midnightBlue}>
-        <ThemeDisplay />
+        <CurrentThemeId />
       </ThemedPage>
     );
   });

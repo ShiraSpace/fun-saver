@@ -19,7 +19,7 @@ describe('the method page in a browser', () => {
   describe('an accordion the parent has not touched', () => {
     it('keeps its chevron upright, so a shut section looks shut', async () => {
       assert.equal(
-        await method.chevronRotation(method.sectionId('why')),
+        await method.chevronRotation(method.sectionNumber('why')),
         UPRIGHT
       );
     });
@@ -27,16 +27,16 @@ describe('the method page in a browser', () => {
 
   describe('once the parent opens one', () => {
     beforeEach(async () => {
-      await method.expand(method.sectionId('why'));
+      await method.expand(method.sectionNumber('why'));
     });
 
     it('turns that chevron over, and leaves every other one alone', async () => {
       assert.equal(
-        await method.chevronRotation(method.sectionId('why')),
+        await method.chevronRotation(method.sectionNumber('why')),
         FLIPPED
       );
       assert.equal(
-        await method.chevronRotation(method.sectionId('wallets')),
+        await method.chevronRotation(method.sectionNumber('wallets')),
         UPRIGHT
       );
     });

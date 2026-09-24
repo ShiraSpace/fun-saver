@@ -1,20 +1,20 @@
 import { JSX } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { ThemeDisplay, THEME_ID_TESTID } from '@/test-utils/theme-probe';
+import { CurrentThemeId, THEME_ID_TESTID } from '@/test-utils/current-theme-id';
 import { AppThemeProvider, useSetThemeId } from '../AppThemeProvider';
 import { THEME_ID, type ThemeId } from '../registry';
 import { missingProviderMessage } from '@/hooks/create-required-context';
 
-function ThemeSwitcher({ targetId }: { targetId: ThemeId }): JSX.Element {
-  const set = useSetThemeId();
-  return <button onClick={() => set(targetId)}>switch</button>;
+function ThemeSwitcher({ themeId }: { themeId: ThemeId }): JSX.Element {
+  const setThemeId = useSetThemeId();
+  return <button onClick={() => setThemeId(themeId)}>switch</button>;
 }
 
 describe('AppThemeProvider', () => {
   it('exposes the initial theme id', () => {
     render(
       <AppThemeProvider initialThemeId={THEME_ID.jungleQuest}>
-        <ThemeDisplay />
+        <CurrentThemeId />
       </AppThemeProvider>
     );
     expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(
@@ -25,8 +25,8 @@ describe('AppThemeProvider', () => {
   it('updates the active theme id on set', () => {
     render(
       <AppThemeProvider initialThemeId={THEME_ID.jungleQuest}>
-        <ThemeDisplay />
-        <ThemeSwitcher targetId={THEME_ID.midnightBlue} />
+        <CurrentThemeId />
+        <ThemeSwitcher themeId={THEME_ID.midnightBlue} />
       </AppThemeProvider>
     );
     fireEvent.click(screen.getByRole('button', { name: 'switch' }));
@@ -41,7 +41,7 @@ describe('AppThemeProvider', () => {
 
       render(
         <AppThemeProvider initialThemeId={THEME_ID.jungleQuest}>
-          <ThemeSwitcher targetId={THEME_ID.midnightBlue} />
+          <ThemeSwitcher themeId={THEME_ID.midnightBlue} />
         </AppThemeProvider>
       );
     });
@@ -61,14 +61,14 @@ describe('AppThemeProvider', () => {
 
   describe('with no AppThemeProvider above', () => {
     it('refuses to name a theme', () => {
-      expect(() => render(<ThemeDisplay />)).toThrow(
+      expect(() => render(<CurrentThemeId />)).toThrow(
         missingProviderMessage('AppThemeProvider')
       );
     });
 
     it('refuses to switch the theme', () => {
       expect(() =>
-        render(<ThemeSwitcher targetId={THEME_ID.midnightBlue} />)
+        render(<ThemeSwitcher themeId={THEME_ID.midnightBlue} />)
       ).toThrow(missingProviderMessage('AppThemeProvider'));
     });
   });

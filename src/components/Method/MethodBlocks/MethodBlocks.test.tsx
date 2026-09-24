@@ -8,14 +8,14 @@ import { MethodBlocks } from './MethodBlocks';
 
 describe('what a section says, written out from the copy', () => {
   describe('given a text block of two paragraphs', () => {
-    const BLOCK: MethodBlock = {
+    const mockBlock: MethodBlock = {
       kind: 'text',
       body: 'פסקה **ראשונה**\n\nפסקה שנייה',
     };
     let container: HTMLElement;
 
     beforeEach(() => {
-      container = render(<MethodBlocks blocks={[BLOCK]} />).container;
+      container = render(<MethodBlocks blocks={[mockBlock]} />).container;
     });
 
     it('breaks where the writer left a blank line, so an argument reads as steps', () => {
@@ -28,7 +28,7 @@ describe('what a section says, written out from the copy', () => {
   });
 
   describe('given a muted text block', () => {
-    const BLOCK: MethodBlock = {
+    const mockBlock: MethodBlock = {
       kind: 'text',
       muted: true,
       body: 'הסתייגות',
@@ -36,7 +36,7 @@ describe('what a section says, written out from the copy', () => {
     let container: HTMLElement;
 
     beforeEach(() => {
-      container = render(<MethodBlocks blocks={[BLOCK]} />).container;
+      container = render(<MethodBlocks blocks={[mockBlock]} />).container;
     });
 
     it('keeps a muted remark muted, rather than levelling it with what surrounds it', () => {
@@ -45,11 +45,11 @@ describe('what a section says, written out from the copy', () => {
   });
 
   describe('given a heading block', () => {
-    const BLOCK: MethodBlock = { kind: 'heading', body: 'השיחה הראשונה' };
+    const mockBlock: MethodBlock = { kind: 'heading', body: 'השיחה הראשונה' };
     let container: HTMLElement;
 
     beforeEach(() => {
-      container = render(<MethodBlocks blocks={[BLOCK]} />).container;
+      container = render(<MethodBlocks blocks={[mockBlock]} />).container;
     });
 
     it('gives a heading the weight of a heading, which a wrapper around it would quietly undo', () => {
@@ -58,7 +58,7 @@ describe('what a section says, written out from the copy', () => {
   });
 
   describe('given the mix section 2 actually carries', () => {
-    const BLOCKS: readonly MethodBlock[] = [
+    const mockBlocks: readonly MethodBlock[] = [
       { kind: 'text', body: 'גוף' },
       { kind: 'quote', body: 'ממצא', citation: 'Aknin, PLoS ONE, 2012' },
       {
@@ -69,7 +69,7 @@ describe('what a section says, written out from the copy', () => {
     ];
 
     beforeEach(() => {
-      render(<MethodBlocks blocks={BLOCKS} />);
+      render(<MethodBlocks blocks={mockBlocks} />);
     });
 
     it('sets a study apart from the prose, so neither is mistaken for the other', () => {
@@ -86,7 +86,7 @@ describe('what a section says, written out from the copy', () => {
   });
 
   describe('given a two-paragraph block and the source behind it', () => {
-    const BLOCK: MethodBlock = {
+    const mockBlock: MethodBlock = {
       kind: 'text',
       sources: [METHOD_COPY.sources.list[0].id],
       body: 'הטענה\n\nוההסבר שאחריה',
@@ -94,7 +94,7 @@ describe('what a section says, written out from the copy', () => {
     let container: HTMLElement;
 
     beforeEach(() => {
-      container = render(<MethodBlocks blocks={[BLOCK]} />).container;
+      container = render(<MethodBlocks blocks={[mockBlock]} />).container;
     });
 
     it('gives the claim one number, however many paragraphs it runs to', () => {

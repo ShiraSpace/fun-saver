@@ -1,16 +1,16 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { Avatar } from '@/components/Avatar/Avatar';
 import { Money } from '@/components/Money';
-import { totalBalance } from '@/lib/derivations';
+import { totalBalance } from '@/lib/wallet-totals';
 import { ACCOUNT_LIST_STYLE, ACCOUNT_LIST_TEST_IDS } from './constants';
 import { Name, Total } from './AccountList.styles';
 import { Row } from '../row-parts';
 
 interface AccountRowProps {
-  account: AccountWithDerivedWallets;
+  account: AccountSummary;
   isCurrent: boolean;
   onSelect: (id: string) => void;
 }

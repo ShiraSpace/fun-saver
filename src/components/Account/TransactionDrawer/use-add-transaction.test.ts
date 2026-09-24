@@ -3,7 +3,7 @@ import { useAddTransaction } from './use-add-transaction';
 
 describe('useAddTransaction', () => {
   const originalFetch = global.fetch;
-  const ACCOUNT_ID = 'account-1';
+  const mockAccountId = 'account-1';
   let fetchMock: jest.Mock;
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('useAddTransaction', () => {
   });
 
   function hook(): ReturnType<typeof useAddTransaction> {
-    return renderHook(() => useAddTransaction(ACCOUNT_ID)).result.current;
+    return renderHook(() => useAddTransaction(mockAccountId)).result.current;
   }
 
   it('posts the amount to the account deposits endpoint', async () => {
@@ -24,7 +24,7 @@ describe('useAddTransaction', () => {
 
     const [url, init] = fetchMock.mock.calls[0];
 
-    expect(url).toBe(`/api/accounts/${ACCOUNT_ID}/deposits`);
+    expect(url).toBe(`/api/accounts/${mockAccountId}/deposits`);
     expect(init.method).toBe('POST');
     expect(init.cache).toBe('no-store');
     expect(JSON.parse(init.body)).toEqual({ amount: 20 });
@@ -41,7 +41,7 @@ describe('useAddTransaction', () => {
 
     const [url, init] = fetchMock.mock.calls[0];
 
-    expect(url).toBe(`/api/accounts/${ACCOUNT_ID}/withdrawals`);
+    expect(url).toBe(`/api/accounts/${mockAccountId}/withdrawals`);
     expect(init.method).toBe('POST');
     expect(init.cache).toBe('no-store');
     expect(JSON.parse(init.body)).toEqual({ walletId: 'w2', amount: 15 });

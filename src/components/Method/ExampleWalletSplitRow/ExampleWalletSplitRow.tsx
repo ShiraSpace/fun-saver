@@ -6,10 +6,10 @@ import {
 } from './constants';
 
 export function ExampleWalletSplitRow({
-  wallet,
+  walletName,
   amounts,
 }: ExampleRow): JSX.Element {
-  const walletShare = EXAMPLE_WALLET_SPLIT_ROW_COPY.walletShare(wallet);
+  const walletShare = EXAMPLE_WALLET_SPLIT_ROW_COPY.walletShare(walletName);
   const perPeriod = amounts.map((amount, period) => (
     <td key={period}>{amount}</td>
   ));

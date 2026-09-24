@@ -6,8 +6,8 @@ import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import {
   mockAccountsContext,
-  mockDerivedAccount,
-  mockSecondDerivedAccount,
+  mockAccountSummary,
+  mockSiblingAccountSummary,
   mockUser,
 } from '@/test-utils/fixtures';
 import { Column } from './Column';
@@ -53,7 +53,7 @@ describe('the page column', () => {
   });
 
   it('holds the account page', () => {
-    render(<Account account={mockDerivedAccount} />, {
+    render(<Account account={mockAccountSummary} />, {
       accounts: mockAccountsContext,
       user: mockUser,
     });
@@ -64,8 +64,8 @@ describe('the page column', () => {
   it('holds the method page', () => {
     render(
       <Method
-        accounts={[mockDerivedAccount, mockSecondDerivedAccount]}
-        initialAccount={mockDerivedAccount}
+        accounts={[mockAccountSummary, mockSiblingAccountSummary]}
+        initialAccount={mockAccountSummary}
       />,
       { route: METHOD_ROUTE, user: mockUser }
     );

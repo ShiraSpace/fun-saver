@@ -5,7 +5,7 @@ const PREFETCH_HEADER = 'next-router-prefetch';
 const SETTLE_MS = 300;
 
 export interface HeldPage {
-  waiting: Promise<void>;
+  requested: Promise<void>;
   settle: () => Promise<void>;
   release: () => void;
 }
@@ -21,14 +21,14 @@ const pause = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function holdNextPage(page: Page): Promise<HeldPage> {
-  const held: HTTPRequest[] = [];
+  const heldRequests: HTTPRequest[] = [];
   let isHolding = true;
 
   await page.setRequestInterception(true);
 
   page.on('request', (request) => {
     if (isHolding && isNextPageRequest(request)) {
-      held.push(request);
+      heldRequests.push(request);
       return;
     }
     void request.continue();
@@ -36,15 +36,15 @@ export async function holdNextPage(page: Page): Promise<HeldPage> {
 
   const settle = (): Promise<void> => pause(SETTLE_MS);
 
-  const waiting = page.waitForRequest(isNextPageRequest).then(() => {});
+  const requested = page.waitForRequest(isNextPageRequest).then(() => {});
 
   const release = (): void => {
     isHolding = false;
-    held.forEach((request) => void request.continue());
+    heldRequests.forEach((request) => void request.continue());
   };
 
   return {
-    waiting,
+    requested,
     settle,
     release,
   };

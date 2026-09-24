@@ -4,12 +4,12 @@ import { WITHDRAWAL_FORM_COPY, WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { WALLET_PICKER_TEST_IDS } from '../WalletPicker/constants';
 import { AMOUNT_KEYPAD_TEST_IDS } from '../AmountKeypad/constants';
-import { mockDerivedAccount, mockDerivedWallets } from '@/test-utils/fixtures';
+import { mockAccountSummary, mockWalletSummaries } from '@/test-utils/fixtures';
 import { agorotToShekels } from '@/lib/money';
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddWithdrawal = jest.fn();
-const onClose = jest.fn();
+const mockOnClose = jest.fn();
 
 jest.mock('../use-add-transaction', () => ({
   useAddTransaction: (): {
@@ -21,7 +21,7 @@ jest.mock('../use-add-transaction', () => ({
   }),
 }));
 
-const [savings, spending, goodDeeds] = mockDerivedWallets;
+const [savings, spending, goodDeeds] = mockWalletSummaries;
 
 function type(...digits: string[]): void {
   for (const digit of digits) {
@@ -33,8 +33,10 @@ describe('WithdrawalForm', () => {
   beforeEach(() => {
     mockAddWithdrawal.mockReset().mockResolvedValue(undefined);
     mockRouter.refresh.mockClear();
-    onClose.mockClear();
-    render(<WithdrawalForm account={mockDerivedAccount} onClose={onClose} />);
+    mockOnClose.mockClear();
+    render(
+      <WithdrawalForm account={mockAccountSummary} onClose={mockOnClose} />
+    );
   });
 
   it('renders a wallet picker with the savings wallet selected by default', () => {
@@ -92,7 +94,7 @@ describe('WithdrawalForm', () => {
       expect(mockAddWithdrawal).toHaveBeenCalledWith(spending.id, 10)
     );
     await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
   });
 
   it('shows an error and stays open when the withdrawal fails', async () => {
@@ -106,6 +108,6 @@ describe('WithdrawalForm', () => {
         screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
       ).toBeInTheDocument()
     );
-    expect(onClose).not.toHaveBeenCalled();
+    expect(mockOnClose).not.toHaveBeenCalled();
   });
 });

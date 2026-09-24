@@ -27,15 +27,15 @@ interface TapOptions {
   y: number;
 }
 
-export class Session {
+export class AppBrowser {
   private browser?: Browser;
   private activePage?: Page;
   private baseUrl = '';
 
   private constructor() {}
 
-  static create(): Session {
-    return new Session();
+  static create(): AppBrowser {
+    return new AppBrowser();
   }
 
   async start(): Promise<void> {
@@ -228,7 +228,7 @@ export class Session {
 
   private requireBrowser(): Browser {
     if (!this.browser) {
-      throw new Error('session not started; call start() first');
+      throw new Error('the app browser is not started; call start() first');
     }
     return this.browser;
   }

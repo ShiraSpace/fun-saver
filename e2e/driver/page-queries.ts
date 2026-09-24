@@ -112,7 +112,7 @@ export function styleOf({
 }: StyleQuery): Promise<string> {
   return page.$eval(
     selector,
-    (element, name) => getComputedStyle(element).getPropertyValue(name),
+    (element, property) => getComputedStyle(element).getPropertyValue(property),
     property
   );
 }
@@ -159,7 +159,7 @@ export async function styleValues(
   return Promise.all(
     elements.map((element) =>
       element.evaluate(
-        (node, name) => getComputedStyle(node).getPropertyValue(name),
+        (node, property) => getComputedStyle(node).getPropertyValue(property),
         property
       )
     )
@@ -186,10 +186,10 @@ export async function rawResponse(
     redirect: 'manual',
     headers: { cookie },
   });
-  const location = response.headers.get('location');
+  const redirectTarget = response.headers.get('location');
 
   return {
     status: response.status,
-    redirectPath: location && new URL(location, url).pathname,
+    redirectPath: redirectTarget && new URL(redirectTarget, url).pathname,
   };
 }

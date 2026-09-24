@@ -1,8 +1,8 @@
 'use client';
 
 import { JSX } from 'react';
-import type { WalletWithDerived } from '@/lib/types';
-import { totalBalance, walletShares } from '@/lib/derivations';
+import type { WalletSummary } from '@/lib/types';
+import { totalBalance, walletShares } from '@/lib/wallet-totals';
 import { agorotToWholeShekels } from '@/lib/money';
 import { Money } from '@/components/Money';
 import { Donut } from './Donut';
@@ -36,7 +36,7 @@ function totalBalanceFontSize(totalBalanceAgorot: number): number {
 }
 
 type BalanceBreakdownWallet = Pick<
-  WalletWithDerived,
+  WalletSummary,
   'id' | 'name' | 'icon' | 'balance'
 >;
 

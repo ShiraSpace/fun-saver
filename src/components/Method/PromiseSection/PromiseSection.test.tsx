@@ -2,7 +2,7 @@ import { render, screen } from '@/test-utils/render';
 import { SECTION_NUMBER } from '../constants';
 import { METHOD_COPY } from '../copy';
 import { CHECKLIST_TEST_IDS } from '../Checklist/constants';
-import { GOAL_OUTCOME_TEST_IDS } from '../GoalOutcome/constants';
+import { KEY_POINT_TEST_IDS } from '../KeyPoint/constants';
 import { METHOD_SECTION_TEST_IDS } from '../MethodSection/constants';
 import { PromiseSection } from './PromiseSection';
 
@@ -18,7 +18,7 @@ describe('the section on the promise the parent has to keep', () => {
   });
 
   it('spells out both halves of the promise, since half a promise is not one', () => {
-    expect(screen.getAllByTestId(GOAL_OUTCOME_TEST_IDS.outcome)).toHaveLength(
+    expect(screen.getAllByTestId(KEY_POINT_TEST_IDS.outcome)).toHaveLength(
       Object.keys(METHOD_COPY.promise.rule).length
     );
   });

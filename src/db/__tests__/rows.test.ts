@@ -15,7 +15,7 @@ import {
 } from '@/test-utils/fixtures';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 
-const accountRow: AccountRow = {
+const mockAccountRow: AccountRow = {
   id: mockAccount.id,
   name: mockAccount.name,
   avatar_id: mockAccount.avatarId,
@@ -24,16 +24,16 @@ const accountRow: AccountRow = {
   wallets: createMockWallets(),
 };
 
-const transaction = createMockTransaction();
+const mockTransaction = createMockTransaction();
 
 const transactionRow: TransactionRow = {
-  id: transaction.id,
-  wallet_id: transaction.walletId,
-  account_id: transaction.accountId,
-  type: transaction.type,
-  amount: transaction.amount,
-  occurred_at: transaction.occurredAt,
-  created_at: transaction.createdAt,
+  id: mockTransaction.id,
+  wallet_id: mockTransaction.walletId,
+  account_id: mockTransaction.accountId,
+  type: mockTransaction.type,
+  amount: mockTransaction.amount,
+  occurred_at: mockTransaction.occurredAt,
+  created_at: mockTransaction.createdAt,
 };
 
 const userRow: UserRow = {
@@ -54,13 +54,13 @@ const accountUserRow: AccountUserRow = {
 
 describe('accountFromRow', () => {
   it('maps an account row to an Account', () => {
-    expect(accountFromRow(accountRow)).toEqual(mockAccount);
+    expect(accountFromRow(mockAccountRow)).toEqual(mockAccount);
   });
 });
 
 describe('transactionFromRow', () => {
   it('maps a transaction row to a Transaction', () => {
-    expect(transactionFromRow(transactionRow)).toEqual(transaction);
+    expect(transactionFromRow(transactionRow)).toEqual(mockTransaction);
   });
 });
 

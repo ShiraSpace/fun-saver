@@ -1,21 +1,21 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockAccount, mockAccountEdit } from '@/test-utils/fixtures';
+import { mockAccount, mockAccountEdits } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
 import { useDriver } from './driver/use-driver';
 import { PHONE } from './driver/viewports';
 
-const EDITED_NAME = 'רוני';
-const LONGEST_NAME = 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH);
+const mockEditedName = 'רוני';
+const mockLongestName = 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH);
 
 describe('edit account from the menu', () => {
-  const { menu, editAccount, avatarPicker, header, session } = useDriver({
+  const { menu, editAccount, avatarPicker, header, appBrowser } = useDriver({
     accounts: [mockAccount],
   });
 
   beforeEach(async () => {
     await menu.open();
-    await menu.clickEditAccountButton();
+    await menu.tapEditAccount();
   });
 
   it('opens the edit form pre-filled with the current account', async () => {
@@ -24,11 +24,11 @@ describe('edit account from the menu', () => {
   });
 
   it('renames the account and shows the new name in the header', async () => {
-    await editAccount.replaceName(EDITED_NAME);
+    await editAccount.replaceName(mockEditedName);
     await editAccount.submit();
 
-    await header.waitForName(EDITED_NAME);
-    assert.equal(await header.name(), EDITED_NAME);
+    await header.waitForTitle(mockEditedName);
+    assert.equal(await header.title(), mockEditedName);
   });
 
   it('saves a new avatar without touching the name', async () => {
@@ -37,19 +37,19 @@ describe('edit account from the menu', () => {
       'header starts on the account avatar'
     );
 
-    await avatarPicker.select(mockAccountEdit.avatarId);
+    await avatarPicker.select(mockAccountEdits.avatarId);
     await editAccount.submit();
 
-    await header.waitForAvatar(mockAccountEdit.avatarId);
-    assert.equal(await header.name(), mockAccount.name);
+    await header.waitForAvatar(mockAccountEdits.avatarId);
+    assert.equal(await header.title(), mockAccount.name);
   });
 
   it('keeps the edit button inside the menu for the longest name', async () => {
-    await editAccount.replaceName(LONGEST_NAME);
+    await editAccount.replaceName(mockLongestName);
     await editAccount.submit();
 
-    await header.waitForName(LONGEST_NAME);
-    await session.resize(PHONE);
+    await header.waitForTitle(mockLongestName);
+    await appBrowser.resize(PHONE);
     await menu.open();
 
     const scope = await menu.globalScopeBox();
@@ -66,19 +66,19 @@ describe('edit account from the menu', () => {
   });
 
   it('closes the form when the edit is cancelled', async () => {
-    await editAccount.replaceName(EDITED_NAME);
+    await editAccount.replaceName(mockEditedName);
     await editAccount.cancel();
 
-    await header.waitForName(mockAccount.name);
+    await header.waitForTitle(mockAccount.name);
     assert.equal(await editAccount.isClosed(), true);
   });
 
   it('keeps the stored name when the edit is cancelled', async () => {
-    await editAccount.replaceName(EDITED_NAME);
+    await editAccount.replaceName(mockEditedName);
     await editAccount.cancel();
-    await session.reload();
+    await appBrowser.reload();
 
-    assert.equal(await header.name(), mockAccount.name);
+    assert.equal(await header.title(), mockAccount.name);
   });
 });
 
@@ -90,7 +90,7 @@ describe('edit account from the menu on the method page', () => {
     await menu.openMethodPage();
 
     await menu.open();
-    await menu.clickEditAccountButton();
+    await menu.tapEditAccount();
 
     assert.equal(await editAccount.isOpen(), true);
     assert.equal(await editAccount.nameValue(), mockAccount.name);

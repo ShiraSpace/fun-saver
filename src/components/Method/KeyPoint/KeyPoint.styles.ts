@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Outcome = styled.div`
+export const Point = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 10px;

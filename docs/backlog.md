@@ -105,7 +105,7 @@ re-researching.
 
 ## 3. Configurable split presets
 
-`DEPOSIT_SPLIT` is a module constant (`src/lib/constants.ts`) at 50/40/10.
+`DEPOSIT_SHARES` is a module constant (`src/lib/constants.ts`) at 50/40/10.
 There is **no evidence for any particular split** (research §1.4) — it is a
 values choice, so it should be the family's.
 
@@ -198,6 +198,15 @@ Until then the page stays static and read-only, which is the approved v1 scope
 Parent-facing page explaining the rationale and the six rules to set. Copy is
 in `docs/copy/method-page.he.md` (shipping, Hebrew) and
 `docs/copy/method-page.en.md` (parked for i18n).
+
+## 8. Deposit confirmation
+Show a nice deposit confirmation with sound and maybe the expected interest from that deposit over time
+
+## Research
+
+### Way to use real money
+- Deposit by API
+- Only spending wallet as V1
 
 ## Explicitly NOT doing
 

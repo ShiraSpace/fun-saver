@@ -1,6 +1,6 @@
 import { DEFAULT_WALLETS } from './constants';
 import { eachDayInclusive } from './dates';
-import { signedAmount } from './derivations';
+import { balanceChange } from './wallet-totals';
 import type { LedgerEntry, Wallet, WalletName } from './types';
 
 export type WalletBalances = Record<WalletName, number[]>;
@@ -32,7 +32,7 @@ function balanceChangeByDay(entries: LedgerEntry[]): Map<string, number> {
 
   for (const entry of entries) {
     const changeSoFar = changeByDay.get(entry.occurredAt) ?? 0;
-    changeByDay.set(entry.occurredAt, changeSoFar + signedAmount(entry));
+    changeByDay.set(entry.occurredAt, changeSoFar + balanceChange(entry));
   }
 
   return changeByDay;

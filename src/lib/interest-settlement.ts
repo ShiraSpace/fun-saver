@@ -2,13 +2,13 @@ import type { DataStore } from '@/db/data-store';
 import { inOrderOfOccurrence } from '@/db/transaction-order';
 import type {
   Account,
-  AccountWithDerivedWallets,
+  AccountSummary,
   Transaction,
   Wallet,
   WalletName,
-  WalletWithDerived,
+  WalletSummary,
 } from './types';
-import { deriveWallet } from './derive-wallet';
+import { summarizeWallet } from './summarize-wallet';
 import { addDailyInterest } from './interest';
 
 const WALLET_ORDER: Record<WalletName, number> = {
@@ -30,7 +30,7 @@ interface SettleAccountInterestParams {
 }
 
 export interface SettledAccount {
-  account: AccountWithDerivedWallets;
+  account: AccountSummary;
   transactions: Transaction[];
 }
 
@@ -42,7 +42,7 @@ interface SettleWalletInterestParams {
 
 interface SettledWallet {
   settledInterest: Transaction[];
-  wallet: WalletWithDerived;
+  wallet: WalletSummary;
 }
 
 function settleWalletInterest(
@@ -63,7 +63,7 @@ function settleWalletInterest(
 
   return {
     settledInterest,
-    wallet: deriveWallet({
+    wallet: summarizeWallet({
       wallet,
       transactions: settledWalletTransactions,
       asOf,
@@ -119,9 +119,9 @@ export function settleInterest({
   );
 }
 
-export async function withDerivedWallets(
+export async function summarizeAccounts(
   query: SettleInterestParams
-): Promise<AccountWithDerivedWallets[]> {
+): Promise<AccountSummary[]> {
   const settledAccounts = await settleInterest(query);
 
   return settledAccounts.map((settledAccount) => settledAccount.account);

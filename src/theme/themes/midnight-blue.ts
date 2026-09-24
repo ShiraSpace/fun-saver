@@ -1,17 +1,17 @@
-import { buildGradients } from '../gradients';
+import { themeGradients } from '../gradients';
 import { SHADOW_SCALE } from '../shadows';
 import { TINT_SCALE } from '../tints';
 import { TYPE_SCALE } from '../typography';
-import type { ThemeStops, ThemeTokens } from '../theme-tokens';
+import type { ThemeGradientStops, ThemeTokens } from '../theme-tokens';
 
-const STOPS = {
+const GRADIENT_STOPS = {
   screen: ['#0A0E14', '#0F1620', '#122036'],
   primaryButton: ['#1D4ED8', '#1E3A8A'],
-  sunnyTile: ['#1E40AF', '#172554'],
+  avatarBadge: ['#1E40AF', '#172554'],
   walletSavings: ['#1E40AF', '#172554'],
   walletSpending: ['#2563EB', '#1E40AF'],
   walletGoodDeeds: ['#4338CA', '#312E81'],
-} as const satisfies ThemeStops;
+} as const satisfies ThemeGradientStops;
 
 export const midnightBlue: ThemeTokens = {
   colors: {
@@ -48,7 +48,7 @@ export const midnightBlue: ThemeTokens = {
     chartSpending: '#38BDF8',
     chartGoodDeeds: '#A78BFA',
   },
-  gradients: buildGradients(STOPS),
+  gradients: themeGradients(GRADIENT_STOPS),
   shadows: SHADOW_SCALE,
   tints: TINT_SCALE,
   typography: TYPE_SCALE,

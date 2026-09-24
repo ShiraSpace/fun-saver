@@ -1,10 +1,10 @@
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { StoreContents } from '@/db/data-store';
-import { Session } from './driver/session';
+import { AppBrowser } from './driver/app-browser';
 import { PHONE, RETINA_SCALE } from './driver/viewports';
 import {
-  createDrivers,
+  createAppDriver,
   openApp,
   startApp,
   type AppDriver,
@@ -17,28 +17,30 @@ export type Shoot = (name: string) => Promise<void>;
 export type TakeShots = (app: AppDriver, shoot: Shoot) => Promise<void>;
 
 export async function withShots(
-  state: Partial<StoreContents>,
+  initialStore: Partial<StoreContents>,
   takeShots: TakeShots
 ): Promise<void> {
   await mkdir(SHOT_DIR, { recursive: true });
 
-  const session = Session.create();
-  const server = await startApp(session);
+  const appBrowser = AppBrowser.create();
+  const server = await startApp(appBrowser);
 
   try {
-    await openApp({ session, server, state, motion: 'reduce' });
-    await session.resize({ ...PHONE, deviceScaleFactor: RETINA_SCALE });
-    await takeShots(createDrivers(session), (name) => shoot(session, name));
+    await openApp({ appBrowser, server, initialStore, motion: 'reduce' });
+    await appBrowser.resize({ ...PHONE, deviceScaleFactor: RETINA_SCALE });
+    await takeShots(createAppDriver(appBrowser), (name) =>
+      shoot(appBrowser, name)
+    );
   } finally {
-    await session.closePage();
-    await session.stop();
+    await appBrowser.closePage();
+    await appBrowser.stop();
     await server.stop();
   }
 }
 
-async function shoot(session: Session, name: string): Promise<void> {
+async function shoot(appBrowser: AppBrowser, name: string): Promise<void> {
   const path = `${join(SHOT_DIR, name)}.png` as const;
 
-  await session.screenshot(path);
+  await appBrowser.screenshot(path);
   console.log(path);
 }

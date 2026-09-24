@@ -8,8 +8,8 @@ import { PostgresStore } from '../postgres-store';
 import { mockAccount } from '@/test-utils/fixtures';
 import { mutableEnv, withCleanEnv } from '@/test-utils/test-utils';
 
-const POSTGRES_URL = 'postgres://user:pass@example.neon.tech/main';
-const DEV_POSTGRES_URL = 'postgres://user:pass@example.neon.tech/dev';
+const mockPostgresUrl = 'postgres://user:pass@example.neon.tech/main';
+const mockDevPostgresUrl = 'postgres://user:pass@example.neon.tech/dev';
 const TRACKED_ENV_KEYS = [
   'FUNSAVER_DATA_PATH',
   'DATABASE_URL',
@@ -59,7 +59,7 @@ describe('getStore', () => {
     });
 
     it('takes precedence over a database url', () => {
-      mutableEnv.DATABASE_URL = POSTGRES_URL;
+      mutableEnv.DATABASE_URL = mockPostgresUrl;
 
       expect(getStore()).toBeInstanceOf(JsonFileStore);
     });
@@ -67,7 +67,7 @@ describe('getStore', () => {
 
   describe('without FUNSAVER_DATA_PATH', () => {
     it('returns a Postgres store for DATABASE_URL', () => {
-      mutableEnv.DATABASE_URL = POSTGRES_URL;
+      mutableEnv.DATABASE_URL = mockPostgresUrl;
 
       expect(getStore()).toBeInstanceOf(PostgresStore);
     });
@@ -88,13 +88,13 @@ describe('getStore', () => {
       });
 
       it('reads DEV_DATABASE_URL', () => {
-        mutableEnv.DEV_DATABASE_URL = DEV_POSTGRES_URL;
+        mutableEnv.DEV_DATABASE_URL = mockDevPostgresUrl;
 
         expect(getStore()).toBeInstanceOf(PostgresStore);
       });
 
       it('ignores DATABASE_URL', () => {
-        mutableEnv.DATABASE_URL = POSTGRES_URL;
+        mutableEnv.DATABASE_URL = mockPostgresUrl;
 
         expect(getStore()).toBeInstanceOf(JsonFileStore);
       });

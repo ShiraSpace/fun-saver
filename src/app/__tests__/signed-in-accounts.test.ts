@@ -7,7 +7,7 @@ import { sortedByName } from '@/db/account-users';
 import { getStore } from '@/db';
 import { SIGN_IN_PATH } from '@/lib/constants';
 import type { Account } from '@/lib/types';
-import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
+import { mockCoParent, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { signedInAccounts } from '../signed-in-accounts';
@@ -55,12 +55,15 @@ describe('signedInAccounts', () => {
 
   it('sends a visitor with no session to the sign-in page', async () => {
     jest.mocked(signedInUser).mockResolvedValue(undefined);
-    const listAccountsForUser = jest.spyOn(getStore(), 'listAccountsForUser');
+    const mockListAccountsForUser = jest.spyOn(
+      getStore(),
+      'listAccountsForUser'
+    );
 
     await expect(signedInAccounts()).rejects.toThrow();
 
     expect(redirect).toHaveBeenCalledWith(SIGN_IN_PATH);
-    expect(listAccountsForUser).not.toHaveBeenCalled();
+    expect(mockListAccountsForUser).not.toHaveBeenCalled();
   });
 
   it('selects the account the cookie names', async () => {
@@ -81,7 +84,7 @@ describe('signedInAccounts', () => {
   it('leaves out an account belonging to somebody else', async () => {
     const theirs = await createOwnedAccount(getStore(), {
       input: { name: 'שירי', avatarId: 'kid-03' },
-      owner: mockSecondUser,
+      owner: mockCoParent,
     });
 
     const { accounts } = await signedInAccounts();

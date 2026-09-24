@@ -1,6 +1,6 @@
 import type { DataStore } from '@/db/data-store';
-import { DEPOSIT_SPLIT } from './constants';
-import { balance } from './derivations';
+import { DEPOSIT_SHARES } from './constants';
+import { balance } from './wallet-totals';
 import { newId } from './ids';
 import { OverdraftError, ValidationError } from './errors';
 import type { Account, Transaction, WalletName } from './types';
@@ -29,8 +29,8 @@ function assertPositiveAmount(amountAgorot: number): void {
 }
 
 export function splitDeposit(amountAgorot: number): DepositSplit {
-  const spending = Math.floor(amountAgorot * DEPOSIT_SPLIT.spending);
-  const goodDeeds = Math.floor(amountAgorot * DEPOSIT_SPLIT.goodDeeds);
+  const spending = Math.floor(amountAgorot * DEPOSIT_SHARES.spending);
+  const goodDeeds = Math.floor(amountAgorot * DEPOSIT_SHARES.goodDeeds);
   const savings = amountAgorot - spending - goodDeeds;
 
   return { savings, spending, goodDeeds };

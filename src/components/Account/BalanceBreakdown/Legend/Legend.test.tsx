@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { mockDerivedWallets, mockWalletShares } from '@/test-utils/fixtures';
+import { mockWalletSummaries, mockWalletShares } from '@/test-utils/fixtures';
 import { Legend } from './Legend';
 import {
   LEGEND_ANIMATION,
@@ -7,7 +7,7 @@ import {
   BALANCE_BREAKDOWN_TEST_IDS,
 } from '../constants';
 
-const walletsWithShare = mockDerivedWallets.map((wallet, index) => ({
+const walletsWithShare = mockWalletSummaries.map((wallet, index) => ({
   id: wallet.id,
   name: wallet.name,
   icon: wallet.icon,
@@ -39,7 +39,7 @@ describe('Legend', () => {
   it("shows each wallet's icon in its square", () => {
     expect(
       screen.getAllByTestId(BALANCE_BREAKDOWN_TEST_IDS.legendDot)[0]
-    ).toHaveTextContent(mockDerivedWallets[0].icon);
+    ).toHaveTextContent(mockWalletSummaries[0].icon);
   });
 
   it('starts each row a beat after the one above it', () => {

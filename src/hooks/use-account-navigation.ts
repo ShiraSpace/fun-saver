@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Account, AccountWithDerivedWallets } from '@/lib/types';
+import type { Account, AccountSummary } from '@/lib/types';
 import {
   APP_MODE,
   AppMode,
@@ -13,17 +13,17 @@ import { useSetThemeId } from '@/theme/AppThemeProvider';
 export interface AccountNavigation {
   mode: AppMode;
   setMode: Dispatch<SetStateAction<AppMode>>;
-  currentAccount?: AccountWithDerivedWallets;
+  currentAccount?: AccountSummary;
   switchAccount: (id: string) => void;
   showNewAccount: (account: Account) => void;
   finishEditing: () => void;
   cancel: () => void;
   isCreating: boolean;
-  editingAccount?: AccountWithDerivedWallets;
+  editingAccount?: AccountSummary;
 }
 
 export function useAccountNavigation(
-  accounts: AccountWithDerivedWallets[],
+  accounts: AccountSummary[],
   initialAccountId: string
 ): AccountNavigation {
   const router = useRouter();

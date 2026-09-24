@@ -9,27 +9,27 @@ import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
 import {
   createMockAccount,
   mockAccountsContext,
-  mockDerivedWallets,
+  mockWalletSummaries,
   mockUser,
 } from '@/test-utils/fixtures';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 
 describe('Account', () => {
-  const ACCOUNT_ID = 'account-1';
-  const ACCOUNT_NAME = 'יעל';
-  const AVATAR_ID = 'kid-01';
+  const mockAccountId = 'account-1';
+  const mockAccountName = 'יעל';
+  const mockAvatarId = 'kid-01';
 
-  const account: AccountWithDerivedWallets = {
+  const mockAccount: AccountSummary = {
     ...createMockAccount({
-      id: ACCOUNT_ID,
-      name: ACCOUNT_NAME,
-      avatarId: AVATAR_ID,
+      id: mockAccountId,
+      name: mockAccountName,
+      avatarId: mockAvatarId,
     }),
-    wallets: mockDerivedWallets,
+    wallets: mockWalletSummaries,
   };
 
   beforeEach(() => {
-    render(<Account account={account} />, {
+    render(<Account account={mockAccount} />, {
       accounts: mockAccountsContext,
       user: mockUser,
     });
@@ -37,7 +37,7 @@ describe('Account', () => {
 
   it('shows the account header with the account name', () => {
     expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-      ACCOUNT_NAME
+      mockAccountName
     );
   });
 

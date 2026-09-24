@@ -10,20 +10,21 @@ import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import {
   mockAccount,
-  mockDerivedWallets,
-  mockSecondAccount,
+  mockWalletSummaries,
+  mockSiblingAccount,
   mockUser,
 } from '@/test-utils/fixtures';
-import type { AccountWithDerivedWallets } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
 import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { openMenu, renderHome } from './home-test-helpers';
 
-const mockPersist = jest.fn();
+const mockWriteCookie = jest.fn();
 
 jest.mock('@/lib/cookies', () => ({
   ...jest.requireActual('@/lib/cookies'),
-  writeCookie: (name: string, value: string): void => mockPersist(name, value),
+  writeCookie: (name: string, value: string): void =>
+    mockWriteCookie(name, value),
 }));
 
 describe('Home', () => {
@@ -33,10 +34,10 @@ describe('Home', () => {
 
   describe('viewing mode', () => {
     it('renders the account named by initialAccountId', () => {
-      renderHome({ initialAccountId: mockSecondAccount.id });
+      renderHome({ initialAccountId: mockSiblingAccount.id });
 
       expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-        mockSecondAccount.name
+        mockSiblingAccount.name
       );
     });
 
@@ -76,11 +77,11 @@ describe('Home', () => {
       fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 
       expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-        mockSecondAccount.name
+        mockSiblingAccount.name
       );
-      expect(mockPersist).toHaveBeenCalledWith(
+      expect(mockWriteCookie).toHaveBeenCalledWith(
         CURRENT_ACCOUNT_COOKIE,
-        mockSecondAccount.id
+        mockSiblingAccount.id
       );
       expect(screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)).toHaveAttribute(
         'data-open',
@@ -97,16 +98,16 @@ describe('Home', () => {
     }
 
     it('applies the tapped account theme', () => {
-      const themedAccounts: AccountWithDerivedWallets[] = [
+      const themedAccounts: AccountSummary[] = [
         {
           ...mockAccount,
           themeId: THEME_ID.sunshineQuest,
-          wallets: mockDerivedWallets,
+          wallets: mockWalletSummaries,
         },
         {
-          ...mockSecondAccount,
+          ...mockSiblingAccount,
           themeId: THEME_ID.midnightBlue,
-          wallets: mockDerivedWallets,
+          wallets: mockWalletSummaries,
         },
       ];
 

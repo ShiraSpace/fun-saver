@@ -15,39 +15,44 @@ describe('useCloseOnBack', () => {
   });
 
   it('closes when the back button fires a popstate', () => {
-    const onClose = jest.fn();
-    renderHook(() => useCloseOnBack(onClose));
+    const mockOnClose = jest.fn();
+    renderHook(() => useCloseOnBack(mockOnClose));
 
     act(() => {
       window.dispatchEvent(new PopStateEvent('popstate'));
     });
 
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
   it('stops listening after it closes', () => {
-    const onClose = jest.fn();
-    const { unmount } = renderHook(() => useCloseOnBack(onClose));
+    const mockOnClose = jest.fn();
+    const { unmount } = renderHook(() => useCloseOnBack(mockOnClose));
 
     unmount();
     act(() => {
       window.dispatchEvent(new PopStateEvent('popstate'));
     });
 
-    expect(onClose).not.toHaveBeenCalled();
+    expect(mockOnClose).not.toHaveBeenCalled();
   });
 
   it('stays open under StrictMode remount', async () => {
-    const onClose = jest.fn();
-    const back = jest.spyOn(window.history, 'back').mockImplementation(() => {
-      setTimeout(() => window.dispatchEvent(new PopStateEvent('popstate')), 0);
-    });
+    const mockOnClose = jest.fn();
+    const mockHistoryBack = jest
+      .spyOn(window.history, 'back')
+      .mockImplementation(() => {
+        setTimeout(
+          () => window.dispatchEvent(new PopStateEvent('popstate')),
+          0
+        );
+      });
 
-    renderHook(() => useCloseOnBack(onClose), { wrapper: StrictMode });
+    renderHook(() => useCloseOnBack(mockOnClose), { wrapper: StrictMode });
     await flushAsync();
 
-    expect(onClose).not.toHaveBeenCalled();
+    expect(mockOnClose).not.toHaveBeenCalled();
 
-    back.mockRestore();
+    mockHistoryBack.mockRestore();
   });
 });

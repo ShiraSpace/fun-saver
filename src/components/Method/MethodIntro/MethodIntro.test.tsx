@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { GOAL_OUTCOME_TEST_IDS } from '../GoalOutcome/constants';
+import { KEY_POINT_TEST_IDS } from '../KeyPoint/constants';
 import { METHOD_COPY } from '../copy';
 import { MethodIntro } from './MethodIntro';
 import { METHOD_INTRO_COPY, METHOD_INTRO_TEST_IDS } from './constants';
@@ -12,8 +12,8 @@ describe('the opener', () => {
   });
 
   it('shows an outcome for every one the copy carries, so a fourth needs no change here', () => {
-    expect(screen.getAllByTestId(GOAL_OUTCOME_TEST_IDS.outcome)).toHaveLength(
-      Object.keys(METHOD_COPY.goal.outcome).length
+    expect(screen.getAllByTestId(KEY_POINT_TEST_IDS.outcome)).toHaveLength(
+      Object.keys(METHOD_COPY.goal.outcomes).length
     );
   });
 

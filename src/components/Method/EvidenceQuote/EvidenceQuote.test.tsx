@@ -5,12 +5,12 @@ import { EvidenceQuote } from './EvidenceQuote';
 import { EVIDENCE_QUOTE_TEST_IDS } from './constants';
 
 describe('an evidence quote', () => {
-  const BODY = 'אלה שקיבלו שתי מעטפות **חסכו 72% יותר**. אותו כסף.';
-  const CITATION = 'Soman & Cheema, Journal of Marketing Research, 2011';
+  const mockBody = 'אלה שקיבלו שתי מעטפות **חסכו 72% יותר**. אותו כסף.';
+  const mockCitation = 'Soman & Cheema, Journal of Marketing Research, 2011';
 
   describe('with no source named', () => {
     beforeEach(() => {
-      render(<EvidenceQuote body={BODY} citation={CITATION} />);
+      render(<EvidenceQuote body={mockBody} citation={mockCitation} />);
     });
 
     it('lifts the finding out of the sentence, because the number is the point', () => {
@@ -38,8 +38,8 @@ describe('an evidence quote', () => {
     beforeEach(() => {
       render(
         <EvidenceQuote
-          body={BODY}
-          citation={CITATION}
+          body={mockBody}
+          citation={mockCitation}
           sources={[METHOD_COPY.sources.list[0].id]}
         />
       );

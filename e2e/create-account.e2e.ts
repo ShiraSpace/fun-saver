@@ -4,28 +4,28 @@ import { mockAccount } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
 describe('create account', () => {
-  const { emptyState, createAccount, avatarPicker, header, dashboard } =
+  const { emptyState, createAccount, avatarPicker, header, account } =
     useDriver();
 
   it('opens the account form from the empty state', async () => {
-    await emptyState.clickCreateAccount();
+    await emptyState.tapCreateAccount();
     assert.equal(await createAccount.isOpen(), true);
   });
 
-  it('creates an account and lands on the dashboard with three zero wallets', async () => {
-    await emptyState.clickCreateAccount();
+  it('creates an account and lands on the account with three zero wallets', async () => {
+    await emptyState.tapCreateAccount();
     await createAccount.isOpen();
 
     await createAccount.fillName('נועה');
     await avatarPicker.selectFirst();
     await createAccount.submit();
 
-    await header.waitForName('נועה');
-    assert.equal(await header.name(), 'נועה');
-    assert.equal(await dashboard.overviewExists(), true);
-    assert.equal(await dashboard.walletCardCount(), 3);
+    await header.waitForTitle('נועה');
+    assert.equal(await header.title(), 'נועה');
+    assert.equal(await account.overviewExists(), true);
+    assert.equal(await account.walletCardCount(), 3);
 
-    const balances = await dashboard.walletBalances();
+    const balances = await account.walletBalances();
     assert.equal(balances.length, 3);
     for (const balance of balances) {
       assert.match(
@@ -45,7 +45,7 @@ describe('add account from the menu', () => {
   beforeEach(async () => {
     await menu.open();
     await menu.openAccountPicker();
-    await menu.clickAddAccountRow();
+    await menu.tapAddAccount();
   });
 
   it('opens the create form from the menu add chip', async () => {
@@ -57,15 +57,15 @@ describe('add account from the menu', () => {
     await avatarPicker.selectFirst();
     await createAccount.submit();
 
-    await header.waitForName('נועה');
-    assert.equal(await header.name(), 'נועה');
+    await header.waitForTitle('נועה');
+    assert.equal(await header.title(), 'נועה');
   });
 
   it('returns to the current account when the create form is cancelled', async () => {
     await createAccount.cancel();
 
-    await header.waitForName(mockAccount.name);
-    assert.equal(await header.name(), mockAccount.name);
+    await header.waitForTitle(mockAccount.name);
+    assert.equal(await header.title(), mockAccount.name);
   });
 });
 
@@ -78,7 +78,7 @@ describe('add account from the menu on the method page', () => {
 
     await menu.open();
     await menu.openAccountPicker();
-    await menu.clickAddAccountRow();
+    await menu.tapAddAccount();
 
     assert.equal(await createAccount.isOpen(), true);
   });

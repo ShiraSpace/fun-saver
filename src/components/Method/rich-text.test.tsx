@@ -2,11 +2,11 @@ import { render } from '@/test-utils/render';
 import { emphasize, paragraphs } from './rich-text';
 
 describe('emphasis in the method copy', () => {
-  const MARKED = 'המטרה היא **תרגול שבועי** בדחיית סיפוקים';
+  const mockMarked = 'המטרה היא **תרגול שבועי** בדחיית סיפוקים';
   let container: HTMLElement;
 
   beforeEach(() => {
-    ({ container } = render(<p>{emphasize(MARKED)}</p>));
+    ({ container } = render(<p>{emphasize(mockMarked)}</p>));
   });
 
   it('gives a marked run real weight, so a claim can stand out mid-sentence', () => {

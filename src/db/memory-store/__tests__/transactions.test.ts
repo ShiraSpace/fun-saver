@@ -2,17 +2,17 @@ import { InMemoryStore } from '../index';
 import {
   createMockTransaction,
   mockAccount,
-  mockSecondAccount,
+  mockSiblingAccount,
   mockTransactions,
 } from '@/test-utils/fixtures';
 
-const deposit = createMockTransaction();
+const mockDeposit = createMockTransaction();
 
 describe('InMemoryStore transactions', () => {
   it('lists transactions filtered by wallet', async () => {
     const store = new InMemoryStore();
 
-    await store.insertTransactions([deposit]);
+    await store.insertTransactions([mockDeposit]);
 
     expect(
       (await store.listTransactionsByWallet('a1', 'w1')).map(
@@ -25,7 +25,7 @@ describe('InMemoryStore transactions', () => {
     const store = new InMemoryStore();
     await store.insertTransactions([
       ...mockTransactions,
-      createMockTransaction({ id: 't7', accountId: mockSecondAccount.id }),
+      createMockTransaction({ id: 't7', accountId: mockSiblingAccount.id }),
     ]);
 
     const listedTransactions = await store.listTransactionsByAccount(
@@ -36,24 +36,33 @@ describe('InMemoryStore transactions', () => {
   });
 
   it('tells the history in the order it happened, same-day transactions in the order they were made', async () => {
-    const evening = createMockTransaction({
+    const mockEveningTransaction = createMockTransaction({
       id: 'evening',
       createdAt: '2026-01-01T09:00:00.000Z',
     });
-    const morning = createMockTransaction({
+    const mockMorningTransaction = createMockTransaction({
       id: 'morning',
       createdAt: '2026-01-01T08:00:00.000Z',
     });
     const store = new InMemoryStore();
-    await store.insertTransactions([evening, morning]);
+    await store.insertTransactions([
+      mockEveningTransaction,
+      mockMorningTransaction,
+    ]);
 
     const byAccount = store.listTransactionsByAccount(mockAccount.id);
     const byWallet = store.listTransactionsByWallet(
       mockAccount.id,
-      evening.walletId
+      mockEveningTransaction.walletId
     );
 
-    expect(await byAccount).toEqual([morning, evening]);
-    expect(await byWallet).toEqual([morning, evening]);
+    expect(await byAccount).toEqual([
+      mockMorningTransaction,
+      mockEveningTransaction,
+    ]);
+    expect(await byWallet).toEqual([
+      mockMorningTransaction,
+      mockEveningTransaction,
+    ]);
   });
 });

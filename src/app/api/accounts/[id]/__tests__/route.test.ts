@@ -4,9 +4,9 @@
 import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import {
-  mockAccountEdit,
+  mockAccountEdits,
   mockCreateAccountInput,
-  mockSecondUser,
+  mockCoParent,
   mockUser,
 } from '@/test-utils/fixtures';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
@@ -43,38 +43,38 @@ describe('PUT /api/accounts/[id]', () => {
 
   it('saves the new name and avatar on the account', async () => {
     const response = await putAccount(accountId, {
-      name: `  ${mockAccountEdit.name}  `,
-      avatarId: mockAccountEdit.avatarId,
+      name: `  ${mockAccountEdits.name}  `,
+      avatarId: mockAccountEdits.avatarId,
     });
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toMatchObject(mockAccountEdit);
+    expect(await response.json()).toMatchObject(mockAccountEdits);
     expect(await getStore().getAccount(accountId)).toMatchObject(
-      mockAccountEdit
+      mockAccountEdits
     );
   });
 
   it('updates the name alone without touching the avatar', async () => {
     const response = await putAccount(accountId, {
-      name: mockAccountEdit.name,
+      name: mockAccountEdits.name,
     });
 
     expect(response.status).toBe(200);
     expect(await getStore().getAccount(accountId)).toMatchObject({
-      name: mockAccountEdit.name,
+      name: mockAccountEdits.name,
       avatarId: mockCreateAccountInput.avatarId,
     });
   });
 
   it('updates the avatar alone without touching the name', async () => {
     const response = await putAccount(accountId, {
-      avatarId: mockAccountEdit.avatarId,
+      avatarId: mockAccountEdits.avatarId,
     });
 
     expect(response.status).toBe(200);
     expect(await getStore().getAccount(accountId)).toMatchObject({
       name: mockCreateAccountInput.name,
-      avatarId: mockAccountEdit.avatarId,
+      avatarId: mockAccountEdits.avatarId,
     });
   });
 
@@ -126,16 +126,16 @@ describe('PUT /api/accounts/[id]', () => {
 
   it('refuses an unknown account with 403 rather than admitting it is gone', async () => {
     const response = await putAccount('does-not-exist', {
-      name: mockAccountEdit.name,
+      name: mockAccountEdits.name,
     });
 
     expect(response.status).toBe(403);
   });
 
   it('refuses a stranger with 403 and leaves the name and avatar alone', async () => {
-    jest.mocked(signedInUser).mockResolvedValue(mockSecondUser);
+    jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
 
-    const response = await putAccount(accountId, mockAccountEdit);
+    const response = await putAccount(accountId, mockAccountEdits);
 
     expect(response.status).toBe(403);
     expect(await getStore().getAccount(accountId)).toMatchObject(

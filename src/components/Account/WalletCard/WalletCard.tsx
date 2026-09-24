@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, ReactNode } from 'react';
-import type { WalletName, WalletWithDerived } from '@/lib/types';
+import type { WalletName, WalletSummary } from '@/lib/types';
 import { Money } from '@/components/Money';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import {
@@ -14,13 +14,8 @@ import {
 } from './WalletCard.styles';
 
 type CardWallet = Pick<
-  WalletWithDerived,
-  | 'name'
-  | 'icon'
-  | 'balance'
-  | 'monthlyInterestRate'
-  | 'openedAt'
-  | 'withdrawals'
+  WalletSummary,
+  'name' | 'icon' | 'balance' | 'monthlyInterestRate' | 'openedAt' | 'withdrawn'
 >;
 
 const WITHDRAWALS_SUMMARY: Record<
@@ -36,12 +31,12 @@ interface WalletCardProps {
   children?: ReactNode;
 }
 
-function walletSummary(wallet: CardWallet): string | undefined {
+function walletSummaryText(wallet: CardWallet): string | undefined {
   if (wallet.name === 'savings') {
     return WALLET_CARD_COPY.savingsSummary(wallet);
   }
 
-  if (wallet.withdrawals === 0) {
+  if (wallet.withdrawn === 0) {
     return;
   }
 
@@ -49,7 +44,7 @@ function walletSummary(wallet: CardWallet): string | undefined {
 }
 
 export function WalletCard({ wallet, children }: WalletCardProps): JSX.Element {
-  const summary = walletSummary(wallet);
+  const summaryText = walletSummaryText(wallet);
 
   return (
     <Card data-testid={WALLET_CARD_TEST_IDS.card}>
@@ -57,9 +52,9 @@ export function WalletCard({ wallet, children }: WalletCardProps): JSX.Element {
         <WalletIcon walletName={wallet.name}>{wallet.icon}</WalletIcon>
         <Name>
           {WALLET_CARD_COPY.name[wallet.name]}
-          {summary && (
+          {summaryText && (
             <Summary data-testid={WALLET_CARD_TEST_IDS.summary}>
-              {summary}
+              {summaryText}
             </Summary>
           )}
         </Name>

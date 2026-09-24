@@ -1,72 +1,78 @@
 import { type BoundingBox } from 'puppeteer';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
-import { Session } from './session';
+import { AppBrowser } from './app-browser';
 
 export class HeaderDriver {
-  constructor(private readonly session: Session) {}
+  constructor(private readonly appBrowser: AppBrowser) {}
 
   exists(): Promise<boolean> {
-    return this.session.exists(HEADER_TEST_IDS.bar);
+    return this.appBrowser.exists(HEADER_TEST_IDS.bar);
   }
 
   box(): Promise<BoundingBox> {
-    return this.session.box(HEADER_TEST_IDS.bar);
+    return this.appBrowser.box(HEADER_TEST_IDS.bar);
   }
 
   homeLinkExists(): Promise<boolean> {
-    return this.session.exists(HEADER_TEST_IDS.homeLink);
+    return this.appBrowser.exists(HEADER_TEST_IDS.homeLink);
   }
 
   homeLinkBox(): Promise<BoundingBox> {
-    return this.session.box(HEADER_TEST_IDS.homeLink);
+    return this.appBrowser.box(HEADER_TEST_IDS.homeLink);
   }
 
-  name(): Promise<string> {
-    return this.session.text(HEADER_TITLE_TEST_IDS.title);
+  title(): Promise<string> {
+    return this.appBrowser.text(HEADER_TITLE_TEST_IDS.title);
   }
 
-  waitForName(name: string): Promise<void> {
-    return this.session.waitForText(HEADER_TITLE_TEST_IDS.title, name);
+  waitForTitle(title: string): Promise<void> {
+    return this.appBrowser.waitForText(HEADER_TITLE_TEST_IDS.title, title);
   }
 
-  nameBox(): Promise<BoundingBox> {
-    return this.session.box(HEADER_TITLE_TEST_IDS.title);
+  titleBox(): Promise<BoundingBox> {
+    return this.appBrowser.box(HEADER_TITLE_TEST_IDS.title);
   }
 
   avatarSource(): Promise<string> {
-    return this.session.imageSource(HEADER_TEST_IDS.avatar);
+    return this.appBrowser.imageSource(HEADER_TEST_IDS.avatar);
   }
 
   waitForAvatar(avatarId: string): Promise<void> {
-    return this.session.waitForImageSource(HEADER_TEST_IDS.avatar, avatarId);
+    return this.appBrowser.waitForImageSource(HEADER_TEST_IDS.avatar, avatarId);
   }
 
   avatarBox(): Promise<BoundingBox> {
-    return this.session.box(HEADER_TEST_IDS.avatar);
+    return this.appBrowser.box(HEADER_TEST_IDS.avatar);
   }
 
-  nameFontSize(): Promise<string> {
-    return this.session.computedStyle(HEADER_TITLE_TEST_IDS.title, 'font-size');
+  titleFontSize(): Promise<string> {
+    return this.appBrowser.computedStyle(
+      HEADER_TITLE_TEST_IDS.title,
+      'font-size'
+    );
   }
 
   background(): Promise<string> {
-    return this.session.computedStyle(HEADER_TEST_IDS.bar, 'background-color');
+    return this.appBrowser.computedStyle(
+      HEADER_TEST_IDS.bar,
+      'background-color'
+    );
   }
 
   shadow(): Promise<string> {
-    return this.session.computedStyle(HEADER_TEST_IDS.bar, 'box-shadow');
+    return this.appBrowser.computedStyle(HEADER_TEST_IDS.bar, 'box-shadow');
   }
 
   tapHomeLink(): Promise<void> {
-    return this.session.click(HEADER_TEST_IDS.homeLink);
+    return this.appBrowser.click(HEADER_TEST_IDS.homeLink);
   }
 
   hasProgressLine(): Promise<boolean> {
-    return this.session.exists(HEADER_TEST_IDS.progress);
+    return this.appBrowser.exists(HEADER_TEST_IDS.progress);
   }
 
   titleColor(): Promise<string> {
-    return this.session.computedStyle(HEADER_TITLE_TEST_IDS.title, 'color');
+    return this.appBrowser.computedStyle(HEADER_TITLE_TEST_IDS.title, 'color');
   }
 }

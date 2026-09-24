@@ -1,15 +1,15 @@
 import { InMemoryStore } from '@/db/memory-store';
 import { today } from '../clock';
 import { addDeposit, addWithdrawal, splitDeposit } from '../transactions';
-import { balance } from '../derivations';
-import { DEPOSIT_SPLIT } from '../constants';
+import { balance } from '../wallet-totals';
+import { DEPOSIT_SHARES } from '../constants';
 import { OverdraftError, ValidationError } from '../errors';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import type { Account, WalletName } from '../types';
 
-const ASOF = today();
+const mockToday = today();
 
-async function seedAccount(): Promise<{
+async function storeWithOwnedAccount(): Promise<{
   store: InMemoryStore;
   account: Account;
 }> {
@@ -20,7 +20,7 @@ async function seedAccount(): Promise<{
 
 describe('addDeposit', () => {
   it('records one deposit transaction per wallet with its split share', async () => {
-    const { store, account } = await seedAccount();
+    const { store, account } = await storeWithOwnedAccount();
     const { wallets } = account;
 
     const walletId = (name: WalletName): string =>
@@ -30,7 +30,7 @@ describe('addDeposit', () => {
       store,
       account,
       amountAgorot: 2000,
-      asOf: ASOF,
+      asOf: mockToday,
     });
     const amountFor = (name: WalletName): number =>
       transactions.find(
@@ -46,17 +46,17 @@ describe('addDeposit', () => {
       transactions.every((transaction) => transaction.type === 'deposit')
     ).toBe(true);
     expect(
-      transactions.every((transaction) => transaction.occurredAt === ASOF)
+      transactions.every((transaction) => transaction.occurredAt === mockToday)
     ).toBe(true);
   });
 
   it('persists the deposit transactions to the store', async () => {
-    const { store, account } = await seedAccount();
+    const { store, account } = await storeWithOwnedAccount();
     const savings = account.wallets.find(
       (wallet) => wallet.name === 'savings'
     )!;
 
-    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: mockToday });
     const saved = await store.listTransactionsByWallet(account.id, savings.id);
 
     expect(saved).toHaveLength(1);
@@ -64,18 +64,18 @@ describe('addDeposit', () => {
   });
 
   it('rejects a non-positive amount', async () => {
-    const { store, account } = await seedAccount();
+    const { store, account } = await storeWithOwnedAccount();
 
     await expect(
-      addDeposit({ store, account, amountAgorot: 0, asOf: ASOF })
+      addDeposit({ store, account, amountAgorot: 0, asOf: mockToday })
     ).rejects.toBeInstanceOf(ValidationError);
   });
 
   it('rejects a non-integer amount', async () => {
-    const { store, account } = await seedAccount();
+    const { store, account } = await storeWithOwnedAccount();
 
     await expect(
-      addDeposit({ store, account, amountAgorot: 10.5, asOf: ASOF })
+      addDeposit({ store, account, amountAgorot: 10.5, asOf: mockToday })
     ).rejects.toBeInstanceOf(ValidationError);
   });
 });
@@ -85,16 +85,16 @@ describe('addWithdrawal', () => {
     account.wallets.find((wallet) => wallet.name === name)!.id;
 
   it('records and persists a withdrawal on the chosen wallet', async () => {
-    const { store, account } = await seedAccount();
+    const { store, account } = await storeWithOwnedAccount();
     const savings = walletIdFor(account, 'savings');
-    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: mockToday });
 
     const transaction = await addWithdrawal({
       store,
       account,
       walletId: savings,
       amountAgorot: 500,
-      asOf: ASOF,
+      asOf: mockToday,
     });
 
     expect(transaction.type).toBe('withdrawal');
@@ -106,9 +106,9 @@ describe('addWithdrawal', () => {
   });
 
   it('allows withdrawing the exact wallet balance', async () => {
-    const { store, account } = await seedAccount();
+    const { store, account } = await storeWithOwnedAccount();
     const savings = walletIdFor(account, 'savings');
-    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: mockToday });
     const walletBalance = splitDeposit(2000).savings;
 
     await expect(
@@ -117,15 +117,15 @@ describe('addWithdrawal', () => {
         account,
         walletId: savings,
         amountAgorot: walletBalance,
-        asOf: ASOF,
+        asOf: mockToday,
       })
     ).resolves.toMatchObject({ amount: walletBalance });
   });
 
   it('rejects withdrawing more than the wallet balance', async () => {
-    const { store, account } = await seedAccount();
+    const { store, account } = await storeWithOwnedAccount();
     const savings = walletIdFor(account, 'savings');
-    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: mockToday });
     const tooMuch = splitDeposit(2000).savings + 1;
 
     await expect(
@@ -134,13 +134,13 @@ describe('addWithdrawal', () => {
         account,
         walletId: savings,
         amountAgorot: tooMuch,
-        asOf: ASOF,
+        asOf: mockToday,
       })
     ).rejects.toBeInstanceOf(OverdraftError);
   });
 
   it('rejects a non-positive amount', async () => {
-    const { store, account } = await seedAccount();
+    const { store, account } = await storeWithOwnedAccount();
     const savings = walletIdFor(account, 'savings');
 
     await expect(
@@ -149,15 +149,15 @@ describe('addWithdrawal', () => {
         account,
         walletId: savings,
         amountAgorot: 0,
-        asOf: ASOF,
+        asOf: mockToday,
       })
     ).rejects.toBeInstanceOf(ValidationError);
   });
 
   it('rejects a non-integer amount', async () => {
-    const { store, account } = await seedAccount();
+    const { store, account } = await storeWithOwnedAccount();
     const savings = walletIdFor(account, 'savings');
-    await addDeposit({ store, account, amountAgorot: 2000, asOf: ASOF });
+    await addDeposit({ store, account, amountAgorot: 2000, asOf: mockToday });
 
     await expect(
       addWithdrawal({
@@ -165,13 +165,13 @@ describe('addWithdrawal', () => {
         account,
         walletId: savings,
         amountAgorot: 10.5,
-        asOf: ASOF,
+        asOf: mockToday,
       })
     ).rejects.toBeInstanceOf(ValidationError);
   });
 
   it('rejects an unknown wallet', async () => {
-    const { store, account } = await seedAccount();
+    const { store, account } = await storeWithOwnedAccount();
 
     await expect(
       addWithdrawal({
@@ -179,7 +179,7 @@ describe('addWithdrawal', () => {
         account,
         walletId: 'nope',
         amountAgorot: 100,
-        asOf: ASOF,
+        asOf: mockToday,
       })
     ).rejects.toBeInstanceOf(ValidationError);
   });
@@ -190,8 +190,8 @@ describe('splitDeposit', () => {
     const total = 2000;
     const split = splitDeposit(total);
 
-    expect(split.spending).toBe(Math.floor(total * DEPOSIT_SPLIT.spending));
-    expect(split.goodDeeds).toBe(Math.floor(total * DEPOSIT_SPLIT.goodDeeds));
+    expect(split.spending).toBe(Math.floor(total * DEPOSIT_SHARES.spending));
+    expect(split.goodDeeds).toBe(Math.floor(total * DEPOSIT_SHARES.goodDeeds));
     expect(split.savings).toBe(total - split.spending - split.goodDeeds);
   });
 
@@ -213,13 +213,13 @@ describe('splitDeposit', () => {
 
 describe('DEPOSIT_SPLIT config', () => {
   it('is the single source of truth for the deposit ratios', () => {
-    expect(DEPOSIT_SPLIT).toEqual({
+    expect(DEPOSIT_SHARES).toEqual({
       savings: 0.4,
       spending: 0.5,
       goodDeeds: 0.1,
     });
 
-    const total = Object.values(DEPOSIT_SPLIT).reduce((sum, r) => sum + r, 0);
+    const total = Object.values(DEPOSIT_SHARES).reduce((sum, r) => sum + r, 0);
     expect(total).toBeCloseTo(1);
   });
 });

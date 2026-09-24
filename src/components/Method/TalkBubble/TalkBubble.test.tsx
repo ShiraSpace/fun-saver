@@ -6,8 +6,8 @@ import { TalkBubble } from './TalkBubble';
 import { TALK_BUBBLE_TEST_IDS } from './constants';
 
 describe('a talk bubble', () => {
-  const LABEL = '🗣️ **מה אומרים לילד**';
-  const LINES: readonly TalkLine[] = [
+  const mockLabel = '🗣️ **מה אומרים לילד**';
+  const mockLines: readonly TalkLine[] = [
     { tone: 'struck', text: '"אמרתי לך לא לבזבז את הכל."' },
     { tone: 'spoken', text: '"נגמר. זה מרגיש רע, ואני מבין."' },
     { tone: 'muted', text: 'בלי הרצאה.' },
@@ -15,7 +15,7 @@ describe('a talk bubble', () => {
 
   describe('given a label', () => {
     beforeEach(() => {
-      render(<TalkBubble label={LABEL} lines={LINES} />);
+      render(<TalkBubble label={mockLabel} lines={mockLines} />);
     });
 
     it('keeps the line the parent should not say, marked rather than deleted', () => {
@@ -23,7 +23,7 @@ describe('a talk bubble', () => {
         .getAllByTestId(TALK_BUBBLE_TEST_IDS.line)
         .map((line) => line.dataset.tone);
 
-      expect(tones).toEqual(LINES.map((line) => line.tone));
+      expect(tones).toEqual(mockLines.map((line) => line.tone));
     });
 
     it('runs the label through the same emphasis as everything else on the page', () => {
@@ -37,7 +37,7 @@ describe('a talk bubble', () => {
     const jungle = getThemeTokens(THEME_ID.jungleQuest).colors;
 
     beforeEach(() => {
-      render(<TalkBubble label={LABEL} lines={LINES} />, {
+      render(<TalkBubble label={mockLabel} lines={mockLines} />, {
         themeId: THEME_ID.jungleQuest,
       });
     });
@@ -54,7 +54,7 @@ describe('a talk bubble', () => {
 
   describe('given none', () => {
     beforeEach(() => {
-      render(<TalkBubble lines={LINES} />);
+      render(<TalkBubble lines={mockLines} />);
     });
 
     it('opens on the words themselves, for a section whose title already said them', () => {

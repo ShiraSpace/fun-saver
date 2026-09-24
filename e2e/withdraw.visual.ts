@@ -4,16 +4,16 @@ import { mockAccount, mockTransactions } from '@/test-utils/fixtures';
 import { useDriver } from './driver/use-driver';
 
 describe('withdraw', () => {
-  const { dashboard } = useDriver({
+  const { account } = useDriver({
     accounts: [mockAccount],
     transactions: mockTransactions,
   });
 
   it('withdraws from the savings wallet and lowers its principal', async () => {
-    assert.match(await dashboard.savingsPrincipal(), /80/);
+    assert.match(await account.savingsPrincipal(), /80/);
 
-    await dashboard.withdraw('savings', 30);
+    await account.withdraw('savings', 30);
 
-    await dashboard.waitForSavingsPrincipal('50');
+    await account.waitForSavingsPrincipal('50');
   });
 });
