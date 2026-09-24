@@ -27,6 +27,6 @@ export function withdrawalCopy({
       : WITHDRAWAL_FORM_COPY.title,
     submitLabel: isSubmitting
       ? WITHDRAWAL_FORM_COPY.submitting
-      : `${submitVerb} ${MONEY_COPY.currency}${amountShekels}`,
+      : `${submitVerb} ${MONEY_COPY.currencySign}${amountShekels}`,
   };
 }

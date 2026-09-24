@@ -51,7 +51,7 @@ function useAnimationProgress(): number {
   return progress;
 }
 
-export function useAnimatedWalletTotal(total: number): number {
+export function useCountUpTotalBalance(total: number): number {
   const progress = useAnimationProgress();
 
   return Math.round(total * progress);

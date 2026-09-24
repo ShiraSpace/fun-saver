@@ -2,7 +2,7 @@ import { render, screen } from '@/test-utils/render';
 import { mockDerivedWallets, mockWalletShares } from '@/test-utils/fixtures';
 import { getThemeTokens } from '@/theme/registry';
 import { Donut, type DonutSegment } from './Donut';
-import { OVERVIEW_CARD_TEST_IDS } from '../constants';
+import { BALANCE_BREAKDOWN_TEST_IDS } from '../constants';
 
 const walletSegments = mockDerivedWallets.map((wallet, index) => ({
   name: wallet.name,
@@ -11,7 +11,7 @@ const walletSegments = mockDerivedWallets.map((wallet, index) => ({
 
 function getArcs(): Element[] {
   const circles = screen
-    .getByTestId(OVERVIEW_CARD_TEST_IDS.donut)
+    .getByTestId(BALANCE_BREAKDOWN_TEST_IDS.donut)
     .querySelectorAll('circle');
 
   return Array.from(circles).slice(1);

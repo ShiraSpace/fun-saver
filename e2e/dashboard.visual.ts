@@ -21,7 +21,7 @@ describe('dashboard', () => {
     assert.equal(await header.exists(), true);
   });
 
-  it('shows the overview card with the savings daily interest', async () => {
+  it('shows the balance breakdown with the savings daily interest', async () => {
     assert.equal(await dashboard.overviewExists(), true);
     assert.match(await dashboard.savingsTodayInterest(), /₪\s*5/);
   });

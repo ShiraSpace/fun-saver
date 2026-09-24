@@ -5,7 +5,7 @@ import type { AccountWithDerivedWallets } from '@/lib/types';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { PrimaryButton } from '@/components/PrimaryButton';
-import { OverviewCard } from './OverviewCard';
+import { BalanceBreakdown } from './BalanceBreakdown';
 import { WalletList } from './WalletList/WalletList';
 import { TransactionDrawer } from './TransactionDrawer';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
@@ -25,7 +25,7 @@ export function Account({ account }: AccountProps): JSX.Element {
     <Screen align="top">
       <Column>
         <Header title={name} account={account} />
-        <OverviewCard key={account.id} wallets={ordered} />
+        <BalanceBreakdown key={account.id} wallets={ordered} />
         <WalletList wallets={ordered} />
         <PrimaryButton
           type="button"

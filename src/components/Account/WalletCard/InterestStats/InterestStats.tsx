@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { halfShekelAmount } from '@/lib/money';
+import { nearestHalfShekel } from '@/lib/money';
 import { Money } from '@/components/Money';
 import { INTEREST_STATS_COPY, INTEREST_STATS_TEST_IDS } from './constants';
 import { Amount, Cell, Label, Stats } from './InterestStats.styles';
@@ -48,7 +48,7 @@ export function InterestStats({
   interestGain,
   todayInterest,
 }: InterestStatsProps): JSX.Element {
-  const hasTodayInterest = halfShekelAmount(todayInterest) !== null;
+  const hasTodayInterest = nearestHalfShekel(todayInterest) !== null;
 
   return (
     <Stats data-testid={INTEREST_STATS_TEST_IDS.stats}>

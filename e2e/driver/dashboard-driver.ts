@@ -1,4 +1,4 @@
-import { OVERVIEW_CARD_TEST_IDS } from '@/components/Account/OverviewCard/constants';
+import { BALANCE_BREAKDOWN_TEST_IDS } from '@/components/Account/BalanceBreakdown/constants';
 import { INTEREST_STATS_TEST_IDS } from '@/components/Account/WalletCard/InterestStats/constants';
 import { WALLET_LIST_TEST_IDS } from '@/components/Account/WalletList/constants';
 import { WALLET_CARD_TEST_IDS } from '@/components/Account/WalletCard/constants';
@@ -13,7 +13,7 @@ export class DashboardDriver {
   constructor(private readonly session: Session) {}
 
   overviewExists(): Promise<boolean> {
-    return this.session.exists(OVERVIEW_CARD_TEST_IDS.card);
+    return this.session.exists(BALANCE_BREAKDOWN_TEST_IDS.card);
   }
 
   savingsTodayInterest(): Promise<string> {
@@ -30,7 +30,7 @@ export class DashboardDriver {
 
   arcAnimations(): Promise<string[]> {
     return this.session.styleValues(
-      OVERVIEW_CARD_TEST_IDS.arc,
+      BALANCE_BREAKDOWN_TEST_IDS.arc,
       'animation-name'
     );
   }

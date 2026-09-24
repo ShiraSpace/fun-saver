@@ -1,6 +1,6 @@
 import type { WalletName } from '@/lib/types';
 
-export const OVERVIEW_CARD_TEST_IDS = {
+export const BALANCE_BREAKDOWN_TEST_IDS = {
   card: 'overview-card',
   total: 'overview-total',
   donut: 'overview-donut',
@@ -8,12 +8,12 @@ export const OVERVIEW_CARD_TEST_IDS = {
   legendRow: 'overview-legend-row',
   legendDot: 'overview-legend-dot',
   legendShare: 'overview-legend-share',
-  legendAmount: 'overview-legend-amount',
+  legendBalance: 'overview-legend-amount',
 } as const;
 
-export const OVERVIEW_CARD_COPY = {
+export const BALANCE_BREAKDOWN_COPY = {
   totalLabel: 'סך הכל',
-  name: {
+  shortWalletLabel: {
     savings: 'חיסכון',
     spending: 'בזבוזים',
     goodDeeds: 'מעשים',
@@ -21,10 +21,10 @@ export const OVERVIEW_CARD_COPY = {
   share: (percent: number): string => `${percent}%`,
 } as const;
 
-export type WalletArcColor =
+export type WalletColor =
   'walletSavings' | 'walletSpending' | 'walletGoodDeeds';
 
-export const WALLET_ARC_COLOR: Record<WalletName, WalletArcColor> = {
+export const WALLET_COLOR: Record<WalletName, WalletColor> = {
   savings: 'walletSavings',
   spending: 'walletSpending',
   goodDeeds: 'walletGoodDeeds',
@@ -58,14 +58,14 @@ export const LEGEND_ANIMATION = {
   riseFromPx: 6,
 } as const;
 
-export const OVERVIEW_CARD_STYLE = {
+export const BALANCE_BREAKDOWN_STYLE = {
   radius: 24,
   padding: 16,
   rowGap: 16,
-  holeLabelSize: 10,
-  holeLabelSpacing: 0.4,
-  holeAmountSize: 26,
-  holeMaxDigits: 4,
+  totalLabelSize: 10,
+  totalLabelSpacing: 0.4,
+  totalAmountSize: 26,
+  totalMaxDigits: 4,
   legendGap: 11,
   legendRowGap: 9,
   dotSize: 22,

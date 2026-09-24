@@ -1,5 +1,5 @@
 export const MONEY_COPY = {
-  currency: '₪',
+  currencySign: '₪',
 } as const;
 
 export const MONEY_STYLE = {

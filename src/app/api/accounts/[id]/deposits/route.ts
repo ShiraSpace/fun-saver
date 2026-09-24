@@ -17,9 +17,9 @@ export const POST = withAccountEditor(async (request, id) => {
     return accountNotFound();
   }
 
-  const amount = validDeposit(await jsonBody(request));
+  const amountShekels = validDeposit(await jsonBody(request));
 
-  if (amount === undefined) {
+  if (amountShekels === undefined) {
     return badRequest(API_ERRORS.invalidDeposit);
   }
 
@@ -27,7 +27,7 @@ export const POST = withAccountEditor(async (request, id) => {
     const transactions = await addDeposit({
       store,
       account,
-      amountAgorot: shekelsToAgorot(amount),
+      amountAgorot: shekelsToAgorot(amountShekels),
       asOf: today(),
     });
 

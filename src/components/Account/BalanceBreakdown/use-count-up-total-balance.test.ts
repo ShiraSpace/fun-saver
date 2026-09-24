@@ -2,17 +2,19 @@ import { renderHook } from '@testing-library/react';
 import { prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
 import {
   progressAt,
-  useAnimatedWalletTotal,
-} from './use-animated-wallet-total';
+  useCountUpTotalBalance,
+} from './use-count-up-total-balance';
 import { TOTAL_ANIMATION } from './constants';
 
-const walletTotal = 35900;
+const totalBalanceAgorot = 35900;
 
-describe('useAnimatedWalletTotal', () => {
+describe('useCountUpTotalBalance', () => {
   it('starts from nothing when the browser allows motion', () => {
     prefersMotion();
 
-    const { result } = renderHook(() => useAnimatedWalletTotal(walletTotal));
+    const { result } = renderHook(() =>
+      useCountUpTotalBalance(totalBalanceAgorot)
+    );
     const nothing = 0;
 
     expect(result.current).toBe(nothing);
@@ -21,9 +23,11 @@ describe('useAnimatedWalletTotal', () => {
   it('shows the whole total straight away when the browser asks for reduced motion', () => {
     prefersReducedMotion();
 
-    const { result } = renderHook(() => useAnimatedWalletTotal(walletTotal));
+    const { result } = renderHook(() =>
+      useCountUpTotalBalance(totalBalanceAgorot)
+    );
 
-    expect(result.current).toBe(walletTotal);
+    expect(result.current).toBe(totalBalanceAgorot);
   });
 });
 
