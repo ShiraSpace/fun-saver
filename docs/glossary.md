@@ -11,7 +11,7 @@ the domain from the names alone, so new code takes its words from this table.
 - **One word per concept.** When a type names a concept (`Transaction`, `Wallet`,
   `Account`), every function, prop, param and local uses that word.
 - **Name a value after the thing that changed:** `balanceChange`, not `delta`.
-- **A parameter takes its type's name:** `history: BalanceHistory`.
+- **A parameter takes its type's name:** `balanceHistory: BalanceHistory`.
 - **No collisions.** Names that read alike mean alike. Client code never shadows a
   browser or JS global (`window`, `history`, `name`, `event`, `location`,
   `status`, `screen`, `close`, `Number`).

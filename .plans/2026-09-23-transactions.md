@@ -656,10 +656,10 @@ export interface BalanceHistoryInput {
   asOf: string;
 }
 export function balanceHistory(input: BalanceHistoryInput): BalanceHistory;
-export function balanceOverRange(history: BalanceHistory, rangeInDays: number): BalanceHistory;
-export function todaysTotalBalance(history: BalanceHistory): number;
-export function totalBalanceChange(history: BalanceHistory, rangeInDays: number): number;
-export function totalBalanceByDay(history: BalanceHistory): Map<string, number>;
+export function balanceOverRange(balanceHistory: BalanceHistory, rangeInDays: number): BalanceHistory;
+export function todaysTotalBalance(balanceHistory: BalanceHistory): number;
+export function totalBalanceChange(balanceHistory: BalanceHistory, rangeInDays: number): number;
+export function totalBalanceByDay(balanceHistory: BalanceHistory): Map<string, number>;
 ```
 
 `rangeInDays` takes `Infinity` for `הכל`. `totalBalanceChange` takes the whole history, not the range,
@@ -792,26 +792,26 @@ export function balanceHistory(input: BalanceHistoryInput): BalanceHistory {
 }
 
 function carriedInDayIndex(
-  history: BalanceHistory,
+  balanceHistory: BalanceHistory,
   rangeInDays: number
 ): number {
-  const todayIndex = history.days.length - 1;
+  const todayIndex = balanceHistory.days.length - 1;
 
   return todayIndex - rangeInDays;
 }
 
 export function balanceOverRange(
-  history: BalanceHistory,
+  balanceHistory: BalanceHistory,
   rangeInDays: number
 ): BalanceHistory {
-  const rangeStartIndex = Math.max(0, carriedInDayIndex(history, rangeInDays));
+  const rangeStartIndex = Math.max(0, carriedInDayIndex(balanceHistory, rangeInDays));
   const fromRangeStart = <T>(values: T[]): T[] => values.slice(rangeStartIndex);
 
   return {
-    days: fromRangeStart(history.days),
-    totalBalance: fromRangeStart(history.totalBalance),
+    days: fromRangeStart(balanceHistory.days),
+    totalBalance: fromRangeStart(balanceHistory.totalBalance),
     wallets: perWallet((walletName) =>
-      fromRangeStart(history.wallets[walletName])
+      fromRangeStart(balanceHistory.wallets[walletName])
     ),
   };
 }
@@ -820,28 +820,28 @@ function closingBalance(values: number[]): number {
   return values[values.length - 1] ?? 0;
 }
 
-export function todaysTotalBalance(history: BalanceHistory): number {
-  return closingBalance(history.totalBalance);
+export function todaysTotalBalance(balanceHistory: BalanceHistory): number {
+  return closingBalance(balanceHistory.totalBalance);
 }
 
 export function totalBalanceChange(
-  history: BalanceHistory,
+  balanceHistory: BalanceHistory,
   rangeInDays: number
 ): number {
-  const carriedInDay = carriedInDayIndex(history, rangeInDays);
+  const carriedInDay = carriedInDayIndex(balanceHistory, rangeInDays);
   const accountIsYoungerThanRange = carriedInDay < 0;
   const carriedInTotalBalance = accountIsYoungerThanRange
     ? 0
-    : history.totalBalance[carriedInDay];
+    : balanceHistory.totalBalance[carriedInDay];
 
-  return todaysTotalBalance(history) - carriedInTotalBalance;
+  return todaysTotalBalance(balanceHistory) - carriedInTotalBalance;
 }
 
 export function totalBalanceByDay(
-  history: BalanceHistory
+  balanceHistory: BalanceHistory
 ): Map<string, number> {
   return new Map(
-    history.days.map((day, dayIndex) => [day, history.totalBalance[dayIndex]])
+    balanceHistory.days.map((day, dayIndex) => [day, balanceHistory.totalBalance[dayIndex]])
   );
 }
 ```
@@ -882,11 +882,11 @@ describe('the balance history', () => {
     balanceHistory({ wallets: mockWallets, transactions, asOf });
 
   it('carries a balance across the days nothing happened', () => {
-    const history = historyOf([mockOpeningDeposit], '2026-01-03');
+    const balanceHistory = historyOf([mockOpeningDeposit], '2026-01-03');
     const firstThreeDays = eachDayInclusive('2026-01-01', '2026-01-03');
 
-    expect(history.days).toEqual(firstThreeDays);
-    expect(history.totalBalance).toEqual([500, 500, 500]);
+    expect(balanceHistory.days).toEqual(firstThreeDays);
+    expect(balanceHistory.totalBalance).toEqual([500, 500, 500]);
   });
 
   it('gives the same history whichever order the store returned the transactions in', () => {
@@ -921,12 +921,12 @@ describe('the balance history', () => {
       amount: 100,
       occurredAt: '2026-01-10',
     });
-    const history = historyOf(
+    const balanceHistory = historyOf(
       [mockOpeningDeposit, mockLaterDeposit],
       '2026-01-10'
     );
 
-    const lastWeek = balanceOverRange(history, 7);
+    const lastWeek = balanceOverRange(balanceHistory, 7);
     const openingBalance = lastWeek.totalBalance[0];
 
     expect(openingBalance).toBe(mockOpeningDeposit.amount);
@@ -936,7 +936,7 @@ describe('the balance history', () => {
 
 Breaks: `balance += …` → `balance = …` (first); take the first transaction's
 `occurredAt` instead of the earliest (second); rebase the total balance to zero
-at the range start — `fromRangeStart(history.totalBalance).map((value) => value - history.totalBalance[rangeStartIndex])`,
+at the range start — `fromRangeStart(balanceHistory.totalBalance).map((value) => value - balanceHistory.totalBalance[rangeStartIndex])`,
 the very failure the spec names (third).
 
 - [ ] **Step 5: The rest**, each with its break:
@@ -950,15 +950,15 @@ the very failure the spec names (third).
     the three wallets. Break: `walletTransactions` ignores the wallet name.
   - `'shows the whole history when the account is younger than the range'` — a
     five-day history over a range of 7 equals the history, and so does
-    `balanceOverRange(history, Infinity)`. Break: remove `Math.max(0, …)` —
+    `balanceOverRange(balanceHistory, Infinity)`. Break: remove `Math.max(0, …)` —
     `rangeStartIndex` goes to `-3` and `slice` quietly keeps the last three days.
-  - `'reports how much the total balance changed across the range'` — `totalBalanceChange(history, 7)`
+  - `'reports how much the total balance changed across the range'` — `totalBalanceChange(balanceHistory, 7)`
     of the ten-day history above is `100`. Break: carry in `0` instead of the balance before the range.
   - `'counts the deposit as growth, for the week and since the beginning'` and
     `'counts every deposit since the account opened'` — an account younger than the range: five
     days after a 500 deposit the change is 500 for `7` and for `Infinity`, and a second deposit
     adds to it. Break: carry in the first day's balance, which already holds the first deposit.
-  - `'reads the total balance a day ended on'` — `totalBalanceByDay(history).get('2026-01-10')` is `600`.
+  - `'reads the total balance a day ended on'` — `totalBalanceByDay(balanceHistory).get('2026-01-10')` is `600`.
   - `wallet-totals.test.ts`: `'counts a withdrawal against the balance and everything else for it'`
     — `balanceChange` of a withdrawal of 200 is `-200`, of interest 5 is `5`.
     Break: return `transaction.amount`. Also run `interest.test.ts` untouched —
