@@ -11,17 +11,17 @@ export class JsonUsers implements UserRepository {
     provider: AuthProvider,
     providerAccountId: string
   ): Promise<User | undefined> {
-    return this.session.read((data): User | undefined =>
-      userWithIdentity(data.users, provider, providerAccountId)
+    return this.session.read((contents): User | undefined =>
+      userWithIdentity(contents.users, provider, providerAccountId)
     );
   }
 
   insert(user: User): Promise<void> {
-    return this.session.write(async (data, save): Promise<void> => {
-      if (isDuplicateUser(data.users, user)) {
+    return this.session.write(async (contents, save): Promise<void> => {
+      if (isDuplicateUser(contents.users, user)) {
         throw new DuplicateUserError(user);
       }
-      data.users.push(user);
+      contents.users.push(user);
       await save();
     });
   }

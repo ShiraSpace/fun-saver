@@ -4,7 +4,7 @@ import { JSX } from 'react';
 import { GoogleLogo } from './GoogleLogo';
 import { useGoogleSignIn } from './use-google-sign-in';
 import { SIGN_IN_COPY, SIGN_IN_TEST_IDS } from './constants';
-import { ErrorMessage, GoogleButton, GoogleMark } from './SignIn.styles';
+import { ErrorMessage, GoogleButton, GoogleLogoFrame } from './SignIn.styles';
 
 export function ContinueWithGoogle(): JSX.Element {
   const { isSigningIn, hasFailed, continueWithGoogle } = useGoogleSignIn();
@@ -27,9 +27,9 @@ export function ContinueWithGoogle(): JSX.Element {
         disabled={isSigningIn}
         onClick={continueWithGoogle}
       >
-        <GoogleMark>
+        <GoogleLogoFrame>
           <GoogleLogo />
-        </GoogleMark>
+        </GoogleLogoFrame>
         {label}
       </GoogleButton>
       {errorMessage}

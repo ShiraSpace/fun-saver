@@ -7,7 +7,7 @@ export const ACCOUNT_LIST_TEST_IDS = {
   addAccount: 'menu-account-add',
 } as const;
 
-export const ACCOUNT_LIST_CONTENT = {
+export const ACCOUNT_LIST_COPY = {
   addLabel: '＋ חשבון חדש',
   addAccessibleLabel: 'הוספת חשבון',
 } as const;

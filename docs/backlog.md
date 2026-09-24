@@ -4,6 +4,14 @@ Forward-looking ideas not yet scheduled. Add items freely; promote to `docs/plan
 
 ## Product features
 
+### Onboarding
+1. Wallets - custom wallets? which are mandatory?
+2. Deposit split percentage
+3. Interest rate
+4. Saving goal - part of the onboarding?
+5. Auto deposits?
+6. Walktrough in "Method" - must do the parent child talk
+
 ### Savings goal on the `savings` wallet
 
 Let the user set a concrete goal on the savings wallet to make the "delayed gratification" mechanic tangible.

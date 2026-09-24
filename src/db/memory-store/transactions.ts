@@ -1,6 +1,6 @@
 import type { Transaction } from '@/lib/types';
 import type { TransactionRepository } from '../data-store';
-import { oldestFirst } from '../transaction-order';
+import { inOrderOfOccurrence } from '../transaction-order';
 
 export class MemoryTransactions implements TransactionRepository {
   private readonly transactions: Transaction[] = [];
@@ -13,7 +13,7 @@ export class MemoryTransactions implements TransactionRepository {
     accountId: string,
     walletId: string
   ): Promise<Transaction[]> {
-    return oldestFirst(
+    return inOrderOfOccurrence(
       this.transactions.filter(
         (transaction) =>
           transaction.accountId === accountId &&
@@ -23,7 +23,7 @@ export class MemoryTransactions implements TransactionRepository {
   }
 
   async listByAccount(accountId: string): Promise<Transaction[]> {
-    return oldestFirst(
+    return inOrderOfOccurrence(
       this.transactions.filter(
         (transaction) => transaction.accountId === accountId
       )

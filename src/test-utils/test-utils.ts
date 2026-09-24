@@ -22,7 +22,7 @@ export function withCleanEnv(keys: readonly string[]): void {
   });
 }
 
-export function withTempDataPath(): void {
+export function withTempStoreEnv(): void {
   let directory: string;
 
   beforeEach(() => {

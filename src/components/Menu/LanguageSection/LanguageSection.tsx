@@ -1,20 +1,17 @@
 'use client';
 
 import { JSX } from 'react';
-import { MenuLabel } from '../MenuLabel';
-import {
-  LANGUAGE_SECTION_CONTENT,
-  LANGUAGE_SECTION_TEST_IDS,
-} from './constants';
+import { MenuSectionTitle } from '../MenuSectionTitle';
+import { LANGUAGE_SECTION_COPY, LANGUAGE_SECTION_TEST_IDS } from './constants';
 import { Segment, Option } from './LanguageSection.styles';
 
 export function LanguageSection(): JSX.Element {
-  const languageSelectorComponents = LANGUAGE_SECTION_CONTENT.options.map(
+  const languageSelectorComponents = LANGUAGE_SECTION_COPY.options.map(
     (option) => (
       <Option
         key={option.code}
         data-testid={LANGUAGE_SECTION_TEST_IDS.option}
-        data-selected={option.code === LANGUAGE_SECTION_CONTENT.selectedCode}
+        data-selected={option.code === LANGUAGE_SECTION_COPY.selectedCode}
       >
         {option.label}
       </Option>
@@ -23,7 +20,7 @@ export function LanguageSection(): JSX.Element {
 
   return (
     <section data-testid={LANGUAGE_SECTION_TEST_IDS.section}>
-      <MenuLabel>{LANGUAGE_SECTION_CONTENT.label}</MenuLabel>
+      <MenuSectionTitle>{LANGUAGE_SECTION_COPY.label}</MenuSectionTitle>
       <Segment>{languageSelectorComponents}</Segment>
     </section>
   );

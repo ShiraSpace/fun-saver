@@ -6,10 +6,10 @@ import {
   createMockTransaction,
   mockTransactions,
 } from '@/test-utils/fixtures';
-import { withLiveStore } from './live-store';
+import { withTestDatabase } from './test-database';
 
 describe('PostgresTransactions', () => {
-  const { store, accountId, transactionId } = withLiveStore();
+  const { store, accountId, transactionId } = withTestDatabase();
   const accountA = createMockAccount({ id: accountId('a') });
   const accountB = createMockAccount({ id: accountId('b') });
 

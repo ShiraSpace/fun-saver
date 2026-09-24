@@ -1,0 +1,1 @@
+export { MenuSectionTitle } from './MenuSectionTitle';

@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 import { ACCOUNT_FORM_COPY, ACCOUNT_FORM_TEST_IDS } from './constants';
-import { CloseButton } from './AccountForm.styles';
+import { Cancel } from './AccountForm.styles';
 
 interface CancelButtonProps {
   onCancel?: () => void;
@@ -14,13 +14,13 @@ export function CancelButton({
   }
 
   return (
-    <CloseButton
+    <Cancel
       type="button"
       aria-label={ACCOUNT_FORM_COPY.cancelLabel}
       onClick={onCancel}
       data-testid={ACCOUNT_FORM_TEST_IDS.cancel}
     >
       {ACCOUNT_FORM_COPY.cancel}
-    </CloseButton>
+    </Cancel>
   );
 }

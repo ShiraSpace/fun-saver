@@ -3,13 +3,13 @@
  */
 import { redirect } from 'next/navigation';
 import { signedInUser } from '@/auth';
-import { byAccountName } from '@/db/account-users';
+import { sortedByName } from '@/db/account-users';
 import { getStore } from '@/db';
 import { SIGN_IN_PATH } from '@/lib/constants';
 import type { Account } from '@/lib/types';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
-import { withTempDataPath } from '@/test-utils/test-utils';
+import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { signedInAccounts } from '../signed-in-accounts';
 
 interface CurrentAccountCookie {
@@ -35,7 +35,7 @@ jest.mock('next/headers', () => ({
 }));
 
 describe('signedInAccounts', () => {
-  withTempDataPath();
+  withTempStoreEnv();
 
   let owned: Account[];
 
@@ -43,7 +43,7 @@ describe('signedInAccounts', () => {
     mockCurrentAccountCookie = undefined;
     jest.mocked(signedInUser).mockResolvedValue(mockUser);
 
-    owned = byAccountName([
+    owned = sortedByName([
       await createOwnedAccount(getStore(), {
         input: { name: 'נועה', avatarId: 'kid-01' },
       }),

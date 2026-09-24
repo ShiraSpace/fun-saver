@@ -10,7 +10,7 @@ export const EMPTY_STATE_COPY = {
 } as const;
 
 export const EMPTY_STATE_LAYOUT = {
-  emojiSize: 72,
+  pigSize: 72,
 } as const;
 
 export const EMPTY_STATE_ANIMATION = {

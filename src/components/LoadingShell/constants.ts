@@ -3,6 +3,6 @@ export const LOADING_SHELL_TEST_IDS = {
   card: 'loading-shell-card',
 } as const;
 
-export const LOADING_SHELL_CONTENT = {
+export const LOADING_SHELL_COPY = {
   label: 'טוען',
 } as const;

@@ -3,7 +3,7 @@ import { mockDerivedAccount } from '@/test-utils/fixtures';
 import { totalBalance } from '@/lib/derivations';
 import { agorotToWholeShekels } from '@/lib/money';
 import { CurrentAccountButton } from './CurrentAccountButton';
-import { ACCOUNT_PICKER_CONTENT, ACCOUNT_PICKER_TEST_IDS } from './constants';
+import { ACCOUNT_PICKER_COPY, ACCOUNT_PICKER_TEST_IDS } from './constants';
 
 const mockOnToggle = jest.fn();
 
@@ -38,7 +38,7 @@ describe('CurrentAccountButton', () => {
     it('points its caret at the list it would open', () => {
       expect(
         screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.caret)
-      ).toHaveTextContent(ACCOUNT_PICKER_CONTENT.closedCaret);
+      ).toHaveTextContent(ACCOUNT_PICKER_COPY.closedCaret);
     });
 
     it('reports itself collapsed', () => {
@@ -62,7 +62,7 @@ describe('CurrentAccountButton', () => {
     it('turns its caret back on the list', () => {
       expect(
         screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.caret)
-      ).toHaveTextContent(ACCOUNT_PICKER_CONTENT.openCaret);
+      ).toHaveTextContent(ACCOUNT_PICKER_COPY.openCaret);
     });
 
     it('reports itself expanded', () => {

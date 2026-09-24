@@ -8,7 +8,7 @@ export interface MenuLanguage {
   label: string;
 }
 
-export const LANGUAGE_SECTION_CONTENT = {
+export const LANGUAGE_SECTION_COPY = {
   label: 'שפה',
   selectedCode: 'he',
   options: [

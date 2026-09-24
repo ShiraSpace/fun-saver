@@ -67,7 +67,7 @@ export const GoogleButton = styled(PrimaryButton)`
   }
 `;
 
-export const GoogleMark = styled.span`
+export const GoogleLogoFrame = styled.span`
   background: ${GOOGLE_BRAND_WHITE};
   border-radius: 50%;
   width: ${SIGN_IN_LAYOUT.googleMarkSize}px;

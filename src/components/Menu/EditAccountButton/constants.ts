@@ -2,7 +2,7 @@ export const EDIT_ACCOUNT_BUTTON_TEST_IDS = {
   button: 'menu-account-edit',
 } as const;
 
-export const EDIT_ACCOUNT_BUTTON_CONTENT = {
+export const EDIT_ACCOUNT_BUTTON_COPY = {
   icon: '✏️',
   label: 'עריכת',
 } as const;

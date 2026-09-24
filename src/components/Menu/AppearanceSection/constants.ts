@@ -17,7 +17,7 @@ const MENU_THEMES: MenuTheme[] = [
   { id: THEME_ID.midnightBlue, label: 'Midnight Blue' },
 ];
 
-export const APPEARANCE_SECTION_CONTENT = {
+export const APPEARANCE_SECTION_COPY = {
   label: 'מראה',
   saveError: 'לא הצלחנו לשמור את העיצוב, נסו שוב',
   themes: MENU_THEMES,

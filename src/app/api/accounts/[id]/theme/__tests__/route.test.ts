@@ -7,13 +7,13 @@ import { THEME_ID } from '@/theme/registry';
 import { getStore } from '@/db';
 import { mockSecondUser, mockUser } from '@/test-utils/fixtures';
 import { createOwnedAccount } from '@/test-utils/owned-account';
-import { withTempDataPath } from '@/test-utils/test-utils';
+import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { PUT } from '../route';
 
 jest.mock('@/auth');
 
 describe('PUT /api/accounts/[id]/theme', () => {
-  withTempDataPath();
+  withTempStoreEnv();
 
   let accountId: string;
 
