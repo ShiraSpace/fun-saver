@@ -992,7 +992,7 @@ export interface TransactionListRow {
   type: TransactionType;
   walletName?: WalletName;
   day: string;
-  amount: number;
+  balanceChange: number;
   balance: number;
   interestDays?: number;
   createdAt: string;
@@ -1011,7 +1011,7 @@ export function monthSections(rows: TransactionListRow[]): MonthSection[];
 export function calendarMonth(iso: string): string;
 ```
 
-`amount` is signed. `walletName` is absent on a deposit — a deposit has no one
+`balanceChange` is signed — the `שינוי` column, named as the glossary names it. `walletName` is absent on a deposit — a deposit has no one
 wallet. `interestDays` is set only on a monthly rollup. `month` is `YYYY-MM`.
 
 - [ ] **Step 1: `calendarMonth`** in `dates.ts`:
@@ -1043,7 +1043,7 @@ export interface TransactionListRow {
   type: TransactionType;
   walletName?: WalletName;
   day: string;
-  amount: number;
+  balanceChange: number;
   balance: number;
   interestDays?: number;
   createdAt: string;
@@ -1080,7 +1080,7 @@ function depositRows(transactions: ListedTransaction[]): RowWithoutBalance[] {
     const row = depositRowByCreatedAt.get(transaction.createdAt);
 
     if (row) {
-      row.amount += transaction.amount;
+      row.balanceChange += balanceChange(transaction);
       continue;
     }
 
@@ -1088,7 +1088,7 @@ function depositRows(transactions: ListedTransaction[]): RowWithoutBalance[] {
       key: `deposit:${transaction.createdAt}`,
       type: TRANSACTION_TYPE.deposit,
       day: transaction.occurredAt,
-      amount: transaction.amount,
+      balanceChange: balanceChange(transaction),
       createdAt: transaction.createdAt,
     });
   }
@@ -1102,7 +1102,7 @@ function withdrawalRows(transactions: ListedTransaction[], walletNameById: Walle
     type: TRANSACTION_TYPE.withdrawal,
     walletName: walletNameById.get(transaction.walletId),
     day: transaction.occurredAt,
-    amount: -transaction.amount,
+    balanceChange: balanceChange(transaction),
     createdAt: transaction.createdAt,
   }));
 }
@@ -1113,8 +1113,8 @@ function dailyInterestRows(transactions: ListedTransaction[], walletNameById: Wa
     type: TRANSACTION_TYPE.interest,
     walletName: walletNameById.get(transaction.walletId),
     day: transaction.occurredAt,
-    amount: transaction.amount,
-    createdAt: '',
+    balanceChange: balanceChange(transaction),
+    createdAt: transaction.createdAt,
   }));
 }
 
@@ -1130,7 +1130,7 @@ function monthlyInterestRows(transactions: ListedTransaction[], walletNameById: 
       continue;
     }
 
-    monthlyRow.amount += dailyRow.amount;
+    monthlyRow.balanceChange += dailyRow.balanceChange;
     monthlyRow.interestDays = (monthlyRow.interestDays ?? 0) + 1;
     monthlyRow.day = dailyRow.day > monthlyRow.day ? dailyRow.day : monthlyRow.day;
   }
@@ -1231,7 +1231,7 @@ export function monthSections(rows: TransactionListRow[]): MonthSection[] {
     const rows = rowsFor(mockDepositTransactions, 'monthly', '2026-01-01');
 
     expect(rows).toHaveLength(1);
-    expect(rows[0]).toMatchObject({ type: TRANSACTION_TYPE.deposit, amount: 600, walletName: undefined });
+    expect(rows[0]).toMatchObject({ type: TRANSACTION_TYPE.deposit, balanceChange: 600, walletName: undefined });
   });
 
   it('keeps two deposits on different days apart', () => {
@@ -1255,7 +1255,7 @@ export function monthSections(rows: TransactionListRow[]): MonthSection[] {
     const [row] = rowsFor([createMockTransaction(), ...mockInterest], 'monthly', '2026-01-04')
       .filter((listedRow) => listedRow.type === TRANSACTION_TYPE.interest);
 
-    expect(row).toMatchObject({ amount: 27, interestDays: 3, day: '2026-01-04' });
+    expect(row).toMatchObject({ balanceChange: 27, interestDays: 3, day: '2026-01-04' });
   });
 ```
 
@@ -1275,14 +1275,16 @@ fixture without distinct `createdAt`s would silently do); never increment
   - `'gives two transactions on one day the same balance'` — a deposit and a
     withdrawal on one day both carry the end-of-day total.
   - `'puts a deposit or withdrawal above that day’s interest'` — Break: `interestRank`
-    returns 0.
+    returns 0. The fixture's interest carries a settlement `createdAt` later
+    than the day's deposit, as the store writes it; otherwise newest-`createdAt`
+    alone puts interest last and the break passes.
   - `'puts the later of two same-day transactions first, whatever order the store gave'`
     — two withdrawals on one day, fixture in ascending `createdAt`; expect
     descending. Break: drop the `createdAt` comparison.
   - `'names the wallet a withdrawal came out of'` — `walletName: 'spending'` for `w2`.
   - `'keeps a filtered view’s balances true'` — `filterByTransactionType(rows, TRANSACTION_TYPE.withdrawal)`
     rows carry the same `balance` as they do in the unfiltered list. Break:
-    make `withBalances` accumulate `amount` down the sorted list instead of
+    make `withBalances` accumulate `balanceChange` down the sorted list instead of
     reading the history — the filtered and unfiltered balances then disagree.
   - `'shows every row for הכל and only its kind otherwise'` — Break: `transactionTypeFilter === 'all'` inverted.
   - `'groups rows under the month they happened in, newest first'` —
@@ -2190,7 +2192,7 @@ export const INTEREST_MODES: readonly Choice<InterestMode>[] = [
 - [ ] **Step 5: `TransactionRow`** — `{ transactionListRow: TransactionListRow }`, an `<li>`:
       `TransactionIcon`, the label (`typography.body`, 700; interest 600), the meta
       (`typography.label`, `textMuted`), then the two numbers in a `dir="ltr"`
-      block — `SignedAmount` with `withAgorot={needsAgorot(transactionListRow.amount)}` in
+      block — `SignedAmount` with `withAgorot={needsAgorot(transactionListRow.balanceChange)}` in
       `gainText` / `withdrawalText`, and `Money` for the balance in `textMuted`
       with a 1px `divider` rule on its inline-start. Each number is preceded by
       a `ScreenReaderOnly` naming it (`שינוי`, `יתרה`), so a row reads as what,
