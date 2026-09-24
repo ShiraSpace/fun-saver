@@ -68,22 +68,29 @@ function walletTransactions(
   return entries.filter((entry) => ids.has(entry.walletId));
 }
 
-function accountTotals(lines: WalletBalances, days: string[]): number[] {
+function accountTotals(
+  walletBalances: WalletBalances,
+  days: string[]
+): number[] {
   return days.map((_, index) =>
-    WALLET_NAMES.reduce((sum, name) => sum + lines[name][index], 0)
+    WALLET_NAMES.reduce((sum, name) => sum + walletBalances[name][index], 0)
   );
+}
+
+function perWallet(balancesOf: (name: WalletName) => number[]): WalletBalances {
+  return {
+    savings: balancesOf('savings'),
+    spending: balancesOf('spending'),
+    goodDeeds: balancesOf('goodDeeds'),
+  };
 }
 
 export function balanceHistory(input: BalanceHistoryInput): BalanceHistory {
   const start = firstTransactionDay(input.entries);
   const days = start === undefined ? [] : eachDayInclusive(start, input.asOf);
-  const balanceOf = (name: WalletName): number[] =>
-    runningBalance(days, walletTransactions(name, input));
-  const wallets = {
-    savings: balanceOf('savings'),
-    spending: balanceOf('spending'),
-    goodDeeds: balanceOf('goodDeeds'),
-  };
+  const wallets = perWallet((name) =>
+    runningBalance(days, walletTransactions(name, input))
+  );
 
   return { days, total: accountTotals(wallets, days), wallets };
 }
@@ -98,11 +105,7 @@ export function balanceOverRange(
   return {
     days: fromRangeStart(history.days),
     total: fromRangeStart(history.total),
-    wallets: {
-      savings: fromRangeStart(history.wallets.savings),
-      spending: fromRangeStart(history.wallets.spending),
-      goodDeeds: fromRangeStart(history.wallets.goodDeeds),
-    },
+    wallets: perWallet((name) => fromRangeStart(history.wallets[name])),
   };
 }
 
