@@ -123,6 +123,10 @@ agreed before the volume. Once they are approved, the rest follow in one go.
 - Every test stand-in takes a `mock` prefix in camelCase: fixtures (`mockAccountId`), values built by a `createMock…`
   helper (`const mockAccount = createMockAccount()`) and jest mocks (`const mockOnClose = jest.fn()`).
   `SCREAMING_SNAKE_CASE` is only for real constants: env vars, URLs, selectors, viewports, timings, `*_TEST_IDS`, `*_COPY`
+- Test setup lives at the narrowest scope that serves it. A stand-in, value or mock used by one test is declared inside
+  that test. One used by several tests goes in the `describe` that holds exactly those tests, nesting a `describe` when
+  only some of them share it. One repeated across files becomes a helper in `src/test-utils/`. When a change leaves a
+  shared value with a single user, move it back in
 - Name things with the words in [`docs/glossary.md`](./docs/glossary.md)
 
 ### Code Formatting

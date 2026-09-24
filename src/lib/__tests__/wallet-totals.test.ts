@@ -1,5 +1,6 @@
 import {
   balance,
+  balanceChange,
   interestEarned,
   withdrawn,
   principal,
@@ -30,6 +31,15 @@ describe('wallet totals', () => {
     transaction(TRANSACTION_TYPE.withdrawal, 1000, '2026-01-03'),
     transaction(TRANSACTION_TYPE.interest, 47, '2026-01-03'),
   ];
+
+  it('counts a withdrawal against the balance and everything else for it', () => {
+    expect(
+      balanceChange(transaction(TRANSACTION_TYPE.withdrawal, 200, '2026-01-01'))
+    ).toBe(-200);
+    expect(
+      balanceChange(transaction(TRANSACTION_TYPE.interest, 5, '2026-01-01'))
+    ).toBe(5);
+  });
 
   it('balance = deposited - withdrawn + interest earned', () => {
     expect(balance(transactions)).toBe(8000 - 1000 + 53 + 47);

@@ -6,17 +6,17 @@
 > first three tests, each watched failing against its own break, approval; then
 > the rest, approval, commit. Every STOP below is a real stop.
 
-**Goal:** Ship `/transactions` — a per-account balance chart and a movement
+**Goal:** Ship `/transactions` — a per-account balance chart and a transaction
 list — and turn the inert `תנועות` tab on.
 
 **Reference:**
 ![img.png](img.png)
 ![img_1.png](img_1.png)
 
-**Architecture:** One server read (`settledLedgers`) settles interest and
-returns every visible account's wallets *and* ledger; the page ships a
+**Architecture:** One server read (`settleInterest`) settles interest and
+returns every visible account's wallets *and* transactions; the page ships a
 five-field projection to a client shell. Two pure derivations in `src/lib`
-(`balance-series.ts`, `transaction-rows.ts`) do all the arithmetic; the
+(`balance-history.ts`, `transaction-rows.ts`) do all the arithmetic; the
 components only draw. The chart is a hand-rolled SVG whose geometry lives in
 pure, tested helpers beside it.
 
@@ -46,12 +46,12 @@ stack was rebased twice because branches were cut from each other instead.
 
 | Wave | Lane A | Lane B | Lane C | Starts when |
 | --- | --- | --- | --- | --- |
-| 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 ✓ #129 — store, then `settledLedgers` | PR 4 → PR 5 — `balance-series`, then `transaction-rows` | now |
+| 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 ✓ #129 — store, then `settleInterest` | PR 4 → PR 5 — `balance-history`, then `transaction-rows` | now |
 | 2 | PR 6 — route, shell, headline | — | — | PRs 3 and 4 merged |
 | 3 | PR 7 — chart | PR 8 — list | — | PR 6 merged; PR 7 also needs PR 1, PR 8 needs PR 5 |
 | 4 | PR 9 — tab and browser suite | — | — | PRs 7 and 8 merged |
 
-- **Only shared file in wave 1:** `src/lib/dates.ts`, where PR 5 adds `monthOf`.
+- **Only shared file in wave 1:** `src/lib/dates.ts`, where PR 5 adds `calendarMonth`.
   Nothing else in wave 1 touches it.
 - **PRs 7 and 8 both edit `use-transactions-view.ts` and `Transactions.tsx`.**
   Each adds its own state and one line of JSX. Whichever merges second rebases
@@ -109,18 +109,18 @@ Inputs the spec implies and nothing else tests, most likely first. Each line's
 test is added to the PR that owns the code.
 
 1. **The first day of a month's interest reads `1 ימים`.** Every month's current
-   bucket has one day on the 1st, and a brand-new ledger reads `1 שורות · 1 יום`.
+   bucket has one day on the 1st, and a brand-new account reads `1 שורות · 1 יום`.
    Expected: `יום אחד`, `שורה אחת`. → PR 8, `TransactionList` / `TransactionRow`.
 2. **A young account on a wide range prints the same date twice.** Three days of
    history on `שבוע`: the tick indices round to `0, 1, 1, 2`. Expected: each
    date once. → PR 7, `axis-ticks.ts`.
-3. **A line that did not move in the window.** Spending alone over a quiet week
+3. **A line that did not move in the range.** Spending alone over a quiet week
    has `max === min`; the mockup's `span || 1` pins it to the bottom edge, where
    it reads as zero, under three identical ticks. Expected: the line at
    mid-height and one tick. → PR 7, `chart-geometry.ts`.
-4. **Switching to a child with no movements while lines and a range are
-   selected.** An empty series makes `Math.min()` return `Infinity`. Expected:
-   the no-history state, and the chosen range and lines kept for the next child.
+4. **Switching to a child with no transactions while lines and a range are
+   selected.** An empty history makes `Math.min()` return `Infinity`. Expected:
+   the no-transactions state, and the chosen range and lines kept for the next child.
    → PR 7, `BalanceChart`; PR 8, `TransactionList`.
 5. **A badge or swatch positioned with physical CSS.** The RTL plugin mirrors
    `left: -5px` to the right-hand corner. Expected: the badge at the corner the
@@ -142,13 +142,13 @@ Each refines or corrects the spec. None re-opens an approved design call.
    `transactions.filter((row) => row.walletId === wallet.id)` per wallet cannot
    produce `undefined` at all — three passes over ~1,000 rows. The empty-wallet
    test stays.
-3. **`balance-series.ts` does not sort; it cannot care.** It sums signed amounts
+3. **`balance-history.ts` does not sort; it cannot care.** It sums signed amounts
    per day and takes the earliest `occurredAt`, and both are independent of
-   order. The "insertion order and sorted order give the same series" test pins
+   order. The "insertion order and sorted order give the same history" test pins
    that. `transaction-rows.ts` is the one that sorts.
-4. **Two real movements on one day order by `createdAt`, newest first.** The spec
+4. **Two deposits or withdrawals on one day order by `createdAt`, newest first.** The spec
    uses `createdAt` only to group deposits, and leaves the order of two
-   same-day movements to whatever order the store returned. For a deposit or
+   same-day transactions to whatever order the store returned. For a deposit or
    withdrawal `createdAt` *is* the event time (`new Date()` at write); only
    interest's is settlement time, and interest is ranked separately. This is the
    tiebreak.
@@ -158,7 +158,7 @@ Each refines or corrects the spec. None re-opens an approved design call.
    one tab stop for free. There is no `radiogroup` in the app to copy, and a
    hand-rolled one owes roving `tabindex`. One shared `ChoiceChips` serves the
    ranges, the type filters and the interest switch.
-6. **The delta pill does not use `Money`.** The spec keeps it on `Money`, but
+6. **The change pill does not use `Money`.** The spec keeps it on `Money`, but
    the pill is always signed and `Money` renders a negative as `₪-12` — the exact
    defect the spec lists against the change column. The pill and the change
    column share one `SignedAmount` (`+₪12`, `-₪12`); the headline and the
@@ -166,7 +166,7 @@ Each refines or corrects the spec. None re-opens an approved design call.
 7. **`TypeFilters` and `InterestMode` are not folders.** Each would be a
    `ChoiceChips` with an options array and nothing else — a component that does
    nothing. `TransactionList` renders `ChoiceChips` twice.
-8. **A flat window draws at mid-height with one tick.** When `max === min` the y
+8. **A flat range draws at mid-height with one tick.** When `max === min` the y
    scale returns mid-height, and the tick values are rounded to whole agorot and
    de-duplicated. That is what keeps Review Focus 3 from printing `₪18 ₪18 ₪18`.
 9. **A direct label's swatch sits at the label's today-side end.** SVG cannot
@@ -224,7 +224,7 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
 - Test: `src/theme/__tests__/chart-lines.test.ts`
 
 **Interfaces:**
-- Produces: `theme.colors.chartSavings`, `chartSpending`, `chartGood`, which PR 7
+- Produces: `theme.colors.chartSavings`, `chartSpending`, `chartGoodDeeds`, which PR 7
   reads through `WALLET_CHART_COLOR`. `contrastRatio(a, b): number` in
   `src/test-utils/css-color.ts`.
 
@@ -237,7 +237,7 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
 ```ts
   readonly chartSavings: string;
   readonly chartSpending: string;
-  readonly chartGood: string;
+  readonly chartGoodDeeds: string;
 ```
 
 - [x] **Step 3: Add the nine values.**
@@ -246,17 +246,17 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
 // src/theme/palette.ts (sunshine-quest), after walletTrack
   chartSavings: '#276E2C',
   chartSpending: '#2563EB',
-  chartGood: '#E94E89',
+  chartGoodDeeds: '#E94E89',
 
 // src/theme/themes/jungle-quest.ts
     chartSavings: '#2A9D8F',
     chartSpending: '#6E9B22',
-    chartGood: '#E76F51',
+    chartGoodDeeds: '#E76F51',
 
 // src/theme/themes/midnight-blue.ts
     chartSavings: '#60A5FA',
     chartSpending: '#38BDF8',
-    chartGood: '#A78BFA',
+    chartGoodDeeds: '#A78BFA',
 ```
 
 - [x] **Step 4: Add the helper** to `src/test-utils/css-color.ts`:
@@ -291,7 +291,7 @@ import { contrastRatio } from '@/test-utils/css-color';
 const GRAPHIC_CONTRAST = 3;
 
 describe.each(Object.entries(THEMES))('the chart lines in %s', (_, { colors }) => {
-  const lines = [colors.chartSavings, colors.chartSpending, colors.chartGood];
+  const lines = [colors.chartSavings, colors.chartSpending, colors.chartGoodDeeds];
 
   it('stand out from the card they are drawn on', () => {
     const ratios = lines.map((line) => contrastRatio(line, colors.surface));
@@ -324,13 +324,13 @@ alone; midnight's donut `walletSavings` at 1.99 is out of scope.
 Branch `feat/list-by-account`. Spec: "Store contract".
 **Merged as #125 on 2026-09-23.** What shipped differs from the steps below:
 review made every store return oldest first, so the memory and json-file
-repositories sort through `oldestFirst` (`src/db/transaction-order.ts`) in both
+repositories sort through `inOrderOfOccurrence` (`src/db/transaction-order.ts`) in both
 `listByAccount` and `listByWallet`, and the tests reuse `mockTransactions`. The
 code on `main` is the record.
 
 **Files:**
 - Modify: `src/db/data-store.ts:26-29` (`TransactionRepository`), `:55-59` (`DataStore`)
-- Modify: `src/db/base-store.ts` (delegate)
+- Modify: `src/db/repository-store.ts` (delegate)
 - Modify: `src/db/memory-store/transactions.ts`, `src/db/json-file-store/transactions.ts`, `src/db/postgres-store/transactions.ts`
 - Test: `src/db/memory-store/__tests__/transactions.test.ts`, `src/db/json-file-store/__tests__/transactions.test.ts`, `src/db/postgres-store/__tests__/transactions.e2e.ts`
 
@@ -348,7 +348,7 @@ code on `main` is the record.
 // DataStore, after listTransactionsByWallet
   listTransactionsByAccount(accountId: string): Promise<Transaction[]>;
 
-// BaseStore
+// RepositoryStore
   listTransactionsByAccount(accountId: string): Promise<Transaction[]> {
     return this.transactions.listByAccount(accountId);
   }
@@ -364,14 +364,14 @@ code on `main` is the record.
 
 // JsonTransactions
   listByAccount(accountId: string): Promise<Transaction[]> {
-    return this.session.read((data): Transaction[] =>
-      data.transactions.filter((transaction) => transaction.accountId === accountId)
+    return this.session.read((contents): Transaction[] =>
+      contents.transactions.filter((transaction) => transaction.accountId === accountId)
     );
   }
 
 // PostgresTransactions
   async listByAccount(accountId: string): Promise<Transaction[]> {
-    const rows = await selectRows<TransactionRow>(
+    const rows = await queryRows<TransactionRow>(
       this.sql,
       `SELECT * FROM transactions
        WHERE account_id = $1
@@ -379,7 +379,7 @@ code on `main` is the record.
       [accountId]
     );
 
-    return rows.map(toTransaction);
+    return rows.map(transactionFromRow);
   }
 ```
 
@@ -416,21 +416,21 @@ code on `main` is the record.
 
 // postgres-store/__tests__/transactions.e2e.ts
   it('lists an account across its wallets and never another account', async () => {
-    const accountA = createMockAccount({ id: accountId('a') });
-    const accountB = createMockAccount({ id: accountId('b') });
-    await store.insertAccount(accountA);
-    await store.insertAccount(accountB);
+    const mockAccountA = createMockAccount({ id: accountId('a') });
+    const mockAccountB = createMockAccount({ id: accountId('b') });
+    await store.insertAccount(mockAccountA);
+    await store.insertAccount(mockAccountB);
     await store.insertTransactions([
-      createMockTransaction({ id: txId('a1'), accountId: accountA.id, walletId: 'savings' }),
-      createMockTransaction({ id: txId('a2'), accountId: accountA.id, walletId: 'spending' }),
-      createMockTransaction({ id: txId('b1'), accountId: accountB.id, walletId: 'savings' }),
+      createMockTransaction({ id: transactionId('a1'), accountId: mockAccountA.id, walletId: 'savings' }),
+      createMockTransaction({ id: transactionId('a2'), accountId: mockAccountA.id, walletId: 'spending' }),
+      createMockTransaction({ id: transactionId('b1'), accountId: mockAccountB.id, walletId: 'savings' }),
     ]);
 
-    const aRows = await store.listTransactionsByAccount(accountA.id);
-    const bRows = await store.listTransactionsByAccount(accountB.id);
+    const accountATransactions = await store.listTransactionsByAccount(mockAccountA.id);
+    const accountBTransactions = await store.listTransactionsByAccount(mockAccountB.id);
 
-    expect(aRows.map((row) => row.id).sort()).toEqual([txId('a1'), txId('a2')]);
-    expect(bRows.map((row) => row.id)).toEqual([txId('b1')]);
+    expect(accountATransactions.map((row) => row.id).sort()).toEqual([transactionId('a1'), transactionId('a2')]);
+    expect(accountBTransactions.map((row) => row.id)).toEqual([transactionId('b1')]);
   });
 ```
 
@@ -444,13 +444,13 @@ Breaks: drop the `accountId` filter (the `WHERE`) in each implementation in turn
     const account = createMockAccount({ id: accountId('o') });
     await store.insertAccount(account);
     await store.insertTransactions([
-      createMockTransaction({ id: txId('late'), accountId: account.id, createdAt: '2026-01-01T09:00:00.000Z' }),
-      createMockTransaction({ id: txId('early'), accountId: account.id, createdAt: '2026-01-01T08:00:00.000Z' }),
+      createMockTransaction({ id: transactionId('late'), accountId: account.id, createdAt: '2026-01-01T09:00:00.000Z' }),
+      createMockTransaction({ id: transactionId('early'), accountId: account.id, createdAt: '2026-01-01T08:00:00.000Z' }),
     ]);
 
     const rows = await store.listTransactionsByAccount(account.id);
 
-    expect(rows.map((row) => row.id)).toEqual([txId('early'), txId('late')]);
+    expect(rows.map((row) => row.id)).toEqual([transactionId('early'), transactionId('late')]);
   });
 ```
 
@@ -465,7 +465,7 @@ Branch `refactor/account-ledgers`. Spec: "The shared read", delivery order 2.
 **Merged as #129 on 2026-09-23.**
 
 What shipped differs from the steps below: each wallet is settled and derived in
-one pass (`payWalletInterest`, gathered by `payOwedInterest`), so the per-wallet
+one pass (`settleWalletInterest`, gathered by `settleAccountInterest`), so the per-wallet
 split happens once; the names say what the code does; and the tests reuse the
 shared fixtures under names in domain language. The history comes back oldest
 first, the interest just paid sorted in, so the first visit reads like every
@@ -474,25 +474,25 @@ later one. The code on `main` is the record.
 `/` and `/method` keep their behaviour; this PR changes nothing a parent sees.
 
 **Files:**
-- Modify: `src/lib/account-ledgers.ts` (whole file)
-- Test: `src/lib/__tests__/account-ledgers.test.ts` (rewrite the
-  `getWalletsForAccount` describe; the `withDerivedWallets` describe stays)
+- Modify: `src/lib/interest-settlement.ts` (whole file)
+- Test: `src/lib/__tests__/interest-settlement.test.ts` (rewrite the
+  `getWalletsForAccount` describe; the `summarizeAccounts` describe stays)
 
 **Interfaces:**
 - Consumes: `store.listTransactionsByAccount` (PR 2).
 - Produces:
 
 ```ts
-export interface Ledger {
-  account: AccountWithDerivedWallets;
+export interface SettledAccount {
+  account: AccountSummary;
   transactions: Transaction[];
 }
-export function settledLedgers(query: AccountsQuery): Promise<Ledger[]>;
-export async function withDerivedWallets(query: AccountsQuery): Promise<AccountWithDerivedWallets[]>;
+export function settleInterest(query: SettleInterestParams): Promise<SettledAccount[]>;
+export async function summarizeAccounts(query: SettleInterestParams): Promise<AccountSummary[]>;
 ```
 
 `getWalletsForAccount` stops being exported — its only caller is
-`withDerivedWallets` and its own test.
+`summarizeAccounts` and its own test.
 
 - [ ] **Step 1: The file.**
 
@@ -500,13 +500,13 @@ export async function withDerivedWallets(query: AccountsQuery): Promise<AccountW
 import type { DataStore } from '@/db/data-store';
 import type {
   Account,
-  AccountWithDerivedWallets,
+  AccountSummary,
   Transaction,
   Wallet,
   WalletName,
-  WalletWithDerived,
+  WalletSummary,
 } from './types';
-import { deriveWallet } from './derive-wallet';
+import { summarizeWallet } from './summarize-wallet';
 import { addDailyInterest } from './interest';
 
 const WALLET_ORDER: Record<WalletName, number> = {
@@ -515,20 +515,20 @@ const WALLET_ORDER: Record<WalletName, number> = {
   goodDeeds: 2,
 };
 
-interface AccountsQuery {
+interface SettleInterestParams {
   store: DataStore;
   accounts: Account[];
   asOf: string;
 }
 
-interface AccountQuery {
+interface SettleAccountInterestParams {
   store: DataStore;
   account: Account;
   asOf: string;
 }
 
-export interface Ledger {
-  account: AccountWithDerivedWallets;
+export interface SettledAccount {
+  account: AccountSummary;
   transactions: Transaction[];
 }
 
@@ -551,13 +551,13 @@ function derivedWallets(
   account: Account,
   settled: Transaction[],
   asOf: string
-): WalletWithDerived[] {
+): WalletSummary[] {
   return account.wallets
-    .map((wallet) => deriveWallet({ wallet, transactions: walletRows(settled, wallet), asOf }))
+    .map((wallet) => summarizeWallet({ wallet, transactions: walletRows(settled, wallet), asOf }))
     .sort((a, b) => WALLET_ORDER[a.name] - WALLET_ORDER[b.name]);
 }
 
-async function payOwedInterest({ store, account, asOf }: AccountQuery): Promise<Ledger> {
+async function settleAccountInterest({ store, account, asOf }: SettleAccountInterestParams): Promise<SettledAccount> {
   const stored = await store.listTransactionsByAccount(account.id);
   const accrued = accruedInterest(account, stored, asOf);
 
@@ -573,24 +573,24 @@ async function payOwedInterest({ store, account, asOf }: AccountQuery): Promise<
   };
 }
 
-export function settledLedgers({ store, accounts, asOf }: AccountsQuery): Promise<Ledger[]> {
-  return Promise.all(accounts.map((account) => payOwedInterest({ store, account, asOf })));
+export function settleInterest({ store, accounts, asOf }: SettleInterestParams): Promise<SettledAccount[]> {
+  return Promise.all(accounts.map((account) => settleAccountInterest({ store, account, asOf })));
 }
 
-export async function withDerivedWallets(
-  query: AccountsQuery
-): Promise<AccountWithDerivedWallets[]> {
-  const ledgers = await settledLedgers(query);
+export async function summarizeAccounts(
+  query: SettleInterestParams
+): Promise<AccountSummary[]> {
+  const settledAccounts = await settleInterest(query);
 
-  return ledgers.map((ledger) => ledger.account);
+  return settledAccounts.map((settledAccount) => settledAccount.account);
 }
 ```
 
 - [ ] **Step 2: tsc, eslint, STOP, commit** —
       `refactor(dashboard): one read serves both the wallets and the ledger`
 - [ ] **Step 3: First three tests.** Rename the `getWalletsForAccount` describe
-      to `settledLedgers` and move its three existing cases onto
-      `(await settledLedgers({ store, accounts: [account], asOf }))[0].account.wallets`.
+      to `settleInterest` and move its three existing cases onto
+      `(await settleInterest({ store, accounts: [account], asOf }))[0].account.wallets`.
       They count as the first three: ordering, compounded interest, no
       re-accrual. Breaks: drop the `.sort`; drop `...accrued` from `settled`;
       drop the `insertTransactions` call (the re-read test reddens).
@@ -598,9 +598,9 @@ export async function withDerivedWallets(
 
 ```ts
   it('derives a wallet nothing has happened to yet, as every new account has', async () => {
-    const [ledger] = await settledLedgers({ store, accounts: [account], asOf: '2026-01-03' });
+    const [settledAccount] = await settleInterest({ store, accounts: [account], asOf: '2026-01-03' });
 
-    expect(ledger.account.wallets.map((wallet) => wallet.balance)).toEqual([0, 0]);
+    expect(settledAccount.account.wallets.map((wallet) => wallet.balance)).toEqual([0, 0]);
   });
 
   it('hands back the interest it just settled, so the ledger is never a day behind', async () => {
@@ -609,14 +609,14 @@ export async function withDerivedWallets(
     });
     await store.insertTransactions([createMockTransaction({ occurredAt: '2026-01-01' })]);
 
-    const [ledger] = await settledLedgers({ store, accounts: [unsettled], asOf: '2026-01-03' });
+    const [settledAccount] = await settleInterest({ store, accounts: [unsettled], asOf: '2026-01-03' });
 
-    expect(ledger.transactions.filter((row) => row.type === 'interest')).toHaveLength(2);
+    expect(settledAccount.transactions.filter((row) => row.type === 'interest')).toHaveLength(2);
   });
 
   it('leaves the store untouched when no interest is owed', async () => {
     const insert = jest.spyOn(store, 'insertTransactions');
-    await settledLedgers({ store, accounts: [account], asOf: '2026-01-01' });
+    await settleInterest({ store, accounts: [account], asOf: '2026-01-01' });
 
     expect(insert).not.toHaveBeenCalled();
   });
@@ -632,242 +632,337 @@ every screen.
 
 ## PR 4 — the balance, day by day
 
-Branch `feat/balance-series`. Spec: "The graph" (the series half), "Running
+Branch `feat/balance-history`. Spec: "The graph" (the balance-history half), "Running
 balance". Pure lib, nothing rendered.
 
 **Files:**
-- Modify: `src/lib/types.ts` (`LedgerEntry`)
-- Modify: `src/lib/derivations.ts` (`signedAmount`)
-- Modify: `src/lib/interest/add-daily-interest.ts` (drop its private `balanceDelta`, import `signedAmount`)
-- Create: `src/lib/balance-series.ts`
-- Test: `src/lib/__tests__/balance-series.test.ts`, `src/lib/__tests__/derivations.test.ts`
+- Modify: `src/lib/wallet-totals.ts` (export `balanceChange`)
+- Modify: `src/lib/interest/add-daily-interest.ts` (drop its private `balanceChange`, import it from `wallet-totals`)
+- Create: `src/lib/balance-history.ts`
+- Test: `src/lib/__tests__/balance-history.test.ts`, `src/lib/__tests__/wallet-totals.test.ts`
 
 **Interfaces:**
 
 ```ts
-// types.ts
-export type LedgerEntry = Pick<
-  Transaction,
-  'walletId' | 'type' | 'amount' | 'occurredAt' | 'createdAt'
->;
+// wallet-totals.ts
+export function balanceChange(transaction: Pick<Transaction, 'type' | 'amount'>): number;
 
-// derivations.ts
-export function signedAmount(transaction: Pick<Transaction, 'type' | 'amount'>): number;
-
-// balance-series.ts
-export type WalletLines = Record<WalletName, number[]>;
-export interface BalanceSeries { days: string[]; total: number[]; wallets: WalletLines }
-export interface BalanceSeriesInput {
+// balance-history.ts
+export type WalletBalances = Record<WalletName, number[]>;
+export interface BalanceHistory { days: string[]; totalBalance: number[]; wallets: WalletBalances }
+export interface BalanceHistoryInput {
   wallets: Pick<Wallet, 'id' | 'name'>[];
-  entries: LedgerEntry[];
+  transactions: Pick<Transaction, 'walletId' | 'type' | 'amount' | 'occurredAt'>[];
   asOf: string;
 }
-export function buildBalanceSeries(input: BalanceSeriesInput): BalanceSeries;
-export function windowSeries(series: BalanceSeries, days: number): BalanceSeries;
-export function latestTotal(series: BalanceSeries): number;
-export function windowChange(window: BalanceSeries): number;
-export function totalByDay(series: BalanceSeries): Map<string, number>;
+export function balanceHistory(input: BalanceHistoryInput): BalanceHistory;
+export function balanceOverRange(balanceHistory: BalanceHistory, rangeInDays: number): BalanceHistory;
+export function todaysTotalBalance(balanceHistory: BalanceHistory): number;
+export function totalBalanceChange(balanceHistory: BalanceHistory, rangeInDays: number): number;
+export function totalBalanceByDay(balanceHistory: BalanceHistory): Map<string, number>;
 ```
 
-`days: number` takes `Infinity` for `הכל`. `total[i]` is the account total at the
-**end** of `days[i]`.
+`rangeInDays` takes `Infinity` for `הכל`. `totalBalanceChange` takes the whole history, not the range,
+because an account younger than the range carries in a balance of 0, which the range itself cannot show. `totalBalance[i]` is the account's
+total balance at the **end** of `days[i]`. The transactions are the page's
+projection: any object with those four fields, so a whole `Transaction` fits too.
 
-- [ ] **Step 1: `signedAmount`** in `derivations.ts`, and in
-      `add-daily-interest.ts` replace both `balanceDelta(transaction)` calls with
-      `signedAmount(transaction)` and delete `balanceDelta`.
+- [ ] **Step 1: `balanceChange`** moves from `add-daily-interest.ts`, where it is
+      private, to `wallet-totals.ts`, exported; `add-daily-interest.ts` imports it.
 
 ```ts
-export function signedAmount(transaction: Pick<Transaction, 'type' | 'amount'>): number {
+export function balanceChange(transaction: Pick<Transaction, 'type' | 'amount'>): number {
   return transaction.type === 'withdrawal' ? -transaction.amount : transaction.amount;
 }
 ```
 
-- [ ] **Step 2: `balance-series.ts`.**
+- [ ] **Step 2: `balance-history.ts`.**
 
 ```ts
 import { DEFAULT_WALLETS } from './constants';
 import { eachDayInclusive } from './dates';
-import { signedAmount } from './derivations';
-import type { LedgerEntry, Wallet, WalletName } from './types';
+import { balanceChange } from './wallet-totals';
+import type { Transaction, Wallet, WalletName } from './types';
 
-export type WalletLines = Record<WalletName, number[]>;
+export type WalletBalances = Record<WalletName, number[]>;
 
-export interface BalanceSeries {
+export interface BalanceHistory {
   days: string[];
-  total: number[];
-  wallets: WalletLines;
+  totalBalance: number[];
+  wallets: WalletBalances;
 }
 
-export interface BalanceSeriesInput {
+export interface BalanceHistoryInput {
   wallets: Pick<Wallet, 'id' | 'name'>[];
-  entries: LedgerEntry[];
+  transactions: Pick<
+    Transaction,
+    'walletId' | 'type' | 'amount' | 'occurredAt'
+  >[];
   asOf: string;
 }
 
-const WALLET_NAMES: readonly WalletName[] = DEFAULT_WALLETS.map((seed) => seed.name);
+const WALLET_NAMES: readonly WalletName[] = DEFAULT_WALLETS.map(
+  (wallet) => wallet.name
+);
 
-function firstDay(entries: LedgerEntry[]): string | undefined {
-  return entries.reduce<string | undefined>(
-    (earliest, entry) =>
-      earliest === undefined || entry.occurredAt < earliest ? entry.occurredAt : earliest,
-    undefined
-  );
+function firstTransactionDay(
+  transactions: Pick<Transaction, 'occurredAt'>[]
+): string | undefined {
+  const transactionDays = transactions
+    .map((transaction) => transaction.occurredAt)
+    .sort();
+
+  return transactionDays[0];
 }
 
-function changeByDay(entries: LedgerEntry[]): Map<string, number> {
-  const change = new Map<string, number>();
+function dailyBalanceChanges(
+  transactions: Pick<Transaction, 'type' | 'amount' | 'occurredAt'>[]
+): Map<string, number> {
+  const balanceChangeByDay = new Map<string, number>();
 
-  for (const entry of entries) {
-    change.set(entry.occurredAt, (change.get(entry.occurredAt) ?? 0) + signedAmount(entry));
+  for (const transaction of transactions) {
+    const day = transaction.occurredAt;
+    const changeSoFar = balanceChangeByDay.get(day) ?? 0;
+    balanceChangeByDay.set(day, changeSoFar + balanceChange(transaction));
   }
 
-  return change;
+  return balanceChangeByDay;
 }
 
-function runningBalance(days: string[], entries: LedgerEntry[]): number[] {
-  const change = changeByDay(entries);
-  const line: number[] = [];
+function runningBalance(
+  days: string[],
+  transactions: BalanceHistoryInput['transactions']
+): number[] {
+  const balanceChangeByDay = dailyBalanceChanges(transactions);
+  const balances: number[] = [];
   let balance = 0;
 
   for (const day of days) {
-    balance += change.get(day) ?? 0;
-    line.push(balance);
+    balance += balanceChangeByDay.get(day) ?? 0;
+    balances.push(balance);
   }
 
-  return line;
+  return balances;
 }
 
-function entriesOf(name: WalletName, { wallets, entries }: BalanceSeriesInput): LedgerEntry[] {
-  const ids = new Set(wallets.filter((wallet) => wallet.name === name).map((wallet) => wallet.id));
+function walletTransactions(
+  walletName: WalletName,
+  { wallets, transactions }: BalanceHistoryInput
+): BalanceHistoryInput['transactions'] {
+  const wallet = wallets.find((candidate) => candidate.name === walletName);
 
-  return entries.filter((entry) => ids.has(entry.walletId));
+  return transactions.filter(
+    (transaction) => transaction.walletId === wallet?.id
+  );
 }
 
-function sumOfLines(lines: WalletLines, days: string[]): number[] {
-  return days.map((_, index) => WALLET_NAMES.reduce((sum, name) => sum + lines[name][index], 0));
+function totalBalances(
+  walletBalances: WalletBalances,
+  days: string[]
+): number[] {
+  const totalBalanceOn = (dayIndex: number): number =>
+    WALLET_NAMES.reduce(
+      (totalBalance, walletName) =>
+        totalBalance + walletBalances[walletName][dayIndex],
+      0
+    );
+
+  return days.map((_, dayIndex) => totalBalanceOn(dayIndex));
 }
 
-export function buildBalanceSeries(input: BalanceSeriesInput): BalanceSeries {
-  const start = firstDay(input.entries);
-  const days = start === undefined ? [] : eachDayInclusive(start, input.asOf);
-  const line = (name: WalletName): number[] => runningBalance(days, entriesOf(name, input));
-  const wallets = {
-    savings: line('savings'),
-    spending: line('spending'),
-    goodDeeds: line('goodDeeds'),
+function perWallet(
+  balancesOf: (walletName: WalletName) => number[]
+): WalletBalances {
+  return {
+    savings: balancesOf('savings'),
+    spending: balancesOf('spending'),
+    goodDeeds: balancesOf('goodDeeds'),
   };
-
-  return { days, total: sumOfLines(wallets, days), wallets };
 }
 
-export function windowSeries(series: BalanceSeries, days: number): BalanceSeries {
-  const from = Math.max(0, series.days.length - 1 - days);
-  const slice = <T,>(values: T[]): T[] => values.slice(from);
+export function balanceHistory(input: BalanceHistoryInput): BalanceHistory {
+  const firstDay = firstTransactionDay(input.transactions);
+  const hasNoTransactions = firstDay === undefined;
+  const days = hasNoTransactions ? [] : eachDayInclusive(firstDay, input.asOf);
+  const wallets = perWallet((walletName) =>
+    runningBalance(days, walletTransactions(walletName, input))
+  );
+
+  return { days, totalBalance: totalBalances(wallets, days), wallets };
+}
+
+function carriedInDayIndex(
+  balanceHistory: BalanceHistory,
+  rangeInDays: number
+): number {
+  const todayIndex = balanceHistory.days.length - 1;
+
+  return todayIndex - rangeInDays;
+}
+
+export function balanceOverRange(
+  balanceHistory: BalanceHistory,
+  rangeInDays: number
+): BalanceHistory {
+  const rangeStartIndex = Math.max(0, carriedInDayIndex(balanceHistory, rangeInDays));
+  const fromRangeStart = <T>(values: T[]): T[] => values.slice(rangeStartIndex);
 
   return {
-    days: slice(series.days),
-    total: slice(series.total),
-    wallets: {
-      savings: slice(series.wallets.savings),
-      spending: slice(series.wallets.spending),
-      goodDeeds: slice(series.wallets.goodDeeds),
-    },
+    days: fromRangeStart(balanceHistory.days),
+    totalBalance: fromRangeStart(balanceHistory.totalBalance),
+    wallets: perWallet((walletName) =>
+      fromRangeStart(balanceHistory.wallets[walletName])
+    ),
   };
 }
 
-function last(values: number[]): number {
+function closingBalance(values: number[]): number {
   return values[values.length - 1] ?? 0;
 }
 
-export function latestTotal(series: BalanceSeries): number {
-  return last(series.total);
+export function todaysTotalBalance(balanceHistory: BalanceHistory): number {
+  return closingBalance(balanceHistory.totalBalance);
 }
 
-export function windowChange(window: BalanceSeries): number {
-  return last(window.total) - (window.total[0] ?? 0);
+export function totalBalanceChange(
+  balanceHistory: BalanceHistory,
+  rangeInDays: number
+): number {
+  const carriedInDay = carriedInDayIndex(balanceHistory, rangeInDays);
+  const accountIsYoungerThanRange = carriedInDay < 0;
+  const carriedInTotalBalance = accountIsYoungerThanRange
+    ? 0
+    : balanceHistory.totalBalance[carriedInDay];
+
+  return todaysTotalBalance(balanceHistory) - carriedInTotalBalance;
 }
 
-export function totalByDay(series: BalanceSeries): Map<string, number> {
-  return new Map(series.days.map((day, index) => [day, series.total[index]]));
+export function totalBalanceByDay(
+  balanceHistory: BalanceHistory
+): Map<string, number> {
+  return new Map(
+    balanceHistory.days.map((day, dayIndex) => [day, balanceHistory.totalBalance[dayIndex]])
+  );
 }
 ```
 
-  A window of `N` days holds `N + 1` points: the balance carried in, then each of
+  A range of `N` days holds `N + 1` points: the balance carried in, then each of
   the `N` days. That is the mockup's `windowStart = DAYS - range`.
 
 - [ ] **Step 3: tsc, eslint, STOP, commit** — `feat(lib): the balance, day by day`
-- [ ] **Step 4: First three tests** (`balance-series.test.ts`; fixtures from
+- [ ] **Step 4: First three tests** (`balance-history.test.ts`; fixtures from
       `createMockWallets()` and `createMockTransaction`, whose `w1/w2/w3` are
-      savings/spending/goodDeeds):
+      savings/spending/goodDeeds; shared stand-ins live inside the `describe`):
 
 ```ts
-const WALLETS = createMockWallets();
+import {
+  balanceHistory,
+  balanceOverRange,
+  type BalanceHistory,
+} from '../balance-history';
+import { eachDayInclusive } from '../dates';
+import type { Transaction } from '../types';
+import {
+  createMockTransaction,
+  createMockWallets,
+} from '@/test-utils/fixtures';
 
-describe('the balance series', () => {
+describe('the balance history', () => {
+  const mockWallets = createMockWallets();
+  const mockOpeningDeposit = createMockTransaction({
+    id: 'opening',
+    amount: 500,
+    occurredAt: '2026-01-01',
+  });
+
+  const historyOf = (
+    transactions: Transaction[],
+    asOf: string
+  ): BalanceHistory =>
+    balanceHistory({ wallets: mockWallets, transactions, asOf });
+
   it('carries a balance across the days nothing happened', () => {
-    const series = buildBalanceSeries({
-      wallets: WALLETS,
-      entries: [createMockTransaction({ amount: 500, occurredAt: '2026-01-01' })],
-      asOf: '2026-01-03',
-    });
+    const balanceHistory = historyOf([mockOpeningDeposit], '2026-01-03');
+    const firstThreeDays = eachDayInclusive('2026-01-01', '2026-01-03');
 
-    expect(series.days).toEqual(eachDayInclusive('2026-01-01', '2026-01-03'));
-    expect(series.total).toEqual([500, 500, 500]);
+    expect(balanceHistory.days).toEqual(firstThreeDays);
+    expect(balanceHistory.totalBalance).toEqual([500, 500, 500]);
   });
 
-  it('draws the same line whichever order the store handed the rows in', () => {
-    const rows = [
-      createMockTransaction({ id: 'b', occurredAt: '2026-01-02', amount: 300 }),
-      createMockTransaction({ id: 'a', occurredAt: '2026-01-01', amount: 500 }),
-      createMockTransaction({ id: 'c', occurredAt: '2026-01-02', type: 'withdrawal', amount: 200 }),
+  it('gives the same history whichever order the store returned the transactions in', () => {
+    const mockSameDayDeposit = createMockTransaction({
+      id: 'deposit',
+      amount: 300,
+      occurredAt: '2026-01-02',
+    });
+    const mockSameDayWithdrawal = createMockTransaction({
+      id: 'withdrawal',
+      type: 'withdrawal',
+      amount: 200,
+      occurredAt: '2026-01-02',
+    });
+    const unsortedTransactions = [
+      mockSameDayDeposit,
+      mockOpeningDeposit,
+      mockSameDayWithdrawal,
     ];
-    const sorted = [...rows].sort((x, y) => x.occurredAt.localeCompare(y.occurredAt));
-    const build = (entries: LedgerEntry[]): BalanceSeries =>
-      buildBalanceSeries({ wallets: WALLETS, entries, asOf: '2026-01-02' });
+    const sortedTransactions = [...unsortedTransactions].sort((a, b) =>
+      a.occurredAt.localeCompare(b.occurredAt)
+    );
 
-    expect(build(rows)).toEqual(build(sorted));
+    expect(historyOf(unsortedTransactions, '2026-01-02')).toEqual(
+      historyOf(sortedTransactions, '2026-01-02')
+    );
   });
 
-  it('starts a narrow window at the balance carried into it, not at zero', () => {
-    const series = buildBalanceSeries({
-      wallets: WALLETS,
-      entries: [
-        createMockTransaction({ amount: 500, occurredAt: '2026-01-01' }),
-        createMockTransaction({ id: 't2', amount: 100, occurredAt: '2026-01-10' }),
-      ],
-      asOf: '2026-01-10',
+  it('starts a narrow range at the balance carried into it, not at zero', () => {
+    const mockLaterDeposit = createMockTransaction({
+      id: 'later',
+      amount: 100,
+      occurredAt: '2026-01-10',
     });
+    const balanceHistory = historyOf(
+      [mockOpeningDeposit, mockLaterDeposit],
+      '2026-01-10'
+    );
 
-    expect(windowSeries(series, 7).total[0]).toBe(500);
+    const lastWeek = balanceOverRange(balanceHistory, 7);
+    const openingBalance = lastWeek.totalBalance[0];
+
+    expect(openingBalance).toBe(mockOpeningDeposit.amount);
   });
 });
 ```
 
-Breaks: `balance += …` → `balance = …` (first); take the first entry's
-`occurredAt` instead of the minimum (second); rebase each windowed line to zero
-at the window start — `values.slice(from).map((value) => value - values[from])`,
+Breaks: `balance += …` → `balance = …` (first); take the first transaction's
+`occurredAt` instead of the earliest (second); rebase the total balance to zero
+at the range start — `fromRangeStart(balanceHistory.totalBalance).map((value) => value - balanceHistory.totalBalance[rangeStartIndex])`,
 the very failure the spec names (third).
 
 - [ ] **Step 5: The rest**, each with its break:
-  - `'has no days to draw for an account nothing has happened to'` —
-    `entries: []` gives `days`, `total` and every wallet line `[]`. Break: default
-    `start` to `asOf`.
-  - `'is one point for an account whose whole history is today'` — one entry on
-    `asOf`, `days.length` is 1. Break: `eachDayInclusive(addDays(start, -1), asOf)`.
-  - `'keeps each wallet on its own line'` — deposits in `w1` and `w2`, withdrawal
-    in `w2`; `wallets.spending` reflects only `w2`, `total` equals the sum of the
-    three lines. Break: `entriesOf` ignores the name.
+  - `'has no days for an account with no transactions'` —
+    `transactions: []` gives `days`, `totalBalance` and every wallet's balances
+    `[]`. Break: default `firstDay` to `asOf`.
+  - `'is one day for an account whose whole history is today'` — one transaction on
+    `asOf`, `days.length` is 1. Break: `eachDayInclusive(addDays(firstDay, -1), asOf)`.
+  - `'keeps each wallet’s balance apart'` — deposits in `w1` and `w2`, withdrawal
+    in `w2`; `wallets.spending` reflects only `w2`, `totalBalance` equals the sum of
+    the three wallets. Break: `walletTransactions` ignores the wallet name.
   - `'shows the whole history when the account is younger than the range'` — a
-    five-day series windowed by 7 equals the series, and so does
-    `windowSeries(series, Infinity)`. Break: remove `Math.max(0, …)` —
-    `from` goes to `-3` and `slice` quietly keeps the last three points.
-  - `'reports the change across the window it was handed'` — `windowChange`
-    of the 7-day window above is `100`. Break: `last(total) - total[1]`.
-  - `'reads the end-of-day total for a day'` — `totalByDay(series).get('2026-01-10')` is `600`.
-  - `derivations.test.ts`: `'counts a withdrawal against the balance and everything else for it'`
-    — `signedAmount` of a withdrawal of 200 is `-200`, of interest 5 is `5`.
+    five-day history over a range of 7 equals the history, and so does
+    `balanceOverRange(balanceHistory, Infinity)`. Break: remove `Math.max(0, …)` —
+    `rangeStartIndex` goes to `-3` and `slice` quietly keeps the last three days.
+  - `'reports how much the total balance changed across the range'` — `totalBalanceChange(balanceHistory, 7)`
+    of the ten-day history above is `100`. Break: carry in `0` instead of the balance before the range.
+  - `'counts the deposit as growth, for the week and since the beginning'` and
+    `'counts every deposit since the account opened'` — an account younger than the range: five
+    days after a 500 deposit the change is 500 for `7` and for `Infinity`, and a second deposit
+    adds to it. Break: carry in the first day's balance, which already holds the first deposit.
+  - `'reads the total balance a day ended on'` — `totalBalanceByDay(balanceHistory).get('2026-01-10')` is `600`.
+  - `wallet-totals.test.ts`: `'counts a withdrawal against the balance and everything else for it'`
+    — `balanceChange` of a withdrawal of 200 is `-200`, of interest 5 is `5`.
     Break: return `transaction.amount`. Also run `interest.test.ts` untouched —
-    it covers the `add-daily-interest` swap.
+    it covers the `add-daily-interest` import.
 
 ---
 
@@ -878,50 +973,50 @@ balance, ordering, sections, filters. Pure lib, nothing rendered; no copy lives
 here, so decisions D and E do not block it.
 
 **Files:**
-- Modify: `src/lib/dates.ts` (`monthOf`)
+- Modify: `src/lib/dates.ts` (`calendarMonth`)
 - Create: `src/lib/transaction-rows.ts`
 - Test: `src/lib/__tests__/transaction-rows.test.ts`, `src/lib/__tests__/dates.test.ts`
 
 **Interfaces:**
-- Consumes: `LedgerEntry`, `signedAmount` (PR 4); `BalanceSeries`, `totalByDay` (PR 4).
+- Consumes: `balanceChange` (PR 4, in `wallet-totals`); `BalanceHistory`, `totalBalanceByDay` (PR 4).
 - Produces:
 
 ```ts
 export type InterestMode = 'monthly' | 'daily';
-export type RowFilter = 'all' | TransactionType;
-export interface LedgerRow {
+export type TransactionTypeFilter = 'all' | TransactionType;
+export interface TransactionListRow {
   key: string;
   type: TransactionType;
-  wallet?: WalletName;
+  walletName?: WalletName;
   day: string;
   amount: number;
   balance: number;
   interestDays?: number;
-  writtenAt: string;
+  createdAt: string;
 }
-export interface MonthSection { month: string; rows: LedgerRow[] }
-export interface LedgerRowsInput {
-  entries: LedgerEntry[];
+export interface MonthSection { month: string; rows: TransactionListRow[] }
+export interface TransactionListRowsInput {
+  transactions: Omit<Transaction, 'id' | 'accountId'>[];
   wallets: Pick<Wallet, 'id' | 'name'>[];
-  series: BalanceSeries;
-  mode: InterestMode;
+  balanceHistory: BalanceHistory;
+  interestMode: InterestMode;
 }
-export function ledgerRows(input: LedgerRowsInput): LedgerRow[];
-export function filterRows(rows: LedgerRow[], filter: RowFilter): LedgerRow[];
-export function monthSections(rows: LedgerRow[]): MonthSection[];
+export function transactionListRows(input: TransactionListRowsInput): TransactionListRow[];
+export function filterByTransactionType(rows: TransactionListRow[], filter: TransactionTypeFilter): TransactionListRow[];
+export function monthSections(rows: TransactionListRow[]): MonthSection[];
 // dates.ts
-export function monthOf(iso: string): string;
+export function calendarMonth(iso: string): string;
 ```
 
-`amount` is signed. `wallet` is absent on a deposit — a deposit has no one
+`amount` is signed. `walletName` is absent on a deposit — a deposit has no one
 wallet. `interestDays` is set only on a monthly rollup. `month` is `YYYY-MM`.
 
-- [ ] **Step 1: `monthOf`** in `dates.ts`:
+- [ ] **Step 1: `calendarMonth`** in `dates.ts`:
 
 ```ts
 const MONTH_LENGTH = 7;
 
-export function monthOf(iso: string): string {
+export function calendarMonth(iso: string): string {
   return iso.slice(0, MONTH_LENGTH);
 }
 ```
@@ -931,171 +1026,175 @@ export function monthOf(iso: string): string {
       public three staying here.
 
 ```ts
-import { totalByDay, type BalanceSeries } from './balance-series';
-import { monthOf } from './dates';
-import { signedAmount } from './derivations';
-import type { LedgerEntry, TransactionType, Wallet, WalletName } from './types';
+import { totalBalanceByDay, type BalanceHistory } from './balance-history';
+import { calendarMonth } from './dates';
+import { balanceChange } from './wallet-totals';
+import type { Transaction, TransactionType, Wallet, WalletName } from './types';
 
 export type InterestMode = 'monthly' | 'daily';
-export type RowFilter = 'all' | TransactionType;
+export type TransactionTypeFilter = 'all' | TransactionType;
 
-export interface LedgerRow {
+export interface TransactionListRow {
   key: string;
   type: TransactionType;
-  wallet?: WalletName;
+  walletName?: WalletName;
   day: string;
   amount: number;
   balance: number;
   interestDays?: number;
-  writtenAt: string;
+  createdAt: string;
 }
 
 export interface MonthSection {
   month: string;
-  rows: LedgerRow[];
+  rows: TransactionListRow[];
 }
 
-export interface LedgerRowsInput {
-  entries: LedgerEntry[];
+export interface TransactionListRowsInput {
+  transactions: Omit<Transaction, 'id' | 'accountId'>[];
   wallets: Pick<Wallet, 'id' | 'name'>[];
-  series: BalanceSeries;
-  mode: InterestMode;
+  balanceHistory: BalanceHistory;
+  interestMode: InterestMode;
 }
 
-type UnbalancedRow = Omit<LedgerRow, 'balance'>;
-type WalletNameOf = (walletId: string) => WalletName | undefined;
+type RowWithoutBalance = Omit<TransactionListRow, 'balance'>;
+type ListedTransaction = TransactionListRowsInput['transactions'][number];
+type WalletNameById = Map<string, WalletName>;
 
-function walletNames(wallets: LedgerRowsInput['wallets']): WalletNameOf {
-  const byId = new Map(wallets.map((wallet) => [wallet.id, wallet.name]));
-
-  return (walletId) => byId.get(walletId);
+function walletNamesById(wallets: TransactionListRowsInput['wallets']): WalletNameById {
+  return new Map(wallets.map((wallet) => [wallet.id, wallet.name]));
 }
 
-function ofType(entries: LedgerEntry[], type: TransactionType): LedgerEntry[] {
-  return entries.filter((entry) => entry.type === type);
+function transactionsOfType(transactions: ListedTransaction[], type: TransactionType): ListedTransaction[] {
+  return transactions.filter((transaction) => transaction.type === type);
 }
 
-function depositRows(entries: LedgerEntry[]): UnbalancedRow[] {
-  const byWrite = new Map<string, UnbalancedRow>();
+function depositRows(transactions: ListedTransaction[]): RowWithoutBalance[] {
+  const depositRowByCreatedAt = new Map<string, RowWithoutBalance>();
 
-  for (const entry of ofType(entries, 'deposit')) {
-    const row = byWrite.get(entry.createdAt);
+  for (const transaction of transactionsOfType(transactions, 'deposit')) {
+    const row = depositRowByCreatedAt.get(transaction.createdAt);
 
     if (row) {
-      row.amount += entry.amount;
+      row.amount += transaction.amount;
       continue;
     }
 
-    byWrite.set(entry.createdAt, {
-      key: `deposit:${entry.createdAt}`,
+    depositRowByCreatedAt.set(transaction.createdAt, {
+      key: `deposit:${transaction.createdAt}`,
       type: 'deposit',
-      day: entry.occurredAt,
-      amount: entry.amount,
-      writtenAt: entry.createdAt,
+      day: transaction.occurredAt,
+      amount: transaction.amount,
+      createdAt: transaction.createdAt,
     });
   }
 
-  return [...byWrite.values()];
+  return [...depositRowByCreatedAt.values()];
 }
 
-function withdrawalRows(entries: LedgerEntry[], walletName: WalletNameOf): UnbalancedRow[] {
-  return ofType(entries, 'withdrawal').map((entry) => ({
-    key: `withdrawal:${entry.walletId}:${entry.createdAt}`,
+function withdrawalRows(transactions: ListedTransaction[], walletNameById: WalletNameById): RowWithoutBalance[] {
+  return transactionsOfType(transactions, 'withdrawal').map((transaction) => ({
+    key: `withdrawal:${transaction.walletId}:${transaction.createdAt}`,
     type: 'withdrawal',
-    wallet: walletName(entry.walletId),
-    day: entry.occurredAt,
-    amount: -entry.amount,
-    writtenAt: entry.createdAt,
+    walletName: walletNameById.get(transaction.walletId),
+    day: transaction.occurredAt,
+    amount: -transaction.amount,
+    createdAt: transaction.createdAt,
   }));
 }
 
-function dailyInterestRows(entries: LedgerEntry[], walletName: WalletNameOf): UnbalancedRow[] {
-  return ofType(entries, 'interest').map((entry) => ({
-    key: `interest:${entry.walletId}:${entry.occurredAt}`,
+function dailyInterestRows(transactions: ListedTransaction[], walletNameById: WalletNameById): RowWithoutBalance[] {
+  return transactionsOfType(transactions, 'interest').map((transaction) => ({
+    key: `interest:${transaction.walletId}:${transaction.occurredAt}`,
     type: 'interest',
-    wallet: walletName(entry.walletId),
-    day: entry.occurredAt,
-    amount: entry.amount,
-    writtenAt: '',
+    walletName: walletNameById.get(transaction.walletId),
+    day: transaction.occurredAt,
+    amount: transaction.amount,
+    createdAt: '',
   }));
 }
 
-function monthlyInterestRows(entries: LedgerEntry[], walletName: WalletNameOf): UnbalancedRow[] {
-  const buckets = new Map<string, UnbalancedRow>();
+function monthlyInterestRows(transactions: ListedTransaction[], walletNameById: WalletNameById): RowWithoutBalance[] {
+  const monthlyInterestRowByKey = new Map<string, RowWithoutBalance>();
 
-  for (const row of dailyInterestRows(entries, walletName)) {
-    const key = `interest:${row.wallet}:${monthOf(row.day)}`;
-    const bucket = buckets.get(key);
+  for (const dailyRow of dailyInterestRows(transactions, walletNameById)) {
+    const key = `interest:${dailyRow.walletName}:${calendarMonth(dailyRow.day)}`;
+    const monthlyRow = monthlyInterestRowByKey.get(key);
 
-    if (!bucket) {
-      buckets.set(key, { ...row, key, interestDays: 1 });
+    if (!monthlyRow) {
+      monthlyInterestRowByKey.set(key, { ...dailyRow, key, interestDays: 1 });
       continue;
     }
 
-    bucket.amount += row.amount;
-    bucket.interestDays = (bucket.interestDays ?? 0) + 1;
-    bucket.day = row.day > bucket.day ? row.day : bucket.day;
+    monthlyRow.amount += dailyRow.amount;
+    monthlyRow.interestDays = (monthlyRow.interestDays ?? 0) + 1;
+    monthlyRow.day = dailyRow.day > monthlyRow.day ? dailyRow.day : monthlyRow.day;
   }
 
-  return [...buckets.values()];
+  return [...monthlyInterestRowByKey.values()];
 }
 
-function realMovementByDay(entries: LedgerEntry[]): Map<string, number> {
-  const movement = new Map<string, number>();
+function dailyDepositsAndWithdrawals(transactions: ListedTransaction[]): Map<string, number> {
+  const depositsAndWithdrawalsByDay = new Map<string, number>();
 
-  for (const entry of entries) {
-    if (entry.type !== 'interest') {
-      movement.set(entry.occurredAt, (movement.get(entry.occurredAt) ?? 0) + signedAmount(entry));
+  for (const transaction of transactions) {
+    if (transaction.type === 'interest') {
+      continue;
     }
+
+    const day = transaction.occurredAt;
+    const changeSoFar = depositsAndWithdrawalsByDay.get(day) ?? 0;
+    depositsAndWithdrawalsByDay.set(day, changeSoFar + balanceChange(transaction));
   }
 
-  return movement;
+  return depositsAndWithdrawalsByDay;
 }
 
-function withBalances(rows: UnbalancedRow[], input: LedgerRowsInput): LedgerRow[] {
-  const endOfDay = totalByDay(input.series);
-  const movement = realMovementByDay(input.entries);
+function withBalances(rows: RowWithoutBalance[], input: TransactionListRowsInput): TransactionListRow[] {
+  const endOfDayTotalBalance = totalBalanceByDay(input.balanceHistory);
+  const depositsAndWithdrawalsByDay = dailyDepositsAndWithdrawals(input.transactions);
 
   return rows.map((row) => {
-    const beforeTheDaysMovement = row.type === 'interest' ? (movement.get(row.day) ?? 0) : 0;
+    const depositsAndWithdrawalsThatDay =
+      row.type === 'interest' ? (depositsAndWithdrawalsByDay.get(row.day) ?? 0) : 0;
 
-    return { ...row, balance: (endOfDay.get(row.day) ?? 0) - beforeTheDaysMovement };
+    return { ...row, balance: (endOfDayTotalBalance.get(row.day) ?? 0) - depositsAndWithdrawalsThatDay };
   });
 }
 
-function interestRank(row: LedgerRow): number {
+function interestRank(row: TransactionListRow): number {
   return row.type === 'interest' ? 1 : 0;
 }
 
-function newestFirst(a: LedgerRow, b: LedgerRow): number {
+function newestFirst(a: TransactionListRow, b: TransactionListRow): number {
   return (
     b.day.localeCompare(a.day) ||
     interestRank(a) - interestRank(b) ||
-    b.writtenAt.localeCompare(a.writtenAt)
+    b.createdAt.localeCompare(a.createdAt)
   );
 }
 
-export function ledgerRows(input: LedgerRowsInput): LedgerRow[] {
-  const walletName = walletNames(input.wallets);
-  const interest = input.mode === 'daily' ? dailyInterestRows : monthlyInterestRows;
+export function transactionListRows(input: TransactionListRowsInput): TransactionListRow[] {
+  const walletNameById = walletNamesById(input.wallets);
+  const interestRows = input.interestMode === 'daily' ? dailyInterestRows : monthlyInterestRows;
   const rows = [
-    ...depositRows(input.entries),
-    ...withdrawalRows(input.entries, walletName),
-    ...interest(input.entries, walletName),
+    ...depositRows(input.transactions),
+    ...withdrawalRows(input.transactions, walletNameById),
+    ...interestRows(input.transactions, walletNameById),
   ];
 
   return withBalances(rows, input).sort(newestFirst);
 }
 
-export function filterRows(rows: LedgerRow[], filter: RowFilter): LedgerRow[] {
-  return filter === 'all' ? rows : rows.filter((row) => row.type === filter);
+export function filterByTransactionType(rows: TransactionListRow[], transactionTypeFilter: TransactionTypeFilter): TransactionListRow[] {
+  return transactionTypeFilter === 'all' ? rows : rows.filter((row) => row.type === transactionTypeFilter);
 }
 
-export function monthSections(rows: LedgerRow[]): MonthSection[] {
+export function monthSections(rows: TransactionListRow[]): MonthSection[] {
   const sections: MonthSection[] = [];
 
   for (const row of rows) {
-    const month = monthOf(row.day);
+    const month = calendarMonth(row.day);
     const current = sections[sections.length - 1];
 
     if (current?.month === month) {
@@ -1109,26 +1208,26 @@ export function monthSections(rows: LedgerRow[]): MonthSection[] {
 }
 ```
 
-  The monthly bucket keys on the wallet **name**, not the id, only because a
-  row already carries the name; one account has one wallet per name.
+  The monthly row keys on the wallet **name**, not the id, only because a
+  row already carries the wallet name; one account has one wallet per name.
 
 - [ ] **Step 3: tsc, eslint, STOP, commit** — `feat(lib): what happened, row by row`
 - [ ] **Step 4: First three tests.** Build every case through a local
-      `rowsFor(entries, mode, asOf)` inside the describe that calls
-      `buildBalanceSeries` then `ledgerRows`, so expected balances come from
-      `totalByDay` rather than typed-out numbers. The first test declares
-      `const DEPOSIT_AT = '2026-01-01T08:00:00.000Z';` inside itself.
+      `rowsFor(transactions, mode, asOf)` inside the describe that calls
+      `balanceHistory` then `transactionListRows`, so expected balances come from
+      `totalBalanceByDay` rather than typed-out numbers. The first test declares
+      `const mockDepositCreatedAt = '2026-01-01T08:00:00.000Z';` inside itself.
 
 ```ts
-  it('shows a deposit as one movement, though it lands in three wallets', () => {
-    const legs = ['w1', 'w2', 'w3'].map((walletId, index) =>
-      createMockTransaction({ id: `d${index}`, walletId, amount: 100 * (index + 1), createdAt: DEPOSIT_AT })
+  it('shows a deposit as one row, though it lands in three wallets', () => {
+    const mockDepositTransactions = ['w1', 'w2', 'w3'].map((walletId, index) =>
+      createMockTransaction({ id: `d${index}`, walletId, amount: 100 * (index + 1), createdAt: mockDepositCreatedAt })
     );
 
-    const rows = rowsFor(legs, 'monthly', '2026-01-01');
+    const rows = rowsFor(mockDepositTransactions, 'monthly', '2026-01-01');
 
     expect(rows).toHaveLength(1);
-    expect(rows[0]).toMatchObject({ type: 'deposit', amount: 600, wallet: undefined });
+    expect(rows[0]).toMatchObject({ type: 'deposit', amount: 600, walletName: undefined });
   });
 
   it('keeps two deposits on different days apart', () => {
@@ -1145,74 +1244,74 @@ export function monthSections(rows: LedgerRow[]): MonthSection[] {
   });
 
   it('rolls a month of interest into one row that counts its days', () => {
-    const interest = ['2026-01-02', '2026-01-03', '2026-01-04'].map((occurredAt) =>
+    const mockInterest = ['2026-01-02', '2026-01-03', '2026-01-04'].map((occurredAt) =>
       createMockTransaction({ id: occurredAt, type: 'interest', amount: 9, occurredAt })
     );
 
-    const [row] = rowsFor([createMockTransaction(), ...interest], 'monthly', '2026-01-04')
-      .filter((each) => each.type === 'interest');
+    const [row] = rowsFor([createMockTransaction(), ...mockInterest], 'monthly', '2026-01-04')
+      .filter((listedRow) => listedRow.type === 'interest');
 
     expect(row).toMatchObject({ amount: 27, interestDays: 3, day: '2026-01-04' });
   });
 ```
 
-Breaks: key deposit legs by `entry.id` instead of `createdAt` (the first
-reddens); key them all by `entry.type` (the second — which is also what a
+Breaks: key deposit transactions by `transaction.id` instead of `createdAt` (the first
+reddens); key them all by `transaction.type` (the second — which is also what a
 fixture without distinct `createdAt`s would silently do); never increment
 `interestDays` (the third).
 
 - [ ] **Step 5: The rest**, each with its break:
   - `'lists every day of interest on its own in daily mode'` — same fixture,
-    `'daily'`, three interest rows. Break: `interest` always monthly.
-  - `'shows the balance the day ended on, beside a real movement'` —
-    `row.balance === totalByDay(series).get(row.day)`. Break: `balance: 0`.
+    `'daily'`, three interest rows. Break: `interestRows` always monthly.
+  - `'shows the balance the day ended on, beside a deposit or withdrawal'` —
+    `row.balance === totalBalanceByDay(balanceHistory).get(row.day)`. Break: `balance: 0`.
   - `'shows interest landing on the balance before that day’s deposit'`, in
     **both** modes — interest and a deposit on one day; the interest row's
-    balance is end-of-day minus the deposit. Break: drop `beforeTheDaysMovement`.
-  - `'gives two movements on one day the same balance'` — a deposit and a
+    balance is end-of-day minus the deposit. Break: drop `depositsAndWithdrawalsThatDay`.
+  - `'gives two transactions on one day the same balance'` — a deposit and a
     withdrawal on one day both carry the end-of-day total.
-  - `'puts the real movement above that day’s interest'` — Break: `interestRank`
+  - `'puts a deposit or withdrawal above that day’s interest'` — Break: `interestRank`
     returns 0.
-  - `'puts the later of two same-day movements first, whatever order the store gave'`
+  - `'puts the later of two same-day transactions first, whatever order the store gave'`
     — two withdrawals on one day, fixture in ascending `createdAt`; expect
-    descending. Break: drop the `writtenAt` comparison.
-  - `'names the wallet a withdrawal came out of'` — `wallet: 'spending'` for `w2`.
-  - `'keeps a filtered view’s balances true'` — `filterRows(rows, 'withdrawal')`
+    descending. Break: drop the `createdAt` comparison.
+  - `'names the wallet a withdrawal came out of'` — `walletName: 'spending'` for `w2`.
+  - `'keeps a filtered view’s balances true'` — `filterByTransactionType(rows, 'withdrawal')`
     rows carry the same `balance` as they do in the unfiltered list. Break:
     make `withBalances` accumulate `amount` down the sorted list instead of
-    reading the series — the filtered and unfiltered balances then disagree.
-  - `'shows every row for הכל and only its kind otherwise'` — Break: `filter === 'all'` inverted.
+    reading the history — the filtered and unfiltered balances then disagree.
+  - `'shows every row for הכל and only its kind otherwise'` — Break: `transactionTypeFilter === 'all'` inverted.
   - `'groups rows under the month they happened in, newest first'` —
     `monthSections` over rows in December and January gives two sections,
     `'2026-01'` first. Break: `current?.month === month` → `current !== undefined`.
   - `'has nothing to list for an account nothing has happened to'` — `[]` in, `[]` out.
-  - `dates.test.ts`: `'names the month a day falls in'` — `monthOf('2026-09-14')` is `'2026-09'`.
+  - `dates.test.ts`: `'names the month a day falls in'` — `calendarMonth('2026-09-14')` is `'2026-09'`.
 
 ---
 
 ## PR 6 — the screen exists: route, shell, headline and ranges
 
 Branch `feat/transactions-route`. Spec: "Route and entry point", "Headline and
-delta", "Why every account". The tab stays inert (delivery order 3). Uses
+change", "Why every account". The tab stays inert (delivery order 3). Uses
 decision B (headline size, settled).
 
 **Files:**
-- Modify: `src/lib/account-ledgers.ts` (`toLedgerEntry`, `ledgerEntriesByAccount`)
+- Modify: `src/lib/interest-settlement.ts` (`withoutIds`, `transactionsByAccount`)
 - Modify: `src/lib/constants.ts` (`AGOROT_SHOWN_BELOW`), `src/lib/money.ts` (`shekelText`, `needsAgorot`)
 - Create: `src/app/transactions/page.tsx`
-- Create: `src/components/Transactions/{Transactions.tsx,Transactions.test.tsx,constants.ts,index.ts,use-transactions-view.ts,transactions-parts.ts}`
+- Create: `src/components/Transactions/{Transactions.tsx,Transactions.test.tsx,constants.ts,index.ts,use-transactions-view.ts,use-balance-history.ts,transactions-parts.ts}`
 - Create: `src/components/Transactions/ChoiceChips/{ChoiceChips.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
 - Create: `src/components/Transactions/SignedAmount/{SignedAmount.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
 - Create: `src/components/Transactions/ChartCard/{ChartCard.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
-- Create: `src/components/Transactions/ChartCard/TotalHeader/{TotalHeader.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
-- Test: `src/lib/__tests__/money.test.ts`, `src/lib/__tests__/account-ledgers.test.ts`
+- Create: `src/components/Transactions/ChartCard/TotalBalanceHeader/{TotalBalanceHeader.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
+- Test: `src/lib/__tests__/money.test.ts`, `src/lib/__tests__/interest-settlement.test.ts`
 
 **Interfaces:**
 
 ```ts
-// account-ledgers.ts
-export function toLedgerEntry(transaction: Transaction): LedgerEntry;
-export function ledgerEntriesByAccount(ledgers: Ledger[]): Record<string, LedgerEntry[]>;
+// interest-settlement.ts
+export function withoutIds(transaction: Transaction): Omit<Transaction, 'id' | 'accountId'>;
+export function transactionsByAccount(settledAccounts: SettledAccount[]): Record<string, Omit<Transaction, 'id' | 'accountId'>[]>;
 
 // money.ts — the one precision rule the ticks and the change column share
 export function shekelText(agorot: number, withAgorot: boolean): string;
@@ -1224,7 +1323,7 @@ export const TRANSACTIONS_COPY: { title: string };
 
 // ChartCard/constants.ts
 export type RangeId = 'week' | 'month' | 'year' | 'all';
-export interface Range { id: RangeId; days: number; label: string; delta: string }
+export interface Range { id: RangeId; lengthInDays: number; label: string; changeLabel: string }
 export const RANGES: readonly Range[];
 export const DEFAULT_RANGE: RangeId;
 
@@ -1235,31 +1334,31 @@ export function useTransactionsView(): TransactionsView;
 // ChoiceChips — reused by PR 8 for the type filters and the interest switch
 export interface Choice<Id extends string> { id: Id; label: string }
 export interface ChoiceChipsProps<Id extends string> {
-  name: string; legend: string; choices: readonly Choice<Id>[];
+  groupName: string; legend: string; choices: readonly Choice<Id>[];
   selected: Id; onSelect: (id: Id) => void; testId: string;
 }
 
 // SignedAmount — reused by PR 8's change column
-export interface SignedAmountProps { amountAgorot: number; withAgorot: boolean; testId: string }
+export interface SignedAmountProps { amount: number; withAgorot: boolean; testId: string }
 ```
 
 - [ ] **Step 1: The projection and the precision rule.**
 
 ```ts
-// account-ledgers.ts
-export function toLedgerEntry({
+// interest-settlement.ts
+export function withoutIds({
   walletId,
   type,
   amount,
   occurredAt,
   createdAt,
-}: Transaction): LedgerEntry {
+}: Transaction): Omit<Transaction, 'id' | 'accountId'> {
   return { walletId, type, amount, occurredAt, createdAt };
 }
 
-export function ledgerEntriesByAccount(ledgers: Ledger[]): Record<string, LedgerEntry[]> {
+export function transactionsByAccount(settledAccounts: SettledAccount[]): Record<string, Omit<Transaction, 'id' | 'accountId'>[]> {
   return Object.fromEntries(
-    ledgers.map((ledger) => [ledger.account.id, ledger.transactions.map(toLedgerEntry)])
+    settledAccounts.map((settledAccount) => [settledAccount.account.id, settledAccount.transactions.map(withoutIds)])
   );
 }
 
@@ -1272,9 +1371,9 @@ export function shekelText(agorot: number, withAgorot: boolean): string {
 }
 
 export function needsAgorot(agorot: number): boolean {
-  const size = Math.abs(agorot);
+  const magnitude = Math.abs(agorot);
 
-  return size < AGOROT_SHOWN_BELOW && size % AGOROT_PER_SHEKEL !== 0;
+  return magnitude < AGOROT_SHOWN_BELOW && magnitude % AGOROT_PER_SHEKEL !== 0;
 }
 ```
 
@@ -1287,20 +1386,20 @@ import { Transactions } from '@/components/Transactions';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { getStore } from '@/db';
-import { settledLedgers, ledgerEntriesByAccount } from '@/lib/account-ledgers';
+import { settleInterest, transactionsByAccount } from '@/lib/interest-settlement';
 import { today } from '@/lib/clock';
-import { selectedAccount } from '@/lib/selected-account';
+import { findCurrentAccount } from '@/lib/current-account';
 import { ThemedPage } from '@/theme/ThemedPage';
 import { signedInAccounts } from '../signed-in-accounts';
 
 export const dynamic = 'force-dynamic';
 
 export default async function TransactionsPage(): Promise<JSX.Element> {
-  const { user, accounts, selectedAccountId, themeId } = await signedInAccounts();
+  const { user, accounts, currentAccountId, themeId } = await signedInAccounts();
   const asOf = today();
-  const ledgers = await settledLedgers({ store: getStore(), accounts, asOf });
-  const derived = ledgers.map((ledger) => ledger.account);
-  const initialAccount = selectedAccount(derived, selectedAccountId);
+  const settledAccounts = await settleInterest({ store: getStore(), accounts, asOf });
+  const accountSummaries = settledAccounts.map((settledAccount) => settledAccount.account);
+  const initialAccount = findCurrentAccount(accountSummaries, currentAccountId);
 
   if (!initialAccount) {
     redirect(HOME_ROUTE);
@@ -1310,9 +1409,9 @@ export default async function TransactionsPage(): Promise<JSX.Element> {
     <ThemedPage themeId={themeId}>
       <SignedInUserProvider value={user}>
         <Transactions
-          accounts={derived}
+          accounts={accountSummaries}
           initialAccount={initialAccount}
-          ledgers={ledgerEntriesByAccount(ledgers)}
+          transactionsByAccount={transactionsByAccount(settledAccounts)}
           asOf={asOf}
         />
       </SignedInUserProvider>
@@ -1322,16 +1421,15 @@ export default async function TransactionsPage(): Promise<JSX.Element> {
 ```
 
 - [ ] **Step 3: The shell**, `Transactions.tsx`, in `Method.tsx`'s shape. The
-      series is built here because the chart and (from PR 8) the list both read
-      it; if the function crosses 40 lines, the `useMemo` moves to
-      `use-account-series.ts` beside it.
+      balance history is built here because the chart and (from PR 8) the list both read
+      it, through `useBalanceHistory` in `use-balance-history.ts` beside it — a hook, so
+      the value can be called `balanceHistory` without shadowing PR 4's function.
 
 ```tsx
 'use client';
 
-import { JSX, useMemo } from 'react';
-import type { AccountWithDerivedWallets, LedgerEntry } from '@/lib/types';
-import { buildBalanceSeries } from '@/lib/balance-series';
+import { JSX } from 'react';
+import type { AccountSummary, Transaction } from '@/lib/types';
 import { Header } from '@/components/Header';
 import { Column, Screen } from '@/components/Screen';
 import { AccountManagement } from '@/components/AccountManagement';
@@ -1339,43 +1437,56 @@ import { AccountsProvider } from '@/components/Home/accounts-context';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { ChartCard } from './ChartCard';
 import { TRANSACTIONS_COPY } from './constants';
+import { useBalanceHistory } from './use-balance-history';
 import { useTransactionsView } from './use-transactions-view';
 
 interface TransactionsProps {
-  accounts: AccountWithDerivedWallets[];
-  initialAccount: AccountWithDerivedWallets;
-  ledgers: Record<string, LedgerEntry[]>;
+  accounts: AccountSummary[];
+  initialAccount: AccountSummary;
+  transactionsByAccount: Record<string, Omit<Transaction, 'id' | 'accountId'>[]>;
   asOf: string;
 }
 
 export function Transactions({
   accounts,
   initialAccount,
-  ledgers,
+  transactionsByAccount,
   asOf,
 }: TransactionsProps): JSX.Element {
   const navigation = useAccountNavigation(accounts, initialAccount.id);
-  const account = navigation.currentAccount ?? initialAccount;
+  const currentAccount = navigation.currentAccount ?? initialAccount;
   const view = useTransactionsView();
-  const series = useMemo(
-    () => buildBalanceSeries({ wallets: account.wallets, entries: ledgers[account.id] ?? [], asOf }),
-    [account, ledgers, asOf]
-  );
+  const balanceHistory = useBalanceHistory({
+    wallets: currentAccount.wallets,
+    transactions: transactionsByAccount[currentAccount.id] ?? [],
+    asOf,
+  });
 
   return (
     <AccountManagement navigation={navigation}>
       <AccountsProvider
-        value={{ accounts, currentAccount: account, selectAccount: navigation.selectAccount }}
+        value={{ accounts, currentAccount, switchAccount: navigation.switchAccount }}
       >
         <Screen align="top">
           <Column>
-            <Header title={TRANSACTIONS_COPY.title} account={account} />
-            <ChartCard series={series} view={view} />
+            <Header title={TRANSACTIONS_COPY.title} account={currentAccount} />
+            <ChartCard balanceHistory={balanceHistory} view={view} />
           </Column>
         </Screen>
       </AccountsProvider>
     </AccountManagement>
   );
+}
+```
+
+  `use-balance-history.ts`:
+
+```ts
+import { useMemo } from 'react';
+import { balanceHistory, type BalanceHistory, type BalanceHistoryInput } from '@/lib/balance-history';
+
+export function useBalanceHistory({ wallets, transactions, asOf }: BalanceHistoryInput): BalanceHistory {
+  return useMemo(() => balanceHistory({ wallets, transactions, asOf }), [wallets, transactions, asOf]);
 }
 ```
 
@@ -1405,7 +1516,7 @@ export function useTransactionsView(): TransactionsView {
 
 - [ ] **Step 4: `ChoiceChips`.** A `fieldset` (border and padding reset), a
       `ScreenReaderOnly as="legend"`, one `label` per choice wrapping a
-      visually hidden `<input type="radio" name={name} checked={…} onChange={() => onSelect(choice.id)}>`
+      visually hidden `<input type="radio" name={groupName} checked={…} onChange={() => onSelect(choice.id)}>`
       with `data-testid={CHOICE_CHIPS_TEST_IDS.option(testId, choice.id)}`, and
       the choice label as text. Chip look is the mockup's `.chip`
       (`padding: 5px 10px; border-radius: 999px; border: 1.5px solid divider;`
@@ -1417,37 +1528,41 @@ export function useTransactionsView(): TransactionsView {
 - [ ] **Step 5: `SignedAmount`.**
 
 ```tsx
-export function SignedAmount({ amountAgorot, withAgorot, testId }: SignedAmountProps): JSX.Element {
-  const sign = amountAgorot < 0 ? SIGNED_AMOUNT_COPY.minus : SIGNED_AMOUNT_COPY.plus;
+export function SignedAmount({ amount, withAgorot, testId }: SignedAmountProps): JSX.Element {
+  const sign = amount < 0 ? SIGNED_AMOUNT_COPY.minus : SIGNED_AMOUNT_COPY.plus;
 
   return (
     <Amount dir="ltr" data-testid={testId}>
       {sign}
       {MONEY_COPY.currency}
-      {shekelText(Math.abs(amountAgorot), withAgorot)}
+      {shekelText(Math.abs(amount), withAgorot)}
     </Amount>
   );
 }
 ```
 
-  `Amount` is `font-variant-numeric: tabular-nums;` and nothing else — colour is
+  `Amount` is `font-variant-numeric: tabular-nums;` and nothing else — color is
   the caller's. `SIGNED_AMOUNT_COPY = { plus: '+', minus: '-' }`.
 
-- [ ] **Step 6: `ChartCard` and `TotalHeader`.** `ChartCard` takes
-      `{ series, view }`, finds the range, windows the series, and renders
-      `TotalHeader` then the range `ChoiceChips`:
+- [ ] **Step 6: `ChartCard` and `TotalBalanceHeader`.** `ChartCard` takes
+      `{ balanceHistory, view }`, finds the range, takes the history over it, and renders
+      `TotalBalanceHeader` then the range `ChoiceChips`:
 
 ```tsx
-export function ChartCard({ series, view }: ChartCardProps): JSX.Element {
+export function ChartCard({ balanceHistory, view }: ChartCardProps): JSX.Element {
   const range = RANGES.find((candidate) => candidate.id === view.range) ?? RANGES[1];
-  const window = windowSeries(series, range.days);
+  const balanceHistoryInRange = balanceOverRange(balanceHistory, range.lengthInDays);
 
   return (
     <Card data-testid={CHART_CARD_TEST_IDS.card}>
-      <TotalHeader total={latestTotal(series)} change={windowChange(window)} rangeLabel={range.delta} />
+      <TotalBalanceHeader
+        totalBalance={todaysTotalBalance(balanceHistory)}
+        totalBalanceChange={totalBalanceChange(balanceHistory, range.lengthInDays)}
+        changeLabel={range.changeLabel}
+      />
       <RangeRow>
         <ChoiceChips
-          name={CHART_CARD_COPY.rangeName}
+          groupName={CHART_CARD_COPY.rangeGroupName}
           legend={CHART_CARD_COPY.rangeLegend}
           choices={RANGES}
           selected={range.id}
@@ -1462,19 +1577,19 @@ export function ChartCard({ series, view }: ChartCardProps): JSX.Element {
 
   ```ts
   export const RANGES: readonly Range[] = [
-    { id: 'week', days: 7, label: 'שבוע', delta: 'השבוע' },
-    { id: 'month', days: 30, label: 'חודש', delta: 'החודש' },
-    { id: 'year', days: 365, label: 'שנה', delta: 'השנה' },
-    { id: 'all', days: Infinity, label: 'הכל', delta: 'מאז ההתחלה' },
+    { id: 'week', lengthInDays: 7, label: 'שבוע', changeLabel: 'השבוע' },
+    { id: 'month', lengthInDays: 30, label: 'חודש', changeLabel: 'החודש' },
+    { id: 'year', lengthInDays: 365, label: 'שנה', changeLabel: 'השנה' },
+    { id: 'all', lengthInDays: Infinity, label: 'הכל', changeLabel: 'מאז ההתחלה' },
   ];
   export const DEFAULT_RANGE: RangeId = 'month';
   ```
 
-  `TotalHeader` renders the label `סך הכל`, the headline through `Money`
-  (`typography.amount`, decision B), and the delta pill
-  `<SignedAmount withAgorot={false} />` followed by `rangeLabel`, with
+  `TotalBalanceHeader` renders the label `סך הכל`, the headline through `Money`
+  (`typography.amount`, decision B), and the change pill
+  `<SignedAmount withAgorot={false} />` followed by `changeLabel`, with
   `data-direction="down"` when the change is negative (`depositBg` /
-  `withdrawText`) and `"up"` otherwise (`gainSoftBg` / `gainText`). Card look:
+  `withdrawalText`) and `"up"` otherwise (`gainSoftBg` / `gainText`). Card look:
   `surface`, `border-radius: 24px; padding: 13px 14px 11px;` and the mockup's
   shadow as `theme.shadows` supplies it.
 
@@ -1483,18 +1598,18 @@ export function ChartCard({ series, view }: ChartCardProps): JSX.Element {
       **STOP**; commit — `feat(transactions): the screen exists, with its total and its ranges`
 - [ ] **Step 8: First three tests** (`Transactions.test.tsx`, rendered like
       `Method.test.tsx` with `{ route: TRANSACTIONS_ROUTE, user: mockUser }`, and
-      a ledger for `mockDerivedAccount` built from `createMockTransaction`s):
+      transactions for `mockAccountSummary` built from `createMockTransaction`s):
   - `'names itself in the header, so the parent knows what they opened'` —
     title equals `TRANSACTIONS_COPY.title`. Break: pass `account.name`.
   - `'opens on the month, as the chart boots'` — the `month` radio is checked.
     Break: `DEFAULT_RANGE = 'all'`.
   - `'shows today’s total whatever range is picked'` — click the `week` radio;
-    the headline still reads `agorotToWholeShekels(latestTotal(series))`, with
-    a fixture whose total moved inside the last week. Break: pass `total={window.total[0]}`.
+    the headline still reads `agorotToWholeShekels(todaysTotalBalance(balanceHistory))`, with
+    a fixture whose total moved inside the last week. Break: pass `totalBalance={balanceHistoryInRange.totalBalance[0]}`.
 - [ ] **Step 9: The rest.**
-  - `TotalHeader.test.tsx`: `'says how much the total moved over the range, and in which direction'`
+  - `TotalBalanceHeader.test.tsx`: `'says how much the total moved over the range, and in which direction'`
     (a negative change renders `-₪…` and `data-direction="down"`; break: sign
-    from `amountAgorot <= 0`); `'names the range it is measuring'`.
+    from `amount <= 0`); `'names the range it is measuring'`.
   - `SignedAmount.test.tsx`: `'puts the sign before the shekel sign, so a loss reads -₪12'`
     (text is `-₪12` for `-1200`; break: render `₪` before the sign);
     `'signs a gain too'`; `'shows agorot when asked'` (`+₪0.09` for 9).
@@ -1505,15 +1620,15 @@ export function ChartCard({ series, view }: ChartCardProps): JSX.Element {
     — `needsAgorot` of 9, 999, 1000, 500 → `true, true, false, false`;
     `'writes shekels to two places, or rounds them'` — `shekelText(9, true)` is
     `'0.09'`, `shekelText(1260, false)` is `'13'`.
-  - `account-ledgers.test.ts`: `'keeps ids and the account off the wire'` —
-    `Object.keys(toLedgerEntry(createMockTransaction())).sort()` equals the five
-    fields; `'keys each ledger by the account it belongs to'`.
+  - `interest-settlement.test.ts`: `'keeps ids and the account off the wire'` —
+    `Object.keys(withoutIds(createMockTransaction())).sort()` equals the five
+    fields; `'keys each account’s transactions by the account they belong to'`.
   - `Transactions.test.tsx`: `'keeps the range when the parent switches child'` —
-    pick `week`, switch to `mockSecondDerivedAccount` through the menu (open it,
+    pick `week`, switch to `mockSiblingAccountSummary` through the menu (open it,
     `openAccountPicker()` from `src/test-utils/account-picker.ts`, click the
     second `ACCOUNT_LIST_TEST_IDS.row`, as `Home.managing-accounts.test.tsx`
     does), and `week` is still checked. Break: move `useTransactionsView()`
-    into `ChartCard` and render it with `key={account.id}`.
+    into `ChartCard` and render it with `key={currentAccount.id}`.
 
 ---
 
@@ -1524,19 +1639,19 @@ Branch `feat/balance-chart`. Spec: "The graph" (all of it), "Chips", "Colours",
 decisions B and C (settled).
 
 **Files:**
-- Modify: `src/lib/constants.ts` (`WALLET_SHORT_NAME`), `src/components/Account/OverviewCard/constants.ts` (drop `OVERVIEW_CARD_COPY.name`), `.../Legend/Legend.tsx`, `.../Legend/Legend.test.tsx`
+- Modify: `src/lib/constants.ts` (`WALLET_SHORT_LABEL`), `src/components/Account/BalanceBreakdown/constants.ts` (drop `BALANCE_BREAKDOWN_COPY.shortWalletLabel`), `.../Legend/Legend.tsx`, `.../Legend/Legend.test.tsx`
 - Modify: `src/lib/dates.ts` (`shortDayMonth`, `shortMonth`)
 - Modify: `src/components/Transactions/use-transactions-view.ts`, `ChartCard/ChartCard.tsx`, `ChartCard/constants.ts`, `ChartCard/ChartCard.styles.ts`
 - Create: `ChartCard/BalanceChart/{BalanceChart.tsx,.styles.ts,.test.tsx,constants.ts,index.ts,chart-geometry.ts,chart-geometry.test.ts,axis-ticks.ts,axis-ticks.test.ts}`
 - Create: `ChartCard/BalanceChart/{ChartLine,YAxis,XAxis,DirectLabels}/` — each `X.tsx`, `X.test.tsx`, `index.ts`, and `constants.ts` / `.styles.ts` where it has any
-- Create: `ChartCard/LineChips/{LineChips.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
+- Create: `ChartCard/BalanceChips/{BalanceChips.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
 - Test: `src/lib/__tests__/dates.test.ts`
 
 **Interfaces:**
 
 ```ts
-// src/lib/constants.ts — moved from OVERVIEW_CARD_COPY.name, one copy only
-export const WALLET_SHORT_NAME: Record<WalletName, string> = {
+// src/lib/constants.ts — moved from BALANCE_BREAKDOWN_COPY.shortWalletLabel, one copy only
+export const WALLET_SHORT_LABEL: Record<WalletName, string> = {
   savings: 'חיסכון', spending: 'בזבוזים', goodDeeds: 'מעשים',
 };
 
@@ -1545,34 +1660,34 @@ export function shortDayMonth(iso: string): string;            // '14.9'
 export function shortMonth(iso: string, withYear: boolean): string; // Intl 'he' short month, '+ 26'
 
 // use-transactions-view.ts additions
-export type LineId = 'total' | WalletName;
-lines: readonly LineId[];          // visible, in LINE_ORDER
-toggleLine: (id: LineId) => void;
-allWalletsOn: boolean;
+export type ShownBalance = 'totalBalance' | WalletName;
+shownBalances: readonly ShownBalance[];  // in SHOWN_BALANCE_ORDER
+toggleShownBalance: (shownBalance: ShownBalance) => void;
+allWalletsShown: boolean;
 toggleAllWallets: () => void;
 
 // chart-geometry.ts
-export interface ChartLineData { id: LineId; values: number[] }
+export interface DrawnBalance { id: ShownBalance; dailyBalances: number[] }
 export interface Extent { min: number; max: number }
-export function extentOf(lines: ChartLineData[]): Extent;
+export function balanceExtent(drawnBalances: DrawnBalance[]): Extent;
 export function xAt(index: number, count: number): number;
 export function scaleY(extent: Extent): (value: number) => number;
 export function linePath(values: number[], y: (value: number) => number): string;
 export function areaPath(values: number[], y: (value: number) => number): string;
-export function yTickValues(extent: Extent): number[];
-export function placeLabels(wanted: { id: LineId; y: number }[]): { id: LineId; y: number }[];
+export function yTickBalances(extent: Extent): number[];
+export function placeLabels(preferredLabels: { id: ShownBalance; y: number }[]): { id: ShownBalance; y: number }[];
 
 // axis-ticks.ts
 export interface AxisTick { index: number; label: string }
 export function xTicks(days: string[]): AxisTick[];
 
 // ChartCard/constants.ts
-export const WALLET_CHART_COLOR: Record<WalletName, 'chartSavings' | 'chartSpending' | 'chartGood'>;
+export const WALLET_CHART_COLOR: Record<WalletName, 'chartSavings' | 'chartSpending' | 'chartGoodDeeds'>;
 ```
 
-- [ ] **Step 1: Hoist the short names.** Add `WALLET_SHORT_NAME` beside
-      `WALLET_NAME`; delete `OVERVIEW_CARD_COPY.name`; `Legend.tsx` and its test
-      read `WALLET_SHORT_NAME[entry.name]`. Run `Legend.test.tsx` — it must pass
+- [ ] **Step 1: Hoist the short names.** Add `WALLET_SHORT_LABEL` beside
+      `WALLET_LABEL`; delete `BALANCE_BREAKDOWN_COPY.shortWalletLabel`; `Legend.tsx` and its test
+      read `WALLET_SHORT_LABEL[wallet.name]`. Run `Legend.test.tsx` — it must pass
       unchanged in meaning.
 - [ ] **Step 2: `dates.ts`.**
 
@@ -1598,14 +1713,14 @@ export function shortMonth(iso: string, withYear: boolean): string {
 
 ```ts
 export const CHART_BOX = { width: 332, height: 112 } as const;
-export const CHART_PAD = { top: 12, bottom: 17, near: 6, far: 38 } as const;
-export const NEAR_X = CHART_PAD.near;
-export const FAR_X = CHART_BOX.width - CHART_PAD.far;
-export const PLOT_BOTTOM = CHART_BOX.height - CHART_PAD.bottom;
-export const PLOT_HEIGHT = PLOT_BOTTOM - CHART_PAD.top;
-export const MID_Y = CHART_PAD.top + PLOT_HEIGHT / 2;
+export const CHART_PADDING = { top: 12, bottom: 17, near: 6, far: 38 } as const;
+export const NEAR_X = CHART_PADDING.near;
+export const FAR_X = CHART_BOX.width - CHART_PADDING.far;
+export const PLOT_BOTTOM = CHART_BOX.height - CHART_PADDING.bottom;
+export const PLOT_HEIGHT = PLOT_BOTTOM - CHART_PADDING.top;
+export const MID_Y = CHART_PADDING.top + PLOT_HEIGHT / 2;
 export const LABEL_GAP = 11;
-export const Y_TICKS = 3;
+export const Y_TICK_COUNT = 3;
 export const TICK_EDGE = 16;
 export const CHART_FILL_OPACITY = 0.07;
 export const ANCHOR_RIGHTWARD = 'end';
@@ -1627,14 +1742,14 @@ export const YEAR_TICKS_FROM_SPAN = 300;
 
 ```ts
 import { AGOROT_SHOWN_BELOW } from '@/lib/constants';
-import type { LineId } from '../../use-transactions-view';
+import type { ShownBalance } from '../../use-transactions-view';
 import {
-  CHART_PAD, FAR_X, LABEL_GAP, MID_Y, NEAR_X, PLOT_BOTTOM, PLOT_HEIGHT, Y_TICKS,
+  CHART_PADDING, FAR_X, LABEL_GAP, MID_Y, NEAR_X, PLOT_BOTTOM, PLOT_HEIGHT, Y_TICK_COUNT,
 } from './constants';
 
-export interface ChartLineData {
-  id: LineId;
-  values: number[];
+export interface DrawnBalance {
+  id: ShownBalance;
+  dailyBalances: number[];
 }
 
 export interface Extent {
@@ -1644,10 +1759,10 @@ export interface Extent {
 
 type ScaleY = (value: number) => number;
 
-export function extentOf(lines: ChartLineData[]): Extent {
-  const values = lines.flatMap((line) => line.values);
+export function balanceExtent(drawnBalances: DrawnBalance[]): Extent {
+  const balances = drawnBalances.flatMap((drawnBalance) => drawnBalance.dailyBalances);
 
-  return { min: Math.min(...values), max: Math.max(...values) };
+  return { min: Math.min(...balances), max: Math.max(...balances) };
 }
 
 export function xAt(index: number, count: number): number {
@@ -1680,12 +1795,12 @@ export function areaPath(values: number[], y: ScaleY): string {
   return `${linePath(values, y)} L ${NEAR_X} ${PLOT_BOTTOM} L ${FAR_X} ${PLOT_BOTTOM} Z`;
 }
 
-export function yTickValues({ min, max }: Extent): number[] {
-  const values = Array.from({ length: Y_TICKS }, (_, index) =>
-    Math.round(min + ((max - min) * index) / (Y_TICKS - 1))
+export function yTickBalances({ min, max }: Extent): number[] {
+  const tickBalances = Array.from({ length: Y_TICK_COUNT }, (_, index) =>
+    Math.round(min + ((max - min) * index) / (Y_TICK_COUNT - 1))
   );
 
-  return [...new Set(values)];
+  return [...new Set(tickBalances)];
 }
 
 export function tickNeedsAgorot({ min, max }: Extent): boolean {
@@ -1693,12 +1808,12 @@ export function tickNeedsAgorot({ min, max }: Extent): boolean {
 }
 
 export function placeLabels(
-  wanted: { id: LineId; y: number }[]
-): { id: LineId; y: number }[] {
-  const placed: { id: LineId; y: number }[] = [];
-  let floor = CHART_PAD.top;
+  preferredLabels: { id: ShownBalance; y: number }[]
+): { id: ShownBalance; y: number }[] {
+  const placed: { id: ShownBalance; y: number }[] = [];
+  let floor = CHART_PADDING.top;
 
-  for (const label of [...wanted].sort((a, b) => a.y - b.y)) {
+  for (const label of [...preferredLabels].sort((a, b) => a.y - b.y)) {
     const y = Math.max(label.y, floor);
     placed.push({ id: label.id, y });
     floor = y + LABEL_GAP;
@@ -1724,7 +1839,7 @@ export interface AxisTick {
 }
 
 function tickCount(span: number): number {
-  return TICK_COUNT_BY_SPAN.find((step) => span <= step.upTo)?.count ?? 0;
+  return TICK_COUNT_BY_SPAN.find((tier) => span <= tier.upTo)?.count ?? 0;
 }
 
 function dateLabel(day: string, span: number): string {
@@ -1750,65 +1865,80 @@ export function xTicks(days: string[]): AxisTick[] {
 
   `BALANCE_CHART_COPY.today = 'היום'`.
 
-- [ ] **Step 6: The view grows lines.**
+- [ ] **Step 6: The view grows the shown balances.**
 
 ```ts
-const LINE_ORDER: readonly LineId[] = ['total', 'savings', 'spending', 'goodDeeds'];
-const WALLET_LINES: readonly LineId[] = LINE_ORDER.filter((id) => id !== 'total');
-const DEFAULT_LINES: readonly LineId[] = ['total'];
+const SHOWN_BALANCE_ORDER: readonly ShownBalance[] = ['totalBalance', 'savings', 'spending', 'goodDeeds'];
+const WALLET_SHOWN_BALANCES: readonly ShownBalance[] = SHOWN_BALANCE_ORDER.filter(
+  (shownBalance) => shownBalance !== 'totalBalance'
+);
+const DEFAULT_SHOWN_BALANCES: readonly ShownBalance[] = ['totalBalance'];
 
-function toggled(lines: readonly LineId[], id: LineId): LineId[] {
-  const next = lines.includes(id) ? lines.filter((line) => line !== id) : [...lines, id];
+function withBalanceToggled(
+  shownBalances: readonly ShownBalance[],
+  shownBalance: ShownBalance
+): ShownBalance[] {
+  const isShown = shownBalances.includes(shownBalance);
+  const nextShownBalances = isShown
+    ? shownBalances.filter((each) => each !== shownBalance)
+    : [...shownBalances, shownBalance];
 
-  return LINE_ORDER.filter((line) => next.includes(line));
+  return SHOWN_BALANCE_ORDER.filter((each) => nextShownBalances.includes(each));
 }
 ```
 
 ```ts
-function allWallets(lines: readonly LineId[]): boolean {
-  return WALLET_LINES.every((id) => lines.includes(id));
+function showsAllWallets(shownBalances: readonly ShownBalance[]): boolean {
+  return WALLET_SHOWN_BALANCES.every((walletBalance) => shownBalances.includes(walletBalance));
 }
 
-function withAllWallets(lines: readonly LineId[], on: boolean): LineId[] {
-  return LINE_ORDER.filter((id) => (id === 'total' ? lines.includes(id) : on));
+function withAllWalletsShown(shownBalances: readonly ShownBalance[], shown: boolean): ShownBalance[] {
+  return SHOWN_BALANCE_ORDER.filter((shownBalance) =>
+    shownBalance === 'totalBalance' ? shownBalances.includes(shownBalance) : shown
+  );
 }
 ```
 
-  The hook holds `useState<readonly LineId[]>(DEFAULT_LINES)` and returns
-  `lines`, `toggleLine: (id) => setLines((current) => toggled(current, id))`,
-  `allWalletsOn: allWallets(lines)` and
-  `toggleAllWallets: () => setLines((current) => withAllWallets(current, !allWallets(current)))`.
+  The hook holds `useState<readonly ShownBalance[]>(DEFAULT_SHOWN_BALANCES)` and returns
+  `shownBalances`,
+  `toggleShownBalance: (shownBalance) => setShownBalances((current) => withBalanceToggled(current, shownBalance))`,
+  `allWalletsShown: showsAllWallets(shownBalances)` and
+  `toggleAllWallets: () => setShownBalances((current) => withAllWalletsShown(current, !showsAllWallets(current)))`.
   Default: total on, all three wallets off.
 
-- [ ] **Step 7: `BalanceChart`** — `{ window: BalanceSeries; lines: readonly LineId[]; rangeLabel: string }`.
+- [ ] **Step 7: `BalanceChart`** — `{ balanceHistory: BalanceHistory; shownBalances: readonly ShownBalance[]; rangeLabel: string }`,
+      where `ChartCard` passes `balanceHistoryInRange` as `balanceHistory`.
 
 ```tsx
-export function BalanceChart({ window, lines, rangeLabel }: BalanceChartProps): JSX.Element {
-  if (window.days.length === 0) {
-    return <ChartMessage text={BALANCE_CHART_COPY.noHistory} />;
+export function BalanceChart({ balanceHistory, shownBalances, rangeLabel }: BalanceChartProps): JSX.Element {
+  if (balanceHistory.days.length === 0) {
+    return <ChartMessage text={BALANCE_CHART_COPY.noTransactions} />;
   }
 
-  if (lines.length === 0) {
+  if (shownBalances.length === 0) {
     return <ChartMessage text={BALANCE_CHART_COPY.pickALine} label={BALANCE_CHART_COPY.noLineLabel} />;
   }
 
-  const drawn = lines.map((id) => ({ id, values: valuesOf(window, id) }));
-  const extent = extentOf(drawn);
+  const drawnBalances = shownBalances.map((shownBalance) => ({
+    id: shownBalance,
+    dailyBalances: shownDailyBalances(balanceHistory, shownBalance),
+  }));
+  const extent = balanceExtent(drawnBalances);
   const y = scaleY(extent);
 
   return (
-    <Svg viewBox={VIEW_BOX} role="img" aria-label={chartLabel(rangeLabel, lines)} data-testid={BALANCE_CHART_TEST_IDS.chart}>
+    <Svg viewBox={VIEW_BOX} role="img" aria-label={chartLabel(rangeLabel, shownBalances)} data-testid={BALANCE_CHART_TEST_IDS.chart}>
       <YAxis extent={extent} y={y} />
-      <TotalFill lines={drawn} y={y} />
-      {drawn.map((line) => <ChartLine key={line.id} line={line} y={y} />)}
-      <DirectLabels lines={drawn} y={y} />
-      <XAxis days={window.days} />
+      <TotalFill drawnBalances={drawnBalances} y={y} />
+      {drawnBalances.map((drawnBalance) => <ChartLine key={drawnBalance.id} drawnBalance={drawnBalance} y={y} />)}
+      <DirectLabels drawnBalances={drawnBalances} y={y} />
+      <XAxis days={balanceHistory.days} />
     </Svg>
   );
 }
 ```
 
-  - `valuesOf(window, id)` is `id === 'total' ? window.total : window.wallets[id]`.
+  - `shownDailyBalances(balanceHistory, shownBalance)` is `shownBalance === 'totalBalance' ? balanceHistory.totalBalance : balanceHistory.wallets[shownBalance]`.
   - `ChartMessage` is a styled `Svg` with `role="img"`, `aria-label` (defaulting
     to its text) and one centred `<text>` — a styled element plus a prop, kept in
     `BalanceChart.styles.ts`, not a folder.
@@ -1816,45 +1946,45 @@ export function BalanceChart({ window, lines, rangeLabel }: BalanceChartProps): 
     `<path d={areaPath(...)} fill={theme.colors.textStrong} fillOpacity={CHART_FILL_OPACITY} />`.
     It branches, so it is a folder with a test, or inline JSX in `BalanceChart` if
     that stays under 40 lines — prefer inline.
-  - The total is drawn **last** so it sits on top: `drawn` is in `LINE_ORDER`,
-    so reverse it for painting — `[...drawn].reverse()` — and keep the order for
+  - The total is drawn **last** so it sits on top: `drawnBalances` is in `SHOWN_BALANCE_ORDER`,
+    so reverse it for painting — `[...drawnBalances].reverse()` — and keep the order for
     the labels.
-  - `chartLabel(range, lines)` is `` `מאזן לאורך זמן · ${range} · ${names}` ``,
-    names from `WALLET_SHORT_NAME` and `סך הכל`, joined with `, `. It lives in
+  - `chartLabel(rangeLabel, shownBalances)` is `` `מאזן לאורך זמן · ${rangeLabel} · ${balanceLabels}` ``,
+    the labels from `WALLET_SHORT_LABEL` and `סך הכל`, joined with `, `. It lives in
     `constants.ts` beside the copy.
   - Copy: `pickALine: 'בחרו קו אחד לפחות להצגה'`, `noLineLabel: 'לא נבחר קו להצגה'`,
-    `noHistory: 'עוד אין תנועות להציג'` (decision C), `total: 'סך הכל'`.
+    `noTransactions: 'עוד אין תנועות להציג'` (decision C), `totalBalance: 'סך הכל'`.
 
 - [ ] **Step 8: The four parts.**
-  - `ChartLine` — one point draws `<circle cx={xAt(0, 1)} cy={y(value)} r={3} fill={colour} />`;
-    more draws `<path d={linePath(...)} stroke={colour} fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth={id === 'total' ? 3.25 : 2.25} />`.
-    Colour: `theme.colors.textStrong` for the total, else
-    `theme.colors[WALLET_CHART_COLOR[id]]`, read with `useTheme()` as `Donut` does.
-  - `YAxis` — for each of `yTickValues(extent)`: a gridline from `NEAR_X` to
+  - `ChartLine` — one day draws `<circle cx={xAt(0, 1)} cy={y(balance)} r={3} fill={color} />`;
+    more draws `<path d={linePath(...)} stroke={color} fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth={drawnBalance.id === 'totalBalance' ? 3.25 : 2.25} />`.
+    Color: `theme.colors.textStrong` for the total balance, else
+    `theme.colors[WALLET_CHART_COLOR[drawnBalance.id]]`, read with `useTheme()` as `Donut` does.
+  - `YAxis` — for each of `yTickBalances(extent)`: a gridline from `NEAR_X` to
     `FAR_X` in `divider`, and a `<text>` at `x = FAR_X + 5`, `text-anchor={ANCHOR_RIGHTWARD}`,
     reading `` `₪${shekelText(value, tickNeedsAgorot(extent))}` `` in `textMuted`.
   - `XAxis` — for each of `xTicks(days)`: `<text text-anchor="middle">` at
     `x = clamp(xAt(index, days.length), NEAR_X + TICK_EDGE, FAR_X - TICK_EDGE)`,
     `y = CHART_BOX.height - 3`, `textMuted`.
-  - `DirectLabels` — `placeLabels` over each drawn line's last value; each label
+  - `DirectLabels` — `placeLabels` over each drawn balance's last day; each label
     is a `<rect>` swatch (9×9, `rx` 3, the line's colour) at `x = NEAR_X + 5`
     followed by `<text x={NEAR_X + 17} text-anchor={ANCHOR_RIGHTWARD} fill={textStrong}>`
-    reading `` `${name} ₪${agorotToWholeShekels(last)}` `` (decision 9).
+    reading `` `${balanceLabel} ₪${agorotToWholeShekels(closingBalance)}` `` (decision 9).
   - Every `<text>` carries the halo from `BalanceChart.styles.ts`:
     `paint-order: stroke; stroke: surface; stroke-width: 3px; stroke-linejoin: round;`
     and `font-weight: 700` (axis: 500). Font sizes stay the mockup's 9.5 / 9 in viewBox units (decision B).
 
-- [ ] **Step 9: `LineChips` and the all-wallets chip.** `LineChips` renders a
+- [ ] **Step 9: `BalanceChips` and the all-wallets chip.** `BalanceChips` renders a
       solid `סך הכל` toggle and the three wallet toggles, each a `<button
       aria-pressed>`, the wallet ones carrying a 9px swatch coloured by a
-      `walletName` prop in `LineChips.styles.ts` (the `Legend` `Dot` pattern).
+      `walletName` prop in `BalanceChips.styles.ts` (the `Legend` `Dot` pattern).
       Label text stays `textMuted`, pressed or not (spec: the text is never the
-      line colour). `ChartCard` adds a dashed `כל הקופות` `<button aria-pressed={allWalletsOn}>`
+      line colour). `ChartCard` adds a dashed `כל הקופות` `<button aria-pressed={allWalletsShown}>`
       at the end of the range row (`margin-inline-start: auto`), then
-      `BalanceChart`, then `LineChips`.
+      `BalanceChart`, then `BalanceChips`.
 
 - [ ] **Step 10: tsc, eslint, build, look at it in all three themes on a
-      seeded dev ledger** — including an account with one day of history and
+      seeded dev store** — including an account with one day of history and
       one with none. **STOP**; commit — `feat(transactions): the chart, and how the balance got here`
 - [ ] **Step 11: First three tests** — `chart-geometry.test.ts`:
 
@@ -1865,8 +1995,8 @@ export function BalanceChart({ window, lines, rangeLabel }: BalanceChartProps): 
     expect(y(1800)).toBe(MID_Y);
   });
 
-  it('labels a flat window once, not three times', () => {
-    expect(yTickValues({ min: 1800, max: 1800 })).toEqual([1800]);
+  it('labels a flat range once, not three times', () => {
+    expect(yTickBalances({ min: 1800, max: 1800 })).toEqual([1800]);
   });
 
   it('puts today at the edge the reading ends on', () => {
@@ -1880,8 +2010,8 @@ Breaks: `span === 0` branch removed (first); drop the `Set` (second); swap
 
 - [ ] **Step 12: The rest**, each with its break.
   - `chart-geometry.test.ts`:
-    - `'never prints two identical ticks for a window that moved under a shekel'` —
-      `yTickValues({ min: 1800, max: 1863 })` has 3 distinct values and every
+    - `'never prints two identical ticks for a range that moved under a shekel'` —
+      `yTickBalances({ min: 1800, max: 1863 })` has 3 distinct values and every
       `shekelText(v, tickNeedsAgorot(extent))` is distinct. Break: `tickNeedsAgorot` returns false.
     - `'draws one point without a path to draw'` — `linePath([5], y)` has no `L`.
     - `'closes the total’s fill along the floor'` — `areaPath` ends `Z` and
@@ -1896,25 +2026,25 @@ Breaks: `span === 0` branch removed (first); drop the `Set` (second); swap
     - `'ends on today'`; `'counts four ticks for a week, five for a month, six beyond'`;
       `'switches to month names past four months, and adds the year past ten'`
       — expectations through `shortMonth` / `shortDayMonth`, not typed strings.
-    - `'labels a one-day history as today'`.
+    - `'labels an account one day old as today'`.
   - `dates.test.ts`: `'writes a short date the way the axis prints it'`;
     `'names a short month, with the year when asked'` (through
     `new Intl.DateTimeFormat('he', { month: 'short', timeZone: 'UTC' })`).
   - `BalanceChart.test.tsx`:
-    - `'asks for a line when every line is off'` — lines `[]` renders the
+    - `'asks for a line when every line is off'` — `shownBalances: []` renders the
       `pickALine` text and the `noLineLabel` name.
-    - `'says there is nothing yet for a child with no history, rather than drawing an empty frame'`
-      (Review Focus 4) — an empty window renders `noHistory`, and does not throw.
+    - `'says there is nothing yet for a child with no transactions, rather than drawing an empty frame'`
+      (Review Focus 4) — an empty history renders `noTransactions`, and does not throw.
       Break: remove the `days.length === 0` return; the test asserts the
-      `noHistory` text is shown.
+      `noTransactions` text is shown.
     - `'tells a screen reader which range and which lines it is showing'` — the
       accessible name contains the range label and each drawn line's name.
       Break: the static `מאזן לאורך זמן`.
     - `'draws each wallet in its own chart colour'`, rendered with
       `themeId: 'jungle-quest'` — each wallet path's `stroke` equals
-      `getThemeTokens('jungle-quest').colors[WALLET_CHART_COLOR[name]]`. Break:
-      read `WALLET_ARC_COLOR`.
-  - `LineChips.test.tsx`: `'shows the total and no wallet at first'`;
+      `getThemeTokens('jungle-quest').colors[WALLET_CHART_COLOR[walletName]]`. Break:
+      read `WALLET_COLOR`.
+  - `BalanceChips.test.tsx`: `'shows the total and no wallet at first'`;
     `'turns one wallet on without touching the others'`; `'reports each line as pressed or not'`.
   - `ChartCard.test.tsx`: `'turns all three wallets on together, and off again'`.
   - `Transactions.test.tsx`: `'keeps the lines the parent chose when they switch child'`.
@@ -1928,87 +2058,87 @@ Branch `feat/transaction-list`. Spec: "The list", "Reuse" (the change column),
 (settled).
 
 **Files:**
-- Modify: `src/lib/dates.ts` (`monthYear`)
+- Modify: `src/lib/dates.ts` (`monthLabel`)
 - Modify: `src/components/Transactions/use-transactions-view.ts` (filter, interest mode), `Transactions.tsx` (renders the list)
 - Modify: `src/components/Transactions/ChoiceChips/*` (a `look: 'chips' | 'segmented'` prop)
 - Create: `Transactions/TransactionList/{TransactionList.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
-- Create: `Transactions/TransactionList/MonthGroup/{MonthGroup.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
+- Create: `Transactions/TransactionList/TransactionMonth/{TransactionMonth.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
 - Create: `Transactions/TransactionList/TransactionRow/{TransactionRow.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
-- Create: `Transactions/TransactionList/TransactionRow/RowIcon/{RowIcon.tsx,.styles.ts,.test.tsx,index.ts}`
+- Create: `Transactions/TransactionList/TransactionRow/TransactionIcon/{TransactionIcon.tsx,.styles.ts,.test.tsx,index.ts}`
 - Test: `src/lib/__tests__/dates.test.ts`
 
 **Interfaces:**
-- Consumes: `ledgerRows`, `filterRows`, `monthSections`, `InterestMode`, `RowFilter` (PR 5);
+- Consumes: `transactionListRows`, `filterByTransactionType`, `monthSections`, `InterestMode`, `TransactionTypeFilter` (PR 5);
   `SignedAmount`, `ChoiceChips`, `ScreenReaderOnly` (PR 6); `needsAgorot` (PR 6).
 - Produces:
 
 ```ts
 // dates.ts
-export function monthYear(month: string, asOf: string): string; // 'ספטמבר' | 'ספטמבר 2025'
+export function monthLabel(month: string, asOf: string): string; // 'ספטמבר' | 'ספטמבר 2025'
 
 // use-transactions-view.ts additions
-filter: RowFilter; setFilter: (filter: RowFilter) => void;
-interestMode: InterestMode; setInterestMode: (mode: InterestMode) => void;  // default 'monthly'
+transactionTypeFilter: TransactionTypeFilter; setTransactionTypeFilter: (transactionTypeFilter: TransactionTypeFilter) => void;
+interestMode: InterestMode; setInterestMode: (interestMode: InterestMode) => void;  // default 'monthly'
 
 // TransactionList props
 interface TransactionListProps {
-  entries: LedgerEntry[];
+  transactions: Omit<Transaction, 'id' | 'accountId'>[];
   wallets: Pick<Wallet, 'id' | 'name'>[];
-  series: BalanceSeries;
+  balanceHistory: BalanceHistory;
   asOf: string;
   view: TransactionsView;
 }
 ```
 
-- [ ] **Step 1: `monthYear`.**
+- [ ] **Step 1: `monthLabel`.**
 
 ```ts
-const HEBREW_MONTH = new Intl.DateTimeFormat('he', { month: 'long', timeZone: 'UTC' });
-const HEBREW_MONTH_YEAR = new Intl.DateTimeFormat('he', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const MONTH_FORMAT = new Intl.DateTimeFormat('he', { month: 'long', timeZone: 'UTC' });
+const MONTH_AND_YEAR_FORMAT = new Intl.DateTimeFormat('he', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
-export function monthYear(month: string, asOf: string): string {
-  const first = utcDate(`${month}-01`);
-  const format = monthOf(asOf).slice(0, 4) === month.slice(0, 4) ? HEBREW_MONTH : HEBREW_MONTH_YEAR;
+export function monthLabel(month: string, asOf: string): string {
+  const firstDay = utcDate(`${month}-01`);
+  const monthFormat = calendarYear(asOf) === calendarYear(month) ? MONTH_FORMAT : MONTH_AND_YEAR_FORMAT;
 
-  return format.format(first);
+  return monthFormat.format(firstDay);
 }
 ```
 
-  Name the `slice(0, 4)` — `yearOf(iso)` beside `monthOf`, with its own `YEAR_LENGTH`.
+  `calendarYear(day)` sits beside `calendarMonth`, with its own `YEAR_LENGTH`; it reads a `YYYY-MM` month as well as a `YYYY-MM-DD` day.
 
-- [ ] **Step 2: The view grows the list's state** — `filter` (`'all'`) and
+- [ ] **Step 2: The view grows the list's state** — `transactionTypeFilter` (`'all'`) and
       `interestMode` (`'monthly'`), plain `useState` pairs.
 - [ ] **Step 3: `TransactionList`.**
 
 ```tsx
-export function TransactionList({ entries, wallets, series, asOf, view }: TransactionListProps): JSX.Element {
+export function TransactionList({ transactions, wallets, balanceHistory, asOf, view }: TransactionListProps): JSX.Element {
   const rows = useMemo(
-    () => ledgerRows({ entries, wallets, series, mode: view.interestMode }),
-    [entries, wallets, series, view.interestMode]
+    () => transactionListRows({ transactions, wallets, balanceHistory, interestMode: view.interestMode }),
+    [transactions, wallets, balanceHistory, view.interestMode]
   );
-  const sections = monthSections(filterRows(rows, view.filter));
+  const sections = monthSections(filterByTransactionType(rows, view.transactionTypeFilter));
 
   return (
     <Card data-testid={TRANSACTION_LIST_TEST_IDS.list}>
       <TitleRow>
         <Title>{TRANSACTION_LIST_COPY.title}</Title>
         <Count data-testid={TRANSACTION_LIST_TEST_IDS.count}>
-          {TRANSACTION_LIST_COPY.count(sections.flatMap((s) => s.rows).length, series.days.length)}
+          {TRANSACTION_LIST_COPY.count(sections.flatMap((section) => section.rows).length, balanceHistory.days.length)}
         </Count>
       </TitleRow>
-      <ChoiceChips name="type" legend={TRANSACTION_LIST_COPY.filterLegend} choices={TYPE_FILTERS}
-        selected={view.filter} onSelect={view.setFilter} testId={TRANSACTION_LIST_TEST_IDS.filters} />
+      <ChoiceChips groupName="type" legend={TRANSACTION_LIST_COPY.filterLegend} choices={TRANSACTION_TYPE_FILTERS}
+        selected={view.transactionTypeFilter} onSelect={view.setTransactionTypeFilter} testId={TRANSACTION_LIST_TEST_IDS.filters} />
       <SubTitle>{TRANSACTION_LIST_COPY.interestTitle}</SubTitle>
-      <ChoiceChips look="segmented" name="interest" legend={TRANSACTION_LIST_COPY.interestTitle}
+      <ChoiceChips look="segmented" groupName="interest" legend={TRANSACTION_LIST_COPY.interestTitle}
         choices={INTEREST_MODES} selected={view.interestMode} onSelect={view.setInterestMode}
         testId={TRANSACTION_LIST_TEST_IDS.interestMode} />
-      <LedgerBody hasHistory={entries.length > 0} sections={sections} asOf={asOf} />
+      <TransactionListMonths hasTransactions={transactions.length > 0} sections={sections} asOf={asOf} />
     </Card>
   );
 }
 ```
 
-  `LedgerBody` branches three ways — no history (decision C's list copy), a
+  `TransactionListMonths` branches three ways — no transactions (decision C's list copy), a
   filter that matches nothing (`אין תנועות בסינון הזה`), or the sections — so it
   is a function component in the same file only if the file stays under 200
   lines; otherwise its own folder with a test.
@@ -2016,22 +2146,22 @@ export function TransactionList({ entries, wallets, series, asOf, view }: Transa
   Copy in `constants.ts`:
 
 ```ts
-function counted(count: number, one: string, many: (n: number) => string): string {
+function countInWords(count: number, one: string, many: (count: number) => string): string {
   return count === 1 ? one : many(count);
 }
 
 export const TRANSACTION_LIST_COPY = {
   title: 'התנועות',
-  count: (rows: number, days: number): string =>
-    `${counted(rows, 'שורה אחת', (n) => `${n} שורות`)} · ${counted(days, 'יום אחד', (n) => `${n} יום`)}`,
+  count: (rowCount: number, dayCount: number): string =>
+    `${countInWords(rowCount, 'שורה אחת', (count) => `${count} שורות`)} · ${countInWords(dayCount, 'יום אחד', (count) => `${count} יום`)}`,
   filterLegend: 'סוג תנועה',
   interestTitle: 'ריבית',
   emptyFilter: 'אין תנועות בסינון הזה',
-  noHistory: 'כאן יופיעו ההפקדות, המשיכות והריבית',
-  columns: { change: 'שינוי', balance: 'יתרה' },
+  noTransactions: 'כאן יופיעו ההפקדות, המשיכות והריבית',
+  columns: { balanceChange: 'שינוי', balance: 'יתרה' },
 } as const;
 
-export const TYPE_FILTERS: readonly Choice<RowFilter>[] = [
+export const TRANSACTION_TYPE_FILTERS: readonly Choice<TransactionTypeFilter>[] = [
   { id: 'all', label: 'הכל' },
   { id: 'deposit', label: 'הפקדות' },
   { id: 'withdrawal', label: 'משיכות' },
@@ -2044,88 +2174,88 @@ export const INTEREST_MODES: readonly Choice<InterestMode>[] = [
 ];
 ```
 
-  `noHistory` is decision C's list copy.
+  `noTransactions` is decision C's list copy.
 
-- [ ] **Step 4: `MonthGroup`** — `{ section: MonthSection; asOf: string }`.
-      A `<section>` whose head is `position: sticky; top: 0; z-index: 2;` on
-      `surface`, carrying `monthYear(section.month, asOf)` and the two column
+- [ ] **Step 4: `TransactionMonth`** — `{ monthSection: MonthSection; asOf: string }`.
+      A `<section>` whose heading is `position: sticky; top: 0; z-index: 2;` on
+      `surface`, carrying `monthLabel(monthSection.month, asOf)` and the two column
       headings (`aria-hidden`: they are visual only — every row names its own
       numbers). The rows are a `<ul>` of `TransactionRow`. One `<section>` per
-      month so the sticky heads replace each other instead of stacking. The list
+      month so the sticky headings replace each other instead of stacking. The list
       scrolls with the page; nothing here sets `overflow`.
-- [ ] **Step 5: `TransactionRow`** — `{ row: LedgerRow }`, an `<li>`:
-      `RowIcon`, the name (`typography.body`, 700; interest 600), the meta
+- [ ] **Step 5: `TransactionRow`** — `{ transactionListRow: TransactionListRow }`, an `<li>`:
+      `TransactionIcon`, the label (`typography.body`, 700; interest 600), the meta
       (`typography.label`, `textMuted`), then the two numbers in a `dir="ltr"`
-      block — `SignedAmount` with `withAgorot={needsAgorot(row.amount)}` in
-      `gainText` / `withdrawText`, and `Money` for the balance in `textMuted`
+      block — `SignedAmount` with `withAgorot={needsAgorot(transactionListRow.amount)}` in
+      `gainText` / `withdrawalText`, and `Money` for the balance in `textMuted`
       with a 1px `divider` rule on its inline-start. Each number is preceded by
       a `ScreenReaderOnly` naming it (`שינוי`, `יתרה`), so a row reads as what,
       when, how much, and what it left.
 
 ```ts
 // TransactionRow/constants.ts
-export const ROW_COPY = {
-  deposit: { icon: '💰', name: 'הפקדה' },
+export const TRANSACTION_ROW_COPY = {
+  deposit: { icon: '💰', label: 'הפקדה' },
   withdrawal: {
-    spending: { badge: '🛒', name: 'קנייה' },
-    goodDeeds: { badge: '🎁', name: 'תרומה' },
-    savings: { badge: '🏦', name: 'משיכה' },
+    spending: { badge: '🛒', label: 'קנייה' },
+    goodDeeds: { badge: '🎁', label: 'תרומה' },
+    savings: { badge: '🏦', label: 'משיכה' },
   },
-  interest: { badge: '✨', name: 'ריבית' },
+  interest: { badge: '✨', label: 'ריבית' },
   interestDays: (days: number): string => (days === 1 ? 'יום אחד' : `${days} ימים`),
 } as const;
 ```
 
-  `withdrawal.savings` is decision D and `interest.name` is decision E. The meta is `ROW_COPY.interestDays(row.interestDays)` on a rollup and
-  `dayMonth(row.day)` otherwise.
+  `withdrawal.savings` is decision D and `interest.label` is decision E. The meta is `TRANSACTION_ROW_COPY.interestDays(transactionListRow.interestDays)` on a rollup and
+  `dayMonth(transactionListRow.day)` otherwise.
 
-- [ ] **Step 6: `RowIcon`** — `{ row: LedgerRow }`. A deposit renders one 34px
-      tile on `depositBg` with `💰`. Anything with a wallet renders the tile on
-      `theme.gradients[WALLET_GRADIENT[row.wallet]]` with `WALLET_ICON[row.wallet]`
+- [ ] **Step 6: `TransactionIcon`** — `{ transactionListRow: TransactionListRow }`. A deposit renders one 34px
+      icon on `depositBg` with `💰`. Anything with a wallet renders the icon on
+      `theme.gradients[WALLET_GRADIENT[transactionListRow.walletName]]` with `WALLET_ICON[transactionListRow.walletName]`
       and a 19px round badge (`surface`, 1.5px `divider` border) holding the
       type's badge. **The badge is placed with `inset-inline-end: -5px;
       inset-block-end: -5px;`** — in RTL that is the bottom-left corner the mockup
       draws, and the RTL plugin leaves logical properties alone (Review Focus 5).
-      No `direction: ltr` on the tile.
+      No `direction: ltr` on the icon.
 - [ ] **Step 7: `ChoiceChips` gains `look`.** `'segmented'` draws the mockup's
       `.seg`: one pill-shaped border around the group, no gap, and the checked
       option filled `textStrong` with `surface` text. Default stays `'chips'`.
-- [ ] **Step 8: `Transactions.tsx` renders `<TransactionList entries={ledgers[account.id] ?? []} wallets={account.wallets} series={series} asOf={asOf} view={view} />`**
+- [ ] **Step 8: `Transactions.tsx` renders `<TransactionList transactions={transactionsByAccount[currentAccount.id] ?? []} wallets={currentAccount.wallets} balanceHistory={balanceHistory} asOf={asOf} view={view} />`**
       under `ChartCard`. tsc, eslint, build, look at it in all three themes;
-      scroll a long ledger and watch the month heads replace each other.
+      scroll a long list of transactions and watch the month headings replace each other.
       **STOP**; commit — `feat(transactions): the list, and what happened`
 - [ ] **Step 9: First three tests** — `TransactionList.test.tsx`:
   - `'shows a deposit once, as the parent made it, not once per wallet'` — three
     legs on one `createdAt` render one `TransactionRow`. Break: key rows per leg
-    in `ledgerRows`.
+    in `transactionListRows`.
   - `'rolls a month of interest into one row until the parent asks for every day'` —
     three interest days render one interest row; select `יומית`; three rows.
     Break: ignore `view.interestMode`.
   - `'says so when a filter matches nothing, instead of showing a blank card'` —
-    a ledger with no withdrawals, select `משיכות`, `emptyFilter` shown. Break:
+    transactions with no withdrawals, select `משיכות`, `emptyFilter` shown. Break:
     return the sections unconditionally.
 - [ ] **Step 10: The rest.**
   - `TransactionList.test.tsx`:
     - `'counts a single row and a single day in words'` (Review Focus 1) — a
-      one-deposit ledger on `asOf` reads `TRANSACTION_LIST_COPY.count(1, 1)`, and
-      that string contains `שורה אחת` and `יום אחד`. Break: `counted` returns `many(count)`.
+      single deposit on `asOf` reads `TRANSACTION_LIST_COPY.count(1, 1)`, and
+      that string contains `שורה אחת` and `יום אחד`. Break: `countInWords` returns `many(count)`.
     - `'keeps the chart’s range out of the list'` — pick `שבוע` on the chart; a
       row older than a week is still listed.
-    - `'has its own word for a child with no history, not the create-an-account page'` —
-      empty entries render `noHistory` and no `EmptyState` test id.
+    - `'has its own word for a child with no transactions, not the create-an-account page'` —
+      empty transactions render `noTransactions` and no `EmptyState` test id.
     - `'keeps the filter when the parent switches child'`.
-  - `MonthGroup.test.tsx`: `'names the month without the year this year, and with it before'` —
-    through `monthYear`; `'keeps the column names out of what a screen reader reads'`.
+  - `TransactionMonth.test.tsx`: `'names the month without the year this year, and with it before'` —
+    through `monthLabel`; `'keeps the column names out of what a screen reader reads'`.
   - `TransactionRow.test.tsx`:
     - `'shows a day’s interest in agorot, so it never reads ₪0'` — 9 agorot
       reads `+₪0.09`. Break: `withAgorot={false}`.
     - `'counts one day of interest as one day'` (Review Focus 1) — a rollup
-      with `interestDays: 1` shows `ROW_COPY.interestDays(1)`, which contains `יום אחד`.
+      with `interestDays: 1` shows `TRANSACTION_ROW_COPY.interestDays(1)`, which contains `יום אחד`.
     - `'names what a withdrawal was by the wallet it came out of'` — spending
       reads `קנייה`, goodDeeds `תרומה`.
     - `'names its change and its balance for a screen reader'` — the `<li>`'s
-      text content contains `ROW_COPY`'s column words before each number.
-  - `RowIcon.test.tsx`: `'gives a deposit one icon and no badge, since it has no one wallet'`;
+      text content contains `TRANSACTION_LIST_COPY.columns`' words before each number.
+  - `TransactionIcon.test.tsx`: `'gives a deposit one icon and no badge, since it has no one wallet'`;
     `'badges a wallet with what happened to it'`.
   - `ChoiceChips.test.tsx`: `'draws as one segmented control when asked'` —
     guards the prop's absence: `look="segmented"` sets `data-look`.
@@ -2140,8 +2270,8 @@ suite). Needs PRs 6–8 merged: the tab links to a finished screen, not a
 half-built one.
 
 **Files:**
-- Modify: `src/components/Menu/NavTabs/constants.ts` (the `href`), `NavTabs.test.tsx`, `NavTab.test.tsx`
-- Modify: `e2e/driver/page-actions.ts`, `e2e/driver/session.ts` (`scrollBy`)
+- Modify: `src/components/Menu/NavigationTabs/constants.ts` (the `href`), `NavigationTabs.test.tsx`, `NavigationTab.test.tsx`
+- Modify: `e2e/driver/page-actions.ts`, `e2e/driver/app-browser.ts` (`scrollBy`)
 - Modify: `e2e/driver/menu-driver.ts` (`openTransactionsPage`, `transactionsTabBackground`)
 - Modify: `e2e/driver/use-driver.ts` (register `transactions`)
 - Create: `e2e/driver/transactions-driver.ts`, `e2e/transactions.visual.ts`
@@ -2157,20 +2287,20 @@ import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
     id: 'transactions',
     icon: '📈',
     label: 'תנועות',
-    testId: NAV_TABS_TEST_IDS.transactionsTab,
+    testId: NAVIGATION_TABS_TEST_IDS.transactionsTab,
     href: TRANSACTIONS_ROUTE,
   },
 ```
 
-- [ ] **Step 2: The session scrolls.**
+- [ ] **Step 2: The app browser scrolls.**
 
 ```ts
 // page-actions.ts
 export async function scrollBy(page: Page, pixels: number): Promise<void> {
-  await page.evaluate((distance) => window.scrollBy(0, distance), pixels);
+  await page.evaluate((scrollPixels) => window.scrollBy(0, scrollPixels), pixels);
 }
 
-// session.ts
+// app-browser.ts
   scrollBy(pixels: number): Promise<void> {
     return actions.scrollBy(this.page, pixels);
   }
@@ -2180,65 +2310,65 @@ export async function scrollBy(page: Page, pixels: number): Promise<void> {
 
 ```ts
 export class TransactionsDriver {
-  constructor(private readonly session: Session) {}
+  constructor(private readonly appBrowser: AppBrowser) {}
 
   open(): Promise<void> {
-    return this.session.visit(TRANSACTIONS_ROUTE);
+    return this.appBrowser.visit(TRANSACTIONS_ROUTE);
   }
 
-  showAllWallets(): Promise<void> {
-    return this.session.click(CHART_CARD_TEST_IDS.allWallets);
+  tapAllWallets(): Promise<void> {
+    return this.appBrowser.click(CHART_CARD_TEST_IDS.allWallets);
   }
 
-  lineColours(): Promise<string[]> {
-    return this.session.styleValues(BALANCE_CHART_TEST_IDS.line, 'stroke');
+  lineColors(): Promise<string[]> {
+    return this.appBrowser.styleValues(BALANCE_CHART_TEST_IDS.line, 'stroke');
   }
 
-  async monthHeadTopAfterScrolling(pixels: number): Promise<number> {
-    await this.session.scrollBy(pixels);
+  async monthHeadingTopAfterScrolling(pixels: number): Promise<number> {
+    await this.appBrowser.scrollBy(pixels);
 
-    return (await this.session.box(MONTH_GROUP_TEST_IDS.head)).y;
+    return (await this.appBrowser.box(TRANSACTION_MONTH_TEST_IDS.heading)).y;
   }
 
-  async badgeCorner(): Promise<{ badge: BoundingBox; tile: BoundingBox }> {
+  async badgeAndIconBoxes(): Promise<{ badge: BoundingBox; icon: BoundingBox }> {
     return {
-      badge: await this.session.box(ROW_ICON_TEST_IDS.badge),
-      tile: await this.session.box(ROW_ICON_TEST_IDS.tile),
+      badge: await this.appBrowser.box(TRANSACTION_ICON_TEST_IDS.badge),
+      icon: await this.appBrowser.box(TRANSACTION_ICON_TEST_IDS.icon),
     };
   }
 }
 ```
 
-  `session.box` returns the **first** match, which is the newest month's head and
+  `appBrowser.box` returns the **first** match, which is the newest month's heading and
   the newest row's badge — what the tests below want. Add the test ids it names
   to the owning `constants.ts` files if PRs 7 and 8 did not.
 
 - [ ] **Step 4: `menu-driver.ts`** — `openTransactionsPage()` clicks
-      `NAV_TABS_TEST_IDS.transactionsTab`, waits for `TRANSACTIONS_COPY.title` in
+      `NAVIGATION_TABS_TEST_IDS.transactionsTab`, waits for `TRANSACTIONS_COPY.title` in
       the title, returns `currentPath()`; `transactionsTabBackground()` mirrors
       `methodTabBackground()`.
 - [ ] **Step 5: tsc, eslint, STOP, commit** — `feat(menu): the transactions tab goes live`
 - [ ] **Step 6: First three tests** — `transactions.visual.ts`, seeding
-      `{ accounts: [account], transactions: LEDGER }` where `LEDGER` is ~60 days
+      `{ accounts: [mockAccount], transactions: mockTwoMonthsOfTransactions }` where `mockTwoMonthsOfTransactions` is ~60 days
       of deposits, withdrawals and daily interest built with
       `createMockTransaction` inside the file:
   - `'draws every wallet in its own colour, in every theme'` — one `describe`
     per theme id (each account seeded with that `themeId`); after
-    `showAllWallets()`, the three wallet strokes equal
-    `hexToRgb(getThemeTokens(id).colors.chartX)` and are pairwise distinct.
+    `tapAllWallets()`, the three wallet strokes equal
+    `hexToRgb(getThemeTokens(themeId).colors.chartX)` and are pairwise distinct.
     Break: `WALLET_CHART_COLOR` points every wallet at `chartSavings`.
   - `'keeps the month’s name on screen while its rows scroll past'` —
-    `monthHeadTopAfterScrolling(400)` is `0`. Break: `position: relative`.
+    `monthHeadingTopAfterScrolling(400)` is `0`. Break: `position: relative`.
   - `'badges a row at the corner the design draws, not its mirror'` (Review
-    Focus 5) — `badge.x < tile.x` and `badge.y + badge.height > tile.y + tile.height`.
+    Focus 5) — `badge.x < icon.x` and `badge.y + badge.height > icon.y + icon.height`.
     Break: write the badge as `left: -5px`.
 - [ ] **Step 7: The rest.**
   - `page-routing.visual.ts`, `describe('the transactions page')`:
     `'is where the menu link takes the parent'`;
     `'tells the parent which screen they are on once they are there'`;
     and `'sends the parent home when there is no account to show'`
-    (`session.visit(TRANSACTIONS_ROUTE)` with no accounts ends on `HOME_ROUTE`).
-  - `NavTabs.test.tsx` / `NavTab.test.tsx`: `'links the transactions tab to its screen'`
+    (`appBrowser.visit(TRANSACTIONS_ROUTE)` with no accounts ends on `HOME_ROUTE`).
+  - `NavigationTabs.test.tsx` / `NavigationTab.test.tsx`: `'links the transactions tab to its screen'`
     — the tab is a link to `TRANSACTIONS_ROUTE`, no longer disabled. Break: drop the `href`.
   - Run `npm run test:e2e` and read the **visual** summary, not the `test:db` one.
 - [ ] **Step 8: Close the spec out.** In the spec, change "The chart's time axis
@@ -2254,7 +2384,7 @@ export class TransactionsDriver {
   arrives in silence until it does, as `/method` does today. Neither epic
   blocks the other.
 - **`useTransactionsView` state survives `router.refresh()`.** A theme tap in
-  the menu refreshes the page, re-sends every ledger and re-runs settlement; the
+  the menu refreshes the page, re-sends every account's transactions and re-runs settlement; the
   client state is kept because the shell's position in the tree does not change.
   Do not key the shell on anything the refresh changes.
 - **The payload ceiling is near** — ~500 KB at about two years for three

@@ -14,6 +14,14 @@ function deposited(transactions: Transaction[]): number {
   return totalAmount(transactions, TRANSACTION_TYPE.deposit);
 }
 
+export function balanceChange(
+  transaction: Pick<Transaction, 'type' | 'amount'>
+): number {
+  return transaction.type === TRANSACTION_TYPE.withdrawal
+    ? -transaction.amount
+    : transaction.amount;
+}
+
 export function withdrawn(transactions: Transaction[]): number {
   return totalAmount(transactions, TRANSACTION_TYPE.withdrawal);
 }

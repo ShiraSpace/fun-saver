@@ -2,6 +2,7 @@ import type { Transaction, Wallet } from '../types';
 import { TRANSACTION_TYPE } from '../constants';
 import { addDays, eachDayInclusive } from '../dates';
 import { newId } from '../ids';
+import { balanceChange } from '../wallet-totals';
 import { interestForDay } from './interest-for-day';
 
 export interface AddDailyInterestParams {
@@ -9,12 +10,6 @@ export interface AddDailyInterestParams {
   transactions: Transaction[];
   asOf: string;
   accountId: string;
-}
-
-function balanceChange(transaction: Transaction): number {
-  return transaction.type === TRANSACTION_TYPE.withdrawal
-    ? -transaction.amount
-    : transaction.amount;
 }
 
 function settledThrough(wallet: Wallet, transactions: Transaction[]): string {
