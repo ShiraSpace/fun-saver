@@ -140,6 +140,12 @@ export const mockAccountEdits = {
   avatarId: 'kid-07',
 };
 
+export const mockOpeningDeposit: Transaction = createMockTransaction({
+  id: 'opening',
+  amount: 500,
+  occurredAt: '2026-01-01',
+});
+
 export const mockTransactions: Transaction[] = [
   createMockTransaction(),
   createMockTransaction({

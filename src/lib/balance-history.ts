@@ -1,4 +1,3 @@
-import { DEFAULT_WALLETS } from './constants';
 import { eachDayInclusive } from './dates';
 import { balanceChange } from './wallet-totals';
 import type { Transaction, Wallet, WalletName } from './types';
@@ -19,10 +18,6 @@ export interface BalanceHistoryInput {
   >[];
   asOf: string;
 }
-
-const WALLET_NAMES: readonly WalletName[] = DEFAULT_WALLETS.map(
-  (wallet) => wallet.name
-);
 
 function firstTransactionDay(
   transactions: Pick<Transaction, 'occurredAt'>[]
@@ -79,10 +74,10 @@ function totalBalances(
   walletBalances: WalletBalances,
   days: string[]
 ): number[] {
+  const balancesOfEachWallet = Object.values(walletBalances);
   const totalBalanceOn = (dayIndex: number): number =>
-    WALLET_NAMES.reduce(
-      (totalBalance, walletName) =>
-        totalBalance + walletBalances[walletName][dayIndex],
+    balancesOfEachWallet.reduce(
+      (totalBalance, balances) => totalBalance + balances[dayIndex],
       0
     );
 
@@ -111,26 +106,29 @@ export function balanceHistory(input: BalanceHistoryInput): BalanceHistory {
 }
 
 function carriedInDayIndex(
-  history: BalanceHistory,
+  balanceHistory: BalanceHistory,
   rangeInDays: number
 ): number {
-  const todayIndex = history.days.length - 1;
+  const todayIndex = balanceHistory.days.length - 1;
 
   return todayIndex - rangeInDays;
 }
 
 export function balanceOverRange(
-  history: BalanceHistory,
+  balanceHistory: BalanceHistory,
   rangeInDays: number
 ): BalanceHistory {
-  const rangeStartIndex = Math.max(0, carriedInDayIndex(history, rangeInDays));
+  const rangeStartIndex = Math.max(
+    0,
+    carriedInDayIndex(balanceHistory, rangeInDays)
+  );
   const fromRangeStart = <T>(values: T[]): T[] => values.slice(rangeStartIndex);
 
   return {
-    days: fromRangeStart(history.days),
-    totalBalance: fromRangeStart(history.totalBalance),
+    days: fromRangeStart(balanceHistory.days),
+    totalBalance: fromRangeStart(balanceHistory.totalBalance),
     wallets: perWallet((walletName) =>
-      fromRangeStart(history.wallets[walletName])
+      fromRangeStart(balanceHistory.wallets[walletName])
     ),
   };
 }
@@ -139,27 +137,30 @@ function closingBalance(values: number[]): number {
   return values[values.length - 1] ?? 0;
 }
 
-export function todaysTotalBalance(history: BalanceHistory): number {
-  return closingBalance(history.totalBalance);
+export function todaysTotalBalance(balanceHistory: BalanceHistory): number {
+  return closingBalance(balanceHistory.totalBalance);
 }
 
 export function totalBalanceChange(
-  history: BalanceHistory,
+  balanceHistory: BalanceHistory,
   rangeInDays: number
 ): number {
-  const carriedInDay = carriedInDayIndex(history, rangeInDays);
+  const carriedInDay = carriedInDayIndex(balanceHistory, rangeInDays);
   const accountIsYoungerThanRange = carriedInDay < 0;
   const carriedInTotalBalance = accountIsYoungerThanRange
     ? 0
-    : history.totalBalance[carriedInDay];
+    : balanceHistory.totalBalance[carriedInDay];
 
-  return todaysTotalBalance(history) - carriedInTotalBalance;
+  return todaysTotalBalance(balanceHistory) - carriedInTotalBalance;
 }
 
 export function totalBalanceByDay(
-  history: BalanceHistory
+  balanceHistory: BalanceHistory
 ): Map<string, number> {
   return new Map(
-    history.days.map((day, dayIndex) => [day, history.totalBalance[dayIndex]])
+    balanceHistory.days.map((day, dayIndex) => [
+      day,
+      balanceHistory.totalBalance[dayIndex],
+    ])
   );
 }
