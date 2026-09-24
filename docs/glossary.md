@@ -31,7 +31,7 @@ the domain from the names alone, so new code takes its words from this table.
 | Which jar                            | חיסכון · בזבוזים · מעשים טובים | `walletName`: `savings`, `spending`, `goodDeeds`                          | `good`, a bare `name`                               |
 | A jar's Hebrew label                 | —                              | `WALLET_LABEL`                                                            | `WALLET_NAME`                                       |
 | Money going in or out                | תנועה · תנועות                 | `transaction`                                                             | movement, entry, row, action, ledger, history       |
-| Its kind                             | —                              | `transactionType`                                                         | mode                                                |
+| Its kind                             | —                              | `transactionType`; its values in `TRANSACTION_TYPE`                       | mode                                                |
 | Putting money in                     | הפקדה                          | `deposit`                                                                 | —                                                   |
 | Taking money out                     | משיכה                          | `withdrawal`; `withdraw` only as the verb for a step a user takes         | spent                                               |
 | Giving from the good-deeds jar       | תרומה                          | `donation`, a good-deeds withdrawal as the UI shows it                    | spent                                               |

@@ -1,5 +1,5 @@
 import type { Transaction, TransactionType, WalletSummary } from './types';
-import { PERCENT_TOTAL } from './constants';
+import { PERCENT_TOTAL, TRANSACTION_TYPE } from './constants';
 
 function totalAmount(
   transactions: Transaction[],
@@ -11,11 +11,11 @@ function totalAmount(
 }
 
 function deposited(transactions: Transaction[]): number {
-  return totalAmount(transactions, 'deposit');
+  return totalAmount(transactions, TRANSACTION_TYPE.deposit);
 }
 
 export function withdrawn(transactions: Transaction[]): number {
-  return totalAmount(transactions, 'withdrawal');
+  return totalAmount(transactions, TRANSACTION_TYPE.withdrawal);
 }
 
 export function principal(transactions: Transaction[]): number {
@@ -23,7 +23,7 @@ export function principal(transactions: Transaction[]): number {
 }
 
 export function interestEarned(transactions: Transaction[]): number {
-  return totalAmount(transactions, 'interest');
+  return totalAmount(transactions, TRANSACTION_TYPE.interest);
 }
 
 export function balance(transactions: Transaction[]): number {
@@ -83,7 +83,8 @@ export function interestEarnedToday(
   return transactions
     .filter(
       (transaction) =>
-        transaction.type === 'interest' && transaction.occurredAt === asOf
+        transaction.type === TRANSACTION_TYPE.interest &&
+        transaction.occurredAt === asOf
     )
     .reduce((total, transaction) => total + transaction.amount, 0);
 }

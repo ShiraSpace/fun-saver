@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
+import { TRANSACTION_TYPE } from '@/lib/constants';
 import { TransactionTypeToggle } from './TransactionTypeToggle';
 import type { ThemeId } from '@/theme/registry';
 import type { EnteredTransactionType } from '../constants';
@@ -30,7 +31,7 @@ describe('TransactionTypeToggle', () => {
   });
 
   it('marks the chosen transaction type as pressed', () => {
-    renderToggle('withdrawal');
+    renderToggle(TRANSACTION_TYPE.withdrawal);
 
     expect(
       screen.getByTestId(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal)
@@ -41,20 +42,20 @@ describe('TransactionTypeToggle', () => {
   });
 
   it('reports the tapped transaction type through onChange', () => {
-    renderToggle('deposit');
+    renderToggle(TRANSACTION_TYPE.deposit);
 
     fireEvent.click(
       screen.getByTestId(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal)
     );
 
-    expect(mockOnChange).toHaveBeenCalledWith('withdrawal');
+    expect(mockOnChange).toHaveBeenCalledWith(TRANSACTION_TYPE.withdrawal);
   });
 
   describe('the arrows, which sit on the track and not on the surface', () => {
     const { alertText, gainText } = getThemeTokens(THEME_ID.jungleQuest).colors;
 
     beforeEach(() => {
-      renderToggle('deposit', THEME_ID.jungleQuest);
+      renderToggle(TRANSACTION_TYPE.deposit, THEME_ID.jungleQuest);
     });
 
     it('paints the withdrawal arrow in the alert red', () => {

@@ -1,4 +1,5 @@
 import { summarizeWallet } from '../summarize-wallet';
+import { TRANSACTION_TYPE } from '../constants';
 import type { WalletSummary } from '../types';
 import { createMockTransaction, createMockWallet } from '@/test-utils/fixtures';
 
@@ -8,11 +9,15 @@ const mockTransactions = [
   createMockTransaction({ id: 'd', amount: 8000 }),
   createMockTransaction({
     id: 'i',
-    type: 'interest',
+    type: TRANSACTION_TYPE.interest,
     amount: 500,
     occurredAt: '2026-01-03',
   }),
-  createMockTransaction({ id: 'w', type: 'withdrawal', amount: 2000 }),
+  createMockTransaction({
+    id: 'w',
+    type: TRANSACTION_TYPE.withdrawal,
+    amount: 2000,
+  }),
 ];
 
 describe('summarizeWallet', () => {

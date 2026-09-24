@@ -1,4 +1,5 @@
 import type { ThemeId } from '@/theme/registry';
+import type { TRANSACTION_TYPE } from './constants';
 
 export interface Account {
   id: string;
@@ -14,7 +15,8 @@ export interface AccountEdits {
   avatarId?: string;
 }
 
-export type TransactionType = 'deposit' | 'withdrawal' | 'interest';
+export type TransactionType =
+  (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE];
 export type WalletName = 'savings' | 'spending' | 'goodDeeds';
 
 export interface Wallet {

@@ -1,5 +1,5 @@
 import type { DataStore } from '@/db/data-store';
-import { DEPOSIT_SHARES } from './constants';
+import { DEPOSIT_SHARES, TRANSACTION_TYPE } from './constants';
 import { balance } from './wallet-totals';
 import { newId } from './ids';
 import { OverdraftError, ValidationError } from './errors';
@@ -52,7 +52,7 @@ export async function addDeposit({
     id: newId(),
     walletId: wallet.id,
     accountId: account.id,
-    type: 'deposit',
+    type: TRANSACTION_TYPE.deposit,
     amount: split[wallet.name],
     occurredAt: asOf,
     createdAt,
@@ -88,7 +88,7 @@ export async function addWithdrawal({
     id: newId(),
     walletId,
     accountId: account.id,
-    type: 'withdrawal',
+    type: TRANSACTION_TYPE.withdrawal,
     amount: amountAgorot,
     occurredAt: asOf,
     createdAt: new Date().toISOString(),

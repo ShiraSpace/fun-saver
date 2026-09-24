@@ -7,6 +7,7 @@ import {
   createMockWallets,
   mockSiblingAccount,
 } from '@/test-utils/fixtures';
+import { TRANSACTION_TYPE } from '../constants';
 import type { Account, WalletSummary } from '../types';
 
 const [mockSavings, mockSpending] = createMockWallets();
@@ -19,7 +20,7 @@ const mockTransactions = [
   createMockTransaction(),
   createMockTransaction({
     id: 'i',
-    type: 'interest',
+    type: TRANSACTION_TYPE.interest,
     amount: 500,
     occurredAt: '2026-01-03',
   }),

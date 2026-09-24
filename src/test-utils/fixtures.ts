@@ -8,7 +8,7 @@ import type {
   WalletSummary,
 } from '@/lib/types';
 import type { AccountOwner } from '@/db/data-store';
-import { DEFAULT_WALLETS } from '@/lib/constants';
+import { DEFAULT_WALLETS, TRANSACTION_TYPE } from '@/lib/constants';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import type { AccountsContextValue } from '@/components/Home/accounts-context';
 
@@ -54,7 +54,7 @@ export function createMockTransaction(
     id: 't1',
     walletId: 'w1',
     accountId: 'a1',
-    type: 'deposit',
+    type: TRANSACTION_TYPE.deposit,
     amount: 8000,
     occurredAt: '2026-01-01',
     createdAt: '2026-01-01T00:00:00.000Z',
@@ -142,19 +142,23 @@ export const mockAccountEdits = {
 
 export const mockTransactions: Transaction[] = [
   createMockTransaction(),
-  createMockTransaction({ id: 't2', type: 'interest', amount: 500 }),
+  createMockTransaction({
+    id: 't2',
+    type: TRANSACTION_TYPE.interest,
+    amount: 500,
+  }),
   createMockTransaction({ id: 't3', walletId: 'w2', amount: 9500 }),
   createMockTransaction({ id: 't4', walletId: 'w3', amount: 4300 }),
   createMockTransaction({
     id: 't5',
     walletId: 'w2',
-    type: 'withdrawal',
+    type: TRANSACTION_TYPE.withdrawal,
     amount: 4500,
   }),
   createMockTransaction({
     id: 't6',
     walletId: 'w3',
-    type: 'withdrawal',
+    type: TRANSACTION_TYPE.withdrawal,
     amount: 1800,
   }),
 ];
