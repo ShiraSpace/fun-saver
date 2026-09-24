@@ -1,5 +1,6 @@
 import {
   balance,
+  balanceChange,
   interestEarned,
   withdrawn,
   principal,
@@ -29,6 +30,13 @@ describe('derivations', () => {
     transaction('withdrawal', 1000, '2026-01-03'),
     transaction('interest', 47, '2026-01-03'),
   ];
+
+  it('counts a withdrawal against the balance and everything else for it', () => {
+    expect(balanceChange(transaction('withdrawal', 200, '2026-01-01'))).toBe(
+      -200
+    );
+    expect(balanceChange(transaction('interest', 5, '2026-01-01'))).toBe(5);
+  });
 
   it('balance = deposits - withdrawals + interest', () => {
     expect(balance(transactions)).toBe(8000 - 1000 + 53 + 47);

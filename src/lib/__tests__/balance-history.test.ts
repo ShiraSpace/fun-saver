@@ -1,6 +1,8 @@
 import {
   balanceHistory,
   balanceOverRange,
+  totalBalanceByDay,
+  totalBalanceChange,
   type BalanceHistory,
 } from '../balance-history';
 import { eachDayInclusive } from '../dates';
@@ -16,6 +18,11 @@ describe('the balance history', () => {
     id: 'opening',
     amount: 500,
     occurredAt: '2026-01-01',
+  });
+  const mockLaterDeposit = createMockTransaction({
+    id: 'later',
+    amount: 100,
+    occurredAt: '2026-01-10',
   });
 
   const historyOf = (
@@ -59,11 +66,6 @@ describe('the balance history', () => {
   });
 
   it('starts a narrow range at the balance carried into it, not at zero', () => {
-    const mockLaterDeposit = createMockTransaction({
-      id: 'later',
-      amount: 100,
-      occurredAt: '2026-01-10',
-    });
     const history = historyOf(
       [mockOpeningDeposit, mockLaterDeposit],
       '2026-01-10'
@@ -73,5 +75,116 @@ describe('the balance history', () => {
     const openingBalance = lastWeek.totalBalance[0];
 
     expect(openingBalance).toBe(mockOpeningDeposit.amount);
+  });
+
+  it('has no days for an account with no transactions', () => {
+    const history = historyOf([], '2026-01-03');
+
+    expect(history.days).toEqual([]);
+    expect(history.totalBalance).toEqual([]);
+    expect(history.wallets).toEqual({
+      savings: [],
+      spending: [],
+      goodDeeds: [],
+    });
+  });
+
+  it('is one day for an account whose whole history is today', () => {
+    const history = historyOf(
+      [mockOpeningDeposit],
+      mockOpeningDeposit.occurredAt
+    );
+
+    expect(history.days).toEqual([mockOpeningDeposit.occurredAt]);
+  });
+
+  describe('each wallet’s balance', () => {
+    const mockSavingsDeposit = createMockTransaction({
+      id: 'savings',
+      walletId: 'w1',
+      amount: 500,
+    });
+    const mockSpendingDeposit = createMockTransaction({
+      id: 'spending',
+      walletId: 'w2',
+      amount: 300,
+    });
+
+    it('holds only what went into that wallet', () => {
+      const history = historyOf(
+        [mockSavingsDeposit, mockSpendingDeposit],
+        '2026-01-01'
+      );
+
+      expect(history.wallets.savings).toEqual([mockSavingsDeposit.amount]);
+    });
+
+    it('takes a withdrawal off the wallet it came out of', () => {
+      const mockSpendingWithdrawal = createMockTransaction({
+        id: 'purchase',
+        walletId: 'w2',
+        type: 'withdrawal',
+        amount: 200,
+      });
+      const history = historyOf(
+        [mockSpendingDeposit, mockSpendingWithdrawal],
+        '2026-01-01'
+      );
+      const spendingLeft =
+        mockSpendingDeposit.amount - mockSpendingWithdrawal.amount;
+
+      expect(history.wallets.spending).toEqual([spendingLeft]);
+    });
+
+    it('stays at zero for a wallet nothing went into', () => {
+      const history = historyOf(
+        [mockSavingsDeposit, mockSpendingDeposit],
+        '2026-01-01'
+      );
+
+      expect(history.wallets.goodDeeds).toEqual([0]);
+    });
+
+    it('adds the three wallets up to the total balance', () => {
+      const history = historyOf(
+        [mockSavingsDeposit, mockSpendingDeposit],
+        '2026-01-01'
+      );
+      const { savings, spending, goodDeeds } = history.wallets;
+
+      expect(history.totalBalance).toEqual([
+        savings[0] + spending[0] + goodDeeds[0],
+      ]);
+    });
+  });
+
+  it('shows the whole history when the account is younger than the range', () => {
+    const fiveDayHistory = historyOf([mockOpeningDeposit], '2026-01-05');
+
+    expect(balanceOverRange(fiveDayHistory, 7)).toEqual(fiveDayHistory);
+    expect(balanceOverRange(fiveDayHistory, Infinity)).toEqual(fiveDayHistory);
+  });
+
+  it('reports how much the total balance changed across the range', () => {
+    const history = historyOf(
+      [mockOpeningDeposit, mockLaterDeposit],
+      '2026-01-10'
+    );
+
+    const lastWeek = balanceOverRange(history, 7);
+
+    expect(totalBalanceChange(lastWeek)).toBe(mockLaterDeposit.amount);
+  });
+
+  it('reads the total balance a day ended on', () => {
+    const history = historyOf(
+      [mockOpeningDeposit, mockLaterDeposit],
+      '2026-01-10'
+    );
+    const bothDeposits = mockOpeningDeposit.amount + mockLaterDeposit.amount;
+
+    expect(totalBalanceByDay(history).get(mockLaterDeposit.occurredAt)).toBe(
+      bothDeposits
+    );
   });
 });
