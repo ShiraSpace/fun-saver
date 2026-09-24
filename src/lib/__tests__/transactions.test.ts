@@ -211,7 +211,7 @@ describe('splitDeposit', () => {
   });
 });
 
-describe('DEPOSIT_SPLIT config', () => {
+describe('DEPOSIT_SHARES config', () => {
   it('is the single source of truth for the deposit ratios', () => {
     expect(DEPOSIT_SHARES).toEqual({
       savings: 0.4,
