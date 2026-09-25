@@ -1,0 +1,390 @@
+<title>Kids' Money Apps Landscape</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F4F6F3; --surface:#FFFFFF; --ink:#16242B; --muted:#56676C; --rule:#DCE2DC;
+  --gold:#B7801B; --gold-soft:#F6E7C6; --green:#2F7D5B; --green-soft:#DCEFE4;
+  --red:#A3423A; --red-soft:#F5DEDA; --grey-soft:#E8ECE9;
+  --display:"Rubik",system-ui,sans-serif; --body:"Atkinson Hyperlegible",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0F171A; --surface:#162126; --ink:#E6ECE9; --muted:#9BAAAD; --rule:#27363B;
+  --gold:#E4B04E; --gold-soft:#3A2F17; --green:#6CC49B; --green-soft:#17332A;
+  --red:#E58A80; --red-soft:#3B2220; --grey-soft:#212E33;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F171A; --surface:#162126; --ink:#E6ECE9; --muted:#9BAAAD; --rule:#27363B;
+  --gold:#E4B04E; --gold-soft:#3A2F17; --green:#6CC49B; --green-soft:#17332A;
+  --red:#E58A80; --red-soft:#3B2220; --grey-soft:#212E33;
+}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);padding-inline:16px;padding-block:32px 64px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.6rem;font-weight:600}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:0;max-width:68ch}
+a{color:var(--green)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.eyebrow{font:500 .75rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header{display:flex;flex-direction:column;gap:14px}
+.lede{font-size:1.15rem;color:var(--muted)}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.verdict strong{font-family:var(--display);font-size:1.25rem;font-weight:600;line-height:1.35}
+section{display:flex;flex-direction:column;gap:20px}
+.coin{display:inline-block;width:.8em;height:.8em;border-radius:50%;background:radial-gradient(circle at 35% 35%,#F7D57E,var(--gold));vertical-align:-.05em;margin-inline-end:.35em}
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+th{font:500 .7rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--bg);position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+td.name{font-weight:700;min-width:150px}
+td.name small{display:block;font-weight:400;color:var(--muted)}
+.matrix td,.matrix th{text-align:center}
+.matrix td:first-child,.matrix th:first-child{text-align:left}
+.matrix tr.us td{background:var(--gold-soft)}
+.mark{font-family:var(--mono);font-weight:500}
+.yes{color:var(--green)} .no{color:var(--muted)} .part{color:var(--gold)}
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.answer{display:flex;flex-direction:column;gap:12px;padding-top:16px;border-top:3px solid var(--ink)}
+.answer .q{font:500 .75rem/1 var(--mono);color:var(--gold);letter-spacing:.08em}
+.answer p.short{font-family:var(--display);font-weight:600;font-size:1.15rem}
+ul{margin:0;padding-inline-start:1.2em;display:flex;flex-direction:column;gap:8px}
+li{max-width:68ch}
+.gaps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;list-style:none;padding:0;counter-reset:gap}
+.gaps li{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:6px;max-width:none}
+.gaps li b{font-family:var(--display);font-weight:600;font-size:1.05rem}
+.risk{border-inline-start:3px solid var(--red);padding:4px 0 4px 16px;color:var(--ink)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px}
+.pill{display:inline-block;font:500 .72rem/1 var(--mono);padding:4px 7px;border-radius:999px;white-space:nowrap}
+.pill.structured{background:var(--green-soft);color:var(--green)}
+.pill.medium{background:var(--gold-soft);color:var(--gold)}
+.pill.light,.pill.none{background:var(--grey-soft);color:var(--muted)}
+.pill.closed{background:var(--red-soft);color:var(--red)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.controls input{font:inherit;padding:8px 12px;border:1px solid var(--rule);border-radius:8px;background:var(--surface);color:var(--ink);flex:1 1 220px;max-width:320px}
+.chip{font:500 .8rem/1 var(--body);padding:8px 12px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.count{font:400 .8rem var(--mono);color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums}
+.note{font-size:.85rem;color:var(--muted)}
+footer{font-size:.85rem;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+@media (prefers-reduced-motion:no-preference){.chip{transition:background .15s,color .15s}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Market research · 25 Sep 2026</span>
+  <h1>Kids' money apps, worldwide and in Hebrew</h1>
+  <p class="lede">48 products compared with Fun Saver: a Hebrew, parent-run ledger with savings, spending and good-deeds wallets, a 50/40/10 split on every deposit, and daily compounding interest drawn as coins.</p>
+  <div class="verdict">
+    <span class="eyebrow">Bottom line</span>
+    <strong>No app we found, in Israel or abroad, combines the fixed 50/40/10 split, a giving wallet, parent-set daily compounding drawn as coins, and Hebrew.</strong>
+    <p class="note">Likely rather than proven: the apps were researched from their sites, stores and press, not tried hands-on.</p>
+  </div>
+</header>
+
+<section>
+  <h2>How the closest apps compare</h2>
+  <div class="scroll">
+    <table class="matrix">
+      <thead><tr><th>App</th><th>Giving wallet</th><th>Auto-split deposits</th><th>Parent-set interest</th><th>Daily compounding</th><th>Hebrew</th><th>Real card</th></tr></thead>
+      <tbody id="matrix"></tbody>
+    </table>
+  </div>
+  <p class="note">✓ yes · ◐ partly · — no. FamZoo and Rooster Money have a free virtual mode as well as a paid card.</p>
+</section>
+
+<section>
+  <h2>Your three questions</h2>
+  <div class="answers">
+    <div class="answer">
+      <span class="q">Q1 · Teaching or saving?</span>
+      <p class="short">Mostly saving and tracking.</p>
+      <ul>
+        <li>Worldwide, about 30% put real weight on teaching: standalone games (Zogo, MoneyPrep, MoneyTime) or card apps with lessons (Greenlight Level Up, GoHenry Money Missions).</li>
+        <li>In Israel, banks and card companies have real money but almost no teaching. Hebrew teaching apps (FinanKids, Kal-Klili) keep no money ledger.</li>
+        <li>Nobody ties lessons to the child's own money. Goalsetter tried and closed its consumer app in Feb 2026.</li>
+      </ul>
+    </div>
+    <div class="answer">
+      <span class="q">Q2 · Can kids pay?</span>
+      <p class="short">Yes. The funded players all moved to real cards.</p>
+      <ul>
+        <li>Worldwide: debit or prepaid cards from Greenlight, GoHenry, BusyKid, FamZoo, Rooster, Revolut &lt;18, Monzo, Till, Mydoh and more. Some add Apple/Google Pay and P2P.</li>
+        <li>Israel: Poalim Junior (8+, Google Pay 13+, Apple Pay 14+), PayBox Young (8–18, NFC and P2P), prepaid MyMAX, My Cal and Netantchik (any age), bank debit cards from 14.</li>
+        <li>No virtual ledger or teaching app lets a kid pay.</li>
+      </ul>
+    </div>
+    <div class="answer">
+      <span class="q">Q3 · Who is closest?</span>
+      <p class="short">FamZoo abroad, FinanKids in Hebrew.</p>
+      <ul>
+        <li>FamZoo: save/spend/give split, parent-paid compound interest, free virtual mode.</li>
+        <li>Rooster Money: free virtual pots with parent-paid interest; paid card as the upgrade.</li>
+        <li>FinanKids: Hebrew virtual coins with lessons, ages 7–14. No split, no giving wallet, no interest.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Chores or not</h2>
+  <p>Many competitors pay kids for chores. Fun Saver deliberately doesn't.</p>
+  <div class="two">
+    <div class="answer">
+      <span class="q">Commission model</span>
+      <p class="short">Money is earned. No work, no pay.</p>
+      <ul>
+        <li><b>Built around chores:</b> BusyKid, S'moresUp, Joon, and FinanKids in Hebrew.</li>
+        <li><b>Support both:</b> Rooster Money, GoHenry, Greenlight, FamZoo and Homey allow a fixed allowance, paid chores, or a mix. They lead with chores in their marketing.</li>
+      </ul>
+    </div>
+    <div class="answer">
+      <span class="q">Fun Saver</span>
+      <p class="short">Not tied to chores, and we recommend it stays that way.</p>
+      <ul>
+        <li><b>Overjustification effect</b> (Lepper et al., 1973): a promised reward weakens motivation the child already had.</li>
+        <li><b>A Fine is a Price</b> (Gneezy &amp; Rustichini, 2000): money attached to a social obligation replaces it. Chores become a job the child can decline.</li>
+        <li>What teaches is the structure: three wallets, "wait for next week", and the weekly conversation.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="risk"><b>Weak point:</b> Mandell's survey shows chore-based allowance scoring slightly higher on financial literacy than unconditional allowance (52.1% vs 49.1%). It's observational, and Fun Saver adds structure to the allowance, but our strongest support is the motivation research, not literacy scores.</p>
+  <p><b>Middle ground if parents ask:</b> an unconditional base allowance plus optional paid "extra jobs" beyond normal family duties. It lets kids earn without paying for chores.</p>
+</section>
+
+<section>
+  <h2>Gaps Fun Saver could own</h2>
+  <ul class="gaps">
+    <li><b><span class="coin"></span>A giving wallet</b>No Israeli product has one, though it fits the ma'aser custom. Abroad, giving is optional or buried.</li>
+    <li><b><span class="coin"></span>Interest you can watch grow</b>Parent-paid interest elsewhere is weekly or monthly and shown as a number, not daily coins.</li>
+    <li><b><span class="coin"></span>Ages 5 to 8</b>Israeli banks start at 8 or 14, phone wallets at 13–14. A free, card-less ledger works with any bank.</li>
+    <li><b><span class="coin"></span>Lessons from real events</b>"Your savings just earned 3 agorot, here's why." Neither teaching apps nor money apps do this.</li>
+    <li><b><span class="coin"></span>A modern virtual ledger</b>The virtual apps are old or abandoned. No KYC or banking licence, and no Synapse-style partner risk.</li>
+    <li><b><span class="coin"></span>No chores for pay</b>Most funded apps push paid chores. A research-backed allowance that isn't tied to chores is a clear stance, in Hebrew especially.</li>
+    <li><b><span class="coin"></span>Price</b>Card apps cost $5–20 a month per family.</li>
+  </ul>
+  <p class="risk"><b>Risk:</b> parents may eventually want a real card. Rooster Money's route, free virtual first and a paid card later, is proven. In Israel that means partnering with an issuer such as Isracard, Max or PayBox.</p>
+</section>
+
+<section>
+  <h2>How the big players make money</h2>
+  <p>Four models, and most players combine two. A pattern runs through them: big standalone apps end up inside a bank or investment company (Acorns bought GoHenry, Barclays is buying GoHenry UK, NatWest owns Rooster, RBC runs Mydoh, MrBeast bought Step).</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Model</th><th>Who</th><th>How it earns</th></tr></thead>
+      <tbody>
+        <tr><td class="name">Family subscription</td><td>Greenlight ($5.99–19.98/mo), GoHenry (£3.99–9.99), Acorns Early ($8–12), BusyKid ($48/yr), FamZoo, Till, Spriggy</td><td>Monthly fee per family; card fees and investing upsells on top</td></tr>
+        <tr><td class="name">Bank buying future customers</td><td>Rooster Money, Mydoh, Monzo, Starling, Revolut &lt;18, Poalim Junior, PayBox Young</td><td>Free or cheap and loss-making alone. Wins the parent now and the child for decades; kids' deposits are cheap funding</td></tr>
+        <tr><td class="name">Card fees, float, credit</td><td>Step, Current, Revolut partly</td><td>Free to families. Earns per-purchase fees and interest on balances; Step builds toward credit</td></tr>
+        <tr><td class="name">Selling to institutions</td><td>Zogo, Goalsetter (since Feb 2026), Visa Financial Football</td><td>Free to users; banks and brands pay for the lessons</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">In Israel it's all banks and card companies: Poalim Junior is free with 4%, PayBox Young's 6% needs the parent to spend ₪2k a month on their card, and prepaid cards charge ₪1–3.5 per load. How each company profits is general industry knowledge, not checked against financial reports.</p>
+</section>
+
+<section>
+  <h2>A card model for Fun Saver</h2>
+  <p>The goal: go worldwide with cards, stay very cheap for families, and at least cover costs.</p>
+  <p class="risk"><b>Why a free card paid by purchase fees fails in Israel:</b> ₪15 a week of spending is about ₪780 a year per child. At Israel's capped purchase fee (about 0.3%, unverified) that earns <b>₪2.3 a year</b>, before the provider's share. Per-card costs are very likely higher. Free works for US apps (1.3% fees plus float and credit) and for banks (loss leader). Fun Saver has neither.</p>
+  <h3>Recommended: free tracking, card at cost plus a thin margin, one price per family</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Tier</th><th>What's in it</th><th>Price</th><th>What it costs us</th></tr></thead>
+      <tbody>
+        <tr><td class="name">Free, always</td><td>Ledger, 3 wallets, 50/40/10 split, interest, Method, all kids</td><td>Free</td><td>Hosting, cents per family</td></tr>
+        <tr><td class="name">Family card</td><td>Cards for every child, parent controls, weekly loads</td><td>Cost + ~20%, per family not per child</td><td>Provider fees, identity checks, support</td></tr>
+        <tr><td class="name">Physical card</td><td>Optional plastic on top of the phone card</td><td>One-time fee at cost</td><td>Printing and shipping</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="two">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <h3>Cost levers</h3>
+      <ul>
+        <li><b>Phone-only cards by default.</b> No printing or shipping; plastic is opt-in.</li>
+        <li><b>Charge only for active cards.</b> An unused card costs and pays nothing.</li>
+        <li><b>Take payment on the web.</b> About 3% instead of the app stores' 15–30%.</li>
+        <li><b>One provider, many countries.</b> Airwallex makes a new country a settings change.</li>
+        <li><b>Price per country.</b> Purchase fees run ~1.3% US, ~0.2% EU/UK, ~0.3% Israel, so the card could be near free in the US and ₪8–10 in Israel.</li>
+      </ul>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <h3>Break-even, family of 2 kids</h3>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Item</th><th>Per month</th></tr></thead>
+          <tbody>
+            <tr><td>2 active cards × ~$1</td><td class="num">$2.00</td></tr>
+            <tr><td>Identity checks, 3 people, over 2 years</td><td class="num">$0.20</td></tr>
+            <tr><td>~8 purchases per kid × ~$0.05</td><td class="num">$0.80</td></tr>
+            <tr><td>Support</td><td class="num">$0.30</td></tr>
+            <tr><td>Web payment processing</td><td class="num">$0.10</td></tr>
+            <tr><td><b>Cost</b></td><td class="num"><b>≈ $3.40</b></td></tr>
+            <tr><td>Purchase fees back, Israel / US</td><td class="num">−$0.30 / −$1.30</td></tr>
+            <tr><td><b>Break-even, Israel / US</b></td><td class="num"><b>$3.10 / $2.10</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Every number is an assumption until a provider quotes. With a 20% margin: about $2.5–4 per family per month, against Greenlight from $5.99 and PayBox Young ₪4.9–7.9.</p>
+    </div>
+  </div>
+  <ul>
+    <li><b>Stay away from</b> ads, selling data or nudging spending (COPPA and GDPR children's rules, and it contradicts the Method), and from budgeting interest on kids' balances, which usually stays with the issuer.</li>
+    <li><b>Later:</b> license the localized lessons and ledger to banks or credit unions, the Zogo route.</li>
+    <li><b>Next step:</b> the Airwallex quote (per-card, per-purchase and monthly fees, and whether it shares purchase fees), and Israel's exact purchase-fee cap.</li>
+  </ul>
+</section>
+
+<section class="two">
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <h2>Israeli rules that matter</h2>
+    <ul>
+      <li><b>Bank account:</b> from 14 with written parental consent, from 16 alone.</li>
+      <li><b>Cards:</b> ATM card from 14 (₪400/day cap until 18); debit from 16, or 15 with a salary; credit from 16 with consent.</li>
+      <li><b>Prepaid cards</b> from card companies have no minimum age; the parent holds the account. Bank prepaid products start at 8.</li>
+      <li><b>bit</b> needs an account in the user's own name, so effectively 14+.</li>
+      <li><b>Phone wallets:</b> Google Pay 13+, Apple Pay 14+ on a kid's Hapoalim card. Google's Wallet for kids isn't offered in Israel.</li>
+      <li>Greenlight, GoHenry, Current and Revolut &lt;18 don't operate in Israel.</li>
+    </ul>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <h2>Recent changes</h2>
+    <ul>
+      <li><b>Feb 2026:</b> Goalsetter closed its consumer app. MrBeast's company bought Step.</li>
+      <li><b>Jul 2026:</b> Bank Hapoalim launched Poalim Junior with 4% interest.</li>
+      <li><b>Q4 2026:</b> Barclays expects to complete buying GoHenry UK. GoHenry US is now Acorns Early.</li>
+      <li><b>Nov 2024:</b> PayBox Young launched.</li>
+      <li><b>May 2024:</b> Copper dropped banking after Synapse collapsed.</li>
+      <li>The leumi.me teen app looks discontinued (unverified).</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Every product we looked at</h2>
+  <div class="controls">
+    <label for="q" class="eyebrow" style="position:absolute;left:-9999px">Search</label>
+    <input id="q" type="search" placeholder="Search apps">
+    <button class="chip" data-f="all" aria-pressed="true">All</button>
+    <button class="chip" data-f="il" aria-pressed="false">Israel</button>
+    <button class="chip" data-f="world" aria-pressed="false">Global</button>
+    <button class="chip" data-f="pay" aria-pressed="false">Kid can pay</button>
+    <button class="chip" data-f="give" aria-pressed="false">Has giving</button>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Product</th><th>Model</th><th>Ages</th><th>Teaching</th><th>Giving</th><th>Interest</th><th>Kid can pay</th><th>Status 2026</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <p class="note">Not found in Israel: Kido, Kidsli, Tikun, Bamboo, Moneyline, "Leumi Teen", "Poalim Teen", a One Zero youth product.</p>
+</section>
+
+<footer>
+  Unverified: bit's exact minimum age, PayBox Young's digital-only age, whether leumi.me is live, Starling pricing and interest, Osper and Spriggy giving or interest, Revolut pricing, Acorns Early donations, KidBank pricing, whether Bankaroo and PiggyBot are maintained.
+</footer>
+</div>
+
+<script>
+const matrix=[
+  ["Fun Saver","y","y","y","y","y","n"],
+  ["FamZoo · US","y","y","y","n","n","y"],
+  ["Rooster Money · UK","y","n","y","n","n","y"],
+  ["BusyKid · US","y","y","y","n","n","y"],
+  ["Greenlight · US","y","n","y","p","n","y"],
+  ["iAllowance · iOS","y","y","y","n","n","n"],
+  ["FinanKids · Israel","n","n","n","n","y","n"],
+  ["Poalim Junior · Israel","n","n","n","p","y","y"],
+];
+const sym={y:["✓","yes"],p:["◐","part"],n:["—","no"]};
+document.getElementById("matrix").innerHTML=matrix.map((r,i)=>`<tr${i?"":' class="us"'}><td class="name">${r[0]}</td>${r.slice(1).map(v=>`<td><span class="mark ${sym[v][1]}">${sym[v][0]}</span></td>`).join("")}</tr>`).join("");
+
+const IL="il",W="world";
+const rows=[
+  [IL,"Poalim Junior","Bank Hapoalim","Bank sub-account + prepaid card","8+","light","N","4% fixed, daily","Card, Google Pay 13+, Apple Pay 14+","Launched Jul 2026, free","https://www.bankhapoalim.co.il/he/poalim-digital/junior"],
+  [IL,"PayBox Young","Discount","Wallet + prepaid card","8–18","light","N","Up to 6% if parent spends ₪2k/mo","NFC, card, P2P","₪4.9–7.9/mo","https://www.payboxapp.com/paybox-young"],
+  [IL,"MyMAX","Max","Prepaid card","Any","none","N","N","Card, digital wallet","₪1 per load","https://www.max.co.il/cards/my-max"],
+  [IL,"My Cal","Cal","Prepaid card","Any","none","N","N","Card","₪2.9 per load","https://www.mako.co.il/finances-money/Article-58bf31c71916f91026.htm"],
+  [IL,"Netantchik","Isracard","Prepaid card","Any","none","N","N","Card, Apple/Google Pay","₪3.5 per load, ₪1k cap","https://www.isracard.co.il/credit-cards/prepaidcard"],
+  [IL,"Leumi CASH / leumi.me","Leumi","Prepaid card + teen app","14–18","light","N","N","Card","leumi.me probably closed","https://www.leumi.co.il/he/account-types/leumi-card-cash"],
+  [IL,"Youth bank accounts","Leumi, Hapoalim, Discount, Mizrahi, FIBI, Pepper","Bank account","14+","light","N","Deposits","Debit/ATM card","Active","https://www.mizrahi-tefahot.co.il/faq/age/"],
+  [IL,"ONE ZERO","Digital bank","Bank account","18+","none","N","—","—","No youth product","https://play.google.com/store/apps/details?id=il.co.firstdigitalbank"],
+  [IL,"bit","Hapoalim","P2P wallet","~14+","none","N","Adults only","P2P","No kids product","https://www.ice.co.il/digital-140/news/article/966367"],
+  [IL,"KashCash","","Stored-value phone wallet","Any","none","N","N","Participating shops","Small","https://www.kashcash.co.il/"],
+  [IL,"FinanKids","","Virtual tracker + lessons","7–14","structured","N","N","","~1,500 families, since Aug 2025","https://apps.apple.com/il/app/id6748967998"],
+  [IL,"Kal-Klili","","Story-based lessons","9–11","structured","N","N","","Updated Dec 2025","https://apps.apple.com/us/app/id6744107979"],
+  [IL,"Docli Kids","","Education + allowance helper","Grades 3, 8","none","N","N","","Pilot","https://kids.docli.co.il/"],
+  [IL,"PayKid","CloseApp","Virtual ledger","Kids","none","N","N","","Likely dormant","https://closeapp.co.il/"],
+  [IL,"Chisachon LeKol Yeled","Bituach Leumi","Government savings","0–18","none","N","Market returns","","₪58/mo gov + optional ₪58","https://www.btl.gov.il/benefits/children/HisahoLayeled/Pages/default.aspx"],
+  [IL,"Kesef Katan, Paamonim, ORT","Bank of Israel & NGOs","Education content","Varies","structured","N","N","","Active","https://www.paamonim.org/he/financial_education/"],
+  [W,"Greenlight","US","Debit card + investing","6–18","structured","Y","Parent-set + 2–6%","Card","$5.99–19.98/mo","https://help.greenlight.com/hc/en-us/articles/360020603133"],
+  [W,"Acorns Early","US (ex-GoHenry)","Debit card + investing","6–18","structured","?","?","Card","$8–12/mo","https://www.acorns.com/early/"],
+  [W,"GoHenry UK","UK","Prepaid card","6–18","structured","Y","~2.63% AER","Card","Barclays sale pending","https://www.gohenry.com/uk/pricing/"],
+  [W,"Pixpay","FR/ES/IT","Card + IBAN","8–18","light","?","?","Card","€3.99–9.99/mo","https://www.moneyvox.fr/epargne/pixpay"],
+  [W,"BusyKid","US","Prepaid card + stocks","5–17","light","Y","Parent-paid + match","Card","$48/yr","https://busykid.com/faq/"],
+  [W,"Step","US","Secured card","13–18+","light","N","High-yield","Card, P2P","Bought by MrBeast","https://www.cnbc.com/2026/02/10/youtube-mrbeast-youth-financial-services-app-step-beast-industries-acquires-fintech-app.html"],
+  [W,"Current Teen","US","Debit card","13–17","light","Y","~0.25%","Card","Free","https://support.current.com/hc/en-us/sections/52070560473499-Teen-Banking"],
+  [W,"FamZoo","US","Prepaid card or IOU ledger","Any","light","Y","Parent-paid compound","Card (paid tier)","$4.99–5.99/mo; IOU free","https://www.finder.com/kids-banking/famzoo"],
+  [W,"Rooster Money","UK (NatWest)","Virtual ledger + card","3–17","medium","Y","Parent-paid","Card (paid tier)","Card £1.99/mo","https://roostermoney.com/pricing/"],
+  [W,"Osper","UK","Prepaid card","6–18","light","?","?","Card","£2.50/child/mo","https://osper.com/pricing"],
+  [W,"Revolut <18","EU/UK/US","Card + vaults","6–17","light","N","Daily (UK)","Card, P2P","Active","https://www.revolut.com/kids-and-teens/kids-savings-account/"],
+  [W,"Monzo Under 16s","UK","Bank account + card","6–15","light","N","~3% AER","Card","Free","https://monzo.com/help/monzo-for-under-16s/under-16s-interest"],
+  [W,"Starling Under 16s","UK","Bank account + card","6–15","light","N","?","Card","Free (unverified)","https://www.finder.com/uk/banking/childrens-banking/monzo-under-16s-vs-starling-under-16s"],
+  [W,"Till","US","Debit card","Any","light","~","Parent-paid monthly","Card, Apple/Google Pay 13+","$7.99/mo","https://www.tillfinancial.com/faq"],
+  [W,"Modak","US","Debit card","<18","medium","?","N","Card","Free; paid tier","https://thecollegeinvestor.com/80994/modak-review/"],
+  [W,"Mydoh","Canada (RBC)","Smart Cash card","6–17","medium","~","N","Card","Free","https://www.mydoh.ca/faq/savings-goals/"],
+  [W,"Spriggy","Australia","Prepaid card + investing","6–17","light","?","?","Card","A$5–9/mo","https://www.spriggy.com.au/plans/"],
+  [W,"Copper","US","Rewards / education","Teens","light","N","N","","Banking dropped 2024","https://www.geekwire.com/2024/fintech-startup-copper-forced-to-discontinue-banking-services-amid-synapse-fiasco/"],
+  [W,"Goalsetter","US","Was card + quizzes","Kids","structured","N","Cashback","","Closed Feb 2026","https://goalsetter.co/faq/"],
+  [W,"Bankaroo","Global","Virtual ledger","5–14","light","Y","Virtual","","Looks dormant","https://bankaroo.com/"],
+  [W,"iAllowance","iOS","Virtual ledger","Any","none","Y","Y","","Old but listed","https://apps.apple.com/us/app/iallowance-chores-allowances/id398299456"],
+  [W,"Homey","US","Virtual ledger / IOU","Any","none","Y","N","","$29.99–49.99/yr","https://www.homeyapp.net/"],
+  [W,"S'moresUp","US","Points ledger","Any","none","N","N","","Freemium","https://www.smoresup.com/pricing"],
+  [W,"Joon","US","Game coins","6–12","none","N","N","","$12.99/mo","https://www.joonapp.io/"],
+  [W,"Moonjar","US","Physical 3-jar box + app","3+","light","Y","N","","~$20–30 once","https://moonjar.com/index.php/products/classic-moonjar-moneybox/"],
+  [W,"Penny Time","US","Virtual ledger + tools","8–14","medium","Y","N","","New","https://www.pennytime.app/"],
+  [W,"KidBank.io","US","Virtual ledger","Any","light","N","Growth chart","","Active","https://kidbank.io/"],
+  [W,"PiggyBot","iOS","Virtual IOU ledger","Kids","none","Y","N","","Likely abandoned","https://www.commonsensemedia.org/app-reviews/piggybot"],
+  [W,"Zogo","US","Education only","Teens+","structured","N","N","","Free, bank-funded","https://zogo.com/"],
+  [W,"Financial Football","Global (Visa)","Education game","11–18+","structured","N","N","","Free","https://www.practicalmoneyskills.com/en/play/financial_football.html"],
+  [W,"MoneyPrep","Global","Education games","5–12","structured","N","N","","Freemium","https://apps.apple.com/us/app/moneyprep-kids-learning-games/id1575939249"],
+  [W,"MoneyTime","US/UK/AU","Course + simulation","10–15","structured","N","N","","~$7/mo","https://www.moneytimekids.com/"],
+];
+const give={Y:["✓","yes"],N:["—","no"],"~":["◐","part"],"?":["?","no"]};
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const closed=/closed|abandoned|dormant|dropped/i;
+let filter="all";
+function render(){
+  const q=document.getElementById("q").value.trim().toLowerCase();
+  const shown=rows.filter(r=>{
+    if(filter==="il"&&r[0]!==IL)return false;
+    if(filter==="world"&&r[0]!==W)return false;
+    if(filter==="pay"&&!r[8]||filter==="pay"&&r[8]==="—")return false;
+    if(filter==="give"&&!(r[6]==="Y"||r[6]==="~"))return false;
+    return !q||r.join(" ").toLowerCase().includes(q);
+  });
+  document.getElementById("rows").innerHTML=shown.map(r=>`<tr>
+    <td class="name"><a href="${r[10]}" target="_blank" rel="noopener">${esc(r[1])}</a><small>${esc(r[0]===IL?"Israel"+(r[2]?" · "+r[2]:""):r[2])}</small></td>
+    <td>${esc(r[3])}</td><td class="num">${esc(r[4])}</td>
+    <td><span class="pill ${r[5]}">${r[5]}</span></td>
+    <td><span class="mark ${give[r[6]][1]}">${give[r[6]][0]}</span></td>
+    <td>${esc(r[7])}</td><td>${esc(r[8]||"No")}</td>
+    <td>${closed.test(r[9])?`<span class="pill closed">${esc(r[9])}</span>`:esc(r[9])}</td></tr>`).join("");
+  document.getElementById("count").textContent=`${shown.length} of ${rows.length}`;
+}
+document.querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{
+  filter=b.dataset.f;
+  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));
+  render();
+}));
+document.getElementById("q").addEventListener("input",render);
+render();
+</script>
