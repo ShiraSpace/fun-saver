@@ -5,6 +5,7 @@ import { getThemeTokens } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
+import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
 import { useDriver } from './driver/use-driver';
 
 describe('page routing', () => {
@@ -54,6 +55,39 @@ describe('page routing', () => {
       await appBrowser.visit(METHOD_ROUTE);
 
       assert.equal(appBrowser.currentPath(), HOME_ROUTE);
+    });
+  });
+
+  describe('the transactions page', () => {
+    describe('with an account', () => {
+      const { menu } = useDriver({ accounts: [mockAccount] });
+
+      it('is where the menu link takes the parent', async () => {
+        await menu.open();
+
+        assert.equal(await menu.openTransactionsPage(), TRANSACTIONS_ROUTE);
+      });
+
+      it('tells the parent which screen they are on once they are there', async () => {
+        await menu.open();
+        await menu.openTransactionsPage();
+        await menu.open();
+
+        assert.equal(
+          await menu.transactionsTabBackground(),
+          hexToRgb(getThemeTokens().colors.textStrong)
+        );
+      });
+    });
+
+    describe('with no account to show', () => {
+      const { appBrowser } = useDriver();
+
+      it('sends the parent home when there is no account to show', async () => {
+        await appBrowser.visit(TRANSACTIONS_ROUTE);
+
+        assert.equal(appBrowser.currentPath(), HOME_ROUTE);
+      });
     });
   });
 });

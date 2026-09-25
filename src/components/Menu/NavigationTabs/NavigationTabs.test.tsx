@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
+import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
 import { mockAccountsContext } from '@/test-utils/mocks/account.mocks';
 import { NavigationTabs } from './NavigationTabs';
 import {
@@ -69,10 +70,10 @@ describe('NavigationTabs', () => {
       expect(mockOnNavigate).toHaveBeenCalled();
     });
 
-    it('shows the screen that does not exist yet as a tab that cannot be taken', () => {
+    it('links the transactions tab to its screen', () => {
       expect(
         screen.getByTestId(NAVIGATION_TABS_TEST_IDS.transactionsTab)
-      ).toBeDisabled();
+      ).toHaveAttribute('href', TRANSACTIONS_ROUTE);
     });
   });
 
