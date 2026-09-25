@@ -35,6 +35,7 @@ export interface ThemeColors {
   readonly chartSavings: string;
   readonly chartSpending: string;
   readonly chartGoodDeeds: string;
+  readonly chartTotalBalanceFill: string;
 }
 
 export interface ThemeGradientStops {

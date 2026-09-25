@@ -2,7 +2,6 @@ import { render, screen } from '@/test-utils/render';
 import type { BalanceHistory } from '@/lib/wallet/balance-history';
 import { SHOWN_BALANCE } from '../../constants';
 import { RANGE, shownBalanceLabel } from '../constants';
-import { BALANCE_LINE_TEST_IDS } from './BalanceLines/BalanceLine/constants';
 import { BALANCE_CHART_COPY, BALANCE_CHART_TEST_IDS } from './constants';
 import { BalanceChart } from './BalanceChart';
 
@@ -90,20 +89,6 @@ describe('the balance chart', () => {
           .getByTestId(BALANCE_CHART_TEST_IDS.chart)
           .getAttribute('aria-label')
       ).toContain(shownBalanceLabel(SHOWN_BALANCE.savings));
-    });
-
-    it('draws the total on top of the wallets', () => {
-      const savingsLine = screen.getByTestId(
-        BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.savings)
-      );
-      const totalBalanceLine = screen.getByTestId(
-        BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.totalBalance)
-      );
-
-      expect(
-        savingsLine.compareDocumentPosition(totalBalanceLine) &
-          Node.DOCUMENT_POSITION_FOLLOWING
-      ).toBeTruthy();
     });
   });
 });

@@ -6,6 +6,7 @@ import {
   type ShownBalanceHistory,
 } from '../chart-geometry';
 import { BalanceLine } from './BalanceLine';
+import { BALANCE_LINES_TEST_IDS } from './constants';
 import { TotalBalanceFill } from './BalanceLines.styles';
 
 interface BalanceLinesProps {
@@ -25,7 +26,10 @@ export function BalanceLines({
     balanceY
   );
   const totalBalanceFillUnderLines = totalBalanceFill ? (
-    <TotalBalanceFill d={totalBalanceFill} />
+    <TotalBalanceFill
+      d={totalBalanceFill}
+      data-testid={BALANCE_LINES_TEST_IDS.totalBalanceFill}
+    />
   ) : null;
   const totalBalanceLast = [...shownBalanceHistories].reverse();
   const linesWithTotalBalanceOnTop = totalBalanceLast.map(

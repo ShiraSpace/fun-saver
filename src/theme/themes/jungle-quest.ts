@@ -47,6 +47,7 @@ export const jungleQuest: ThemeTokens = {
     chartSavings: '#2A9D8F',
     chartSpending: '#6E9B22',
     chartGoodDeeds: '#E76F51',
+    chartTotalBalanceFill: 'rgba(27, 67, 50, 0.07)',
   },
   gradients: themeGradients(GRADIENT_STOPS),
   shadows: SHADOW_SCALE,
