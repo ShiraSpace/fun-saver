@@ -23,6 +23,8 @@ export function TransactionIcon({
     );
   }
 
+  const { badge } = transactionRowCopy(transactionListRow);
+
   return (
     <WalletIcon
       aria-hidden
@@ -30,9 +32,7 @@ export function TransactionIcon({
       data-testid={TRANSACTION_ICON_TEST_IDS.icon}
     >
       {WALLET_ICON[walletName]}
-      <Badge data-testid={TRANSACTION_ICON_TEST_IDS.badge}>
-        {transactionRowCopy(transactionListRow).badge}
-      </Badge>
+      <Badge data-testid={TRANSACTION_ICON_TEST_IDS.badge}>{badge}</Badge>
     </WalletIcon>
   );
 }

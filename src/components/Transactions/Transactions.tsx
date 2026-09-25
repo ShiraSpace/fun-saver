@@ -11,7 +11,7 @@ import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { BalanceOverTime } from './BalanceOverTime';
 import { TransactionList } from './TransactionList';
 import { TRANSACTIONS_COPY } from './constants';
-import { useBalanceHistory } from './use-balance-history';
+import { useAccountTransactions } from './use-account-transactions';
 import { useTransactionsViewChoices } from './use-transactions-view-choices';
 
 interface TransactionsProps {
@@ -34,10 +34,9 @@ export function Transactions({
   const currentAccount = navigation.currentAccount ?? initialAccount;
   const accountsContext = { accounts, currentAccount, switchAccount };
 
-  const currentTransactions = transactionsByAccount[currentAccount.id] ?? [];
-  const currentBalanceHistory = useBalanceHistory({
-    wallets: currentAccount.wallets,
-    transactions: currentTransactions,
+  const { transactions, balanceHistory } = useAccountTransactions({
+    account: currentAccount,
+    transactionsByAccount,
     asOf,
   });
 
@@ -48,13 +47,13 @@ export function Transactions({
           <Column>
             <Header title={TRANSACTIONS_COPY.title} account={currentAccount} />
             <BalanceOverTime
-              balanceHistory={currentBalanceHistory}
+              balanceHistory={balanceHistory}
               viewChoices={viewChoices}
             />
             <TransactionList
-              transactions={currentTransactions}
+              transactions={transactions}
               wallets={currentAccount.wallets}
-              balanceHistory={currentBalanceHistory}
+              balanceHistory={balanceHistory}
               asOf={asOf}
               viewChoices={viewChoices}
             />

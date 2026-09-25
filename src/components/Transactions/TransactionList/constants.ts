@@ -13,7 +13,7 @@ import { countInWords } from '../count-in-words';
 export const TRANSACTION_LIST_COPY = {
   title: 'התנועות',
   count: (rowCount: number, dayCount: number): string =>
-    `${countInWords(rowCount, 'שורה אחת', (count) => `${count} שורות`)} · ${countInWords(dayCount, 'יום אחד', (count) => `${count} יום`)}`,
+    `${countInWords(rowCount, 'שורה אחת', (count) => `${count} שורות`)} · ${countInWords(dayCount, 'יום אחד', (count) => `${count} ימים`)}`,
   filterLegend: 'סוג תנועה',
   interestTitle: 'ריבית',
   emptyFilter: 'אין תנועות בסינון הזה',
@@ -41,6 +41,7 @@ export const TRANSACTION_LIST_INTEREST_GROUP_NAME = 'interest-mode';
 export const TRANSACTION_LIST_TEST_IDS = {
   list: 'transaction-list',
   count: 'transaction-list-count',
+  interestTitle: 'transaction-list-interest-title',
   filters: TRANSACTION_LIST_TYPE_GROUP_NAME,
   interestMode: TRANSACTION_LIST_INTEREST_GROUP_NAME,
   emptyFilter: 'transaction-list-empty-filter',

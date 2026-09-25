@@ -32,7 +32,7 @@ export const Count = styled.span`
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
 
-export const SubTitle = styled.h3`
+export const SubTitle = styled.p`
   margin: 11px 0 5px;
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 700;

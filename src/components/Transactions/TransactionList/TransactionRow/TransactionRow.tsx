@@ -32,22 +32,24 @@ export function TransactionRow({
   transactionListRow,
 }: TransactionRowProps): JSX.Element {
   const { type, balanceChange, balance } = transactionListRow;
+  const { label } = transactionRowCopy(transactionListRow);
+  const days = transactionRowDays(transactionListRow);
+  const balanceFell = balanceChange < 0;
+  const withAgorot = needsAgorot(balanceChange);
 
   return (
     <Row data-testid={TRANSACTION_ROW_TEST_IDS.row}>
       <TransactionIcon transactionListRow={transactionListRow} />
       <TransactionRowDescription>
-        <Name data-transaction-type={type}>
-          {transactionRowCopy(transactionListRow).label}
-        </Name>
-        <Days>{transactionRowDays(transactionListRow)}</Days>
+        <Name data-transaction-type={type}>{label}</Name>
+        <Days>{days}</Days>
       </TransactionRowDescription>
       <Amounts dir="ltr">
-        <ChangeAmount data-balance-fell={balanceChange < 0}>
+        <ChangeAmount data-balance-fell={balanceFell}>
           <ColumnName>{TRANSACTION_LIST_COPY.columns.balanceChange}</ColumnName>
           <BalanceChange
             balanceChange={balanceChange}
-            withAgorot={needsAgorot(balanceChange)}
+            withAgorot={withAgorot}
             testId={TRANSACTION_ROW_TEST_IDS.balanceChange}
           />
         </ChangeAmount>

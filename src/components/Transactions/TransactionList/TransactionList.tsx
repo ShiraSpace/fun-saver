@@ -86,13 +86,13 @@ function TransactionListHead({
   dayCount,
   viewChoices,
 }: TransactionListHeadProps): JSX.Element {
+  const countText = TRANSACTION_LIST_COPY.count(rowCount, dayCount);
+
   return (
     <Head>
       <TitleRow>
         <Title>{TRANSACTION_LIST_COPY.title}</Title>
-        <Count data-testid={TRANSACTION_LIST_TEST_IDS.count}>
-          {TRANSACTION_LIST_COPY.count(rowCount, dayCount)}
-        </Count>
+        <Count data-testid={TRANSACTION_LIST_TEST_IDS.count}>{countText}</Count>
       </TitleRow>
       <ChoiceChips
         groupName={TRANSACTION_LIST_TYPE_GROUP_NAME}
@@ -102,7 +102,12 @@ function TransactionListHead({
         onSelect={viewChoices.setTransactionTypeFilter}
         testId={TRANSACTION_LIST_TEST_IDS.filters}
       />
-      <SubTitle>{TRANSACTION_LIST_COPY.interestTitle}</SubTitle>
+      <SubTitle
+        aria-hidden
+        data-testid={TRANSACTION_LIST_TEST_IDS.interestTitle}
+      >
+        {TRANSACTION_LIST_COPY.interestTitle}
+      </SubTitle>
       <ChoiceChips
         variant={CHOICE_CHIPS_VARIANT.segmented}
         groupName={TRANSACTION_LIST_INTEREST_GROUP_NAME}
@@ -138,6 +143,8 @@ export function TransactionList({
     rows,
     viewChoices.transactionTypeFilter
   );
+  const hasTransactions = transactions.length > 0;
+  const sections = monthSections(shownRows);
 
   return (
     <Card data-testid={TRANSACTION_LIST_TEST_IDS.list}>
@@ -147,8 +154,8 @@ export function TransactionList({
         viewChoices={viewChoices}
       />
       <TransactionListMonths
-        hasTransactions={transactions.length > 0}
-        sections={monthSections(shownRows)}
+        hasTransactions={hasTransactions}
+        sections={sections}
         asOf={asOf}
       />
     </Card>

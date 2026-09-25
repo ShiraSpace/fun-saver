@@ -22,6 +22,7 @@ export function TransactionMonth({
   asOf,
 }: TransactionMonthProps): JSX.Element {
   const { month, rows } = monthSection;
+  const monthName = monthLabel(month, asOf);
   const transactionRows = rows.map((transactionListRow) => (
     <TransactionRow
       key={transactionListRow.key}
@@ -33,7 +34,7 @@ export function TransactionMonth({
     <section>
       <Heading>
         <MonthName data-testid={TRANSACTION_MONTH_TEST_IDS.monthName(month)}>
-          {monthLabel(month, asOf)}
+          {monthName}
         </MonthName>
         <ColumnNames
           dir="ltr"

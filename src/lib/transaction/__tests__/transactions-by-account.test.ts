@@ -3,7 +3,10 @@ import {
   mockSiblingAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
 import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
-import { transactionsByAccount } from '../transactions-by-account';
+import {
+  accountTransactions,
+  transactionsByAccount,
+} from '../transactions-by-account';
 
 describe('transactions by account', () => {
   const byAccount = transactionsByAccount([
@@ -37,5 +40,21 @@ describe('transactions by account', () => {
 
   it('keys each account’s transactions by that account', () => {
     expect(byAccount[mockSiblingAccountSummary.id]).toEqual([]);
+  });
+
+  describe('an account the page was sent nothing for', () => {
+    const mockUnknownAccountId = 'no-such-account';
+
+    it('hands back the same empty list every time, so the screen does not redo its sums', () => {
+      expect(accountTransactions(byAccount, mockUnknownAccountId)).toBe(
+        accountTransactions(byAccount, mockUnknownAccountId)
+      );
+    });
+  });
+
+  it('hands back an account’s own transactions', () => {
+    expect(accountTransactions(byAccount, mockAccountSummary.id)).toBe(
+      byAccount[mockAccountSummary.id]
+    );
   });
 });

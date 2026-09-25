@@ -79,6 +79,12 @@ describe('the transaction list', () => {
       expect(listedRows()).toHaveLength(1);
     });
 
+    it('names the interest choice once for a screen reader, not twice', () => {
+      expect(
+        screen.getByTestId(TRANSACTION_LIST_TEST_IDS.interestTitle)
+      ).toHaveAttribute('aria-hidden', 'true');
+    });
+
     describe('when the parent asks for every day', () => {
       beforeEach(() => {
         choose(TRANSACTION_LIST_TEST_IDS.interestMode, INTEREST_MODE.daily);

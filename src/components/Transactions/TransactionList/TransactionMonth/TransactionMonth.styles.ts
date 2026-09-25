@@ -4,7 +4,7 @@ import { Amounts } from '../transaction-list-parts';
 export const Heading = styled.div`
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 9px;
