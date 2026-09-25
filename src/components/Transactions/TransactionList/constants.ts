@@ -8,14 +8,7 @@ import type {
   TransactionTypeFilter,
 } from '@/lib/transaction/transaction-rows';
 import type { Choice } from '../ChoiceChips';
-
-function countInWords(
-  count: number,
-  one: string,
-  many: (count: number) => string
-): string {
-  return count === 1 ? one : many(count);
-}
+import { countInWords } from '../count-in-words';
 
 export const TRANSACTION_LIST_COPY = {
   title: 'התנועות',

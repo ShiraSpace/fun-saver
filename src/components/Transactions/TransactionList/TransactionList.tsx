@@ -64,17 +64,15 @@ function TransactionListMonths({
     );
   }
 
-  return (
-    <>
-      {sections.map((monthSection) => (
-        <TransactionMonth
-          key={monthSection.month}
-          monthSection={monthSection}
-          asOf={asOf}
-        />
-      ))}
-    </>
-  );
+  const months = sections.map((monthSection) => (
+    <TransactionMonth
+      key={monthSection.month}
+      monthSection={monthSection}
+      asOf={asOf}
+    />
+  ));
+
+  return <>{months}</>;
 }
 
 interface TransactionListHeadProps {

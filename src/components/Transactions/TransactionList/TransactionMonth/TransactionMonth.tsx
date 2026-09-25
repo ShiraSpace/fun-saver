@@ -22,6 +22,12 @@ export function TransactionMonth({
   asOf,
 }: TransactionMonthProps): JSX.Element {
   const { month, rows } = monthSection;
+  const transactionRows = rows.map((transactionListRow) => (
+    <TransactionRow
+      key={transactionListRow.key}
+      transactionListRow={transactionListRow}
+    />
+  ));
 
   return (
     <section>
@@ -40,14 +46,7 @@ export function TransactionMonth({
           <BalanceColumn>{TRANSACTION_LIST_COPY.columns.balance}</BalanceColumn>
         </ColumnNames>
       </Heading>
-      <Rows>
-        {rows.map((transactionListRow) => (
-          <TransactionRow
-            key={transactionListRow.key}
-            transactionListRow={transactionListRow}
-          />
-        ))}
-      </Rows>
+      <Rows>{transactionRows}</Rows>
     </section>
   );
 }
