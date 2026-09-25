@@ -29,7 +29,7 @@ mockup `mockups/account-summary/transactions.html` + `account-summary.js` is the
 specification of record for anything either document leaves open. Read both
 before any PR.
 
-## Where it stands (2026-09-25)
+## Where it stands (2026-09-26)
 
 Spec and plan merged as #119. **PR 1 merged as #122** — the chart-line colours
 are on `main`, so PR 7 now waits only on PR 6. **PR 2 merged as #125** — every
@@ -37,12 +37,22 @@ store lists an account's whole ledger, oldest first. **PR 3 merged as #129** —
 one read settles interest and hands back each child's wallets and history, so
 lane B is done. **PR 4 merged as #152** and **PR 5 as #156** — the balance
 history and the transaction list rows are on `main`, so wave 1 is done.
-**PR 6 is open as #157**, built under the glossary's names (`BalanceOverTime`,
+**PR 6 merged as #157**, built under the glossary's names (`BalanceOverTime`,
 `TotalBalance`, `BalanceChange`, `use-transactions-view-choices`); its section
 below records it as built, and PRs 7–9 use those names. It left the
-display-precision rule to PR 7 and `BalanceChange`'s agorot to PR 8.
-PR 7 may stack on `feat/transactions-route` while #157 is open, retargeting
-to `main` once it merges.
+display-precision rule to PR 7 and `BalanceChange`'s agorot to PR 8. The plan
+was synced to it in #158. **Wave 3 is open: PRs 7 and 8 can both start.**
+
+**`src/lib` is being split into domain folders** on `refactor/lib-domain-folders`
+(`.plans/2026-09-25-lib-domain-folders.md`) — files move, nothing changes
+behaviour. Whichever of it and PR 7 / PR 8 merges second rebases and re-points
+its imports. The one path these sections name that moves is
+`src/lib/constants.ts`: after the split, `WALLET_SHORT_LABEL` (PR 7) goes in
+`src/lib/wallet/constants.ts` beside `WALLET_LABEL`. Types and other symbols
+move too (`@/lib/types` splits by domain, `balance-history` and
+`transaction-rows` go under `wallet/` and `transaction/`); import each from
+wherever `main` has it when the PR starts. `dates.ts` and `money.ts` stay at
+the root.
 
 ### Lanes — who can run in parallel
 
@@ -54,8 +64,8 @@ stack was rebased twice because branches were cut from each other instead.
 | Wave | Lane A | Lane B | Lane C | Starts when |
 | --- | --- | --- | --- | --- |
 | 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 ✓ #129 — store, then `settleInterest` | PR 4 ✓ #152 → PR 5 ✓ #156 — `balance-history`, then `transaction-rows` | done |
-| 2 | PR 6 — route, shell, total balance — open #157 | — | — | PRs 3 and 4 merged |
-| 3 | PR 7 — chart | PR 8 — list | — | PR 6 merged; PR 7 also needs PR 1, PR 8 needs PR 5 |
+| 2 | PR 6 — route, shell, total balance ✓ #157 | — | — | done |
+| 3 | PR 7 — chart | PR 8 — list | — | now |
 | 4 | PR 9 — tab and browser suite | — | — | PRs 7 and 8 merged |
 
 - **Only shared file in wave 1:** `src/lib/dates.ts`, where PR 5 adds `calendarMonth`.
@@ -1402,11 +1412,10 @@ it grows PR 6's `BalanceOverTime` and view choices. Uses decisions B and C (sett
 **Interfaces:**
 
 ```ts
-// src/components/Transactions/constants.ts — display precision, not money, so not src/lib
+// src/components/Transactions/constants.ts
 export const AGOROT_SHOWN_BELOW = 10 * AGOROT_PER_SHEKEL;
 
-// src/components/Transactions/money-text.ts — the one precision rule the ticks
-// (here) and the change column (PR 8) share; display text stays with the screen
+// src/components/Transactions/money-text.ts
 export function shekelsText(agorot: number, withAgorot: boolean): string;
 
 // src/lib/constants.ts — moved from BALANCE_BREAKDOWN_COPY.shortWalletLabel, one copy only
