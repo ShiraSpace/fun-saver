@@ -111,5 +111,11 @@ describe('NavigationTabs', () => {
         screen.getByTestId(NAVIGATION_TABS_TEST_IDS.methodTab)
       ).toBeDisabled();
     });
+
+    it('cannot send them to the transactions, which needs an account to open', () => {
+      expect(
+        screen.getByTestId(NAVIGATION_TABS_TEST_IDS.transactionsTab)
+      ).toBeDisabled();
+    });
   });
 });
