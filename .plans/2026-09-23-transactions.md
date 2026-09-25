@@ -29,7 +29,7 @@ mockup `mockups/account-summary/transactions.html` + `account-summary.js` is the
 specification of record for anything either document leaves open. Read both
 before any PR.
 
-## Where it stands (2026-09-26)
+## Where it stands (2026-09-27)
 
 Spec and plan merged as #119. **PR 1 merged as #122** — the chart-line colours
 are on `main`, so PR 7 now waits only on PR 6. **PR 2 merged as #125** — every
@@ -43,16 +43,25 @@ below records it as built, and PRs 7–9 use those names. It left the
 display-precision rule to PR 7 and `BalanceChange`'s agorot to PR 8. The plan
 was synced to it in #158. **Wave 3 is open: PRs 7 and 8 can both start.**
 
-**`src/lib` is being split into domain folders** on `refactor/lib-domain-folders`
-(`.plans/2026-09-25-lib-domain-folders.md`) — files move, nothing changes
-behaviour. Whichever of it and PR 7 / PR 8 merges second rebases and re-points
-its imports. The one path these sections name that moves is
-`src/lib/constants.ts`: after the split, `WALLET_SHORT_LABEL` (PR 7) goes in
-`src/lib/wallet/constants.ts` beside `WALLET_LABEL`. Types and other symbols
-move too (`@/lib/types` splits by domain, `balance-history` and
-`transaction-rows` go under `wallet/` and `transaction/`); import each from
-wherever `main` has it when the PR starts. `dates.ts` and `money.ts` stay at
-the root.
+**`src/lib` is in domain folders since #161**
+(`.plans/2026-09-25-lib-domain-folders.md`); files moved, nothing changed
+behaviour. `account/`, `user/`, `transaction/`, `wallet/` and `interest/` each
+hold their own logic, `types.ts`, `constants.ts` and `errors.ts`. `dates.ts`,
+`money.ts`, `clock.ts` and `AGOROT_PER_SHEKEL` (in `constants.ts`) stay at the
+root. Shared test mocks are split the same way, into
+`src/test-utils/mocks/<domain>.mocks.ts`. Sections for merged PRs keep the
+paths they had when they merged. PRs 7 and 8 started on the new layout and
+keep their own sections current. Where they place files:
+
+| Symbol | Now in |
+| --- | --- |
+| `WALLET_LABEL`, `WALLET_ICON`, and PR 7's new `WALLET_SHORT_LABEL` | `src/lib/wallet/constants.ts` |
+| `balanceHistory`, `BalanceHistory` | `src/lib/wallet/balance-history.ts` |
+| `balanceChange` (was `wallet-totals`) | `src/lib/wallet/balance.ts` |
+| `transactionListRows`, `monthSections`, `InterestMode` | `src/lib/transaction/transaction-rows.ts` |
+| `transactionsByAccount` | `src/lib/transaction/transactions-by-account.ts` |
+| `TRANSACTION_TYPE`, `INTEREST_MODE` | `src/lib/transaction/constants.ts` |
+| `Transaction` · `Wallet`, `WalletName` · `AccountSummary` | `src/lib/transaction/types.ts` · `src/lib/wallet/types.ts` · `src/lib/account/types.ts` |
 
 ### Lanes — who can run in parallel
 
@@ -93,8 +102,8 @@ no PR waits on the user for a decision.
 - Hebrew only, RTL, inherited from the root layout's `dir="rtl"`. No English copy.
 - No new dependency. No new API route. No migration, no new index.
 - Amounts are integer agorot everywhere below the component layer.
-- A transaction's type is read from `TRANSACTION_TYPE` in `src/lib/constants.ts`
-  (#153) — `TRANSACTION_TYPE.deposit`, never the string `'deposit'` — in
+- A transaction's type is read from `TRANSACTION_TYPE` in `src/lib/transaction/constants.ts`
+  (#153, moved in #161) — `TRANSACTION_TYPE.deposit`, never the string `'deposit'` — in
   production code, tests and filter options alike.
 - Days are UTC `YYYY-MM-DD` strings, as `today()` and `occurredAt` already are.
 - No colour literal (`#hex`, `rgba(`, `hsla(`) in any `.tsx`, `.styles.ts`,
@@ -1327,7 +1336,7 @@ built names.
   `findCurrentAccount`, redirecting to `HOME_ROUTE` when there is no account.
   It hands the shell every `AccountSummary`, plus `transactionsByAccount(...)`
   and `asOf`.
-- `src/lib/transactions-by-account.ts`, which projects each settled account's
+- `src/lib/transactions-by-account.ts` (`src/lib/transaction/` since #161), which projects each settled account's
   transactions without `id` and `accountId` and keys them by account id:
 
 ```ts

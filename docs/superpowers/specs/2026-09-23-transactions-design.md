@@ -8,7 +8,7 @@
 > Implementation in progress; PR 1, the chart-line colour tokens, merged as #122;
 > PR 2, the whole-ledger store read, as #125; PR 3, the shared read, as #129;
 > PR 4, the balance history, as #152; PR 5, the transaction list rows, as #156;
-> PR 6, the route and shell, as #157.
+> PR 6, the route and shell, as #157. `src/lib` moved into domain folders in #161.
 > Mockup: `mockups/account-summary/transactions.html` + `account-summary.js` —
 > one screen, no competing variants; the controls beneath it are details inside
 > that screen. The mockup is the specification of record for anything this
@@ -38,7 +38,7 @@ things outside the route that the screen cannot ship without:
   and the ledger;
 - `listByAccount` on `TransactionRepository`, `DataStore`, `RepositoryStore` and all
   three repositories;
-- `WALLET_SHORT_LABEL` hoisted out of `BalanceBreakdown` into `src/lib/constants.ts`,
+- `WALLET_SHORT_LABEL` hoisted out of `BalanceBreakdown` into `src/lib/wallet/constants.ts`,
   which edits a shipped screen's constants;
 - `monthLabel()` in `src/lib/dates.ts`, and an `href` on the `transactions` entry
   of `NAVIGATION_DESTINATIONS`.
@@ -176,7 +176,7 @@ switch — is named there as the upgrade.
 
 ## The graph
 
-A hand-rolled SVG. `src/lib/balance-history.ts` will be pure and unit-tested:
+A hand-rolled SVG. `src/lib/wallet/balance-history.ts` is pure and unit-tested:
 `Transaction[]` to a per-day balance per wallet plus a total, over the account's
 whole history. Days with no transactions carry the previous day's balance forward, so
 the history has one point per day from the account's first transaction to `asOf`
@@ -264,7 +264,7 @@ The chips carry short wallet names so total plus three wallets fit one row —
 exist as `BALANCE_BREAKDOWN_COPY.shortWalletLabel` in
 `src/components/Account/BalanceBreakdown/constants.ts`, where the donut legend uses
 them, and they are exactly the mockup's: `חיסכון` · `בזבוזים` · `מעשים`. They move
-to `WALLET_SHORT_LABEL` beside `WALLET_LABEL` in `src/lib/constants.ts` and both
+to `WALLET_SHORT_LABEL` beside `WALLET_LABEL` in `src/lib/wallet/constants.ts` and both
 screens read them from there. A second copy is not written.
 
 **Colours** come from the emotion theme: `textStrong` for the total line and its
@@ -495,8 +495,8 @@ what makes comparing two children a single tap.
 ## Components
 
 ```
-src/lib/balance-history.ts      pure, graph: per-day balance per wallet + total
-src/lib/transaction-rows.ts     pure, list: grouping, rollup, ordering; reads the history for balances
+src/lib/wallet/balance-history.ts         pure, graph: per-day balance per wallet + total
+src/lib/transaction/transaction-rows.ts   pure, list: grouping, rollup, ordering; reads the history for balances
 src/components/Transactions/
   Transactions.tsx              client shell, account navigation
   use-transactions-view-choices.ts  range, shown balances, transaction type filter, interest mode
@@ -529,9 +529,9 @@ with their setters do not fit in the 40 lines left.
 
 | Need | Already exists |
 | --- | --- |
-| wallet icons | `WALLET_ICON` in `src/lib/constants.ts` |
-| wallet labels (rows) | `WALLET_LABEL` in `src/lib/constants.ts` |
-| short wallet labels (chips, direct labels) | `BALANCE_BREAKDOWN_COPY.shortWalletLabel`, hoisted to `WALLET_SHORT_LABEL` in `src/lib/constants.ts` |
+| wallet icons | `WALLET_ICON` in `src/lib/wallet/constants.ts` |
+| wallet labels (rows) | `WALLET_LABEL` in `src/lib/wallet/constants.ts` |
+| short wallet labels (chips, direct labels) | `BALANCE_BREAKDOWN_COPY.shortWalletLabel`, hoisted to `WALLET_SHORT_LABEL` in `src/lib/wallet/constants.ts` |
 | whole-shekel formatting (headline, change, balances) | `agorotToWholeShekels()` in `src/lib/money.ts` |
 | row date (`14 בספטמבר`) | `dayMonth()` in `src/lib/dates.ts` |
 | amount rendering | `Money` |
