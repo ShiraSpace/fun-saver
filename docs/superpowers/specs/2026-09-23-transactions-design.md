@@ -376,7 +376,7 @@ the title reads the row count and the span of the account's whole history.
 
 `addDeposit` writes one transaction per wallet and gives all three a **single
 `createdAt`**, computed once before the map, plus the same `occurredAt`. The list
-groups `type === 'deposit'` by `createdAt` and renders one row carrying the sum.
+groups `type === TRANSACTION_TYPE.deposit` by `createdAt` and renders one row carrying the sum.
 Exact, not heuristic. A deposit row shows a single icon and no wallet badge,
 because a deposit has no one wallet.
 

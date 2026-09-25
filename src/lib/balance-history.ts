@@ -29,7 +29,7 @@ function firstTransactionDay(
   return transactionDays[0];
 }
 
-function dailyBalanceChanges(
+export function dailyBalanceChanges(
   transactions: Pick<Transaction, 'type' | 'amount' | 'occurredAt'>[]
 ): Map<string, number> {
   const balanceChangeByDay = new Map<string, number>();

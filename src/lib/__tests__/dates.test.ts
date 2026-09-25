@@ -1,4 +1,4 @@
-import { addDays, eachDayInclusive } from '../dates';
+import { addDays, calendarMonth, eachDayInclusive } from '../dates';
 
 describe('addDays', () => {
   it('advances within a month', () => {
@@ -28,5 +28,11 @@ describe('eachDayInclusive', () => {
 
   it('returns nothing when start is after end', () => {
     expect(eachDayInclusive('2026-01-05', '2026-01-04')).toEqual([]);
+  });
+});
+
+describe('calendarMonth', () => {
+  it('names the month a day falls in', () => {
+    expect(calendarMonth('2026-09-14')).toBe('2026-09');
   });
 });
