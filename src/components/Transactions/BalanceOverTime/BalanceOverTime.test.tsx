@@ -4,7 +4,7 @@ import {
   mockAccountSummary,
 } from '@/test-utils/mocks/general.mocks';
 import { balanceHistory, totalBalanceChange } from '@/lib/balance-history';
-import { agorotToWholeShekels } from '@/lib/money';
+import { balanceChangeInShekels } from '@/lib/money';
 import { TOTAL_BALANCE_TEST_IDS } from './TotalBalance/constants';
 import { RANGE, type RangeId } from './constants';
 import { BalanceOverTime } from './BalanceOverTime';
@@ -27,9 +27,9 @@ function renderBalanceOverTime(rangeId: RangeId): void {
   );
 }
 
-function balanceChangeInShekels(rangeId: RangeId): string {
+function balanceChangeOver(rangeId: RangeId): string {
   return String(
-    agorotToWholeShekels(
+    balanceChangeInShekels(
       totalBalanceChange(mockBalanceHistory, RANGE[rangeId].days)
     )
   );
@@ -44,7 +44,7 @@ describe('the balance over time', () => {
     it('shows how much the total balance moved that week', () => {
       expect(
         screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange)
-      ).toHaveTextContent(balanceChangeInShekels('week'));
+      ).toHaveTextContent(balanceChangeOver('week'));
     });
 
     it('names the week as the range it measured', () => {
@@ -62,7 +62,7 @@ describe('the balance over time', () => {
     it('shows how much the total balance moved since the first transaction', () => {
       expect(
         screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange)
-      ).toHaveTextContent(balanceChangeInShekels('all'));
+      ).toHaveTextContent(balanceChangeOver('all'));
     });
   });
 });

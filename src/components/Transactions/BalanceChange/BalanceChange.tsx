@@ -16,12 +16,13 @@ export function BalanceChange({
   const shekels = balanceChangeInShekels(balanceChange);
   const sign =
     shekels < 0 ? BALANCE_CHANGE_COPY.fell : BALANCE_CHANGE_COPY.rose;
+  const shekelsMoved = Math.abs(shekels);
 
   return (
     <Amount dir="ltr" data-testid={testId}>
       {sign}
       {MONEY_COPY.currencySign}
-      {Math.abs(shekels)}
+      {shekelsMoved}
     </Amount>
   );
 }

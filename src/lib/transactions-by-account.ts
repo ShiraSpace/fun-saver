@@ -6,21 +6,27 @@ export type TransactionsByAccount = Record<
   Omit<Transaction, 'id' | 'accountId'>[]
 >;
 
+function transactionsSentToThePage(
+  transactions: Transaction[]
+): TransactionsByAccount[string] {
+  return transactions.map(
+    ({ walletId, type, amount, occurredAt, createdAt }) => ({
+      walletId,
+      type,
+      amount,
+      occurredAt,
+      createdAt,
+    })
+  );
+}
+
 export function transactionsByAccount(
   settledAccounts: SettledAccount[]
 ): TransactionsByAccount {
   return Object.fromEntries(
     settledAccounts.map((settledAccount) => [
       settledAccount.account.id,
-      settledAccount.transactions.map(
-        ({ walletId, type, amount, occurredAt, createdAt }) => ({
-          walletId,
-          type,
-          amount,
-          occurredAt,
-          createdAt,
-        })
-      ),
+      transactionsSentToThePage(settledAccount.transactions),
     ])
   );
 }
