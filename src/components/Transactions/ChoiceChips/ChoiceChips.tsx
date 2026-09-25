@@ -1,7 +1,11 @@
 'use client';
 
 import { JSX } from 'react';
-import { CHOICE_CHIPS_TEST_IDS } from './constants';
+import {
+  CHOICE_CHIPS_TEST_IDS,
+  CHOICE_CHIPS_VARIANT,
+  type ChoiceChipsVariant,
+} from './constants';
 import { Chip, Group, GroupName, Radio } from './ChoiceChips.styles';
 
 export interface Choice<Id extends string> {
@@ -10,6 +14,7 @@ export interface Choice<Id extends string> {
 }
 
 interface ChoiceChipsProps<Id extends string> {
+  variant?: ChoiceChipsVariant;
   groupName: string;
   legend: string;
   choices: readonly Choice<Id>[];
@@ -25,6 +30,7 @@ export function ChoiceChips<Id extends string>({
   selected,
   onSelect,
   testId,
+  variant = CHOICE_CHIPS_VARIANT.chips,
 }: ChoiceChipsProps<Id>): JSX.Element {
   const chips = choices.map((choice) => (
     <Chip key={choice.id}>
@@ -40,7 +46,7 @@ export function ChoiceChips<Id extends string>({
   ));
 
   return (
-    <Group>
+    <Group data-variant={variant}>
       <GroupName>{legend}</GroupName>
       {chips}
     </Group>

@@ -14,9 +14,12 @@ import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { openAccountPicker } from '@/test-utils/account-picker';
+import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { CHOICE_CHIPS_TEST_IDS } from './ChoiceChips/constants';
 import { BALANCE_OVER_TIME_TEST_IDS } from './BalanceOverTime/constants';
 import { TOTAL_BALANCE_TEST_IDS } from './BalanceOverTime/TotalBalance/constants';
+import { TRANSACTION_LIST_TEST_IDS } from './TransactionList/constants';
+import { TRANSACTION_ROW_TEST_IDS } from './TransactionList/TransactionRow/constants';
 import { TRANSACTIONS_COPY, TRANSACTIONS_ROUTE } from './constants';
 import { Transactions } from './Transactions';
 
@@ -36,6 +39,21 @@ function rangeOption(rangeId: string): HTMLElement {
   return screen.getByTestId(
     CHOICE_CHIPS_TEST_IDS.option(BALANCE_OVER_TIME_TEST_IDS.ranges, rangeId)
   );
+}
+
+function transactionTypeOption(transactionTypeFilter: string): HTMLElement {
+  return screen.getByTestId(
+    CHOICE_CHIPS_TEST_IDS.option(
+      TRANSACTION_LIST_TEST_IDS.filters,
+      transactionTypeFilter
+    )
+  );
+}
+
+function switchToAnotherChild(): void {
+  fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+  openAccountPicker();
+  fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 }
 
 describe('the transactions screen', () => {
@@ -80,15 +98,43 @@ describe('the transactions screen', () => {
       ).toHaveTextContent(String(agorotToWholeShekels(todaysTotal)));
     });
 
+    it('still lists the deposit from before the week', () => {
+      expect(screen.getAllByTestId(TRANSACTION_ROW_TEST_IDS.row)).toHaveLength(
+        mockDeposits.length
+      );
+    });
+
     describe('and then switches to another child', () => {
       beforeEach(() => {
-        fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
-        openAccountPicker();
-        fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
+        switchToAnotherChild();
       });
 
       it('keeps the week picked', () => {
         expect(rangeOption('week')).toBeChecked();
+      });
+    });
+  });
+
+  describe('when the parent shows only withdrawals', () => {
+    beforeEach(() => {
+      fireEvent.click(transactionTypeOption(TRANSACTION_TYPE.withdrawal));
+    });
+
+    describe('and then switches to a child with no transactions yet', () => {
+      beforeEach(() => {
+        switchToAnotherChild();
+      });
+
+      it('keeps withdrawals picked', () => {
+        expect(
+          transactionTypeOption(TRANSACTION_TYPE.withdrawal)
+        ).toBeChecked();
+      });
+
+      it('says the child has no transactions, not that the filter found none', () => {
+        expect(
+          screen.getByTestId(TRANSACTION_LIST_TEST_IDS.noTransactions)
+        ).toBeInTheDocument();
       });
     });
   });

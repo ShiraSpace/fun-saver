@@ -1,4 +1,5 @@
 import type { SettledAccount } from '@/lib/interest/interest-settlement';
+import { NO_TRANSACTIONS } from './constants';
 import type { Transaction } from './types';
 
 export type TransactionsByAccount = Record<
@@ -29,4 +30,11 @@ export function transactionsByAccount(
       transactionsSentToThePage(settledAccount.transactions),
     ])
   );
+}
+
+export function accountTransactions(
+  transactionsByAccount: TransactionsByAccount,
+  accountId: string
+): TransactionsByAccount[string] {
+  return transactionsByAccount[accountId] ?? NO_TRANSACTIONS;
 }
