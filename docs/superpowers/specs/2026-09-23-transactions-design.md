@@ -6,7 +6,9 @@
 > payload arithmetic. `sunshine-quest`'s chart-line colours settled 2026-09-23
 > in PR 1 (the plan's decision A).
 > Implementation in progress; PR 1, the chart-line colour tokens, merged as #122;
-> PR 2, the whole-ledger store read, as #125; PR 3, the shared read, as #129.
+> PR 2, the whole-ledger store read, as #125; PR 3, the shared read, as #129;
+> PR 4, the balance history, as #152; PR 5, the transaction list rows, as #156.
+> PR 6, the route and shell, is open as #157.
 > Mockup: `mockups/account-summary/transactions.html` + `account-summary.js` —
 > one screen, no competing variants; the controls beneath it are details inside
 > that screen. The mockup is the specification of record for anything this
@@ -497,16 +499,18 @@ src/lib/balance-history.ts      pure, graph: per-day balance per wallet + total
 src/lib/transaction-rows.ts     pure, list: grouping, rollup, ordering; reads the history for balances
 src/components/Transactions/
   Transactions.tsx              client shell, account navigation
-  use-transactions-view.ts      range, shown balances, transaction type filter, interest mode
-  use-balance-history.ts        the current account's balance history, memoised
-  constants.ts                  TRANSACTIONS_ROUTE, TRANSACTIONS_COPY, test ids
+  use-transactions-view-choices.ts  range, shown balances, transaction type filter, interest mode
+  constants.ts                  TRANSACTIONS_ROUTE, TRANSACTIONS_COPY, AGOROT_SHOWN_BELOW
+  money-text.ts                 shekelsText, needsAgorot: the one display-precision rule
   index.ts
-  ChartCard/                    card shell, chips, ranges
-    TotalBalanceHeader/         headline total balance + change pill
+  BalanceChange/                a signed change, +₪12 / -₪0.09 (the pill and the list's column)
+  ChoiceChips/                  one choice from a few: ranges, type filter, interest mode
+  BalanceOverTime/              the card: total balance, ranges, chart, balance chips
+    TotalBalance/               headline total balance + change pill
     BalanceChart/               svg: scales, paths, both axes, direct labels
     BalanceChips/               which balances the chart shows
   TransactionList/              list shell, count line, no-transactions state
-    TransactionMonth/ TransactionRow/ TypeFilters/ InterestMode/
+    TransactionMonth/ TransactionRow/
 ```
 
 Every folder carries the `index.ts`, `constants.ts` and `.styles.ts` siblings
@@ -514,8 +518,8 @@ CLAUDE.md requires; only the files worth naming are listed.
 
 Split to stay inside the 200-line file and 40-line function limits without
 collapsing anything to get under them. `BalanceChart` is its own folder because
-the path math alone is ~150 lines and would otherwise push `ChartCard` over the
-file limit on its first PR. `use-transactions-view.ts` exists from the first PR
+the path math alone is ~150 lines and would otherwise push `BalanceOverTime` over the
+file limit on its first PR. `use-transactions-view-choices.ts` exists from the first PR
 rather than being extracted when the limit bites: `Method.tsx` is already 57
 lines doing nothing but the `AccountManagement` / `AccountsProvider` / `Screen` /
 `Column` / `Header` wrapping this screen also needs, and four pieces of state
