@@ -50,7 +50,9 @@ export class PostgresTransactions implements TransactionRepository {
     const { values, placeholders } = insertValues(transactions);
 
     await this.sql.query(
-      `INSERT INTO transactions (${TRANSACTION_COLUMNS}) VALUES ${placeholders}`,
+      `INSERT INTO transactions (${TRANSACTION_COLUMNS}) VALUES ${placeholders}
+       ON CONFLICT (account_id, wallet_id, occurred_at) WHERE type = 'interest'
+       DO NOTHING`,
       values
     );
   }
