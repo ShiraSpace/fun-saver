@@ -60,6 +60,10 @@ describe('balanceChangeInShekels', () => {
     expect(balanceChangeInShekels(-140)).toBe(-1.5);
   });
 
+  it('keeps a rise rising while rounding it to the nearest half shekel', () => {
+    expect(balanceChangeInShekels(140)).toBe(1.5);
+  });
+
   it('reads a change too small to show as no change, not as a fall', () => {
     expect(balanceChangeInShekels(-20)).toBe(0);
   });

@@ -21,6 +21,18 @@ describe('transactions by account', () => {
     it('leaves the account behind', () => {
       expect(firstTransaction).not.toHaveProperty('accountId');
     });
+
+    it('keeps what the chart and the list need to draw it', () => {
+      const [mockFirstTransaction] = mockTransactions;
+
+      expect(firstTransaction).toMatchObject({
+        walletId: mockFirstTransaction.walletId,
+        type: mockFirstTransaction.type,
+        amount: mockFirstTransaction.amount,
+        occurredAt: mockFirstTransaction.occurredAt,
+        createdAt: mockFirstTransaction.createdAt,
+      });
+    });
   });
 
   it('keys each account’s transactions by that account', () => {

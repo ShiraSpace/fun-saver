@@ -11,6 +11,7 @@ import type { TransactionsViewChoices } from '../use-transactions-view-choices';
 import { TotalBalance } from './TotalBalance';
 import {
   BALANCE_OVER_TIME_COPY,
+  BALANCE_OVER_TIME_RANGE_GROUP_NAME,
   BALANCE_OVER_TIME_TEST_IDS,
   RANGE,
   RANGES,
@@ -39,7 +40,7 @@ export function BalanceOverTime({
       />
       <RangeRow>
         <ChoiceChips
-          groupName={BALANCE_OVER_TIME_COPY.rangeGroupName}
+          groupName={BALANCE_OVER_TIME_RANGE_GROUP_NAME}
           legend={BALANCE_OVER_TIME_COPY.rangeLegend}
           choices={RANGES}
           selected={range.id}

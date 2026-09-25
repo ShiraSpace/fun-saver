@@ -18,12 +18,13 @@ export const RANGES: readonly TimeRange[] = Object.values(RANGE);
 
 export const DEFAULT_RANGE: RangeId = 'month';
 
+export const BALANCE_OVER_TIME_RANGE_GROUP_NAME = 'balance-over-time-range';
+
 export const BALANCE_OVER_TIME_TEST_IDS = {
   card: 'balance-over-time',
-  ranges: 'balance-over-time-range',
+  ranges: BALANCE_OVER_TIME_RANGE_GROUP_NAME,
 } as const;
 
 export const BALANCE_OVER_TIME_COPY = {
-  rangeGroupName: 'balance-over-time-range',
   rangeLegend: 'טווח זמן',
 } as const;
