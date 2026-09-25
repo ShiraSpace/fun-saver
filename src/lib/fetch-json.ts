@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { SIGN_IN_PATH } from './constants';
+import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { goTo } from './navigate';
 
 interface JsonRequest {

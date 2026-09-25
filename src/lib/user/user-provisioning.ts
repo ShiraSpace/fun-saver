@@ -1,8 +1,8 @@
 import type { DataStore } from '@/db/data-store';
-import { now } from './clock';
+import { now } from '@/lib/clock';
 import { GOOGLE_PROVIDER } from './constants';
 import { DuplicateUserError } from './errors';
-import { newId } from './ids';
+import { newId } from '@/lib/ids';
 import type { User } from './types';
 
 export interface GoogleIdentity {

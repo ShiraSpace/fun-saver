@@ -1,5 +1,5 @@
-import type { AuthProvider, User } from '@/lib/types';
-import { DuplicateUserError } from '@/lib/errors';
+import type { AuthProvider, User } from '@/lib/user/types';
+import { DuplicateUserError } from '@/lib/user/errors';
 import type { UserRepository } from '../data-store';
 import { userWithIdentity, isDuplicateUser } from '../user-identity';
 import type { FileSession } from './file-session';

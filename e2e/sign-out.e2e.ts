@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import { SIGN_IN_PATH } from '@/lib/constants';
+import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { mockAccount } from '@/test-utils/mocks/general.mocks';
 import { useDriver } from './driver/use-driver';
 

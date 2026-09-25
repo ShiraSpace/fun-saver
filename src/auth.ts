@@ -2,9 +2,9 @@ import NextAuth, { type Session } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import Google from 'next-auth/providers/google';
 import { getStore } from '@/db';
-import { provisionUser, googleIdentity } from '@/lib/user-provisioning';
-import { sessionUser } from '@/lib/session-user';
-import type { SignedInUser } from '@/lib/types';
+import { provisionUser, googleIdentity } from '@/lib/user/user-provisioning';
+import { sessionUser } from '@/lib/user/session-user';
+import type { SignedInUser } from '@/lib/user/types';
 
 declare module 'next-auth/jwt' {
   interface JWT {

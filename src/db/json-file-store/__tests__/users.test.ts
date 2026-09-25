@@ -1,6 +1,6 @@
 import { JsonFileStore } from '../index';
 import { mockUser, createMockUser } from '@/test-utils/mocks/general.mocks';
-import { DuplicateUserError } from '@/lib/errors';
+import { DuplicateUserError } from '@/lib/user/errors';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 describe('JsonFileStore users', () => {

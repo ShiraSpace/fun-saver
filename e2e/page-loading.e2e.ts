@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { LOADING_SHELL_TEST_IDS } from '@/components/LoadingShell/constants';
-import { SIGN_IN_PATH } from '@/lib/constants';
+import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { METHOD_COPY } from '@/components/Method/copy';

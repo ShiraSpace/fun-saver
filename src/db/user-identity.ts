@@ -1,4 +1,4 @@
-import type { AuthProvider, User } from '@/lib/types';
+import type { AuthProvider, User } from '@/lib/user/types';
 
 export function userWithIdentity(
   users: User[],

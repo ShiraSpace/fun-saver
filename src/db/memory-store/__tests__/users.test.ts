@@ -1,6 +1,6 @@
 import { InMemoryStore } from '../index';
 import { mockUser, createMockUser } from '@/test-utils/mocks/general.mocks';
-import { DuplicateUserError } from '@/lib/errors';
+import { DuplicateUserError } from '@/lib/user/errors';
 
 describe('InMemoryStore users', () => {
   let store: InMemoryStore;
