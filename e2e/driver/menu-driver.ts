@@ -11,6 +11,7 @@ import { SIGNED_IN_USER_SECTION_TEST_IDS } from '@/components/Menu/SignedInUserS
 import { SIGN_IN_TEST_IDS } from '@/components/SignIn/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '@/components/Menu/AppearanceSection/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
+import { TRANSACTIONS_COPY } from '@/components/Transactions/constants';
 import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { AppBrowser } from './app-browser';
 
@@ -75,6 +76,16 @@ export class MenuDriver {
     return this.appBrowser.currentPath();
   }
 
+  async openTransactionsPage(): Promise<string> {
+    await this.appBrowser.click(NAVIGATION_TABS_TEST_IDS.transactionsTab);
+    await this.appBrowser.waitForText(
+      HEADER_TITLE_TEST_IDS.title,
+      TRANSACTIONS_COPY.title
+    );
+
+    return this.appBrowser.currentPath();
+  }
+
   async signOut(): Promise<string> {
     const left = this.appBrowser.waitForNavigation();
 
@@ -119,6 +130,13 @@ export class MenuDriver {
   methodTabBackground(): Promise<string> {
     return this.appBrowser.computedStyle(
       NAVIGATION_TABS_TEST_IDS.methodTab,
+      'background-color'
+    );
+  }
+
+  transactionsTabBackground(): Promise<string> {
+    return this.appBrowser.computedStyle(
+      NAVIGATION_TABS_TEST_IDS.transactionsTab,
       'background-color'
     );
   }

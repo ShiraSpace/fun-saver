@@ -1,5 +1,6 @@
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { METHOD_ROUTE } from '@/components/Method/constants';
+import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
 
 export const NAVIGATION_TABS_TEST_IDS = {
   tabBar: 'menu-nav-tabs',
@@ -33,6 +34,7 @@ export const NAVIGATION_DESTINATIONS: readonly NavigationDestination[] = [
     icon: '📈',
     label: 'תנועות',
     testId: NAVIGATION_TABS_TEST_IDS.transactionsTab,
+    href: TRANSACTIONS_ROUTE,
   },
   {
     id: 'method',
