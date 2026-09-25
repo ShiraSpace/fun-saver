@@ -4,6 +4,8 @@ import {
   calendarYear,
   eachDayInclusive,
   monthLabel,
+  shortDayMonth,
+  shortMonth,
 } from '../dates';
 
 describe('addDays', () => {
@@ -40,6 +42,28 @@ describe('eachDayInclusive', () => {
 describe('calendarMonth', () => {
   it('names the month a day falls in', () => {
     expect(calendarMonth('2026-09-14')).toBe('2026-09');
+  });
+});
+
+describe('shortDayMonth', () => {
+  it('writes a short date the way the chart prints it', () => {
+    expect(shortDayMonth('2026-09-14')).toBe('14.9');
+  });
+});
+
+describe('shortMonth', () => {
+  const mockDay = '2026-09-14';
+  const hebrewShortMonth = new Intl.DateTimeFormat('he', {
+    month: 'short',
+    timeZone: 'UTC',
+  }).format(new Date(`${mockDay}T00:00:00Z`));
+
+  it('names the month in short Hebrew', () => {
+    expect(shortMonth(mockDay, false)).toBe(hebrewShortMonth);
+  });
+
+  it('adds the last two digits of the year when asked', () => {
+    expect(shortMonth(mockDay, true)).toBe(`${hebrewShortMonth} 26`);
   });
 });
 

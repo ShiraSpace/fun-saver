@@ -1,6 +1,6 @@
 import { AGOROT_PER_SHEKEL } from './constants';
 
-const HALF_SHEKEL_AGOROT = AGOROT_PER_SHEKEL / 2;
+export const HALF_SHEKEL_AGOROT = AGOROT_PER_SHEKEL / 2;
 
 export function agorotToShekels(agorot: number): number {
   return agorot / AGOROT_PER_SHEKEL;

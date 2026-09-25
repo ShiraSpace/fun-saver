@@ -10,6 +10,7 @@ import {
   ALL_TRANSACTION_TYPES,
   INTEREST_MODE,
 } from '@/lib/transaction/constants';
+import { SHOWN_BALANCE } from '../constants';
 import { TOTAL_BALANCE_TEST_IDS } from './TotalBalance/constants';
 import { RANGE, type RangeId } from './constants';
 import { BalanceOverTime } from './BalanceOverTime';
@@ -30,6 +31,10 @@ function renderBalanceOverTime(rangeId: RangeId): void {
       viewChoices={{
         range: rangeId,
         setRange: jest.fn(),
+        shownBalances: [SHOWN_BALANCE.totalBalance],
+        toggleShownBalance: jest.fn(),
+        allWalletsShown: false,
+        toggleAllWallets: jest.fn(),
         transactionTypeFilter: ALL_TRANSACTION_TYPES,
         setTransactionTypeFilter: jest.fn(),
         interestMode: INTEREST_MODE.monthly,

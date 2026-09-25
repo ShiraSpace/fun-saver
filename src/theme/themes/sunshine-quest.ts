@@ -47,6 +47,7 @@ export const sunshineQuest: ThemeTokens = {
     chartSavings: '#276E2C',
     chartSpending: '#2563EB',
     chartGoodDeeds: '#E94E89',
+    chartTotalBalanceFill: 'rgba(58, 31, 90, 0.07)',
   },
   gradients: themeGradients(GRADIENT_STOPS),
   shadows: SHADOW_SCALE,

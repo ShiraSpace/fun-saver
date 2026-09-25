@@ -4,6 +4,13 @@ const HEBREW_DAY_MONTH = new Intl.DateTimeFormat('he', {
   timeZone: 'UTC',
 });
 
+const HEBREW_SHORT_MONTH = new Intl.DateTimeFormat('he', {
+  month: 'short',
+  timeZone: 'UTC',
+});
+
+const YEAR_DIGITS = 2;
+
 const HEBREW_MONTH = new Intl.DateTimeFormat('he', {
   month: 'long',
   timeZone: 'UTC',
@@ -21,6 +28,20 @@ function utcDate(iso: string): Date {
 
 export function dayMonth(iso: string): string {
   return HEBREW_DAY_MONTH.format(utcDate(iso));
+}
+
+export function shortDayMonth(iso: string): string {
+  const date = utcDate(iso);
+
+  return `${date.getUTCDate()}.${date.getUTCMonth() + 1}`;
+}
+
+export function shortMonth(iso: string, withYear: boolean): string {
+  const date = utcDate(iso);
+  const month = HEBREW_SHORT_MONTH.format(date);
+  const year = String(date.getUTCFullYear()).slice(-YEAR_DIGITS);
+
+  return withYear ? `${month} ${year}` : month;
 }
 
 export function addDays(iso: string, days: number): string {

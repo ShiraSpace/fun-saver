@@ -1,0 +1,52 @@
+import { JSX } from 'react';
+import {
+  totalBalanceFillPath,
+  type BalanceY,
+  type DayX,
+  type ShownBalanceHistory,
+} from '../chart-geometry';
+import { BalanceLine } from './BalanceLine';
+import { BALANCE_LINES_TEST_IDS } from './constants';
+import { TotalBalanceFill } from './BalanceLines.styles';
+
+interface BalanceLinesProps {
+  shownBalanceHistories: ShownBalanceHistory[];
+  dayX: DayX;
+  balanceY: BalanceY;
+}
+
+export function BalanceLines({
+  shownBalanceHistories,
+  dayX,
+  balanceY,
+}: BalanceLinesProps): JSX.Element {
+  const totalBalanceFill = totalBalanceFillPath(
+    shownBalanceHistories,
+    dayX,
+    balanceY
+  );
+  const totalBalanceFillUnderLines = totalBalanceFill ? (
+    <TotalBalanceFill
+      d={totalBalanceFill}
+      data-testid={BALANCE_LINES_TEST_IDS.totalBalanceFill}
+    />
+  ) : null;
+  const totalBalanceLast = [...shownBalanceHistories].reverse();
+  const linesWithTotalBalanceOnTop = totalBalanceLast.map(
+    (shownBalanceHistory) => (
+      <BalanceLine
+        key={shownBalanceHistory.shownBalance}
+        shownBalanceHistory={shownBalanceHistory}
+        dayX={dayX}
+        balanceY={balanceY}
+      />
+    )
+  );
+
+  return (
+    <g>
+      {totalBalanceFillUnderLines}
+      {linesWithTotalBalanceOnTop}
+    </g>
+  );
+}

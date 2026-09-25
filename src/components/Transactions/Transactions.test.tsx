@@ -20,6 +20,12 @@ import { BALANCE_OVER_TIME_TEST_IDS } from './BalanceOverTime/constants';
 import { TOTAL_BALANCE_TEST_IDS } from './BalanceOverTime/TotalBalance/constants';
 import { TRANSACTION_LIST_TEST_IDS } from './TransactionList/constants';
 import { TRANSACTION_ROW_TEST_IDS } from './TransactionList/TransactionRow/constants';
+import { SHOWN_BALANCE } from './constants';
+import { BALANCE_CHIPS_TEST_IDS } from './BalanceOverTime/BalanceChips/constants';
+import {
+  BALANCE_CHART_COPY,
+  BALANCE_CHART_TEST_IDS,
+} from './BalanceOverTime/BalanceChart/constants';
 import { TRANSACTIONS_COPY, TRANSACTIONS_ROUTE } from './constants';
 import { Transactions } from './Transactions';
 
@@ -112,6 +118,27 @@ describe('the transactions screen', () => {
       it('keeps the week picked', () => {
         expect(rangeOption('week')).toBeChecked();
       });
+    });
+  });
+
+  describe('when the parent turns savings on and switches to a child with no transactions', () => {
+    beforeEach(() => {
+      fireEvent.click(
+        screen.getByTestId(BALANCE_CHIPS_TEST_IDS.chip(SHOWN_BALANCE.savings))
+      );
+      switchToAnotherChild();
+    });
+
+    it('says there is nothing to show yet', () => {
+      expect(
+        screen.getByTestId(BALANCE_CHART_TEST_IDS.message)
+      ).toHaveTextContent(BALANCE_CHART_COPY.noTransactions.text);
+    });
+
+    it('keeps the lines the parent chose', () => {
+      expect(
+        screen.getByTestId(BALANCE_CHIPS_TEST_IDS.chip(SHOWN_BALANCE.savings))
+      ).toHaveAttribute('aria-pressed', 'true');
     });
   });
 

@@ -8,6 +8,9 @@ import {
 } from '@/lib/wallet/balance-history';
 import { ChoiceChips } from '../ChoiceChips';
 import type { TransactionsViewChoices } from '../use-transactions-view-choices';
+import { AllWalletsChip } from './AllWalletsChip';
+import { BalanceChart } from './BalanceChart';
+import { BalanceChips } from './BalanceChips';
 import { TotalBalance } from './TotalBalance';
 import {
   BALANCE_OVER_TIME_COPY,
@@ -47,7 +50,20 @@ export function BalanceOverTime({
           onSelect={viewChoices.setRange}
           testId={BALANCE_OVER_TIME_TEST_IDS.ranges}
         />
+        <AllWalletsChip
+          allWalletsShown={viewChoices.allWalletsShown}
+          onToggle={viewChoices.toggleAllWallets}
+        />
       </RangeRow>
+      <BalanceChart
+        balanceHistory={balanceHistory}
+        range={range}
+        shownBalances={viewChoices.shownBalances}
+      />
+      <BalanceChips
+        shownBalances={viewChoices.shownBalances}
+        onToggle={viewChoices.toggleShownBalance}
+      />
     </Card>
   );
 }

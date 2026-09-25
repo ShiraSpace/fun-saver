@@ -47,6 +47,7 @@ export const midnightBlue: ThemeTokens = {
     chartSavings: '#60A5FA',
     chartSpending: '#38BDF8',
     chartGoodDeeds: '#A78BFA',
+    chartTotalBalanceFill: 'rgba(236, 241, 248, 0.07)',
   },
   gradients: themeGradients(GRADIENT_STOPS),
   shadows: SHADOW_SCALE,
