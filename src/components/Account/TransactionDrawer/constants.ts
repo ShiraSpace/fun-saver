@@ -1,6 +1,6 @@
 import { SCREEN_LAYOUT } from '@/components/Screen/constants';
-import type { TRANSACTION_TYPE } from '@/lib/constants';
-import type { TransactionType } from '@/lib/types';
+import type { TRANSACTION_TYPE } from '@/lib/transaction/constants';
+import type { TransactionType } from '@/lib/transaction/types';
 
 export type EnteredTransactionType = Exclude<
   TransactionType,

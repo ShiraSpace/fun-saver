@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
+import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import {
-  createMockTransaction,
   mockAccountSummary,
   mockSiblingAccountSummary,
   mockUser,

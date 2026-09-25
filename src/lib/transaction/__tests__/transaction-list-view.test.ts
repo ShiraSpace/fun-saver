@@ -13,7 +13,7 @@ import type { Transaction } from '../types';
 import {
   createMockTransaction,
   mockOpeningDeposit,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/transaction.mocks';
 import {
   balanceHistoryFor,
   closingBalances,

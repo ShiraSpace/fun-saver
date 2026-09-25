@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {
   mockAccount,
   mockWalletSummaries,
-  mockTransactions,
 } from '@/test-utils/mocks/general.mocks';
+import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { WALLET_LIST_COPY } from '@/components/Account/WalletList/constants';
 import { WALLET_CARD_COPY } from '@/components/Account/WalletCard/constants';
 import { useDriver } from './driver/use-driver';

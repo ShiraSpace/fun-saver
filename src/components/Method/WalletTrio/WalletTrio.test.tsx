@@ -1,7 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
-import { DEPOSIT_SHARES } from '@/lib/constants';
+import { DEPOSIT_SHARES } from '@/lib/transaction/constants';
 import { METHOD_COPY } from '../copy';
 import { WalletTrio } from './WalletTrio';
 import { percentLabel } from '../constants';

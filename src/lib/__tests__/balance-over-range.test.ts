@@ -7,9 +7,9 @@ import {
 } from '../balance-history';
 import {
   createMockTransaction,
-  createMockWallets,
   mockOpeningDeposit,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/transaction.mocks';
+import { createMockWallets } from '@/test-utils/mocks/general.mocks';
 
 describe('the balance over a range', () => {
   const mockWallets = createMockWallets();

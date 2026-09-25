@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { TRANSACTION_TYPE } from '@/lib/constants';
+import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { EnteredTransactionType } from '../constants';
 import {
   TRANSACTION_TYPE_TOGGLE_COPY,

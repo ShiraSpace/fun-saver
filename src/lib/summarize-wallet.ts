@@ -1,4 +1,5 @@
-import type { Transaction, Wallet, WalletSummary } from './types';
+import type { Transaction } from '@/lib/transaction/types';
+import type { Wallet, WalletSummary } from './types';
 import {
   balance,
   interestEarned,

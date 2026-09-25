@@ -3,11 +3,11 @@ import { inOrderOfOccurrence } from '@/db/transaction-order';
 import type {
   Account,
   AccountSummary,
-  Transaction,
   Wallet,
   WalletName,
   WalletSummary,
 } from '@/lib/types';
+import type { Transaction } from '@/lib/transaction/types';
 import { summarizeWallet } from '@/lib/summarize-wallet';
 import { addDailyInterest } from './add-daily-interest';
 

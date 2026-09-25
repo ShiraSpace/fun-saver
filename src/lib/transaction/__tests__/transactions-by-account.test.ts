@@ -1,8 +1,8 @@
 import {
   mockAccountSummary,
   mockSiblingAccountSummary,
-  mockTransactions,
 } from '@/test-utils/mocks/general.mocks';
+import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { transactionsByAccount } from '../transactions-by-account';
 
 describe('transactions by account', () => {

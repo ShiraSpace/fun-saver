@@ -2,12 +2,12 @@ import { InMemoryStore } from '@/db/memory-store';
 import { settleInterest, summarizeAccounts } from '../interest-settlement';
 import {
   createMockAccount,
-  createMockTransaction,
   createMockWallet,
   createMockWallets,
   mockSiblingAccount,
 } from '@/test-utils/mocks/general.mocks';
-import { TRANSACTION_TYPE } from '@/lib/constants';
+import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
+import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { Account, WalletSummary } from '@/lib/types';
 
 const [mockSavings, mockSpending] = createMockWallets();

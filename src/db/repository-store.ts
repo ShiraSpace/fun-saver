@@ -3,9 +3,9 @@ import type {
   AccountEdits,
   AccountUser,
   AuthProvider,
-  Transaction,
   User,
 } from '@/lib/types';
+import type { Transaction } from '@/lib/transaction/types';
 import type { ThemeId } from '@/theme/registry';
 import type {
   AccountOwner,

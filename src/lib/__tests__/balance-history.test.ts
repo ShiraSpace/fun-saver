@@ -1,11 +1,11 @@
 import { balanceHistory } from '../balance-history';
-import { TRANSACTION_TYPE } from '../constants';
+import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { eachDayInclusive } from '../dates';
 import {
   createMockTransaction,
-  createMockWallets,
   mockOpeningDeposit,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/transaction.mocks';
+import { createMockWallets } from '@/test-utils/mocks/general.mocks';
 
 describe('the balance history', () => {
   const mockWallets = createMockWallets();

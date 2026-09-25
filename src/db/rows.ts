@@ -3,10 +3,10 @@ import type {
   AccountUser,
   AuthProvider,
   AccountUserRole,
-  Transaction,
   User,
   Wallet,
 } from '@/lib/types';
+import type { Transaction } from '@/lib/transaction/types';
 import type { ThemeId } from '@/theme/registry';
 
 export interface AccountRow {

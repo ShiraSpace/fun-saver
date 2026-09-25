@@ -4,7 +4,7 @@ import { Transactions } from '@/components/Transactions';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { getStore } from '@/db';
 import { settleInterest } from '@/lib/interest/interest-settlement';
-import { transactionsByAccount } from '@/lib/transactions-by-account';
+import { transactionsByAccount } from '@/lib/transaction/transactions-by-account';
 import { today } from '@/lib/clock';
 import { findCurrentAccount } from '@/lib/current-account';
 import { ThemedPage } from '@/theme/ThemedPage';

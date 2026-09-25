@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
-import { TRANSACTION_TYPE } from '@/lib/constants';
+import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { TransactionTypeToggle } from './TransactionTypeToggle';
 import type { ThemeId } from '@/theme/registry';
 import type { EnteredTransactionType } from '../constants';

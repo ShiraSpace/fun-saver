@@ -1,11 +1,11 @@
 /**
  * @jest-environment node
  */
+import { createMockAccount } from '@/test-utils/mocks/general.mocks';
 import {
-  createMockAccount,
   createMockTransaction,
   mockTransactions,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/transaction.mocks';
 import { withTestDatabase } from './test-database';
 
 describe('PostgresTransactions', () => {

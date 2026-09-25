@@ -1,5 +1,7 @@
-import type { Transaction, TransactionType, WalletSummary } from './types';
-import { PERCENT_TOTAL, TRANSACTION_TYPE } from './constants';
+import type { Transaction, TransactionType } from '@/lib/transaction/types';
+import type { WalletSummary } from './types';
+import { PERCENT_TOTAL } from './constants';
+import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 
 function totalAmount(
   transactions: Transaction[],

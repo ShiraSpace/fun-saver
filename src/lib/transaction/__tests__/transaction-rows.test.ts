@@ -1,12 +1,12 @@
-import { totalBalanceByDay, type BalanceHistory } from '../balance-history';
+import { totalBalanceByDay, type BalanceHistory } from '@/lib/balance-history';
 import { INTEREST_MODE, TRANSACTION_TYPE } from '../constants';
 import type { TransactionListRow } from '../transaction-rows';
-import { balanceChange } from '../wallet-totals';
+import { balanceChange } from '@/lib/wallet-totals';
 import {
   createMockTransaction,
-  createMockWallets,
   mockOpeningDeposit,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/transaction.mocks';
+import { createMockWallets } from '@/test-utils/mocks/general.mocks';
 import {
   balanceHistoryFor,
   closingBalances,

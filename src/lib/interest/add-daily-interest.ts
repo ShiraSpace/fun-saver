@@ -1,5 +1,6 @@
-import type { Transaction, Wallet } from '../types';
-import { TRANSACTION_TYPE } from '../constants';
+import type { Transaction } from '@/lib/transaction/types';
+import type { Wallet } from '@/lib/types';
+import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { addDays, eachDayInclusive } from '../dates';
 import { newId } from '../ids';
 import { balanceChange } from '../wallet-totals';

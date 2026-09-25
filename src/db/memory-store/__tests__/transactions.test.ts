@@ -1,9 +1,11 @@
 import { InMemoryStore } from '../index';
 import {
   createMockTransaction,
+  mockTransactions,
+} from '@/test-utils/mocks/transaction.mocks';
+import {
   mockAccount,
   mockSiblingAccount,
-  mockTransactions,
 } from '@/test-utils/mocks/general.mocks';
 
 const mockDeposit = createMockTransaction();

@@ -1,4 +1,4 @@
-import type { Transaction } from '@/lib/types';
+import type { Transaction } from '@/lib/transaction/types';
 import type { TransactionRepository } from '../data-store';
 import { transactionFromRow, type TransactionRow } from '../rows';
 import { queryRows, type QueryParam, type Sql } from './query';

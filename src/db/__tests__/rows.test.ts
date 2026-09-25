@@ -8,8 +8,8 @@ import {
   type TransactionRow,
   type UserRow,
 } from '../rows';
+import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import {
-  createMockTransaction,
   createMockWallets,
   mockAccount,
 } from '@/test-utils/mocks/general.mocks';

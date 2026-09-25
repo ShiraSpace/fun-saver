@@ -7,8 +7,8 @@ import {
   transactionListRows,
   type InterestMode,
   type TransactionListRow,
-} from '@/lib/transaction-rows';
-import type { Transaction, TransactionType } from '@/lib/types';
+} from '@/lib/transaction/transaction-rows';
+import type { Transaction, TransactionType } from '@/lib/transaction/types';
 import { createMockWallets } from './mocks/general.mocks';
 
 export function balanceHistoryFor(

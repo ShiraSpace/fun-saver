@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import { DEFAULT_WALLETS } from '@/lib/constants';
-import type { DepositSplit } from '@/lib/transactions';
+import type { DepositSplit } from '@/lib/transaction/transactions';
 import { WalletTile } from '../WalletTile';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { Wallets } from './DepositSplitPreview.styles';

@@ -1,6 +1,7 @@
 import { eachDayInclusive } from './dates';
 import { balanceChange } from './wallet-totals';
-import type { Transaction, Wallet, WalletName } from './types';
+import type { Transaction } from '@/lib/transaction/types';
+import type { Wallet, WalletName } from './types';
 
 export type WalletBalances = Record<WalletName, number[]>;
 

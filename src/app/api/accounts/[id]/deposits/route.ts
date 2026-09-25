@@ -1,9 +1,9 @@
 import { getStore } from '@/db';
-import { addDeposit } from '@/lib/transactions';
+import { addDeposit } from '@/lib/transaction/transactions';
 import { shekelsToAgorot } from '@/lib/money';
 import { ValidationError } from '@/lib/errors';
 import { today } from '@/lib/clock';
-import { validDeposit } from '@/lib/transaction-input';
+import { validDeposit } from '@/lib/transaction/transaction-input';
 import { jsonBody } from '@/app/api/json-body';
 import { API_ERRORS } from '@/app/api/constants';
 import { accountNotFound, badRequest } from '@/app/api/responses';

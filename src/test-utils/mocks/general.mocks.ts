@@ -8,13 +8,12 @@ import type {
   Account,
   AccountUser,
   AccountSummary,
-  Transaction,
   User,
   Wallet,
   WalletSummary,
 } from '@/lib/types';
 import type { AccountOwner } from '@/db/data-store';
-import { DEFAULT_WALLETS, TRANSACTION_TYPE } from '@/lib/constants';
+import { DEFAULT_WALLETS } from '@/lib/constants';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import type { AccountsContextValue } from '@/components/Home/accounts-context';
 
@@ -49,21 +48,6 @@ export function createMockAccount(overrides: Partial<Account> = {}): Account {
     isActive: true,
     themeId: DEFAULT_THEME_ID,
     wallets: createMockWallets(),
-    ...overrides,
-  };
-}
-
-export function createMockTransaction(
-  overrides: Partial<Transaction> = {}
-): Transaction {
-  return {
-    id: 't1',
-    walletId: 'w1',
-    accountId: 'a1',
-    type: TRANSACTION_TYPE.deposit,
-    amount: 8000,
-    occurredAt: '2026-01-01',
-    createdAt: '2026-01-01T00:00:00.000Z',
     ...overrides,
   };
 }
@@ -145,35 +129,6 @@ export const mockAccountEdits = {
   name: 'רוני',
   avatarId: 'kid-07',
 };
-
-export const mockOpeningDeposit: Transaction = createMockTransaction({
-  id: 'opening',
-  amount: 500,
-  occurredAt: '2026-01-01',
-});
-
-export const mockTransactions: Transaction[] = [
-  createMockTransaction(),
-  createMockTransaction({
-    id: 't2',
-    type: TRANSACTION_TYPE.interest,
-    amount: 500,
-  }),
-  createMockTransaction({ id: 't3', walletId: 'w2', amount: 9500 }),
-  createMockTransaction({ id: 't4', walletId: 'w3', amount: 4300 }),
-  createMockTransaction({
-    id: 't5',
-    walletId: 'w2',
-    type: TRANSACTION_TYPE.withdrawal,
-    amount: 4500,
-  }),
-  createMockTransaction({
-    id: 't6',
-    walletId: 'w3',
-    type: TRANSACTION_TYPE.withdrawal,
-    amount: 1800,
-  }),
-];
 
 const mockWalletTotals: Pick<
   WalletSummary,

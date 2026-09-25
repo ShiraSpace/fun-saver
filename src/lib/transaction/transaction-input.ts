@@ -1,4 +1,4 @@
-import { asObject } from './json-object';
+import { asObject } from '@/lib/json-object';
 
 export interface WithdrawalInput {
   walletId: string;

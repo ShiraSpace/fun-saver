@@ -13,25 +13,6 @@ export const PERCENT_TOTAL = 100;
 
 export const MAX_ACCOUNT_NAME_LENGTH = 60;
 
-export const TRANSACTION_TYPE = {
-  deposit: 'deposit',
-  withdrawal: 'withdrawal',
-  interest: 'interest',
-} as const;
-
-export const ALL_TRANSACTION_TYPES = 'all';
-
-export const INTEREST_MODE = {
-  monthly: 'monthly',
-  daily: 'daily',
-} as const;
-
-export const DEPOSIT_SHARES: Record<WalletName, number> = {
-  savings: 0.4,
-  spending: 0.5,
-  goodDeeds: 0.1,
-};
-
 export interface WalletConfig {
   name: WalletName;
   icon: string;

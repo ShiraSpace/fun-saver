@@ -1,4 +1,4 @@
-import { DEPOSIT_SHARES } from '@/lib/constants';
+import { DEPOSIT_SHARES } from '@/lib/transaction/constants';
 import { percentLabel } from '../constants';
 import { WALLETS_COPY } from './wallets';
 
