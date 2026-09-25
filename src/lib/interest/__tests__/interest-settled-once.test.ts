@@ -43,6 +43,9 @@ describe('a day of interest', () => {
         .spyOn(store, 'listTransactionsByAccount')
         .mockResolvedValueOnce(transactionsBeforeSettling);
       await settleDay();
+    });
+
+    afterEach(() => {
       jest.restoreAllMocks();
     });
 

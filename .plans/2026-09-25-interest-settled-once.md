@@ -50,7 +50,7 @@ build on production and would reject real interest.
 - Settlement (in-memory store): settling the same day twice, where the second settlement reads
   the transactions from before the first, settles it once; two settlements racing settle it once.
 - Stores: a second interest transaction for the same account, wallet and day is refused:
-  in-memory and JSON (`*.test.ts`), Postgres (`transactions.e2e.ts`). A deposit on the same day
+  in-memory and JSON (`*.test.ts`), Postgres (`settled-interest.e2e.ts`). A deposit on the same day
   is still stored, and so is interest for another account whose wallet has the same id.
 - `test:db` uses `TEST_DATABASE_URL` (the `test` branch), so migrate it first with
   `npm run db:migrate-test`, and run it only when no other session is running it.

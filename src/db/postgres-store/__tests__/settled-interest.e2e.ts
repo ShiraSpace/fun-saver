@@ -12,7 +12,7 @@ import { settleInterest } from '@/lib/interest/interest-settlement';
 import type { Transaction } from '@/lib/transaction/types';
 import { withTestDatabase } from './test-database';
 
-describe('PostgresTransactions', () => {
+describe('PostgresTransactions storing each day of interest once', () => {
   const { store, accountId, transactionId } = withTestDatabase();
   const mockAccountA = createMockAccount({ id: accountId('a') });
   const mockAccountB = createMockAccount({ id: accountId('b') });
@@ -90,6 +90,36 @@ describe('PostgresTransactions', () => {
       });
     });
 
+    describe('when a deposit is made on a day whose interest is already settled', () => {
+      beforeEach(async () => {
+        await store.insertTransactions([
+          {
+            ...mockDayOfInterest,
+            id: transactionId('interest'),
+            accountId: mockAccountA.id,
+          },
+        ]);
+        await store.insertTransactions([
+          createMockTransaction({
+            id: transactionId('same-day-deposit'),
+            accountId: mockAccountA.id,
+            walletId: mockDayOfInterest.walletId,
+            occurredAt: mockDay,
+          }),
+        ]);
+      });
+
+      it('keeps the deposit', async () => {
+        const transactions = await store.listTransactionsByAccount(
+          mockAccountA.id
+        );
+
+        expect(transactions.map((transaction) => transaction.id)).toContain(
+          transactionId('same-day-deposit')
+        );
+      });
+    });
+
     describe('when page loads all read it as unsettled before any of them settles it', () => {
       const pageLoadCount = 4;
 
@@ -130,6 +160,9 @@ describe('PostgresTransactions', () => {
           settleInterest({ store, accounts: [mockAccountA], asOf: mockDay })
         );
         await Promise.all(pageLoads);
+      });
+
+      afterEach(() => {
         jest.restoreAllMocks();
       });
 
