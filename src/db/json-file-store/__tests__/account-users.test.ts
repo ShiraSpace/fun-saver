@@ -5,8 +5,8 @@ import {
   mockAccount,
   mockAccountUser,
   mockSiblingAccount,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 const mockOtherUserId = 'u2';

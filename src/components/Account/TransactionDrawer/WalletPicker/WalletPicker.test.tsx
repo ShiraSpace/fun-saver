@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { WalletPicker } from './WalletPicker';
 import { WALLET_PICKER_TEST_IDS } from './constants';
-import { mockWalletSummaries } from '@/test-utils/mocks/general.mocks';
+import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { agorotToShekels } from '@/lib/money';
 
 const mockOnSelect = jest.fn();

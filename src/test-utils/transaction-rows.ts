@@ -9,7 +9,7 @@ import {
   type TransactionListRow,
 } from '@/lib/transaction/transaction-rows';
 import type { Transaction, TransactionType } from '@/lib/transaction/types';
-import { createMockWallets } from './mocks/general.mocks';
+import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 
 export function balanceHistoryFor(
   transactions: Transaction[],

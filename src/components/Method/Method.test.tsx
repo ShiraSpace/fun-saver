@@ -2,8 +2,8 @@ import { render, screen, within } from '@/test-utils/render';
 import {
   mockAccountSummary,
   mockSiblingAccountSummary,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { METHOD_SECTION_TEST_IDS } from './MethodSection/constants';

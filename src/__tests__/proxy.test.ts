@@ -4,7 +4,7 @@
 import { NextRequest } from 'next/server';
 import type { Session } from 'next-auth';
 import { SIGN_IN_PATH } from '@/lib/user/constants';
-import { mockUser } from '@/test-utils/mocks/general.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { config, proxy } from '../proxy';
 
 jest.mock('@/auth');

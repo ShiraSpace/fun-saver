@@ -6,7 +6,7 @@ import {
 import {
   mockAccount,
   mockSiblingAccount,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 const mockDeposit = createMockTransaction();

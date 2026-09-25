@@ -1,6 +1,6 @@
 import { signOut } from 'next-auth/react';
 import { fireEvent, screen, waitFor } from '@/test-utils/render';
-import { mockUser } from '@/test-utils/mocks/general.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { goTo } from '@/lib/navigate';

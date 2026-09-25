@@ -6,9 +6,9 @@ import type { User } from '@/lib/user/types';
 import { DuplicateAccountError, UnknownOwnerError } from '@/lib/account/errors';
 import {
   createMockAccount,
-  createMockUser,
   mockAccountUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { createMockUser } from '@/test-utils/mocks/user.mocks';
 import { withTestDatabase } from './test-database';
 
 describe('PostgresAccountUsers creating an account with an owner', () => {

@@ -3,8 +3,8 @@ import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import {
   mockAccountSummary,
   mockSiblingAccountSummary,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import {
   balanceHistory,
   todaysTotalBalance,

@@ -1,6 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
-import { mockAccountSummary } from '@/test-utils/mocks/general.mocks';
+import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import {
   balanceHistory,
   totalBalanceChange,

@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import type { User } from '@/lib/user/types';
-import { createMockUser } from '@/test-utils/mocks/general.mocks';
+import { createMockUser } from '@/test-utils/mocks/user.mocks';
 import { DuplicateUserError } from '@/lib/user/errors';
 import { withTestDatabase } from './test-database';
 

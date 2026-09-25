@@ -9,9 +9,9 @@ import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
 import {
   createMockAccount,
   mockAccountsContext,
-  mockWalletSummaries,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { AccountSummary } from '@/lib/account/types';
 
 describe('Account', () => {

@@ -44,13 +44,14 @@ lib/
   interest/
     (existing) + interest-settlement.ts
     constants.ts  DAYS_PER_MONTH, SAVINGS_MONTHLY_RATE
-  money.ts        + AGOROT_PER_SHEKEL
+  money.ts
+  constants.ts    AGOROT_PER_SHEKEL
   errors.ts       ValidationError only (clock.ts and transactions.ts use it)
   clock.ts  dates.ts  ids.ts  json-object.ts
   fetch-json.ts  navigate.ts  cookies.ts
 ```
 
-When every symbol has moved, the root `types.ts` and `constants.ts` are deleted.
+When every symbol has moved, the root `types.ts` is deleted.
 
 Test moves: `wallet-totals.test.ts` → `wallet/__tests__/balance.test.ts`. `balance-over-range.test.ts` goes with `balance-history` to `wallet/__tests__/`. Every other test follows its subject. Root tests for clock, dates, cookies (both), fetch-json and money stay in `lib/__tests__/`.
 
@@ -82,12 +83,12 @@ These keep their paths because cookies and navigate stay at the root. Re-check t
 3. **wallet:** `wallet-totals.ts` → `wallet/balance.ts`, plus `balance-history.ts` and `summarize-wallet.ts`. Split out the wallet types and constants.
 4. **account:** move the five account files. Split out the account types, constants and errors.
 5. **user:** move `user-provisioning.ts` and `session-user.ts`. Split out the user types, constants and errors.
-6. **root cleanup:** move `AGOROT_PER_SHEKEL` into `money.ts`. Leave only `ValidationError` in `errors.ts`. Delete the now-empty root `types.ts` and `constants.ts`.
+6. ~~**root cleanup**~~ dropped. CLAUDE.md rule 7 keeps hard-coded values in a constants file, so the root, which is the folder for generic helpers, keeps `constants.ts` (`AGOROT_PER_SHEKEL`) and `errors.ts` (`ValidationError`), as each domain folder does. The root `types.ts` was deleted in phase 5, once it held only user types.
 7. **mocks:** split `general.mocks.ts`, then delete it:
    - `account.mocks.ts`: `createMockAccount`, `createMockAccountUser`, `mockAccount`, `mockSiblingAccount`, `mockAccountUser`, `mockOwner`, `mockStrangerOwner`, `mockCreateAccountInput`, `mockAccountEdits`, `mockAccountSummary`, `mockSiblingAccountSummary`, `mockAccountsContext`
    - `user.mocks.ts`: `createMockUser`, `mockUser`, `mockCoParent`
    - `transaction.mocks.ts` (already exists): add `createMockTransaction`, `mockOpeningDeposit`, `mockTransactions`
-   - `wallet.mocks.ts`: `createMockWallet`, `createMockWallets`, `createMockWalletSummary`, `mockWalletSummaries`, `mockWalletShares`
+   - `wallet.mocks.ts`: `createMockWallet`, `createMockWallets`, `createMockWalletSummary`, `mockWalletSummaries`, `mockWalletShares`, and the local `mockWalletTotals`, renamed `mockWalletBalances` because the glossary bans walletTotal
 
 ## Verification (every phase)
 
@@ -95,7 +96,7 @@ These keep their paths because cookies and navigate stay at the root. Re-check t
 - Verify `HEAD`, not the working tree: after each commit, `rtk proxy git status --porcelain` is empty.
 - `git diff -M --stat main`: moved files show as renames, not as a delete plus an add.
 - No changed values. After removing import lines and moved declarations, the diff has no `+`/`-` lines that change a string or number, and cookie names, `TRANSACTION_TYPE` values and `WalletName` literals are unchanged. Check with `git diff main -U0 | rg '^[+-]' | rg -v '^[+-]\s*(import|from|\}|export)'` and read what remains.
-- After phase 6: `rg "@/lib/(types|constants)'" src e2e` returns nothing, and `rg "@/lib/errors'"` matches only `ValidationError` imports.
+- After phase 5: `rg "@/lib/types'" src e2e` returns nothing. `rg "@/lib/constants'"` matches only `AGOROT_PER_SHEKEL`, and `rg "@/lib/errors'"` matches only `ValidationError`.
 - Before the PR: `npm run test:e2e`, since e2e drivers import lib.
 
 ## Out of scope

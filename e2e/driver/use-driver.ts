@@ -5,8 +5,8 @@ import type { StoreContents } from '@/db/data-store';
 import {
   createMockAccountUser,
   mockOwner,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
 import { sessionCookie } from './auth-session';

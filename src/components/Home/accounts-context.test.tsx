@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 import { render, screen } from '@/test-utils/render';
-import { mockAccountsContext } from '@/test-utils/mocks/general.mocks';
+import { mockAccountsContext } from '@/test-utils/mocks/account.mocks';
 import { missingProviderMessage } from '@/hooks/create-required-context';
 import { useAccounts, useOptionalAccounts } from './accounts-context';
 

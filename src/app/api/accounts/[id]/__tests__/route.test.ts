@@ -6,9 +6,8 @@ import { getStore } from '@/db';
 import {
   mockAccountEdits,
   mockCreateAccountInput,
-  mockCoParent,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
 import { THEME_ID } from '@/theme/registry';
 import { createOwnedAccount } from '@/test-utils/owned-account';

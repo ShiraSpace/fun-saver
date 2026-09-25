@@ -5,7 +5,7 @@ import {
   createMockTransaction,
   mockOpeningDeposit,
 } from '@/test-utils/mocks/transaction.mocks';
-import { createMockWallets } from '@/test-utils/mocks/general.mocks';
+import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 
 describe('the balance history', () => {
   const mockWallets = createMockWallets();

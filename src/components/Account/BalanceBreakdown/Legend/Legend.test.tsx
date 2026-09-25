@@ -2,7 +2,7 @@ import { render, screen } from '@/test-utils/render';
 import {
   mockWalletSummaries,
   mockWalletShares,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/wallet.mocks';
 import { Legend } from './Legend';
 import {
   LEGEND_ANIMATION,

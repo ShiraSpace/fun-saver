@@ -2,10 +2,12 @@ import { InMemoryStore } from '@/db/memory-store';
 import { settleInterest, summarizeAccounts } from '../interest-settlement';
 import {
   createMockAccount,
+  mockSiblingAccount,
+} from '@/test-utils/mocks/account.mocks';
+import {
   createMockWallet,
   createMockWallets,
-  mockSiblingAccount,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/wallet.mocks';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { Account } from '@/lib/account/types';

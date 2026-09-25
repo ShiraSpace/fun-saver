@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockUser } from '@/test-utils/mocks/general.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { useDriver } from './driver/use-driver';
 
 describe('the app browser', () => {

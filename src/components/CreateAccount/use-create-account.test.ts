@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import {
   mockAccount,
   mockCreateAccountInput,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { useCreateAccount } from './use-create-account';
 
 describe('useCreateAccount', () => {

@@ -1,9 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  mockAccount,
-  mockWalletSummaries,
-} from '@/test-utils/mocks/general.mocks';
+import { mockAccount } from '@/test-utils/mocks/account.mocks';
+import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { WALLET_LIST_COPY } from '@/components/Account/WalletList/constants';
 import { WALLET_CARD_COPY } from '@/components/Account/WalletCard/constants';

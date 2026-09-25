@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { createMockWalletSummary } from '@/test-utils/mocks/general.mocks';
+import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
 import { SavingsInterestStats } from './SavingsInterestStats';
 import { INTEREST_STATS_TEST_IDS } from '../../WalletCard/InterestStats/constants';
 

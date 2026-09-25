@@ -3,10 +3,8 @@
  */
 import type { Account } from '@/lib/account/types';
 import type { User } from '@/lib/user/types';
-import {
-  createMockAccount,
-  createMockUser,
-} from '@/test-utils/mocks/general.mocks';
+import { createMockAccount } from '@/test-utils/mocks/account.mocks';
+import { createMockUser } from '@/test-utils/mocks/user.mocks';
 import { withTestDatabase } from './test-database';
 
 const mockAddedAt = '2026-01-01T00:00:00.000Z';

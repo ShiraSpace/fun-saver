@@ -7,7 +7,7 @@ import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
 import {
   createMockAccount,
   mockAccount,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { useDriver } from './driver/use-driver';
 
 const EDGE_TOLERANCE = 24;

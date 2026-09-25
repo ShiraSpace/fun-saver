@@ -5,7 +5,7 @@ import { ValidationError } from '@/lib/errors';
 import { getStore } from '../index';
 import { JsonFileStore } from '../json-file-store';
 import { PostgresStore } from '../postgres-store';
-import { mockAccount } from '@/test-utils/mocks/general.mocks';
+import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { mutableEnv, withCleanEnv } from '@/test-utils/test-utils';
 
 const mockPostgresUrl = 'postgres://user:pass@example.neon.tech/main';

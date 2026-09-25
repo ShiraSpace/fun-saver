@@ -6,7 +6,7 @@ import {
   mockAccount,
   mockAccountEdits,
   mockSiblingAccount,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 
 const mockPristineAccount = createMockAccount();
 

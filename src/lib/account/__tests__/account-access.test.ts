@@ -1,9 +1,6 @@
 import { InMemoryStore } from '@/db/memory-store';
-import {
-  createMockAccountUser,
-  mockCoParent,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+import { createMockAccountUser } from '@/test-utils/mocks/account.mocks';
+import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import type { AccountUser } from '../types';
 import { canEditAccount } from '../account-access';

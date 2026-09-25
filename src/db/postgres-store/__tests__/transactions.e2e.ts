@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { createMockAccount } from '@/test-utils/mocks/general.mocks';
+import { createMockAccount } from '@/test-utils/mocks/account.mocks';
 import {
   createMockTransaction,
   mockTransactions,

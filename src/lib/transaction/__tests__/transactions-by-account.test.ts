@@ -1,7 +1,7 @@
 import {
   mockAccountSummary,
   mockSiblingAccountSummary,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { transactionsByAccount } from '../transactions-by-account';
 

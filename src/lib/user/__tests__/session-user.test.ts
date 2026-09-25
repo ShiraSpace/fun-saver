@@ -1,5 +1,5 @@
 import type { Session } from 'next-auth';
-import { mockUser } from '@/test-utils/mocks/general.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { sessionUser } from '../session-user';
 
 const mockSessionExpiry = '2099-01-01T00:00:00.000Z';

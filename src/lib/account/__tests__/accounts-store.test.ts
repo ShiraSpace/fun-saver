@@ -6,8 +6,8 @@ import { SAVINGS_MONTHLY_RATE } from '@/lib/interest/constants';
 import {
   mockCreateAccountInput,
   mockAccountEdits,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { Account } from '../types';
 
 describe('AccountsStore', () => {

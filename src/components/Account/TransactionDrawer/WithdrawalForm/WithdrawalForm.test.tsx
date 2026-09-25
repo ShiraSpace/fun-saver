@@ -4,10 +4,8 @@ import { WITHDRAWAL_FORM_COPY, WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { WALLET_PICKER_TEST_IDS } from '../WalletPicker/constants';
 import { AMOUNT_KEYPAD_TEST_IDS } from '../AmountKeypad/constants';
-import {
-  mockAccountSummary,
-  mockWalletSummaries,
-} from '@/test-utils/mocks/general.mocks';
+import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
+import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { agorotToShekels } from '@/lib/money';
 import { mockRouter } from '@mocks/next/navigation';
 
