@@ -1,17 +1,20 @@
 import { render, screen } from '@/test-utils/render';
-import { NAVIGATION_DESTINATIONS, NAVIGATION_TABS_TEST_IDS } from './constants';
+import { NAVIGATION_TABS_TEST_IDS } from './constants';
 import { NavigationTab } from './NavigationTab';
 
-const unreachableScreen = NAVIGATION_DESTINATIONS.find(
-  (screen) => !screen.href
-)!;
-
 describe('NavigationTab', () => {
-  describe('for a screen that does not exist yet', () => {
+  describe('for a screen the parent cannot open yet', () => {
     beforeEach(() => {
+      const mockUnreachableDestination = {
+        id: 'transactions',
+        icon: '📈',
+        label: 'תנועות',
+        testId: NAVIGATION_TABS_TEST_IDS.transactionsTab,
+      };
+
       render(
         <NavigationTab
-          destination={unreachableScreen}
+          destination={mockUnreachableDestination}
           isCurrent={false}
           onNavigate={jest.fn()}
         />

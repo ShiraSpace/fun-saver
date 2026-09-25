@@ -41,7 +41,10 @@ history and the transaction list rows are on `main`, so wave 1 is done.
 `TotalBalance`, `BalanceChange`, `use-transactions-view-choices`); its section
 below records it as built, and PRs 7–9 use those names. It left the
 display-precision rule to PR 7 and `BalanceChange`'s agorot to PR 8. The plan
-was synced to it in #158. **Wave 3 is open: PRs 7 and 8 can both start.**
+was synced to it in #158. **Wave 3 is open: PRs 7 (#164) and 8 (#163) are
+in review.** **PR 9 is split in two.** PR 9a gives the `תנועות` tab its `href`
+now, since `/transactions` has rendered since PR 6. PR 9b, the browser suite
+for the chart and the list, still waits on PRs 7 and 8.
 
 **`src/lib` is in domain folders since #161**
 (`.plans/2026-09-25-lib-domain-folders.md`); files moved, nothing changed
@@ -65,7 +68,7 @@ keep their own sections current. Where they place files:
 
 ### Lanes — who can run in parallel
 
-Nine PRs in three lanes, one join, one fork, one finish. **Inside a lane**, each
+Ten PRs in three lanes, one join, one fork, one finish. **Inside a lane**, each
 PR branches off `main` once the one before it has merged — the method page's
 stack was rebased twice because branches were cut from each other instead.
 **Across lanes**, PRs touch disjoint files and run at the same time.
@@ -75,7 +78,8 @@ stack was rebased twice because branches were cut from each other instead.
 | 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 ✓ #129 — store, then `settleInterest` | PR 4 ✓ #152 → PR 5 ✓ #156 — `balance-history`, then `transaction-rows` | done |
 | 2 | PR 6 — route, shell, total balance ✓ #157 | — | — | done |
 | 3 | PR 7 — chart | PR 8 — list | — | now |
-| 4 | PR 9 — tab and browser suite | — | — | PRs 7 and 8 merged |
+| 3 | PR 9a — the tab goes live | — | — | now: `/transactions` renders since PR 6 |
+| 4 | PR 9b — browser suite | — | — | PRs 7 and 8 merged |
 
 - **Only shared file in wave 1:** `src/lib/dates.ts`, where PR 5 adds `calendarMonth`.
   Nothing else in wave 1 touches it.
@@ -2082,36 +2086,54 @@ export const TRANSACTION_ROW_COPY = {
 
 ---
 
-## PR 9 — the tab goes live, and the browser keeps the chart honest
+## PR 9a — the tab goes live ✓ built
 
-Branch `feat/transactions-tab`. Spec: delivery order 3, "Testing" (the visual
-suite). Needs PRs 6–8 merged: the tab links to a finished screen, not a
-half-built one.
+Branch `feat/transactions-tab`. Spec: delivery order 3. Its one condition is
+that `/transactions` renders, which it has since PR 6, so the user chose to
+wire the tab before PRs 7 and 8 merge. The browser suite for the chart and the
+list moved to PR 9b.
+
+**Built:**
+- `src/components/Menu/NavigationTabs/constants.ts`: the `transactions` entry
+  gets `href: TRANSACTIONS_ROUTE`, imported the way `METHOD_ROUTE` is.
+- `e2e/driver/menu-driver.ts`: `openTransactionsPage()` and
+  `transactionsTabBackground()`, the same shape as `openMethodPage()` and
+  `methodTabBackground()`.
+- `NavigationTabs.test.tsx`: `'links the transactions tab to its screen'`
+  replaces the inert-tab test. Break: drop the `href`. `'cannot send them to
+  the transactions, which needs an account to open'` joins the method's
+  no-account test. Break: the tab keeps its `href` with no account.
+- `NavigationTab.test.tsx`: its fixture was the destination without an `href`,
+  and none is left. It is now the transactions destination with its `href`
+  removed, which is how a parent with no account sees every tab. Break: the
+  icon's `opacity`.
+- `e2e/page-routing.visual.ts`, `describe('the transactions page')`:
+  `'is where the menu link takes the parent'` (break: no `href`),
+  `'tells the parent which screen they are on once they are there'` (break:
+  `isCurrent` false for transactions) and `'sends the parent home when there
+  is no account to show'`. For that last break, removing the `redirect` does
+  not type-check, since it is what narrows `initialAccount`. Pointing it at a
+  path other than `HOME_ROUTE` does.
+- `npm run test:e2e` passes: `test:db` 28/28 on the Neon `test` branch,
+  visual 60/60, browser 31/31. `DATABASE_URL` is `production`, but the
+  suites never read it: `test:db` uses `TEST_DATABASE_URL`, and the browser
+  suites use a JSON store through `FUNSAVER_DATA_PATH`.
+
+---
+
+## PR 9b — the browser keeps the chart honest
+
+Branch `test/transactions-browser-suite`. Spec: "Testing" (the visual suite).
+Needs PRs 7 (#164) and 8 (#163) merged: it checks the chart and the list they
+draw.
 
 **Files:**
-- Modify: `src/components/Menu/NavigationTabs/constants.ts` (the `href`), `NavigationTabs.test.tsx`, `NavigationTab.test.tsx`
 - Modify: `e2e/driver/page-actions.ts`, `e2e/driver/app-browser.ts` (`scrollBy`)
-- Modify: `e2e/driver/menu-driver.ts` (`openTransactionsPage`, `transactionsTabBackground`)
 - Modify: `e2e/driver/use-driver.ts` (register `transactions`)
 - Create: `e2e/driver/transactions-driver.ts`, `e2e/transactions.visual.ts`
-- Modify: `e2e/page-routing.visual.ts` (the third tab)
 - Modify: `docs/superpowers/specs/2026-09-23-transactions-design.md` (decision 1's sentence; status)
 
-- [ ] **Step 1: The tab.**
-
-```ts
-import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
-
-  {
-    id: 'transactions',
-    icon: '📈',
-    label: 'תנועות',
-    testId: NAVIGATION_TABS_TEST_IDS.transactionsTab,
-    href: TRANSACTIONS_ROUTE,
-  },
-```
-
-- [ ] **Step 2: The app browser scrolls.**
+- [ ] **Step 1: The app browser scrolls.**
 
 ```ts
 // page-actions.ts
@@ -2125,7 +2147,7 @@ export async function scrollBy(page: Page, pixels: number): Promise<void> {
   }
 ```
 
-- [ ] **Step 3: `TransactionsDriver`.**
+- [ ] **Step 2: `TransactionsDriver`.** Register it in `use-driver.ts` as `transactions`.
 
 ```ts
 export class TransactionsDriver {
@@ -2162,12 +2184,7 @@ export class TransactionsDriver {
   the newest row's badge — what the tests below want. Add the test ids it names
   to the owning `constants.ts` files if PRs 7 and 8 did not.
 
-- [ ] **Step 4: `menu-driver.ts`** — `openTransactionsPage()` clicks
-      `NAVIGATION_TABS_TEST_IDS.transactionsTab`, waits for `TRANSACTIONS_COPY.title` in
-      the title, returns `currentPath()`; `transactionsTabBackground()` mirrors
-      `methodTabBackground()`.
-- [ ] **Step 5: tsc, eslint, STOP, commit** — `feat(menu): the transactions tab goes live`
-- [ ] **Step 6: First three tests** — `transactions.visual.ts`, seeding
+- [ ] **Step 3: First three tests** — `transactions.visual.ts`, seeding
       `{ accounts: [mockAccount], transactions: mockTwoMonthsOfTransactions }` where `mockTwoMonthsOfTransactions` is ~60 days
       of deposits, withdrawals and daily interest built with
       `createMockTransaction` inside the file:
@@ -2181,16 +2198,9 @@ export class TransactionsDriver {
   - `'badges a row at the corner the design draws, not its mirror'` (Review
     Focus 5) — `badge.x < icon.x` and `badge.y + badge.height > icon.y + icon.height`.
     Break: write the badge as `left: -5px`.
-- [ ] **Step 7: The rest.**
-  - `page-routing.visual.ts`, `describe('the transactions page')`:
-    `'is where the menu link takes the parent'`;
-    `'tells the parent which screen they are on once they are there'`;
-    and `'sends the parent home when there is no account to show'`
-    (`appBrowser.visit(TRANSACTIONS_ROUTE)` with no accounts ends on `HOME_ROUTE`).
-  - `NavigationTabs.test.tsx` / `NavigationTab.test.tsx`: `'links the transactions tab to its screen'`
-    — the tab is a link to `TRANSACTIONS_ROUTE`, no longer disabled. Break: drop the `href`.
-  - Run `npm run test:e2e` and read the **visual** summary, not the `test:db` one.
-- [ ] **Step 8: Close the spec out.** In the spec, change "The chart's time axis
+- [ ] **Step 4: The rest.** Run `npm run test:e2e` and read the **visual**
+      summary, not the `test:db` one.
+- [ ] **Step 5: Close the spec out.** In the spec, change "The chart's time axis
       runs right-to-left, newest at the right edge" to "…, newest at the left
       edge, where an RTL line ends", set the status to implemented with the PR
       numbers, and update "Where it stands" here.
