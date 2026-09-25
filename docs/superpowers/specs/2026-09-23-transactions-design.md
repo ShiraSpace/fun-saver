@@ -7,7 +7,7 @@
 > in PR 1 (the plan's decision A).
 > Implementation in progress; PR 1, the chart-line colour tokens, merged as #122;
 > PR 2, the whole-ledger store read, as #125; PR 3, the shared read, as #129;
-> PR 4, the balance history, as #152; PR 5, the transaction list rows, as #156.
+> PR 4, the balance history, as #152; PR 5, the transaction list rows, as #156;
 > PR 6, the route and shell, as #157.
 > Mockup: `mockups/account-summary/transactions.html` + `account-summary.js` —
 > one screen, no competing variants; the controls beneath it are details inside
