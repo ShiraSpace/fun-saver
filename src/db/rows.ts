@@ -1,10 +1,9 @@
 import type {
   Account,
   AccountUser,
-  AuthProvider,
   AccountUserRole,
-  User,
-} from '@/lib/types';
+} from '@/lib/account/types';
+import type { AuthProvider, User } from '@/lib/types';
 import type { Wallet } from '@/lib/wallet/types';
 import type { Transaction } from '@/lib/transaction/types';
 import type { ThemeId } from '@/theme/registry';

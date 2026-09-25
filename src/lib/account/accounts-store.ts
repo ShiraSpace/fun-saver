@@ -1,8 +1,8 @@
 import type { DataStore } from '@/db/data-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
-import { now } from './clock';
-import { today } from './clock';
-import { newId } from './ids';
+import { now } from '@/lib/clock';
+import { today } from '@/lib/clock';
+import { newId } from '@/lib/ids';
 import { DEFAULT_WALLETS } from '@/lib/wallet/constants';
 import type { Account, AccountEdits } from './types';
 import type { Wallet } from '@/lib/wallet/types';

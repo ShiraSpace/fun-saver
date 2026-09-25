@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, useState } from 'react';
-import type { AccountSummary } from '@/lib/types';
+import type { AccountSummary } from '@/lib/account/types';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { PrimaryButton } from '@/components/PrimaryButton';

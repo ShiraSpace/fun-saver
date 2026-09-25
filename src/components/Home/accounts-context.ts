@@ -1,7 +1,7 @@
 'use client';
 
 import { createRequiredContext } from '@/hooks/create-required-context';
-import type { AccountSummary } from '@/lib/types';
+import type { AccountSummary } from '@/lib/account/types';
 
 export interface AccountsContextValue {
   accounts: AccountSummary[];

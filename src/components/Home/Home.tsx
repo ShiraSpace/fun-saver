@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountSummary } from '@/lib/types';
+import type { AccountSummary } from '@/lib/account/types';
 import { Account } from '@/components/Account';
 import { AccountManagement } from '@/components/AccountManagement';
 import { APP_MODE } from '@/components/AccountManagement/app-mode-context';

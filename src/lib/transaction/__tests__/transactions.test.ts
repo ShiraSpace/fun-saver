@@ -6,7 +6,7 @@ import { DEPOSIT_SHARES, TRANSACTION_TYPE } from '../constants';
 import { OverdraftError } from '../errors';
 import { ValidationError } from '@/lib/errors';
 import { createOwnedAccount } from '@/test-utils/owned-account';
-import type { Account } from '@/lib/types';
+import type { Account } from '@/lib/account/types';
 import type { WalletName } from '@/lib/wallet/types';
 
 const mockToday = today();

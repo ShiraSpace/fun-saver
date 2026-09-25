@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, useCallback, useRef, useState } from 'react';
-import type { AccountSummary } from '@/lib/types';
+import type { AccountSummary } from '@/lib/account/types';
 import { AccountList } from '../AccountList';
 import { CurrentAccountButton } from './CurrentAccountButton';
 import { useCloseOnOutsideClick } from './use-close-on-outside-click';

@@ -1,4 +1,4 @@
-import type { Account, AccountUser } from '@/lib/types';
+import type { Account, AccountUser } from '@/lib/account/types';
 import type { AccountOwner, AccountUserRepository } from '../data-store';
 import { sortedByName, ownerAccountUser } from '../account-users';
 import {

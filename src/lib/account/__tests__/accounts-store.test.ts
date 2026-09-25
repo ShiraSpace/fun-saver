@@ -1,14 +1,14 @@
 import { InMemoryStore } from '@/db/memory-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { AccountsStore } from '../accounts-store';
-import { today } from '../clock';
+import { today } from '@/lib/clock';
 import { SAVINGS_MONTHLY_RATE } from '@/lib/interest/constants';
 import {
   mockCreateAccountInput,
   mockAccountEdits,
   mockUser,
 } from '@/test-utils/mocks/general.mocks';
-import type { Account } from '@/lib/types';
+import type { Account } from '../types';
 
 describe('AccountsStore', () => {
   let store: InMemoryStore;

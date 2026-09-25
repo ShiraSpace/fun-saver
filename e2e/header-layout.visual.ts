@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { type BoundingBox } from 'puppeteer';
 import { TYPE_SCALE } from '@/theme/typography';
 import { HEADER_LAYOUT, HEADER_TEST_IDS } from '@/components/Header/constants';
-import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
+import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
 import {
   createMockAccount,
   mockAccount,

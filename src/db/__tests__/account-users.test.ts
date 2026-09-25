@@ -1,4 +1,4 @@
-import type { Account, AccountUser } from '@/lib/types';
+import type { Account, AccountUser } from '@/lib/account/types';
 import { accountsForUser, findAccountUser } from '../account-users';
 import {
   createMockAccount,

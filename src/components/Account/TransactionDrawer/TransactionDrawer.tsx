@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, useState } from 'react';
-import type { AccountSummary } from '@/lib/types';
+import type { AccountSummary } from '@/lib/account/types';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { TransactionTypeToggle } from './TransactionTypeToggle';
 import { DepositForm } from './DepositForm';

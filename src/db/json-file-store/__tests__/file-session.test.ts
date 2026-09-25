@@ -1,5 +1,5 @@
 import { JsonFileStore } from '../index';
-import { UnknownOwnerError } from '@/lib/errors';
+import { UnknownOwnerError } from '@/lib/account/errors';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import {
   mockAccount,

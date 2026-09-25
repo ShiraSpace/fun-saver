@@ -5,7 +5,7 @@ import { HOME_ROUTE } from '@/components/Home/constants';
 import { getStore } from '@/db';
 import { summarizeAccounts } from '@/lib/interest/interest-settlement';
 import { today } from '@/lib/clock';
-import { findCurrentAccount } from '@/lib/current-account';
+import { findCurrentAccount } from '@/lib/account/current-account';
 import { ThemedPage } from '@/theme/ThemedPage';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { signedInAccounts } from '../signed-in-accounts';

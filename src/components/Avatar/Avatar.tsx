@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { avatarSource } from '@/lib/avatars';
+import { avatarSource } from '@/lib/account/avatars';
 import { Circle } from './Avatar.styles';
 
 interface AvatarBaseProps {

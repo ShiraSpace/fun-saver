@@ -1,6 +1,6 @@
 import type { DataStore } from '@/db/data-store';
 import { inOrderOfOccurrence } from '@/db/transaction-order';
-import type { Account, AccountSummary } from '@/lib/types';
+import type { Account, AccountSummary } from '@/lib/account/types';
 import type { Wallet, WalletName, WalletSummary } from '@/lib/wallet/types';
 import type { Transaction } from '@/lib/transaction/types';
 import { summarizeWallet } from '@/lib/wallet/summarize-wallet';

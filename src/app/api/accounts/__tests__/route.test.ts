@@ -5,7 +5,7 @@ import {
   mockCreateAccountInput,
   mockUser,
 } from '@/test-utils/mocks/general.mocks';
-import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
+import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
 import { getStore } from '@/db';
 import { signedInUser } from '@/auth';
 import { withTempStoreEnv } from '@/test-utils/test-utils';

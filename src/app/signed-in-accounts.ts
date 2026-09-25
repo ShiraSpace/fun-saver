@@ -4,8 +4,9 @@ import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import { SIGN_IN_PATH } from '@/lib/constants';
 import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
-import { findCurrentAccount } from '@/lib/current-account';
-import type { Account, SignedInUser } from '@/lib/types';
+import { findCurrentAccount } from '@/lib/account/current-account';
+import type { Account } from '@/lib/account/types';
+import type { SignedInUser } from '@/lib/types';
 import { resolveThemeId, type ThemeId } from '@/theme/registry';
 
 export interface SignedInAccounts {

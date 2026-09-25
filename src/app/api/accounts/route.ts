@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
-import { validNewAccount } from '@/lib/account-input';
-import { AccountsStore } from '@/lib/accounts-store';
+import { validNewAccount } from '@/lib/account/account-input';
+import { AccountsStore } from '@/lib/account/accounts-store';
 import { jsonBody } from '@/app/api/json-body';
 import { API_ERRORS } from '@/app/api/constants';
 import { badRequest, notSignedIn } from '@/app/api/responses';

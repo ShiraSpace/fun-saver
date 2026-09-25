@@ -1,7 +1,8 @@
 /**
  * @jest-environment node
  */
-import type { Account, User } from '@/lib/types';
+import type { Account } from '@/lib/account/types';
+import type { User } from '@/lib/types';
 import {
   createMockAccount,
   createMockUser,

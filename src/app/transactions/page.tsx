@@ -6,7 +6,7 @@ import { getStore } from '@/db';
 import { settleInterest } from '@/lib/interest/interest-settlement';
 import { transactionsByAccount } from '@/lib/transaction/transactions-by-account';
 import { today } from '@/lib/clock';
-import { findCurrentAccount } from '@/lib/current-account';
+import { findCurrentAccount } from '@/lib/account/current-account';
 import { ThemedPage } from '@/theme/ThemedPage';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { signedInAccounts } from '../signed-in-accounts';

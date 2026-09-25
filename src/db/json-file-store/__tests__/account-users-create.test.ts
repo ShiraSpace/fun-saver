@@ -1,5 +1,5 @@
 import { JsonFileStore } from '../index';
-import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
+import { DuplicateAccountError, UnknownOwnerError } from '@/lib/account/errors';
 import {
   mockAccount,
   mockAccountUser,

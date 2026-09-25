@@ -1,5 +1,5 @@
-import type { Account, AccountUser } from '@/lib/types';
-import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
+import type { Account, AccountUser } from '@/lib/account/types';
+import { DuplicateAccountError, UnknownOwnerError } from '@/lib/account/errors';
 import type { AccountOwner, AccountUserRepository } from '../data-store';
 import {
   accountsForUser,

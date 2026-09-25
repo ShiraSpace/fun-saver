@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { Account } from '@/lib/types';
+import type { Account } from '@/lib/account/types';
 import { HomeAvatarLink } from '../HomeAvatarLink';
 import { HEADER_AVATAR_PROPS, HEADER_TEST_IDS } from '../constants';
 import { HeaderAvatar } from '../header-parts';

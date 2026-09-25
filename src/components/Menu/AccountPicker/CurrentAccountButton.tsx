@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountSummary } from '@/lib/types';
+import type { AccountSummary } from '@/lib/account/types';
 import { Avatar } from '@/components/Avatar/Avatar';
 import { Money } from '@/components/Money';
 import { totalBalance } from '@/lib/wallet/balance';

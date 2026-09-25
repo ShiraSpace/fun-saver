@@ -1,8 +1,9 @@
 /**
  * @jest-environment node
  */
-import type { Account, User } from '@/lib/types';
-import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
+import type { Account } from '@/lib/account/types';
+import type { User } from '@/lib/types';
+import { DuplicateAccountError, UnknownOwnerError } from '@/lib/account/errors';
 import {
   createMockAccount,
   createMockUser,

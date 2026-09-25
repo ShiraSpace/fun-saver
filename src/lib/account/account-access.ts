@@ -1,5 +1,5 @@
 import type { DataStore } from '@/db/data-store';
-import { EDITING_ROLES } from '@/lib/constants';
+import { EDITING_ROLES } from './constants';
 
 export type AccountUserReader = Pick<DataStore, 'getAccountUser'>;
 

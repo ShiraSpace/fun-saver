@@ -6,7 +6,7 @@ import { signedInUser } from '@/auth';
 import { sortedByName } from '@/db/account-users';
 import { getStore } from '@/db';
 import { SIGN_IN_PATH } from '@/lib/constants';
-import type { Account } from '@/lib/types';
+import type { Account } from '@/lib/account/types';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/general.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';

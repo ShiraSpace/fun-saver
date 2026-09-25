@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountSummary } from '@/lib/types';
+import type { AccountSummary } from '@/lib/account/types';
 import { ACCOUNT_LIST_DOM_ID, ACCOUNT_LIST_TEST_IDS } from './constants';
 import { AccountRow } from './AccountRow';
 import { List } from './AccountList.styles';

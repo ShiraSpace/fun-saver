@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { Account } from '@/lib/types';
+import type { Account } from '@/lib/account/types';
 import { AccountForm } from '@/components/AccountForm';
 import type { AccountFormValues } from '@/components/AccountForm/AccountForm';
 import { useUpdateAccount } from './use-update-account';

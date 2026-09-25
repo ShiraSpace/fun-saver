@@ -12,7 +12,7 @@ import {
   mockWalletSummaries,
   mockUser,
 } from '@/test-utils/mocks/general.mocks';
-import type { AccountSummary } from '@/lib/types';
+import type { AccountSummary } from '@/lib/account/types';
 
 describe('Account', () => {
   const mockAccountId = 'account-1';

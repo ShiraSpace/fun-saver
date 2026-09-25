@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Account, AccountSummary } from '@/lib/types';
+import type { Account, AccountSummary } from '@/lib/account/types';
 import {
   APP_MODE,
   AppMode,
 } from '@/components/AccountManagement/app-mode-context';
 import { CURRENT_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
-import { findCurrentAccount } from '@/lib/current-account';
+import { findCurrentAccount } from '@/lib/account/current-account';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/AppThemeProvider';
 

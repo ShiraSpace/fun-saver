@@ -8,7 +8,7 @@ import {
 } from '@/test-utils/mocks/general.mocks';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
-import type { Account } from '@/lib/types';
+import type { Account } from '@/lib/account/types';
 import type { WalletSummary } from '@/lib/wallet/types';
 
 const [mockSavings, mockSpending] = createMockWallets();

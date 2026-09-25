@@ -2,7 +2,7 @@ import type { AccountEdits } from './types';
 import type { CreateAccountInput } from './accounts-store';
 import { AVATARS } from './avatars';
 import { MAX_ACCOUNT_NAME_LENGTH } from './constants';
-import { asObject } from './json-object';
+import { asObject } from '@/lib/json-object';
 
 const ACCOUNT_FIELDS = ['name', 'avatarId'] as const;
 

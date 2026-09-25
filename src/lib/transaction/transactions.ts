@@ -4,7 +4,7 @@ import { balance } from '@/lib/wallet/balance';
 import { newId } from '@/lib/ids';
 import { OverdraftError } from './errors';
 import { ValidationError } from '@/lib/errors';
-import type { Account } from '@/lib/types';
+import type { Account } from '@/lib/account/types';
 import type { WalletName } from '@/lib/wallet/types';
 import type { Transaction } from './types';
 

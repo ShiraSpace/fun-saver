@@ -1,5 +1,5 @@
-import type { Account, AccountEdits } from '@/lib/types';
-import { DuplicateAccountError } from '@/lib/errors';
+import type { Account, AccountEdits } from '@/lib/account/types';
+import { DuplicateAccountError } from '@/lib/account/errors';
 import type { ThemeId } from '@/theme/registry';
 import type { AccountRepository } from '../data-store';
 

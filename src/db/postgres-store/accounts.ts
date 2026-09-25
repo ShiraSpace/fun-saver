@@ -1,4 +1,4 @@
-import type { Account, AccountEdits } from '@/lib/types';
+import type { Account, AccountEdits } from '@/lib/account/types';
 import type { ThemeId } from '@/theme/registry';
 import type { AccountRepository } from '../data-store';
 import { accountFromRow, type AccountRow } from '../rows';

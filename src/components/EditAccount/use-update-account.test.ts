@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import type { Account } from '@/lib/types';
+import type { Account } from '@/lib/account/types';
 import {
   mockAccount,
   mockAccountEdits,

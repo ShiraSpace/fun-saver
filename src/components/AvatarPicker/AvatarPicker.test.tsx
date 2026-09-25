@@ -1,6 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
-import { AVATARS } from '@/lib/avatars';
+import { AVATARS } from '@/lib/account/avatars';
 import { AvatarPicker } from './AvatarPicker';
 import { AVATAR_PICKER_TEST_IDS } from './constants';
 
