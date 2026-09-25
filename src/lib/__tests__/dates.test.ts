@@ -1,7 +1,9 @@
 import {
   addDays,
   calendarMonth,
+  calendarYear,
   eachDayInclusive,
+  monthLabel,
   shortDayMonth,
   shortMonth,
 } from '../dates';
@@ -62,5 +64,27 @@ describe('shortMonth', () => {
 
   it('adds the last two digits of the year when asked', () => {
     expect(shortMonth(mockDay, true)).toBe(`${hebrewShortMonth} 26`);
+  });
+});
+
+describe('calendarYear', () => {
+  it('reads the year of a day', () => {
+    expect(calendarYear('2026-09-25')).toBe('2026');
+  });
+
+  it('reads the year of a month', () => {
+    expect(calendarYear('2025-12')).toBe('2025');
+  });
+});
+
+describe('monthLabel', () => {
+  const mockAsOf = '2026-09-25';
+
+  it('names a month of this year without the year', () => {
+    expect(monthLabel('2026-09', mockAsOf)).toBe('ספטמבר');
+  });
+
+  it('adds the year to a month of another year', () => {
+    expect(monthLabel('2025-09', mockAsOf)).toBe('ספטמבר 2025');
   });
 });

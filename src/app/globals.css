@@ -2,7 +2,7 @@
 
 html,
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 html:has([role='dialog'][data-open='true']) {

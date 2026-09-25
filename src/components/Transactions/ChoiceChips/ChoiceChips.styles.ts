@@ -1,14 +1,6 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-
-const readByScreenReaderOnly = css`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-`;
+import { readByScreenReaderOnly } from '../transactions-parts';
+import { CHOICE_CHIPS_VARIANT } from './constants';
 
 export const Group = styled.fieldset`
   display: flex;
@@ -18,6 +10,15 @@ export const Group = styled.fieldset`
   padding: 0;
   border: none;
   min-width: 0;
+
+  &[data-variant='${CHOICE_CHIPS_VARIANT.segmented}'] {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 0;
+    border: 1.5px solid ${({ theme }): string => theme.colors.divider};
+    border-radius: 999px;
+    overflow: hidden;
+  }
 `;
 
 export const GroupName = styled.legend`
@@ -43,6 +44,17 @@ export const Chip = styled.label`
   &:has(input:checked) {
     background: ${({ theme }): string => theme.colors.depositBg};
     border-color: currentColor;
+  }
+
+  [data-variant='${CHOICE_CHIPS_VARIANT.segmented}'] > & {
+    padding: 5px 12px;
+    border: none;
+    border-radius: 0;
+  }
+
+  [data-variant='${CHOICE_CHIPS_VARIANT.segmented}'] > &:has(input:checked) {
+    background: ${({ theme }): string => theme.colors.textStrong};
+    color: ${({ theme }): string => theme.colors.surface};
   }
 
   &:has(input:focus-visible) {

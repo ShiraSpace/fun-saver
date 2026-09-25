@@ -1,5 +1,7 @@
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { Transaction } from '@/lib/transaction/types';
+import type { Wallet } from '@/lib/wallet/types';
+import { createMockWallets } from './wallet.mocks';
 
 export function createMockTransaction(
   overrides: Partial<Transaction> = {}
@@ -21,6 +23,41 @@ export const mockOpeningDeposit: Transaction = createMockTransaction({
   amount: 500,
   occurredAt: '2026-01-01',
 });
+
+export const mockWalletDeposits: Transaction[] = createMockWallets().map(
+  (wallet, index) =>
+    createMockTransaction({
+      id: `deposit-${wallet.name}`,
+      walletId: wallet.id,
+      amount: 100 * (index + 1),
+      createdAt: mockOpeningDeposit.createdAt,
+    })
+);
+
+export const mockMonthOfInterest: Transaction[] = [
+  '2026-01-02',
+  '2026-01-03',
+  '2026-01-04',
+].map((occurredAt) =>
+  createMockTransaction({
+    id: occurredAt,
+    type: TRANSACTION_TYPE.interest,
+    amount: 9,
+    occurredAt,
+  })
+);
+
+export const mockMonthOfInterestLastDay: string =
+  mockMonthOfInterest[mockMonthOfInterest.length - 1].occurredAt;
+
+export function createMockWithdrawal(wallet: Pick<Wallet, 'id'>): Transaction {
+  return createMockTransaction({
+    id: `withdrawal-${wallet.id}`,
+    walletId: wallet.id,
+    type: TRANSACTION_TYPE.withdrawal,
+    amount: 100,
+  });
+}
 
 export const mockTransactions: Transaction[] = [
   createMockTransaction(),
@@ -77,3 +114,17 @@ export const mockBusyDayTransactions: Transaction[] = [
   mockBusyDayWithdrawal,
   mockBusyDayInterest,
 ];
+
+export const mockDayOfInterest: Transaction = createMockTransaction({
+  id: 'day-of-interest',
+  type: TRANSACTION_TYPE.interest,
+  amount: 12,
+  occurredAt: '2026-01-02',
+  createdAt: '2026-01-02T06:00:00.000Z',
+});
+
+export const mockDayOfInterestCopy: Transaction = {
+  ...mockDayOfInterest,
+  id: 'day-of-interest-copy',
+  createdAt: '2026-01-02T06:00:00.034Z',
+};

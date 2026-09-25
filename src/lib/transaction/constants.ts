@@ -1,4 +1,5 @@
 import type { WalletName } from '@/lib/wallet/types';
+import type { Transaction } from './types';
 
 export const TRANSACTION_TYPE = {
   deposit: 'deposit',
@@ -7,6 +8,8 @@ export const TRANSACTION_TYPE = {
 } as const;
 
 export const ALL_TRANSACTION_TYPES = 'all';
+
+export const NO_TRANSACTIONS: Transaction[] = [];
 
 export const INTEREST_MODE = {
   monthly: 'monthly',

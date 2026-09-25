@@ -1,4 +1,5 @@
 import type { Transaction } from '@/lib/transaction/types';
+import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { TransactionRepository } from '../data-store';
 import { transactionFromRow, type TransactionRow } from '../rows';
 import { queryRows, type QueryParam, type Sql } from './query';
@@ -50,7 +51,9 @@ export class PostgresTransactions implements TransactionRepository {
     const { values, placeholders } = insertValues(transactions);
 
     await this.sql.query(
-      `INSERT INTO transactions (${TRANSACTION_COLUMNS}) VALUES ${placeholders}`,
+      `INSERT INTO transactions (${TRANSACTION_COLUMNS}) VALUES ${placeholders}
+       ON CONFLICT (account_id, wallet_id, occurred_at) WHERE type = '${TRANSACTION_TYPE.interest}'
+       DO NOTHING`,
       values
     );
   }

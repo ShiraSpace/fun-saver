@@ -1,6 +1,7 @@
 import type { Transaction } from '@/lib/transaction/types';
 import type { TransactionRepository } from '../data-store';
 import { inOrderOfOccurrence } from '../transaction-order';
+import { withoutInterestAlreadySettled } from '../settled-interest';
 import type { FileSession } from './file-session';
 
 export class JsonTransactions implements TransactionRepository {
@@ -8,7 +9,9 @@ export class JsonTransactions implements TransactionRepository {
 
   insert(transactions: Transaction[]): Promise<void> {
     return this.session.write(async (contents, save): Promise<void> => {
-      contents.transactions.push(...transactions);
+      contents.transactions.push(
+        ...withoutInterestAlreadySettled(contents.transactions, transactions)
+      );
       await save();
     });
   }

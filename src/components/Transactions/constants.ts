@@ -1,3 +1,4 @@
+import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import type { WalletName } from '@/lib/wallet/types';
 
 export const TRANSACTIONS_ROUTE = '/transactions';
@@ -14,3 +15,5 @@ export const SHOWN_BALANCE = {
 } as const satisfies Record<string, 'totalBalance' | WalletName>;
 
 export type ShownBalance = (typeof SHOWN_BALANCE)[keyof typeof SHOWN_BALANCE];
+
+export const AGOROT_SHOWN_BELOW = 10 * AGOROT_PER_SHEKEL;

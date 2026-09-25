@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { CHOICE_CHIPS_TEST_IDS } from './constants';
+import { CHOICE_CHIPS_TEST_IDS, CHOICE_CHIPS_VARIANT } from './constants';
 import { ChoiceChips } from './ChoiceChips';
 
 const mockTestId = 'fruit';
@@ -46,5 +46,28 @@ describe('choice chips', () => {
 
   it('names the group for a screen reader', () => {
     expect(screen.getByRole('group')).toHaveAccessibleName(mockLegend);
+  });
+});
+
+describe('choice chips drawn as one segmented control', () => {
+  beforeEach(() => {
+    render(
+      <ChoiceChips
+        variant={CHOICE_CHIPS_VARIANT.segmented}
+        groupName={mockGroupName}
+        legend={mockLegend}
+        choices={mockChoices}
+        selected={mockSelected.id}
+        onSelect={jest.fn()}
+        testId={mockTestId}
+      />
+    );
+  });
+
+  it('draws as one segmented control when asked', () => {
+    expect(screen.getByRole('group')).toHaveAttribute(
+      'data-variant',
+      CHOICE_CHIPS_VARIANT.segmented
+    );
   });
 });

@@ -14,10 +14,13 @@ import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { openAccountPicker } from '@/test-utils/account-picker';
-import { SHOWN_BALANCE } from './constants';
+import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { CHOICE_CHIPS_TEST_IDS } from './ChoiceChips/constants';
 import { BALANCE_OVER_TIME_TEST_IDS } from './BalanceOverTime/constants';
 import { TOTAL_BALANCE_TEST_IDS } from './BalanceOverTime/TotalBalance/constants';
+import { TRANSACTION_LIST_TEST_IDS } from './TransactionList/constants';
+import { TRANSACTION_ROW_TEST_IDS } from './TransactionList/TransactionRow/constants';
+import { SHOWN_BALANCE } from './constants';
 import { BALANCE_CHIPS_TEST_IDS } from './BalanceOverTime/BalanceChips/constants';
 import {
   BALANCE_CHART_COPY,
@@ -38,16 +41,25 @@ const mockDeposits = [
   }),
 ];
 
-function switchToTheOtherChild(): void {
-  fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
-  openAccountPicker();
-  fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
-}
-
 function rangeOption(rangeId: string): HTMLElement {
   return screen.getByTestId(
     CHOICE_CHIPS_TEST_IDS.option(BALANCE_OVER_TIME_TEST_IDS.ranges, rangeId)
   );
+}
+
+function transactionTypeOption(transactionTypeFilter: string): HTMLElement {
+  return screen.getByTestId(
+    CHOICE_CHIPS_TEST_IDS.option(
+      TRANSACTION_LIST_TEST_IDS.filters,
+      transactionTypeFilter
+    )
+  );
+}
+
+function switchToAnotherChild(): void {
+  fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+  openAccountPicker();
+  fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 }
 
 describe('the transactions screen', () => {
@@ -92,9 +104,15 @@ describe('the transactions screen', () => {
       ).toHaveTextContent(String(agorotToWholeShekels(todaysTotal)));
     });
 
+    it('still lists the deposit from before the week', () => {
+      expect(screen.getAllByTestId(TRANSACTION_ROW_TEST_IDS.row)).toHaveLength(
+        mockDeposits.length
+      );
+    });
+
     describe('and then switches to another child', () => {
       beforeEach(() => {
-        switchToTheOtherChild();
+        switchToAnotherChild();
       });
 
       it('keeps the week picked', () => {
@@ -108,7 +126,7 @@ describe('the transactions screen', () => {
       fireEvent.click(
         screen.getByTestId(BALANCE_CHIPS_TEST_IDS.chip(SHOWN_BALANCE.savings))
       );
-      switchToTheOtherChild();
+      switchToAnotherChild();
     });
 
     it('says there is nothing to show yet', () => {
@@ -121,6 +139,30 @@ describe('the transactions screen', () => {
       expect(
         screen.getByTestId(BALANCE_CHIPS_TEST_IDS.chip(SHOWN_BALANCE.savings))
       ).toHaveAttribute('aria-pressed', 'true');
+    });
+  });
+
+  describe('when the parent shows only withdrawals', () => {
+    beforeEach(() => {
+      fireEvent.click(transactionTypeOption(TRANSACTION_TYPE.withdrawal));
+    });
+
+    describe('and then switches to a child with no transactions yet', () => {
+      beforeEach(() => {
+        switchToAnotherChild();
+      });
+
+      it('keeps withdrawals picked', () => {
+        expect(
+          transactionTypeOption(TRANSACTION_TYPE.withdrawal)
+        ).toBeChecked();
+      });
+
+      it('says the child has no transactions, not that the filter found none', () => {
+        expect(
+          screen.getByTestId(TRANSACTION_LIST_TEST_IDS.noTransactions)
+        ).toBeInTheDocument();
+      });
     });
   });
 });
