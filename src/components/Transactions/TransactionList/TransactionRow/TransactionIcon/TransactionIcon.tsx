@@ -13,14 +13,11 @@ interface TransactionIconProps {
 export function TransactionIcon({
   transactionListRow,
 }: TransactionIconProps): JSX.Element {
-  const { key, walletName } = transactionListRow;
+  const { walletName } = transactionListRow;
 
   if (!walletName) {
     return (
-      <DepositIcon
-        aria-hidden
-        data-testid={TRANSACTION_ICON_TEST_IDS.icon(key)}
-      >
+      <DepositIcon aria-hidden data-testid={TRANSACTION_ICON_TEST_IDS.icon}>
         {TRANSACTION_ROW_COPY.deposit.icon}
       </DepositIcon>
     );
@@ -30,10 +27,10 @@ export function TransactionIcon({
     <WalletIcon
       aria-hidden
       walletName={walletName}
-      data-testid={TRANSACTION_ICON_TEST_IDS.icon(key)}
+      data-testid={TRANSACTION_ICON_TEST_IDS.icon}
     >
       {WALLET_ICON[walletName]}
-      <Badge data-testid={TRANSACTION_ICON_TEST_IDS.badge(key)}>
+      <Badge data-testid={TRANSACTION_ICON_TEST_IDS.badge}>
         {transactionRowCopy(transactionListRow).badge}
       </Badge>
     </WalletIcon>

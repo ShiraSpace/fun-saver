@@ -8,6 +8,7 @@ import { balanceChange } from '@/lib/wallet/balance';
 import {
   createMockTransaction,
   mockOpeningDeposit,
+  mockWalletDeposits,
 } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 import {
@@ -28,15 +29,6 @@ describe('the transaction list rows', () => {
     let rows: TransactionListRow[];
 
     beforeEach(() => {
-      const mockWalletDeposits = createMockWallets().map((wallet, index) =>
-        createMockTransaction({
-          id: `deposit-${wallet.name}`,
-          walletId: wallet.id,
-          amount: 100 * (index + 1),
-          createdAt: mockOpeningDeposit.createdAt,
-        })
-      );
-
       rows = transactionListRowsFor(
         mockWalletDeposits,
         INTEREST_MODE.monthly,

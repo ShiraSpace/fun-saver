@@ -12,6 +12,7 @@ import {
 import type { Transaction } from '../types';
 import {
   createMockTransaction,
+  mockMonthOfInterest,
   mockOpeningDeposit,
 } from '@/test-utils/mocks/transaction.mocks';
 import {
@@ -71,16 +72,6 @@ describe('what the transaction list shows', () => {
   });
 
   describe('a month of interest', () => {
-    const mockMonthOfInterest = ['2026-01-02', '2026-01-03', '2026-01-04'].map(
-      (occurredAt) =>
-        createMockTransaction({
-          id: occurredAt,
-          type: TRANSACTION_TYPE.interest,
-          amount: 9,
-          occurredAt,
-        })
-    );
-
     function interestRowsFor(
       interestMode: InterestMode,
       interest: Transaction[] = mockMonthOfInterest

@@ -31,10 +31,10 @@ function transactionRowDays({ interestDays, day }: TransactionListRow): string {
 export function TransactionRow({
   transactionListRow,
 }: TransactionRowProps): JSX.Element {
-  const { key, type, balanceChange, balance } = transactionListRow;
+  const { type, balanceChange, balance } = transactionListRow;
 
   return (
-    <Row data-testid={TRANSACTION_ROW_TEST_IDS.row(key)}>
+    <Row data-testid={TRANSACTION_ROW_TEST_IDS.row}>
       <TransactionIcon transactionListRow={transactionListRow} />
       <TransactionRowDescription>
         <Name data-transaction-type={type}>
@@ -48,14 +48,14 @@ export function TransactionRow({
           <BalanceChange
             balanceChange={balanceChange}
             withAgorot={needsAgorot(balanceChange)}
-            testId={TRANSACTION_ROW_TEST_IDS.balanceChange(key)}
+            testId={TRANSACTION_ROW_TEST_IDS.balanceChange}
           />
         </ChangeAmount>
         <BalanceColumn>
           <ColumnName>{TRANSACTION_LIST_COPY.columns.balance}</ColumnName>
           <Money
             amountAgorot={balance}
-            testId={TRANSACTION_ROW_TEST_IDS.balance(key)}
+            testId={TRANSACTION_ROW_TEST_IDS.balance}
           />
         </BalanceColumn>
       </Amounts>

@@ -13,7 +13,7 @@ export const TRANSACTION_ROW_COPY = {
 } as const;
 
 export const TRANSACTION_ROW_TEST_IDS = {
-  row: (key: string): string => `transaction-row-${key}`,
-  balanceChange: (key: string): string => `transaction-row-${key}-change`,
-  balance: (key: string): string => `transaction-row-${key}-balance`,
+  row: 'transaction-row',
+  balanceChange: 'transaction-row-balance-change',
+  balance: 'transaction-row-balance',
 } as const;
