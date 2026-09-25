@@ -5,7 +5,7 @@ import {
   todaysTotalBalance,
   totalBalanceChange,
   type BalanceHistory,
-} from '@/lib/balance-history';
+} from '@/lib/wallet/balance-history';
 import { ChoiceChips } from '../ChoiceChips';
 import type { TransactionsViewChoices } from '../use-transactions-view-choices';
 import { TotalBalance } from './TotalBalance';

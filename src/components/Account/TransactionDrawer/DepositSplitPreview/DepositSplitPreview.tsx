@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { DEFAULT_WALLETS } from '@/lib/constants';
+import { DEFAULT_WALLETS } from '@/lib/wallet/constants';
 import type { DepositSplit } from '@/lib/transaction/transactions';
 import { WalletTile } from '../WalletTile';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';

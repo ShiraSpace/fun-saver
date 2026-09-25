@@ -3,8 +3,9 @@ import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { now } from './clock';
 import { today } from './clock';
 import { newId } from './ids';
-import { DEFAULT_WALLETS } from './constants';
-import type { Account, AccountEdits, Wallet } from './types';
+import { DEFAULT_WALLETS } from '@/lib/wallet/constants';
+import type { Account, AccountEdits } from './types';
+import type { Wallet } from '@/lib/wallet/types';
 
 export interface CreateAccountInput {
   name: string;

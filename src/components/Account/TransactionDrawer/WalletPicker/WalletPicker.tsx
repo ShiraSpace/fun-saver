@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { WalletSummary } from '@/lib/types';
+import type { WalletSummary } from '@/lib/wallet/types';
 import { WalletTile } from '../WalletTile';
 import { WALLET_PICKER_TEST_IDS } from './constants';
 import { Wallets } from './WalletPicker.styles';

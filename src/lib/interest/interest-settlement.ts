@@ -1,14 +1,9 @@
 import type { DataStore } from '@/db/data-store';
 import { inOrderOfOccurrence } from '@/db/transaction-order';
-import type {
-  Account,
-  AccountSummary,
-  Wallet,
-  WalletName,
-  WalletSummary,
-} from '@/lib/types';
+import type { Account, AccountSummary } from '@/lib/types';
+import type { Wallet, WalletName, WalletSummary } from '@/lib/wallet/types';
 import type { Transaction } from '@/lib/transaction/types';
-import { summarizeWallet } from '@/lib/summarize-wallet';
+import { summarizeWallet } from '@/lib/wallet/summarize-wallet';
 import { addDailyInterest } from './add-daily-interest';
 
 const WALLET_ORDER: Record<WalletName, number> = {

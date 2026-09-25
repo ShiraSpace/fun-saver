@@ -1,10 +1,11 @@
 import type { DataStore } from '@/db/data-store';
 import { DEPOSIT_SHARES, TRANSACTION_TYPE } from './constants';
-import { balance } from '@/lib/wallet-totals';
+import { balance } from '@/lib/wallet/balance';
 import { newId } from '@/lib/ids';
 import { OverdraftError } from './errors';
 import { ValidationError } from '@/lib/errors';
-import type { Account, WalletName } from '@/lib/types';
+import type { Account } from '@/lib/types';
+import type { WalletName } from '@/lib/wallet/types';
 import type { Transaction } from './types';
 
 interface AddWithdrawalParams {

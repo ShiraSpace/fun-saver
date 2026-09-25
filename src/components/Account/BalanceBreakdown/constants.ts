@@ -1,4 +1,4 @@
-import type { WalletName } from '@/lib/types';
+import type { WalletName } from '@/lib/wallet/types';
 
 export const BALANCE_BREAKDOWN_TEST_IDS = {
   card: 'overview-card',

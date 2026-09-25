@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { WalletName } from '@/lib/types';
+import type { WalletName } from '@/lib/wallet/types';
 import { WALLET_GRADIENT } from '@/theme/wallet-gradient';
 import { WALLET_CARD_STYLE } from './constants';
 

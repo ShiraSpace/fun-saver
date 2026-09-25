@@ -2,7 +2,7 @@ import {
   dailyBalanceChanges,
   totalBalanceByDay,
   type BalanceHistory,
-} from '@/lib/balance-history';
+} from '@/lib/wallet/balance-history';
 import { calendarMonth } from '@/lib/dates';
 import {
   dailyInterestRows,
@@ -18,7 +18,7 @@ import {
   TRANSACTION_TYPE,
 } from './constants';
 import type { Transaction, TransactionType } from './types';
-import type { Wallet, WalletName } from '@/lib/types';
+import type { Wallet, WalletName } from '@/lib/wallet/types';
 
 export type InterestMode = (typeof INTEREST_MODE)[keyof typeof INTEREST_MODE];
 export type TransactionTypeFilter =

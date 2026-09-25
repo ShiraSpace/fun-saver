@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { mockAccountSummary } from '@/test-utils/mocks/general.mocks';
-import { totalBalance } from '@/lib/wallet-totals';
+import { totalBalance } from '@/lib/wallet/balance';
 import { agorotToWholeShekels } from '@/lib/money';
 import { AccountRow } from './AccountRow';
 import { ACCOUNT_LIST_TEST_IDS } from './constants';

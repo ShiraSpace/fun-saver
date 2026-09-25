@@ -1,6 +1,6 @@
 import { balanceHistory } from '../balance-history';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
-import { eachDayInclusive } from '../dates';
+import { eachDayInclusive } from '@/lib/dates';
 import {
   createMockTransaction,
   mockOpeningDeposit,

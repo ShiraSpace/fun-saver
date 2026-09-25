@@ -3,7 +3,7 @@
 import { JSX, useMemo } from 'react';
 import type { AccountSummary } from '@/lib/types';
 import type { TransactionsByAccount } from '@/lib/transaction/transactions-by-account';
-import { balanceHistory } from '@/lib/balance-history';
+import { balanceHistory } from '@/lib/wallet/balance-history';
 import { Header } from '@/components/Header';
 import { Column, Screen } from '@/components/Screen';
 import { AccountManagement } from '@/components/AccountManagement';

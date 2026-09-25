@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import type { WalletSummary } from '@/lib/types';
+import type { WalletSummary } from '@/lib/wallet/types';
 import { InterestStats } from '../../WalletCard/InterestStats';
 
 interface SavingsInterestStatsProps {

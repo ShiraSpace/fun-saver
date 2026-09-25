@@ -4,16 +4,10 @@
  * `transaction.mocks.ts`), put new mocks there, and move over any
  * mocks from this file that belong to that domain.
  */
-import type {
-  Account,
-  AccountUser,
-  AccountSummary,
-  User,
-  Wallet,
-  WalletSummary,
-} from '@/lib/types';
+import type { Account, AccountUser, AccountSummary, User } from '@/lib/types';
+import type { Wallet, WalletSummary } from '@/lib/wallet/types';
 import type { AccountOwner } from '@/db/data-store';
-import { DEFAULT_WALLETS } from '@/lib/constants';
+import { DEFAULT_WALLETS } from '@/lib/wallet/constants';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import type { AccountsContextValue } from '@/components/Home/accounts-context';
 

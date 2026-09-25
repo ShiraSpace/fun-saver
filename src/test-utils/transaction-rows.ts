@@ -2,7 +2,7 @@ import {
   balanceHistory,
   totalBalanceByDay,
   type BalanceHistory,
-} from '@/lib/balance-history';
+} from '@/lib/wallet/balance-history';
 import {
   transactionListRows,
   type InterestMode,

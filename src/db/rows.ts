@@ -4,8 +4,8 @@ import type {
   AuthProvider,
   AccountUserRole,
   User,
-  Wallet,
 } from '@/lib/types';
+import type { Wallet } from '@/lib/wallet/types';
 import type { Transaction } from '@/lib/transaction/types';
 import type { ThemeId } from '@/theme/registry';
 

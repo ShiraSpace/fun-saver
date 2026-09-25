@@ -5,7 +5,7 @@ import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import { today } from '@/lib/clock';
 import { addDeposit } from '@/lib/transaction/transactions';
-import { balance } from '@/lib/wallet-totals';
+import { balance } from '@/lib/wallet/balance';
 import type { Account } from '@/lib/types';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/general.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';

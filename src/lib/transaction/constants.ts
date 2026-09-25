@@ -1,4 +1,4 @@
-import type { WalletName } from '@/lib/types';
+import type { WalletName } from '@/lib/wallet/types';
 
 export const TRANSACTION_TYPE = {
   deposit: 'deposit',

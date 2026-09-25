@@ -1,4 +1,4 @@
-import type { WalletName } from '@/lib/types';
+import type { WalletName } from '@/lib/wallet/types';
 import { SOURCES_COPY } from './sources';
 
 export type SourceId = (typeof SOURCES_COPY.list)[number]['id'];

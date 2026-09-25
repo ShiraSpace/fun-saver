@@ -7,7 +7,7 @@ import {
   interestEarnedToday,
   totalBalance,
   walletShares,
-} from '../wallet-totals';
+} from '../balance';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { Transaction } from '@/lib/transaction/types';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';

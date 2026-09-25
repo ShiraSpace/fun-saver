@@ -1,13 +1,13 @@
 import { calendarMonth } from '@/lib/dates';
 import { TRANSACTION_TYPE } from './constants';
-import { balanceChange } from '@/lib/wallet-totals';
+import { balanceChange } from '@/lib/wallet/balance';
 import type {
   ListedTransaction,
   TransactionListRow,
   TransactionListRowsInput,
 } from './transaction-rows';
 import type { TransactionType } from './types';
-import type { WalletName } from '@/lib/types';
+import type { WalletName } from '@/lib/wallet/types';
 
 export type TransactionListRowWithoutBalance = Omit<
   TransactionListRow,

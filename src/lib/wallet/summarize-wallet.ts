@@ -6,7 +6,7 @@ import {
   principal,
   interestEarnedToday,
   withdrawn,
-} from './wallet-totals';
+} from './balance';
 
 export interface SummarizeWalletParams {
   wallet: Wallet;

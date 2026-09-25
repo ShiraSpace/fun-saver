@@ -1,12 +1,13 @@
 import { InMemoryStore } from '@/db/memory-store';
 import { today } from '@/lib/clock';
 import { addDeposit, addWithdrawal, splitDeposit } from '../transactions';
-import { balance } from '@/lib/wallet-totals';
+import { balance } from '@/lib/wallet/balance';
 import { DEPOSIT_SHARES, TRANSACTION_TYPE } from '../constants';
 import { OverdraftError } from '../errors';
 import { ValidationError } from '@/lib/errors';
 import { createOwnedAccount } from '@/test-utils/owned-account';
-import type { Account, WalletName } from '@/lib/types';
+import type { Account } from '@/lib/types';
+import type { WalletName } from '@/lib/wallet/types';
 
 const mockToday = today();
 

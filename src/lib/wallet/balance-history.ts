@@ -1,5 +1,5 @@
-import { eachDayInclusive } from './dates';
-import { balanceChange } from './wallet-totals';
+import { eachDayInclusive } from '@/lib/dates';
+import { balanceChange } from './balance';
 import type { Transaction } from '@/lib/transaction/types';
 import type { Wallet, WalletName } from './types';
 
