@@ -1,32 +1,26 @@
 import { JSX } from 'react';
-import { Chart } from '../BalanceChart.styles';
-import { BALANCE_CHART_TEST_IDS, CHART_BOX, VIEW_BOX } from '../constants';
+import { BALANCE_CHART_TEST_IDS, MESSAGE_Y } from '../constants';
 import { MessageText } from './ChartMessage.styles';
 
 interface ChartMessageProps {
   text: string;
-  label?: string;
+  chartWidth: number;
 }
 
 export function ChartMessage({
   text,
-  label = text,
+  chartWidth,
 }: ChartMessageProps): JSX.Element {
+  const centreX = chartWidth / 2;
+
   return (
-    <Chart
-      viewBox={VIEW_BOX}
-      role="img"
-      aria-label={label}
-      data-testid={BALANCE_CHART_TEST_IDS.chart}
+    <MessageText
+      x={centreX}
+      y={MESSAGE_Y}
+      textAnchor="middle"
+      data-testid={BALANCE_CHART_TEST_IDS.message}
     >
-      <MessageText
-        x={CHART_BOX.width / 2}
-        y={CHART_BOX.height / 2}
-        textAnchor="middle"
-        data-testid={BALANCE_CHART_TEST_IDS.message}
-      >
-        {text}
-      </MessageText>
-    </Chart>
+      {text}
+    </MessageText>
   );
 }

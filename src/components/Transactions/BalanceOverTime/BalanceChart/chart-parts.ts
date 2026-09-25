@@ -1,14 +1,14 @@
 import { css, type SerializedStyles, type Theme } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { ThemeColors } from '@/theme/theme-tokens';
-import type { ShownBalance } from '../../use-transactions-view-choices';
+import { SHOWN_BALANCE, type ShownBalance } from '../../constants';
 import { WALLET_CHART_COLOR } from '../constants';
 
 export function shownBalanceColor(
   colors: ThemeColors,
   shownBalance: ShownBalance
 ): string {
-  return shownBalance === 'totalBalance'
+  return shownBalance === SHOWN_BALANCE.totalBalance
     ? colors.textStrong
     : colors[WALLET_CHART_COLOR[shownBalance]];
 }
@@ -27,7 +27,7 @@ export function readableOverLines({
 
 export const AxisText = styled.text`
   ${readableOverLines}
-  font-size: 9px;
+  font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 500;
   stroke-width: 2.5px;
   fill: ${({ theme }): string => theme.colors.textMuted};

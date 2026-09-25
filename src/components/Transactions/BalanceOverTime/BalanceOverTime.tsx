@@ -2,7 +2,6 @@
 
 import { JSX } from 'react';
 import {
-  balanceOverRange,
   todaysTotalBalance,
   totalBalanceChange,
   type BalanceHistory,
@@ -57,9 +56,9 @@ export function BalanceOverTime({
         />
       </RangeRow>
       <BalanceChart
-        balanceHistory={balanceOverRange(balanceHistory, range.days)}
+        balanceHistory={balanceHistory}
+        range={range}
         shownBalances={viewChoices.shownBalances}
-        rangeLabel={range.label}
       />
       <BalanceChips
         shownBalances={viewChoices.shownBalances}

@@ -1,10 +1,10 @@
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { HALF_SHEKEL_AGOROT } from '@/lib/money';
 import type { BalanceHistory } from '@/lib/wallet/balance-history';
-import type { ShownBalance } from '../../use-transactions-view-choices';
+import { SHOWN_BALANCE, type ShownBalance } from '../../constants';
 import {
   BALANCE_TICK_COUNT,
-  FIRST_DAY_X,
+  CHART_PADDING,
   FLAT_BALANCE_Y,
   HIGHEST_BALANCE_Y,
   LABEL_GAP,
@@ -30,11 +30,13 @@ export interface PlacedTodaysBalance {
 
 export type BalanceY = (balance: number) => number;
 
+export type DayX = (dayIndex: number) => number;
+
 function dailyBalancesOf(
   balanceHistory: BalanceHistory,
   shownBalance: ShownBalance
 ): number[] {
-  return shownBalance === 'totalBalance'
+  return shownBalance === SHOWN_BALANCE.totalBalance
     ? balanceHistory.totalBalance
     : balanceHistory.wallets[shownBalance];
 }
@@ -59,10 +61,16 @@ export function lowestAndHighestBalance(
   return { lowest: Math.min(...balances), highest: Math.max(...balances) };
 }
 
-export function dayX(dayIndex: number, dayCount: number): number {
-  const progress = dayCount > 1 ? dayIndex / (dayCount - 1) : 1;
+export function firstDayXOf(chartWidth: number): number {
+  return chartWidth - CHART_PADDING.firstDay;
+}
 
-  return FIRST_DAY_X + (TODAY_X - FIRST_DAY_X) * progress;
+export function dayXWithin(dayCount: number, firstDayX: number): DayX {
+  return (dayIndex): number => {
+    const progress = dayCount > 1 ? dayIndex / (dayCount - 1) : 1;
+
+    return firstDayX + (TODAY_X - firstDayX) * progress;
+  };
 }
 
 export function balanceYWithin({ lowest, highest }: BalanceBounds): BalanceY {
@@ -79,12 +87,13 @@ export function balanceYWithin({ lowest, highest }: BalanceBounds): BalanceY {
 
 export function balanceLinePath(
   dailyBalances: number[],
+  dayX: DayX,
   balanceY: BalanceY
 ): string {
   return dailyBalances
     .map((balance, dayIndex) => {
       const command = dayIndex === 0 ? 'M' : 'L';
-      const x = dayX(dayIndex, dailyBalances.length).toFixed(1);
+      const x = dayX(dayIndex).toFixed(1);
 
       return `${command}${x} ${balanceY(balance).toFixed(1)}`;
     })
@@ -93,19 +102,23 @@ export function balanceLinePath(
 
 export function totalBalanceFillPath(
   shownBalanceHistories: ShownBalanceHistory[],
+  dayX: DayX,
   balanceY: BalanceY
 ): string | undefined {
   const totalBalanceHistory = shownBalanceHistories.find(
-    ({ shownBalance }) => shownBalance === 'totalBalance'
+    ({ shownBalance }) => shownBalance === SHOWN_BALANCE.totalBalance
   );
 
   if (!totalBalanceHistory || totalBalanceHistory.dailyBalances.length < 2) {
     return undefined;
   }
 
-  const line = balanceLinePath(totalBalanceHistory.dailyBalances, balanceY);
+  const { dailyBalances } = totalBalanceHistory;
+  const line = balanceLinePath(dailyBalances, dayX, balanceY);
+  const todayX = dayX(dailyBalances.length - 1);
+  const firstDayX = dayX(0);
 
-  return `${line} L ${TODAY_X} ${LOWEST_BALANCE_Y} L ${FIRST_DAY_X} ${LOWEST_BALANCE_Y} Z`;
+  return `${line} L ${todayX} ${LOWEST_BALANCE_Y} L ${firstDayX} ${LOWEST_BALANCE_Y} Z`;
 }
 
 function ticksRoundedTo(

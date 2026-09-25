@@ -2,23 +2,27 @@
 
 import { JSX } from 'react';
 import { useTheme } from '@emotion/react';
+import { SHOWN_BALANCE } from '../../../../constants';
 import {
   balanceLinePath,
-  dayX,
   type BalanceY,
+  type DayX,
   type ShownBalanceHistory,
 } from '../../chart-geometry';
 import { shownBalanceColor } from '../../chart-parts';
+import { TODAY_X } from '../../constants';
 import { BALANCE_LINE_TEST_IDS, SINGLE_DAY_DOT_RADIUS } from './constants';
 import { Line } from './BalanceLine.styles';
 
 interface BalanceLineProps {
   shownBalanceHistory: ShownBalanceHistory;
+  dayX: DayX;
   balanceY: BalanceY;
 }
 
 export function BalanceLine({
   shownBalanceHistory,
+  dayX,
   balanceY,
 }: BalanceLineProps): JSX.Element {
   const theme = useTheme();
@@ -27,10 +31,12 @@ export function BalanceLine({
   const testId = BALANCE_LINE_TEST_IDS.line(shownBalance);
 
   if (dailyBalances.length === 1) {
+    const todaysBalanceY = balanceY(dailyBalances[0]);
+
     return (
       <circle
-        cx={dayX(0, 1)}
-        cy={balanceY(dailyBalances[0])}
+        cx={TODAY_X}
+        cy={todaysBalanceY}
         r={SINGLE_DAY_DOT_RADIUS}
         fill={color}
         data-testid={testId}
@@ -38,11 +44,14 @@ export function BalanceLine({
     );
   }
 
+  const linePath = balanceLinePath(dailyBalances, dayX, balanceY);
+  const isTotalBalance = shownBalance === SHOWN_BALANCE.totalBalance;
+
   return (
     <Line
-      d={balanceLinePath(dailyBalances, balanceY)}
+      d={linePath}
       stroke={color}
-      data-total-balance={shownBalance === 'totalBalance'}
+      data-total-balance={isTotalBalance}
       data-testid={testId}
     />
   );

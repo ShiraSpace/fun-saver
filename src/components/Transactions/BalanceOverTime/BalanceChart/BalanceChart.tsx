@@ -1,69 +1,78 @@
 'use client';
 
-import { JSX } from 'react';
-import type { BalanceHistory } from '@/lib/wallet/balance-history';
-import type { ShownBalance } from '../../use-transactions-view-choices';
-import { BalanceAxis } from './BalanceAxis';
-import { BalanceLines } from './BalanceLines';
-import { ChartMessage } from './ChartMessage';
-import { DayAxis } from './DayAxis';
-import { TodaysBalances } from './TodaysBalances';
+import { JSX, useRef } from 'react';
 import {
-  balanceYWithin,
-  lowestAndHighestBalance,
-  eachShownBalanceHistory,
-} from './chart-geometry';
+  balanceOverRange,
+  type BalanceHistory,
+} from '@/lib/wallet/balance-history';
+import type { ShownBalance } from '../../constants';
+import type { TimeRange } from '../constants';
+import { ChartMessage } from './ChartMessage';
+import { ShownBalances } from './ShownBalances';
 import {
   BALANCE_CHART_COPY,
   BALANCE_CHART_TEST_IDS,
-  VIEW_BOX,
   chartLabel,
+  viewBoxOf,
 } from './constants';
+import { useChartWidth } from './use-chart-width';
 import { Chart } from './BalanceChart.styles';
 
 interface BalanceChartProps {
   balanceHistory: BalanceHistory;
+  range: TimeRange;
   shownBalances: readonly ShownBalance[];
-  rangeLabel: string;
+}
+
+interface EmptyChartMessage {
+  text: string;
+  label: string;
+}
+
+function emptyChartMessage(
+  balanceHistory: BalanceHistory,
+  shownBalances: readonly ShownBalance[]
+): EmptyChartMessage | undefined {
+  if (balanceHistory.days.length === 0) {
+    return BALANCE_CHART_COPY.noTransactions;
+  }
+
+  return shownBalances.length === 0
+    ? BALANCE_CHART_COPY.noBalanceShown
+    : undefined;
 }
 
 export function BalanceChart({
   balanceHistory,
+  range,
   shownBalances,
-  rangeLabel,
 }: BalanceChartProps): JSX.Element {
-  if (balanceHistory.days.length === 0) {
-    return <ChartMessage {...BALANCE_CHART_COPY.noTransactions} />;
-  }
-
-  if (shownBalances.length === 0) {
-    return <ChartMessage {...BALANCE_CHART_COPY.noBalanceShown} />;
-  }
-
-  const shownBalanceHistories = eachShownBalanceHistory(
-    balanceHistory,
-    shownBalances
+  const chartRef = useRef<SVGSVGElement>(null);
+  const chartWidth = useChartWidth(chartRef);
+  const viewBox = viewBoxOf(chartWidth);
+  const emptyMessage = emptyChartMessage(balanceHistory, shownBalances);
+  const chartName =
+    emptyMessage?.label ?? chartLabel(range.label, shownBalances);
+  const balanceHistoryInRange = balanceOverRange(balanceHistory, range.days);
+  const drawing = emptyMessage ? (
+    <ChartMessage text={emptyMessage.text} chartWidth={chartWidth} />
+  ) : (
+    <ShownBalances
+      balanceHistory={balanceHistoryInRange}
+      shownBalances={shownBalances}
+      chartWidth={chartWidth}
+    />
   );
-  const balanceBounds = lowestAndHighestBalance(shownBalanceHistories);
-  const balanceY = balanceYWithin(balanceBounds);
 
   return (
     <Chart
-      viewBox={VIEW_BOX}
+      ref={chartRef}
+      viewBox={viewBox}
       role="img"
-      aria-label={chartLabel(rangeLabel, shownBalances)}
+      aria-label={chartName}
       data-testid={BALANCE_CHART_TEST_IDS.chart}
     >
-      <BalanceAxis balanceBounds={balanceBounds} balanceY={balanceY} />
-      <BalanceLines
-        shownBalanceHistories={shownBalanceHistories}
-        balanceY={balanceY}
-      />
-      <TodaysBalances
-        shownBalanceHistories={shownBalanceHistories}
-        balanceY={balanceY}
-      />
-      <DayAxis days={balanceHistory.days} />
+      {drawing}
     </Chart>
   );
 }

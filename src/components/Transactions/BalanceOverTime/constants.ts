@@ -1,6 +1,6 @@
 import { WALLET_SHORT_LABEL } from '@/lib/wallet/constants';
 import type { WalletName } from '@/lib/wallet/types';
-import type { ShownBalance } from '../use-transactions-view-choices';
+import { SHOWN_BALANCE, type ShownBalance } from '../constants';
 import { TOTAL_BALANCE_COPY } from './TotalBalance/constants';
 
 export type RangeId = 'week' | 'month' | 'year' | 'all';
@@ -44,7 +44,7 @@ export const WALLET_CHART_COLOR: Record<WalletName, WalletChartColor> = {
 };
 
 export function shownBalanceLabel(shownBalance: ShownBalance): string {
-  return shownBalance === 'totalBalance'
+  return shownBalance === SHOWN_BALANCE.totalBalance
     ? TOTAL_BALANCE_COPY.label
     : WALLET_SHORT_LABEL[shownBalance];
 }

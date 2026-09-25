@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
-import type { WalletName } from '@/lib/wallet/types';
 import { DEFAULT_RANGE, type RangeId } from './BalanceOverTime/constants';
-
-export type ShownBalance = 'totalBalance' | WalletName;
+import { SHOWN_BALANCE, type ShownBalance } from './constants';
 
 export interface TransactionsViewChoices {
   range: RangeId;
@@ -14,12 +12,12 @@ export interface TransactionsViewChoices {
   toggleAllWallets: () => void;
 }
 
-const SHOWN_BALANCE_ORDER: readonly ShownBalance[] = [
-  'totalBalance',
-  ...WALLET_NAMES,
-];
+const SHOWN_BALANCE_ORDER: readonly ShownBalance[] =
+  Object.values(SHOWN_BALANCE);
 
-const DEFAULT_SHOWN_BALANCES: readonly ShownBalance[] = ['totalBalance'];
+const DEFAULT_SHOWN_BALANCES: readonly ShownBalance[] = [
+  SHOWN_BALANCE.totalBalance,
+];
 
 function inShownBalanceOrder(
   shownBalances: readonly ShownBalance[]
@@ -50,7 +48,7 @@ function withAllWalletsToggled(
   shownBalances: readonly ShownBalance[]
 ): ShownBalance[] {
   const keptTotalBalance = shownBalances.filter(
-    (shownBalance) => shownBalance === 'totalBalance'
+    (shownBalance) => shownBalance === SHOWN_BALANCE.totalBalance
   );
 
   return allWalletsShownIn(shownBalances)
