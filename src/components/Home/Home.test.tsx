@@ -10,11 +10,11 @@ import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import {
   mockAccount,
-  mockWalletSummaries,
   mockSiblingAccount,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
-import type { AccountSummary } from '@/lib/types';
+} from '@/test-utils/mocks/account.mocks';
+import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
+import type { AccountSummary } from '@/lib/account/types';
 import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { openMenu, renderHome } from './home-test-helpers';

@@ -1,11 +1,14 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
+import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import {
-  createMockTransaction,
   mockAccountSummary,
   mockSiblingAccountSummary,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
-import { balanceHistory, todaysTotalBalance } from '@/lib/balance-history';
+} from '@/test-utils/mocks/account.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
+import {
+  balanceHistory,
+  todaysTotalBalance,
+} from '@/lib/wallet/balance-history';
 import { agorotToWholeShekels } from '@/lib/money';
 import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';

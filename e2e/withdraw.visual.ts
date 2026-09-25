@@ -1,9 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  mockAccount,
-  mockTransactions,
-} from '@/test-utils/mocks/general.mocks';
+import { mockAccount } from '@/test-utils/mocks/account.mocks';
+import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { useDriver } from './driver/use-driver';
 
 describe('withdraw', () => {

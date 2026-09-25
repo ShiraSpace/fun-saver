@@ -4,7 +4,7 @@ import {
   EDIT_ACCOUNT_BUTTON_COPY,
   EDIT_ACCOUNT_BUTTON_TEST_IDS,
 } from './constants';
-import { mockAccount } from '@/test-utils/mocks/general.mocks';
+import { mockAccount } from '@/test-utils/mocks/account.mocks';
 
 describe('EditAccountButton', () => {
   const mockOnEditAccount = jest.fn();

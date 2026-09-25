@@ -6,7 +6,7 @@ import { openAccountPicker } from '@/test-utils/account-picker';
 import {
   mockAccountsContext,
   mockAccountSummary,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
 
 const mockCloseMenu = jest.fn();

@@ -1,12 +1,12 @@
 import { InMemoryStore } from '../index';
-import { DuplicateAccountError } from '@/lib/errors';
+import { DuplicateAccountError } from '@/lib/account/errors';
 import { THEME_ID } from '@/theme/registry';
 import {
   createMockAccount,
   mockAccount,
   mockAccountEdits,
   mockSiblingAccount,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 
 const mockPristineAccount = createMockAccount();
 

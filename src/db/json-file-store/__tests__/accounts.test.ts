@@ -1,11 +1,11 @@
 import { JsonFileStore } from '../index';
-import { DuplicateAccountError } from '@/lib/errors';
+import { DuplicateAccountError } from '@/lib/account/errors';
 import { THEME_ID } from '@/theme/registry';
 import {
   mockAccount,
   mockAccountEdits,
   mockSiblingAccount,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 describe('JsonFileStore accounts', () => {

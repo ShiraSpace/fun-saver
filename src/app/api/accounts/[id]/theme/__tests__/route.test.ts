@@ -5,7 +5,7 @@ import { signedInUser } from '@/auth';
 import { API_ERRORS } from '@/app/api/constants';
 import { THEME_ID } from '@/theme/registry';
 import { getStore } from '@/db';
-import { mockCoParent, mockUser } from '@/test-utils/mocks/general.mocks';
+import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { PUT } from '../route';

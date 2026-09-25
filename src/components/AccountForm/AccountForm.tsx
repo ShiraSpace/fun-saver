@@ -3,7 +3,7 @@
 import { JSX, ReactNode } from 'react';
 import { Screen } from '@/components/Screen';
 import { AvatarPicker } from '@/components/AvatarPicker';
-import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/constants';
+import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
 import { NameField } from './NameField';
 import { CancelButton } from './CancelButton';
 import { FormTitle } from './FormTitle';

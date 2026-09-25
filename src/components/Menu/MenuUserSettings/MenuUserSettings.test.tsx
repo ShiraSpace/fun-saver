@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { mockUser } from '@/test-utils/mocks/general.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { WithMenu } from '@/test-utils/menu';
 import { MenuUserSettings } from './MenuUserSettings';
 import { MENU_USER_SETTINGS_TEST_IDS } from './constants';

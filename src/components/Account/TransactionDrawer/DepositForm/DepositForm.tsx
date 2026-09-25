@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountSummary } from '@/lib/types';
+import type { AccountSummary } from '@/lib/account/types';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { DepositAmount } from '../DepositAmount';
 import { DepositSplitPreview } from '../DepositSplitPreview';

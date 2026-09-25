@@ -1,7 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { DepositSplitPreview } from './DepositSplitPreview';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
-import { splitDeposit } from '@/lib/transactions';
+import { splitDeposit } from '@/lib/transaction/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 

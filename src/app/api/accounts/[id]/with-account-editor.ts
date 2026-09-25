@@ -1,6 +1,6 @@
 import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
-import { canEditAccount } from '@/lib/account-access';
+import { canEditAccount } from '@/lib/account/account-access';
 import { notSignedIn, notYourAccount } from '@/app/api/responses';
 
 interface RouteContext {

@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { WalletName } from '@/lib/types';
+import type { WalletName } from '@/lib/wallet/types';
 import { Money } from '@/components/Money';
 import {
   BALANCE_BREAKDOWN_COPY,

@@ -1,6 +1,6 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { AVATARS } from '@/lib/avatars';
+import { AVATARS } from '@/lib/account/avatars';
 import { AVATAR_PICKER_LAYOUT } from '@/components/AvatarPicker/constants';
 import { getThemeTokens } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';

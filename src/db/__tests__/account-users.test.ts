@@ -1,4 +1,4 @@
-import type { Account, AccountUser } from '@/lib/types';
+import type { Account, AccountUser } from '@/lib/account/types';
 import { accountsForUser, findAccountUser } from '../account-users';
 import {
   createMockAccount,
@@ -6,8 +6,8 @@ import {
   mockAccount,
   mockAccountUser,
   mockSiblingAccount,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 
 const mockParentId = mockUser.id;
 const mockUnrelatedParentId = 'u2';

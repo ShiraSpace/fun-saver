@@ -4,7 +4,7 @@ import { JSX, ReactNode, useEffect } from 'react';
 import { createRequiredContext } from '@/hooks/create-required-context';
 import { THEME_COOKIE, writeCookie } from '@/lib/cookies';
 import { useThemeId } from '@/theme/AppThemeProvider';
-import type { SignedInUser } from '@/lib/types';
+import type { SignedInUser } from '@/lib/user/types';
 
 const [SignedInUserContextProvider, useSignedInUser] =
   createRequiredContext<SignedInUser>('SignedInUserProvider');

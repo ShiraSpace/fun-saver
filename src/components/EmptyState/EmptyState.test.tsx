@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { mockUser } from '@/test-utils/mocks/general.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { PIG_EMOJI } from '@/components/Pig/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';

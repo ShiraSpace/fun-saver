@@ -1,8 +1,9 @@
-import type { Transaction, Wallet } from '../types';
-import { TRANSACTION_TYPE } from '../constants';
+import type { Transaction } from '@/lib/transaction/types';
+import type { Wallet } from '@/lib/wallet/types';
+import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { addDays, eachDayInclusive } from '../dates';
 import { newId } from '../ids';
-import { balanceChange } from '../wallet-totals';
+import { balanceChange } from '@/lib/wallet/balance';
 import { interestForDay } from './interest-for-day';
 
 export interface AddDailyInterestParams {

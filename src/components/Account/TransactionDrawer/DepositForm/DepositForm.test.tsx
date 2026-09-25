@@ -2,10 +2,10 @@ import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { DepositForm } from './DepositForm';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { AMOUNT_KEYPAD_TEST_IDS } from '../AmountKeypad/constants';
-import { splitDeposit } from '@/lib/transactions';
+import { splitDeposit } from '@/lib/transaction/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import { mockAccountSummary } from '@/test-utils/mocks/general.mocks';
+import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddDeposit = jest.fn();

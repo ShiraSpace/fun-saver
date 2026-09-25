@@ -10,7 +10,7 @@ import {
   type AccountsContextValue,
 } from '@/components/Home/accounts-context';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
-import type { SignedInUser } from '@/lib/types';
+import type { SignedInUser } from '@/lib/user/types';
 import { setMockPathname } from '@mocks/next/navigation';
 
 interface RenderOptions {

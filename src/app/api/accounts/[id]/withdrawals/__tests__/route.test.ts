@@ -4,10 +4,10 @@
 import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
 import { today } from '@/lib/clock';
-import { addDeposit } from '@/lib/transactions';
-import { balance } from '@/lib/wallet-totals';
-import type { Account } from '@/lib/types';
-import { mockCoParent, mockUser } from '@/test-utils/mocks/general.mocks';
+import { addDeposit } from '@/lib/transaction/transactions';
+import { balance } from '@/lib/wallet/balance';
+import type { Account } from '@/lib/account/types';
+import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { POST } from '../route';

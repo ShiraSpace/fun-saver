@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { signOut } from 'next-auth/react';
-import { SIGN_IN_PATH } from '@/lib/constants';
+import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { goTo } from '@/lib/navigate';
 import { useOnMenuClose } from '../use-menu-state';
 

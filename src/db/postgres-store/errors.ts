@@ -1,5 +1,5 @@
 import { NeonDbError } from '@neondatabase/serverless';
-import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
+import { DuplicateAccountError, UnknownOwnerError } from '@/lib/account/errors';
 
 const UNIQUE_VIOLATION = '23505';
 const FOREIGN_KEY_VIOLATION = '23503';

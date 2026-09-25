@@ -3,7 +3,7 @@ import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import {
   mockAccount,
   mockCreateAccountInput,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { CreateAccount } from './CreateAccount';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
 import {

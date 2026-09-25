@@ -1,5 +1,6 @@
-import type { WalletName } from '@/lib/types';
-import { DEPOSIT_SHARES, WALLET_ICON, WALLET_LABEL } from '@/lib/constants';
+import type { WalletName } from '@/lib/wallet/types';
+import { DEPOSIT_SHARES } from '@/lib/transaction/constants';
+import { WALLET_ICON, WALLET_LABEL } from '@/lib/wallet/constants';
 import { percentLabel } from '../constants';
 
 export const EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS = {

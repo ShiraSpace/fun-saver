@@ -1,10 +1,12 @@
 import { JsonFileStore } from '../index';
 import {
   createMockTransaction,
+  mockTransactions,
+} from '@/test-utils/mocks/transaction.mocks';
+import {
   mockAccount,
   mockSiblingAccount,
-  mockTransactions,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 const mockDeposit = createMockTransaction();

@@ -1,10 +1,10 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountSummary } from '@/lib/types';
+import type { AccountSummary } from '@/lib/account/types';
 import { Avatar } from '@/components/Avatar/Avatar';
 import { Money } from '@/components/Money';
-import { totalBalance } from '@/lib/wallet-totals';
+import { totalBalance } from '@/lib/wallet/balance';
 import { ACCOUNT_LIST_STYLE, ACCOUNT_LIST_TEST_IDS } from './constants';
 import { Name, Total } from './AccountList.styles';
 import { Row } from '../row-parts';

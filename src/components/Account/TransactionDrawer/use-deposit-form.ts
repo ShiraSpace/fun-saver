@@ -1,5 +1,8 @@
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import { splitDeposit, type DepositSplit } from '@/lib/transactions';
+import {
+  splitDeposit,
+  type DepositSplit,
+} from '@/lib/transaction/transactions';
 import { useAddTransaction } from './use-add-transaction';
 import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 

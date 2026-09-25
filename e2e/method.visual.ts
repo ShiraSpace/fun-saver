@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockAccount } from '@/test-utils/mocks/general.mocks';
+import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { SOURCE_MARKER_COPY } from '@/components/Method/SourceMarker/constants';
 import { SOURCES_SECTION_ID } from '@/components/Method/constants';
 import { useDriver } from './driver/use-driver';

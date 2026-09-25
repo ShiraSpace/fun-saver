@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { mockAccountSummary } from '@/test-utils/mocks/general.mocks';
+import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import type { AccountNavigation } from '@/hooks/use-account-navigation';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';

@@ -1,6 +1,6 @@
 import { getStore } from '@/db';
-import { validAccountEdits } from '@/lib/account-input';
-import { AccountsStore } from '@/lib/accounts-store';
+import { validAccountEdits } from '@/lib/account/account-input';
+import { AccountsStore } from '@/lib/account/accounts-store';
 import { jsonBody } from '@/app/api/json-body';
 import { API_ERRORS } from '@/app/api/constants';
 import { accountNotFound, badRequest } from '@/app/api/responses';

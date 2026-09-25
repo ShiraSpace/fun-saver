@@ -4,7 +4,7 @@ import { sortedByName } from '@/db/account-users';
 import {
   mockAccount,
   mockSiblingAccount,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { useDriver } from './driver/use-driver';
 
 describe('account switching', () => {

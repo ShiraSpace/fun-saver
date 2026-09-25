@@ -4,7 +4,7 @@ import { getThemeTokens } from '@/theme/registry';
 import { WalletList } from './WalletList';
 import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
 import { WALLET_CARD_TEST_IDS } from '../WalletCard/constants';
-import { mockWalletSummaries } from '@/test-utils/mocks/general.mocks';
+import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 
 describe('WalletList', () => {
   beforeEach(() => {

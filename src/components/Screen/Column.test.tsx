@@ -8,8 +8,8 @@ import {
   mockAccountsContext,
   mockAccountSummary,
   mockSiblingAccountSummary,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { Column } from './Column';
 
 interface ColumnShape {

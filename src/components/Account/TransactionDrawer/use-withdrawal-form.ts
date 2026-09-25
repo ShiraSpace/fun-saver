@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import type { WalletSummary } from '@/lib/types';
+import type { WalletSummary } from '@/lib/wallet/types';
 import { useAddTransaction } from './use-add-transaction';
 import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 

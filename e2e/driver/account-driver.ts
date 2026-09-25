@@ -1,4 +1,4 @@
-import type { WalletName } from '@/lib/types';
+import type { WalletName } from '@/lib/wallet/types';
 import { BALANCE_BREAKDOWN_TEST_IDS } from '@/components/Account/BalanceBreakdown/constants';
 import { INTEREST_STATS_TEST_IDS } from '@/components/Account/WalletCard/InterestStats/constants';
 import { WALLET_LIST_TEST_IDS } from '@/components/Account/WalletList/constants';

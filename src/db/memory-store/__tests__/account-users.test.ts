@@ -1,14 +1,13 @@
 import { InMemoryStore } from '../index';
-import { DuplicateAccountError, UnknownOwnerError } from '@/lib/errors';
+import { DuplicateAccountError, UnknownOwnerError } from '@/lib/account/errors';
 import {
   mockAccount,
   mockAccountUser,
   mockOwner,
   mockSiblingAccount,
-  mockCoParent,
   mockStrangerOwner,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 
 describe('InMemoryStore account users', () => {
   let store: InMemoryStore;

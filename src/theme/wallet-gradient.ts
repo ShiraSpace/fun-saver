@@ -1,4 +1,4 @@
-import type { WalletName } from '@/lib/types';
+import type { WalletName } from '@/lib/wallet/types';
 import type { ThemeGradients } from './theme-tokens';
 
 export type WalletGradient = Extract<

@@ -3,9 +3,9 @@
  */
 import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
-import { mockCoParent, mockUser } from '@/test-utils/mocks/general.mocks';
-import { splitDeposit } from '@/lib/transactions';
-import type { Transaction } from '@/lib/types';
+import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
+import { splitDeposit } from '@/lib/transaction/transactions';
+import type { Transaction } from '@/lib/transaction/types';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { POST } from '../route';

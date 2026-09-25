@@ -2,9 +2,9 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import {
   mockAccountSummary,
   mockSiblingAccountSummary,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
-import { totalBalance } from '@/lib/wallet-totals';
+import { totalBalance } from '@/lib/wallet/balance';
 import { agorotToWholeShekels } from '@/lib/money';
 import { AccountList } from './AccountList';
 import { ACCOUNT_LIST_COPY, ACCOUNT_LIST_TEST_IDS } from './constants';

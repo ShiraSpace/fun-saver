@@ -4,7 +4,7 @@ import { MENU_ACCOUNT_SETTINGS_TEST_IDS } from './constants';
 import {
   mockAccountsContext,
   mockSiblingAccountSummary,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 
 describe('MenuAccountSettings', () => {
   beforeEach(() => {

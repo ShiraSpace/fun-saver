@@ -4,7 +4,7 @@ import { THEME_ID, getThemeTokens } from '@/theme/registry';
 import {
   mockAccountsContext,
   mockAccountSummary,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { AppearanceSection } from './AppearanceSection';
 import {

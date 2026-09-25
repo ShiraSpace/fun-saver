@@ -1,5 +1,5 @@
-import type { Account } from '@/lib/types';
-import type { CreateAccountInput } from '@/lib/accounts-store';
+import type { Account } from '@/lib/account/types';
+import type { CreateAccountInput } from '@/lib/account/accounts-store';
 import { fetchJson } from '@/lib/fetch-json';
 
 const ACCOUNTS_ENDPOINT = '/api/accounts';

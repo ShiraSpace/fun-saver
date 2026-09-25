@@ -1,6 +1,7 @@
 import { JSX } from 'react';
-import type { WalletName } from '@/lib/types';
-import { DEPOSIT_SHARES, WALLET_ICON, WALLET_LABEL } from '@/lib/constants';
+import type { WalletName } from '@/lib/wallet/types';
+import { DEPOSIT_SHARES } from '@/lib/transaction/constants';
+import { WALLET_ICON, WALLET_LABEL } from '@/lib/wallet/constants';
 import { percentLabel } from '../constants';
 import { WALLET_TRIO_TEST_IDS } from './constants';
 import { Icon, Name, TrioWallet, Share, Trio } from './WalletTrio.styles';

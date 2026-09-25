@@ -1,6 +1,6 @@
 import { encode } from 'next-auth/jwt';
 import type { CookieData } from 'puppeteer';
-import type { User } from '@/lib/types';
+import type { User } from '@/lib/user/types';
 
 export const TEST_AUTH_SECRET = 'fun-saver-e2e-auth-secret';
 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
-import { sessionUser } from '@/lib/session-user';
-import { SIGN_IN_PATH } from '@/lib/constants';
+import { sessionUser } from '@/lib/user/session-user';
+import { SIGN_IN_PATH } from '@/lib/user/constants';
 
 export const config = {
   matcher: ['/((?!login(?:/|$)|api(?:/|$)|_next(?:/|$)|avatars/).*)'],

@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import { Avatar } from '../Avatar';
-import { AVATARS, type AvatarOption } from '@/lib/avatars';
+import { AVATARS, type AvatarOption } from '@/lib/account/avatars';
 import { AVATAR_PICKER_LAYOUT, AVATAR_PICKER_TEST_IDS } from './constants';
 import { Grid, OptionButton } from './AvatarPicker.styles';
 

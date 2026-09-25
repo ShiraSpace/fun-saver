@@ -1,4 +1,4 @@
-import { PERCENT_TOTAL } from '@/lib/constants';
+import { PERCENT_TOTAL } from '@/lib/wallet/constants';
 
 export const METHOD_ROUTE = '/method';
 

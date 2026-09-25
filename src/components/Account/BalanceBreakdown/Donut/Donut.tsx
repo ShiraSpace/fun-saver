@@ -2,8 +2,8 @@
 
 import { JSX } from 'react';
 import { useTheme } from '@emotion/react';
-import type { WalletName } from '@/lib/types';
-import { PERCENT_TOTAL } from '@/lib/constants';
+import type { WalletName } from '@/lib/wallet/types';
+import { PERCENT_TOTAL } from '@/lib/wallet/constants';
 import {
   DONUT_ANIMATION,
   DONUT_CIRCUMFERENCE,

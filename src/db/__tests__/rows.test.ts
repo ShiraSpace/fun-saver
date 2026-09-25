@@ -8,11 +8,9 @@ import {
   type TransactionRow,
   type UserRow,
 } from '../rows';
-import {
-  createMockTransaction,
-  createMockWallets,
-  mockAccount,
-} from '@/test-utils/mocks/general.mocks';
+import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
+import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
+import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 
 const mockAccountRow: AccountRow = {

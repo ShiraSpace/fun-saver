@@ -1,8 +1,8 @@
 'use client';
 
 import { JSX } from 'react';
-import type { WalletSummary } from '@/lib/types';
-import { totalBalance, walletShares } from '@/lib/wallet-totals';
+import type { WalletSummary } from '@/lib/wallet/types';
+import { totalBalance, walletShares } from '@/lib/wallet/balance';
 import { agorotToWholeShekels } from '@/lib/money';
 import { Money } from '@/components/Money';
 import { Donut } from './Donut';

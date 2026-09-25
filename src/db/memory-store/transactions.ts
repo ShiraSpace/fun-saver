@@ -1,4 +1,4 @@
-import type { Transaction } from '@/lib/types';
+import type { Transaction } from '@/lib/transaction/types';
 import type { TransactionRepository } from '../data-store';
 import { inOrderOfOccurrence } from '../transaction-order';
 

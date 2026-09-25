@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, ReactNode } from 'react';
-import type { WalletName, WalletSummary } from '@/lib/types';
+import type { WalletName, WalletSummary } from '@/lib/wallet/types';
 import { Money } from '@/components/Money';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import {

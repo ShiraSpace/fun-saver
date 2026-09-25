@@ -9,7 +9,7 @@ import {
   fillName,
 } from '@/test-utils/account-form';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
-import { AVATARS } from '@/lib/avatars';
+import { AVATARS } from '@/lib/account/avatars';
 import { AccountForm } from './AccountForm';
 import { NAME_FIELD_TEST_IDS } from './NameField/constants';
 import { ACCOUNT_FORM_COPY, ACCOUNT_FORM_TEST_IDS } from './constants';

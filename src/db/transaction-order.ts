@@ -1,4 +1,4 @@
-import type { Transaction } from '@/lib/types';
+import type { Transaction } from '@/lib/transaction/types';
 
 export function inOrderOfOccurrence(
   transactions: Transaction[]

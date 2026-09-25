@@ -1,12 +1,12 @@
 /**
  * @jest-environment node
  */
-import { DuplicateAccountError } from '@/lib/errors';
+import { DuplicateAccountError } from '@/lib/account/errors';
 import { THEME_ID } from '@/theme/registry';
 import {
   createMockAccount,
   mockAccountEdits,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
 import { withTestDatabase } from './test-database';
 
 describe('PostgresAccounts', () => {

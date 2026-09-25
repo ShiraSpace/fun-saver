@@ -1,4 +1,4 @@
-import type { Account, AccountEdits } from '@/lib/types';
+import type { Account, AccountEdits } from '@/lib/account/types';
 import { fetchJson } from '@/lib/fetch-json';
 
 function accountEndpoint(accountId: string): string {

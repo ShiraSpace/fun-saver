@@ -1,5 +1,5 @@
-import type { WalletSummary } from '@/lib/types';
-import { PERCENT_TOTAL, WALLET_LABEL } from '@/lib/constants';
+import type { WalletSummary } from '@/lib/wallet/types';
+import { PERCENT_TOTAL, WALLET_LABEL } from '@/lib/wallet/constants';
 import { dayMonth } from '@/lib/dates';
 import { agorotToWholeShekels } from '@/lib/money';
 

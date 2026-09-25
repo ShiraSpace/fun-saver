@@ -2,7 +2,7 @@
 
 import { JSX, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import type { Account } from '@/lib/types';
+import type { Account } from '@/lib/account/types';
 import {
   MenuHeaderBackdrop,
   MenuOverlay,

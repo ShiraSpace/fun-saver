@@ -1,12 +1,12 @@
 import { JsonFileStore } from '../index';
-import { UnknownOwnerError } from '@/lib/errors';
+import { UnknownOwnerError } from '@/lib/account/errors';
+import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import {
-  createMockTransaction,
   mockAccount,
   mockAccountUser,
   mockOwner,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
+} from '@/test-utils/mocks/account.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 describe('FileSession write queue', () => {

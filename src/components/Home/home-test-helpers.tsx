@@ -10,11 +10,11 @@ import {
 import {
   createMockAccount,
   mockAccount,
-  mockWalletSummaries,
   mockSiblingAccount,
-  mockUser,
-} from '@/test-utils/mocks/general.mocks';
-import type { AccountSummary } from '@/lib/types';
+} from '@/test-utils/mocks/account.mocks';
+import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
+import { mockUser } from '@/test-utils/mocks/user.mocks';
+import type { AccountSummary } from '@/lib/account/types';
 import { Home } from './Home';
 
 export const accounts: AccountSummary[] = [
