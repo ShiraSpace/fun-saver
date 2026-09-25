@@ -8,7 +8,7 @@ import {
   type InterestMode,
   type TransactionListRow,
 } from '@/lib/transaction-rows';
-import type { Transaction } from '@/lib/types';
+import type { Transaction, TransactionType } from '@/lib/types';
 import { createMockWallets } from './mocks/general.mocks';
 
 export function balanceHistoryFor(
@@ -38,4 +38,11 @@ export function closingBalances(
   const endOfDayTotalBalance = totalBalanceByDay(accountBalanceHistory);
 
   return rows.map((row) => endOfDayTotalBalance.get(row.day));
+}
+
+export function rowsOfType(
+  rows: TransactionListRow[],
+  transactionType: TransactionType
+): TransactionListRow[] {
+  return rows.filter((row) => row.type === transactionType);
 }
