@@ -33,6 +33,16 @@ describe('the total balance', () => {
     });
   });
 
+  describe('when the balance fell by too little to show', () => {
+    beforeEach(() => {
+      renderTotalBalance(-20);
+    });
+
+    it('does not mark it as a fall', () => {
+      expect(changeOverRange()).toHaveAttribute('data-balance-fell', 'false');
+    });
+  });
+
   describe('when the balance did not move over the range', () => {
     beforeEach(() => {
       renderTotalBalance(0);

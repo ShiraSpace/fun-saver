@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { agorotToWholeShekels } from '@/lib/money';
+import { balanceChangeInShekels } from '@/lib/money';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { BALANCE_CHANGE_COPY } from './constants';
 import { BalanceChange } from './BalanceChange';
@@ -16,7 +16,7 @@ describe('a balance change', () => {
     renderBalanceChange(mockFall);
 
     expect(screen.getByTestId(mockTestId)).toHaveTextContent(
-      `${BALANCE_CHANGE_COPY.fell}${MONEY_COPY.currencySign}${agorotToWholeShekels(-mockFall)}`
+      `${BALANCE_CHANGE_COPY.fell}${MONEY_COPY.currencySign}${-balanceChangeInShekels(mockFall)}`
     );
   });
 
@@ -25,7 +25,16 @@ describe('a balance change', () => {
     renderBalanceChange(mockRise);
 
     expect(screen.getByTestId(mockTestId)).toHaveTextContent(
-      `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${agorotToWholeShekels(mockRise)}`
+      `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${balanceChangeInShekels(mockRise)}`
+    );
+  });
+
+  it('shows a fall of half a shekel, rather than rounding it away', () => {
+    const mockHalfShekelFall = -40;
+    renderBalanceChange(mockHalfShekelFall);
+
+    expect(screen.getByTestId(mockTestId)).toHaveTextContent(
+      `${BALANCE_CHANGE_COPY.fell}${MONEY_COPY.currencySign}${-balanceChangeInShekels(mockHalfShekelFall)}`
     );
   });
 
@@ -33,7 +42,7 @@ describe('a balance change', () => {
     renderBalanceChange(0);
 
     expect(screen.getByTestId(mockTestId)).toHaveTextContent(
-      `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${agorotToWholeShekels(0)}`
+      `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${balanceChangeInShekels(0)}`
     );
   });
 });
