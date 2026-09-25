@@ -6,6 +6,7 @@ import {
   totalBalanceChange,
 } from '@/lib/wallet/balance-history';
 import { balanceChangeInShekels } from '@/lib/money';
+import { SHOWN_BALANCE } from '../constants';
 import { TOTAL_BALANCE_TEST_IDS } from './TotalBalance/constants';
 import { RANGE, type RangeId } from './constants';
 import { BalanceOverTime } from './BalanceOverTime';
@@ -26,7 +27,7 @@ function renderBalanceOverTime(rangeId: RangeId): void {
       viewChoices={{
         range: rangeId,
         setRange: jest.fn(),
-        shownBalances: ['totalBalance'],
+        shownBalances: [SHOWN_BALANCE.totalBalance],
         toggleShownBalance: jest.fn(),
         allWalletsShown: false,
         toggleAllWallets: jest.fn(),

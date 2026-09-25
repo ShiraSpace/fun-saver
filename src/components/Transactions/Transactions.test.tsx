@@ -14,9 +14,15 @@ import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { openAccountPicker } from '@/test-utils/account-picker';
+import { SHOWN_BALANCE } from './constants';
 import { CHOICE_CHIPS_TEST_IDS } from './ChoiceChips/constants';
 import { BALANCE_OVER_TIME_TEST_IDS } from './BalanceOverTime/constants';
 import { TOTAL_BALANCE_TEST_IDS } from './BalanceOverTime/TotalBalance/constants';
+import { BALANCE_CHIPS_TEST_IDS } from './BalanceOverTime/BalanceChips/constants';
+import {
+  BALANCE_CHART_COPY,
+  BALANCE_CHART_TEST_IDS,
+} from './BalanceOverTime/BalanceChart/constants';
 import { TRANSACTIONS_COPY, TRANSACTIONS_ROUTE } from './constants';
 import { Transactions } from './Transactions';
 
@@ -31,6 +37,12 @@ const mockDeposits = [
     createdAt: '2026-01-08T10:00:00.000Z',
   }),
 ];
+
+function switchToTheOtherChild(): void {
+  fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+  openAccountPicker();
+  fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
+}
 
 function rangeOption(rangeId: string): HTMLElement {
   return screen.getByTestId(
@@ -82,14 +94,33 @@ describe('the transactions screen', () => {
 
     describe('and then switches to another child', () => {
       beforeEach(() => {
-        fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
-        openAccountPicker();
-        fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
+        switchToTheOtherChild();
       });
 
       it('keeps the week picked', () => {
         expect(rangeOption('week')).toBeChecked();
       });
+    });
+  });
+
+  describe('when the parent turns savings on and switches to a child with no transactions', () => {
+    beforeEach(() => {
+      fireEvent.click(
+        screen.getByTestId(BALANCE_CHIPS_TEST_IDS.chip(SHOWN_BALANCE.savings))
+      );
+      switchToTheOtherChild();
+    });
+
+    it('says there is nothing to show yet', () => {
+      expect(
+        screen.getByTestId(BALANCE_CHART_TEST_IDS.message)
+      ).toHaveTextContent(BALANCE_CHART_COPY.noTransactions.text);
+    });
+
+    it('keeps the lines the parent chose', () => {
+      expect(
+        screen.getByTestId(BALANCE_CHIPS_TEST_IDS.chip(SHOWN_BALANCE.savings))
+      ).toHaveAttribute('aria-pressed', 'true');
     });
   });
 });
