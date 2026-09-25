@@ -6,6 +6,10 @@ import {
   totalBalanceChange,
 } from '@/lib/wallet/balance-history';
 import { balanceChangeInShekels } from '@/lib/money';
+import {
+  ALL_TRANSACTION_TYPES,
+  INTEREST_MODE,
+} from '@/lib/transaction/constants';
 import { TOTAL_BALANCE_TEST_IDS } from './TotalBalance/constants';
 import { RANGE, type RangeId } from './constants';
 import { BalanceOverTime } from './BalanceOverTime';
@@ -23,7 +27,14 @@ function renderBalanceOverTime(rangeId: RangeId): void {
   render(
     <BalanceOverTime
       balanceHistory={mockBalanceHistory}
-      viewChoices={{ range: rangeId, setRange: jest.fn() }}
+      viewChoices={{
+        range: rangeId,
+        setRange: jest.fn(),
+        transactionTypeFilter: ALL_TRANSACTION_TYPES,
+        setTransactionTypeFilter: jest.fn(),
+        interestMode: INTEREST_MODE.monthly,
+        setInterestMode: jest.fn(),
+      }}
     />
   );
 }

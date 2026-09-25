@@ -1,16 +1,17 @@
 'use client';
 
-import { JSX, useMemo } from 'react';
+import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
 import type { TransactionsByAccount } from '@/lib/transaction/transactions-by-account';
-import { balanceHistory } from '@/lib/wallet/balance-history';
 import { Header } from '@/components/Header';
 import { Column, Screen } from '@/components/Screen';
 import { AccountManagement } from '@/components/AccountManagement';
 import { AccountsProvider } from '@/components/Home/accounts-context';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { BalanceOverTime } from './BalanceOverTime';
+import { TransactionList } from './TransactionList';
 import { TRANSACTIONS_COPY } from './constants';
+import { useBalanceHistory } from './use-balance-history';
 import { useTransactionsViewChoices } from './use-transactions-view-choices';
 
 interface TransactionsProps {
@@ -33,15 +34,12 @@ export function Transactions({
   const currentAccount = navigation.currentAccount ?? initialAccount;
   const accountsContext = { accounts, currentAccount, switchAccount };
 
-  const currentBalanceHistory = useMemo(
-    () =>
-      balanceHistory({
-        wallets: currentAccount.wallets,
-        transactions: transactionsByAccount[currentAccount.id] ?? [],
-        asOf,
-      }),
-    [currentAccount, transactionsByAccount, asOf]
-  );
+  const currentTransactions = transactionsByAccount[currentAccount.id] ?? [];
+  const currentBalanceHistory = useBalanceHistory({
+    wallets: currentAccount.wallets,
+    transactions: currentTransactions,
+    asOf,
+  });
 
   return (
     <AccountManagement navigation={navigation}>
@@ -51,6 +49,13 @@ export function Transactions({
             <Header title={TRANSACTIONS_COPY.title} account={currentAccount} />
             <BalanceOverTime
               balanceHistory={currentBalanceHistory}
+              viewChoices={viewChoices}
+            />
+            <TransactionList
+              transactions={currentTransactions}
+              wallets={currentAccount.wallets}
+              balanceHistory={currentBalanceHistory}
+              asOf={asOf}
               viewChoices={viewChoices}
             />
           </Column>

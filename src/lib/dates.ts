@@ -4,6 +4,17 @@ const HEBREW_DAY_MONTH = new Intl.DateTimeFormat('he', {
   timeZone: 'UTC',
 });
 
+const HEBREW_MONTH = new Intl.DateTimeFormat('he', {
+  month: 'long',
+  timeZone: 'UTC',
+});
+
+const HEBREW_MONTH_AND_YEAR = new Intl.DateTimeFormat('he', {
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
 function utcDate(iso: string): Date {
   return new Date(`${iso}T00:00:00Z`);
 }
@@ -33,4 +44,20 @@ const YEAR_MONTH_LENGTH = 'YYYY-MM'.length;
 
 export function calendarMonth(iso: string): string {
   return iso.slice(0, YEAR_MONTH_LENGTH);
+}
+
+const YEAR_LENGTH = 'YYYY'.length;
+
+export function calendarYear(iso: string): string {
+  return iso.slice(0, YEAR_LENGTH);
+}
+
+export function monthLabel(month: string, asOf: string): string {
+  const firstDay = utcDate(`${month}-01`);
+  const monthFormat =
+    calendarYear(asOf) === calendarYear(month)
+      ? HEBREW_MONTH
+      : HEBREW_MONTH_AND_YEAR;
+
+  return monthFormat.format(firstDay);
 }
