@@ -114,7 +114,9 @@ export function transactionListRows(
     ...interestRows(input.transactions, walletNameById),
   ];
 
-  return withBalances(rows, input).sort(newestFirst);
+  const rowsWithBalances = withBalances(rows, input);
+
+  return rowsWithBalances.sort(newestFirst);
 }
 
 export function filterByTransactionType(
