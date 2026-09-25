@@ -1,5 +1,6 @@
 import { addDailyInterest, dailyRate, interestForDay } from '../index';
-import { DAYS_PER_MONTH, TRANSACTION_TYPE } from '@/lib/constants';
+import { TRANSACTION_TYPE } from '@/lib/constants';
+import { DAYS_PER_MONTH } from '../constants';
 import type { Transaction } from '@/lib/types';
 import {
   createMockTransaction,

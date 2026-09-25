@@ -1,3 +1,4 @@
+import { SAVINGS_MONTHLY_RATE } from '@/lib/interest/constants';
 import type { AccountUserRole, AuthProvider, WalletName } from './types';
 
 export const GOOGLE_PROVIDER: AuthProvider = 'google';
@@ -11,10 +12,6 @@ export const AGOROT_PER_SHEKEL = 100;
 export const PERCENT_TOTAL = 100;
 
 export const MAX_ACCOUNT_NAME_LENGTH = 60;
-
-export const DAYS_PER_MONTH = 30;
-
-export const SAVINGS_MONTHLY_RATE = 0.15;
 
 export const TRANSACTION_TYPE = {
   deposit: 'deposit',

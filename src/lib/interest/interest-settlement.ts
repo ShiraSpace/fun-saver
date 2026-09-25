@@ -7,9 +7,9 @@ import type {
   Wallet,
   WalletName,
   WalletSummary,
-} from './types';
-import { summarizeWallet } from './summarize-wallet';
-import { addDailyInterest } from './interest';
+} from '@/lib/types';
+import { summarizeWallet } from '@/lib/summarize-wallet';
+import { addDailyInterest } from './add-daily-interest';
 
 const WALLET_ORDER: Record<WalletName, number> = {
   savings: 0,

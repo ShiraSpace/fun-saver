@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { Method } from '@/components/Method';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { getStore } from '@/db';
-import { summarizeAccounts } from '@/lib/interest-settlement';
+import { summarizeAccounts } from '@/lib/interest/interest-settlement';
 import { today } from '@/lib/clock';
 import { findCurrentAccount } from '@/lib/current-account';
 import { ThemedPage } from '@/theme/ThemedPage';

@@ -1,7 +1,7 @@
 import { JSX } from 'react';
 import { Home } from '@/components/Home';
 import { getStore } from '@/db';
-import { summarizeAccounts } from '@/lib/interest-settlement';
+import { summarizeAccounts } from '@/lib/interest/interest-settlement';
 import { today } from '@/lib/clock';
 import { ThemedPage } from '@/theme/ThemedPage';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';

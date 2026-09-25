@@ -2,7 +2,7 @@ import { InMemoryStore } from '@/db/memory-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { AccountsStore } from '../accounts-store';
 import { today } from '../clock';
-import { SAVINGS_MONTHLY_RATE } from '../constants';
+import { SAVINGS_MONTHLY_RATE } from '@/lib/interest/constants';
 import {
   mockCreateAccountInput,
   mockAccountEdits,

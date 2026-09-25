@@ -1,4 +1,4 @@
-import type { SettledAccount } from './interest-settlement';
+import type { SettledAccount } from '@/lib/interest/interest-settlement';
 import type { Transaction } from './types';
 
 export type TransactionsByAccount = Record<
