@@ -3,12 +3,9 @@ import {
   mockWalletSummaries,
   mockWalletShares,
 } from '@/test-utils/mocks/wallet.mocks';
+import { WALLET_SHORT_LABEL } from '@/lib/wallet/constants';
 import { Legend } from './Legend';
-import {
-  LEGEND_ANIMATION,
-  BALANCE_BREAKDOWN_COPY,
-  BALANCE_BREAKDOWN_TEST_IDS,
-} from '../constants';
+import { LEGEND_ANIMATION, BALANCE_BREAKDOWN_TEST_IDS } from '../constants';
 
 const walletsWithShare = mockWalletSummaries.map((wallet, index) => ({
   id: wallet.id,
@@ -36,7 +33,7 @@ describe('Legend', () => {
   it('names each wallet in Hebrew', () => {
     expect(
       screen.getAllByTestId(BALANCE_BREAKDOWN_TEST_IDS.legendRow)[0]
-    ).toHaveTextContent(BALANCE_BREAKDOWN_COPY.shortWalletLabel.savings);
+    ).toHaveTextContent(WALLET_SHORT_LABEL.savings);
   });
 
   it("shows each wallet's icon in its square", () => {

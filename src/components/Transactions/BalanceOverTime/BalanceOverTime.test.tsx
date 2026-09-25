@@ -23,7 +23,14 @@ function renderBalanceOverTime(rangeId: RangeId): void {
   render(
     <BalanceOverTime
       balanceHistory={mockBalanceHistory}
-      viewChoices={{ range: rangeId, setRange: jest.fn() }}
+      viewChoices={{
+        range: rangeId,
+        setRange: jest.fn(),
+        shownBalances: ['totalBalance'],
+        toggleShownBalance: jest.fn(),
+        allWalletsShown: false,
+        toggleAllWallets: jest.fn(),
+      }}
     />
   );
 }

@@ -2,6 +2,7 @@
 
 import { JSX } from 'react';
 import type { WalletName } from '@/lib/wallet/types';
+import { WALLET_SHORT_LABEL } from '@/lib/wallet/constants';
 import { Money } from '@/components/Money';
 import {
   BALANCE_BREAKDOWN_COPY,
@@ -34,7 +35,7 @@ export function Legend({ wallets }: LegendProps): JSX.Element {
       >
         {wallet.icon}
       </Dot>
-      {BALANCE_BREAKDOWN_COPY.shortWalletLabel[wallet.name]}
+      {WALLET_SHORT_LABEL[wallet.name]}
       <Share data-testid={BALANCE_BREAKDOWN_TEST_IDS.legendShare}>
         {BALANCE_BREAKDOWN_COPY.share(wallet.share)}
       </Share>

@@ -9,5 +9,8 @@ export const Card = styled.section`
 `;
 
 export const RangeRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
   margin: 8px 0 2px;
 `;

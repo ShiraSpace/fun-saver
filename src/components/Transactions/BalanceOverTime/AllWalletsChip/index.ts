@@ -1,0 +1,1 @@
+export { AllWalletsChip } from './AllWalletsChip';

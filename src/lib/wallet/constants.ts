@@ -3,10 +3,22 @@ import type { WalletConfig, WalletName } from './types';
 
 export const PERCENT_TOTAL = 100;
 
+export const WALLET_NAMES: readonly WalletName[] = [
+  'savings',
+  'spending',
+  'goodDeeds',
+];
+
 export const WALLET_LABEL: Record<WalletName, string> = {
   savings: 'חיסכון',
   spending: 'בזבוזים',
   goodDeeds: 'מעשים טובים',
+};
+
+export const WALLET_SHORT_LABEL: Record<WalletName, string> = {
+  savings: 'חיסכון',
+  spending: 'בזבוזים',
+  goodDeeds: 'מעשים',
 };
 
 export const WALLET_ICON: Record<WalletName, string> = {

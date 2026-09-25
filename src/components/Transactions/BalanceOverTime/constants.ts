@@ -1,3 +1,8 @@
+import { WALLET_SHORT_LABEL } from '@/lib/wallet/constants';
+import type { WalletName } from '@/lib/wallet/types';
+import type { ShownBalance } from '../use-transactions-view-choices';
+import { TOTAL_BALANCE_COPY } from './TotalBalance/constants';
+
 export type RangeId = 'week' | 'month' | 'year' | 'all';
 
 export interface TimeRange {
@@ -28,3 +33,18 @@ export const BALANCE_OVER_TIME_TEST_IDS = {
 export const BALANCE_OVER_TIME_COPY = {
   rangeLegend: 'טווח זמן',
 } as const;
+
+export type WalletChartColor =
+  'chartSavings' | 'chartSpending' | 'chartGoodDeeds';
+
+export const WALLET_CHART_COLOR: Record<WalletName, WalletChartColor> = {
+  savings: 'chartSavings',
+  spending: 'chartSpending',
+  goodDeeds: 'chartGoodDeeds',
+};
+
+export function shownBalanceLabel(shownBalance: ShownBalance): string {
+  return shownBalance === 'totalBalance'
+    ? TOTAL_BALANCE_COPY.label
+    : WALLET_SHORT_LABEL[shownBalance];
+}

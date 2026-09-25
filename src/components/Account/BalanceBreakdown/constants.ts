@@ -13,11 +13,6 @@ export const BALANCE_BREAKDOWN_TEST_IDS = {
 
 export const BALANCE_BREAKDOWN_COPY = {
   totalLabel: 'סך הכל',
-  shortWalletLabel: {
-    savings: 'חיסכון',
-    spending: 'בזבוזים',
-    goodDeeds: 'מעשים',
-  },
   share: (percent: number): string => `${percent}%`,
 } as const;
 
