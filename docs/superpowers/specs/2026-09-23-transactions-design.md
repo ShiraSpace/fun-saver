@@ -8,7 +8,9 @@
 > Implementation in progress; PR 1, the chart-line colour tokens, merged as #122;
 > PR 2, the whole-ledger store read, as #125; PR 3, the shared read, as #129;
 > PR 4, the balance history, as #152; PR 5, the transaction list rows, as #156;
-> PR 6, the route and shell, as #157. `src/lib` moved into domain folders in #161.
+> PR 6, the route and shell, as #157; PR 7, the chart, as #164; PR 8, the list,
+> as #163; PR 9a, the live tab, as #168. `src/lib` moved into domain folders in #161.
+> PR 9b, the browser suite, is the one PR left.
 > Mockup: `mockups/account-summary/transactions.html` + `account-summary.js` —
 > one screen, no competing variants; the controls beneath it are details inside
 > that screen. The mockup is the specification of record for anything this

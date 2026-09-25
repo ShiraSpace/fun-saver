@@ -29,7 +29,7 @@ mockup `mockups/account-summary/transactions.html` + `account-summary.js` is the
 specification of record for anything either document leaves open. Read both
 before any PR.
 
-## Where it stands (2026-09-27)
+## Where it stands (2026-09-28)
 
 Spec and plan merged as #119. **PR 1 merged as #122** — the chart-line colours
 are on `main`, so PR 7 now waits only on PR 6. **PR 2 merged as #125** — every
@@ -41,10 +41,13 @@ history and the transaction list rows are on `main`, so wave 1 is done.
 `TotalBalance`, `BalanceChange`, `use-transactions-view-choices`); its section
 below records it as built, and PRs 7–9 use those names. It left the
 display-precision rule to PR 7 and `BalanceChange`'s agorot to PR 8. The plan
-was synced to it in #158. **Wave 3 is open: PRs 7 (#164) and 8 (#163) are
-in review.** **PR 9 is split in two.** PR 9a gives the `תנועות` tab its `href`
-now, since `/transactions` has rendered since PR 6. PR 9b, the browser suite
-for the chart and the list, still waits on PRs 7 and 8.
+was synced to it in #158. **PR 7 merged as #164** and **PR 8 as #163** — the
+chart and the list are on `main`, built under the glossary as `BalanceChart`
+(`BalanceLines`, `BalanceAxis`, `DayAxis`, `TodaysBalances`), `BalanceChips`,
+`AllWalletsChip` and `TransactionList` (`TransactionMonth`, `TransactionRow`,
+`TransactionIcon`). **PR 9 was split in two.** **PR 9a merged as #168** — the
+`תנועות` tab links to `/transactions`. **PR 9b, the browser suite and the
+spec's close-out, is the one PR left.**
 
 **`src/lib` is in domain folders since #161**
 (`.plans/2026-09-25-lib-domain-folders.md`); files moved, nothing changed
@@ -77,15 +80,15 @@ stack was rebased twice because branches were cut from each other instead.
 | --- | --- | --- | --- | --- |
 | 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 ✓ #129 — store, then `settleInterest` | PR 4 ✓ #152 → PR 5 ✓ #156 — `balance-history`, then `transaction-rows` | done |
 | 2 | PR 6 — route, shell, total balance ✓ #157 | — | — | done |
-| 3 | PR 7 — chart | PR 8 — list | — | now |
-| 3 | PR 9a — the tab goes live | — | — | now: `/transactions` renders since PR 6 |
-| 4 | PR 9b — browser suite | — | — | PRs 7 and 8 merged |
+| 3 | PR 7 — chart ✓ #164 | PR 8 — list ✓ #163 | — | done |
+| 3 | PR 9a — the tab goes live ✓ #168 | — | — | done |
+| 4 | PR 9b — browser suite | — | — | now |
 
 - **Only shared file in wave 1:** `src/lib/dates.ts`, where PR 5 adds `calendarMonth`.
   Nothing else in wave 1 touches it.
-- **PRs 7 and 8 both edit `use-transactions-view.ts` and `Transactions.tsx`.**
-  Each adds its own state and one line of JSX. Whichever merges second rebases
-  onto the first. Everything else they touch is disjoint.
+- **PRs 7 and 8 both edited `use-transactions-view-choices.ts` and `Transactions.tsx`.**
+  Each added its own state and one line of JSX, and the second to merge rebased
+  onto the first. Everything else they touched was disjoint.
 
 **Running sessions side by side:**
 - One worktree per session, one writer each:
@@ -2086,7 +2089,7 @@ export const TRANSACTION_ROW_COPY = {
 
 ---
 
-## PR 9a — the tab goes live ✓ built
+## PR 9a — the tab goes live ✓ #168
 
 Branch `feat/transactions-tab`. Spec: delivery order 3. Its one condition is
 that `/transactions` renders, which it has since PR 6, so the user chose to
