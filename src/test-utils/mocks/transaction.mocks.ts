@@ -77,3 +77,17 @@ export const mockBusyDayTransactions: Transaction[] = [
   mockBusyDayWithdrawal,
   mockBusyDayInterest,
 ];
+
+export const mockDayOfInterest: Transaction = createMockTransaction({
+  id: 'day-of-interest',
+  type: TRANSACTION_TYPE.interest,
+  amount: 12,
+  occurredAt: '2026-01-02',
+  createdAt: '2026-01-02T06:00:00.000Z',
+});
+
+export const mockDayOfInterestCopy: Transaction = {
+  ...mockDayOfInterest,
+  id: 'day-of-interest-copy',
+  createdAt: '2026-01-02T06:00:00.034Z',
+};
