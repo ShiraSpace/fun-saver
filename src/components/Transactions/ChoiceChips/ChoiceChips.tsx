@@ -10,7 +10,7 @@ export interface Choice<Id extends string> {
 }
 
 interface ChoiceChipsProps<Id extends string> {
-  name: string;
+  groupName: string;
   legend: string;
   choices: readonly Choice<Id>[];
   selected: Id;
@@ -19,7 +19,7 @@ interface ChoiceChipsProps<Id extends string> {
 }
 
 export function ChoiceChips<Id extends string>({
-  name,
+  groupName,
   legend,
   choices,
   selected,
@@ -30,7 +30,7 @@ export function ChoiceChips<Id extends string>({
     <Chip key={choice.id}>
       <Radio
         type="radio"
-        name={name}
+        name={groupName}
         checked={choice.id === selected}
         onChange={(): void => onSelect(choice.id)}
         data-testid={CHOICE_CHIPS_TEST_IDS.option(testId, choice.id)}

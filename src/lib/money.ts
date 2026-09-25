@@ -23,3 +23,13 @@ export function nearestHalfShekel(agorot: number): number | null {
 
   return agorotToShekels(halfShekels * HALF_SHEKEL_AGOROT);
 }
+
+export function balanceChangeInShekels(balanceChange: number): number {
+  const shekels = nearestHalfShekel(Math.abs(balanceChange));
+
+  if (shekels === null) {
+    return 0;
+  }
+
+  return Math.sign(balanceChange) * shekels;
+}

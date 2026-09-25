@@ -1,4 +1,5 @@
 import { JSX } from 'react';
+import { balanceChangeInShekels } from '@/lib/money';
 import { Money } from '@/components/Money';
 import { BalanceChange } from '../../BalanceChange';
 import { TOTAL_BALANCE_COPY, TOTAL_BALANCE_TEST_IDS } from './constants';
@@ -20,7 +21,7 @@ export function TotalBalance({
   balanceChange,
   changeLabel,
 }: TotalBalanceProps): JSX.Element {
-  const balanceFell = balanceChange < 0;
+  const balanceFell = balanceChangeInShekels(balanceChange) < 0;
 
   return (
     <Head>

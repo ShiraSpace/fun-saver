@@ -3,6 +3,7 @@ import { CHOICE_CHIPS_TEST_IDS } from './constants';
 import { ChoiceChips } from './ChoiceChips';
 
 const mockTestId = 'fruit';
+const mockGroupName = 'fruits';
 const mockLegend = 'פרי';
 const mockChoices = [
   { id: 'apple', label: 'תפוח' },
@@ -21,7 +22,7 @@ describe('choice chips', () => {
   beforeEach(() => {
     render(
       <ChoiceChips
-        name={mockTestId}
+        groupName={mockGroupName}
         legend={mockLegend}
         choices={mockChoices}
         selected={mockSelected.id}

@@ -1,7 +1,8 @@
 'use client';
 
 import { JSX, useMemo } from 'react';
-import type { AccountSummary, Transaction } from '@/lib/types';
+import type { AccountSummary } from '@/lib/types';
+import type { TransactionsByAccount } from '@/lib/transactions-by-account';
 import { balanceHistory } from '@/lib/balance-history';
 import { Header } from '@/components/Header';
 import { Column, Screen } from '@/components/Screen';
@@ -15,10 +16,7 @@ import { useTransactionsViewChoices } from './use-transactions-view-choices';
 interface TransactionsProps {
   accounts: AccountSummary[];
   initialAccount: AccountSummary;
-  transactionsByAccount: Record<
-    string,
-    Omit<Transaction, 'id' | 'accountId'>[]
-  >;
+  transactionsByAccount: TransactionsByAccount;
   asOf: string;
 }
 

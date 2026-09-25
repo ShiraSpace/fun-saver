@@ -39,7 +39,7 @@ export function BalanceOverTime({
       />
       <RangeRow>
         <ChoiceChips
-          name={BALANCE_OVER_TIME_COPY.rangeName}
+          groupName={BALANCE_OVER_TIME_COPY.rangeGroupName}
           legend={BALANCE_OVER_TIME_COPY.rangeLegend}
           choices={RANGES}
           selected={range.id}

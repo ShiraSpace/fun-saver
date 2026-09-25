@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const Head = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: baseline;
   gap: 9px;
 `;
 
