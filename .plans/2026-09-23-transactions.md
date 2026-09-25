@@ -2100,7 +2100,9 @@ list moved to PR 9b.
   `transactionsTabBackground()`, the same shape as `openMethodPage()` and
   `methodTabBackground()`.
 - `NavigationTabs.test.tsx`: `'links the transactions tab to its screen'`
-  replaces the inert-tab test. Break: drop the `href`.
+  replaces the inert-tab test. Break: drop the `href`. `'cannot send them to
+  the transactions, which needs an account to open'` joins the method's
+  no-account test. Break: the tab keeps its `href` with no account.
 - `NavigationTab.test.tsx`: its fixture was the destination without an `href`,
   and none is left. It is now the transactions destination with its `href`
   removed, which is how a parent with no account sees every tab. Break: the
