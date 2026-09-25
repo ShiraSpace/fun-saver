@@ -2,6 +2,7 @@ import { calendarMonth } from './dates';
 import { TRANSACTION_TYPE } from './constants';
 import { balanceChange } from './wallet-totals';
 import type {
+  ListedTransaction,
   TransactionListRow,
   TransactionListRowsInput,
 } from './transaction-rows';
@@ -11,7 +12,6 @@ export type TransactionListRowWithoutBalance = Omit<
   TransactionListRow,
   'balance'
 >;
-type ListedTransaction = TransactionListRowsInput['transactions'][number];
 export type WalletNameById = Map<string, WalletName>;
 
 export function walletNamesById(
@@ -85,6 +85,20 @@ export function withdrawalRows(
   }));
 }
 
+function dailyInterestRow(
+  transaction: ListedTransaction,
+  walletNameById: WalletNameById
+): TransactionListRowWithoutBalance {
+  return {
+    key: `interest:${transaction.walletId}:${transaction.occurredAt}`,
+    type: TRANSACTION_TYPE.interest,
+    walletName: walletNameById.get(transaction.walletId),
+    day: transaction.occurredAt,
+    balanceChange: balanceChange(transaction),
+    createdAt: transaction.createdAt,
+  };
+}
+
 export function dailyInterestRows(
   transactions: ListedTransaction[],
   walletNameById: WalletNameById
@@ -94,31 +108,24 @@ export function dailyInterestRows(
     TRANSACTION_TYPE.interest
   );
 
-  return dailyInterest.map((transaction) => ({
-    key: `interest:${transaction.walletId}:${transaction.occurredAt}`,
-    type: TRANSACTION_TYPE.interest,
-    walletName: walletNameById.get(transaction.walletId),
-    day: transaction.occurredAt,
-    balanceChange: balanceChange(transaction),
-    createdAt: transaction.createdAt,
-  }));
+  return dailyInterest.map((transaction) =>
+    dailyInterestRow(transaction, walletNameById)
+  );
 }
 
 export function monthlyInterestRows(
   transactions: ListedTransaction[],
   walletNameById: WalletNameById
 ): TransactionListRowWithoutBalance[] {
-  const dailyRows = dailyInterestRows(transactions, walletNameById).map(
-    (dailyRow) => {
-      const month = calendarMonth(dailyRow.day);
-
-      return {
-        ...dailyRow,
-        key: `interest:${dailyRow.walletName}:${month}`,
-        interestDays: 1,
-      };
-    }
+  const dailyInterest = transactionsOfType(
+    transactions,
+    TRANSACTION_TYPE.interest
   );
+  const dailyRows = dailyInterest.map((transaction) => ({
+    ...dailyInterestRow(transaction, walletNameById),
+    key: `interest:${transaction.walletId}:${calendarMonth(transaction.occurredAt)}`,
+    interestDays: 1,
+  }));
 
   return combinedByKey(dailyRows, (monthlyRow, dailyRow) => {
     const interestDaysSoFar = monthlyRow.interestDays ?? 0;

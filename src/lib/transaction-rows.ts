@@ -1,4 +1,8 @@
-import { totalBalanceByDay, type BalanceHistory } from './balance-history';
+import {
+  dailyBalanceChanges,
+  totalBalanceByDay,
+  type BalanceHistory,
+} from './balance-history';
 import { calendarMonth } from './dates';
 import {
   dailyInterestRows,
@@ -8,12 +12,16 @@ import {
   withdrawalRows,
   type TransactionListRowWithoutBalance,
 } from './transaction-row-builders';
-import { balanceChange } from './wallet-totals';
-import { TRANSACTION_TYPE } from './constants';
+import {
+  ALL_TRANSACTION_TYPES,
+  INTEREST_MODE,
+  TRANSACTION_TYPE,
+} from './constants';
 import type { Transaction, TransactionType, Wallet, WalletName } from './types';
 
-export type InterestMode = 'monthly' | 'daily';
-export type TransactionTypeFilter = 'all' | TransactionType;
+export type InterestMode = (typeof INTEREST_MODE)[keyof typeof INTEREST_MODE];
+export type TransactionTypeFilter =
+  typeof ALL_TRANSACTION_TYPES | TransactionType;
 
 export interface TransactionListRow {
   key: string;
@@ -38,7 +46,8 @@ export interface TransactionListRowsInput {
   interestMode: InterestMode;
 }
 
-type ListedTransaction = TransactionListRowsInput['transactions'][number];
+export type ListedTransaction =
+  TransactionListRowsInput['transactions'][number];
 
 function isInterest({ type }: Pick<Transaction, 'type'>): boolean {
   return type === TRANSACTION_TYPE.interest;
@@ -47,21 +56,11 @@ function isInterest({ type }: Pick<Transaction, 'type'>): boolean {
 function dailyDepositsAndWithdrawals(
   transactions: ListedTransaction[]
 ): Map<string, number> {
-  const depositsAndWithdrawalsByDay = new Map<string, number>();
   const depositsAndWithdrawals = transactions.filter(
     (transaction) => !isInterest(transaction)
   );
 
-  for (const transaction of depositsAndWithdrawals) {
-    const day = transaction.occurredAt;
-    const balanceChangeSoFar = depositsAndWithdrawalsByDay.get(day) ?? 0;
-    depositsAndWithdrawalsByDay.set(
-      day,
-      balanceChangeSoFar + balanceChange(transaction)
-    );
-  }
-
-  return depositsAndWithdrawalsByDay;
+  return dailyBalanceChanges(depositsAndWithdrawals);
 }
 
 function withBalances(
@@ -104,7 +103,7 @@ export function transactionListRows(
   input: TransactionListRowsInput
 ): TransactionListRow[] {
   const walletNameById = walletNamesById(input.wallets);
-  const listsEveryInterestDay = input.interestMode === 'daily';
+  const listsEveryInterestDay = input.interestMode === INTEREST_MODE.daily;
   const interestRows = listsEveryInterestDay
     ? dailyInterestRows
     : monthlyInterestRows;
@@ -122,7 +121,7 @@ export function filterByTransactionType(
   rows: TransactionListRow[],
   transactionTypeFilter: TransactionTypeFilter
 ): TransactionListRow[] {
-  const listsEveryType = transactionTypeFilter === 'all';
+  const listsEveryType = transactionTypeFilter === ALL_TRANSACTION_TYPES;
 
   return listsEveryType
     ? rows
