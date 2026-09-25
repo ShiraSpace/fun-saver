@@ -3,7 +3,7 @@ import type { Transaction } from '@/lib/transaction/types';
 
 function interestDay(transaction: Transaction): string | undefined {
   if (transaction.type !== TRANSACTION_TYPE.interest) {
-    return undefined;
+    return;
   }
 
   return JSON.stringify([
