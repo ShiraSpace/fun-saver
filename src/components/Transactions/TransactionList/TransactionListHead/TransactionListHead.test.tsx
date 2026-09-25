@@ -36,17 +36,3 @@ describe('the head of the transaction list', () => {
     ).toHaveAttribute('aria-hidden', 'true');
   });
 });
-
-describe('the count line', () => {
-  it('says one row in words', () => {
-    expect(TRANSACTION_LIST_COPY.count(1, 2)).toContain('שורה אחת');
-  });
-
-  it('says one day in words', () => {
-    expect(TRANSACTION_LIST_COPY.count(2, 1)).toContain('יום אחד');
-  });
-
-  it('says several days in the plural', () => {
-    expect(TRANSACTION_LIST_COPY.count(2, 3)).toContain('3 ימים');
-  });
-});

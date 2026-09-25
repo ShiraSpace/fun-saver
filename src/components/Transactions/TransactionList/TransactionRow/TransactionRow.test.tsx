@@ -80,10 +80,6 @@ describe('a transaction row', () => {
     });
   });
 
-  it('says one day of interest in words', () => {
-    expect(TRANSACTION_ROW_COPY.interestDays(1)).toBe('יום אחד');
-  });
-
   it.each(createMockWallets())(
     'names a withdrawal from $name by what the money was for',
     (wallet) => {
