@@ -29,13 +29,20 @@ mockup `mockups/account-summary/transactions.html` + `account-summary.js` is the
 specification of record for anything either document leaves open. Read both
 before any PR.
 
-## Where it stands (2026-09-23)
+## Where it stands (2026-09-25)
 
 Spec and plan merged as #119. **PR 1 merged as #122** — the chart-line colours
 are on `main`, so PR 7 now waits only on PR 6. **PR 2 merged as #125** — every
 store lists an account's whole ledger, oldest first. **PR 3 merged as #129** —
 one read settles interest and hands back each child's wallets and history, so
-lane B is done and PR 6 now waits only on PR 4.
+lane B is done. **PR 4 merged as #152** and **PR 5 as #156** — the balance
+history and the transaction list rows are on `main`, so wave 1 is done.
+**PR 6 is open as #157**, built under the glossary's names (`BalanceOverTime`,
+`TotalBalance`, `BalanceChange`, `use-transactions-view-choices`); its section
+below records it as built, and PRs 7–9 use those names. It left the
+display-precision rule to PR 7 and `BalanceChange`'s agorot to PR 8.
+PR 7 may stack on `feat/transactions-route` while #157 is open, retargeting
+to `main` once it merges.
 
 ### Lanes — who can run in parallel
 
@@ -46,8 +53,8 @@ stack was rebased twice because branches were cut from each other instead.
 
 | Wave | Lane A | Lane B | Lane C | Starts when |
 | --- | --- | --- | --- | --- |
-| 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 ✓ #129 — store, then `settleInterest` | PR 4 → PR 5 — `balance-history`, then `transaction-rows` | now |
-| 2 | PR 6 — route, shell, headline | — | — | PRs 3 and 4 merged |
+| 1 | PR 1 — theme tokens ✓ #122 | PR 2 ✓ #125 → PR 3 ✓ #129 — store, then `settleInterest` | PR 4 ✓ #152 → PR 5 ✓ #156 — `balance-history`, then `transaction-rows` | done |
+| 2 | PR 6 — route, shell, total balance — open #157 | — | — | PRs 3 and 4 merged |
 | 3 | PR 7 — chart | PR 8 — list | — | PR 6 merged; PR 7 also needs PR 1, PR 8 needs PR 5 |
 | 4 | PR 9 — tab and browser suite | — | — | PRs 7 and 8 merged |
 
@@ -164,7 +171,7 @@ Each refines or corrects the spec. None re-opens an approved design call.
 6. **The change pill does not use `Money`.** The spec keeps it on `Money`, but
    the pill is always signed and `Money` renders a negative as `₪-12` — the exact
    defect the spec lists against the change column. The pill and the change
-   column share one `SignedAmount` (`+₪12`, `-₪12`); the headline and the
+   column share one `BalanceChange` (`+₪12`, `-₪12`); the headline and the
    balance column keep `Money`.
 7. **`TypeFilters` and `InterestMode` are not folders.** Each would be a
    `ChoiceChips` with an options array and nothing else — a component that does
@@ -1295,367 +1302,113 @@ fixture without distinct `createdAt`s would silently do); never increment
 
 ---
 
-## PR 6 — the screen exists: route, shell, headline and ranges
+## PR 6 — the screen exists: route, shell, total balance and ranges
 
-Branch `feat/transactions-route`. Spec: "Route and entry point", "Headline and
-change", "Why every account". The tab stays inert (delivery order 3). Uses
-decision B (headline size, settled).
+Branch `feat/transactions-route`, **open as #157**. Spec: "Route and entry
+point", "Headline and change", "Why every account". The tab stays inert
+(delivery order 3). Uses decision B (headline size).
 
-**Files:**
-- Modify: `src/lib/interest-settlement.ts` (`withoutIds`, `transactionsByAccount`)
-- Modify: `src/lib/constants.ts` (`AGOROT_SHOWN_BELOW`), `src/lib/money.ts` (`shekelText`, `needsAgorot`)
-- Create: `src/app/transactions/page.tsx`
-- Create: `src/components/Transactions/{Transactions.tsx,Transactions.test.tsx,constants.ts,index.ts,use-transactions-view.ts,use-balance-history.ts,transactions-parts.ts}`
-- Create: `src/components/Transactions/ChoiceChips/{ChoiceChips.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
-- Create: `src/components/Transactions/SignedAmount/{SignedAmount.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
-- Create: `src/components/Transactions/ChartCard/{ChartCard.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
-- Create: `src/components/Transactions/ChartCard/TotalBalanceHeader/{TotalBalanceHeader.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
-- Test: `src/lib/__tests__/money.test.ts`, `src/lib/__tests__/interest-settlement.test.ts`
+This section records PR 6 **as built**. Its names follow the glossary, which
+overruled several names this plan first proposed. PRs 7–9 below use the
+built names.
 
-**Interfaces:**
-
-```ts
-// interest-settlement.ts
-export function withoutIds(transaction: Transaction): Omit<Transaction, 'id' | 'accountId'>;
-export function transactionsByAccount(settledAccounts: SettledAccount[]): Record<string, Omit<Transaction, 'id' | 'accountId'>[]>;
-
-// money.ts — the one precision rule the ticks and the change column share
-export function shekelText(agorot: number, withAgorot: boolean): string;
-export function needsAgorot(agorot: number): boolean;
-
-// Transactions/constants.ts
-export const TRANSACTIONS_ROUTE = '/transactions';
-export const TRANSACTIONS_COPY: { title: string };
-
-// ChartCard/constants.ts
-export type RangeId = 'week' | 'month' | 'year' | 'all';
-export interface Range { id: RangeId; lengthInDays: number; label: string; changeLabel: string }
-export const RANGES: readonly Range[];
-export const DEFAULT_RANGE: RangeId;
-
-// use-transactions-view.ts — grows in PRs 7 and 8
-export interface TransactionsView { range: RangeId; setRange: (range: RangeId) => void }
-export function useTransactionsView(): TransactionsView;
-
-// ChoiceChips — reused by PR 8 for the type filters and the interest switch
-export interface Choice<Id extends string> { id: Id; label: string }
-export interface ChoiceChipsProps<Id extends string> {
-  groupName: string; legend: string; choices: readonly Choice<Id>[];
-  selected: Id; onSelect: (id: Id) => void; testId: string;
-}
-
-// SignedAmount — reused by PR 8's change column
-export interface SignedAmountProps { amount: number; withAgorot: boolean; testId: string }
-```
-
-- [ ] **Step 1: The projection and the precision rule.**
+**What it adds:**
+- `src/app/transactions/page.tsx`: `signedInAccounts` → `settleInterest` →
+  `findCurrentAccount`, redirecting to `HOME_ROUTE` when there is no account.
+  It hands the shell every `AccountSummary`, plus `transactionsByAccount(...)`
+  and `asOf`.
+- `src/lib/transactions-by-account.ts`, which projects each settled account's
+  transactions without `id` and `accountId` and keys them by account id:
 
 ```ts
-// interest-settlement.ts
-export function withoutIds({
-  walletId,
-  type,
-  amount,
-  occurredAt,
-  createdAt,
-}: Transaction): Omit<Transaction, 'id' | 'accountId'> {
-  return { walletId, type, amount, occurredAt, createdAt };
-}
-
-export function transactionsByAccount(settledAccounts: SettledAccount[]): Record<string, Omit<Transaction, 'id' | 'accountId'>[]> {
-  return Object.fromEntries(
-    settledAccounts.map((settledAccount) => [settledAccount.account.id, settledAccount.transactions.map(withoutIds)])
-  );
-}
-
-// constants.ts
-export const AGOROT_SHOWN_BELOW = 10 * AGOROT_PER_SHEKEL;
-
-// money.ts
-export function shekelText(agorot: number, withAgorot: boolean): string {
-  return withAgorot ? agorotToShekels(agorot).toFixed(2) : String(agorotToWholeShekels(agorot));
-}
-
-export function needsAgorot(agorot: number): boolean {
-  const magnitude = Math.abs(agorot);
-
-  return magnitude < AGOROT_SHOWN_BELOW && magnitude % AGOROT_PER_SHEKEL !== 0;
-}
+export function transactionsByAccount(
+  settledAccounts: SettledAccount[]
+): Record<string, Omit<Transaction, 'id' | 'accountId'>[]>;
 ```
 
-- [ ] **Step 2: The page**, in `/method/page.tsx`'s shape.
-
-```tsx
-import { JSX } from 'react';
-import { redirect } from 'next/navigation';
-import { Transactions } from '@/components/Transactions';
-import { HOME_ROUTE } from '@/components/Home/constants';
-import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
-import { getStore } from '@/db';
-import { settleInterest, transactionsByAccount } from '@/lib/interest-settlement';
-import { today } from '@/lib/clock';
-import { findCurrentAccount } from '@/lib/current-account';
-import { ThemedPage } from '@/theme/ThemedPage';
-import { signedInAccounts } from '../signed-in-accounts';
-
-export const dynamic = 'force-dynamic';
-
-export default async function TransactionsPage(): Promise<JSX.Element> {
-  const { user, accounts, currentAccountId, themeId } = await signedInAccounts();
-  const asOf = today();
-  const settledAccounts = await settleInterest({ store: getStore(), accounts, asOf });
-  const accountSummaries = settledAccounts.map((settledAccount) => settledAccount.account);
-  const initialAccount = findCurrentAccount(accountSummaries, currentAccountId);
-
-  if (!initialAccount) {
-    redirect(HOME_ROUTE);
-  }
-
-  return (
-    <ThemedPage themeId={themeId}>
-      <SignedInUserProvider value={user}>
-        <Transactions
-          accounts={accountSummaries}
-          initialAccount={initialAccount}
-          transactionsByAccount={transactionsByAccount(settledAccounts)}
-          asOf={asOf}
-        />
-      </SignedInUserProvider>
-    </ThemedPage>
-  );
-}
-```
-
-- [ ] **Step 3: The shell**, `Transactions.tsx`, in `Method.tsx`'s shape. The
-      balance history is built here because the chart and (from PR 8) the list both read
-      it, through `useBalanceHistory` in `use-balance-history.ts` beside it — a hook, so
-      the value can be called `balanceHistory` without shadowing PR 4's function.
-
-```tsx
-'use client';
-
-import { JSX } from 'react';
-import type { AccountSummary, Transaction } from '@/lib/types';
-import { Header } from '@/components/Header';
-import { Column, Screen } from '@/components/Screen';
-import { AccountManagement } from '@/components/AccountManagement';
-import { AccountsProvider } from '@/components/Home/accounts-context';
-import { useAccountNavigation } from '@/hooks/use-account-navigation';
-import { ChartCard } from './ChartCard';
-import { TRANSACTIONS_COPY } from './constants';
-import { useBalanceHistory } from './use-balance-history';
-import { useTransactionsView } from './use-transactions-view';
-
-interface TransactionsProps {
-  accounts: AccountSummary[];
-  initialAccount: AccountSummary;
-  transactionsByAccount: Record<string, Omit<Transaction, 'id' | 'accountId'>[]>;
-  asOf: string;
-}
-
-export function Transactions({
-  accounts,
-  initialAccount,
-  transactionsByAccount,
-  asOf,
-}: TransactionsProps): JSX.Element {
-  const navigation = useAccountNavigation(accounts, initialAccount.id);
-  const currentAccount = navigation.currentAccount ?? initialAccount;
-  const view = useTransactionsView();
-  const balanceHistory = useBalanceHistory({
-    wallets: currentAccount.wallets,
-    transactions: transactionsByAccount[currentAccount.id] ?? [],
-    asOf,
-  });
-
-  return (
-    <AccountManagement navigation={navigation}>
-      <AccountsProvider
-        value={{ accounts, currentAccount, switchAccount: navigation.switchAccount }}
-      >
-        <Screen align="top">
-          <Column>
-            <Header title={TRANSACTIONS_COPY.title} account={currentAccount} />
-            <ChartCard balanceHistory={balanceHistory} view={view} />
-          </Column>
-        </Screen>
-      </AccountsProvider>
-    </AccountManagement>
-  );
-}
-```
-
-  `use-balance-history.ts`:
+- `src/components/Transactions/`:
+  - `Transactions.tsx` is the shell. It builds `currentBalanceHistory` with
+    `balanceHistory(...)` in a `useMemo`, and renders `Header` and
+    `BalanceOverTime`.
+  - `constants.ts` holds `TRANSACTIONS_ROUTE`, and `TRANSACTIONS_COPY.title`
+    set to `תנועות`.
+  - `use-transactions-view-choices.ts` holds the view choices; PRs 7 and 8
+    grow it:
 
 ```ts
-import { useMemo } from 'react';
-import { balanceHistory, type BalanceHistory, type BalanceHistoryInput } from '@/lib/balance-history';
-
-export function useBalanceHistory({ wallets, transactions, asOf }: BalanceHistoryInput): BalanceHistory {
-  return useMemo(() => balanceHistory({ wallets, transactions, asOf }), [wallets, transactions, asOf]);
-}
-```
-
-  `use-transactions-view.ts`:
-
-```ts
-import { useState } from 'react';
-import { DEFAULT_RANGE, type RangeId } from './ChartCard/constants';
-
-export interface TransactionsView {
+export interface TransactionsViewChoices {
   range: RangeId;
   setRange: (range: RangeId) => void;
 }
-
-export function useTransactionsView(): TransactionsView {
-  const [range, setRange] = useState<RangeId>(DEFAULT_RANGE);
-
-  return { range, setRange };
-}
+export function useTransactionsViewChoices(): TransactionsViewChoices;
 ```
 
-  `constants.ts`: `TRANSACTIONS_ROUTE`, `TRANSACTIONS_COPY = { title: 'תנועות' }`.
-  `transactions-parts.ts` holds `ScreenReaderOnly` (`position: absolute; width:
-  1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space:
-  nowrap;`), the first visually-hidden text in the app, used by `ChoiceChips`'
-  legend here and by PR 8's row labels.
+  - `BalanceOverTime/` is the card. It takes `{ balanceHistory, viewChoices }`
+    and renders `TotalBalance`, then the range `ChoiceChips`. Its
+    `constants.ts` holds `RangeId`, `Range` (`id`, `days`, `label`,
+    `changeLabel`), `RANGE` keyed by id, `RANGES`, `DEFAULT_RANGE = 'month'`,
+    `BALANCE_OVER_TIME_TEST_IDS` (`card`, `ranges`) and
+    `BALANCE_OVER_TIME_COPY`.
+  - `BalanceOverTime/TotalBalance/` shows the label, the total balance through
+    `Money`, and a `BalanceChange` pill followed by `changeLabel`. The pill is
+    marked as a fall when the change is negative.
+  - `BalanceChange/` takes `{ balanceChange, testId }` and renders `+₪12` or
+    `-₪12` inside `dir="ltr"`, **in whole shekels only**. PR 8 adds agorot.
+  - `ChoiceChips/` is one native radio per choice inside a `fieldset`. Its
+    visually hidden `legend` and radio share a `readByScreenReaderOnly` rule
+    that lives in `ChoiceChips.styles.ts`, because it has one user so far.
+    PR 8 gives it a second.
 
-- [ ] **Step 4: `ChoiceChips`.** A `fieldset` (border and padding reset), a
-      `ScreenReaderOnly as="legend"`, one `label` per choice wrapping a
-      visually hidden `<input type="radio" name={groupName} checked={…} onChange={() => onSelect(choice.id)}>`
-      with `data-testid={CHOICE_CHIPS_TEST_IDS.option(testId, choice.id)}`, and
-      the choice label as text. Chip look is the mockup's `.chip`
-      (`padding: 5px 10px; border-radius: 999px; border: 1.5px solid divider;`
-      `font-size: typography.label; font-weight: 600; color: textMuted`); the
-      checked look reads `&:has(input:checked)` — `depositBg` fill, `currentColor`
-      border — and focus reads `&:has(input:focus-visible)` with an outline in
-      `selectionRing`. The input is hidden with `ScreenReaderOnly`'s rules, never
-      `display: none`, or it leaves the tab order.
-- [ ] **Step 5: `SignedAmount`.**
+**What moved out of PR 6:**
+- **The display-precision rule moved to PR 7,** where the y-axis ticks need it
+  first. The plan had put `shekelText`, `needsAgorot` and `AGOROT_SHOWN_BELOW`
+  in `src/lib`. The glossary keeps `money.ts` to numbers and puts display text
+  with the component that draws it, so they land in
+  `src/components/Transactions/` instead.
+- **`BalanceChange`'s agorot moved to PR 8,** where the change column needs
+  them first.
+- **The shared visually-hidden rule moved to PR 8,** where it gets its second
+  user.
 
-```tsx
-export function SignedAmount({ amount, withAgorot, testId }: SignedAmountProps): JSX.Element {
-  const sign = amount < 0 ? SIGNED_AMOUNT_COPY.minus : SIGNED_AMOUNT_COPY.plus;
-
-  return (
-    <Amount dir="ltr" data-testid={testId}>
-      {sign}
-      {MONEY_COPY.currency}
-      {shekelText(Math.abs(amount), withAgorot)}
-    </Amount>
-  );
-}
-```
-
-  `Amount` is `font-variant-numeric: tabular-nums;` and nothing else — color is
-  the caller's. `SIGNED_AMOUNT_COPY = { plus: '+', minus: '-' }`.
-
-- [ ] **Step 6: `ChartCard` and `TotalBalanceHeader`.** `ChartCard` takes
-      `{ balanceHistory, view }`, finds the range, takes the history over it, and renders
-      `TotalBalanceHeader` then the range `ChoiceChips`:
-
-```tsx
-export function ChartCard({ balanceHistory, view }: ChartCardProps): JSX.Element {
-  const range = RANGES.find((candidate) => candidate.id === view.range) ?? RANGES[1];
-  const balanceHistoryInRange = balanceOverRange(balanceHistory, range.lengthInDays);
-
-  return (
-    <Card data-testid={CHART_CARD_TEST_IDS.card}>
-      <TotalBalanceHeader
-        totalBalance={todaysTotalBalance(balanceHistory)}
-        totalBalanceChange={totalBalanceChange(balanceHistory, range.lengthInDays)}
-        changeLabel={range.changeLabel}
-      />
-      <RangeRow>
-        <ChoiceChips
-          groupName={CHART_CARD_COPY.rangeGroupName}
-          legend={CHART_CARD_COPY.rangeLegend}
-          choices={RANGES}
-          selected={range.id}
-          onSelect={view.setRange}
-          testId={CHART_CARD_TEST_IDS.ranges}
-        />
-      </RangeRow>
-    </Card>
-  );
-}
-```
-
-  ```ts
-  export const RANGES: readonly Range[] = [
-    { id: 'week', lengthInDays: 7, label: 'שבוע', changeLabel: 'השבוע' },
-    { id: 'month', lengthInDays: 30, label: 'חודש', changeLabel: 'החודש' },
-    { id: 'year', lengthInDays: 365, label: 'שנה', changeLabel: 'השנה' },
-    { id: 'all', lengthInDays: Infinity, label: 'הכל', changeLabel: 'מאז ההתחלה' },
-  ];
-  export const DEFAULT_RANGE: RangeId = 'month';
-  ```
-
-  `TotalBalanceHeader` renders the label `סך הכל`, the headline through `Money`
-  (`typography.amount`, decision B), and the change pill
-  `<SignedAmount withAgorot={false} />` followed by `changeLabel`, with
-  `data-direction="down"` when the change is negative (`depositBg` /
-  `withdrawalText`) and `"up"` otherwise (`gainSoftBg` / `gainText`). Card look:
-  `surface`, `border-radius: 24px; padding: 13px 14px 11px;` and the mockup's
-  shadow as `theme.shadows` supplies it.
-
-- [ ] **Step 7: tsc, eslint, `npm run build`** (the route must collect), then
-      open `/transactions` in `npm run dev` and look at it in all three themes.
-      **STOP**; commit — `feat(transactions): the screen exists, with its total and its ranges`
-- [ ] **Step 8: First three tests** (`Transactions.test.tsx`, rendered like
-      `Method.test.tsx` with `{ route: TRANSACTIONS_ROUTE, user: mockUser }`, and
-      transactions for `mockAccountSummary` built from `createMockTransaction`s):
-  - `'names itself in the header, so the parent knows what they opened'` —
-    title equals `TRANSACTIONS_COPY.title`. Break: pass `account.name`.
-  - `'opens on the month, as the chart boots'` — the `month` radio is checked.
-    Break: `DEFAULT_RANGE = 'all'`.
-  - `'shows today’s total whatever range is picked'` — click the `week` radio;
-    the headline still reads `agorotToWholeShekels(todaysTotalBalance(balanceHistory))`, with
-    a fixture whose total moved inside the last week. Break: pass `totalBalance={balanceHistoryInRange.totalBalance[0]}`.
-- [ ] **Step 9: The rest.**
-  - `TotalBalanceHeader.test.tsx`: `'says how much the total moved over the range, and in which direction'`
-    (a negative change renders `-₪…` and `data-direction="down"`; break: sign
-    from `amount <= 0`); `'names the range it is measuring'`.
-  - `SignedAmount.test.tsx`: `'puts the sign before the shekel sign, so a loss reads -₪12'`
-    (text is `-₪12` for `-1200`; break: render `₪` before the sign);
-    `'signs a gain too'`; `'shows agorot when asked'` (`+₪0.09` for 9).
-  - `ChoiceChips.test.tsx`: `'checks exactly one choice'`; `'tells its parent which choice was picked'`;
-    `'names the group for a screen reader'` (the fieldset's accessible name is
-    the legend; break: drop the legend).
-  - `money.test.ts`: `'shows agorot only for a small amount that is not whole shekels'`
-    — `needsAgorot` of 9, 999, 1000, 500 → `true, true, false, false`;
-    `'writes shekels to two places, or rounds them'` — `shekelText(9, true)` is
-    `'0.09'`, `shekelText(1260, false)` is `'13'`.
-  - `interest-settlement.test.ts`: `'keeps ids and the account off the wire'` —
-    `Object.keys(withoutIds(createMockTransaction())).sort()` equals the five
-    fields; `'keys each account’s transactions by the account they belong to'`.
-  - `Transactions.test.tsx`: `'keeps the range when the parent switches child'` —
-    pick `week`, switch to `mockSiblingAccountSummary` through the menu (open it,
-    `openAccountPicker()` from `src/test-utils/account-picker.ts`, click the
-    second `ACCOUNT_LIST_TEST_IDS.row`, as `Home.managing-accounts.test.tsx`
-    does), and `week` is still checked. Break: move `useTransactionsView()`
-    into `ChartCard` and render it with `key={currentAccount.id}`.
+**Tests** (each watched failing against its own break):
+- `Transactions.test.tsx`: names itself in the header; opens on the month;
+  still shows today's total balance on another range; keeps the week picked
+  when the parent switches child.
+- `TotalBalance.test.tsx`, `BalanceChange.test.tsx` and `ChoiceChips.test.tsx`:
+  the sign before the shekel sign, the fall marking, the range's name, and one
+  checked choice with a named group.
+- `transactions-by-account.test.ts`: each transaction leaves its id and its
+  account behind, and is keyed by its account.
 
 ---
 
 ## PR 7 — the chart: how the balance got here
 
 Branch `feat/balance-chart`. Spec: "The graph" (all of it), "Chips", "Colours",
-"RTL / mobile / accessibility" (the chart's label). Needs PR 1 merged. Uses
-decisions B and C (settled).
+"RTL / mobile / accessibility" (the chart's label). Needs PRs 1 and 6 merged —
+it grows PR 6's `BalanceOverTime` and view choices. Uses decisions B and C (settled).
 
 **Files:**
 - Modify: `src/lib/constants.ts` (`WALLET_SHORT_LABEL`), `src/components/Account/BalanceBreakdown/constants.ts` (drop `BALANCE_BREAKDOWN_COPY.shortWalletLabel`), `.../Legend/Legend.tsx`, `.../Legend/Legend.test.tsx`
 - Modify: `src/lib/dates.ts` (`shortDayMonth`, `shortMonth`)
-- Modify: `src/components/Transactions/use-transactions-view.ts`, `ChartCard/ChartCard.tsx`, `ChartCard/constants.ts`, `ChartCard/ChartCard.styles.ts`
-- Create: `ChartCard/BalanceChart/{BalanceChart.tsx,.styles.ts,.test.tsx,constants.ts,index.ts,chart-geometry.ts,chart-geometry.test.ts,axis-ticks.ts,axis-ticks.test.ts}`
-- Create: `ChartCard/BalanceChart/{ChartLine,YAxis,XAxis,DirectLabels}/` — each `X.tsx`, `X.test.tsx`, `index.ts`, and `constants.ts` / `.styles.ts` where it has any
-- Create: `ChartCard/BalanceChips/{BalanceChips.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
+- Modify: `src/components/Transactions/constants.ts` (`AGOROT_SHOWN_BELOW`)
+- Create: `src/components/Transactions/money-text.ts`, `src/components/Transactions/money-text.test.ts`
+- Modify: `src/components/Transactions/use-transactions-view-choices.ts`, `BalanceOverTime/BalanceOverTime.tsx`, `BalanceOverTime/constants.ts`, `BalanceOverTime/BalanceOverTime.styles.ts`
+- Create: `BalanceOverTime/BalanceChart/{BalanceChart.tsx,.styles.ts,.test.tsx,constants.ts,index.ts,chart-geometry.ts,chart-geometry.test.ts,axis-ticks.ts,axis-ticks.test.ts}`
+- Create: `BalanceOverTime/BalanceChart/{ChartLine,YAxis,XAxis,DirectLabels}/` — each `X.tsx`, `X.test.tsx`, `index.ts`, and `constants.ts` / `.styles.ts` where it has any
+- Create: `BalanceOverTime/BalanceChips/{BalanceChips.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
 - Test: `src/lib/__tests__/dates.test.ts`
 
 **Interfaces:**
 
 ```ts
+// src/components/Transactions/constants.ts — display precision, not money, so not src/lib
+export const AGOROT_SHOWN_BELOW = 10 * AGOROT_PER_SHEKEL;
+
+// src/components/Transactions/money-text.ts — the one precision rule the ticks
+// (here) and the change column (PR 8) share; display text stays with the screen
+export function shekelsText(agorot: number, withAgorot: boolean): string;
+
 // src/lib/constants.ts — moved from BALANCE_BREAKDOWN_COPY.shortWalletLabel, one copy only
 export const WALLET_SHORT_LABEL: Record<WalletName, string> = {
   savings: 'חיסכון', spending: 'בזבוזים', goodDeeds: 'מעשים',
@@ -1665,7 +1418,7 @@ export const WALLET_SHORT_LABEL: Record<WalletName, string> = {
 export function shortDayMonth(iso: string): string;            // '14.9'
 export function shortMonth(iso: string, withYear: boolean): string; // Intl 'he' short month, '+ 26'
 
-// use-transactions-view.ts additions
+// use-transactions-view-choices.ts additions
 export type ShownBalance = 'totalBalance' | WalletName;
 shownBalances: readonly ShownBalance[];  // in SHOWN_BALANCE_ORDER
 toggleShownBalance: (shownBalance: ShownBalance) => void;
@@ -1687,8 +1440,20 @@ export function placeLabels(preferredLabels: { id: ShownBalance; y: number }[]):
 export interface AxisTick { index: number; label: string }
 export function xTicks(days: string[]): AxisTick[];
 
-// ChartCard/constants.ts
+// BalanceOverTime/constants.ts
 export const WALLET_CHART_COLOR: Record<WalletName, 'chartSavings' | 'chartSpending' | 'chartGoodDeeds'>;
+```
+
+- [ ] **Step 0: The display-precision rule.** It was in PR 6 in the first
+      draft of this plan; PR 6 shipped without it (see its section).
+
+```ts
+// src/components/Transactions/money-text.ts
+import { agorotToShekels, agorotToWholeShekels } from '@/lib/money';
+
+export function shekelsText(agorot: number, withAgorot: boolean): string {
+  return withAgorot ? agorotToShekels(agorot).toFixed(2) : String(agorotToWholeShekels(agorot));
+}
 ```
 
 - [ ] **Step 1: Hoist the short names.** Add `WALLET_SHORT_LABEL` beside
@@ -1747,8 +1512,8 @@ export const YEAR_TICKS_FROM_SPAN = 300;
 - [ ] **Step 4: `chart-geometry.ts`.**
 
 ```ts
-import { AGOROT_SHOWN_BELOW } from '@/lib/constants';
-import type { ShownBalance } from '../../use-transactions-view';
+import { AGOROT_SHOWN_BELOW } from '../../constants';
+import type { ShownBalance } from '../../use-transactions-view-choices';
 import {
   CHART_PADDING, FAR_X, LABEL_GAP, MID_Y, NEAR_X, PLOT_BOTTOM, PLOT_HEIGHT, Y_TICK_COUNT,
 } from './constants';
@@ -1871,7 +1636,7 @@ export function xTicks(days: string[]): AxisTick[] {
 
   `BALANCE_CHART_COPY.today = 'היום'`.
 
-- [ ] **Step 6: The view grows the shown balances.**
+- [ ] **Step 6: The view choices grow the shown balances.**
 
 ```ts
 const SHOWN_BALANCE_ORDER: readonly ShownBalance[] = ['totalBalance', 'savings', 'spending', 'goodDeeds'];
@@ -1913,7 +1678,7 @@ function withAllWalletsShown(shownBalances: readonly ShownBalance[], shown: bool
   Default: total on, all three wallets off.
 
 - [ ] **Step 7: `BalanceChart`** — `{ balanceHistory: BalanceHistory; shownBalances: readonly ShownBalance[]; rangeLabel: string }`,
-      where `ChartCard` passes `balanceHistoryInRange` as `balanceHistory`.
+      where `BalanceOverTime` passes `balanceHistoryInRange` as `balanceHistory`.
 
 ```tsx
 export function BalanceChart({ balanceHistory, shownBalances, rangeLabel }: BalanceChartProps): JSX.Element {
@@ -1968,7 +1733,7 @@ export function BalanceChart({ balanceHistory, shownBalances, rangeLabel }: Bala
     `theme.colors[WALLET_CHART_COLOR[drawnBalance.id]]`, read with `useTheme()` as `Donut` does.
   - `YAxis` — for each of `yTickBalances(extent)`: a gridline from `NEAR_X` to
     `FAR_X` in `divider`, and a `<text>` at `x = FAR_X + 5`, `text-anchor={ANCHOR_RIGHTWARD}`,
-    reading `` `₪${shekelText(value, tickNeedsAgorot(extent))}` `` in `textMuted`.
+    reading `` `₪${shekelsText(value, tickNeedsAgorot(extent))}` `` in `textMuted`.
   - `XAxis` — for each of `xTicks(days)`: `<text text-anchor="middle">` at
     `x = clamp(xAt(index, days.length), NEAR_X + TICK_EDGE, FAR_X - TICK_EDGE)`,
     `y = CHART_BOX.height - 3`, `textMuted`.
@@ -1985,7 +1750,7 @@ export function BalanceChart({ balanceHistory, shownBalances, rangeLabel }: Bala
       aria-pressed>`, the wallet ones carrying a 9px swatch coloured by a
       `walletName` prop in `BalanceChips.styles.ts` (the `Legend` `Dot` pattern).
       Label text stays `textMuted`, pressed or not (spec: the text is never the
-      line colour). `ChartCard` adds a dashed `כל הקופות` `<button aria-pressed={allWalletsShown}>`
+      line colour). `BalanceOverTime` adds a dashed `כל הקופות` `<button aria-pressed={allWalletsShown}>`
       at the end of the range row (`margin-inline-start: auto`), then
       `BalanceChart`, then `BalanceChips`.
 
@@ -2015,10 +1780,13 @@ Breaks: `span === 0` branch removed (first); drop the `Set` (second); swap
 `NEAR_X` and `FAR_X` in `xAt` (third).
 
 - [ ] **Step 12: The rest**, each with its break.
+  - `money-text.test.ts`: `'writes shekels to two places, or rounds them to whole shekels'` —
+    `shekelsText(9, true)` is `'0.09'`, `shekelsText(1260, false)` is `'13'`.
+    Break: `toFixed(1)`.
   - `chart-geometry.test.ts`:
     - `'never prints two identical ticks for a range that moved under a shekel'` —
       `yTickBalances({ min: 1800, max: 1863 })` has 3 distinct values and every
-      `shekelText(v, tickNeedsAgorot(extent))` is distinct. Break: `tickNeedsAgorot` returns false.
+      `shekelsText(v, tickNeedsAgorot(extent))` is distinct. Break: `tickNeedsAgorot` returns false.
     - `'draws one point without a path to draw'` — `linePath([5], y)` has no `L`.
     - `'closes the total’s fill along the floor'` — `areaPath` ends `Z` and
       contains `PLOT_BOTTOM` twice.
@@ -2052,7 +1820,7 @@ Breaks: `span === 0` branch removed (first); drop the `Set` (second); swap
       read `WALLET_COLOR`.
   - `BalanceChips.test.tsx`: `'shows the total and no wallet at first'`;
     `'turns one wallet on without touching the others'`; `'reports each line as pressed or not'`.
-  - `ChartCard.test.tsx`: `'turns all three wallets on together, and off again'`.
+  - `BalanceOverTime.test.tsx`: `'turns all three wallets on together, and off again'`.
   - `Transactions.test.tsx`: `'keeps the lines the parent chose when they switch child'`.
 
 ---
@@ -2060,13 +1828,16 @@ Breaks: `span === 0` branch removed (first); drop the `Set` (second); swap
 ## PR 8 — the list: what happened
 
 Branch `feat/transaction-list`. Spec: "The list", "Reuse" (the change column),
-"The rows need labels of their own". Uses decisions C, D and E
-(settled).
+"The rows need labels of their own". Needs PRs 5 and 6 merged. Uses
+decisions C, D and E (settled).
 
 **Files:**
 - Modify: `src/lib/dates.ts` (`monthLabel`)
-- Modify: `src/components/Transactions/use-transactions-view.ts` (filter, interest mode), `Transactions.tsx` (renders the list)
-- Modify: `src/components/Transactions/ChoiceChips/*` (a `look: 'chips' | 'segmented'` prop)
+- Modify: `src/components/Transactions/use-transactions-view-choices.ts` (filter, interest mode), `Transactions.tsx` (renders the list)
+- Modify: `src/components/Transactions/ChoiceChips/*` (a `look: 'chips' | 'segmented'` prop; its `readByScreenReaderOnly` moves out)
+- Modify: `src/components/Transactions/BalanceChange/*` (an optional `withAgorot` prop)
+- Modify: `src/components/Transactions/money-text.ts`, `money-text.test.ts` (`needsAgorot`)
+- Create: `src/components/Transactions/transactions-parts.ts` (`readByScreenReaderOnly`, now with two users)
 - Create: `Transactions/TransactionList/{TransactionList.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
 - Create: `Transactions/TransactionList/TransactionMonth/{TransactionMonth.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
 - Create: `Transactions/TransactionList/TransactionRow/{TransactionRow.tsx,.styles.ts,.test.tsx,constants.ts,index.ts}`
@@ -2075,14 +1846,15 @@ Branch `feat/transaction-list`. Spec: "The list", "Reuse" (the change column),
 
 **Interfaces:**
 - Consumes: `transactionListRows`, `filterByTransactionType`, `monthSections`, `InterestMode`, `TransactionTypeFilter` (PR 5);
-  `SignedAmount`, `ChoiceChips`, `ScreenReaderOnly` (PR 6); `needsAgorot` (PR 6).
+  `BalanceChange`, `ChoiceChips` (PR 6); `shekelsText`, `AGOROT_SHOWN_BELOW` (PR 7 — or
+  added here first if PR 8 merges before PR 7; whichever merges second rebases).
 - Produces:
 
 ```ts
 // dates.ts
 export function monthLabel(month: string, asOf: string): string; // 'ספטמבר' | 'ספטמבר 2025'
 
-// use-transactions-view.ts additions
+// use-transactions-view-choices.ts additions
 transactionTypeFilter: TransactionTypeFilter; setTransactionTypeFilter: (transactionTypeFilter: TransactionTypeFilter) => void;
 interestMode: InterestMode; setInterestMode: (interestMode: InterestMode) => void;  // default 'monthly'
 
@@ -2092,9 +1864,27 @@ interface TransactionListProps {
   wallets: Pick<Wallet, 'id' | 'name'>[];
   balanceHistory: BalanceHistory;
   asOf: string;
-  view: TransactionsView;
+  viewChoices: TransactionsViewChoices;
 }
 ```
+
+- [ ] **Step 0: What PR 6 left for the change column.**
+  - `money-text.ts` gains the change column's precision rule:
+
+```ts
+export function needsAgorot(agorot: number): boolean {
+  const magnitude = Math.abs(agorot);
+
+  return magnitude < AGOROT_SHOWN_BELOW && magnitude % AGOROT_PER_SHEKEL !== 0;
+}
+```
+
+  - `BalanceChange` takes `withAgorot?: boolean` (default `false`, so the
+    total-balance pill is unchanged) and renders `shekelsText(Math.abs(balanceChange), withAgorot)`
+    in place of `agorotToWholeShekels`.
+  - `readByScreenReaderOnly` moves from `ChoiceChips.styles.ts` to
+    `transactions-parts.ts`, because `TransactionRow` is its second user
+    (CLAUDE.md 4a). `ChoiceChips.styles.ts` imports it back.
 
 - [ ] **Step 1: `monthLabel`.**
 
@@ -2112,17 +1902,17 @@ export function monthLabel(month: string, asOf: string): string {
 
   `calendarYear(day)` sits beside `calendarMonth`, with its own `YEAR_LENGTH`; it reads a `YYYY-MM` month as well as a `YYYY-MM-DD` day.
 
-- [ ] **Step 2: The view grows the list's state** — `transactionTypeFilter` (`'all'`) and
+- [ ] **Step 2: The view choices grow the list's state** — `transactionTypeFilter` (`'all'`) and
       `interestMode` (`'monthly'`), plain `useState` pairs.
 - [ ] **Step 3: `TransactionList`.**
 
 ```tsx
-export function TransactionList({ transactions, wallets, balanceHistory, asOf, view }: TransactionListProps): JSX.Element {
+export function TransactionList({ transactions, wallets, balanceHistory, asOf, viewChoices }: TransactionListProps): JSX.Element {
   const rows = useMemo(
-    () => transactionListRows({ transactions, wallets, balanceHistory, interestMode: view.interestMode }),
-    [transactions, wallets, balanceHistory, view.interestMode]
+    () => transactionListRows({ transactions, wallets, balanceHistory, interestMode: viewChoices.interestMode }),
+    [transactions, wallets, balanceHistory, viewChoices.interestMode]
   );
-  const sections = monthSections(filterByTransactionType(rows, view.transactionTypeFilter));
+  const sections = monthSections(filterByTransactionType(rows, viewChoices.transactionTypeFilter));
 
   return (
     <Card data-testid={TRANSACTION_LIST_TEST_IDS.list}>
@@ -2133,10 +1923,10 @@ export function TransactionList({ transactions, wallets, balanceHistory, asOf, v
         </Count>
       </TitleRow>
       <ChoiceChips groupName="type" legend={TRANSACTION_LIST_COPY.filterLegend} choices={TRANSACTION_TYPE_FILTERS}
-        selected={view.transactionTypeFilter} onSelect={view.setTransactionTypeFilter} testId={TRANSACTION_LIST_TEST_IDS.filters} />
+        selected={viewChoices.transactionTypeFilter} onSelect={viewChoices.setTransactionTypeFilter} testId={TRANSACTION_LIST_TEST_IDS.filters} />
       <SubTitle>{TRANSACTION_LIST_COPY.interestTitle}</SubTitle>
       <ChoiceChips look="segmented" groupName="interest" legend={TRANSACTION_LIST_COPY.interestTitle}
-        choices={INTEREST_MODES} selected={view.interestMode} onSelect={view.setInterestMode}
+        choices={INTEREST_MODES} selected={viewChoices.interestMode} onSelect={viewChoices.setInterestMode}
         testId={TRANSACTION_LIST_TEST_IDS.interestMode} />
       <TransactionListMonths hasTransactions={transactions.length > 0} sections={sections} asOf={asOf} />
     </Card>
@@ -2192,10 +1982,10 @@ export const INTEREST_MODES: readonly Choice<InterestMode>[] = [
 - [ ] **Step 5: `TransactionRow`** — `{ transactionListRow: TransactionListRow }`, an `<li>`:
       `TransactionIcon`, the label (`typography.body`, 700; interest 600), the meta
       (`typography.label`, `textMuted`), then the two numbers in a `dir="ltr"`
-      block — `SignedAmount` with `withAgorot={needsAgorot(transactionListRow.balanceChange)}` in
+      block — `BalanceChange` with `withAgorot={needsAgorot(transactionListRow.balanceChange)}` in
       `gainText` / `withdrawalText`, and `Money` for the balance in `textMuted`
       with a 1px `divider` rule on its inline-start. Each number is preceded by
-      a `ScreenReaderOnly` naming it (`שינוי`, `יתרה`), so a row reads as what,
+      a visually hidden span (`readByScreenReaderOnly`) naming it (`שינוי`, `יתרה`), so a row reads as what,
       when, how much, and what it left.
 
 ```ts
@@ -2226,8 +2016,8 @@ export const TRANSACTION_ROW_COPY = {
 - [ ] **Step 7: `ChoiceChips` gains `look`.** `'segmented'` draws the mockup's
       `.seg`: one pill-shaped border around the group, no gap, and the checked
       option filled `textStrong` with `surface` text. Default stays `'chips'`.
-- [ ] **Step 8: `Transactions.tsx` renders `<TransactionList transactions={transactionsByAccount[currentAccount.id] ?? []} wallets={currentAccount.wallets} balanceHistory={balanceHistory} asOf={asOf} view={view} />`**
-      under `ChartCard`. tsc, eslint, build, look at it in all three themes;
+- [ ] **Step 8: `Transactions.tsx` renders `<TransactionList transactions={transactionsByAccount[currentAccount.id] ?? []} wallets={currentAccount.wallets} balanceHistory={currentBalanceHistory} asOf={asOf} viewChoices={viewChoices} />`**
+      under `BalanceOverTime`. tsc, eslint, build, look at it in all three themes;
       scroll a long list of transactions and watch the month headings replace each other.
       **STOP**; commit — `feat(transactions): the list, and what happened`
 - [ ] **Step 9: First three tests** — `TransactionList.test.tsx`:
@@ -2236,11 +2026,16 @@ export const TRANSACTION_ROW_COPY = {
     in `transactionListRows`.
   - `'rolls a month of interest into one row until the parent asks for every day'` —
     three interest days render one interest row; select `יומית`; three rows.
-    Break: ignore `view.interestMode`.
+    Break: ignore `viewChoices.interestMode`.
   - `'says so when a filter matches nothing, instead of showing a blank card'` —
     transactions with no withdrawals, select `משיכות`, `emptyFilter` shown. Break:
     return the sections unconditionally.
 - [ ] **Step 10: The rest.**
+  - `money-text.test.ts`: `'shows agorot only for a small change that is not whole shekels'`
+    — `needsAgorot` of 9, 999, 1000, 500 → `true, true, false, false`. Break:
+    drop the `% AGOROT_PER_SHEKEL` clause.
+  - `BalanceChange.test.tsx`: `'shows agorot when asked, so a day of interest never reads +₪0'`
+    — `withAgorot` on 9 reads `+₪0.09`. Break: ignore `withAgorot`.
   - `TransactionList.test.tsx`:
     - `'counts a single row and a single day in words'` (Review Focus 1) — a
       single deposit on `asOf` reads `TRANSACTION_LIST_COPY.count(1, 1)`, and
@@ -2323,7 +2118,7 @@ export class TransactionsDriver {
   }
 
   tapAllWallets(): Promise<void> {
-    return this.appBrowser.click(CHART_CARD_TEST_IDS.allWallets);
+    return this.appBrowser.click(BALANCE_OVER_TIME_TEST_IDS.allWallets);
   }
 
   lineColors(): Promise<string[]> {
@@ -2389,7 +2184,7 @@ export class TransactionsDriver {
 - **The loading shell is menu-epic PR 11, not merged** (PR 11a merged as #114). `/transactions`
   arrives in silence until it does, as `/method` does today. Neither epic
   blocks the other.
-- **`useTransactionsView` state survives `router.refresh()`.** A theme tap in
+- **`useTransactionsViewChoices` state survives `router.refresh()`.** A theme tap in
   the menu refreshes the page, re-sends every account's transactions and re-runs settlement; the
   client state is kept because the shell's position in the tree does not change.
   Do not key the shell on anything the refresh changes.
