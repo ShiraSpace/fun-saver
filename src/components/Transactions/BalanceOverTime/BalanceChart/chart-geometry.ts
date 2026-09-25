@@ -121,21 +121,37 @@ export function totalBalanceFillPath(
   return `${line} L ${todayX} ${LOWEST_BALANCE_Y} L ${firstDayX} ${LOWEST_BALANCE_Y} Z`;
 }
 
+function roundedTo(roundingAgorot: number, balance: number): number {
+  return Math.round(balance / roundingAgorot) * roundingAgorot;
+}
+
 function ticksRoundedTo(
   roundingAgorot: number,
   { lowest, highest }: BalanceBounds
 ): number[] {
-  const tickBalances = Array.from({ length: BALANCE_TICK_COUNT }, (_, step) => {
-    const balance =
-      lowest + ((highest - lowest) * step) / (BALANCE_TICK_COUNT - 1);
+  const lowestTick = Math.ceil(lowest / roundingAgorot) * roundingAgorot;
+  const highestTick = Math.floor(highest / roundingAgorot) * roundingAgorot;
 
-    return Math.round(balance / roundingAgorot) * roundingAgorot;
-  });
+  if (lowestTick > highestTick) {
+    return [];
+  }
+
+  const tickBalances = Array.from({ length: BALANCE_TICK_COUNT }, (_, step) =>
+    roundedTo(
+      roundingAgorot,
+      lowestTick +
+        ((highestTick - lowestTick) * step) / (BALANCE_TICK_COUNT - 1)
+    )
+  );
 
   return [...new Set(tickBalances)];
 }
 
 export function balanceTicks(balanceBounds: BalanceBounds): number[] {
+  if (balanceBounds.lowest === balanceBounds.highest) {
+    return [roundedTo(AGOROT_PER_SHEKEL, balanceBounds.lowest)];
+  }
+
   const wholeShekelTicks = ticksRoundedTo(AGOROT_PER_SHEKEL, balanceBounds);
   const halfShekelTicks = ticksRoundedTo(HALF_SHEKEL_AGOROT, balanceBounds);
 

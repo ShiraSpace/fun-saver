@@ -59,6 +59,14 @@ describe('the balances labelled on the side', () => {
     ]);
   });
 
+  it('marks a balance that barely moved only with amounts inside its range', () => {
+    expect(balanceTicks({ lowest: 2630, highest: 2680 })).toEqual([2650]);
+  });
+
+  it('marks a balance that did not move in whole shekels', () => {
+    expect(balanceTicks({ lowest: 1827, highest: 1827 })).toEqual([1800]);
+  });
+
   it('stays in whole shekels when they already read apart', () => {
     expect(balanceTicks({ lowest: 2400, highest: 30100 })).toEqual([
       2400, 16300, 30100,
