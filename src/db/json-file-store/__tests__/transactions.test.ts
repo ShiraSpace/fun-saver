@@ -1,8 +1,11 @@
 import { JsonFileStore } from '../index';
 import {
   createMockTransaction,
+  mockDayOfInterest,
+  mockDayOfInterestCopy,
   mockTransactions,
 } from '@/test-utils/mocks/transaction.mocks';
+import { interestSettledOn } from '@/test-utils/settled-interest';
 import {
   mockAccount,
   mockSiblingAccount,
@@ -74,5 +77,25 @@ describe('JsonFileStore transactions', () => {
       mockMorningTransaction,
       mockEveningTransaction,
     ]);
+  });
+
+  describe('when a day of interest arrives a second time', () => {
+    beforeEach(async () => {
+      const store = new JsonFileStore(file.path);
+      await store.insertAccount(mockAccount);
+      await store.insertTransactions([mockDayOfInterest]);
+      await store.insertTransactions([mockDayOfInterestCopy]);
+    });
+
+    it('keeps the day settled once, after a restart too', async () => {
+      const reopened = new JsonFileStore(file.path);
+      const transactions = await reopened.listTransactionsByAccount(
+        mockAccount.id
+      );
+
+      expect(
+        interestSettledOn(transactions, mockDayOfInterest.occurredAt)
+      ).toEqual([mockDayOfInterest]);
+    });
   });
 });

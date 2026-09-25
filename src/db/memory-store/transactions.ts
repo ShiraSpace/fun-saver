@@ -1,12 +1,15 @@
 import type { Transaction } from '@/lib/transaction/types';
 import type { TransactionRepository } from '../data-store';
 import { inOrderOfOccurrence } from '../transaction-order';
+import { withoutInterestAlreadySettled } from '../settled-interest';
 
 export class MemoryTransactions implements TransactionRepository {
   private readonly transactions: Transaction[] = [];
 
   async insert(transactions: Transaction[]): Promise<void> {
-    this.transactions.push(...transactions);
+    this.transactions.push(
+      ...withoutInterestAlreadySettled(this.transactions, transactions)
+    );
   }
 
   async listByWallet(

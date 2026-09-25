@@ -1,8 +1,11 @@
 import { InMemoryStore } from '../index';
 import {
   createMockTransaction,
+  mockDayOfInterest,
+  mockDayOfInterestCopy,
   mockTransactions,
 } from '@/test-utils/mocks/transaction.mocks';
+import { interestSettledOn } from '@/test-utils/settled-interest';
 import {
   mockAccount,
   mockSiblingAccount,
@@ -66,5 +69,25 @@ describe('InMemoryStore transactions', () => {
       mockMorningTransaction,
       mockEveningTransaction,
     ]);
+  });
+
+  describe('when a day of interest arrives a second time', () => {
+    let store: InMemoryStore;
+
+    beforeEach(async () => {
+      store = new InMemoryStore();
+      await store.insertTransactions([mockDayOfInterest]);
+      await store.insertTransactions([mockDayOfInterestCopy]);
+    });
+
+    it('keeps the day settled once', async () => {
+      const transactions = await store.listTransactionsByAccount(
+        mockAccount.id
+      );
+
+      expect(
+        interestSettledOn(transactions, mockDayOfInterest.occurredAt)
+      ).toEqual([mockDayOfInterest]);
+    });
   });
 });
