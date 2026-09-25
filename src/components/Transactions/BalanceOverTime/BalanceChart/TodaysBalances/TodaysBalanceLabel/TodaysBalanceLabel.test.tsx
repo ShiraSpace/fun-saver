@@ -3,7 +3,8 @@ import { agorotToWholeShekels } from '@/lib/money';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { SHOWN_BALANCE } from '../../../../constants';
-import { shownBalanceLabel, WALLET_CHART_COLOR } from '../../../constants';
+import { shownBalanceLabel } from '../../../constants';
+import { shownBalanceColor } from '../../chart-parts';
 import { TODAYS_BALANCE_LABEL_TEST_IDS } from './constants';
 import { TodaysBalanceLabel } from './TodaysBalanceLabel';
 
@@ -46,7 +47,10 @@ describe('today’s balance at the end of a line', () => {
         .querySelector('rect')
     ).toHaveAttribute(
       'fill',
-      getThemeTokens(THEME_ID.jungleQuest).colors[WALLET_CHART_COLOR.spending]
+      shownBalanceColor(
+        getThemeTokens(THEME_ID.jungleQuest).colors,
+        SHOWN_BALANCE.spending
+      )
     );
   });
 });

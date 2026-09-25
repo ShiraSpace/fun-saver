@@ -175,7 +175,9 @@ export function todaysBalancesSpacedApart(
   const placed: PlacedTodaysBalance[] = [];
   let nextFreeY = HIGHEST_BALANCE_Y;
 
-  for (const label of [...wantedLabels].sort((a, b) => a.y - b.y)) {
+  const labelsFromTheTop = [...wantedLabels].sort((a, b) => a.y - b.y);
+
+  for (const label of labelsFromTheTop) {
     const y = Math.max(label.y, nextFreeY);
     placed.push({ ...label, y });
     nextFreeY = y + LABEL_GAP;

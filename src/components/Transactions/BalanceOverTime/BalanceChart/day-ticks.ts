@@ -40,7 +40,9 @@ export function dayTicks(days: string[]): DayTick[] {
     Math.round((daysBack * step) / (count - 1))
   );
 
-  return [...new Set(dayIndices)].map((dayIndex) => ({
+  const distinctDayIndices = [...new Set(dayIndices)];
+
+  return distinctDayIndices.map((dayIndex) => ({
     dayIndex,
     label:
       dayIndex === daysBack

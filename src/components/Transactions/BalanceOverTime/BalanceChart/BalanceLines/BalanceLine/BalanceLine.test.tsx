@@ -1,8 +1,8 @@
 import { render, screen } from '@/test-utils/render';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { SHOWN_BALANCE } from '../../../../constants';
-import { WALLET_CHART_COLOR } from '../../../constants';
 import { balanceYWithin, dayXWithin, firstDayXOf } from '../../chart-geometry';
+import { shownBalanceColor } from '../../chart-parts';
 import { UNMEASURED_CHART_WIDTH } from '../../constants';
 import { BALANCE_LINE_TEST_IDS } from './constants';
 import { BalanceLine } from './BalanceLine';
@@ -39,7 +39,10 @@ describe('the line of one balance', () => {
         screen.getByTestId(BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.spending))
       ).toHaveAttribute(
         'stroke',
-        getThemeTokens(THEME_ID.jungleQuest).colors[WALLET_CHART_COLOR.spending]
+        shownBalanceColor(
+          getThemeTokens(THEME_ID.jungleQuest).colors,
+          SHOWN_BALANCE.spending
+        )
       );
     });
   });
