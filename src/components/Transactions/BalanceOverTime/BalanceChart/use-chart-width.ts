@@ -10,7 +10,7 @@ export function useChartWidth(
     const chart = chartRef.current;
 
     if (!chart || typeof ResizeObserver === 'undefined') {
-      return undefined;
+      return;
     }
 
     const observer = new ResizeObserver(([entry]) =>

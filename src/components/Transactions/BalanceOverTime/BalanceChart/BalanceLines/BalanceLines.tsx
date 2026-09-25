@@ -27,16 +27,17 @@ export function BalanceLines({
   const totalBalanceFillUnderLines = totalBalanceFill ? (
     <TotalBalanceFill d={totalBalanceFill} />
   ) : null;
-  const linesWithTotalBalanceOnTop = [...shownBalanceHistories]
-    .reverse()
-    .map((shownBalanceHistory) => (
+  const totalBalanceLast = [...shownBalanceHistories].reverse();
+  const linesWithTotalBalanceOnTop = totalBalanceLast.map(
+    (shownBalanceHistory) => (
       <BalanceLine
         key={shownBalanceHistory.shownBalance}
         shownBalanceHistory={shownBalanceHistory}
         dayX={dayX}
         balanceY={balanceY}
       />
-    ));
+    )
+  );
 
   return (
     <g>

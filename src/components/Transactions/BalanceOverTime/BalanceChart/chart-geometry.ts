@@ -110,7 +110,7 @@ export function totalBalanceFillPath(
   );
 
   if (!totalBalanceHistory || totalBalanceHistory.dailyBalances.length < 2) {
-    return undefined;
+    return;
   }
 
   const { dailyBalances } = totalBalanceHistory;

@@ -49,6 +49,7 @@ export function BalanceChart({
 }: BalanceChartProps): JSX.Element {
   const chartRef = useRef<SVGSVGElement>(null);
   const chartWidth = useChartWidth(chartRef);
+
   const viewBox = viewBoxOf(chartWidth);
   const emptyMessage = emptyChartMessage(balanceHistory, shownBalances);
   const chartName =
