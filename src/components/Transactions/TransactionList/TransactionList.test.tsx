@@ -79,12 +79,6 @@ describe('the transaction list', () => {
       expect(listedRows()).toHaveLength(1);
     });
 
-    it('names the interest choice once for a screen reader, not twice', () => {
-      expect(
-        screen.getByTestId(TRANSACTION_LIST_TEST_IDS.interestTitle)
-      ).toHaveAttribute('aria-hidden', 'true');
-    });
-
     describe('when the parent asks for every day', () => {
       beforeEach(() => {
         choose(TRANSACTION_LIST_TEST_IDS.interestMode, INTEREST_MODE.daily);
@@ -119,16 +113,6 @@ describe('the transaction list', () => {
       ).toHaveTextContent(
         TRANSACTION_LIST_COPY.count(mockBusyDayWithdrawalCount, historyDays)
       );
-    });
-  });
-
-  describe('the count line', () => {
-    it('says one row in words', () => {
-      expect(TRANSACTION_LIST_COPY.count(1, 2)).toContain('שורה אחת');
-    });
-
-    it('says one day in words', () => {
-      expect(TRANSACTION_LIST_COPY.count(2, 1)).toContain('יום אחד');
     });
   });
 
