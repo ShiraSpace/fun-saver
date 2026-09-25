@@ -23,6 +23,19 @@ CREATE TABLE IF NOT EXISTS transactions (
 CREATE INDEX IF NOT EXISTS transactions_account_wallet_idx
   ON transactions(account_id, wallet_id);
 
+DELETE FROM transactions
+WHERE id IN (
+  SELECT id FROM (
+    SELECT id, row_number() OVER (
+      PARTITION BY account_id, wallet_id, occurred_at
+      ORDER BY created_at, id
+    ) AS copy_number
+    FROM transactions
+    WHERE type = 'interest'
+  ) AS interest_copies
+  WHERE copy_number > 1
+);
+
 CREATE UNIQUE INDEX IF NOT EXISTS transactions_interest_once_per_day_idx
   ON transactions(account_id, wallet_id, occurred_at)
   WHERE type = 'interest';
