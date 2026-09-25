@@ -1,16 +1,15 @@
 import { render, screen } from '@/test-utils/render';
-import { NAVIGATION_DESTINATIONS, NAVIGATION_TABS_TEST_IDS } from './constants';
+import { NAVIGATION_TABS_TEST_IDS } from './constants';
 import { NavigationTab } from './NavigationTab';
 
 describe('NavigationTab', () => {
   describe('for a screen the parent cannot open yet', () => {
     beforeEach(() => {
       const mockUnreachableDestination = {
-        ...NAVIGATION_DESTINATIONS.find(
-          (destination) =>
-            destination.testId === NAVIGATION_TABS_TEST_IDS.transactionsTab
-        )!,
-        href: undefined,
+        id: 'transactions',
+        icon: '📈',
+        label: 'תנועות',
+        testId: NAVIGATION_TABS_TEST_IDS.transactionsTab,
       };
 
       render(

@@ -83,7 +83,7 @@ describe('page routing', () => {
     describe('with no account to show', () => {
       const { appBrowser } = useDriver();
 
-      it('sends the parent home when there is no account to show', async () => {
+      it('sends the parent home', async () => {
         await appBrowser.visit(TRANSACTIONS_ROUTE);
 
         assert.equal(appBrowser.currentPath(), HOME_ROUTE);

@@ -57,7 +57,7 @@ describe('NavigationTabs', () => {
       ).not.toHaveAttribute('href');
     });
 
-    it('sends the other screen to its route', () => {
+    it('sends the method tab to its route', () => {
       const methodTab = screen.getByTestId(NAVIGATION_TABS_TEST_IDS.methodTab);
 
       expect(methodTab).toHaveAttribute('href', METHOD_ROUTE);
