@@ -35,4 +35,4 @@ no account, accounts never used, a week with no activity.
 - **Amounts** are stored in agorot, always positive; `type` gives the direction.
   The report shows shekels.
 - **Weeks** start Monday; the weekly table covers the last 12 weeks, the monthly
-  one goes back to the first transaction.
+  one goes back to the first sign-up, account or transaction.

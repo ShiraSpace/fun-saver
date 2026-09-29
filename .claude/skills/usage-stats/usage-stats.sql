@@ -28,7 +28,7 @@ FROM transactions GROUP BY 1, 2 ORDER BY 1, 2;
 
 \qecho '== Monthly'
 WITH months AS (
-  SELECT generate_series(date_trunc('month', (SELECT min(occurred_at)::date FROM transactions)),
+  SELECT generate_series(date_trunc('month', least((SELECT min(occurred_on) FROM :activity AS activity), (SELECT min(joined_on) FROM :user_joined AS user_joined), (SELECT min(opened_on) FROM :account_opened AS account_opened))),
                          date_trunc('month', now()), '1 month')::date AS month
 )
 SELECT to_char(m.month, 'YYYY-MM') AS month,
