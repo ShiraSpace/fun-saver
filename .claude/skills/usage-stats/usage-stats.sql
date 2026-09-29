@@ -36,19 +36,19 @@ SELECT to_char(m.month, 'YYYY-MM') AS month,
   (SELECT count(*) FROM :account_opened AS account_opened WHERE date_trunc('month', opened_on) = m.month) AS new_accounts,
   (SELECT count(*) FROM :activity AS activity WHERE type <> 'interest' AND date_trunc('month', occurred_on) = m.month) AS manual_transactions,
   (SELECT count(DISTINCT account_id) FROM :activity AS activity WHERE type <> 'interest' AND date_trunc('month', occurred_on) = m.month) AS accounts_with_activity
-FROM months m ORDER BY 1 DESC LIMIT 12;
+FROM months m ORDER BY 1 DESC;
 
 \qecho '== Weekly (weeks start Monday)'
 WITH weeks AS (
   SELECT generate_series(date_trunc('week', now()) - interval '11 weeks',
-                         date_trunc('week', now()), '1 week')::date AS week
+                         date_trunc('week', now()), '1 week')::date AS week_start
 )
-SELECT w.week,
-  (SELECT count(*) FROM :user_joined AS user_joined    WHERE date_trunc('week', joined_on) = w.week) AS new_users,
-  (SELECT count(*) FROM :account_opened AS account_opened WHERE date_trunc('week', opened_on) = w.week) AS new_accounts,
-  (SELECT count(*) FROM :activity AS activity WHERE type <> 'interest' AND date_trunc('week', occurred_on) = w.week) AS manual_transactions,
-  (SELECT count(DISTINCT account_id) FROM :activity AS activity WHERE type <> 'interest' AND date_trunc('week', occurred_on) = w.week) AS accounts_with_activity
-FROM weeks w ORDER BY 1 DESC;
+SELECT weeks.week_start AS week,
+  (SELECT count(*) FROM :user_joined AS user_joined    WHERE date_trunc('week', joined_on) = weeks.week_start) AS new_users,
+  (SELECT count(*) FROM :account_opened AS account_opened WHERE date_trunc('week', opened_on) = weeks.week_start) AS new_accounts,
+  (SELECT count(*) FROM :activity AS activity WHERE type <> 'interest' AND date_trunc('week', occurred_on) = weeks.week_start) AS manual_transactions,
+  (SELECT count(DISTINCT account_id) FROM :activity AS activity WHERE type <> 'interest' AND date_trunc('week', occurred_on) = weeks.week_start) AS accounts_with_activity
+FROM weeks ORDER BY 1 DESC;
 
 \qecho '== Accounts per user'
 SELECT accounts, count(*) AS users FROM (
