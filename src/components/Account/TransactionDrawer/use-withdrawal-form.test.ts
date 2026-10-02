@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useWithdrawalForm } from './use-withdrawal-form';
+import type { WalletSummary } from '@/lib/wallet/types';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { mockRouter } from '@mocks/next/navigation';
 
@@ -17,13 +18,13 @@ jest.mock('./use-add-transaction', () => ({
 }));
 
 const mockAccountId = 'a1';
-const [savings, , goodDeeds] = mockWalletSummaries;
+const [savings, spending, goodDeeds] = mockWalletSummaries;
 
-function setup(): ReturnType<
-  typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>
-> {
+function setup(
+  wallets: WalletSummary[] = mockWalletSummaries
+): ReturnType<typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>> {
   return renderHook(() =>
-    useWithdrawalForm(mockAccountId, mockWalletSummaries, mockOnClose)
+    useWithdrawalForm(mockAccountId, wallets, mockOnClose)
   );
 }
 
@@ -34,12 +35,34 @@ describe('useWithdrawalForm', () => {
     mockOnClose.mockClear();
   });
 
-  it('selects the first wallet by default', () => {
-    const { result } = setup();
+  describe('default wallet', () => {
+    it('starts on the spending wallet when it has money', () => {
+      const { result } = setup();
 
-    expect(result.current.selectedWalletId).toBe(savings.id);
-    expect(result.current.amountShekels).toBe(0);
-    expect(result.current.canSubmit).toBe(false);
+      expect(result.current.selectedWalletId).toBe(spending.id);
+      expect(result.current.amountShekels).toBe(0);
+      expect(result.current.canSubmit).toBe(false);
+    });
+
+    it('falls back to the good-deeds wallet when spending is empty', () => {
+      const { result } = setup([
+        savings,
+        { ...spending, balance: 0 },
+        goodDeeds,
+      ]);
+
+      expect(result.current.selectedWalletId).toBe(goodDeeds.id);
+    });
+
+    it('never starts on the savings wallet, even when only savings has money', () => {
+      const { result } = setup([
+        savings,
+        { ...spending, balance: 0 },
+        { ...goodDeeds, balance: 0 },
+      ]);
+
+      expect(result.current.selectedWalletId).toBe(spending.id);
+    });
   });
 
   it('builds the amount from tapped digits', () => {
@@ -80,7 +103,7 @@ describe('useWithdrawalForm', () => {
     act(() => result.current.onSubmit());
 
     await waitFor(() =>
-      expect(mockAddWithdrawal).toHaveBeenCalledWith(savings.id, 10)
+      expect(mockAddWithdrawal).toHaveBeenCalledWith(spending.id, 10)
     );
     await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
     await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
