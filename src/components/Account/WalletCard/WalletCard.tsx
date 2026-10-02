@@ -2,6 +2,7 @@
 
 import { JSX, ReactNode } from 'react';
 import type { WalletName, WalletSummary } from '@/lib/wallet/types';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { Money } from '@/components/Money';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import {
@@ -32,7 +33,7 @@ interface WalletCardProps {
 }
 
 function walletSummaryText(wallet: CardWallet): string | undefined {
-  if (wallet.name === 'savings') {
+  if (wallet.name === WALLET_NAMES.savings) {
     return WALLET_CARD_COPY.savingsSummary(wallet);
   }
 

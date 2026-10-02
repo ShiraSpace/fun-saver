@@ -1,4 +1,5 @@
 import { DEPOSIT_SHARES } from '@/lib/transaction/constants';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { percentLabel } from '../constants';
 import { WALLETS_COPY } from './wallets';
 
@@ -75,9 +76,9 @@ export const SETUP_COPY = {
     table: {
       headers: ['קופה', 'לשבוע', 'לחודש', 'לשנה'],
       rows: [
-        { walletName: 'spending', amounts: ['₪15', '₪65', '₪780'] },
-        { walletName: 'savings', amounts: ['₪12', '₪52', '₪624'] },
-        { walletName: 'goodDeeds', amounts: ['₪3', '₪13', '₪156'] },
+        { walletName: WALLET_NAMES.spending, amounts: ['₪15', '₪65', '₪780'] },
+        { walletName: WALLET_NAMES.savings, amounts: ['₪12', '₪52', '₪624'] },
+        { walletName: WALLET_NAMES.goodDeeds, amounts: ['₪3', '₪13', '₪156'] },
       ],
     },
     note: {

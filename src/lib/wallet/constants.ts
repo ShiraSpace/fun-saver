@@ -3,11 +3,11 @@ import type { WalletConfig, WalletName } from './types';
 
 export const PERCENT_TOTAL = 100;
 
-export const WALLET_NAMES: readonly WalletName[] = [
-  'savings',
-  'spending',
-  'goodDeeds',
-];
+export const WALLET_NAMES = {
+  savings: 'savings',
+  spending: 'spending',
+  goodDeeds: 'goodDeeds',
+} as const satisfies Record<WalletName, WalletName>;
 
 export const WALLET_LABEL: Record<WalletName, string> = {
   savings: 'חיסכון',
@@ -29,10 +29,18 @@ export const WALLET_ICON: Record<WalletName, string> = {
 
 export const DEFAULT_WALLETS: readonly WalletConfig[] = [
   {
-    name: 'savings',
+    name: WALLET_NAMES.savings,
     icon: WALLET_ICON.savings,
     monthlyInterestRate: SAVINGS_MONTHLY_RATE,
   },
-  { name: 'spending', icon: WALLET_ICON.spending, monthlyInterestRate: 0 },
-  { name: 'goodDeeds', icon: WALLET_ICON.goodDeeds, monthlyInterestRate: 0 },
+  {
+    name: WALLET_NAMES.spending,
+    icon: WALLET_ICON.spending,
+    monthlyInterestRate: 0,
+  },
+  {
+    name: WALLET_NAMES.goodDeeds,
+    icon: WALLET_ICON.goodDeeds,
+    monthlyInterestRate: 0,
+  },
 ];

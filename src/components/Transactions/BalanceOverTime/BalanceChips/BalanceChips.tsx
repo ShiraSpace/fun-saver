@@ -34,7 +34,7 @@ function chipOf(
 
 export function BalanceChips(props: BalanceChipsProps): JSX.Element {
   const totalBalanceChip = chipOf(SHOWN_BALANCE.totalBalance, props);
-  const walletChips = WALLET_NAMES.map((walletName) => {
+  const walletChips = Object.values(WALLET_NAMES).map((walletName) => {
     const walletChip = chipOf(walletName, props);
 
     return (

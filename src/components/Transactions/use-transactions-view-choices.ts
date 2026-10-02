@@ -55,7 +55,9 @@ function withShownBalanceToggled(
 }
 
 function allWalletsShownIn(shownBalances: readonly ShownBalance[]): boolean {
-  return WALLET_NAMES.every((walletName) => shownBalances.includes(walletName));
+  return Object.values(WALLET_NAMES).every((walletName) =>
+    shownBalances.includes(walletName)
+  );
 }
 
 function withAllWalletsToggled(
@@ -67,7 +69,10 @@ function withAllWalletsToggled(
 
   return allWalletsShownIn(shownBalances)
     ? keptTotalBalance
-    : inShownBalanceOrder([...keptTotalBalance, ...WALLET_NAMES]);
+    : inShownBalanceOrder([
+        ...keptTotalBalance,
+        ...Object.values(WALLET_NAMES),
+      ]);
 }
 
 export function useTransactionsViewChoices(): TransactionsViewChoices {
