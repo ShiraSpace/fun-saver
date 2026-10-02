@@ -3,9 +3,11 @@
 import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
 import { Account } from '@/components/Account';
+import { ChildAccount } from '@/components/ChildAccount';
 import { AccountManagement } from '@/components/AccountManagement';
 import { APP_MODE } from '@/components/AccountManagement/app-mode-context';
 import { EmptyState } from '@/components/EmptyState';
+import { isChildView } from '@/lib/account/view-mode';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { AccountsProvider } from './accounts-context';
 
@@ -24,7 +26,11 @@ export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
     <AccountManagement navigation={navigation}>
       {currentAccount && (
         <AccountsProvider value={{ accounts, currentAccount, switchAccount }}>
-          <Account account={currentAccount} />
+          {isChildView(currentAccount) ? (
+            <ChildAccount account={currentAccount} />
+          ) : (
+            <Account account={currentAccount} />
+          )}
         </AccountsProvider>
       )}
       {showsEmptyState && <EmptyState onCreate={startCreatingAccount} />}
