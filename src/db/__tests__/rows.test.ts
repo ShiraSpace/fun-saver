@@ -11,6 +11,7 @@ import {
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
+import { APP_VIEW_MODE } from '@/lib/account/view-mode';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 
 const mockAccountRow: AccountRow = {
@@ -22,6 +23,21 @@ const mockAccountRow: AccountRow = {
   view_mode: mockAccount.viewMode,
   wallets: createMockWallets(),
 };
+
+describe('accountFromRow view mode', () => {
+  it('reads a stored child view', () => {
+    expect(
+      accountFromRow({ ...mockAccountRow, view_mode: APP_VIEW_MODE.child })
+        .viewMode
+    ).toBe(APP_VIEW_MODE.child);
+  });
+
+  it('shows an unknown stored view as the parent screen', () => {
+    expect(
+      accountFromRow({ ...mockAccountRow, view_mode: 'toddler' }).viewMode
+    ).toBe(APP_VIEW_MODE.parent);
+  });
+});
 
 const mockTransaction = createMockTransaction();
 
