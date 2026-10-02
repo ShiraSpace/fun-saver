@@ -51,9 +51,12 @@ simpler screen that answers three questions at a glance:
 
 ## How the view mode is stored
 
-The theme already does this: `accounts.theme_id` is the source of truth, and
-`SignedInUserProvider` mirrors it into the `themeId` cookie. View mode copies
-that pattern exactly.
+The mode is a column on the account, saved and read the way `theme_id` is.
+There's no cookie: every page (`/`, `/transactions`, `/method`) already loads
+the account rows on the server in `signedInAccounts()`, so the mode arrives in
+the same `SELECT *` at no extra cost. The theme's cookie exists only because
+the root layout paints colours before data loads, and view mode has no step
+like that. Add a cookie only if something ever needs the mode before the data.
 
 - **Type:** an enum-like constant, in the same shape as `APP_MODE`:
 
@@ -81,12 +84,10 @@ that pattern exactly.
 - **API:** `PUT /api/accounts/[id]/view-mode` with `{ viewMode }`. It is
   thin (validate, call `src/lib`, return JSON), the same shape as
   `/api/accounts/[id]/theme`.
-- **Server render:** `signedInAccounts()` already loads the current account,
-  so `page.tsx` passes `currentAccount.viewMode` to `Home`. The first paint
-  is already the right view, with no flash of the parent screen.
-- **Cookie (mirror):** `SignedInUserProvider` writes `APP_VIEW_MODE_COOKIE`
-  next to `THEME_COOKIE`. Pages that don't load the account (`/method`) read
-  it, so a child who lands there by URL still gets the child menu.
+- **Server render:** `Account.viewMode` comes from the row, and
+  `AccountSummary` extends `Account`, so `Home` and the menu read
+  `currentAccount.viewMode` with no new prop. The first paint is already the
+  right view, with no flash of the parent screen.
 - **Switching:** the switch PUTs the new mode, then calls `router.refresh()`.
   If the save fails, it stays in the current view and shows an error, the
   same as `useAccountTheme`.
@@ -158,8 +159,9 @@ account, language.
 
 ## Parent menu (mockup 2b)
 
-One new row in the account card (`MenuAccountSettings` area, under the
-account picker): **🧒 מצב ילד**, "מסך פשוט ל<name>, רק לצפייה", and a
+One new row in `MenuAccountSettings`, after the theme and language. The
+block's note already says "נשמר על החשבון הזה בלבד" (saved on this account
+only), which is exactly what the mode is: **🧒 מצב ילד**, "מסך פשוט ל<name>, רק לצפייה", and a
 switch. Turning it on saves the mode, closes the menu and refreshes into
 the child home.
 
@@ -182,7 +184,6 @@ Add these to `docs/glossary.md` in the same PR that introduces them:
 - **No interest yet:** "✨ +₪0" is shown, so the layout never jumps.
 - **A wallet under ₪1:** shows ₪0.
 - **Save fails:** the view doesn't change, and the switch shows an error.
-- **Cookie blocked:** only `/method` is affected; it shows the parent menu.
 
 ## Testing
 
@@ -195,8 +196,14 @@ Add these to `docs/glossary.md` in the same PR that introduces them:
 - **Components:** the child home shows three amounts and nothing tappable;
   the child menu hides parent sections; the parent menu's switch saves the
   mode. Tests follow the house rules: one expect per `it`, `mock` prefix.
-- **e2e:** turn child mode on, reload and still be in child mode, switch to
-  a fresh browser context and still be in child mode (it's in the
-  database), then turn it off.
+- **e2e:** an account stored in child mode opens straight into the child
+  home, which proves the server reads it. Turn child mode on, reload and
+  still be in child mode; there's no cookie, so only the database can
+  explain that. Then turn it off from the child menu.
+- **Child on a parent route by URL:** `/transactions` and `/method` load the
+  account too, so their menu is the child menu.
 - **Visual:** screenshots of the child home and child menu for the PR
   (`pr-screenshots` skill).
+- **Type sizes come from `theme.typography`.** The savings number uses
+  `display` (48) and the wallet amounts use `amount` (38), not the mockup's
+  76/34. Add a token only if 48 reads too small on a device.
