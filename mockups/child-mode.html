@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — Child mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* tokens from src/theme/themes/sunshine-quest.ts */
+  :root {
+    --screen: linear-gradient(170deg, #FFC34D 0%, #FF8A4C 45%, #E94E89 100%);
+    --primary: #6B2C8E;
+    --surface: #FFFFFF;
+    --textStrong: #3A1F5A;
+    --textMuted: #675A80;
+    --divider: #F2D9D2;
+    --softBg: #FFF8E0;
+    --softBorder: #FFD23F;
+    --softText: #7A5A0A;
+    --accountScopeBg: #F4EEFA;
+    --accountScopeBorder: #C9B6E4;
+    --gainText: #276E2C;
+    --gainSoftBg: #E1F4E5;
+    --walletSavings: linear-gradient(#FFE6B0, #FFC34D);
+    --walletSpending: linear-gradient(#FFD8C7, #FF8A4C);
+    --walletGoodDeeds: linear-gradient(#FBC4DA, #E94E89);
+    --savingsSolid: #FFC34D;
+    --spendingSolid: #FF8A4C;
+    --goodDeedsSolid: #E94E89;
+    --walletTrack: #F3ECE4;
+    --lip: 0 5px 0 rgba(0, 0, 0, 0.12);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Rubik', sans-serif; background: #111; color: #eee; }
+  .page { max-width: 1240px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1.doc { text-align: center; font-size: 24px; margin: 0 0 6px; }
+  .subtitle { text-align: center; color: #aaa; margin: 0 0 40px; font-size: 14px; }
+  section.step { margin-bottom: 64px; }
+  section.step > h2 { font-size: 18px; margin: 0 0 4px; text-align: center; }
+  section.step > p.why { text-align: center; color: #aaa; font-size: 13px; margin: 0 auto 22px; max-width: 640px; line-height: 1.6; }
+  .row { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; align-items: flex-start; }
+  .col { width: 360px; }
+  .cap { text-align: center; color: #ccc; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  .cap .tag { display: inline-block; background: #2b6; color: #fff; border-radius: 999px; padding: 1px 8px; font-size: 11px; margin-inline-start: 6px; }
+  h1.doc, .subtitle, section.step > h2, section.step > p.why, .cap, .notes { direction: ltr; unicode-bidi: plaintext; }
+  .notes { color: #aaa; font-size: 12px; line-height: 1.6; margin: 12px 4px 0; padding-inline-start: 18px; }
+  .research { max-width: 760px; margin: 0 auto 48px; background: #1a1a1a; border: 1px solid #2c2c2c; border-radius: 16px; padding: 16px 22px; direction: ltr; font-size: 13px; line-height: 1.7; color: #ccc; }
+  .research h2 { font-size: 15px; margin: 0 0 6px; color: #eee; }
+  .research ul { margin: 0; padding-inline-start: 18px; }
+
+  .phone { width: 360px; background: #1c1c1c; border-radius: 38px; padding: 8px; border: 1px solid #2c2c2c; box-shadow: 0 18px 40px rgba(0,0,0,.6); }
+  .screen { position: relative; border-radius: 31px; overflow: hidden; height: 760px; background: var(--screen); color: var(--textStrong); padding: 16px 14px 24px; }
+  .screen.menuBg { background: #FDF6E0; }
+
+  .card { background: var(--surface); border-radius: 22px; box-shadow: var(--lip); }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; margin-bottom: 16px; }
+  .header .name { font-size: 22px; font-weight: 800; display: flex; gap: 14px; align-items: center; }
+  .burger { width: 26px; display: grid; gap: 4px; }
+  .burger i { display: block; height: 4px; border-radius: 4px; background: var(--textStrong); }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #F6C177; display: grid; place-items: center; font-size: 24px; }
+  .avatar.big { width: 84px; height: 84px; font-size: 50px; margin: 0 auto 8px; }
+
+  .spendHero { padding: 22px 18px 20px; text-align: center; margin-bottom: 14px; }
+  .spendHero .icon { width: 72px; height: 72px; border-radius: 22px; background: var(--walletSpending); display: grid; place-items: center; font-size: 40px; margin: 0 auto 10px; }
+  .spendHero .label { font-size: 18px; font-weight: 700; color: var(--textMuted); }
+  .spendHero .big { font-size: 76px; font-weight: 800; line-height: 1; margin: 6px 0 4px; }
+  .spendHero .big small { font-size: 40px; vertical-align: 18px; margin-inline-end: 2px; }
+
+  .walletRow { padding: 14px 16px; display: flex; align-items: center; gap: 14px; margin-bottom: 12px; min-height: 92px; }
+  .walletRow .icon { width: 58px; height: 58px; border-radius: 18px; display: grid; place-items: center; font-size: 32px; flex: none; }
+  .walletRow .who { flex: 1; }
+  .walletRow .who b { display: block; font-size: 19px; }
+  .walletRow .who span { color: var(--textMuted); font-size: 14px; }
+  .walletRow .amount { font-size: 34px; font-weight: 800; }
+  .walletRow .amount small { font-size: 20px; }
+
+  .growth { display: inline-flex; align-items: center; gap: 6px; background: var(--gainSoftBg); color: var(--gainText); border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: 15px; margin-top: 4px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1.5px dashed var(--divider); }
+  .split div { border-radius: 14px; padding: 8px 0; font-size: 14px; font-weight: 700; color: var(--textMuted); background: var(--softBg); }
+  .split b { display: block; font-size: 24px; color: var(--textStrong); }
+  .split .earned { color: var(--gainText); background: var(--gainSoftBg); }
+  .split .earned b { color: var(--gainText); }
+  .coinDrop { display: inline-block; animation: drop 1.6s ease-in infinite; }
+  @keyframes drop { 0% { transform: translateY(-14px); opacity: 0; } 30% { opacity: 1; } 70%, 100% { transform: translateY(0); opacity: 1; } }
+
+  .jars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .jar { padding: 12px 8px 14px; text-align: center; }
+  .jar.on { outline: 4px solid var(--primary); outline-offset: -4px; }
+  .jar .glass { position: relative; height: 170px; border-radius: 20px 20px 26px 26px; background: var(--walletTrack); overflow: hidden; margin: 0 6px 10px; border: 3px solid #EADFD3; }
+  .jar .glass .fill { position: absolute; inset: auto 0 0 0; }
+  .jar .glass .emoji { position: absolute; inset: 0; display: grid; place-items: center; font-size: 38px; }
+  .jar b { display: block; font-size: 30px; font-weight: 800; }
+  .jar span { font-size: 14px; font-weight: 700; color: var(--textMuted); }
+  .sentence { padding: 16px; text-align: center; font-size: 22px; font-weight: 800; margin-bottom: 14px; }
+  .sentence em { font-style: normal; color: var(--primary); font-size: 30px; }
+  .growthCard { padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+  .growthCard .icon { width: 52px; height: 52px; border-radius: 16px; background: var(--walletSavings); display: grid; place-items: center; font-size: 28px; flex: none; }
+  .growthCard .body { flex: 1; font-size: 16px; font-weight: 700; }
+  .growthCard .body span { display: block; color: var(--textMuted); font-size: 13px; font-weight: 600; }
+
+  .menuChild { text-align: center; padding: 22px 16px; margin-bottom: 16px; }
+  .menuChild b { font-size: 26px; }
+  .menuChild .total { color: var(--textMuted); font-size: 15px; margin-top: 2px; }
+  .menuItem { display: flex; align-items: center; gap: 14px; padding: 16px 18px; margin-bottom: 12px; font-size: 19px; font-weight: 700; min-height: 76px; }
+  .menuItem .ic { font-size: 30px; }
+  .menuItem.on { background: var(--textStrong); color: #fff; }
+  .swatches { display: flex; gap: 12px; margin-inline-start: auto; }
+  .swatches i { width: 34px; height: 34px; border-radius: 50%; display: block; border: 3px solid #fff; box-shadow: 0 0 0 1.5px var(--divider); }
+  .swatches i.on { box-shadow: 0 0 0 3px var(--primary); }
+  .parentExit { position: absolute; inset: auto 14px 22px 14px; text-align: center; color: var(--textMuted); font-size: 14px; font-weight: 600; }
+  .parentExit .switchRow { display: inline-flex; align-items: center; gap: 10px; border: 1.5px solid var(--divider); background: #fff; border-radius: 999px; padding: 8px 16px; }
+
+  .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .tab { background: #fff; border: 1.5px solid var(--divider); border-radius: 20px; padding: 12px 0; text-align: center; font-weight: 700; font-size: 14px; color: var(--textMuted); }
+  .tab div { font-size: 20px; margin-bottom: 4px; }
+  .tab.on { background: var(--textStrong); color: #fff; border-color: var(--textStrong); }
+  .scope { background: var(--accountScopeBg); border: 1.5px solid var(--accountScopeBorder); border-radius: 24px; padding: 14px; }
+  .user { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1.5px solid var(--accountScopeBorder); margin-bottom: 12px; }
+  .user .who { flex: 1; } .user .who b { display: block; font-size: 17px; } .user .who span { color: var(--textMuted); font-size: 13px; }
+  .pill { border: 1.5px solid var(--accountScopeBorder); background: #fff; border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 13px; color: var(--textMuted); }
+  .picker { background: #fff; border: 1.5px solid var(--accountScopeBorder); border-radius: 18px; padding: 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .picker .who { flex: 1; } .picker .who b { display: block; font-size: 17px; } .picker .who span { color: var(--textMuted); font-size: 13px; }
+  .modeRow { background: #fff; border: 1.5px solid var(--softBorder); border-radius: 18px; padding: 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: 700; font-size: 15px; }
+  .modeRow .who { flex: 1; } .modeRow .who span { display: block; color: var(--textMuted); font-size: 12px; font-weight: 600; }
+  .switch { width: 48px; height: 28px; border-radius: 999px; background: #D9D2E4; position: relative; flex: none; }
+  .switch::after { content: ''; position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+  .switch.on { background: var(--primary); }
+  .switch.on::after { right: auto; left: 3px; }
+  .editLink { text-align: center; color: var(--textMuted); font-weight: 700; font-size: 14px; text-decoration: underline; }
+  .new { position: relative; }
+  .new::before { content: 'חדש'; position: absolute; top: -9px; left: 14px; background: #2b6; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 999px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1 class="doc">🧒 Child mode — mockups</h1>
+  <p class="subtitle">Sunshine Quest theme, 360px phone. Read-only, one screen, no saving goal (that ships as its own feature). Example: ₪23.40 spending · ₪148.90 savings · ₪9.60 good deeds.</p>
+
+  <div class="research">
+    <h2>Research → rules applied here</h2>
+    <ul>
+      <li><b>Whole shekels, rounded down.</b> Decimal money is taught at 8–9, so a 7-year-old sees ₪23, never ₪23.40. Rounding down means the child never sees money they don't have.</li>
+      <li><b>Counts, not percentages.</b> No donut, no rate, no chart. Growth is shown as a count, "earned by itself +₪6", next to the child's own money (jar-method.md §6.1: show growth, never the mechanism).</li>
+      <li><b>One screen, no scrolling.</b> NN/g: young children avoid scrolling. Everything fits in 760px.</li>
+      <li><b>Big targets, icon plus word.</b> Rows are at least 76px (≈2cm, NN/g). Never an icon alone or text alone (Google Designed for Families).</li>
+      <li><b>Savings leads, spending stays clear.</b> Savings is the hero, as you asked. Spending gets the second biggest number, because it's what a child asks at the shop.</li>
+      <li><b>Not babyish.</b> Same theme and cards as the parent app, only bigger and with less on screen.</li>
+    </ul>
+  </div>
+
+  <section class="step">
+    <h2>1 · Child home — savings first</h2>
+    <p class="why">Savings is the hero: the biggest number, split into the money the child put in and what it earned by itself since savings began. Spending comes next and stays easy to read at a glance. The saving goal's picture and progress bar will go inside the savings card in the next feature, so the card is built to grow.</p>
+    <div class="row">
+
+      <div class="col">
+        <div class="cap">1 · Savings hero <span class="tag">chosen</span></div>
+        <div class="phone"><div class="screen">
+          <div class="card header"><span class="name"><span class="burger"><i></i><i></i><i></i></span>נועה</span><span class="avatar">🧢</span></div>
+          <div class="card spendHero">
+            <div class="icon" style="background:var(--walletSavings)">🐷</div>
+            <div class="label">החיסכון שלך</div>
+            <div class="big"><small>₪</small>148</div>
+            <div class="split"><div>הפקדת<b>₪142</b></div><div class="earned">✨ הרוויח לבד<b dir="ltr">+₪6</b></div></div>
+          </div>
+          <div class="card walletRow">
+            <div class="icon" style="background:var(--walletSpending)">🛍️</div>
+            <div class="who"><b>בזבוזים</b><span>יש לך לבזבז</span></div>
+            <div class="amount"><small>₪</small>23</div>
+          </div>
+          <div class="card walletRow">
+            <div class="icon" style="background:var(--walletGoodDeeds)">💛</div>
+            <div class="who"><b>מעשים טובים</b><span>לתת למישהו אחר</span></div>
+            <div class="amount"><small>₪</small>9</div>
+          </div>
+        </div></div>
+        <ul class="notes">
+          <li>Savings is the largest number on the screen. Under it: "you deposited" (₪142) and "earned by itself" (+₪6), which add up to the total.</li><li>Rounding: the total and the interest are rounded down, and "you deposited" is total minus interest, so the parts always add up. (Rounding each part down on its own can come to ₪1 less than the total.)</li><li>Once the goal ships, both numbers count from the day the goal was set.</li>
+          <li>Spending is second, with a 34px number and the words "to spend", so "how much can I spend?" still takes one look.</li>
+          <li>Each wallet appears once. Nothing can be tapped except the menu. View only.</li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <div class="cap">Next feature · goal inside the savings card</div>
+        <div class="phone"><div class="screen">
+          <div class="card header"><span class="name"><span class="burger"><i></i><i></i><i></i></span>נועה</span><span class="avatar">🧢</span></div>
+          <div class="card spendHero" style="padding-top:14px">
+            <div style="height:120px;border-radius:18px;background:var(--walletSavings);display:grid;place-items:center;font-size:70px;margin-bottom:10px;opacity:.55;border:2px dashed #C9B6E4">🚲</div>
+            <div class="label">החיסכון שלך</div>
+            <div class="big" style="font-size:60px"><small style="font-size:32px;vertical-align:14px">₪</small>148</div>
+            <div class="split"><div>הפקדת<b>₪142</b></div><div class="earned">✨ הרוויח לבד<b dir="ltr">+₪6</b></div></div>
+            <div style="margin-top:12px;height:14px;border-radius:999px;background:var(--walletTrack);overflow:hidden;opacity:.55;border:2px dashed #C9B6E4"><i style="display:block;height:100%;width:57%;background:linear-gradient(90deg,#FFC34D,#FF8A4C)"></i></div>
+          </div>
+          <div class="card walletRow">
+            <div class="icon" style="background:var(--walletSpending)">🛍️</div>
+            <div class="who"><b>בזבוזים</b><span>יש לך לבזבז</span></div>
+            <div class="amount"><small>₪</small>23</div>
+          </div>
+          <div class="card walletRow">
+            <div class="icon" style="background:var(--walletGoodDeeds)">💛</div>
+            <div class="who"><b>מעשים טובים</b><span>לתת למישהו אחר</span></div>
+            <div class="amount"><small>₪</small>9</div>
+          </div>
+        </div></div>
+        <ul class="notes">
+          <li>Shown only to check it fits. The dashed parts are <b>not</b> in this feature.</li>
+          <li>Everything still fits on one screen with no scrolling, once the image and bar are added.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="step">
+    <h2>2 · The menu</h2>
+    <p class="why">The parent menu has three page tabs, the account picker, and settings. The child menu has a picture of the child, colours to choose, and the way back to parent mode. Switching back is a plain toggle with no gate, as decided.</p>
+    <div class="row">
+
+      <div class="col">
+        <div class="cap">2a · Child menu <span class="tag">recommended</span></div>
+        <div class="phone"><div class="screen menuBg">
+          <div class="card header"><span class="name"><span style="font-size:26px">✕</span></span><span class="name">תפריט</span></div>
+          <div class="card menuChild">
+            <div class="avatar big">🧢</div>
+            <b>נועה</b>
+          </div>
+          <div class="card menuItem on"><span class="ic">🏠</span>הכסף שלי</div>
+          <div class="card menuItem"><span class="ic">🎨</span>צבעים
+            <span class="swatches"><i class="on" style="background:linear-gradient(#FFC34D,#E94E89)"></i><i style="background:linear-gradient(#5BC0EB,#3A7BD5)"></i><i style="background:linear-gradient(#7BD389,#2E9E5B)"></i></span>
+          </div>
+          <div class="parentExit"><span class="switchRow">👤 מצב הורה <span class="switch"></span></span></div>
+        </div></div>
+        <ul class="notes">
+          <li>Two items, each 76px high: home and colours (the existing appearance section, which kids enjoy).</li>
+          <li>"Parent mode" is small and at the bottom, out of the way but reachable.</li>
+          <li>No account picker, no sign-out, no edit, no method page.</li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <div class="cap">2b · Where the parent turns it on</div>
+        <div class="phone"><div class="screen menuBg">
+          <div class="card header"><span class="name"><span style="font-size:26px">✕</span></span><span class="name">נועה</span></div>
+          <div class="tabs">
+            <div class="tab on"><div>🏠</div>בית</div><div class="tab"><div>📈</div>תנועות</div><div class="tab"><div>📖</div>השיטה</div>
+          </div>
+          <div class="scope">
+            <div class="user"><div class="avatar">👤</div><div class="who"><b>אלי</b><span>eli@example.com</span></div><span class="pill">יציאה</span></div>
+            <div class="picker"><div class="avatar">🧢</div><div class="who"><b>נועה</b><span>₪181 · מוצג כרגע</span></div><span>▾</span></div>
+            <div class="modeRow new"><span style="font-size:22px">🧒</span><div class="who">מצב ילד<span>מסך פשוט לנועה, רק לצפייה</span></div><span class="switch on"></span></div>
+            <div class="editLink">✏️ עריכת נועה</div>
+          </div>
+        </div></div>
+        <ul class="notes">
+          <li>One new row in the account card (purple), because child mode shows one child's money.</li>
+          <li>Turning it on closes the menu and opens the child home for that account.</li>
+          <li>The device remembers it (a cookie, like the theme), so a reload stays in child mode.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+</div>
+</body>
+</html>
