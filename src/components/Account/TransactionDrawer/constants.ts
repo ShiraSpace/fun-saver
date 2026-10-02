@@ -1,6 +1,7 @@
 import { SCREEN_LAYOUT } from '@/components/Screen/constants';
 import type { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { TransactionType } from '@/lib/transaction/types';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
 
 export type EnteredTransactionType = Exclude<
   TransactionType,
@@ -41,3 +42,5 @@ export const SWIPE_TO_CLOSE = {
   closeThreshold: 100,
   snapMs: 200,
 } as const;
+
+export const [, ...DEFAULT_WITHDRAWAL_WALLET_NAMES] = WALLET_NAMES;
