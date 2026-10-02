@@ -42,8 +42,6 @@ describe('useWithdrawalForm', () => {
       const { result } = setup();
 
       expect(result.current.selectedWalletId).toBe(spending.id);
-      expect(result.current.amountShekels).toBe(0);
-      expect(result.current.canSubmit).toBe(false);
     });
 
     it('falls back to the good-deeds wallet when spending is empty', () => {
@@ -61,6 +59,13 @@ describe('useWithdrawalForm', () => {
 
       expect(result.current.selectedWalletId).toBe(spending.id);
     });
+  });
+
+  it('starts with no amount and submit disabled', () => {
+    const { result } = setup();
+
+    expect(result.current.amountShekels).toBe(0);
+    expect(result.current.canSubmit).toBe(false);
   });
 
   it('builds the amount from tapped digits', () => {
