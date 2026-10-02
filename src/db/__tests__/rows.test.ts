@@ -19,6 +19,7 @@ const mockAccountRow: AccountRow = {
   avatar_id: mockAccount.avatarId,
   is_active: mockAccount.isActive,
   theme_id: DEFAULT_THEME_ID,
+  view_mode: mockAccount.viewMode,
   wallets: createMockWallets(),
 };
 

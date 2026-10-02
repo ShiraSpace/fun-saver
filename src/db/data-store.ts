@@ -2,6 +2,7 @@ import type { Account, AccountEdits, AccountUser } from '@/lib/account/types';
 import type { AuthProvider, User } from '@/lib/user/types';
 import type { Transaction } from '@/lib/transaction/types';
 import type { ThemeId } from '@/theme/registry';
+import type { AppViewMode } from '@/lib/account/view-mode';
 
 export interface StoreContents {
   accounts: Account[];
@@ -15,6 +16,7 @@ export interface AccountRepository {
   list(): Promise<Account[]>;
   get(id: string): Promise<Account | undefined>;
   setTheme(id: string, themeId: ThemeId): Promise<Account | undefined>;
+  setViewMode(id: string, viewMode: AppViewMode): Promise<Account | undefined>;
   update(id: string, edits: AccountEdits): Promise<Account | undefined>;
 }
 
@@ -47,6 +49,10 @@ export interface DataStore {
   insertAccount(account: Account): Promise<void>;
   getAccount(id: string): Promise<Account | undefined>;
   setAccountTheme(id: string, themeId: ThemeId): Promise<Account | undefined>;
+  setAccountViewMode(
+    id: string,
+    viewMode: AppViewMode
+  ): Promise<Account | undefined>;
   updateAccount(
     accountId: string,
     edits: AccountEdits

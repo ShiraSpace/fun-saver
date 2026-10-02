@@ -1,3 +1,5 @@
+import type { Account } from './types';
+
 export const APP_VIEW_MODE = {
   parent: 'parent',
   child: 'child',
@@ -15,6 +17,6 @@ export function resolveAppViewMode(stored: string | undefined): AppViewMode {
   return isAppViewMode(stored) ? stored : APP_VIEW_MODE.parent;
 }
 
-export function isChildView(account: { viewMode?: AppViewMode }): boolean {
+export function isChildView(account: Pick<Account, 'viewMode'>): boolean {
   return account.viewMode === APP_VIEW_MODE.child;
 }
