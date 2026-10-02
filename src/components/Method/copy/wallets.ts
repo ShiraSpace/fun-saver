@@ -1,4 +1,5 @@
 import { WALLET_NAMES } from '@/lib/wallet/constants';
+
 export const WALLETS_COPY = {
   title: 'שלוש הקופות',
   walletNames: [

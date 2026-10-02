@@ -36,6 +36,8 @@ describe('useWithdrawalForm', () => {
   });
 
   describe('default wallet', () => {
+    const mockEmptySpending = { ...spending, balance: 0 };
+
     it('starts on the spending wallet when it has money', () => {
       const { result } = setup();
 
@@ -45,11 +47,7 @@ describe('useWithdrawalForm', () => {
     });
 
     it('falls back to the good-deeds wallet when spending is empty', () => {
-      const { result } = setup([
-        savings,
-        { ...spending, balance: 0 },
-        goodDeeds,
-      ]);
+      const { result } = setup([savings, mockEmptySpending, goodDeeds]);
 
       expect(result.current.selectedWalletId).toBe(goodDeeds.id);
     });
@@ -57,7 +55,7 @@ describe('useWithdrawalForm', () => {
     it('never starts on the savings wallet, even when only savings has money', () => {
       const { result } = setup([
         savings,
-        { ...spending, balance: 0 },
+        mockEmptySpending,
         { ...goodDeeds, balance: 0 },
       ]);
 
