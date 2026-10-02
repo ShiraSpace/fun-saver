@@ -1,7 +1,7 @@
 import { SCREEN_LAYOUT } from '@/components/Screen/constants';
 import type { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { TransactionType } from '@/lib/transaction/types';
-import { WALLET_NAMES } from '@/lib/wallet/constants';
+import type { WalletName } from '@/lib/wallet/types';
 
 export type EnteredTransactionType = Exclude<
   TransactionType,
@@ -43,4 +43,7 @@ export const SWIPE_TO_CLOSE = {
   snapMs: 200,
 } as const;
 
-export const [, ...DEFAULT_WITHDRAWAL_WALLET_NAMES] = WALLET_NAMES;
+export const DEFAULT_WITHDRAWAL_WALLET_NAMES: readonly WalletName[] = [
+  'spending',
+  'goodDeeds',
+];
