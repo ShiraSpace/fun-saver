@@ -16,7 +16,8 @@
     "test:visual": "next build && tsx --test --test-concurrency=4 e2e/*.visual.ts",
     "db:migrate": "tsx --env-file=.env.local src/db/run-migration.ts",
     "db:migrate-dev": "tsx --env-file=.env.local src/db/run-migration.ts --dev",
-    "db:migrate-test": "tsx --env-file=.env.local src/db/run-migration.ts --test"
+    "db:migrate-test": "tsx --env-file=.env.local src/db/run-migration.ts --test",
+    "emoji-words": "tsx scripts/emoji-words.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
