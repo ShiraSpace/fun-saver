@@ -43,6 +43,7 @@
   .row { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; align-items: flex-start; }
   .col { width: 360px; }
   .cap { text-align: center; color: #ccc; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  .cap .comp { display: inline-block; background: #333; color: #ddd; border-radius: 6px; padding: 1px 7px; font-size: 11px; font-family: ui-monospace, monospace; margin-inline-start: 6px; }
   .cap .tag { display: inline-block; background: #2b6; color: #fff; border-radius: 999px; padding: 1px 8px; font-size: 11px; margin-inline-start: 6px; }
   h1.doc, .subtitle, section.step > h2, section.step > p.why, .cap, .notes { direction: ltr; unicode-bidi: plaintext; }
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1.5px dashed var(--divider); }
@@ -73,26 +74,36 @@
   @keyframes borderSettle { to { opacity: 0; } }
   .savingsCard.celebrating .head .icon { animation: piggyHop 0.8s ease-in-out 0s 12; }
   @keyframes piggyHop { 0%, 100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-7px) rotate(-8deg); } 60% { transform: translateY(0) rotate(6deg); } }
-  .savingsCard.celebrating .goalStrip .bar { position: relative; }
-  .savingsCard.celebrating .goalStrip .bar::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.85) 50%, transparent 70%); background-size: 200% 100%; opacity: 0; animation: barShine 1.4s linear 0s 7; }
+  .savingsCard.celebrating .goalProgress .bar { position: relative; }
+  .savingsCard.celebrating .goalProgress .bar::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.85) 50%, transparent 70%); background-size: 200% 100%; opacity: 0; animation: barShine 1.4s linear 0s 7; }
   @keyframes barShine { from { background-position: 200% 0; opacity: 1; } to { background-position: -100% 0; opacity: 1; } }
-  .savingsCard.celebrating .goalStrip .thumb { animation: piggyHop 0.8s ease-in-out 0.4s 12; }
+  .savingsCard.celebrating .goalProgress .thumb { animation: piggyHop 0.8s ease-in-out 0.4s 12; }
   .confetti { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
   .confetti i { position: absolute; width: 8px; height: 14px; border-radius: 2px; opacity: .9; }
   .reachedTitle { text-align: center; color: #fff; font-size: 28px; font-weight: 800; margin: -4px 0 12px; text-shadow: 0 2px 4px rgba(0,0,0,.15); }
   .goalHero.reached { box-shadow: var(--lip), 0 0 0 4px #FFD23F, 0 0 34px rgba(255,210,63,.8); }
   .togo.reached { background: var(--gainSoftBg); border-color: #8BD19A; color: var(--gainText); }
   .lockBadge.open { background: #fff; color: var(--gainText); }
-  .goalStrip.reached .top { color: var(--gainText); }
-  .goalStrip.reached .bar > i { background: linear-gradient(90deg, #5CC870, #276E2C); }
-  .goalStrip.reached .thumb { box-shadow: 0 0 0 2px #FFD23F; }
+  .goalProgress.reached .top { color: var(--gainText); }
+  .goalProgress.reached .bar > i { background: linear-gradient(90deg, #5CC870, #276E2C); }
+  .goalProgress.reached .thumb { box-shadow: 0 0 0 2px #FFD23F; }
   .cancelGoalLink { text-align: left; color: #A81B3A; font-size: 12px; font-weight: 600; margin: -6px 6px 12px; text-decoration: underline; text-underline-offset: 3px; }
   .dialog { position: absolute; left: 18px; right: 18px; top: 170px; background: #fff; border-radius: 24px; padding: 22px 18px 18px; text-align: center; box-shadow: 0 18px 40px rgba(0,0,0,.3); }
   .dialog .thumb { width: 64px; height: 64px; border-radius: 18px; background: var(--walletSavings); display: grid; place-items: center; font-size: 36px; margin: 0 auto 12px; }
   .dialog h4 { margin: 0 0 8px; font-size: 20px; font-weight: 800; }
   .dialog p { margin: 0 0 6px; color: var(--textMuted); font-size: 14px; line-height: 1.5; }
   .dialog .keep { margin: 18px 0 12px; font-size: 16px; padding: 13px; }
-  .holdButton { position: relative; overflow: hidden; border: 2px solid #A81B3A; color: #A81B3A; border-radius: 999px; padding: 11px; font-weight: 700; font-size: 14px; cursor: pointer; user-select: none; }
+  .holdButton { position: relative; overflow: hidden; border: 2px solid #A81B3A; color: #A81B3A; background: #fff; border-radius: 999px; padding: 11px; width: 100%; font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: none; }
+  .holdButton:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+  .savingsCard.reachedOutline { box-shadow: var(--lip), 0 0 0 3px #FFD23F; }
+  .lockNote.reached { background: var(--gainSoftBg); border: 1.5px solid #8BD19A; color: var(--gainText); }
+  .grid.scrolls { max-height: 268px; overflow: hidden; position: relative; }
+  .grid.scrolls::after { content: ''; position: absolute; inset: auto 0 0 0; height: 40px; background: linear-gradient(transparent, #fff); }
+  @media (prefers-reduced-motion: reduce) {
+    .confetti { display: none; }
+    .savingsCard.celebrating::before, .savingsCard.celebrating::after { display: none; }
+    .savingsCard.celebrating .head .icon, .savingsCard.celebrating .goalProgress .thumb, .savingsCard.celebrating .goalProgress .bar::after { animation: none; }
+  }
   .holdButton .holdFill { position: absolute; inset: 0 0 0 auto; width: 0; background: #F6C9CF; transition: width .25s ease-out; }
   .holdButton.holding .holdFill { width: 100%; transition: width 2s linear; }
   .holdButton.done { background: #A81B3A; color: #fff; }
@@ -229,11 +240,11 @@
   .amount .lock { font-size: 12px; }
   .savingsCard { padding: 12px 14px; margin-bottom: 10px; }
   .savingsCard .head { display: flex; align-items: center; gap: 12px; }
-  .goalStrip { margin-top: 12px; padding-top: 10px; border-top: 1.5px dashed var(--divider); display: flex; gap: 10px; align-items: center; }
-  .goalStrip .thumb { width: 34px; height: 34px; border-radius: 10px; background: var(--walletSavings); display: grid; place-items: center; font-size: 20px; flex: none; }
-  .goalStrip .body { flex: 1; }
-  .goalStrip .top { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
-  .goalStrip .top span { color: var(--textMuted); font-weight: 600; }
+  .goalProgress { margin-top: 12px; padding-top: 10px; border-top: 1.5px dashed var(--divider); display: flex; gap: 10px; align-items: center; }
+  .goalProgress .thumb { width: 34px; height: 34px; border-radius: 10px; background: var(--walletSavings); display: grid; place-items: center; font-size: 20px; flex: none; }
+  .goalProgress .body { flex: 1; }
+  .goalProgress .top { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+  .goalProgress .top span { color: var(--textMuted); font-weight: 600; }
   .goalBanner { padding: 10px 14px; display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
   .goalBanner .thumb { width: 40px; height: 40px; border-radius: 12px; background: var(--walletSavings); display: grid; place-items: center; font-size: 22px; flex: none; }
   .goalBanner .body { flex: 1; }
@@ -245,7 +256,7 @@
 <body>
 <div class="page">
   <h1 class="doc">🎯 יעד חיסכון: mockups</h1>
-  <p class="subtitle">Sunshine Quest theme, 360px phone. Order follows the build: set the goal → goal set → menu entry → home.</p>
+  <p class="subtitle">Sunshine Quest theme, 360px phone. Order follows the build: set the goal → goal set → menu entry → home → drawer. Matches the design spec as revised 2026-10-03 (component names in grey tags).</p>
 
   <section class="step">
     <h2>1 · Setting the goal</h2>
@@ -253,7 +264,7 @@
     <div class="row">
 
       <div class="col">
-        <div class="cap">1a · Filled in, ready to accept</div>
+        <div class="cap">1a · Filled in, ready to accept <span class="comp">SetGoal</span></div>
         <div class="phone"><div class="screen">
           <div class="modalTop"><h3>🎯 יעד חיסכון</h3><div class="closeX">✕</div></div>
 
@@ -279,12 +290,12 @@
         </div></div>
         <ul class="notes">
           <li>The button stays disabled until there is a name and an amount. The image is optional; without one the goal shows 🎯.</li>
-          <li>✕ and ביטול both close without saving. ✕ matches עריכת חשבון; ביטול is the explicit cancel you asked for.</li>
+          <li>✕ and ביטול both close without saving. ✕ and the title are <code>AccountForm</code>'s <code>CancelButton</code> and <code>FormTitle</code>; ביטול is a new text button; קובעים יעד is a <code>PrimaryButton</code>.</li>
         </ul>
       </div>
 
       <div class="col">
-        <div class="cap">1b · Image search</div>
+        <div class="cap">1b · Image search <span class="comp">GoalPictureSearch</span></div>
         <div class="phone"><div class="screen">
           <div class="modalTop"><h3>🎯 יעד חיסכון</h3><div class="closeX">✕</div></div>
           <div class="card field"><span class="label">על מה חוסכים?</span><span class="value">אופניים</span></div>
@@ -293,19 +304,51 @@
             <div class="grabber"></div>
             <div class="sheetTitle"><span>בחירת תמונה</span><span class="x">✕</span></div>
             <div class="search">🔍 <span>אופניים</span></div>
-            <div class="grid">
-              <div class="tile t1 on">🚲</div><div class="tile t4">🚴‍♀️</div><div class="tile t3">🚴</div>
-              <div class="tile t2">🚵</div><div class="tile t5">🛴</div><div class="tile t6">🚵‍♀️</div>
-              <div class="tile t3">🛵</div><div class="tile t1">🛹</div><div class="tile t4">🛼</div>
+            <div class="grid scrolls">
+              <div class="tile t1 on">🚲</div><div class="tile t4">🚴</div><div class="tile t3">🚵</div>
+              <div class="tile t2">🛴</div><div class="tile t5">🛵</div><div class="tile t6">🛹</div>
+              <div class="tile t3">🛼</div><div class="tile t1">🏍️</div><div class="tile t4">🚳</div>
+              <div class="tile t6">🚏</div><div class="tile t2">🏁</div><div class="tile t5">⛑️</div>
             </div>
             <div class="credit">v1: emoji drawn on photo tiles · later: Pixabay photos in the same tiles</div>
             <div class="primaryButton">בחירה</div>
           </div>
         </div></div>
         <ul class="notes">
-          <li>Opens already searching for the goal name. Editing the text searches again.</li>
+          <li>Opens already searching for the goal name. Editing the text searches again. "האופניים" and "ולאופניים" find the same tiles; "כלב" finds dogs, never "לב" hearts.</li>
+          <li>One tile per emoji: no skin-tone, gendered or hair variants, nothing newer than Emoji 13.0. The first 9 show; more results scroll.</li>
           <li>Upload and paste-a-link are shown but disabled, marked בקרוב. They arrive later, together with Pixabay, since all three need image storage.</li>
           <li>Looks and behaves the same in every version. Only where the results come from changes: a built-in emoji library with Hebrew search words in v1, Pixabay later.</li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <div class="cap">1c · Amount already saved <span class="comp">SetGoal</span></div>
+        <div class="phone"><div class="screen">
+          <div class="modalTop"><h3>🎯 יעד חיסכון</h3><div class="closeX">✕</div></div>
+
+          <div class="card field"><span class="label">על מה חוסכים?</span><span class="value">כדור</span></div>
+
+          <div class="sectionLabel">תמונה</div>
+          <div class="card imagePick">
+            <div class="preview">⚽<span class="swap">↻</span></div>
+            <div class="sources">
+              <div class="source on">🔍 חיפוש תמונה</div>
+              <div class="source disabled">📷 העלאה מהטלפון <span class="soon">בקרוב</span></div>
+              <div class="source disabled">🔗 הדבקת קישור <span class="soon">בקרוב</span></div>
+            </div>
+          </div>
+
+          <div class="card field"><span class="label">כמה צריך?</span><span class="value big">₪80</span><span class="caret"></span></div>
+          <div class="amountHint">יש כבר ₪85 בחיסכון</div>
+
+          <div class="lockNote reached"><span>🎉</span><span>כבר יש מספיק בחיסכון! אפשר לקנות את הכדור כבר עכשיו.</span></div>
+
+          <div class="primaryButton">✓ קובעים יעד</div>
+          <div class="textButton">ביטול</div>
+        </div></div>
+        <ul class="notes">
+          <li>A goal at or below what is already saved is allowed. It shows as reached at once and locks nothing, so the lock note gives way to the reached line.</li>
         </ul>
       </div>
 
@@ -317,7 +360,7 @@
     <p class="why">Read-only: name, image, amount and progress, plus a way back. A goal can't be edited. A parent can only cancel it, from the menu (3c).</p>
     <div class="row">
       <div class="col">
-        <div class="cap">2 · Goal screen</div>
+        <div class="cap">2 · Goal screen <span class="comp">ViewGoal</span></div>
         <div class="phone"><div class="screen">
           <div class="modalTop"><h3>🎯 היעד של נועה</h3><div class="closeX">✕</div></div>
           <div class="card goalHero">
@@ -335,7 +378,7 @@
         </ul>
       </div>
       <div class="col">
-        <div class="cap">2b · Goal reached <button class="replay" onclick="replayConfetti(this)">▶ replay</button></div>
+        <div class="cap">2b · Goal reached <span class="comp">ViewGoal + Celebration</span> <button class="replay" onclick="replayConfetti(this)">▶ replay</button></div>
         <div class="phone"><div class="screen">
           <div class="confetti falling"><i style="right:32%;width:6px;height:14px;background:#FFD23F;--fall:2.6s;--delay:4.0s;--sway:-26px"></i><i style="right:57%;width:6px;height:10px;background:#E94E89;--fall:3.5s;--delay:1.3s;--sway:-19px"></i><i style="right:11%;width:10px;height:6px;background:#6B2C8E;--fall:2.9s;--delay:5.1s;--sway:-29px"></i><i style="right:57%;width:6px;height:6px;background:#5CC870;--fall:2.5s;--delay:3.6s;--sway:-30px"></i><i style="right:83%;width:10px;height:6px;background:#2563EB;--fall:2.7s;--delay:0.9s;--sway:-21px"></i><i style="right:19%;width:10px;height:10px;background:#FF8A4C;--fall:3.1s;--delay:4.0s;--sway:12px"></i><i style="right:55%;width:8px;height:6px;background:#FFD23F;--fall:3.1s;--delay:3.1s;--sway:26px"></i><i style="right:89%;width:6px;height:10px;background:#E94E89;--fall:2.8s;--delay:1.5s;--sway:-24px"></i><i style="right:56%;width:6px;height:10px;background:#6B2C8E;--fall:3.0s;--delay:5.4s;--sway:16px"></i><i style="right:50%;width:10px;height:10px;background:#5CC870;--fall:2.6s;--delay:2.1s;--sway:18px"></i><i style="right:74%;width:8px;height:6px;background:#2563EB;--fall:3.1s;--delay:5.4s;--sway:17px"></i><i style="right:49%;width:8px;height:6px;background:#FF8A4C;--fall:3.4s;--delay:0.4s;--sway:-29px"></i><i style="right:64%;width:8px;height:6px;background:#FFD23F;--fall:2.5s;--delay:4.3s;--sway:16px"></i><i style="right:35%;width:6px;height:14px;background:#E94E89;--fall:3.5s;--delay:2.2s;--sway:-20px"></i><i style="right:14%;width:8px;height:14px;background:#6B2C8E;--fall:2.7s;--delay:2.4s;--sway:12px"></i><i style="right:54%;width:8px;height:6px;background:#5CC870;--fall:3.5s;--delay:5.1s;--sway:24px"></i><i style="right:85%;width:10px;height:10px;background:#2563EB;--fall:3.5s;--delay:0.9s;--sway:-13px"></i><i style="right:3%;width:8px;height:6px;background:#FF8A4C;--fall:3.4s;--delay:1.1s;--sway:10px"></i><i style="right:37%;width:10px;height:6px;background:#FFD23F;--fall:3.1s;--delay:5.9s;--sway:-19px"></i><i style="right:39%;width:6px;height:10px;background:#E94E89;--fall:2.9s;--delay:0.6s;--sway:11px"></i><i style="right:43%;width:6px;height:6px;background:#6B2C8E;--fall:2.5s;--delay:3.7s;--sway:-10px"></i><i style="right:12%;width:6px;height:6px;background:#5CC870;--fall:2.8s;--delay:0.2s;--sway:-22px"></i><i style="right:26%;width:8px;height:14px;background:#2563EB;--fall:2.8s;--delay:2.3s;--sway:-12px"></i><i style="right:47%;width:8px;height:6px;background:#FF8A4C;--fall:2.8s;--delay:0.9s;--sway:25px"></i><i style="right:17%;width:10px;height:10px;background:#FFD23F;--fall:2.4s;--delay:5.9s;--sway:13px"></i><i style="right:73%;width:8px;height:6px;background:#E94E89;--fall:2.8s;--delay:4.0s;--sway:-24px"></i><i style="right:36%;width:10px;height:10px;background:#6B2C8E;--fall:2.6s;--delay:4.8s;--sway:23px"></i><i style="right:78%;width:8px;height:14px;background:#5CC870;--fall:3.4s;--delay:4.6s;--sway:-14px"></i><i style="right:71%;width:10px;height:6px;background:#2563EB;--fall:3.6s;--delay:4.9s;--sway:15px"></i><i style="right:92%;width:8px;height:10px;background:#FF8A4C;--fall:2.9s;--delay:5.8s;--sway:29px"></i><i style="right:23%;width:10px;height:10px;background:#FFD23F;--fall:2.7s;--delay:1.2s;--sway:-20px"></i><i style="right:47%;width:6px;height:14px;background:#E94E89;--fall:3.2s;--delay:5.0s;--sway:-27px"></i><i style="right:76%;width:10px;height:14px;background:#6B2C8E;--fall:3.3s;--delay:3.0s;--sway:-19px"></i><i style="right:10%;width:6px;height:6px;background:#5CC870;--fall:3.5s;--delay:4.5s;--sway:18px"></i><i style="right:17%;width:6px;height:6px;background:#2563EB;--fall:3.6s;--delay:0.2s;--sway:26px"></i><i style="right:80%;width:10px;height:10px;background:#FF8A4C;--fall:3.6s;--delay:4.1s;--sway:13px"></i><i style="right:4%;width:6px;height:14px;background:#FFD23F;--fall:3.4s;--delay:4.5s;--sway:-21px"></i><i style="right:95%;width:8px;height:6px;background:#E94E89;--fall:2.6s;--delay:5.4s;--sway:-15px"></i><i style="right:25%;width:6px;height:6px;background:#6B2C8E;--fall:3.1s;--delay:1.6s;--sway:27px"></i><i style="right:35%;width:10px;height:10px;background:#5CC870;--fall:2.9s;--delay:3.6s;--sway:27px"></i><i style="right:52%;width:10px;height:10px;background:#2563EB;--fall:3.0s;--delay:0.1s;--sway:26px"></i><i style="right:75%;width:8px;height:6px;background:#FF8A4C;--fall:2.6s;--delay:0.9s;--sway:-21px"></i><i style="right:51%;width:6px;height:10px;background:#FFD23F;--fall:3.1s;--delay:4.9s;--sway:-28px"></i><i style="right:20%;width:6px;height:14px;background:#E94E89;--fall:2.5s;--delay:0.6s;--sway:21px"></i><i style="right:33%;width:8px;height:6px;background:#6B2C8E;--fall:3.6s;--delay:3.8s;--sway:-24px"></i><i style="right:52%;width:6px;height:14px;background:#5CC870;--fall:3.0s;--delay:5.8s;--sway:28px"></i><i style="right:15%;width:8px;height:10px;background:#2563EB;--fall:2.5s;--delay:2.7s;--sway:-23px"></i><i style="right:22%;width:10px;height:6px;background:#FF8A4C;--fall:2.8s;--delay:0.8s;--sway:-29px"></i><i style="right:36%;width:6px;height:14px;background:#FFD23F;--fall:2.7s;--delay:0.9s;--sway:14px"></i><i style="right:85%;width:8px;height:6px;background:#E94E89;--fall:2.6s;--delay:4.1s;--sway:-13px"></i><i style="right:40%;width:6px;height:14px;background:#6B2C8E;--fall:2.9s;--delay:2.2s;--sway:-24px"></i><i style="right:54%;width:8px;height:6px;background:#5CC870;--fall:2.9s;--delay:0.1s;--sway:20px"></i><i style="right:92%;width:6px;height:10px;background:#2563EB;--fall:2.5s;--delay:5.7s;--sway:-29px"></i><i style="right:27%;width:8px;height:6px;background:#FF8A4C;--fall:2.4s;--delay:4.8s;--sway:25px"></i><i style="right:79%;width:6px;height:14px;background:#FFD23F;--fall:2.7s;--delay:0.9s;--sway:24px"></i><i style="right:7%;width:6px;height:6px;background:#E94E89;--fall:3.2s;--delay:2.6s;--sway:-15px"></i><i style="right:10%;width:6px;height:14px;background:#6B2C8E;--fall:2.7s;--delay:3.8s;--sway:-11px"></i><i style="right:3%;width:6px;height:6px;background:#5CC870;--fall:3.6s;--delay:2.6s;--sway:22px"></i><i style="right:69%;width:6px;height:14px;background:#2563EB;--fall:3.5s;--delay:6.0s;--sway:11px"></i><i style="right:61%;width:6px;height:14px;background:#FF8A4C;--fall:3.0s;--delay:1.3s;--sway:20px"></i></div>
           <div class="modalTop"><h3>🎯 היעד של נועה</h3><div class="closeX">✕</div></div>
@@ -351,7 +394,7 @@
           <div class="primaryButton">חזרה</div>
         </div></div>
         <ul class="notes">
-          <li>Confetti falls for about 10 seconds, then fades out. It plays every time this screen opens while the goal is reached.</li>
+          <li>Confetti falls for about 10 seconds, then fades out. It plays every time this screen opens while the goal is reached. Under reduced motion it is not drawn at all.</li>
           <li>The goal stays until the next withdrawal from savings, which clears it. The menu then goes back to 3b.</li>
         </ul>
       </div>
@@ -363,7 +406,7 @@
     <p class="why">A goal belongs to one child, so the entry goes in the account card (purple) under the account picker, not with the page tabs. The menu is also the only place a goal can be cancelled.</p>
     <div class="row">
       <div class="col">
-        <div class="cap">3a · Goal set</div>
+        <div class="cap">3a · Goal set <span class="comp">MenuGoal</span></div>
         <div class="phone"><div class="screen menuBg">
           <div class="card header"><span class="name"><span style="font-size:26px">✕</span></span><span class="name">נועה</span></div>
           <div class="tabs">
@@ -383,7 +426,7 @@
         </div></div>
       </div>
       <div class="col">
-        <div class="cap">3b · No goal yet</div>
+        <div class="cap">3b · No goal yet <span class="comp">MenuGoal</span></div>
         <div class="phone"><div class="screen menuBg">
           <div class="card header"><span class="name"><span style="font-size:26px">✕</span></span><span class="name">נועה</span></div>
           <div class="tabs">
@@ -398,30 +441,25 @@
         </div></div>
       </div>
       <div class="col">
-        <div class="cap">3c · Cancel, confirmed</div>
-        <div class="phone"><div class="screen menuBg">
-          <div class="card header"><span class="name"><span style="font-size:26px">✕</span></span><span class="name">נועה</span></div>
-          <div class="tabs">
-            <div class="tab on"><div>🏠</div>בית</div><div class="tab"><div>📈</div>תנועות</div><div class="tab"><div>📖</div>השיטה</div>
-          </div>
-          <div class="scope">
-            <div class="user"><div class="avatar">👤</div><div class="who"><b>אלי</b><span>eli@example.com</span></div><span class="pill">יציאה</span></div>
-            <div class="picker"><div class="avatar">🧢</div><div class="who"><b>נועה</b><span>₪160 · מוצג כרגע</span></div><span>▾</span></div>
-          </div>
+        <div class="cap">3c · Cancel, confirmed <span class="comp">CancelGoal</span></div>
+        <div class="phone"><div class="screen">
+          <div class="card header"><span class="name"><span class="burger"><i></i><i></i><i></i></span>נועה</span><span class="avatar">🧢</span></div>
+          <div class="card donutCard"><div class="donut"><div><span>סך הכל<b>160</b></span></div></div><div class="legend"><div><span>🐷 חיסכון</span><b>₪85</b></div><div><span>🛍️ בזבוזים</span><b>₪50</b></div><div><span>💛 מעשים</span><b>₪25</b></div></div></div>
           <div class="dim"></div>
-          <div class="dialog">
+          <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="cancelGoalTitle">
             <div class="thumb">🚲</div>
-            <h4>לבטל את היעד „אופניים”?</h4>
+            <h4 id="cancelGoalTitle">לבטל את היעד „אופניים”?</h4>
             <p>נועה כבר חסכה ₪85 מתוך ₪300.</p>
             <p>הכסף נשאר בקופת החיסכון, והקופה תיפתח למשיכה.</p>
-            <div class="primaryButton keep">משאירים את היעד</div>
-            <div class="holdButton" onpointerdown="startHold(this)" onpointerup="stopHold(this)" onpointerleave="stopHold(this)"><i class="holdFill"></i><span>✋ לחיצה ארוכה לביטול היעד</span></div>
+            <div class="primaryButton keep" tabindex="0">משאירים את היעד</div>
+            <button type="button" class="holdButton" aria-label="לחיצה ארוכה לביטול היעד: להחזיק 2 שניות"><i class="holdFill"></i><span>✋ לחיצה ארוכה לביטול היעד</span></button>
             <div class="holdHint">להחזיק 2 שניות</div>
           </div>
         </div></div>
         <ul class="notes">
-          <li>Try it: press and hold the red button. It fills over 2 seconds, and letting go early resets it.</li>
-          <li>The big purple button keeps the goal, so a quick tap never cancels it.</li>
+          <li>Try it: press and hold the red button, or focus it and hold Space or Enter. It fills over 2 seconds; letting go, sliding off or losing focus resets it. A tap does nothing.</li>
+          <li>The menu closes before the dialog opens, so it sits over whichever page the menu was on. Escape keeps the goal.</li>
+          <li>The big purple button keeps the goal and has focus, so a quick tap never cancels it.</li>
           <li>Cancelling clears the goal and unlocks savings. The menu goes back to 3b.</li>
         </ul>
       </div>
@@ -434,7 +472,7 @@
     <div class="row">
 
       <div class="col">
-        <div class="cap">4a · Saving toward the goal <span class="tag">chosen</span></div>
+        <div class="cap">4a · Saving toward the goal <span class="comp">GoalProgress</span></div>
         <div class="phone"><div class="screen">
           <div class="card header"><span class="name"><span class="burger"><i></i><i></i><i></i></span>נועה</span><span class="avatar">🧢</span></div>
           <div class="card donutCard">
@@ -448,7 +486,7 @@
               <div class="amount"><span class="lock">🔒</span>₪85</div>
             </div>
             <div class="stats"><div>הכסף שלך<b>₪80</b></div><div>רווח מריבית<b>₪5</b></div><div>היום<b>₪5</b></div></div>
-            <div class="goalStrip">
+            <div class="goalProgress">
               <div class="thumb">🚲</div>
               <div class="body"><div class="top">אופניים <span>₪85 / ₪300</span></div><div class="bar thin"><i style="width:28%"></i></div></div>
             </div>
@@ -464,7 +502,7 @@
       </div>
 
       <div class="col">
-        <div class="cap">4b · Goal reached <button class="replay" onclick="replayConfetti(this)">▶ replay</button></div>
+        <div class="cap">4b · Goal reached <span class="comp">Celebration</span> <button class="replay" onclick="replayConfetti(this)">▶ replay</button></div>
         <div class="phone"><div class="screen">
           <div class="confetti falling"><i style="right:32%;width:6px;height:14px;background:#FFD23F;--fall:2.6s;--delay:4.0s;--sway:-26px"></i><i style="right:57%;width:6px;height:10px;background:#E94E89;--fall:3.5s;--delay:1.3s;--sway:-19px"></i><i style="right:11%;width:10px;height:6px;background:#6B2C8E;--fall:2.9s;--delay:5.1s;--sway:-29px"></i><i style="right:57%;width:6px;height:6px;background:#5CC870;--fall:2.5s;--delay:3.6s;--sway:-30px"></i><i style="right:83%;width:10px;height:6px;background:#2563EB;--fall:2.7s;--delay:0.9s;--sway:-21px"></i><i style="right:19%;width:10px;height:10px;background:#FF8A4C;--fall:3.1s;--delay:4.0s;--sway:12px"></i><i style="right:55%;width:8px;height:6px;background:#FFD23F;--fall:3.1s;--delay:3.1s;--sway:26px"></i><i style="right:89%;width:6px;height:10px;background:#E94E89;--fall:2.8s;--delay:1.5s;--sway:-24px"></i><i style="right:56%;width:6px;height:10px;background:#6B2C8E;--fall:3.0s;--delay:5.4s;--sway:16px"></i><i style="right:50%;width:10px;height:10px;background:#5CC870;--fall:2.6s;--delay:2.1s;--sway:18px"></i><i style="right:74%;width:8px;height:6px;background:#2563EB;--fall:3.1s;--delay:5.4s;--sway:17px"></i><i style="right:49%;width:8px;height:6px;background:#FF8A4C;--fall:3.4s;--delay:0.4s;--sway:-29px"></i><i style="right:64%;width:8px;height:6px;background:#FFD23F;--fall:2.5s;--delay:4.3s;--sway:16px"></i><i style="right:35%;width:6px;height:14px;background:#E94E89;--fall:3.5s;--delay:2.2s;--sway:-20px"></i><i style="right:14%;width:8px;height:14px;background:#6B2C8E;--fall:2.7s;--delay:2.4s;--sway:12px"></i><i style="right:54%;width:8px;height:6px;background:#5CC870;--fall:3.5s;--delay:5.1s;--sway:24px"></i><i style="right:85%;width:10px;height:10px;background:#2563EB;--fall:3.5s;--delay:0.9s;--sway:-13px"></i><i style="right:3%;width:8px;height:6px;background:#FF8A4C;--fall:3.4s;--delay:1.1s;--sway:10px"></i><i style="right:37%;width:10px;height:6px;background:#FFD23F;--fall:3.1s;--delay:5.9s;--sway:-19px"></i><i style="right:39%;width:6px;height:10px;background:#E94E89;--fall:2.9s;--delay:0.6s;--sway:11px"></i><i style="right:43%;width:6px;height:6px;background:#6B2C8E;--fall:2.5s;--delay:3.7s;--sway:-10px"></i><i style="right:12%;width:6px;height:6px;background:#5CC870;--fall:2.8s;--delay:0.2s;--sway:-22px"></i><i style="right:26%;width:8px;height:14px;background:#2563EB;--fall:2.8s;--delay:2.3s;--sway:-12px"></i><i style="right:47%;width:8px;height:6px;background:#FF8A4C;--fall:2.8s;--delay:0.9s;--sway:25px"></i><i style="right:17%;width:10px;height:10px;background:#FFD23F;--fall:2.4s;--delay:5.9s;--sway:13px"></i><i style="right:73%;width:8px;height:6px;background:#E94E89;--fall:2.8s;--delay:4.0s;--sway:-24px"></i><i style="right:36%;width:10px;height:10px;background:#6B2C8E;--fall:2.6s;--delay:4.8s;--sway:23px"></i><i style="right:78%;width:8px;height:14px;background:#5CC870;--fall:3.4s;--delay:4.6s;--sway:-14px"></i><i style="right:71%;width:10px;height:6px;background:#2563EB;--fall:3.6s;--delay:4.9s;--sway:15px"></i><i style="right:92%;width:8px;height:10px;background:#FF8A4C;--fall:2.9s;--delay:5.8s;--sway:29px"></i><i style="right:23%;width:10px;height:10px;background:#FFD23F;--fall:2.7s;--delay:1.2s;--sway:-20px"></i><i style="right:47%;width:6px;height:14px;background:#E94E89;--fall:3.2s;--delay:5.0s;--sway:-27px"></i><i style="right:76%;width:10px;height:14px;background:#6B2C8E;--fall:3.3s;--delay:3.0s;--sway:-19px"></i><i style="right:10%;width:6px;height:6px;background:#5CC870;--fall:3.5s;--delay:4.5s;--sway:18px"></i><i style="right:17%;width:6px;height:6px;background:#2563EB;--fall:3.6s;--delay:0.2s;--sway:26px"></i><i style="right:80%;width:10px;height:10px;background:#FF8A4C;--fall:3.6s;--delay:4.1s;--sway:13px"></i><i style="right:4%;width:6px;height:14px;background:#FFD23F;--fall:3.4s;--delay:4.5s;--sway:-21px"></i><i style="right:95%;width:8px;height:6px;background:#E94E89;--fall:2.6s;--delay:5.4s;--sway:-15px"></i><i style="right:25%;width:6px;height:6px;background:#6B2C8E;--fall:3.1s;--delay:1.6s;--sway:27px"></i><i style="right:35%;width:10px;height:10px;background:#5CC870;--fall:2.9s;--delay:3.6s;--sway:27px"></i><i style="right:52%;width:10px;height:10px;background:#2563EB;--fall:3.0s;--delay:0.1s;--sway:26px"></i><i style="right:75%;width:8px;height:6px;background:#FF8A4C;--fall:2.6s;--delay:0.9s;--sway:-21px"></i><i style="right:51%;width:6px;height:10px;background:#FFD23F;--fall:3.1s;--delay:4.9s;--sway:-28px"></i><i style="right:20%;width:6px;height:14px;background:#E94E89;--fall:2.5s;--delay:0.6s;--sway:21px"></i><i style="right:33%;width:8px;height:6px;background:#6B2C8E;--fall:3.6s;--delay:3.8s;--sway:-24px"></i><i style="right:52%;width:6px;height:14px;background:#5CC870;--fall:3.0s;--delay:5.8s;--sway:28px"></i><i style="right:15%;width:8px;height:10px;background:#2563EB;--fall:2.5s;--delay:2.7s;--sway:-23px"></i><i style="right:22%;width:10px;height:6px;background:#FF8A4C;--fall:2.8s;--delay:0.8s;--sway:-29px"></i><i style="right:36%;width:6px;height:14px;background:#FFD23F;--fall:2.7s;--delay:0.9s;--sway:14px"></i><i style="right:85%;width:8px;height:6px;background:#E94E89;--fall:2.6s;--delay:4.1s;--sway:-13px"></i><i style="right:40%;width:6px;height:14px;background:#6B2C8E;--fall:2.9s;--delay:2.2s;--sway:-24px"></i><i style="right:54%;width:8px;height:6px;background:#5CC870;--fall:2.9s;--delay:0.1s;--sway:20px"></i><i style="right:92%;width:6px;height:10px;background:#2563EB;--fall:2.5s;--delay:5.7s;--sway:-29px"></i><i style="right:27%;width:8px;height:6px;background:#FF8A4C;--fall:2.4s;--delay:4.8s;--sway:25px"></i><i style="right:79%;width:6px;height:14px;background:#FFD23F;--fall:2.7s;--delay:0.9s;--sway:24px"></i><i style="right:7%;width:6px;height:6px;background:#E94E89;--fall:3.2s;--delay:2.6s;--sway:-15px"></i><i style="right:10%;width:6px;height:14px;background:#6B2C8E;--fall:2.7s;--delay:3.8s;--sway:-11px"></i><i style="right:3%;width:6px;height:6px;background:#5CC870;--fall:3.6s;--delay:2.6s;--sway:22px"></i><i style="right:69%;width:6px;height:14px;background:#2563EB;--fall:3.5s;--delay:6.0s;--sway:11px"></i><i style="right:61%;width:6px;height:14px;background:#FF8A4C;--fall:3.0s;--delay:1.3s;--sway:20px"></i></div>
           <div class="card header"><span class="name"><span class="burger"><i></i><i></i><i></i></span>נועה</span><span class="avatar">🧢</span></div>
@@ -479,7 +517,7 @@
               <div class="amount">₪300</div>
             </div>
             <div class="stats"><div>הכסף שלך<b>₪270</b></div><div>רווח מריבית<b>₪30</b></div><div>היום<b>₪2</b></div></div>
-            <div class="goalStrip reached">
+            <div class="goalProgress reached">
               <div class="thumb">🚲</div>
               <div class="body"><div class="top">🎉 הגעת ליעד! <span>₪300 / ₪300</span></div><div class="bar thin"><i style="width:100%"></i></div></div>
             </div>
@@ -491,10 +529,12 @@
         <ul class="notes">
           <li>The same 10-second confetti as the goal screen, every time home opens while the goal is reached.</li>
           <li>For the same 10 seconds a glowing gold-pink border runs around the savings card, the 🐷 and 🚲 hop and a shine runs along the full bar. Afterwards the card keeps a gold outline until the goal is cleared.</li>
-          <li>The strip turns green and the 🔒 disappears. Withdrawing from savings is allowed again.</li>
-          <li>After that withdrawal the strip disappears and the savings card looks the way it does today.</li>
+          <li>The goal line turns green and the 🔒 disappears. Withdrawing from savings is allowed again.</li>
+          <li>Under reduced motion there is no confetti, border or hop; the gold outline is shown straight away.</li>
+          <li>After the next savings withdrawal the goal line disappears and the savings card looks the way it does today.</li>
         </ul>
       </div>
+
     </div>
   </section>
   <section class="step">
@@ -521,7 +561,7 @@
         <ul class="notes"><li>Withdrawal opens on בזבוזים instead of savings. The savings tile is greyed out with a 🔒 and how much is left to the goal.</li><li>Deposits into savings work as normal. Only withdrawals are locked.</li></ul>
       </div>
       <div class="col">
-        <div class="cap">5b · Child taps savings</div>
+        <div class="cap">5b · Child taps savings <span class="comp">LockedSavings</span></div>
         <div class="phone"><div class="screen">
           <div class="homeBehind">
             <div class="card header"><span class="name"><span class="burger"><i></i><i></i><i></i></span>נועה</span><span class="avatar">🧢</span></div>
@@ -542,7 +582,7 @@
             <div class="drawerSubmit disabled">🔒 שומרים עד היעד</div>
           </div>
         </div></div>
-        <ul class="notes"><li>The tile can still be tapped, so the child gets an answer instead of a dead button. The keypad gives way to the goal and its progress.</li><li>The button is disabled and says why. Picking another wallet brings the keypad back.</li></ul>
+        <ul class="notes"><li>The tile can still be tapped, so the child gets an answer instead of a dead button. The keypad gives way to the goal and its progress.</li><li>The button is disabled and says why. Picking another wallet brings the keypad back.</li><li>If a goal was set on another phone, a withdrawal from this drawer is refused with 409: the page refreshes into this state, with no אופס error alert.</li></ul>
       </div>
       <div class="col">
         <div class="cap">5c · Goal reached</div>
@@ -562,7 +602,7 @@
             <div class="drawerSubmit">משיכה של ₪300</div>
           </div>
         </div></div>
-        <ul class="notes"><li>Savings looks like any other wallet again, with no lock icon. A green line warns that this withdrawal ends the goal.</li><li>After it goes through, the goal is cleared: the strip leaves home and the menu goes back to 3b.</li></ul>
+        <ul class="notes"><li>Savings looks like any other wallet again, with no lock icon. A green line warns that this withdrawal ends the goal.</li><li>Any amount from savings ends the goal, not just the full ₪300. After it goes through, the goal is cleared: the goal line leaves home and the menu goes back to 3b.</li></ul>
       </div>
     </div>
   </section>
@@ -575,6 +615,7 @@
     });
   }
   function startHold(button) {
+    if (button.classList.contains('holding')) return;
     button.classList.remove('done');
     button.classList.add('holding');
     button.holdTimer = setTimeout(() => {
@@ -587,6 +628,21 @@
     clearTimeout(button.holdTimer);
     button.classList.remove('holding');
   }
+  const HOLD_KEYS = [' ', 'Enter'];
+  document.querySelectorAll('.holdButton').forEach((button) => {
+    button.addEventListener('pointerdown', () => startHold(button));
+    ['pointerup', 'pointerleave', 'pointercancel', 'blur'].forEach((type) => button.addEventListener(type, () => stopHold(button)));
+    button.addEventListener('contextmenu', (event) => event.preventDefault());
+    button.addEventListener('click', (event) => event.preventDefault());
+    button.addEventListener('keydown', (event) => {
+      if (!HOLD_KEYS.includes(event.key)) return;
+      event.preventDefault();
+      if (!event.repeat) startHold(button);
+    });
+    button.addEventListener('keyup', (event) => {
+      if (HOLD_KEYS.includes(event.key)) stopHold(button);
+    });
+  });
 </script>
 </body>
 </html>
