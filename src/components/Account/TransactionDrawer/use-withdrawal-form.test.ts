@@ -1,6 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useWithdrawalForm } from './use-withdrawal-form';
-import type { WalletSummary } from '@/lib/wallet/types';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { mockRouter } from '@mocks/next/navigation';
 
@@ -18,13 +17,13 @@ jest.mock('./use-add-transaction', () => ({
 }));
 
 const mockAccountId = 'a1';
-const [savings, spending, goodDeeds] = mockWalletSummaries;
+const [, spending, goodDeeds] = mockWalletSummaries;
 
-function setup(
-  wallets: WalletSummary[] = mockWalletSummaries
-): ReturnType<typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>> {
+function setup(): ReturnType<
+  typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>
+> {
   return renderHook(() =>
-    useWithdrawalForm(mockAccountId, wallets, mockOnClose)
+    useWithdrawalForm(mockAccountId, mockWalletSummaries, mockOnClose)
   );
 }
 
@@ -35,30 +34,10 @@ describe('useWithdrawalForm', () => {
     mockOnClose.mockClear();
   });
 
-  describe('default wallet', () => {
-    const mockEmptySpending = { ...spending, balance: 0 };
+  it('starts on the default withdrawal wallet', () => {
+    const { result } = setup();
 
-    it('starts on the spending wallet when it has money', () => {
-      const { result } = setup();
-
-      expect(result.current.selectedWalletId).toBe(spending.id);
-    });
-
-    it('falls back to the good-deeds wallet when spending is empty', () => {
-      const { result } = setup([savings, mockEmptySpending, goodDeeds]);
-
-      expect(result.current.selectedWalletId).toBe(goodDeeds.id);
-    });
-
-    it('never starts on the savings wallet, even when only savings has money', () => {
-      const { result } = setup([
-        savings,
-        mockEmptySpending,
-        { ...goodDeeds, balance: 0 },
-      ]);
-
-      expect(result.current.selectedWalletId).toBe(spending.id);
-    });
+    expect(result.current.selectedWalletId).toBe(spending.id);
   });
 
   it('starts with no amount and submit disabled', () => {
