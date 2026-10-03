@@ -99,6 +99,7 @@ async function writeInitialStore(
       })
     ),
     transactions: initialStore.transactions ?? [],
+    goals: initialStore.goals ?? [],
   };
 
   await mkdir(dirname(storePath), { recursive: true });

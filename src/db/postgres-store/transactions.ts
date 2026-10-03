@@ -45,17 +45,21 @@ function insertValues(transactions: Transaction[]): InsertValues {
 export class PostgresTransactions implements TransactionRepository {
   constructor(private readonly sql: Sql) {}
 
-  async insert(transactions: Transaction[]): Promise<void> {
-    if (transactions.length === 0) return;
-
+  insertStatement(transactions: Transaction[]): ReturnType<Sql> {
     const { values, placeholders } = insertValues(transactions);
 
-    await this.sql.query(
+    return this.sql.query(
       `INSERT INTO transactions (${TRANSACTION_COLUMNS}) VALUES ${placeholders}
        ON CONFLICT (account_id, wallet_id, occurred_at) WHERE type = '${TRANSACTION_TYPE.interest}'
        DO NOTHING`,
       values
     );
+  }
+
+  async insert(transactions: Transaction[]): Promise<void> {
+    if (transactions.length === 0) return;
+
+    await this.insertStatement(transactions);
   }
 
   async listByWallet(

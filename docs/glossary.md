@@ -47,6 +47,12 @@ the domain from the names alone, so new code takes its words from this table.
 | What a day changed                   | שינוי                          | `balanceChange`, `BalanceChange`                                          | delta, netChange, signed amount, change pill        |
 | The balance over time                | —                              | `balanceHistory`, `BalanceOverTime`                                       | series, chart card                                  |
 | The child's own money, not interest  | הכסף שלך                       | `principal`: deposits less withdrawals                                    | deposits, deposited, ownMoney                       |
+| What a child saves toward            | יעד · יעד חיסכון               | `goal`, `Goal`, `goalReached`                                             | target, objective, wish                             |
+| The goal's picture                   | תמונה                          | `picture`, `GoalPicture`                                                  | image, icon, thumbnail                              |
+| How a goal ended                     | —                              | `ending`: `completed`, `cancelled`; values in `GOAL_ENDING`; type `GoalEnding` | status, result, outcome, done                       |
+| Asking to end a goal                 | —                              | `endRequest`, `GoalEndRequest`                                            | goalEnd, `GoalEnd`, end params                      |
+| Savings kept for a goal              | שומרים עד היעד                 | `SavingsLockedError`, locked                                              | frozen, blocked                                     |
+| A goal reached, shown                | הגעת ליעד!                     | `Celebration`                                                             | confetti, party                                     |
 | An amount of money                   | ₪                              | agorot unless the name ends `…Shekels`                                    | a bare `amount` holding shekels                     |
 | The account being viewed             | —                              | `currentAccount`                                                          | selected, target                                    |
 | Settings in the menu                 | הגדרות                         | `MenuAccountSettings`, `MenuUserSettings`                                 | scope                                               |

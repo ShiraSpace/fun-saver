@@ -2,11 +2,13 @@ import type { Account, AccountEdits, AccountUser } from '@/lib/account/types';
 import type { AuthProvider, User } from '@/lib/user/types';
 import type { Transaction } from '@/lib/transaction/types';
 import type { ThemeId } from '@/theme/registry';
+import type { Goal, GoalEndRequest } from '@/lib/goal/types';
 import type {
   AccountOwner,
   AccountRepository,
   AccountUserRepository,
   DataStore,
+  GoalRepository,
   TransactionRepository,
   UserRepository,
 } from './data-store';
@@ -16,7 +18,8 @@ export class RepositoryStore implements DataStore {
     private readonly accounts: AccountRepository,
     private readonly transactions: TransactionRepository,
     private readonly users: UserRepository,
-    private readonly accountUsers: AccountUserRepository
+    private readonly accountUsers: AccountUserRepository,
+    private readonly goals: GoalRepository
   ) {}
 
   insertAccount(account: Account): Promise<void> {
@@ -77,5 +80,24 @@ export class RepositoryStore implements DataStore {
 
   insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void> {
     return this.accountUsers.insertAccountWithOwner(account, owner);
+  }
+
+  insertGoal(goal: Goal): Promise<void> {
+    return this.goals.insert(goal);
+  }
+
+  getActiveGoal(accountId: string): Promise<Goal | undefined> {
+    return this.goals.getActive(accountId);
+  }
+
+  endGoal(endRequest: GoalEndRequest): Promise<Goal | undefined> {
+    return this.goals.end(endRequest);
+  }
+
+  insertWithdrawalCompletingGoal(
+    withdrawal: Transaction,
+    goalId: string
+  ): Promise<void> {
+    return this.goals.insertWithdrawalCompleting(withdrawal, goalId);
   }
 }

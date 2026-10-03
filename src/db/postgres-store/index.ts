@@ -2,6 +2,7 @@ import { neon } from '@neondatabase/serverless';
 import { RepositoryStore } from '../repository-store';
 import { PostgresAccounts } from './accounts';
 import { PostgresAccountUsers } from './account-users';
+import { PostgresGoals } from './goals';
 import { PostgresTransactions } from './transactions';
 import { PostgresUsers } from './users';
 
@@ -13,7 +14,8 @@ export class PostgresStore extends RepositoryStore {
       new PostgresAccounts(sql),
       new PostgresTransactions(sql),
       new PostgresUsers(sql),
-      new PostgresAccountUsers(sql)
+      new PostgresAccountUsers(sql),
+      new PostgresGoals(sql)
     );
   }
 }

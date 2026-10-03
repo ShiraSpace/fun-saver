@@ -59,3 +59,18 @@ CREATE TABLE IF NOT EXISTS account_users (
 );
 
 CREATE INDEX IF NOT EXISTS account_users_user_idx ON account_users(user_id);
+
+CREATE TABLE IF NOT EXISTS goals (
+  id         TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  name       TEXT NOT NULL,
+  amount     INTEGER NOT NULL CHECK (amount > 0),
+  picture    JSONB NOT NULL,
+  started_at TEXT NOT NULL,
+  ended_at   TEXT,
+  ending     TEXT CHECK (ending IN ('completed', 'cancelled')),
+  CHECK ((ended_at IS NULL) = (ending IS NULL))
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS goals_one_active_per_account_idx
+  ON goals(account_id) WHERE ended_at IS NULL;
