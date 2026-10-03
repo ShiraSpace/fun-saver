@@ -18,6 +18,7 @@ import { EmptyStateDriver } from './empty-state-driver';
 import { AccountFormDriver } from './account-form-driver';
 import { AvatarPickerDriver } from './avatar-picker-driver';
 import { AccountDriver } from './account-driver';
+import { ChildAccountDriver } from './child-account-driver';
 import { MethodDriver } from './method-driver';
 import { LoadingShellDriver } from './loading-shell-driver';
 import { startServer, type RunningServer } from '../server';
@@ -38,6 +39,7 @@ export interface AppDriver {
   editAccount: AccountFormDriver;
   avatarPicker: AvatarPickerDriver;
   account: AccountDriver;
+  childAccount: ChildAccountDriver;
   method: MethodDriver;
   loadingShell: LoadingShellDriver;
 }
@@ -58,6 +60,7 @@ export function createAppDriver(appBrowser: AppBrowser): AppDriver {
     ),
     avatarPicker: new AvatarPickerDriver(appBrowser),
     account: new AccountDriver(appBrowser),
+    childAccount: new ChildAccountDriver(appBrowser),
     method: new MethodDriver(appBrowser),
     loadingShell: new LoadingShellDriver(appBrowser),
   };

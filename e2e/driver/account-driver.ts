@@ -17,6 +17,10 @@ export class AccountDriver {
     return this.appBrowser.exists(BALANCE_BREAKDOWN_TEST_IDS.card);
   }
 
+  async waitForOverview(): Promise<void> {
+    await this.appBrowser.waitForTestId(BALANCE_BREAKDOWN_TEST_IDS.card);
+  }
+
   savingsTodayInterest(): Promise<string> {
     return this.appBrowser.text(INTEREST_STATS_TEST_IDS.interestEarnedToday);
   }
