@@ -156,15 +156,13 @@ parent remembering.
 
 ## 6. Parent/child roles
 
-Currently one signed-in user per account tree. The method assumes two different
-people with different powers: a parent who deposits and sets the rules, and a
-child who views, spends and donates.
+Resolved for viewing by the account-saved view mode: a parent turns child
+view on for an account, with no child login and no device mode, and the child
+only looks. See `docs/superpowers/specs/2026-10-03-child-mode-design.md`.
 
-- Child view: no deposit, no settings, no rate; can withdraw from
-  `spending`/`goodDeeds` and (once the goal is met) from `savings`.
+- Child view: no deposit, no settings, no rate, view only.
 - Parent view: everything.
-- Blocked on deciding whether children get their own login or a device-level
-  mode.
+- Still deferred: child withdrawals and a parent PIN.
 
 ## 6b. Live action checklist on the method page
 

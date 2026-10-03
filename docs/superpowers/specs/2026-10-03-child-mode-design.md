@@ -71,8 +71,8 @@ like that. Add a cookie only if something ever needs the mode before the data.
 
   Every comparison, default and fallback in TypeScript uses
   `APP_VIEW_MODE.parent` or `APP_VIEW_MODE.child`, never a bare string. The
-  only literal is the SQL column default, because SQL can't import it. Keep
-  that default the same as `APP_VIEW_MODE.parent`. It follows the shape of `AppMode`
+  only literals are the SQL column `DEFAULT` and `CHECK ('parent','child')`,
+  because SQL can't import `APP_VIEW_MODE`. Keep them in sync with it. It follows the shape of `AppMode`
   (`src/components/AccountManagement/app-mode-context.ts`) but means
   something different: `AppMode` is viewing, creating or editing an account.
   The server, the store and the API all use `APP_VIEW_MODE`, so it lives in
