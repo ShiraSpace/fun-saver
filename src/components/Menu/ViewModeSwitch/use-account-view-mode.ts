@@ -40,15 +40,19 @@ function menuFinishesFading(): Promise<void> {
   return wait(MENU_OVERLAY_STYLE.transitionMs);
 }
 
+function saveSucceeds(saved: Promise<unknown>): Promise<boolean> {
+  return saved.then(
+    () => true,
+    () => false
+  );
+}
+
 async function showThenSave(
   steps: ViewModeSwitchSteps,
   viewModeChoice: ViewModeChoice,
   viewMode: AppViewMode
 ): Promise<void> {
-  const isSaved = steps.saved.then(
-    () => true,
-    () => false
-  );
+  const isSaved = saveSucceeds(steps.saved);
 
   await switchFinishesSliding();
   steps.closeMenu();
@@ -65,14 +69,19 @@ async function showThenSave(
 }
 
 async function saveThenShow(steps: ViewModeSwitchSteps): Promise<void> {
-  try {
-    await Promise.all([steps.saved, switchFinishesSliding()]);
+  const [isSaved] = await Promise.all([
+    saveSucceeds(steps.saved),
+    switchFinishesSliding(),
+  ]);
+
+  if (isSaved) {
     steps.closeMenu();
     steps.refresh();
-  } catch {
-    steps.slideBack();
-    steps.reportSaveFailed(true);
+    return;
   }
+
+  steps.slideBack();
+  steps.reportSaveFailed(true);
 }
 
 export function useAccountViewMode(): AccountViewMode {

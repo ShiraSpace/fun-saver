@@ -4,8 +4,8 @@ import type { AppViewMode } from '@/lib/account/view-mode';
 import type { ViewModeChoice } from './accounts-context';
 
 interface ChosenViewMode {
-  accountId: string;
   viewMode: AppViewMode;
+  chosenOn: AccountSummary;
 }
 
 interface ShownViewMode {
@@ -17,7 +17,7 @@ function withChosenViewMode(
   account: AccountSummary | undefined,
   chosen: ChosenViewMode | undefined
 ): AccountSummary | undefined {
-  if (!account || chosen?.accountId !== account.id) {
+  if (!account || chosen?.chosenOn !== account) {
     return account;
   }
 
@@ -32,7 +32,7 @@ export function useShownViewMode(
 
   const showViewMode = (viewMode: AppViewMode): void => {
     if (currentAccount) {
-      setChosen({ accountId: currentAccount.id, viewMode });
+      setChosen({ viewMode, chosenOn: currentAccount });
     }
   };
 
