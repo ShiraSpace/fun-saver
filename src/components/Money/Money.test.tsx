@@ -53,4 +53,14 @@ describe('Money', () => {
 
     expect(screen.getByTestId('amount')).toHaveTextContent('₪0');
   });
+
+  describe('an amount carrying agorot, shown to a child', () => {
+    beforeEach(() => {
+      render(<Money amountAgorot={26484} testId="amount" roundDown />);
+    });
+
+    it('drops the agorot instead of rounding up', () => {
+      expect(screen.getByTestId('amount')).toHaveTextContent('₪264');
+    });
+  });
 });

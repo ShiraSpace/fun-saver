@@ -1,6 +1,7 @@
 import type { Account, AccountEdits } from '@/lib/account/types';
 import { DuplicateAccountError } from '@/lib/account/errors';
 import type { ThemeId } from '@/theme/registry';
+import type { AppViewMode } from '@/lib/account/view-mode';
 import type { AccountRepository } from '../data-store';
 
 export class MemoryAccounts implements AccountRepository {
@@ -30,6 +31,21 @@ export class MemoryAccounts implements AccountRepository {
     }
 
     account.themeId = themeId;
+
+    return account;
+  }
+
+  async setViewMode(
+    id: string,
+    viewMode: AppViewMode
+  ): Promise<Account | undefined> {
+    const account = this.find(id);
+
+    if (!account) {
+      return;
+    }
+
+    account.viewMode = viewMode;
 
     return account;
   }

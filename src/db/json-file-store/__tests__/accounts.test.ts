@@ -1,5 +1,6 @@
 import { JsonFileStore } from '../index';
 import { DuplicateAccountError } from '@/lib/account/errors';
+import { APP_VIEW_MODE } from '@/lib/account/view-mode';
 import { THEME_ID } from '@/theme/registry';
 import {
   mockAccount,
@@ -45,6 +46,18 @@ describe('JsonFileStore accounts', () => {
     expect((await new JsonFileStore(file.path).getAccount('a1'))?.themeId).toBe(
       THEME_ID.midnightBlue
     );
+  });
+
+  it('remembers child view across instances', async () => {
+    await new JsonFileStore(file.path).insertAccount(mockAccount);
+    await new JsonFileStore(file.path).setAccountViewMode(
+      mockAccount.id,
+      APP_VIEW_MODE.child
+    );
+
+    expect(
+      (await new JsonFileStore(file.path).getAccount(mockAccount.id))?.viewMode
+    ).toBe(APP_VIEW_MODE.child);
   });
 
   describe('edit account', () => {

@@ -1,4 +1,5 @@
 import type { Account, AccountUser, AccountSummary } from '@/lib/account/types';
+import { APP_VIEW_MODE } from '@/lib/account/view-mode';
 import type { AccountOwner } from '@/db/data-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import type { AccountsContextValue } from '@/components/Home/accounts-context';
@@ -16,6 +17,7 @@ export function createMockAccount(overrides: Partial<Account> = {}): Account {
     avatarId: 'kid-01',
     isActive: true,
     themeId: DEFAULT_THEME_ID,
+    viewMode: APP_VIEW_MODE.parent,
     wallets: createMockWallets(),
     ...overrides,
   };
@@ -78,4 +80,9 @@ export const mockAccountsContext: AccountsContextValue = {
   accounts: [mockAccountSummary, mockSiblingAccountSummary],
   currentAccount: mockAccountSummary,
   switchAccount: () => {},
+};
+
+export const mockChildAccountsContext: AccountsContextValue = {
+  ...mockAccountsContext,
+  currentAccount: { ...mockAccountSummary, viewMode: APP_VIEW_MODE.child },
 };

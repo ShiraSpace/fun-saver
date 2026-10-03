@@ -27,33 +27,36 @@ the domain from the names alone, so new code takes its words from this table.
 
 ## Terms
 
-| Concept                              | Hebrew UI                      | Code term                                                                 | Not                                                 |
-| ------------------------------------ | ------------------------------ | ------------------------------------------------------------------------- | --------------------------------------------------- |
-| A child's account                    | חשבון                          | `account`                                                                 | "account" for a Google account; that is an identity |
-| The signed-in parent                 | —                              | `user`, `signedInUser`                                                    | profile                                             |
-| A parent's Google sign-in            | —                              | `identity` (`GoogleIdentity`)                                             | provider, provider account                          |
-| One of the three jars                | קופה                           | `wallet`                                                                  | pot, jar, box, tile                                 |
-| Which jar                            | חיסכון · בזבוזים · מעשים טובים | `walletName`: `savings`, `spending`, `goodDeeds`                          | `good`, a bare `name`                               |
-| A jar's Hebrew label                 | —                              | `WALLET_LABEL`                                                            | `WALLET_NAME`                                       |
-| Money going in or out                | תנועה · תנועות                 | `transaction`                                                             | movement, entry, row, action, ledger, history       |
-| Its kind                             | —                              | `transactionType`; its values in `TRANSACTION_TYPE`                       | mode                                                |
-| Putting money in                     | הפקדה                          | `deposit`                                                                 | —                                                   |
-| Taking money out                     | משיכה                          | `withdrawal`; `withdraw` only as the verb for a step a user takes         | spent                                               |
-| Giving from the good-deeds jar       | תרומה                          | `donation`, a good-deeds withdrawal as the UI shows it                    | spent                                               |
-| The 50 / 40 / 10 rule                | —                              | `DEPOSIT_SHARES` for the fractions, `DepositSplit` for the agorot amounts | split for fractions, share for amounts              |
-| Interest                             | ריבית · רווח מריבית            | `interest`, `interestEarned`, `interestEarnedToday`                       | gain, `todayInterest`                               |
-| Paying the interest owed up to today | —                              | `settle`, `settleInterest`, `SettledAccount`                              | pay, payout, ledger                                 |
-| Money in a jar                       | יתרה                           | `balance`; for the whole account `totalBalance`                           | overview, walletTotal, value                        |
-| What a day changed                   | שינוי                          | `balanceChange`, `BalanceChange`                                          | delta, netChange, signed amount, change pill        |
-| The balance over time                | —                              | `balanceHistory`, `BalanceOverTime`                                       | series, chart card                                  |
-| The child's own money, not interest  | הכסף שלך                       | `principal`: deposits less withdrawals                                    | deposits, deposited, ownMoney                       |
-| An amount of money                   | ₪                              | agorot unless the name ends `…Shekels`                                    | a bare `amount` holding shekels                     |
-| The account being viewed             | —                              | `currentAccount`                                                          | selected, target                                    |
-| Settings in the menu                 | הגדרות                         | `MenuAccountSettings`, `MenuUserSettings`                                 | scope                                               |
-| Moving between screens               | בית · תנועות · השיטה           | `navigation`: `NavigationTabs`, `NavigationDestination`                   | nav, screen                                         |
-| The Method page's to-do list         | מה צריך לעשות                  | `checklist`                                                               | action                                              |
-| The main call-to-action button       | —                              | `PrimaryButton`                                                           | action button                                       |
-| Signing in                           | —                              | `signIn`, `SIGN_IN_PATH`                                                  | login                                               |
-| A finger on the screen, in e2e       | —                              | `tap`                                                                     | click                                               |
-| Where data is saved                  | —                              | `store`, `StoreContents`, `storePath`                                     | data, seed                                          |
-| A test stand-in                      | —                              | `mockCamelCase`                                                           | `UPPER_CASE`, seed, `createMock…`                   |
+| Concept                                 | Hebrew UI                      | Code term                                                                        | Not                                                 |
+| --------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------- | --------------------------------------------------- |
+| A child's account                       | חשבון                          | `account`                                                                        | "account" for a Google account; that is an identity |
+| The signed-in parent                    | —                              | `user`, `signedInUser`                                                           | profile                                             |
+| A parent's Google sign-in               | —                              | `identity` (`GoogleIdentity`)                                                    | provider, provider account                          |
+| One of the three jars                   | קופה                           | `wallet`                                                                         | pot, jar, box, tile                                 |
+| Which jar                               | חיסכון · בזבוזים · מעשים טובים | `walletName`: `savings`, `spending`, `goodDeeds`                                 | `good`, a bare `name`                               |
+| A jar's Hebrew label                    | —                              | `WALLET_LABEL`                                                                   | `WALLET_NAME`                                       |
+| Money going in or out                   | תנועה · תנועות                 | `transaction`                                                                    | movement, entry, row, action, ledger, history       |
+| Its kind                                | —                              | `transactionType`; its values in `TRANSACTION_TYPE`                              | mode                                                |
+| Putting money in                        | הפקדה                          | `deposit`                                                                        | —                                                   |
+| Taking money out                        | משיכה                          | `withdrawal`; `withdraw` only as the verb for a step a user takes                | spent                                               |
+| Giving from the good-deeds jar          | תרומה                          | `donation`, a good-deeds withdrawal as the UI shows it                           | spent                                               |
+| The 50 / 40 / 10 rule                   | —                              | `DEPOSIT_SHARES` for the fractions, `DepositSplit` for the agorot amounts        | split for fractions, share for amounts              |
+| Interest                                | ריבית · רווח מריבית            | `interest`, `interestEarned`, `interestEarnedToday`                              | gain, `todayInterest`                               |
+| Paying the interest owed up to today    | —                              | `settle`, `settleInterest`, `SettledAccount`                                     | pay, payout, ledger                                 |
+| Money in a jar                          | יתרה                           | `balance`; for the whole account `totalBalance`                                  | overview, walletTotal, value                        |
+| What a day changed                      | שינוי                          | `balanceChange`, `BalanceChange`                                                 | delta, netChange, signed amount, change pill        |
+| The balance over time                   | —                              | `balanceHistory`, `BalanceOverTime`                                              | series, chart card                                  |
+| The child's own money, not interest     | הכסף שלך                       | `principal`: deposits less withdrawals                                           | deposits, deposited, ownMoney                       |
+| An amount of money                      | ₪                              | agorot unless the name ends `…Shekels`                                           | a bare `amount` holding shekels                     |
+| The account being viewed                | —                              | `currentAccount`                                                                 | selected, target                                    |
+| Which screen the account is shown in    | מצב ילד · מצב הורה             | `AppViewMode`: `APP_VIEW_MODE.parent`, `APP_VIEW_MODE.child`; column `view_mode` | `AppMode` (viewing/creating/editing), childView     |
+| Whole shekels, never more than there is | ₪                              | `floorToShekels`                                                                 | rounding to nearest on a child's screen             |
+| Savings as the child sees it            | הפקדת · הרוויח לבד             | `savingsInWholeShekels`: `principalShekels`, `interestEarnedShekels`             | deposited, gain                                     |
+| Settings in the menu                    | הגדרות                         | `MenuAccountSettings`, `MenuUserSettings`                                        | scope                                               |
+| Moving between screens                  | בית · תנועות · השיטה           | `navigation`: `NavigationTabs`, `NavigationDestination`                          | nav, screen                                         |
+| The Method page's to-do list            | מה צריך לעשות                  | `checklist`                                                                      | action                                              |
+| The main call-to-action button          | —                              | `PrimaryButton`                                                                  | action button                                       |
+| Signing in                              | —                              | `signIn`, `SIGN_IN_PATH`                                                         | login                                               |
+| A finger on the screen, in e2e          | —                              | `tap`                                                                            | click                                               |
+| Where data is saved                     | —                              | `store`, `StoreContents`, `storePath`                                            | data, seed                                          |
+| A test stand-in                         | —                              | `mockCamelCase`                                                                  | `UPPER_CASE`, seed, `createMock…`                   |

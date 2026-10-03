@@ -3,8 +3,11 @@
 import { Fragment, JSX } from 'react';
 import { AccountPicker } from '../AccountPicker';
 import { EditAccountButton } from '../EditAccountButton';
+import { ViewModeSwitch } from '../ViewModeSwitch';
+import { ChildViewSetting } from './AccountControls.styles';
 import { useMenu } from '../use-menu-state';
 import { useAccounts } from '@/components/Home/accounts-context';
+import { APP_VIEW_MODE } from '@/lib/account/view-mode';
 import {
   APP_MODE,
   useAppMode,
@@ -32,6 +35,9 @@ export function AccountControls(): JSX.Element {
         currentAccount={currentAccount}
         onSelect={openAccount}
       />
+      <ChildViewSetting>
+        <ViewModeSwitch viewMode={APP_VIEW_MODE.child} />
+      </ChildViewSetting>
       <EditAccountButton
         accountName={currentAccount.name}
         onEditAccount={startEditingAccount}
