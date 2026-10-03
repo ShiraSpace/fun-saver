@@ -41,5 +41,4 @@ export const Item = styled.div`
 
 export const ParentCorner = styled.div`
   margin-top: 28px;
-  opacity: 0.85;
 `;

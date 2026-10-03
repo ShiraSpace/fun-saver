@@ -18,7 +18,7 @@ export const Row = styled.button`
 `;
 
 export const Icon = styled.span`
-  font-size: 22px;
+  font-size: ${({ theme }): number => theme.typography.title}px;
 `;
 
 export const Label = styled.span`

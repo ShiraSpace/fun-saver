@@ -9,6 +9,7 @@ import { AppearanceSection } from '../AppearanceSection';
 import { ViewModeSwitch } from '../ViewModeSwitch';
 import { useMenu } from '../use-menu-state';
 import {
+  CHILD_MENU_AVATAR_PROPS,
   CHILD_MENU_CONTENT_COPY,
   CHILD_MENU_CONTENT_TEST_IDS,
 } from './constants';
@@ -27,7 +28,7 @@ export function ChildMenuContent(): JSX.Element {
   return (
     <div data-testid={CHILD_MENU_CONTENT_TEST_IDS.menu}>
       <Child>
-        <Avatar avatarId={currentAccount.avatarId} alt="" size={84} />
+        <Avatar avatarId={currentAccount.avatarId} alt="" size={CHILD_MENU_AVATAR_PROPS.size} />
         <ChildName>{currentAccount.name}</ChildName>
       </Child>
       <HomeLink

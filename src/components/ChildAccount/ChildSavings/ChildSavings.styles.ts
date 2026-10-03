@@ -14,7 +14,7 @@ export const Icon = styled.div`
   margin: 0 auto 10px;
   display: grid;
   place-items: center;
-  font-size: 40px;
+  font-size: ${({ theme }): number => theme.typography.amount}px;
   border-radius: 22px;
   background: ${({ theme }): string => theme.gradients.walletSavings};
 `;

@@ -5,10 +5,9 @@ export const CHILD_WALLET_TEST_IDS = {
   balance: 'child-wallet-balance',
 } as const;
 
-export const CHILD_WALLET_COPY: Record<
-  Exclude<WalletName, 'savings'>,
-  string
-> = {
+export type ChildWalletName = Exclude<WalletName, 'savings'>;
+
+export const CHILD_WALLET_COPY: Record<ChildWalletName, string> = {
   spending: 'יש לך לבזבז',
   goodDeeds: 'לתת למישהו אחר',
 };

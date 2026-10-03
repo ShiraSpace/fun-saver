@@ -27,7 +27,7 @@ export function ChildSavings({ savings }: ChildSavingsProps): JSX.Element {
 
   return (
     <Card data-testid={CHILD_SAVINGS_TEST_IDS.card}>
-      <Icon>{savings.icon}</Icon>
+      <Icon aria-hidden="true">{savings.icon}</Icon>
       <Title>{CHILD_SAVINGS_COPY.title}</Title>
       <Total>
         <Money
