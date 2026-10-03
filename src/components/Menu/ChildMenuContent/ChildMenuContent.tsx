@@ -28,7 +28,11 @@ export function ChildMenuContent(): JSX.Element {
   return (
     <div data-testid={CHILD_MENU_CONTENT_TEST_IDS.menu}>
       <Child>
-        <Avatar avatarId={currentAccount.avatarId} alt="" size={CHILD_MENU_AVATAR_PROPS.size} />
+        <Avatar
+          avatarId={currentAccount.avatarId}
+          alt=""
+          size={CHILD_MENU_AVATAR_PROPS.size}
+        />
         <ChildName>{currentAccount.name}</ChildName>
       </Child>
       <HomeLink

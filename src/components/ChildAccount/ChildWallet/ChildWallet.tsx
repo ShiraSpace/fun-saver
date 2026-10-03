@@ -18,7 +18,9 @@ interface ChildWalletProps {
 export function ChildWallet({ wallet }: ChildWalletProps): JSX.Element {
   return (
     <Card data-testid={CHILD_WALLET_TEST_IDS.card}>
-      <Icon walletName={wallet.name} aria-hidden="true">{wallet.icon}</Icon>
+      <Icon walletName={wallet.name} aria-hidden="true">
+        {wallet.icon}
+      </Icon>
       <Name>
         {WALLET_LABEL[wallet.name]}
         <Note>{CHILD_WALLET_COPY[wallet.name]}</Note>
