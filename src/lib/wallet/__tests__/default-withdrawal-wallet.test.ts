@@ -2,32 +2,35 @@ import { defaultWithdrawalWallet } from '../default-withdrawal-wallet';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 
 describe('the default withdrawal wallet', () => {
-  const [savings, spending, goodDeeds] = mockWalletSummaries;
-  const mockEmptySpending = { ...spending, balance: 0 };
+  const [mockSavings, mockSpending, mockGoodDeeds] = mockWalletSummaries;
 
   it('is the spending wallet when it has money', () => {
-    expect(defaultWithdrawalWallet(mockWalletSummaries)).toBe(spending);
+    expect(defaultWithdrawalWallet(mockWalletSummaries)).toBe(mockSpending);
   });
 
   it('is the spending wallet whatever order the wallets come in', () => {
-    expect(defaultWithdrawalWallet([goodDeeds, savings, spending])).toBe(
-      spending
-    );
+    expect(
+      defaultWithdrawalWallet([mockGoodDeeds, mockSavings, mockSpending])
+    ).toBe(mockSpending);
   });
 
-  it('falls back to the good-deeds wallet when spending is empty', () => {
-    expect(
-      defaultWithdrawalWallet([savings, mockEmptySpending, goodDeeds])
-    ).toBe(goodDeeds);
-  });
+  describe('when spending is empty', () => {
+    const mockEmptySpending = { ...mockSpending, balance: 0 };
 
-  it('is never the savings wallet, even when only savings has money', () => {
-    expect(
-      defaultWithdrawalWallet([
-        savings,
-        mockEmptySpending,
-        { ...goodDeeds, balance: 0 },
-      ])
-    ).toBe(mockEmptySpending);
+    it('falls back to the good-deeds wallet', () => {
+      expect(
+        defaultWithdrawalWallet([mockSavings, mockEmptySpending, mockGoodDeeds])
+      ).toBe(mockGoodDeeds);
+    });
+
+    it('is never the savings wallet, even when only savings has money', () => {
+      expect(
+        defaultWithdrawalWallet([
+          mockSavings,
+          mockEmptySpending,
+          { ...mockGoodDeeds, balance: 0 },
+        ])
+      ).toBe(mockEmptySpending);
+    });
   });
 });
