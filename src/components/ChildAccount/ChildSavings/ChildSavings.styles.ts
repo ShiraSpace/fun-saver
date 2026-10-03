@@ -27,7 +27,7 @@ export const Title = styled.div`
 
 export const Total = styled.div`
   margin: 6px 0 4px;
-  font-size: ${({ theme }): number => theme.typography.display}px;
+  font-size: ${({ theme }): number => theme.typography.hero}px;
   font-weight: 800;
   color: ${({ theme }): string => theme.colors.textStrong};
 `;

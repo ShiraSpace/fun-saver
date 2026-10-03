@@ -152,16 +152,15 @@ parent one:
 - **🏠 הכסף שלי**, a link to home, 76px tall.
 - **🎨 צבעים**: the existing `AppearanceSection` with its three themes, which
   saves to the account as it does today.
-- **👤 מצב הורה**: a small switch at the bottom that turns the mode off.
+- **👤 מצב הורה**: a compact pill toggle pinned to the bottom of the menu that turns the mode off.
 
 Not shown: `NavigationTabs`, user settings (sign out), account picker, edit
 account, language.
 
 ## Parent menu (mockup 2b)
 
-One new row in `MenuAccountSettings`, after the theme and language. The
-block's note already says "נשמר על החשבון הזה בלבד" (saved on this account
-only), which is exactly what the mode is: **🧒 מצב ילד**, "מסך פשוט ל<name>, רק לצפייה", and a
+One new row in the account card, right under the account picker and above
+"עריכת <name>" (mockup 2b): **🧒 מצב ילד**, "מסך פשוט ל<name>, רק לצפייה", and a
 switch. Turning it on saves the mode, closes the menu and refreshes into
 the child home.
 
@@ -204,6 +203,5 @@ Add these to `docs/glossary.md` in the same PR that introduces them:
   account too, so their menu is the child menu.
 - **Visual:** screenshots of the child home and child menu for the PR
   (`pr-screenshots` skill).
-- **Type sizes come from `theme.typography`.** The savings number uses
-  `display` (48) and the wallet amounts use `amount` (38), not the mockup's
-  76/34. Add a token only if 48 reads too small on a device.
+- **Type sizes come from `theme.typography`.** The savings number uses a
+  new `hero` step (76, as in the mockup); the wallet amounts use `amount` (38).

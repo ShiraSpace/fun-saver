@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import { REDUCED_MOTION } from '@/theme/motion';
+import { VIEW_MODE_SWITCH_MOTION } from './constants';
 
 export const Row = styled.button`
   display: flex;
@@ -15,6 +17,16 @@ export const Row = styled.button`
   font-weight: 700;
   color: ${({ theme }): string => theme.colors.textStrong};
   cursor: pointer;
+
+  &[data-compact='true'] {
+    width: auto;
+    min-height: 48px;
+    padding: 8px 16px;
+    border-color: ${({ theme }): string => theme.colors.divider};
+    border-radius: 999px;
+    font-weight: 600;
+    color: ${({ theme }): string => theme.colors.textMuted};
+  }
 `;
 
 export const Icon = styled.span`
@@ -40,6 +52,7 @@ export const Track = styled.span`
   height: 28px;
   border-radius: 999px;
   background: ${({ theme }): string => theme.colors.divider};
+  transition: background ${VIEW_MODE_SWITCH_MOTION.slideMs}ms ease;
 
   &::after {
     content: '';
@@ -50,6 +63,15 @@ export const Track = styled.span`
     height: 22px;
     border-radius: 50%;
     background: ${({ theme }): string => theme.colors.surface};
+    transition: inset-inline-start ${VIEW_MODE_SWITCH_MOTION.slideMs}ms ease;
+  }
+
+  @media ${REDUCED_MOTION} {
+    transition: none;
+
+    &::after {
+      transition: none;
+    }
   }
 
   &[data-on='true'] {

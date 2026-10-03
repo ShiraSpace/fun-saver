@@ -1,4 +1,5 @@
 export const TYPE_SCALE = {
+  hero: 76,
   display: 48,
   amount: 38,
   title: 22,

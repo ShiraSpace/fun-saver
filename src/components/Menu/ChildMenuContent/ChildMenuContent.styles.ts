@@ -1,5 +1,19 @@
 import styled from '@emotion/styled';
 import Link from 'next/link';
+import {
+  MENU_OVERLAY_LAYOUT,
+  MENU_OVERLAY_STYLE,
+} from '../MenuOverlay/constants';
+
+export const Layout = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: calc(
+    100dvh - ${MENU_OVERLAY_LAYOUT.top}px -
+      ${MENU_OVERLAY_LAYOUT.contentPaddingTop}px -
+      ${MENU_OVERLAY_STYLE.paddingBottom}px
+  );
+`;
 
 export const Child = styled.div`
   display: grid;
@@ -40,5 +54,8 @@ export const Item = styled.div`
 `;
 
 export const ParentCorner = styled.div`
-  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  padding-top: 28px;
 `;

@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { isChildView } from '@/lib/account/view-mode';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { AccountsProvider } from './accounts-context';
+import { useShownViewMode } from './use-shown-view-mode';
 
 interface HomeProps {
   accounts: AccountSummary[];
@@ -18,14 +19,19 @@ interface HomeProps {
 
 export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
   const navigation = useAccountNavigation(accounts, initialAccountId);
-  const { currentAccount, switchAccount, setMode } = navigation;
+  const { switchAccount, setMode } = navigation;
+  const { shownAccount: currentAccount, viewModeChoice } = useShownViewMode(
+    navigation.currentAccount
+  );
   const startCreatingAccount = (): void => setMode(APP_MODE.creatingAccount);
   const showsEmptyState = !currentAccount && !navigation.isCreating;
 
   return (
     <AccountManagement navigation={navigation}>
       {currentAccount && (
-        <AccountsProvider value={{ accounts, currentAccount, switchAccount }}>
+        <AccountsProvider
+          value={{ accounts, currentAccount, switchAccount, viewModeChoice }}
+        >
           {isChildView(currentAccount) ? (
             <ChildAccount account={currentAccount} />
           ) : (

@@ -18,6 +18,7 @@ import {
   ChildName,
   HomeLink,
   Item,
+  Layout,
   ParentCorner,
 } from './ChildMenuContent.styles';
 
@@ -26,7 +27,7 @@ export function ChildMenuContent(): JSX.Element {
   const { closeMenu } = useMenu();
 
   return (
-    <div data-testid={CHILD_MENU_CONTENT_TEST_IDS.menu}>
+    <Layout data-testid={CHILD_MENU_CONTENT_TEST_IDS.menu}>
       <Child>
         <Avatar
           avatarId={currentAccount.avatarId}
@@ -47,8 +48,8 @@ export function ChildMenuContent(): JSX.Element {
         <AppearanceSection />
       </Item>
       <ParentCorner>
-        <ViewModeSwitch viewMode={APP_VIEW_MODE.parent} />
+        <ViewModeSwitch viewMode={APP_VIEW_MODE.parent} isCompact />
       </ParentCorner>
-    </div>
+    </Layout>
   );
 }

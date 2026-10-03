@@ -18,3 +18,7 @@ export const VIEW_MODE_SWITCH_COPY = {
     `מסך פשוט ל${accountName}, רק לצפייה`,
   saveError: 'לא הצלחנו להחליף מסך, נסו שוב',
 } as const;
+
+export const VIEW_MODE_SWITCH_MOTION = {
+  slideMs: 220,
+} as const;

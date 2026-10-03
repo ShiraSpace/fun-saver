@@ -16,12 +16,16 @@ import {
 
 interface ViewModeSwitchProps {
   viewMode: AppViewMode;
+  isCompact?: boolean;
 }
 
-export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
+export function ViewModeSwitch({
+  viewMode,
+  isCompact = false,
+}: ViewModeSwitchProps): JSX.Element {
   const { currentAccount } = useAccounts();
-  const { chooseViewMode, saveFailed } = useAccountViewMode();
-  const isOn = currentAccount.viewMode === viewMode;
+  const { chooseViewMode, chosenViewMode, saveFailed } = useAccountViewMode();
+  const isOn = (chosenViewMode ?? currentAccount.viewMode) === viewMode;
 
   return (
     <div>
@@ -29,6 +33,7 @@ export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
         type="button"
         role="switch"
         aria-checked={isOn}
+        data-compact={isCompact}
         data-testid={VIEW_MODE_SWITCH_TEST_IDS.switch}
         onClick={(): void => chooseViewMode(viewMode)}
       >

@@ -1,47 +1,115 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAccounts } from '@/components/Home/accounts-context';
+import {
+  useAccounts,
+  type ViewModeChoice,
+} from '@/components/Home/accounts-context';
 import type { AppViewMode } from '@/lib/account/view-mode';
 import { fetchJson } from '@/lib/fetch-json';
 import { useMenu, useOnMenuClose } from '../use-menu-state';
+import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
+import { VIEW_MODE_SWITCH_MOTION } from './constants';
 
 interface AccountViewMode {
   chooseViewMode: (viewMode: AppViewMode) => void;
+  chosenViewMode?: AppViewMode;
   saveFailed: boolean;
+}
+
+interface ViewModeSwitchSteps {
+  saved: Promise<unknown>;
+  closeMenu: () => void;
+  refresh: () => void;
+  slideBack: () => void;
+  reportSaveFailed: (saveFailed: boolean) => void;
 }
 
 function accountViewModeEndpoint(accountId: string): string {
   return `/api/accounts/${accountId}/view-mode`;
 }
 
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function switchFinishesSliding(): Promise<void> {
+  return wait(VIEW_MODE_SWITCH_MOTION.slideMs);
+}
+
+function menuFinishesFading(): Promise<void> {
+  return wait(MENU_OVERLAY_STYLE.transitionMs);
+}
+
+async function showThenSave(
+  steps: ViewModeSwitchSteps,
+  viewModeChoice: ViewModeChoice,
+  viewMode: AppViewMode
+): Promise<void> {
+  const isSaved = steps.saved.then(
+    () => true,
+    () => false
+  );
+
+  await switchFinishesSliding();
+  steps.closeMenu();
+  await menuFinishesFading();
+  viewModeChoice.showViewMode(viewMode);
+
+  if (await isSaved) {
+    steps.refresh();
+    return;
+  }
+
+  viewModeChoice.returnToSavedViewMode();
+  steps.reportSaveFailed(true);
+}
+
+async function saveThenShow(steps: ViewModeSwitchSteps): Promise<void> {
+  try {
+    await Promise.all([steps.saved, switchFinishesSliding()]);
+    steps.closeMenu();
+    steps.refresh();
+  } catch {
+    steps.slideBack();
+    steps.reportSaveFailed(true);
+  }
+}
+
 export function useAccountViewMode(): AccountViewMode {
-  const { currentAccount } = useAccounts();
+  const { currentAccount, viewModeChoice } = useAccounts();
   const { closeMenu } = useMenu();
   const router = useRouter();
-  const [saveFailed, setSaveFailed] = useState(false);
+  const [chosenViewMode, setChosenViewMode] = useState<AppViewMode>();
+  const [localSaveFailed, setLocalSaveFailed] = useState(false);
+  const reportSaveFailed =
+    viewModeChoice?.reportSaveFailed ?? setLocalSaveFailed;
 
-  useOnMenuClose((): void => setSaveFailed(false));
+  useOnMenuClose((): void => reportSaveFailed(false));
 
   const chooseViewMode = (viewMode: AppViewMode): void => {
-    setSaveFailed(false);
+    setChosenViewMode(viewMode);
+    reportSaveFailed(false);
 
-    void saveOnAccount();
+    const steps: ViewModeSwitchSteps = {
+      saved: fetchJson({
+        url: accountViewModeEndpoint(currentAccount.id),
+        method: 'PUT',
+        body: { viewMode },
+      }),
+      closeMenu,
+      refresh: (): void => router.refresh(),
+      slideBack: (): void => setChosenViewMode(undefined),
+      reportSaveFailed,
+    };
 
-    async function saveOnAccount(): Promise<void> {
-      try {
-        await fetchJson({
-          url: accountViewModeEndpoint(currentAccount.id),
-          method: 'PUT',
-          body: { viewMode },
-        });
-
-        closeMenu();
-        router.refresh();
-      } catch {
-        setSaveFailed(true);
-      }
-    }
+    void (viewModeChoice
+      ? showThenSave(steps, viewModeChoice, viewMode)
+      : saveThenShow(steps));
   };
 
-  return { chooseViewMode, saveFailed };
+  return {
+    chooseViewMode,
+    chosenViewMode,
+    saveFailed: viewModeChoice?.saveFailed ?? localSaveFailed,
+  };
 }
