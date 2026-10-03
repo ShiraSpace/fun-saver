@@ -55,9 +55,9 @@ describe('MenuContent', () => {
       );
     });
 
-    it("offers child view among this account's settings", () => {
+    it('offers child view right where the parent picks the child', () => {
       expect(
-        screen.getByTestId(MENU_ACCOUNT_SETTINGS_TEST_IDS.block)
+        screen.getByTestId(MENU_USER_SETTINGS_TEST_IDS.block)
       ).toContainElement(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch));
     });
   });

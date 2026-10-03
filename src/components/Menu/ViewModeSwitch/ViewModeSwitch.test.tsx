@@ -83,6 +83,22 @@ describe('ViewModeSwitch', () => {
     });
   });
 
+  describe('the moment a parent taps the switch', () => {
+    beforeEach(() => {
+      global.fetch = jest.fn().mockReturnValue(new Promise(() => {}));
+      renderInOpenMenu(<ViewModeSwitch viewMode={APP_VIEW_MODE.child} />, {
+        accounts: mockAccountsContext,
+      });
+      tapSwitch();
+    });
+
+    it('slides on before the save answers', () => {
+      expect(
+        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+      ).toHaveAttribute('aria-checked', 'true');
+    });
+  });
+
   describe("the child's way back", () => {
     beforeEach(() => {
       render(
@@ -136,6 +152,14 @@ describe('ViewModeSwitch', () => {
       expect(
         await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError)
       ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.saveError);
+    });
+
+    it('slides the switch back off', async () => {
+      await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError);
+
+      expect(
+        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+      ).toHaveAttribute('aria-checked', 'false');
     });
 
     describe('and the menu is closed and reopened', () => {
