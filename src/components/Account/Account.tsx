@@ -2,6 +2,7 @@
 
 import { JSX, useState } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -16,8 +17,12 @@ interface AccountProps {
 
 export function Account({ account }: AccountProps): JSX.Element {
   const { wallets } = account;
-  const savings = wallets.find((wallet) => wallet.name === 'savings');
-  const otherWallets = wallets.filter((wallet) => wallet.name !== 'savings');
+  const savings = wallets.find(
+    (wallet) => wallet.name === WALLET_NAMES.savings
+  );
+  const otherWallets = wallets.filter(
+    (wallet) => wallet.name !== WALLET_NAMES.savings
+  );
   const savingsFirst = savings ? [savings, ...otherWallets] : otherWallets;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import type { WalletSummary } from '@/lib/wallet/types';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
+import { defaultWithdrawalWallet } from '@/lib/wallet/default-withdrawal-wallet';
 import { useAddTransaction } from './use-add-transaction';
 import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 
@@ -20,7 +22,7 @@ export function useWithdrawalForm(
 ): WithdrawalFormState {
   const { addWithdrawal } = useAddTransaction(accountId);
   const [selectedWalletId, setSelectedWalletId] = useState(
-    wallets[0]?.id ?? ''
+    () => defaultWithdrawalWallet(wallets)?.id ?? ''
   );
   const entry = useAmountEntry(
     (amountShekels) => addWithdrawal(selectedWalletId, amountShekels),
@@ -38,7 +40,7 @@ export function useWithdrawalForm(
     ...entry,
     selectedWalletId,
     selectedBalance: selectedWallet?.balance ?? 0,
-    isDonation: selectedWallet?.name === 'goodDeeds',
+    isDonation: selectedWallet?.name === WALLET_NAMES.goodDeeds,
     isOverdraft,
     canSubmit: entry.amountShekels > 0 && !isOverdraft && !entry.isSubmitting,
     onSelectWallet: setSelectedWalletId,
