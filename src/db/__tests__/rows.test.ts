@@ -24,21 +24,6 @@ const mockAccountRow: AccountRow = {
   wallets: createMockWallets(),
 };
 
-describe('accountFromRow view mode', () => {
-  it('reads a stored child view', () => {
-    expect(
-      accountFromRow({ ...mockAccountRow, view_mode: APP_VIEW_MODE.child })
-        .viewMode
-    ).toBe(APP_VIEW_MODE.child);
-  });
-
-  it('shows an unknown stored view as the parent screen', () => {
-    expect(
-      accountFromRow({ ...mockAccountRow, view_mode: 'toddler' }).viewMode
-    ).toBe(APP_VIEW_MODE.parent);
-  });
-});
-
 const mockTransaction = createMockTransaction();
 
 const transactionRow: TransactionRow = {
@@ -70,6 +55,21 @@ const accountUserRow: AccountUserRow = {
 describe('accountFromRow', () => {
   it('maps an account row to an Account', () => {
     expect(accountFromRow(mockAccountRow)).toEqual(mockAccount);
+  });
+});
+
+describe('accountFromRow view mode', () => {
+  it('reads a stored child view', () => {
+    expect(
+      accountFromRow({ ...mockAccountRow, view_mode: APP_VIEW_MODE.child })
+        .viewMode
+    ).toBe(APP_VIEW_MODE.child);
+  });
+
+  it('shows an unknown stored view as the parent screen', () => {
+    expect(
+      accountFromRow({ ...mockAccountRow, view_mode: 'toddler' }).viewMode
+    ).toBe(APP_VIEW_MODE.parent);
   });
 });
 

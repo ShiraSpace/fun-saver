@@ -22,7 +22,7 @@ function putRawBody(id: string, body: string): Promise<Response> {
   return PUT(request, { params: Promise.resolve({ id }) });
 }
 
-function putViewMode(viewMode: string, id: string): Promise<Response> {
+function putViewMode(id: string, viewMode: string): Promise<Response> {
   return putRawBody(id, JSON.stringify({ viewMode }));
 }
 
@@ -40,7 +40,7 @@ describe('PUT /api/accounts/[id]/view-mode', () => {
     let response: Response;
 
     beforeEach(async () => {
-      response = await putViewMode(APP_VIEW_MODE.child, accountId);
+      response = await putViewMode(accountId, APP_VIEW_MODE.child);
     });
 
     it('saves child view on the account', async () => {
@@ -58,7 +58,7 @@ describe('PUT /api/accounts/[id]/view-mode', () => {
     let response: Response;
 
     beforeEach(async () => {
-      response = await putViewMode('toddler', accountId);
+      response = await putViewMode(accountId, 'toddler');
     });
 
     it('is refused as a bad request', () => {
@@ -85,7 +85,7 @@ describe('PUT /api/accounts/[id]/view-mode', () => {
 
     beforeEach(async () => {
       jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
-      response = await putViewMode(APP_VIEW_MODE.child, accountId);
+      response = await putViewMode(accountId, APP_VIEW_MODE.child);
     });
 
     it('is refused', () => {

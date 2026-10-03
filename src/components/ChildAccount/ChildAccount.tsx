@@ -34,7 +34,7 @@ export function ChildAccount({ account }: ChildAccountProps): JSX.Element {
     <Screen align="top">
       <Column data-testid={CHILD_ACCOUNT_TEST_IDS.screen}>
         <Header title={account.name} account={account} />
-        <Wallets>
+        <Wallets data-testid={CHILD_ACCOUNT_TEST_IDS.wallets}>
           {savings && <ChildSavings savings={savings} />}
           {spending && <ChildWallet wallet={spending} />}
           {goodDeeds && <ChildWallet wallet={goodDeeds} />}

@@ -40,7 +40,7 @@ describe('a parent turns child view on', () => {
 });
 
 describe('the child goes back to the parent screen', () => {
-  const { menu, childAccount, account } = useDriver({
+  const { menu, account } = useDriver({
     accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
   });
 
@@ -51,7 +51,7 @@ describe('the child goes back to the parent screen', () => {
   });
 
   it('shows the parent screen again', async () => {
-    assert.equal(await childAccount.isShown(), false);
+    assert.equal(await account.overviewExists(), true);
   });
 });
 
@@ -62,6 +62,21 @@ describe('a child who opens a parent page by its address', () => {
 
   beforeEach(async () => {
     await appBrowser.visit('/method');
+    await menu.open();
+  });
+
+  it('still gets the child menu', async () => {
+    assert.equal(await menu.childMenuIsShown(), true);
+  });
+});
+
+describe('a child who opens the transactions page by its address', () => {
+  const { menu, appBrowser } = useDriver({
+    accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
+  });
+
+  beforeEach(async () => {
+    await appBrowser.visit('/transactions');
     await menu.open();
   });
 

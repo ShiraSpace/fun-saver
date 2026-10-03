@@ -4,7 +4,6 @@ import {
   mockAccountsContext,
 } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
-import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { ChildAccount } from './ChildAccount';
 import { CHILD_ACCOUNT_TEST_IDS } from './constants';
 import { CHILD_SAVINGS_TEST_IDS } from './ChildSavings/constants';
@@ -39,6 +38,10 @@ describe('ChildAccount', () => {
   });
 
   it('offers the child nothing to do but look', () => {
-    expect(screen.queryByTestId(ACCOUNT_TEST_IDS.newTransaction)).toBeNull();
+    expect(
+      screen
+        .getByTestId(CHILD_ACCOUNT_TEST_IDS.wallets)
+        .querySelectorAll('button, a')
+    ).toHaveLength(0);
   });
 });
