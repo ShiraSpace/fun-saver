@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import {
   mockAccountsContext,
   mockAccountSummary,
+  mockChildAccountsContext,
 } from '@/test-utils/mocks/account.mocks';
 import {
   closeAndReopenMenu,
@@ -79,6 +80,46 @@ describe('ViewModeSwitch', () => {
 
     it('refreshes so the page loads in child view', () => {
       expect(mockRouter.refresh).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("the child's way back", () => {
+    beforeEach(() => {
+      render(
+        <WithMenu>
+          <ViewModeSwitch viewMode={APP_VIEW_MODE.parent} />
+        </WithMenu>,
+        { accounts: mockChildAccountsContext }
+      );
+    });
+
+    it('is labelled for the parent', () => {
+      expect(
+        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+      ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[APP_VIEW_MODE.parent]);
+    });
+
+    it('carries no note about a child', () => {
+      expect(
+        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+      ).not.toHaveTextContent(
+        VIEW_MODE_SWITCH_COPY.childNote(mockAccountSummary.name)
+      );
+    });
+
+    describe('and the child taps it', () => {
+      beforeEach(async () => {
+        tapSwitch();
+        await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
+      });
+
+      it('saves parent view on the current account', () => {
+        const [, options] = (global.fetch as jest.Mock).mock.calls[0];
+
+        expect(JSON.parse(options.body)).toEqual({
+          viewMode: APP_VIEW_MODE.parent,
+        });
+      });
     });
   });
 

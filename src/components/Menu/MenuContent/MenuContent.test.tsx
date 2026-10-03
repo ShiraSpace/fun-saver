@@ -1,8 +1,13 @@
 import { render, screen } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
-import { mockAccountsContext } from '@/test-utils/mocks/account.mocks';
+import {
+  mockAccountsContext,
+  mockChildAccountsContext,
+} from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
 import { MenuContent } from './MenuContent';
+import { CHILD_MENU_CONTENT_TEST_IDS } from '../ChildMenuContent/constants';
+import { NAVIGATION_TABS_TEST_IDS } from '../NavigationTabs/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from '../AccountPicker/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '../EditAccountButton/constants';
@@ -54,6 +59,41 @@ describe('MenuContent', () => {
       expect(
         screen.getByTestId(MENU_ACCOUNT_SETTINGS_TEST_IDS.block)
       ).toContainElement(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch));
+    });
+  });
+
+  describe('for an account in child view', () => {
+    beforeEach(() => {
+      render(
+        <WithMenu>
+          <MenuContent />
+        </WithMenu>,
+        { user: mockUser, accounts: mockChildAccountsContext }
+      );
+    });
+
+    it('shows the child menu', () => {
+      expect(
+        screen.getByTestId(CHILD_MENU_CONTENT_TEST_IDS.menu)
+      ).toBeInTheDocument();
+    });
+
+    it('hides the account picker, so the child stays on their own money', () => {
+      expect(
+        screen.queryByTestId(ACCOUNT_PICKER_TEST_IDS.picker)
+      ).not.toBeInTheDocument();
+    });
+
+    it('hides the screens meant for the parent', () => {
+      expect(
+        screen.queryByTestId(NAVIGATION_TABS_TEST_IDS.tabBar)
+      ).not.toBeInTheDocument();
+    });
+
+    it('hides signing out', () => {
+      expect(
+        screen.queryByTestId(MENU_USER_SETTINGS_TEST_IDS.block)
+      ).not.toBeInTheDocument();
     });
   });
 });

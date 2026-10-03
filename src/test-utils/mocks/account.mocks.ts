@@ -81,3 +81,8 @@ export const mockAccountsContext: AccountsContextValue = {
   currentAccount: mockAccountSummary,
   switchAccount: () => {},
 };
+
+export const mockChildAccountsContext: AccountsContextValue = {
+  ...mockAccountsContext,
+  currentAccount: { ...mockAccountSummary, viewMode: APP_VIEW_MODE.child },
+};
