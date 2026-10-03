@@ -1,0 +1,66 @@
+import { InMemoryStore } from '@/db/memory-store';
+import { mockAccount } from '@/test-utils/mocks/account.mocks';
+import { createMockGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
+import { createMockWithdrawal } from '@/test-utils/mocks/transaction.mocks';
+import { createMockWallet } from '@/test-utils/mocks/wallet.mocks';
+import { GOAL_ENDING } from '../constants';
+import { SavingsLockedError } from '../errors';
+import { withdrawFromSavings } from '../savings-withdrawal';
+
+describe('withdrawFromSavings', () => {
+  const mockWithdrawal = createMockWithdrawal(createMockWallet());
+
+  it('records the withdrawal as before when there is no goal', async () => {
+    const store = new InMemoryStore();
+
+    await withdrawFromSavings({
+      store,
+      withdrawal: mockWithdrawal,
+      goal: undefined,
+      savingsBalance: 0,
+    });
+
+    expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
+      mockWithdrawal,
+    ]);
+  });
+
+  it('refuses with SavingsLockedError and writes nothing while the goal is not reached', async () => {
+    const store = new InMemoryStore();
+    await store.insertGoal(mockGoal);
+
+    await expect(
+      withdrawFromSavings({
+        store,
+        withdrawal: mockWithdrawal,
+        goal: mockGoal,
+        savingsBalance: mockGoal.amount - 1,
+      })
+    ).rejects.toThrow(SavingsLockedError);
+
+    expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([]);
+    expect(await store.getActiveGoal(mockAccount.id)).toEqual(mockGoal);
+  });
+
+  it('ends a reached goal as completed, at the moment the withdrawal was made', async () => {
+    const store = new InMemoryStore();
+    const storedGoal = createMockGoal();
+    await store.insertGoal(storedGoal);
+
+    await withdrawFromSavings({
+      store,
+      withdrawal: mockWithdrawal,
+      goal: storedGoal,
+      savingsBalance: storedGoal.amount,
+    });
+
+    expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
+      mockWithdrawal,
+    ]);
+    expect(storedGoal).toEqual({
+      ...mockGoal,
+      endedAt: mockWithdrawal.createdAt,
+      ending: GOAL_ENDING.completed,
+    });
+  });
+});
