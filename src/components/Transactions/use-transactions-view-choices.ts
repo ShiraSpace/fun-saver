@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { WALLET_NAMES } from '@/lib/wallet/constants';
+import { WALLET_NAME_LIST } from '@/lib/wallet/constants';
 import {
   ALL_TRANSACTION_TYPES,
   INTEREST_MODE,
@@ -55,7 +55,7 @@ function withShownBalanceToggled(
 }
 
 function allWalletsShownIn(shownBalances: readonly ShownBalance[]): boolean {
-  return Object.values(WALLET_NAMES).every((walletName) =>
+  return WALLET_NAME_LIST.every((walletName) =>
     shownBalances.includes(walletName)
   );
 }
@@ -69,10 +69,7 @@ function withAllWalletsToggled(
 
   return allWalletsShownIn(shownBalances)
     ? keptTotalBalance
-    : inShownBalanceOrder([
-        ...keptTotalBalance,
-        ...Object.values(WALLET_NAMES),
-      ]);
+    : inShownBalanceOrder([...keptTotalBalance, ...WALLET_NAME_LIST]);
 }
 
 export function useTransactionsViewChoices(): TransactionsViewChoices {
