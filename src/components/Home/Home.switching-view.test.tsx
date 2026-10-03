@@ -27,20 +27,20 @@ const SERVER_SAYS_TEST_IDS = {
 
 function HomeWithServerAccounts(): JSX.Element {
   const [serverAccounts, setServerAccounts] = useState(accounts);
+  const serverSaysChild = (): void =>
+    setServerAccounts(accountsInViewMode(APP_VIEW_MODE.child));
+  const serverSaysParent = (): void =>
+    setServerAccounts(accountsInViewMode(APP_VIEW_MODE.parent));
 
   return (
     <Fragment>
       <button
         data-testid={SERVER_SAYS_TEST_IDS.child}
-        onClick={(): void =>
-          setServerAccounts(accountsInViewMode(APP_VIEW_MODE.child))
-        }
+        onClick={serverSaysChild}
       />
       <button
         data-testid={SERVER_SAYS_TEST_IDS.parent}
-        onClick={(): void =>
-          setServerAccounts(accountsInViewMode(APP_VIEW_MODE.parent))
-        }
+        onClick={serverSaysParent}
       />
       <Home accounts={serverAccounts} initialAccountId={mockAccount.id} />
     </Fragment>
