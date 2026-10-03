@@ -51,6 +51,7 @@ the domain from the names alone, so new code takes its words from this table.
 | The account being viewed             | —                              | `currentAccount`                                                          | selected, target                                    |
 | Settings in the menu                 | הגדרות                         | `MenuAccountSettings`, `MenuUserSettings`                                 | scope                                               |
 | Moving between screens               | בית · תנועות · השיטה           | `navigation`: `NavigationTabs`, `NavigationDestination`                   | nav, screen                                         |
+| The Method page's opening section    | מה אנחנו מנסים להשיג           | `purpose`, `PURPOSE_COPY`                                                 | goal                                                |
 | The Method page's to-do list         | מה צריך לעשות                  | `checklist`                                                               | action                                              |
 | The main call-to-action button       | —                              | `PrimaryButton`                                                           | action button                                       |
 | Signing in                           | —                              | `signIn`, `SIGN_IN_PATH`                                                  | login                                               |

@@ -24,30 +24,30 @@
 
 ## פתיח — בלוק אחד, מפריד באמצע
 
-`key: method.goal.eyebrow`
+`key: method.purpose.eyebrow`
 מה אנחנו מנסים להשיג
 
-`key: method.goal.title`
+`key: method.purpose.title`
 ## שהילד יתאמן בלבחור
 
-`key: method.goal.body` · `text`
+`key: method.purpose.body` · `text`
 המטרה היא לא שיחסוך. המטרה היא שיהיה לו **תרגול שבועי בדחיית סיפוקים** —
 בחירה בין "עכשיו" ל"אחר כך" — ושתהיה לו סיבה אמיתית להאמין ש"אחר כך" מגיע.
 
-`key: method.goal.outcome.spending`
+`key: method.purpose.outcome.spending`
 🛍️ **להרגיש גבול** — כסף שנגמר, ונגמר.
 
-`key: method.goal.outcome.savings`
+`key: method.purpose.outcome.savings`
 🐷 **להתאמן בהמתנה — ולראות שזה משתלם.** כסף שנשאר בחיסכון גדל מעצמו.
 
-`key: method.goal.outcome.savings.note`
+`key: method.purpose.outcome.savings.note`
 ככה מגיעה ההבנה הראשונה של ריבית: לא מהסבר, אלא מזה שהוא רואה מטבעות נוספים
 בכל יום.
 
-`key: method.goal.outcome.goodDeeds`
+`key: method.purpose.outcome.goodDeeds`
 💛 **לגלות שנתינה מרגישה טוב** — מכסף שהוא שלו.
 
-`key: method.goal.derived`
+`key: method.purpose.derived`
 ועל הדרך הוא ילמד **התנהלות פיננסית, חיסכון וריבית**. "לא" מפסיק להיות סוף
 הסיפור: דברים שאנחנו לא קונים לו, הוא יכול לקנות בעצמו.
 
