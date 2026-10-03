@@ -1,7 +1,8 @@
 # Saving goal — design
 
-> Status: **approved in brainstorming 2026-10-03, revised after review the same
-> day**, not yet implemented.
+> Status: **approved in brainstorming 2026-10-03, revised after two reviews the
+> same day** (the second checked every claim against the code), not yet
+> implemented.
 > Mockup: `mockups/saving-goal.html` — every screen and state below, with the
 > confetti, border and hold-to-cancel animations live.
 > Backlog: `docs/backlog.md` § "Savings goal on the `savings` wallet" and
@@ -60,6 +61,8 @@ reached, and ends when the child withdraws the money to buy it.
 | Storage | A `goals` table, one row per goal ever set, kept after it ends. |
 | Endings | `completed` or `cancelled`. Reached-then-cancelled is `cancelled`. |
 | Which withdrawal ended a goal | Not stored as a column. The goal's `ended_at` is set to that withdrawal's `created_at`, so the two match exactly. |
+| No picture chosen | `SetGoal` sends 🎯, so every stored goal has a picture and `picture` stays `NOT NULL`. |
+| A refused savings withdrawal | `409`, not `400`: it means the screen is stale, and every `409` in this feature tells the client to refresh. |
 
 ## Data
 
@@ -99,20 +102,30 @@ CREATE UNIQUE INDEX IF NOT EXISTS goals_one_active_per_account_idx
 - **Reached is never stored.** It is `savings balance ≥ goal amount`, worked out
   each time, so it cannot disagree with the balance.
 - The migration is the block above, appended to `src/db/schema.sql`, which is
-  idempotent and safe to replay. It runs on the Neon `production` branch
-  **before PR 2 deploys** — from PR 2 every savings withdrawal reads `goals`.
+  idempotent and safe to replay. `run-migration.ts` splits the file on `;`, so
+  the block holds no `;` inside a statement. It runs on the Neon `test` and
+  `dev` branches in PR 1 (`npm run db:migrate-test`, `db:migrate-dev`), since
+  PR 1's `test:db` suite needs the table, and on `production`
+  (`npm run db:migrate`, after confirming `DATABASE_URL` points at it)
+  **before PR 2 deploys** — from PR 2 every page load and every savings
+  withdrawal reads `goals`. The table is additive, so running it early is
+  harmless.
 
 ### Types
 
-`src/lib/goal/types.ts`, with the outcomes as an `as const` map like
-`TRANSACTION_TYPE`:
+The outcomes are an `as const` map in `src/lib/goal/constants.ts`, the way
+`TRANSACTION_TYPE` lives in `src/lib/transaction/constants.ts`:
 
 ```ts
 export const GOAL_OUTCOME = {
   completed: 'completed',
   cancelled: 'cancelled',
 } as const;
+```
 
+and the types in `src/lib/goal/types.ts`:
+
+```ts
 export type GoalOutcome = (typeof GOAL_OUTCOME)[keyof typeof GOAL_OUTCOME];
 
 export interface GoalPicture {
@@ -162,13 +175,28 @@ The page receives each account's active goal alongside its wallets, as
    on page load, and between page loads a savings balance only falls by a
    withdrawal, which ends a reached goal. So the screen never shows a goal as
    reached that the server would refuse.
+8. **The checks run in the overdraft check's order.** Unknown wallet, then
+   amount, then overdraft, then the goal. A reached goal with a withdrawal
+   larger than the balance is refused as an overdraft and stays active.
+9. **The lock has the overdraft check's read-then-write gap, deliberately.**
+   A goal set in the same instant as a savings withdrawal can miss it; the
+   result is a goal showing less progress, never lost money or a stuck lock.
+   Closing the gap means a conditional `INSERT … WHERE NOT EXISTS` for the
+   lock and the overdraft together — worth it only if the app outgrows family
+   scale.
 
-A valid goal has:
-- a name of 1–`MAX_GOAL_NAME_LENGTH` (30) characters after trimming;
+A valid goal request body is `{ name, amount, picture }`, with `amount` in
+shekels like the withdrawal body; `validGoal` returns `amountShekels` and
+`setGoal` stores agorot through `shekelsToAgorot`. It has:
+- a name of 1–`MAX_GOAL_NAME_LENGTH` (30) characters after trimming, stored
+  trimmed;
 - an amount of whole shekels from 1 to `MAX_GOAL_SHEKELS` (100,000), which
   keeps the agorot far below the `INTEGER` limit;
 - a picture of exactly `{ kind: 'emoji', emoji }`, where `emoji` is at most 32
-  UTF-16 units and matches `\p{Extended_Pictographic}`;
+  UTF-16 units and is exactly one emoji: `new RegExp('^\\p{RGI_Emoji}$', 'v')`.
+  `\p{Extended_Pictographic}` is not used: it refuses flags and keycaps and,
+  unanchored, accepts `🚲abc`. The `v` flag needs `new RegExp`, because
+  `tsconfig` targets ES2017; Node 20+ runs it;
 - no other fields.
 
 ## Server
@@ -183,12 +211,17 @@ A valid goal has:
 - `constants.ts`: `MAX_GOAL_NAME_LENGTH`, `MAX_GOAL_SHEKELS`, `GOAL_OUTCOME`.
 
 `addWithdrawal` in `src/lib/transaction/transactions.ts` gains the goal check
-when the wallet's `name` is `savings`:
+when the wallet's `name` is `savings`, after the overdraft check (rule 8):
 
 - active goal, not reached → throw `SavingsLockedError`;
 - active goal, reached → `store.insertWithdrawalCompletingGoal(withdrawal,
   goal.id)`;
 - no active goal → unchanged.
+
+For savings, the wallet's transactions and the active goal are read together
+(`Promise.all`), so the lock adds no round trip in sequence. `addWithdrawal`
+is near the 40-line limit already, so the goal branch is its own function in
+`src/lib/goal/` rather than more lines in `addWithdrawal`.
 
 ### Store
 
@@ -198,44 +231,66 @@ three backends (`postgres-store`, `memory-store`, `json-file-store`):
 - `insert(goal)` — throws `GoalAlreadyActiveError` when the account has one.
   Postgres maps the unique violation (`23505`) to it, the way
   `accountWriteError` maps account writes.
-- `activeForAccount(accountId)`
+- `getActive(accountId)`
 - `end({ goalId, accountId, endedAt, outcome })` — returns whether a goal was
   ended (rule 5).
+- `insertWithdrawalCompleting(withdrawal, goalId)` — the one write that
+  spans two tables, owned by the goal repository the way
+  `insertAccountWithOwner` is owned by `AccountUserRepository`.
 
-`DataStore` gains the matching methods, plus
-`insertWithdrawalCompletingGoal(withdrawal, goalId)`:
+`DataStore` gains `insertGoal`, `getActiveGoal`, `endGoal` and
+`insertWithdrawalCompletingGoal`, delegated by `RepositoryStore`, whose
+constructor takes the goal repository as a fifth argument. `rows.ts` gains
+`GoalRow` and `goalFromRow` (a `NULL` `ended_at`/`outcome` reads as
+`undefined`; `picture` arrives parsed, like `wallets`). The cross-table write
+per backend:
 
 - **Postgres:** one `sql.transaction([...])` holding the `INSERT` into
   `transactions` and the rule-5 `UPDATE` on `goals`, the way
-  `insertAccountWithOwner` does today. Neon's HTTP transaction is a batch and
-  cannot branch on a read, so every condition lives in the `WHERE` clause.
+  `insertAccountWithOwner` does today. `PostgresTransactions` exposes an
+  `insertStatement`, as `PostgresAccounts` does, so the insert is not written
+  twice. Neon's HTTP transaction is a batch and cannot branch on a read, so
+  every condition lives in the `WHERE` clause. An `UPDATE` that matches no
+  row (the goal was cancelled in between) still records the withdrawal.
 - **JSON file:** both changes inside one `FileSession.write`, saved once.
-- **Memory:** both changes in one synchronous step.
+- **Memory:** `MemoryGoals` is built with the `MemoryTransactions` instance,
+  the way `MemoryAccountUsers` is built with accounts and users, and makes
+  both changes with no `await` between them.
 
-`StoreContents` gains `goals`, and `FileSession`'s `emptyContents` gains
-`goals: []`, so store files written before this feature read as having none.
+`StoreContents` in `data-store.ts` gains `goals`, and `FileSession`'s
+`emptyContents` gains `goals: []`, so store files written before this feature
+read as having none.
 
 ### Loading the goal for the page
 
-`settleAccountInterest` is the path home, `/transactions` and `/method` share,
-and all three draw the menu that shows the goal. It reads the active goal in
-parallel with the account's transactions (`Promise.all`) and puts it on the
-`AccountSummary`. No extra round trip in sequence.
+`settleAccountInterest` builds every `AccountSummary`: home and `/method`
+reach it through `summarizeAccounts`, `/transactions` through
+`settleInterest`, and all three draw the menu that shows the goal. It reads
+the active goal in parallel with the account's transactions (`Promise.all`)
+and puts it on the `AccountSummary`. No extra round trip in sequence; one
+query per account, run in parallel, like the transactions read beside it.
 
 ### API
 
 Same shape as the sibling routes, behind `withAccountEditor`. New messages go
-in `src/app/api/constants.ts`.
+in `API_ERRORS` in `src/app/api/constants.ts` (`invalidGoal`, `missingGoalId`,
+`goalAlreadyActive`, `goalNotActive`, `savingsLocked`). Nothing returns `409`
+today, so `src/app/api/responses.ts` gains `conflict(error)` beside
+`badRequest`.
 
 | Route | Does | Refuses |
 |---|---|---|
 | `POST /api/accounts/[id]/goal` | sets a goal, returns it | 400 invalid input; 409 a goal is already active |
 | `DELETE /api/accounts/[id]/goal?goalId=…` | cancels that goal | 400 no `goalId`; 409 it is not this account's active goal |
-| `POST /api/accounts/[id]/withdrawals` | unchanged, plus rule 2 | 400 `SavingsLockedError`, like `OverdraftError` |
+| `POST /api/accounts/[id]/withdrawals` | unchanged, plus rule 2 | 409 `SavingsLockedError` |
 
 `POST`, not `PUT`: setting is not idempotent, a repeat is refused. `DELETE`
 carries the goal id the dialog showed, so a stale screen cannot cancel a goal
 it never displayed (rule 5).
+
+On the client, `fetchJson` (`src/lib/fetch-json.ts`) accepts `DELETE` with no
+body, and its failure carries the response status, so a caller can tell a
+`409` (refresh) from any other failure (the existing error alert).
 
 ## Image search, v1
 
@@ -250,17 +305,23 @@ it never displayed (rule 5).
 - **Trimmed while generating:** skin-tone and other variants are dropped, so
   one bicycle does not fill the 3×3 grid five times; emoji newer than
   Emoji 14.0 are dropped, since older phones draw them as empty boxes and a
-  goal picture is stored for good. Only each emoji and its Hebrew words are
-  kept — about 1.3 MB raw, a fraction of that trimmed.
+  goal picture is stored for good. CLDR annotations carry no emoji version, so
+  the script also reads `emoji-test.txt` from the pinned Unicode emoji release
+  (its `E14.0`-style column). Only each emoji and its Hebrew words are kept.
+  The script fails if the output exceeds **150 KB**, so the sheet's download
+  stays small.
 - **Loaded with `import()` when the sheet opens**, never with the app.
-- **Search runs on the phone.** No server call. An emoji matches when one of
-  its Hebrew words appears inside a typed word, so "האופניים" finds
-  "אופניים". Results are ranked by how many typed words matched.
+- **Search runs on the phone.** No server call. A typed word matches an
+  emoji's Hebrew word when it equals it, or equals it after dropping up to two
+  leading prefix letters (`ה ו ב ל מ ש כ`), so "האופניים" and "ולאופניים"
+  find "אופניים". Plain "appears inside" is not used: short words like "יד"
+  would match inside "תלמידה". Results are ranked by how many typed words
+  matched.
 - The sheet opens already searching for the goal name. Editing the text
   searches again.
 - Results are drawn as picture tiles, the same tiles Pixabay photos will fill
   later. Nothing in the sheet says "emoji".
-- Without a chosen picture the goal shows 🎯.
+- Without a chosen picture, `SetGoal` sends 🎯 (see Decisions).
 
 ## Screens
 
@@ -268,16 +329,25 @@ Mockup frame numbers in brackets.
 
 ### Opening and closing
 
-`APP_MODE` gains `settingGoal` and `viewingGoal` beside `editingAccount`.
-Closing either returns to home. After a goal is set or cancelled, the page
-calls `router.refresh()`, the way the theme change does. A 409 also refreshes,
-since it means the screen was stale.
+`APP_MODE` gains `settingGoal`, `viewingGoal` and `cancellingGoal` beside
+`editingAccount`. The menu closes when it opens any of them (as
+`startEditingAccount` does), so the cancel dialog needs its own mode too.
+`AccountManagement` draws their overlays, and home, `/transactions` and
+`/method` all render it, so the goal screens open over whichever page the
+menu was on, and closing returns to that page in `viewing` mode. The menu's
+goal row opens `viewingGoal`; the strip opens it on home. Adding three
+overlays takes `AccountManagement` and `useAccountNavigation` past the
+40-line limit, so the goal overlays move into their own component.
+
+After a goal is set or cancelled, the page calls `router.refresh()`, the way
+`finishEditing` does. A 409 also refreshes, since it means the screen was
+stale.
 
 ### New components — `src/components/Goal/`
 
 | Component | Frames | What it is |
 |---|---|---|
-| `SetGoal` | 1a | Name, picture, amount, the lock note, **קובעים יעד** and **ביטול**. Same title, ✕ and buttons as `AccountForm`, reusing its `CancelButton`. The button is disabled until there is a name and an amount. Upload and link are disabled with a בקרוב tag. |
+| `SetGoal` | 1a | Name, picture, amount, the lock note, **קובעים יעד** and **ביטול**. Same title, ✕ and buttons as `AccountForm`, reusing its `CancelButton` (exported from `AccountForm/index.ts`, which today exports only `AccountForm`). The button is disabled until there is a name and an amount. Upload and link are disabled with a בקרוב tag. |
 | `GoalPictureSearch` | 1b | The search sheet: search box, 3×3 picture tiles, a ✓ on the chosen one, **בחירה**. |
 | `GoalProgress` | 2, 2b | Picture, name, bar, `₪85 נחסכו` / `מתוך ₪300`, the "עוד ₪215 ומגיעים!" line, the `🔒 שומרים עד היעד` badge and **חזרה**. Reached: the `הגעת ליעד!` heading, gold glow, full bar, "כל הכבוד! אפשר לקנות את …", badge without a lock. |
 | `GoalStrip` | 4a, 4b | One line at the bottom of the savings `WalletCard`. Tapping opens `viewingGoal`. Reached: green, `🎉 הגעת ליעד!`. |
@@ -299,8 +369,11 @@ since it means the screen was stale.
   `🔒 החיסכון שמור ליעד „…”` and the bar, and disables the button as `🔒 שומרים עד היעד` (5b).
   `use-withdrawal-form` treats a locked savings wallet like an overdraft:
   `canSubmit` is false. Reached: savings looks like any wallet, and a green
-  line reads `🎉 משיכה מהחיסכון תסיים את היעד „…”` (5c). A 400 from the
-  server shows its message like an overdraft does.
+  line reads `🎉 משיכה מהחיסכון תסיים את היעד „…”` (5c). The drawer never
+  shows a server message (they are English, and `useAmountEntry` keeps only
+  `hasError`): a refused withdrawal shows the existing `WithdrawalAlert`
+  error, and a `409` also calls `router.refresh()`, so a goal set elsewhere
+  appears and savings shows as locked.
 
 All text goes in each component's `constants.ts`. Colours come from the theme:
 the reached green is `gainText` / `gainSoftBg`. The confetti and border colours
@@ -309,15 +382,19 @@ become new theme values, one set per theme.
 ## Testing
 
 - **Logic:** `validGoal` at every boundary (name 0/1/30/31 after trimming,
-  amount 0/1/100,000/100,001 and non-whole, extra fields, a non-emoji
-  picture); `goalReached` at `balance = amount − 1` and `= amount`; a locked
-  withdrawal is refused; a reached withdrawal ends the goal as `completed` with
-  `ended_at` equal to the withdrawal's `created_at`; spending and good-deeds
-  withdrawals ignore the goal; deposits are unaffected; cancelling ends it as
-  `cancelled`.
+  amount 0/1/100,000/100,001 and non-whole, extra fields, a picture that is
+  text, two emoji or `🚲abc`, and a flag that is accepted); `goalReached` at
+  `balance = amount − 1` and `= amount`; a locked withdrawal is refused; a
+  reached withdrawal ends the goal as `completed` with `ended_at` equal to the
+  withdrawal's `created_at`; a reached withdrawal larger than the balance is
+  refused as an overdraft and the goal stays active; spending and good-deeds
+  withdrawals ignore the goal; savings with no goal withdraws as today;
+  deposits are unaffected; cancelling ends it as `cancelled`; the picture
+  search matches "האופניים" and does not match "יד" inside "תלמידה".
 - **Stores (memory and JSON, `npm test`):** a second active goal is refused;
-  `end` with another account's id or an ended goal ends nothing; an old store
-  file without `goals` reads as none.
+  `end` with another account's id or an ended goal ends nothing; withdraw-and-
+  end on a goal already cancelled records the withdrawal and leaves the goal
+  `cancelled`; an old store file without `goals` reads as none.
 - **Database (`test:db`):** the index refuses a second active goal and it
   surfaces as `GoalAlreadyActiveError`; the `CHECK`s refuse `amount = 0` and
   an `outcome` without `ended_at`; `end` fills `ended_at` and `outcome`;
@@ -325,7 +402,7 @@ become new theme values, one set per theme.
   active — neither write behind.
 - **Routes:** another user's account is refused; a second goal gets 409;
   cancelling with a stale or foreign `goalId` gets 409; a locked withdrawal
-  gets its message.
+  gets 409. `fetchJson` sends `DELETE` and its failure carries the status.
 - **Components:** one test file per new component. For example, savings is
   greyed in the drawer, the strip opens the goal screen, letting go of the hold
   early does not cancel, `pointercancel` resets the hold.
@@ -336,13 +413,15 @@ become new theme values, one set per theme.
 
 Each PR merges on its own and leaves the app working.
 
-1. **Goals storage and rules.** The table, `GoalRepository` in all three
-   backends, `src/lib/goal`, the glossary additions, and the Method copy
-   rename below. Nothing visible.
+1. **Goals storage and rules.** The table (migrated on Neon `test` and
+   `dev`), `GoalRepository` in all three backends, `src/lib/goal`, the
+   glossary additions, and the Method copy rename below. Nothing visible.
 2. **API and the server lock.** Run the migration on Neon `production` first.
    The set and cancel routes, the withdrawal rules, the goal on
-   `AccountSummary`. `docs/the-method.md` and the backlog's "not yet enforced"
-   lines are updated. Nothing visible: no screen can set a goal yet.
+   `AccountSummary`, `fetchJson`'s `DELETE` and status. `docs/the-method.md`
+   and the backlog are updated: the "not yet enforced" lines go, and the
+   backlog's "Savings goal" data sketch (fields on `Wallet`) points here
+   instead. Nothing visible: no screen can set a goal yet.
 3. **Showing a goal.** `GoalProgress`, `GoalStrip`, the menu row, the 🔒 on
    the savings card, the locked drawer states. Testable with seeded goals.
 4. **Setting and cancelling.** `SetGoal`, `GoalPictureSearch` with the
