@@ -3,8 +3,8 @@
 import { JSX } from 'react';
 import { useAccounts } from '@/components/Home/accounts-context';
 import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
-import { useAccountViewMode } from './use-account-view-mode';
 import { REQUEST_STATE } from '@/lib/request-state';
+import { useAccountViewMode } from './use-account-view-mode';
 import { VIEW_MODE_SWITCH_COPY, VIEW_MODE_SWITCH_TEST_IDS } from './constants';
 import {
   Icon,

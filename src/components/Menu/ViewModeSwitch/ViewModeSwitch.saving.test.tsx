@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { act, fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import {
   mockAccountsContext,
   mockAccountSummary,
@@ -6,6 +6,7 @@ import {
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { VIEW_MODE } from '@/lib/account/view-mode';
+import { prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
 import { Header } from '@/components/Header';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
@@ -79,40 +80,63 @@ describe('ViewModeSwitch while it saves', () => {
     });
   });
 
+  describe('the save succeeds in the header menu', () => {
+    beforeEach(async () => {
+      prefersReducedMotion();
+      jest.useFakeTimers();
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({ ok: true, json: async () => mockAccountSummary });
+      tapSwitchInHeaderMenu();
+      await act(() => jest.advanceTimersByTimeAsync(1));
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+      prefersMotion();
+    });
+
+    it('keeps the switch locked after the menu closes', () => {
+      expect(
+        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+      ).toBeDisabled();
+    });
+
+    it('keeps the header loader running after the menu closes', () => {
+      expect(screen.getByTestId(HEADER_TEST_IDS.progress)).toBeInTheDocument();
+    });
+  });
+
   describe('the save fails', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       global.fetch = jest.fn().mockResolvedValue({ ok: false });
       renderInOpenMenu(<ViewModeSwitch viewMode={VIEW_MODE.child} />, {
         accounts: mockAccountsContext,
       });
       tapSwitch();
+      await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError);
     });
 
-    it('says the screen did not change', async () => {
+    it('says the screen did not change', () => {
       expect(
-        await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError)
+        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError)
       ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.saveError);
     });
 
-    it('slides the switch back off', async () => {
-      await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError);
-
+    it('slides the switch back off', () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
       ).toHaveAttribute('aria-checked', 'false');
     });
 
-    it('unlocks the switch so the parent can try again', async () => {
-      await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError);
-
+    it('unlocks the switch so the parent can try again', () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
       ).toBeEnabled();
     });
 
     describe('and the menu is closed and reopened', () => {
-      beforeEach(async () => {
-        await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError);
+      beforeEach(() => {
         closeAndReopenMenu();
       });
 
