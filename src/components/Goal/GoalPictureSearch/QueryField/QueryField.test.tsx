@@ -26,8 +26,8 @@ describe('QueryField', () => {
       });
     });
 
-    it('reports the change', () => {
-      expect(mockOnChange).toHaveBeenCalledTimes(1);
+    it('reports the typed query', () => {
+      expect(mockOnChange).toHaveBeenCalledWith(mockTypedQuery);
     });
   });
 });

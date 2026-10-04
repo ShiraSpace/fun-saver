@@ -27,7 +27,11 @@ export function GoalPictureSearch({
   const titleId = useId();
   const search = useGoalPictureSearch({ goalName, picture, onChange });
 
-  useEscapeKey({ isListening: true, onEscape: onClose });
+  useEscapeKey({
+    isListening: true,
+    onEscape: onClose,
+    takesPrecedence: true,
+  });
 
   return (
     <>
@@ -47,10 +51,10 @@ export function GoalPictureSearch({
           pictures={search.pictures}
           requestState={search.requestState}
           query={search.searchedQuery}
-          chosenEmoji={search.chosenEmoji}
-          onChoose={search.chooseEmoji}
+          chosenPicture={search.chosenPicture}
+          onChoosePicture={search.choosePicture}
         />
-        <ChooseButton onChoose={search.confirmChoice} />
+        <ChooseButton onConfirm={search.confirmChoice} />
       </Sheet>
     </>
   );

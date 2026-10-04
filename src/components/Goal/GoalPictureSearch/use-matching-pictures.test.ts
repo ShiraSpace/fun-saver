@@ -41,5 +41,22 @@ describe('useMatchingPictures', () => {
     it('finds the bicycle for a word typed with a prefix letter', () => {
       expect(hook.result.current.pictures).toContain(mockQueryPicture);
     });
+
+    describe('and the sheet opens again', () => {
+      let reopenedHook: MatchingPicturesHook;
+
+      beforeEach(() => {
+        hook.unmount();
+        reopenedHook = renderHook(() =>
+          useMatchingPictures(mockQueryWithPrefix)
+        );
+      });
+
+      it('starts with the pictures already found', () => {
+        expect(reopenedHook.result.current.pictures).toContain(
+          mockQueryPicture
+        );
+      });
+    });
   });
 });

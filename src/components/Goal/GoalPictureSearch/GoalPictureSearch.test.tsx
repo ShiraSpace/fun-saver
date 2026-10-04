@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { DEFAULT_GOAL_PICTURE, GOAL_PICTURE_KIND } from '@/lib/goal/constants';
 import type { GoalPicture } from '@/lib/goal/types';
 import { createMockGoalPicture } from '@/test-utils/mocks/goal.mocks';
-import { ESCAPE_KEY } from '@/hooks/constants';
+import { ESCAPE_KEY, KEY_DOWN_EVENT } from '@/hooks/constants';
 import { GoalPictureSearch } from './GoalPictureSearch';
 import { GOAL_PICTURE_SEARCH_TEST_IDS } from './constants';
 import { CHOOSE_BUTTON_TEST_IDS } from './ChooseButton/constants';
@@ -89,6 +89,16 @@ describe('GoalPictureSearch', () => {
       });
     });
 
+    describe('after tapping the bicycle only', () => {
+      beforeEach(() => {
+        fireEvent.click(screen.getByText(mockGoalNamePicture));
+      });
+
+      it('does not send a picture yet', () => {
+        expect(mockOnChange).not.toHaveBeenCalled();
+      });
+    });
+
     describe('after tapping the bicycle and choosing', () => {
       beforeEach(() => {
         fireEvent.click(screen.getByText(mockGoalNamePicture));
@@ -108,8 +118,11 @@ describe('GoalPictureSearch', () => {
         fireEvent.click(screen.getByTestId(SHEET_HEADING_TEST_IDS.close));
       });
 
-      it('closes without changing the picture', () => {
+      it('closes', () => {
         expect(mockOnClose).toHaveBeenCalledTimes(1);
+      });
+
+      it('leaves the picture unchanged', () => {
         expect(mockOnChange).not.toHaveBeenCalled();
       });
     });
@@ -125,12 +138,24 @@ describe('GoalPictureSearch', () => {
     });
 
     describe('after pressing Escape', () => {
+      const mockOnLayerBelowEscape = jest.fn();
+
       beforeEach(() => {
+        mockOnLayerBelowEscape.mockClear();
+        document.addEventListener(KEY_DOWN_EVENT, mockOnLayerBelowEscape);
         fireEvent.keyDown(document.body, { key: ESCAPE_KEY });
+      });
+
+      afterEach(() => {
+        document.removeEventListener(KEY_DOWN_EVENT, mockOnLayerBelowEscape);
       });
 
       it('closes', () => {
         expect(mockOnClose).toHaveBeenCalledTimes(1);
+      });
+
+      it('leaves the layer below open', () => {
+        expect(mockOnLayerBelowEscape).not.toHaveBeenCalled();
       });
     });
   });

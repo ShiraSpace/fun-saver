@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { DEFAULT_GOAL_PICTURE, GOAL_PICTURE_KIND } from '@/lib/goal/constants';
 import type { GoalPicture } from '@/lib/goal/types';
 import type { RequestState } from '@/lib/request-state';
@@ -19,9 +19,9 @@ interface GoalPictureSearchState {
   searchedQuery: string;
   pictures: string[];
   requestState: RequestState;
-  chosenEmoji: string;
-  editQuery: (event: ChangeEvent<HTMLInputElement>) => void;
-  chooseEmoji: (emoji: string) => void;
+  chosenPicture: string;
+  editQuery: (query: string) => void;
+  choosePicture: (picture: string) => void;
   confirmChoice: () => void;
 }
 
@@ -31,7 +31,7 @@ export function useGoalPictureSearch({
   onChange,
 }: GoalPictureSearchOptions): GoalPictureSearchState {
   const [query, setQuery] = useState(goalName);
-  const [chosenEmoji, setChosenEmoji] = useState(
+  const [chosenPicture, setChosenPicture] = useState(
     (picture ?? DEFAULT_GOAL_PICTURE).emoji
   );
   const searchedQuery = useDebouncedValue(query, PICTURE_SEARCH_DELAY_MS);
@@ -42,10 +42,10 @@ export function useGoalPictureSearch({
     searchedQuery,
     pictures,
     requestState,
-    chosenEmoji,
-    editQuery: (event): void => setQuery(event.target.value),
-    chooseEmoji: setChosenEmoji,
+    chosenPicture,
+    editQuery: setQuery,
+    choosePicture: setChosenPicture,
     confirmChoice: (): void =>
-      onChange({ kind: GOAL_PICTURE_KIND.emoji, emoji: chosenEmoji }),
+      onChange({ kind: GOAL_PICTURE_KIND.emoji, emoji: chosenPicture }),
   };
 }

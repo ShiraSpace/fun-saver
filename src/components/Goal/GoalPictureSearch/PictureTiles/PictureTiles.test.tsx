@@ -5,21 +5,22 @@ import { PictureTiles } from './PictureTiles';
 import { PICTURE_TILES_COPY, PICTURE_TILES_TEST_IDS } from './constants';
 
 describe('PictureTiles', () => {
+  const mockQuery = 'אופניים';
+
   describe('with matching pictures and one chosen', () => {
     const mockPictures = ['🚲', '🚴', '🛴'];
-    const mockChosenEmoji = '🚴';
-    const mockQuery = 'אופניים';
-    const mockOnChoose = jest.fn();
+    const mockChosenPicture = '🚴';
+    const mockOnChoosePicture = jest.fn();
 
     beforeEach(() => {
-      mockOnChoose.mockClear();
+      mockOnChoosePicture.mockClear();
       render(
         <PictureTiles
           pictures={mockPictures}
           requestState={REQUEST_STATE.idle}
           query={mockQuery}
-          chosenEmoji={mockChosenEmoji}
-          onChoose={mockOnChoose}
+          chosenPicture={mockChosenPicture}
+          onChoosePicture={mockOnChoosePicture}
         />
       );
     });
@@ -36,27 +37,26 @@ describe('PictureTiles', () => {
         .filter((tile) => tile.getAttribute('aria-pressed') === 'true');
 
       expect(pressed.map((tile) => tile.textContent)).toEqual([
-        mockChosenEmoji,
+        mockChosenPicture,
       ]);
     });
 
     describe('after tapping a tile that is not chosen', () => {
-      const mockTappedEmoji = '🛴';
+      const mockTappedPicture = '🛴';
 
       beforeEach(() => {
-        fireEvent.click(screen.getByText(mockTappedEmoji));
+        fireEvent.click(screen.getByText(mockTappedPicture));
       });
 
       it('chooses that tile’s picture', () => {
-        expect(mockOnChoose).toHaveBeenCalledWith(mockTappedEmoji);
+        expect(mockOnChoosePicture).toHaveBeenCalledWith(mockTappedPicture);
       });
     });
   });
 
   describe('with no tiles to show', () => {
-    const mockChosenEmoji = '🎯';
-    const mockQuery = 'אופניים';
-    const mockOnChoose = jest.fn();
+    const mockChosenPicture = '🎯';
+    const mockOnChoosePicture = jest.fn();
 
     function renderStateOnly(requestState: RequestState, query: string): void {
       render(
@@ -64,8 +64,8 @@ describe('PictureTiles', () => {
           pictures={[]}
           requestState={requestState}
           query={query}
-          chosenEmoji={mockChosenEmoji}
-          onChoose={mockOnChoose}
+          chosenPicture={mockChosenPicture}
+          onChoosePicture={mockOnChoosePicture}
         />
       );
     }
@@ -126,8 +126,7 @@ describe('PictureTiles', () => {
   describe('on jungle-quest, where the primary colour is not the ring', () => {
     const { selectionRing } = getThemeTokens(THEME_ID.jungleQuest).colors;
     const mockPicture = '🚲';
-    const mockQuery = 'אופניים';
-    const mockOnChoose = jest.fn();
+    const mockOnChoosePicture = jest.fn();
 
     beforeEach(() => {
       render(
@@ -135,8 +134,8 @@ describe('PictureTiles', () => {
           pictures={[mockPicture]}
           requestState={REQUEST_STATE.idle}
           query={mockQuery}
-          chosenEmoji={mockPicture}
-          onChoose={mockOnChoose}
+          chosenPicture={mockPicture}
+          onChoosePicture={mockOnChoosePicture}
         />,
         { themeId: THEME_ID.jungleQuest }
       );

@@ -24,6 +24,7 @@ export const Sheet = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  max-height: 90dvh;
   gap: 12px;
   padding: 16px 14px 18px;
   background: ${surface};

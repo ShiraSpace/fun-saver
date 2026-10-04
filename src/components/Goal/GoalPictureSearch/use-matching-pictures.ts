@@ -13,16 +13,28 @@ interface MatchingPictures {
   requestState: RequestState;
 }
 
+let loadedPicturesByTerm: PicturesByTerm | undefined;
+
+async function loadPicturesByTerm(): Promise<PicturesByTerm> {
+  const { default: pictureWords } =
+    await import('@/lib/goal/picture-search/picture-words.he.json');
+  loadedPicturesByTerm = indexPictureWords(pictureWords);
+  return loadedPicturesByTerm;
+}
+
 export function useMatchingPictures(query: string): MatchingPictures {
-  const [picturesByTerm, setPicturesByTerm] = useState<PicturesByTerm>();
+  const [picturesByTerm, setPicturesByTerm] = useState(loadedPicturesByTerm);
   const [requestState, setRequestState] = useState<RequestState>(
-    REQUEST_STATE.pending
+    loadedPicturesByTerm ? REQUEST_STATE.idle : REQUEST_STATE.pending
   );
 
   useEffect(() => {
-    void import('@/lib/goal/picture-search/picture-words.he.json')
-      .then(({ default: pictureWords }) => {
-        setPicturesByTerm(indexPictureWords(pictureWords));
+    if (loadedPicturesByTerm) {
+      return;
+    }
+    void loadPicturesByTerm()
+      .then((loaded) => {
+        setPicturesByTerm(loaded);
         setRequestState(REQUEST_STATE.idle);
       })
       .catch(() => setRequestState(REQUEST_STATE.failed));

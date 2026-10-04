@@ -15,6 +15,7 @@ export const Grid = styled.div`
   align-content: start;
   gap: 6px;
   aspect-ratio: 1;
+  min-height: 0;
   padding: 4px;
   overflow-y: auto;
 `;

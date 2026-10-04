@@ -9,8 +9,8 @@ interface PictureTilesProps {
   pictures: string[];
   requestState: RequestState;
   query: string;
-  chosenEmoji: string;
-  onChoose: (emoji: string) => void;
+  chosenPicture: string;
+  onChoosePicture: (picture: string) => void;
 }
 
 function stateLine(
@@ -34,16 +34,17 @@ export function PictureTiles({
   pictures,
   requestState,
   query,
-  chosenEmoji,
-  onChoose,
+  chosenPicture,
+  onChoosePicture,
 }: PictureTilesProps): JSX.Element {
   const line = stateLine(pictures, requestState, query);
+  const isFailed = requestState === REQUEST_STATE.failed;
 
   if (line) {
     return (
       <StateLine
         role="status"
-        isAlert={requestState === REQUEST_STATE.failed}
+        isAlert={isFailed}
         data-testid={PICTURE_TILES_TEST_IDS.stateLine}
       >
         {line}
@@ -51,15 +52,15 @@ export function PictureTiles({
     );
   }
 
-  const tiles = pictures.map((emoji) => (
+  const tiles = pictures.map((picture) => (
     <Tile
-      key={emoji}
+      key={picture}
       type="button"
-      aria-pressed={emoji === chosenEmoji}
+      aria-pressed={picture === chosenPicture}
       data-testid={PICTURE_TILES_TEST_IDS.tile}
-      onClick={(): void => onChoose(emoji)}
+      onClick={(): void => onChoosePicture(picture)}
     >
-      {emoji}
+      {picture}
     </Tile>
   ));
 
