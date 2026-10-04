@@ -13,17 +13,17 @@ describe('useCreateAccount', () => {
   });
 
   it('posts the new account to the accounts endpoint and returns it', async () => {
-    const fetchMock = jest
+    const mockFetch = jest
       .fn()
       .mockResolvedValue({ ok: true, json: async () => mockAccount });
-    global.fetch = fetchMock as unknown as typeof fetch;
+    global.fetch = mockFetch as unknown as typeof fetch;
 
     const { result } = renderHook(() => useCreateAccount());
     const account = await result.current.createAccount(mockCreateAccountInput);
 
     expect(account).toEqual(mockAccount);
 
-    const [url, init] = fetchMock.mock.calls[0];
+    const [url, init] = mockFetch.mock.calls[0];
     expect(url).toBe('/api/accounts');
     expect(init.method).toBe('POST');
     expect(init.cache).toBe('no-store');

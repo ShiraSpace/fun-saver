@@ -4,11 +4,11 @@ import { useAddTransaction } from './use-add-transaction';
 describe('useAddTransaction', () => {
   const originalFetch = global.fetch;
   const mockAccountId = 'account-1';
-  let fetchMock: jest.Mock;
+  let mockFetch: jest.Mock;
 
   beforeEach(() => {
-    fetchMock = jest.fn().mockResolvedValue({ ok: true, json: async () => [] });
-    global.fetch = fetchMock as unknown as typeof fetch;
+    mockFetch = jest.fn().mockResolvedValue({ ok: true, json: async () => [] });
+    global.fetch = mockFetch as unknown as typeof fetch;
   });
 
   afterEach(() => {
@@ -22,7 +22,7 @@ describe('useAddTransaction', () => {
   it('posts the amount to the account deposits endpoint', async () => {
     await hook().addDeposit(20);
 
-    const [url, init] = fetchMock.mock.calls[0];
+    const [url, init] = mockFetch.mock.calls[0];
 
     expect(url).toBe(`/api/accounts/${mockAccountId}/deposits`);
     expect(init.method).toBe('POST');
@@ -31,7 +31,7 @@ describe('useAddTransaction', () => {
   });
 
   it('throws when the deposit request fails', async () => {
-    fetchMock.mockResolvedValue({ ok: false });
+    mockFetch.mockResolvedValue({ ok: false });
 
     await expect(hook().addDeposit(20)).rejects.toThrow();
   });
@@ -39,7 +39,7 @@ describe('useAddTransaction', () => {
   it('posts the wallet and amount to the account withdrawals endpoint', async () => {
     await hook().addWithdrawal('w2', 15);
 
-    const [url, init] = fetchMock.mock.calls[0];
+    const [url, init] = mockFetch.mock.calls[0];
 
     expect(url).toBe(`/api/accounts/${mockAccountId}/withdrawals`);
     expect(init.method).toBe('POST');
@@ -48,7 +48,7 @@ describe('useAddTransaction', () => {
   });
 
   it('throws when the withdrawal request fails', async () => {
-    fetchMock.mockResolvedValue({ ok: false });
+    mockFetch.mockResolvedValue({ ok: false });
 
     await expect(hook().addWithdrawal('w2', 15)).rejects.toThrow();
   });

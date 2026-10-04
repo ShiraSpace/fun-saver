@@ -8,7 +8,7 @@ import { useUpdateAccount } from './use-update-account';
 
 describe('useUpdateAccount', () => {
   const originalFetch = global.fetch;
-  let fetchMock: jest.Mock;
+  let mockFetch: jest.Mock;
 
   afterEach(() => {
     global.fetch = originalFetch;
@@ -16,10 +16,10 @@ describe('useUpdateAccount', () => {
 
   describe('when the request succeeds', () => {
     beforeEach(() => {
-      fetchMock = jest
+      mockFetch = jest
         .fn()
         .mockResolvedValue({ ok: true, json: async () => mockAccount });
-      global.fetch = fetchMock as unknown as typeof fetch;
+      global.fetch = mockFetch as unknown as typeof fetch;
     });
 
     function updateAccount(): Promise<Account> {
@@ -30,7 +30,7 @@ describe('useUpdateAccount', () => {
     it('puts to the endpoint for that account', async () => {
       await updateAccount();
 
-      const [url, init] = fetchMock.mock.calls[0];
+      const [url, init] = mockFetch.mock.calls[0];
       expect(url).toBe(`/api/accounts/${mockAccount.id}`);
       expect(init.method).toBe('PUT');
     });
@@ -38,7 +38,7 @@ describe('useUpdateAccount', () => {
     it('sends the edits as the body, uncached', async () => {
       await updateAccount();
 
-      const [, init] = fetchMock.mock.calls[0];
+      const [, init] = mockFetch.mock.calls[0];
       expect(JSON.parse(init.body)).toEqual(mockAccountEdits);
       expect(init.cache).toBe('no-store');
     });
