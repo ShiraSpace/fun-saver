@@ -9,8 +9,9 @@ import {
   createMockWallets,
 } from '@/test-utils/mocks/wallet.mocks';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
+import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
-import type { Account } from '@/lib/account/types';
+import type { Account, AccountSummary } from '@/lib/account/types';
 import type { WalletSummary } from '@/lib/wallet/types';
 
 const [mockSavings, mockSpending] = createMockWallets();
@@ -203,5 +204,25 @@ describe('summarizeAccounts', () => {
     expect(
       await summarizeAccounts({ store, accounts: [], asOf: '2026-01-03' })
     ).toEqual([]);
+  });
+
+  describe('an account with an active goal', () => {
+    const mockGoal = createMockGoal({ accountId: mockAccount.id });
+    const mockAsOf = '2026-01-03';
+
+    let accountSummary: AccountSummary;
+
+    beforeEach(async () => {
+      await store.insertGoal(mockGoal);
+      [accountSummary] = await summarizeAccounts({
+        store,
+        accounts: [mockAccount],
+        asOf: mockAsOf,
+      });
+    });
+
+    it('carries the goal on its summary', () => {
+      expect(accountSummary.goal).toEqual(mockGoal);
+    });
   });
 });
