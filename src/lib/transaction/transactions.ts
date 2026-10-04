@@ -6,6 +6,8 @@ import { OverdraftError } from './errors';
 import { ValidationError } from '@/lib/errors';
 import type { Account } from '@/lib/account/types';
 import type { WalletName } from '@/lib/wallet/types';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
+import { withdrawFromSavings } from '@/lib/goal/savings-withdrawal';
 import type { Transaction } from './types';
 
 interface AddWithdrawalParams {
@@ -15,6 +17,8 @@ interface AddWithdrawalParams {
   amountAgorot: number;
   asOf: string;
 }
+
+type NewWithdrawalParams = Omit<AddWithdrawalParams, 'store'>;
 
 interface AddDepositParams {
   store: DataStore;
@@ -66,6 +70,23 @@ export async function addDeposit({
   return transactions;
 }
 
+function newWithdrawal({
+  account,
+  walletId,
+  amountAgorot,
+  asOf,
+}: NewWithdrawalParams): Transaction {
+  return {
+    id: newId(),
+    walletId,
+    accountId: account.id,
+    type: TRANSACTION_TYPE.withdrawal,
+    amount: amountAgorot,
+    occurredAt: asOf,
+    createdAt: new Date().toISOString(),
+  };
+}
+
 export async function addWithdrawal({
   store,
   account,
@@ -81,23 +102,29 @@ export async function addWithdrawal({
     throw new ValidationError('unknown wallet');
   }
 
-  const existing = await store.listTransactionsByWallet(account.id, walletId);
+  const isSavings = wallet.name === WALLET_NAMES.savings;
+  const [existing, goal] = await Promise.all([
+    store.listTransactionsByWallet(account.id, walletId),
+    isSavings ? store.getActiveGoal(account.id) : undefined,
+  ]);
+  const walletBalance = balance(existing);
 
-  if (balance(existing) < amountAgorot) {
+  if (walletBalance < amountAgorot) {
     throw new OverdraftError('cannot withdraw more than the pot balance');
   }
 
-  const withdrawal: Transaction = {
-    id: newId(),
-    walletId,
-    accountId: account.id,
-    type: TRANSACTION_TYPE.withdrawal,
-    amount: amountAgorot,
-    occurredAt: asOf,
-    createdAt: new Date().toISOString(),
-  };
+  const withdrawal = newWithdrawal({ account, walletId, amountAgorot, asOf });
 
-  await store.insertTransactions([withdrawal]);
+  if (isSavings) {
+    await withdrawFromSavings({
+      store,
+      withdrawal,
+      goal,
+      savingsBalance: walletBalance,
+    });
+  } else {
+    await store.insertTransactions([withdrawal]);
+  }
 
   return withdrawal;
 }
