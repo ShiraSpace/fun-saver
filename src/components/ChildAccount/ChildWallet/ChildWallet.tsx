@@ -4,6 +4,7 @@ import { JSX } from 'react';
 import type { SpendableWalletName, WalletSummary } from '@/lib/wallet/types';
 import { WALLET_LABEL } from '@/lib/wallet/constants';
 import { Money } from '@/components/Money';
+import { MONEY_ROUNDING } from '@/components/Money/constants';
 import { CHILD_WALLET_COPY, CHILD_WALLET_TEST_IDS } from './constants';
 import { Amount, Card, Icon, Name, Note } from './ChildWallet.styles';
 
@@ -28,7 +29,7 @@ export function ChildWallet({ wallet }: ChildWalletProps): JSX.Element {
         <Money
           amountAgorot={wallet.balance}
           testId={CHILD_WALLET_TEST_IDS.balance}
-          roundDown
+          rounding={MONEY_ROUNDING.downToShekel}
         />
       </Amount>
     </Card>

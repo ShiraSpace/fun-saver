@@ -6,45 +6,41 @@ import {
   floorToShekels,
   nearestHalfShekel,
 } from '@/lib/money';
-import { MONEY_COPY } from './constants';
+import { MONEY_COPY, MONEY_ROUNDING, type MoneyRounding } from './constants';
 import { Amount, Currency, Shekels } from './Money.styles';
 
 interface ShownShekelsParams {
   amountAgorot: number;
-  allowHalf: boolean;
-  roundDown: boolean;
+  rounding: MoneyRounding;
 }
 
-function shownShekels({
-  amountAgorot,
-  allowHalf,
-  roundDown,
-}: ShownShekelsParams): number {
-  if (roundDown) {
-    return floorToShekels(amountAgorot);
-  }
+type RoundToShekels = (amountAgorot: number) => number;
 
-  return allowHalf
-    ? (nearestHalfShekel(amountAgorot) ?? 0)
-    : agorotToWholeShekels(amountAgorot);
+const ROUND_TO_SHEKELS: Record<MoneyRounding, RoundToShekels> = {
+  nearestShekel: agorotToWholeShekels,
+  nearestHalfShekel: (amountAgorot: number): number =>
+    nearestHalfShekel(amountAgorot) ?? 0,
+  downToShekel: floorToShekels,
+};
+
+function shownShekels({ amountAgorot, rounding }: ShownShekelsParams): number {
+  return ROUND_TO_SHEKELS[rounding](amountAgorot);
 }
 
 interface MoneyProps {
   amountAgorot: number;
   testId: string;
-  allowHalf?: boolean;
   fullSizeCurrency?: boolean;
-  roundDown?: boolean;
+  rounding?: MoneyRounding;
 }
 
 export function Money({
   amountAgorot,
   testId,
-  allowHalf = false,
   fullSizeCurrency = false,
-  roundDown = false,
+  rounding = MONEY_ROUNDING.nearestShekel,
 }: MoneyProps): JSX.Element {
-  const shekels = shownShekels({ amountAgorot, allowHalf, roundDown });
+  const shekels = shownShekels({ amountAgorot, rounding });
 
   return (
     <Amount dir="ltr" data-testid={testId}>
