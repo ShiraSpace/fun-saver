@@ -2,17 +2,16 @@ import { render, screen } from '@/test-utils/render';
 import { MenuAccountSettings } from './MenuAccountSettings';
 import { MENU_ACCOUNT_SETTINGS_TEST_IDS } from './constants';
 import {
-  mockAccountsContext,
+  createMockAccountsContext,
   mockSiblingAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
 
 describe('MenuAccountSettings', () => {
   beforeEach(() => {
     render(<MenuAccountSettings>{null}</MenuAccountSettings>, {
-      accounts: {
-        ...mockAccountsContext,
+      accounts: createMockAccountsContext({
         currentAccount: mockSiblingAccountSummary,
-      },
+      }),
     });
   });
 

@@ -4,6 +4,7 @@ import {
   MENU_OVERLAY_LAYOUT,
   MENU_OVERLAY_STYLE,
 } from '../MenuOverlay/constants';
+import { childMenuRow } from '../row-parts';
 
 export const Layout = styled.div`
   display: flex;
@@ -16,17 +17,15 @@ export const Layout = styled.div`
 `;
 
 export const Child = styled.div`
-  display: grid;
-  justify-items: center;
-  gap: 8px;
-  padding: 22px 16px;
-  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  ${childMenuRow}
+  margin-bottom: 12px;
   border-radius: 22px;
   background: ${({ theme }): string => theme.colors.surface};
 `;
 
 export const ChildName = styled.b`
-  font-size: ${({ theme }): number => theme.typography.title}px;
   color: ${({ theme }): string => theme.colors.textStrong};
 `;
 
@@ -43,14 +42,6 @@ export const HomeLink = styled(Link)`
   text-decoration: none;
   color: ${({ theme }): string => theme.colors.surface};
   background: ${({ theme }): string => theme.colors.textStrong};
-`;
-
-export const Item = styled.div`
-  min-height: 76px;
-  padding: 16px 18px;
-  margin-bottom: 12px;
-  border-radius: 22px;
-  background: ${({ theme }): string => theme.colors.surface};
 `;
 
 export const ParentCorner = styled.div`

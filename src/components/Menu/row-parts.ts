@@ -62,3 +62,12 @@ export const AddButton = styled.button`
   font-size: ${rowSize}px;
   font-weight: 600;
 `;
+
+export const childMenuRow = ({ theme }: { theme: Theme }): string => `
+  min-height: 56px;
+  box-sizing: border-box;
+  padding: 6px 16px;
+  gap: 14px;
+  font-size: ${theme.typography.heading}px;
+  font-weight: 700;
+`;

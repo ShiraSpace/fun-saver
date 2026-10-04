@@ -57,6 +57,61 @@ describe('the child goes back to the parent screen', () => {
   });
 });
 
+describe('a child switches to a sibling', () => {
+  const mockChild = createMockAccount({
+    id: 'a1',
+    name: 'אביגיל',
+    viewMode: VIEW_MODE.child,
+  });
+  const mockChildSiblingAccount = createMockAccount({
+    id: 'a2',
+    name: 'יואב',
+    avatarId: 'kid-08',
+    viewMode: VIEW_MODE.child,
+  });
+  const mockParentSiblingAccount = createMockAccount({
+    id: 'a3',
+    name: 'מתן',
+    avatarId: 'kid-07',
+    viewMode: VIEW_MODE.parent,
+  });
+  const { menu, header, childAccount, appBrowser } = useDriver({
+    accounts: [mockChild, mockChildSiblingAccount, mockParentSiblingAccount],
+  });
+
+  beforeEach(async () => {
+    await menu.open();
+  });
+
+  it('starts on the child whose name sorts first', async () => {
+    assert.equal(await header.title(), mockChild.name);
+  });
+
+  it('offers only the sibling who is also in child view', async () => {
+    assert.deepEqual(await menu.childMenuAccountNames(), [
+      mockChildSiblingAccount.name,
+    ]);
+  });
+
+  describe('the child taps the sibling', () => {
+    beforeEach(async () => {
+      await menu.switchAccountFromChildMenu(0);
+      await header.waitForTitle(mockChildSiblingAccount.name);
+    });
+
+    it("shows the sibling's child screen", async () => {
+      assert.equal(await childAccount.screenExists(), true);
+    });
+
+    it("is still the sibling's child screen after a reload", async () => {
+      await appBrowser.reload();
+
+      assert.equal(await header.title(), mockChildSiblingAccount.name);
+      assert.equal(await childAccount.screenExists(), true);
+    });
+  });
+});
+
 for (const parentPage of [METHOD_ROUTE, TRANSACTIONS_ROUTE]) {
   describe(`a child who opens ${parentPage} by its address`, () => {
     const { menu, appBrowser } = useDriver({

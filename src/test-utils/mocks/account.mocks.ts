@@ -84,13 +84,26 @@ export const mockSiblingAccountSummary: AccountSummary = {
   wallets: [createMockWalletSummary({ id: 'w4', balance: 4200 })],
 };
 
-export const mockAccountsContext: AccountsContextValue = {
-  accounts: [mockAccountSummary, mockSiblingAccountSummary],
-  currentAccount: mockAccountSummary,
-  switchAccount: () => {},
-};
+export function createMockAccountsContext(
+  overrides: Partial<AccountsContextValue> = {}
+): AccountsContextValue {
+  return {
+    accounts: [mockAccountSummary, mockSiblingAccountSummary],
+    currentAccount: mockAccountSummary,
+    switchAccount: (): void => {},
+    ...overrides,
+  };
+}
 
-export const mockChildAccountsContext: AccountsContextValue = {
-  ...mockAccountsContext,
-  currentAccount: { ...mockAccountSummary, viewMode: VIEW_MODE.child },
-};
+export function createMockChildAccountsContext(
+  overrides: Partial<AccountsContextValue> = {}
+): AccountsContextValue {
+  return createMockAccountsContext({
+    currentAccount: { ...mockAccountSummary, viewMode: VIEW_MODE.child },
+    ...overrides,
+  });
+}
+
+export const mockAccountsContext = createMockAccountsContext();
+
+export const mockChildAccountsContext = createMockChildAccountsContext();

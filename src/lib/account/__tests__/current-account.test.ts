@@ -1,19 +1,23 @@
 import { findCurrentAccount } from '../current-account';
 
-const first = { id: 'a1' };
-const second = { id: 'a2' };
-const accounts = [first, second];
+const mockFirstAccount = { id: 'a1' };
+const mockSecondAccount = { id: 'a2' };
+const mockAccounts = [mockFirstAccount, mockSecondAccount];
 
 describe('findCurrentAccount', () => {
   it('finds the account the id names', () => {
-    expect(findCurrentAccount(accounts, second.id)).toBe(second);
+    expect(findCurrentAccount(mockAccounts, mockSecondAccount.id)).toBe(
+      mockSecondAccount
+    );
   });
 
   it('falls back to the first account when the id names none of them', () => {
-    expect(findCurrentAccount(accounts, 'unknown-account-id')).toBe(first);
+    expect(findCurrentAccount(mockAccounts, 'unknown-account-id')).toBe(
+      mockFirstAccount
+    );
   });
 
   it('has nothing to fall back to when there are no accounts', () => {
-    expect(findCurrentAccount([], first.id)).toBeUndefined();
+    expect(findCurrentAccount([], mockFirstAccount.id)).toBeUndefined();
   });
 });

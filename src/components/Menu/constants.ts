@@ -17,6 +17,10 @@ export const MENU_LAYOUT = {
   blockGap: 14,
 } as const;
 
+export const CHILD_MENU_AVATAR_PROPS = {
+  size: 40,
+} as const;
+
 export const MENU_ROW_STYLE = {
   borderWidth: 1.5,
   pressScale: 0.98,
