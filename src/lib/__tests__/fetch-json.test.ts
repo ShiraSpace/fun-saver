@@ -17,7 +17,7 @@ const mockRequest = {
 
 describe('fetchJson', () => {
   const originalFetch = global.fetch;
-  let fetchMock: jest.Mock;
+  let mockFetch: jest.Mock;
 
   afterEach(() => {
     global.fetch = originalFetch;
@@ -25,16 +25,16 @@ describe('fetchJson', () => {
 
   describe('when the route answers', () => {
     beforeEach(() => {
-      fetchMock = jest
+      mockFetch = jest
         .fn()
         .mockResolvedValue({ ok: true, json: async () => mockAccount });
-      global.fetch = fetchMock as unknown as typeof fetch;
+      global.fetch = mockFetch as unknown as typeof fetch;
     });
 
     it('calls the given url with the given method', async () => {
       await fetchJson(mockRequest);
 
-      const [url, init] = fetchMock.mock.calls[0];
+      const [url, init] = mockFetch.mock.calls[0];
       expect(url).toBe(mockRequest.url);
       expect(init.method).toBe(mockRequest.method);
     });
@@ -42,7 +42,7 @@ describe('fetchJson', () => {
     it('sends the body as json', async () => {
       await fetchJson(mockRequest);
 
-      const [, init] = fetchMock.mock.calls[0];
+      const [, init] = mockFetch.mock.calls[0];
       expect(init.headers).toEqual({ 'Content-Type': 'application/json' });
       expect(JSON.parse(init.body)).toEqual(mockRequest.body);
     });
@@ -50,7 +50,7 @@ describe('fetchJson', () => {
     it('never accepts a cached answer', async () => {
       await fetchJson(mockRequest);
 
-      const [, init] = fetchMock.mock.calls[0];
+      const [, init] = mockFetch.mock.calls[0];
       expect(init.cache).toBe('no-store');
     });
 
@@ -136,15 +136,15 @@ describe('fetchJson', () => {
     } as const;
 
     beforeEach(async () => {
-      fetchMock = jest
+      mockFetch = jest
         .fn()
         .mockResolvedValue({ ok: true, json: async () => mockAccount });
-      global.fetch = fetchMock as unknown as typeof fetch;
+      global.fetch = mockFetch as unknown as typeof fetch;
       await fetchJson(mockDeleteRequest);
     });
 
     it('sends no body', () => {
-      const [, init] = fetchMock.mock.calls[0];
+      const [, init] = mockFetch.mock.calls[0];
       expect(init.body).toBeUndefined();
     });
   });
