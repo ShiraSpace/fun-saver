@@ -1,4 +1,9 @@
-import { VIEW_MODE, isShownToChild, resolveViewMode } from '../view-mode';
+import {
+  VIEW_MODE,
+  isShownToChild,
+  otherAccountsShownToChild,
+  resolveViewMode,
+} from '../view-mode';
 
 describe('resolveViewMode', () => {
   it('keeps a stored child view', () => {
@@ -21,5 +26,20 @@ describe('isShownToChild', () => {
 
   it('is false for an account in parent view', () => {
     expect(isShownToChild({ viewMode: VIEW_MODE.parent })).toBe(false);
+  });
+});
+
+describe('otherAccountsShownToChild', () => {
+  it('leaves out an account in parent view', () => {
+    const mockCurrentAccount = { id: 'a1', viewMode: VIEW_MODE.child };
+    const mockChildSibling = { id: 'a2', viewMode: VIEW_MODE.child };
+    const mockParentSibling = { id: 'a3', viewMode: VIEW_MODE.parent };
+
+    expect(
+      otherAccountsShownToChild(
+        [mockCurrentAccount, mockChildSibling, mockParentSibling],
+        mockCurrentAccount
+      )
+    ).toEqual([mockChildSibling]);
   });
 });

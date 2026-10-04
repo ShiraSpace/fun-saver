@@ -66,7 +66,7 @@ describe('ChildMenuContent', () => {
   });
 });
 
-describe('ChildMenuContent with siblings in either view', () => {
+describe('ChildMenuContent with a sibling in each view', () => {
   const mockChildSibling = {
     ...mockSiblingAccountSummary,
     id: 'a3',
@@ -96,22 +96,17 @@ describe('ChildMenuContent with siblings in either view', () => {
     );
   });
 
-  it('lists every sibling, whatever their view', () => {
+  it('lists only the sibling in child view', () => {
     const names = screen
       .getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)
       .map((name) => name.textContent);
 
-    expect(names).toEqual([
-      mockSiblingAccountSummary.name,
-      mockChildSibling.name,
-    ]);
+    expect(names).toEqual([mockChildSibling.name]);
   });
 
-  describe('the child taps a sibling', () => {
+  describe('the child taps their sibling', () => {
     beforeEach(() => {
-      fireEvent.click(
-        screen.getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)[1]
-      );
+      fireEvent.click(screen.getByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row));
     });
 
     it("switches to the sibling's account", () => {

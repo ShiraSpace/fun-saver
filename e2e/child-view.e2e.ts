@@ -75,7 +75,7 @@ describe('a child switches to a sibling', () => {
     avatarId: 'kid-07',
     viewMode: VIEW_MODE.parent,
   });
-  const { menu, header, account, childAccount, appBrowser } = useDriver({
+  const { menu, header, childAccount, appBrowser } = useDriver({
     accounts: [mockChild, mockChildSibling, mockParentSibling],
   });
 
@@ -87,14 +87,13 @@ describe('a child switches to a sibling', () => {
     assert.equal(await header.title(), mockChild.name);
   });
 
-  it('offers every sibling, whatever their view', async () => {
+  it('offers only the sibling who is also in child view', async () => {
     assert.deepEqual(await menu.childMenuAccountNames(), [
       mockChildSibling.name,
-      mockParentSibling.name,
     ]);
   });
 
-  describe('the child taps a sibling in child view', () => {
+  describe('the child taps the sibling', () => {
     beforeEach(async () => {
       await menu.switchAccountFromChildMenu(0);
       await header.waitForTitle(mockChildSibling.name);
@@ -109,19 +108,6 @@ describe('a child switches to a sibling', () => {
 
       assert.equal(await header.title(), mockChildSibling.name);
       assert.equal(await childAccount.screenExists(), true);
-    });
-  });
-
-  describe('the child taps a sibling in parent view', () => {
-    beforeEach(async () => {
-      await menu.switchAccountFromChildMenu(1);
-      await header.waitForTitle(mockParentSibling.name);
-    });
-
-    it("shows the sibling's parent screen, as saved", async () => {
-      await account.waitForOverview();
-
-      assert.equal(await childAccount.screenExists(), false);
     });
   });
 });
