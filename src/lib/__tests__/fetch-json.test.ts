@@ -4,6 +4,7 @@ import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { goTo } from '../navigate';
 import { fetchJson, RequestFailedError } from '../fetch-json';
+import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 
 jest.mock('../navigate', () => ({ goTo: jest.fn() }));
 
@@ -16,19 +17,16 @@ const mockRequest = {
 } as const;
 
 describe('fetchJson', () => {
-  const originalFetch = global.fetch;
   let mockFetch: jest.Mock;
 
-  afterEach(() => {
-    global.fetch = originalFetch;
-  });
+  restoreFetchAfterEach();
 
   describe('when the route answers', () => {
     beforeEach(() => {
       mockFetch = jest
         .fn()
         .mockResolvedValue({ ok: true, json: async () => mockAccount });
-      global.fetch = mockFetch as unknown as typeof fetch;
+      stubFetch(mockFetch);
     });
 
     it('calls the given url with the given method', async () => {
@@ -61,11 +59,13 @@ describe('fetchJson', () => {
 
   describe('when the route refuses', () => {
     beforeEach(() => {
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: false,
-        status: 404,
-        json: async () => ({ error: API_ERRORS.accountNotFound }),
-      }) as unknown as typeof fetch;
+      stubFetch(
+        jest.fn().mockResolvedValue({
+          ok: false,
+          status: 404,
+          json: async () => ({ error: API_ERRORS.accountNotFound }),
+        })
+      );
     });
 
     it('throws rather than returning a body that is not there', async () => {
@@ -82,11 +82,13 @@ describe('fetchJson', () => {
   describe('when the session has expired', () => {
     beforeEach(() => {
       jest.mocked(goTo).mockClear();
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: false,
-        status: 401,
-        json: async () => ({ error: API_ERRORS.notSignedIn }),
-      }) as unknown as typeof fetch;
+      stubFetch(
+        jest.fn().mockResolvedValue({
+          ok: false,
+          status: 401,
+          json: async () => ({ error: API_ERRORS.notSignedIn }),
+        })
+      );
     });
 
     it('sends the browser to the sign-in page', async () => {
@@ -98,9 +100,7 @@ describe('fetchJson', () => {
 
   describe('when the connection fails', () => {
     beforeEach(() => {
-      global.fetch = jest
-        .fn()
-        .mockRejectedValue(connectionError) as unknown as typeof fetch;
+      stubFetch(jest.fn().mockRejectedValue(connectionError));
     });
 
     it('lets the failure through untouched', async () => {
@@ -112,11 +112,13 @@ describe('fetchJson', () => {
     let failure: unknown;
 
     beforeEach(async () => {
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: false,
-        status: StatusCodes.CONFLICT,
-        json: async () => ({ error: API_ERRORS.goalNotActive }),
-      }) as unknown as typeof fetch;
+      stubFetch(
+        jest.fn().mockResolvedValue({
+          ok: false,
+          status: StatusCodes.CONFLICT,
+          json: async () => ({ error: API_ERRORS.goalNotActive }),
+        })
+      );
       failure = await fetchJson(mockRequest).catch((error) => error);
     });
 
@@ -139,7 +141,7 @@ describe('fetchJson', () => {
       mockFetch = jest
         .fn()
         .mockResolvedValue({ ok: true, json: async () => mockAccount });
-      global.fetch = mockFetch as unknown as typeof fetch;
+      stubFetch(mockFetch);
       await fetchJson(mockDeleteRequest);
     });
 

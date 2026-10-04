@@ -5,21 +5,19 @@ import {
   mockAccountEdits,
 } from '@/test-utils/mocks/account.mocks';
 import { useUpdateAccount } from './use-update-account';
+import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 
 describe('useUpdateAccount', () => {
-  const originalFetch = global.fetch;
   let mockFetch: jest.Mock;
 
-  afterEach(() => {
-    global.fetch = originalFetch;
-  });
+  restoreFetchAfterEach();
 
   describe('when the request succeeds', () => {
     beforeEach(() => {
       mockFetch = jest
         .fn()
         .mockResolvedValue({ ok: true, json: async () => mockAccount });
-      global.fetch = mockFetch as unknown as typeof fetch;
+      stubFetch(mockFetch);
     });
 
     function updateAccount(): Promise<Account> {
@@ -49,9 +47,7 @@ describe('useUpdateAccount', () => {
   });
 
   it('throws when the request fails', async () => {
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue({ ok: false }) as unknown as typeof fetch;
+    stubFetch(jest.fn().mockResolvedValue({ ok: false }));
 
     const { result } = renderHook(() => useUpdateAccount());
 

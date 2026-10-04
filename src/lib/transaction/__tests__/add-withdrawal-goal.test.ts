@@ -5,9 +5,9 @@ import { OverdraftError } from '../errors';
 import type { Account } from '@/lib/account/types';
 import { balance } from '@/lib/wallet/balance';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
-import { walletNamed } from '@/lib/wallet/wallet-named';
 import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
+import { walletIdNamed } from '@/test-utils/wallet-id-named';
 import { addDeposit, addWithdrawal, splitDeposit } from '../transactions';
 
 describe('addWithdrawal from savings with a goal', () => {
@@ -21,7 +21,7 @@ describe('addWithdrawal from savings with a goal', () => {
   beforeEach(async () => {
     store = new InMemoryStore();
     account = await createOwnedAccount(store);
-    savingsId = walletNamed(account.wallets, WALLET_NAMES.savings)!.id;
+    savingsId = walletIdNamed(account, WALLET_NAMES.savings);
 
     await addDeposit({
       store,
@@ -115,7 +115,7 @@ describe('addWithdrawal from savings with a goal', () => {
       let spendingId: string;
 
       beforeEach(async () => {
-        spendingId = walletNamed(account.wallets, WALLET_NAMES.spending)!.id;
+        spendingId = walletIdNamed(account, WALLET_NAMES.spending);
         await store.insertGoal(
           createMockGoal({
             accountId: account.id,

@@ -1,19 +1,17 @@
 import { renderHook } from '@testing-library/react';
 import { useAddTransaction } from './use-add-transaction';
+import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 
 describe('useAddTransaction', () => {
-  const originalFetch = global.fetch;
   const mockAccountId = 'account-1';
   let mockFetch: jest.Mock;
 
   beforeEach(() => {
     mockFetch = jest.fn().mockResolvedValue({ ok: true, json: async () => [] });
-    global.fetch = mockFetch as unknown as typeof fetch;
+    stubFetch(mockFetch);
   });
 
-  afterEach(() => {
-    global.fetch = originalFetch;
-  });
+  restoreFetchAfterEach();
 
   function hook(): ReturnType<typeof useAddTransaction> {
     return renderHook(() => useAddTransaction(mockAccountId)).result.current;

@@ -11,6 +11,7 @@ import { shekelsToAgorot } from '@/lib/money';
 import type { Account } from '@/lib/account/types';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
+import { walletIdNamed } from '@/test-utils/wallet-id-named';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
 import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
 import { API_ERRORS } from '@/app/api/constants';
@@ -29,9 +30,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
 
   beforeEach(async () => {
     account = await createOwnedAccount(getStore());
-    savingsId = account.wallets.find(
-      (wallet) => wallet.name === WALLET_NAMES.savings
-    )!.id;
+    savingsId = walletIdNamed(account, WALLET_NAMES.savings);
     await addDeposit({
       store: getStore(),
       account,

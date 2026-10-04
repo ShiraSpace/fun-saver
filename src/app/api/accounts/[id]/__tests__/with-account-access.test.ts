@@ -6,16 +6,10 @@ import { getStore } from '@/db';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
-import {
-  withAccountEditor,
-  type AccountRouteParams,
-} from '../with-account-access';
+import { withAccountEditor } from '../with-account-access';
+import type { GoalRouteParams } from '../goals/[goalId]/goal-route-params';
 
 jest.mock('@/auth');
-
-interface GoalRouteParams extends AccountRouteParams {
-  goalId: string;
-}
 
 describe('withAccountEditor', () => {
   withTempStoreEnv();
