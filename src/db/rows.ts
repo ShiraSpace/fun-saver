@@ -3,7 +3,7 @@ import type {
   AccountUser,
   AccountUserRole,
 } from '@/lib/account/types';
-import { resolveAppViewMode } from '@/lib/account/view-mode';
+import { resolveViewMode } from '@/lib/account/view-mode';
 import type { AuthProvider, User } from '@/lib/user/types';
 import type { Wallet } from '@/lib/wallet/types';
 import type { Transaction } from '@/lib/transaction/types';
@@ -36,7 +36,7 @@ export function accountFromRow(row: AccountRow): Account {
     avatarId: row.avatar_id,
     isActive: row.is_active,
     themeId: row.theme_id as ThemeId,
-    viewMode: resolveAppViewMode(row.view_mode),
+    viewMode: resolveViewMode(row.view_mode),
     wallets: row.wallets as Wallet[],
   };
 }

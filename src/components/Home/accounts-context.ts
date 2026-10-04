@@ -2,10 +2,10 @@
 
 import { createRequiredContext } from '@/hooks/create-required-context';
 import type { AccountSummary } from '@/lib/account/types';
-import type { AppViewMode } from '@/lib/account/view-mode';
+import type { ViewMode } from '@/lib/account/view-mode';
 
 export interface ViewModeChoice {
-  showViewMode: (viewMode: AppViewMode) => void;
+  showViewMode: (viewMode: ViewMode) => void;
 }
 
 export interface AccountsContextValue {

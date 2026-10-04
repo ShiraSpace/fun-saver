@@ -1,6 +1,6 @@
 import { InMemoryStore } from '../index';
 import { DuplicateAccountError } from '@/lib/account/errors';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { THEME_ID } from '@/theme/registry';
 import {
   createMockAccount,
@@ -47,18 +47,18 @@ describe('InMemoryStore accounts', () => {
     beforeEach(async () => {
       await store.insertAccount(createMockAccount());
       await store.insertAccount(mockSiblingAccount);
-      await store.setAccountViewMode(mockAccount.id, APP_VIEW_MODE.child);
+      await store.setAccountViewMode(mockAccount.id, VIEW_MODE.child);
     });
 
     it('shows that child the child screen', async () => {
       expect((await store.getAccount(mockAccount.id))?.viewMode).toBe(
-        APP_VIEW_MODE.child
+        VIEW_MODE.child
       );
     });
 
     it('leaves the sibling on the parent screen', async () => {
       expect((await store.getAccount(mockSiblingAccount.id))?.viewMode).toBe(
-        APP_VIEW_MODE.parent
+        VIEW_MODE.parent
       );
     });
   });
@@ -67,7 +67,7 @@ describe('InMemoryStore accounts', () => {
     await store.insertAccount(createMockAccount());
 
     expect(
-      await store.setAccountViewMode('missing', APP_VIEW_MODE.child)
+      await store.setAccountViewMode('missing', VIEW_MODE.child)
     ).toBeUndefined();
   });
 

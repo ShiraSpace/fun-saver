@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, JSX } from 'react';
-import { isChildView } from '@/lib/account/view-mode';
+import { isShownToChild } from '@/lib/account/view-mode';
 import { useOptionalAccounts } from '@/components/Home/accounts-context';
 import { MenuUserSettings } from '../MenuUserSettings';
 import { MenuAccountSettings } from '../MenuAccountSettings';
@@ -18,7 +18,7 @@ export function MenuContent(): JSX.Element {
   const hasAccount = Boolean(accounts);
   const { closeMenu } = useMenu();
 
-  if (accounts && isChildView(accounts.currentAccount)) {
+  if (accounts && isShownToChild(accounts.currentAccount)) {
     return <ChildMenuContent />;
   }
 

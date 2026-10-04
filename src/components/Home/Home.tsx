@@ -7,7 +7,7 @@ import { ChildAccount } from '@/components/ChildAccount';
 import { AccountManagement } from '@/components/AccountManagement';
 import { APP_MODE } from '@/components/AccountManagement/app-mode-context';
 import { EmptyState } from '@/components/EmptyState';
-import { isChildView } from '@/lib/account/view-mode';
+import { isShownToChild } from '@/lib/account/view-mode';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { AccountsProvider } from './accounts-context';
 import { useShownViewMode } from './use-shown-view-mode';
@@ -22,7 +22,7 @@ interface HomeProps {
 }
 
 function AccountForViewMode({ account }: AccountForViewModeProps): JSX.Element {
-  if (isChildView(account)) {
+  if (isShownToChild(account)) {
     return <ChildAccount account={account} />;
   }
 

@@ -8,7 +8,7 @@ import {
   VIEW_MODE_SWITCH_TEST_IDS,
 } from '@/components/Menu/ViewModeSwitch/constants';
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
-import { APP_VIEW_MODE, type AppViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
 import type { AccountSummary } from '@/lib/account/types';
 import { wait } from '@/lib/wait';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
@@ -16,7 +16,7 @@ import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { Home } from './Home';
 import { accounts, openMenu, renderHome } from './home-test-helpers';
 
-function accountsInViewMode(viewMode: AppViewMode): AccountSummary[] {
+function accountsInViewMode(viewMode: ViewMode): AccountSummary[] {
   return accounts.map((account) =>
     account.id === mockAccount.id ? { ...account, viewMode } : account
   );
@@ -30,9 +30,9 @@ const SERVER_SAYS_TEST_IDS = {
 function HomeWithServerAccounts(): JSX.Element {
   const [serverAccounts, setServerAccounts] = useState(accounts);
   const serverSaysChild = (): void =>
-    setServerAccounts(accountsInViewMode(APP_VIEW_MODE.child));
+    setServerAccounts(accountsInViewMode(VIEW_MODE.child));
   const serverSaysParent = (): void =>
-    setServerAccounts(accountsInViewMode(APP_VIEW_MODE.parent));
+    setServerAccounts(accountsInViewMode(VIEW_MODE.parent));
 
   return (
     <Fragment>

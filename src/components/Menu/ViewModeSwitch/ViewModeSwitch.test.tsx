@@ -9,7 +9,7 @@ import {
   renderInOpenMenu,
   WithMenu,
 } from '@/test-utils/menu';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { mockRouter } from '@mocks/next/navigation';
 import { prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
 import { ViewModeSwitch } from './ViewModeSwitch';
@@ -35,7 +35,7 @@ describe('ViewModeSwitch', () => {
       jest.useFakeTimers();
       render(
         <WithMenu closeMenu={mockCloseMenu}>
-          <ViewModeSwitch viewMode={APP_VIEW_MODE.child} />
+          <ViewModeSwitch viewMode={VIEW_MODE.child} />
         </WithMenu>,
         { accounts: mockAccountsContext }
       );
@@ -57,7 +57,7 @@ describe('ViewModeSwitch', () => {
     beforeEach(() => {
       render(
         <WithMenu>
-          <ViewModeSwitch viewMode={APP_VIEW_MODE.child} />
+          <ViewModeSwitch viewMode={VIEW_MODE.child} />
         </WithMenu>,
         { accounts: mockAccountsContext }
       );
@@ -84,7 +84,7 @@ describe('ViewModeSwitch', () => {
     beforeEach(async () => {
       render(
         <WithMenu closeMenu={mockCloseMenu}>
-          <ViewModeSwitch viewMode={APP_VIEW_MODE.child} />
+          <ViewModeSwitch viewMode={VIEW_MODE.child} />
         </WithMenu>,
         { accounts: mockAccountsContext }
       );
@@ -97,7 +97,7 @@ describe('ViewModeSwitch', () => {
 
       expect([url, JSON.parse(String(options?.body))]).toEqual([
         `/api/accounts/${mockAccountSummary.id}/view-mode`,
-        { viewMode: APP_VIEW_MODE.child },
+        { viewMode: VIEW_MODE.child },
       ]);
     });
 
@@ -113,7 +113,7 @@ describe('ViewModeSwitch', () => {
   describe('the moment a parent taps the switch', () => {
     beforeEach(() => {
       global.fetch = jest.fn().mockReturnValue(new Promise(() => {}));
-      renderInOpenMenu(<ViewModeSwitch viewMode={APP_VIEW_MODE.child} />, {
+      renderInOpenMenu(<ViewModeSwitch viewMode={VIEW_MODE.child} />, {
         accounts: mockAccountsContext,
       });
       tapSwitch();
@@ -130,7 +130,7 @@ describe('ViewModeSwitch', () => {
     beforeEach(() => {
       render(
         <WithMenu>
-          <ViewModeSwitch viewMode={APP_VIEW_MODE.parent} />
+          <ViewModeSwitch viewMode={VIEW_MODE.parent} />
         </WithMenu>,
         { accounts: mockChildAccountsContext }
       );
@@ -139,7 +139,7 @@ describe('ViewModeSwitch', () => {
     it('is labelled for the parent', () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[APP_VIEW_MODE.parent]);
+      ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[VIEW_MODE.parent]);
     });
 
     it('carries no note about a child', () => {
@@ -160,7 +160,7 @@ describe('ViewModeSwitch', () => {
         const [, options] = jest.mocked(global.fetch).mock.calls[0];
 
         expect(JSON.parse(String(options?.body))).toEqual({
-          viewMode: APP_VIEW_MODE.parent,
+          viewMode: VIEW_MODE.parent,
         });
       });
     });
@@ -169,7 +169,7 @@ describe('ViewModeSwitch', () => {
   describe('the save fails', () => {
     beforeEach(() => {
       global.fetch = jest.fn().mockResolvedValue({ ok: false });
-      renderInOpenMenu(<ViewModeSwitch viewMode={APP_VIEW_MODE.child} />, {
+      renderInOpenMenu(<ViewModeSwitch viewMode={VIEW_MODE.child} />, {
         accounts: mockAccountsContext,
       });
       tapSwitch();

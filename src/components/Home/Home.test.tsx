@@ -19,7 +19,7 @@ import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { accounts, openMenu, renderHome } from './home-test-helpers';
 import { CHILD_ACCOUNT_TEST_IDS } from '@/components/ChildAccount/constants';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 
 const mockWriteCookie = jest.fn();
 
@@ -149,10 +149,7 @@ describe('Home', () => {
   describe('an account in child view', () => {
     beforeEach(() => {
       renderHome({
-        accounts: [
-          { ...accounts[0], viewMode: APP_VIEW_MODE.child },
-          accounts[1],
-        ],
+        accounts: [{ ...accounts[0], viewMode: VIEW_MODE.child }, accounts[1]],
       });
     });
 

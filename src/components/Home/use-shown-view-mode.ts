@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
-import type { AppViewMode } from '@/lib/account/view-mode';
+import type { ViewMode } from '@/lib/account/view-mode';
 import type { ViewModeChoice } from './accounts-context';
 
 interface ChosenViewMode {
-  viewMode: AppViewMode;
+  viewMode: ViewMode;
   chosenOn: AccountSummary;
 }
 
@@ -29,7 +29,7 @@ export function useShownViewMode(
 ): ShownViewMode {
   const [chosen, setChosen] = useState<ChosenViewMode>();
 
-  const showViewMode = (viewMode: AppViewMode): void => {
+  const showViewMode = (viewMode: ViewMode): void => {
     if (currentAccount) {
       setChosen({ viewMode, chosenOn: currentAccount });
     }

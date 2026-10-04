@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import {
   createMockAccount,
   mockAccount,
@@ -11,7 +11,7 @@ import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
 
 describe('an account stored in child view', () => {
   const { childAccount } = useDriver({
-    accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
+    accounts: [createMockAccount({ viewMode: VIEW_MODE.child })],
   });
 
   it('opens straight on the child screen', async () => {
@@ -43,7 +43,7 @@ describe('a parent turns child view on', () => {
 
 describe('the child goes back to the parent screen', () => {
   const { menu, account } = useDriver({
-    accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
+    accounts: [createMockAccount({ viewMode: VIEW_MODE.child })],
   });
 
   beforeEach(async () => {
@@ -60,7 +60,7 @@ describe('the child goes back to the parent screen', () => {
 for (const parentPage of [METHOD_ROUTE, TRANSACTIONS_ROUTE]) {
   describe(`a child who opens ${parentPage} by its address`, () => {
     const { menu, appBrowser } = useDriver({
-      accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
+      accounts: [createMockAccount({ viewMode: VIEW_MODE.child })],
     });
 
     beforeEach(async () => {

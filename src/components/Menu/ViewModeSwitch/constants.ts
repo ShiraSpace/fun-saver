@@ -1,4 +1,4 @@
-import { APP_VIEW_MODE, type AppViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
 
 export const VIEW_MODE_SWITCH_TEST_IDS = {
   switch: 'menu-view-mode-switch',
@@ -7,13 +7,13 @@ export const VIEW_MODE_SWITCH_TEST_IDS = {
 
 export const VIEW_MODE_SWITCH_COPY = {
   icon: {
-    [APP_VIEW_MODE.child]: '🧒',
-    [APP_VIEW_MODE.parent]: '👤',
-  } satisfies Record<AppViewMode, string>,
+    [VIEW_MODE.child]: '🧒',
+    [VIEW_MODE.parent]: '👤',
+  } satisfies Record<ViewMode, string>,
   label: {
-    [APP_VIEW_MODE.child]: 'מצב ילד',
-    [APP_VIEW_MODE.parent]: 'מצב הורה',
-  } satisfies Record<AppViewMode, string>,
+    [VIEW_MODE.child]: 'מצב ילד',
+    [VIEW_MODE.parent]: 'מצב הורה',
+  } satisfies Record<ViewMode, string>,
   childNote: (accountName: string): string =>
     `מסך פשוט ל${accountName}, רק לצפייה`,
   saveError: 'לא הצלחנו להחליף מסך, נסו שוב',

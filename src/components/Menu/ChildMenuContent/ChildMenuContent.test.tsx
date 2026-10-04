@@ -6,7 +6,7 @@ import {
 } from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import {
   VIEW_MODE_SWITCH_COPY,
@@ -49,7 +49,7 @@ describe('ChildMenuContent', () => {
   it('offers the parent the way back', () => {
     expect(
       screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-    ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[APP_VIEW_MODE.parent]);
+    ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[VIEW_MODE.parent]);
   });
 
   describe('the child goes home', () => {

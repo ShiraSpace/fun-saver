@@ -61,21 +61,21 @@ like that. Add a cookie only if something ever needs the mode before the data.
 - **Type:** an enum-like constant, in the same shape as `APP_MODE`:
 
   ```ts
-  export const APP_VIEW_MODE = {
+  export const VIEW_MODE = {
     parent: 'parent',
     child: 'child',
   } as const;
 
-  export type AppViewMode = (typeof APP_VIEW_MODE)[keyof typeof APP_VIEW_MODE];
+  export type ViewMode = (typeof VIEW_MODE)[keyof typeof VIEW_MODE];
   ```
 
   Every comparison, default and fallback in TypeScript uses
-  `APP_VIEW_MODE.parent` or `APP_VIEW_MODE.child`, never a bare string. The
+  `VIEW_MODE.parent` or `VIEW_MODE.child`, never a bare string. The
   only literals are the SQL column `DEFAULT` and `CHECK ('parent','child')`,
-  because SQL can't import `APP_VIEW_MODE`. Keep them in sync with it. It follows the shape of `AppMode`
+  because SQL can't import `VIEW_MODE`. Keep them in sync with it. It follows the shape of `AppMode`
   (`src/components/AccountManagement/app-mode-context.ts`) but means
   something different: `AppMode` is viewing, creating or editing an account.
-  The server, the store and the API all use `APP_VIEW_MODE`, so it lives in
+  The server, the store and the API all use `VIEW_MODE`, so it lives in
   `src/lib/account/`, not in a component.
 - **Database (persistent):** a new column on `accounts`,
   `view_mode TEXT NOT NULL DEFAULT 'parent'`. Add it to `schema.sql` with
@@ -171,7 +171,7 @@ Add these to `docs/glossary.md` in the same PR that introduces them:
 
 | Concept | Hebrew UI | Code term | Not |
 | --- | --- | --- | --- |
-| Which screen the account is shown in | מצב ילד · מצב הורה | `AppViewMode` (`parent`, `child`), `APP_VIEW_MODE`, column `view_mode` | `AppMode`, which is viewing/creating/editing |
+| Which screen the account is shown in | מצב ילד · מצב הורה | `ViewMode` (`parent`, `child`), `VIEW_MODE`, column `view_mode` | `AppMode`, which is viewing/creating/editing |
 | Whole shekels, never more than there is | — | `floorToShekels` | rounding to nearest for a child |
 | The savings tile "what was put in" | הפקדת | `principal` (existing term, UI label only changes) | `deposited`, which the glossary rejects |
 
@@ -179,7 +179,7 @@ Add these to `docs/glossary.md` in the same PR that introduces them:
 
 - **No accounts:** child mode can't be turned on, because the switch lives in
   the account card. `EmptyState` renders as it does today.
-- **An unknown `view_mode` value:** falls back to `APP_VIEW_MODE.parent`, the same way
+- **An unknown `view_mode` value:** falls back to `VIEW_MODE.parent`, the same way
   `resolveThemeId` falls back to the default theme.
 - **No interest yet:** "✨ +₪0" is shown, so the layout never jumps.
 - **A wallet under ₪1:** shows ₪0.
@@ -193,7 +193,7 @@ Add these to `docs/glossary.md` in the same PR that introduces them:
 - **API:** `view-mode` route, a valid mode, an invalid mode, and another
   user's account.
 - **DB (`test:db`):** `view_mode` round-trips through the store, and defaults
-  to `APP_VIEW_MODE.parent`.
+  to `VIEW_MODE.parent`.
 - **Components:** the child home shows three amounts and nothing tappable;
   the child menu hides parent sections; the parent menu's switch saves the
   mode. Tests follow the house rules: one expect per `it`, `mock` prefix.

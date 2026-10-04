@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import { DuplicateAccountError } from '@/lib/account/errors';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { THEME_ID } from '@/theme/registry';
 import {
   createMockAccount,
@@ -65,10 +65,10 @@ describe('PostgresAccounts', () => {
     it('saves child view and reads it back', async () => {
       const mockAccount = createMockAccount({ id: accountId('view-mode') });
       await store.insertAccount(mockAccount);
-      await store.setAccountViewMode(mockAccount.id, APP_VIEW_MODE.child);
+      await store.setAccountViewMode(mockAccount.id, VIEW_MODE.child);
 
       expect((await store.getAccount(mockAccount.id))?.viewMode).toBe(
-        APP_VIEW_MODE.child
+        VIEW_MODE.child
       );
     });
 
@@ -77,7 +77,7 @@ describe('PostgresAccounts', () => {
       await store.insertAccount(mockAccount);
 
       expect((await store.getAccount(mockAccount.id))?.viewMode).toBe(
-        APP_VIEW_MODE.parent
+        VIEW_MODE.parent
       );
     });
   });

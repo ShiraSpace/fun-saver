@@ -4,7 +4,7 @@ import {
   useAccounts,
   type ViewModeChoice,
 } from '@/components/Home/accounts-context';
-import type { AppViewMode } from '@/lib/account/view-mode';
+import type { ViewMode } from '@/lib/account/view-mode';
 import { fetchJson } from '@/lib/fetch-json';
 import { wait } from '@/lib/wait';
 import { motionIsReduced } from '@/theme/motion';
@@ -13,8 +13,8 @@ import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
 import { VIEW_MODE_SWITCH_MOTION } from './constants';
 
 interface AccountViewMode {
-  chooseViewMode: (viewMode: AppViewMode) => void;
-  chosenViewMode?: AppViewMode;
+  chooseViewMode: (viewMode: ViewMode) => void;
+  chosenViewMode?: ViewMode;
   saveFailed: boolean;
 }
 
@@ -45,7 +45,7 @@ function saveSucceeds(saved: Promise<unknown>): Promise<boolean> {
 
 async function showSavedViewMode(
   steps: SavedViewModeSteps,
-  viewMode: AppViewMode
+  viewMode: ViewMode
 ): Promise<void> {
   steps.closeMenu();
 
@@ -61,12 +61,12 @@ export function useAccountViewMode(): AccountViewMode {
   const { currentAccount, viewModeChoice } = useAccounts();
   const { closeMenu } = useMenu();
   const router = useRouter();
-  const [chosenViewMode, setChosenViewMode] = useState<AppViewMode>();
+  const [chosenViewMode, setChosenViewMode] = useState<ViewMode>();
   const [saveFailed, setSaveFailed] = useState(false);
 
   useOnMenuClose((): void => setSaveFailed(false));
 
-  const chooseViewMode = async (viewMode: AppViewMode): Promise<void> => {
+  const chooseViewMode = async (viewMode: ViewMode): Promise<void> => {
     setChosenViewMode(viewMode);
     setSaveFailed(false);
 

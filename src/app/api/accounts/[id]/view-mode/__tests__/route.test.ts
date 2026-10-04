@@ -3,7 +3,7 @@
  */
 import { signedInUser } from '@/auth';
 import { API_ERRORS } from '@/app/api/constants';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { getStore } from '@/db';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
@@ -40,17 +40,17 @@ describe('PUT /api/accounts/[id]/view-mode', () => {
     let response: Response;
 
     beforeEach(async () => {
-      response = await putViewMode(accountId, APP_VIEW_MODE.child);
+      response = await putViewMode(accountId, VIEW_MODE.child);
     });
 
     it('saves child view on the account', async () => {
       expect((await getStore().getAccount(accountId))?.viewMode).toBe(
-        APP_VIEW_MODE.child
+        VIEW_MODE.child
       );
     });
 
     it('answers with the updated account', async () => {
-      expect((await response.json()).viewMode).toBe(APP_VIEW_MODE.child);
+      expect((await response.json()).viewMode).toBe(VIEW_MODE.child);
     });
   });
 
@@ -85,7 +85,7 @@ describe('PUT /api/accounts/[id]/view-mode', () => {
 
     beforeEach(async () => {
       jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
-      response = await putViewMode(accountId, APP_VIEW_MODE.child);
+      response = await putViewMode(accountId, VIEW_MODE.child);
     });
 
     it('is refused', () => {
@@ -94,7 +94,7 @@ describe('PUT /api/accounts/[id]/view-mode', () => {
 
     it('leaves the account on the parent screen', async () => {
       expect((await getStore().getAccount(accountId))?.viewMode).toBe(
-        APP_VIEW_MODE.parent
+        VIEW_MODE.parent
       );
     });
   });

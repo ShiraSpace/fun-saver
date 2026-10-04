@@ -4,7 +4,7 @@ import { JSX } from 'react';
 import { AvatarBadge } from '@/components/AvatarBadge';
 import { useAccounts } from '@/components/Home/accounts-context';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { AppearanceSection } from '../AppearanceSection';
 import { ViewModeSwitch } from '../ViewModeSwitch';
 import { useMenu } from '../use-menu-state';
@@ -48,7 +48,7 @@ export function ChildMenuContent(): JSX.Element {
         <AppearanceSection />
       </Item>
       <ParentCorner>
-        <ViewModeSwitch viewMode={APP_VIEW_MODE.parent} />
+        <ViewModeSwitch viewMode={VIEW_MODE.parent} />
       </ParentCorner>
     </Layout>
   );

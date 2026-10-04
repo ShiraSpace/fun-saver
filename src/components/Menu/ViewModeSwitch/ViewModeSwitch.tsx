@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import { useAccounts } from '@/components/Home/accounts-context';
-import { APP_VIEW_MODE, type AppViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
 import { useAccountViewMode } from './use-account-view-mode';
 import { VIEW_MODE_SWITCH_COPY, VIEW_MODE_SWITCH_TEST_IDS } from './constants';
 import {
@@ -15,17 +15,17 @@ import {
 } from './ViewModeSwitch.styles';
 
 interface ViewModeSwitchProps {
-  viewMode: AppViewMode;
+  viewMode: ViewMode;
 }
 
 export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
   const { currentAccount } = useAccounts();
   const { chooseViewMode, chosenViewMode, saveFailed } = useAccountViewMode();
   const isOn = (chosenViewMode ?? currentAccount.viewMode) === viewMode;
-  const isCompact = viewMode === APP_VIEW_MODE.parent;
+  const isCompact = viewMode === VIEW_MODE.parent;
   const icon = VIEW_MODE_SWITCH_COPY.icon[viewMode];
   const label = VIEW_MODE_SWITCH_COPY.label[viewMode];
-  const childNote = viewMode === APP_VIEW_MODE.child && (
+  const childNote = viewMode === VIEW_MODE.child && (
     <Note>{VIEW_MODE_SWITCH_COPY.childNote(currentAccount.name)}</Note>
   );
   const saveError = saveFailed && (

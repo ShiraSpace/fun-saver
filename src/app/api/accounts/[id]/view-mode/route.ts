@@ -1,6 +1,6 @@
 import { getStore } from '@/db';
 import { asObject } from '@/lib/json-object';
-import { isAppViewMode } from '@/lib/account/view-mode';
+import { isViewMode } from '@/lib/account/view-mode';
 import { jsonBody } from '@/app/api/json-body';
 import { API_ERRORS } from '@/app/api/constants';
 import { accountNotFound, badRequest } from '@/app/api/responses';
@@ -13,7 +13,7 @@ export const PUT = withAccountEditor(async (request, id) => {
     return badRequest(API_ERRORS.invalidViewModeRequest);
   }
 
-  if (!isAppViewMode(body.viewMode)) {
+  if (!isViewMode(body.viewMode)) {
     return badRequest(API_ERRORS.unknownViewMode);
   }
 
