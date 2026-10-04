@@ -1,20 +1,20 @@
-import { act, fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { DEFAULT_GOAL_PICTURE, GOAL_PICTURE_KIND } from '@/lib/goal/constants';
 import type { GoalPicture } from '@/lib/goal/types';
 import { createMockGoalPicture } from '@/test-utils/mocks/goal.mocks';
 import { ESCAPE_KEY } from '@/hooks/constants';
 import { GoalPictureSearch } from './GoalPictureSearch';
-import {
-  GOAL_PICTURE_SEARCH_TEST_IDS,
-  PICTURE_SEARCH_DELAY_MS,
-} from './constants';
+import { GOAL_PICTURE_SEARCH_TEST_IDS } from './constants';
 import { CHOOSE_BUTTON_TEST_IDS } from './ChooseButton/constants';
 import {
   PICTURE_TILES_COPY,
   PICTURE_TILES_TEST_IDS,
 } from './PictureTiles/constants';
 import { QUERY_FIELD_TEST_IDS } from './QueryField/constants';
-import { SHEET_HEADING_TEST_IDS } from './SheetHeading/constants';
+import {
+  SHEET_HEADING_COPY,
+  SHEET_HEADING_TEST_IDS,
+} from './SheetHeading/constants';
 
 const mockGoalName = 'אופניים';
 const mockOnChange = jest.fn();
@@ -57,7 +57,7 @@ describe('GoalPictureSearch', () => {
 
     it('is named by its title', () => {
       expect(
-        screen.getByRole('dialog', { name: /בחירת תמונה/ })
+        screen.getByRole('dialog', { name: SHEET_HEADING_COPY.title })
       ).toBeInTheDocument();
     });
 
@@ -66,12 +66,7 @@ describe('GoalPictureSearch', () => {
         fireEvent.change(screen.getByTestId(QUERY_FIELD_TEST_IDS.input), {
           target: { value: 'כלב' },
         });
-        await act(
-          () =>
-            new Promise((resolve) =>
-              setTimeout(resolve, PICTURE_SEARCH_DELAY_MS)
-            )
-        );
+        await screen.findByText('🐶');
       });
 
       it('searches for what was typed', () => {

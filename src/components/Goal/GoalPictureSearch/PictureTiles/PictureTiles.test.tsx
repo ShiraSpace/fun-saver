@@ -4,18 +4,6 @@ import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { PictureTiles } from './PictureTiles';
 import { PICTURE_TILES_COPY, PICTURE_TILES_TEST_IDS } from './constants';
 
-function renderStateOnly(requestState: RequestState, query: string): void {
-  render(
-    <PictureTiles
-      pictures={[]}
-      requestState={requestState}
-      query={query}
-      chosenEmoji="🎯"
-      onChoose={jest.fn()}
-    />
-  );
-}
-
 describe('PictureTiles', () => {
   describe('with matching pictures and one chosen', () => {
     const mockPictures = ['🚲', '🚴', '🛴'];
@@ -64,58 +52,76 @@ describe('PictureTiles', () => {
     });
   });
 
-  describe('while the word list loads', () => {
-    beforeEach(() => {
-      renderStateOnly(REQUEST_STATE.pending, 'אופניים');
+  describe('with no tiles to show', () => {
+    const mockOnChoose = jest.fn();
+
+    function renderStateOnly(requestState: RequestState, query: string): void {
+      render(
+        <PictureTiles
+          pictures={[]}
+          requestState={requestState}
+          query={query}
+          chosenEmoji="🎯"
+          onChoose={mockOnChoose}
+        />
+      );
+    }
+
+    describe('while the word list loads', () => {
+      beforeEach(() => {
+        renderStateOnly(REQUEST_STATE.pending, 'אופניים');
+      });
+
+      it('says the pictures are being looked for', () => {
+        expect(
+          screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
+        ).toHaveTextContent(PICTURE_TILES_COPY.loading);
+      });
     });
 
-    it('says the pictures are being looked for', () => {
-      expect(
-        screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
-      ).toHaveTextContent(PICTURE_TILES_COPY.loading);
-    });
-  });
+    describe('when the word list failed to load', () => {
+      beforeEach(() => {
+        renderStateOnly(REQUEST_STATE.failed, 'אופניים');
+      });
 
-  describe('when the word list failed to load', () => {
-    beforeEach(() => {
-      renderStateOnly(REQUEST_STATE.failed, 'אופניים');
-    });
-
-    it('says the pictures did not load', () => {
-      expect(
-        screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
-      ).toHaveTextContent(PICTURE_TILES_COPY.failed);
-    });
-  });
-
-  describe('with nothing typed but spaces', () => {
-    beforeEach(() => {
-      renderStateOnly(REQUEST_STATE.idle, '  ');
+      it('says the pictures did not load', () => {
+        expect(
+          screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
+        ).toHaveTextContent(PICTURE_TILES_COPY.failed);
+      });
     });
 
-    it('hints at typing what to search for', () => {
-      expect(
-        screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
-      ).toHaveTextContent(PICTURE_TILES_COPY.hint);
-    });
-  });
+    describe('with nothing typed but spaces', () => {
+      beforeEach(() => {
+        renderStateOnly(REQUEST_STATE.idle, '  ');
+      });
 
-  describe('with no picture matching the typed words', () => {
-    const mockQuery = 'קקטוס';
-
-    beforeEach(() => {
-      renderStateOnly(REQUEST_STATE.idle, mockQuery);
+      it('hints at typing what to search for', () => {
+        expect(
+          screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
+        ).toHaveTextContent(PICTURE_TILES_COPY.hint);
+      });
     });
 
-    it('names the typed words in the no-match line', () => {
-      expect(
-        screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
-      ).toHaveTextContent(PICTURE_TILES_COPY.noMatch(mockQuery));
+    describe('with no picture matching the typed words', () => {
+      const mockQuery = 'קקטוס';
+
+      beforeEach(() => {
+        renderStateOnly(REQUEST_STATE.idle, mockQuery);
+      });
+
+      it('names the typed words in the no-match line', () => {
+        expect(
+          screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
+        ).toHaveTextContent(PICTURE_TILES_COPY.noMatch(mockQuery));
+      });
     });
   });
 
   describe('on jungle-quest, where the primary colour is not the ring', () => {
     const { selectionRing } = getThemeTokens(THEME_ID.jungleQuest).colors;
+
+    const mockOnChoose = jest.fn();
 
     beforeEach(() => {
       render(
@@ -124,7 +130,7 @@ describe('PictureTiles', () => {
           requestState={REQUEST_STATE.idle}
           query="אופניים"
           chosenEmoji="🚲"
-          onChoose={jest.fn()}
+          onChoose={mockOnChoose}
         />,
         { themeId: THEME_ID.jungleQuest }
       );

@@ -1,6 +1,6 @@
 import { fireEvent, renderHook } from '@testing-library/react';
 import { useEscapeKey } from '../use-escape-key';
-import { ESCAPE_KEY } from '../constants';
+import { ESCAPE_KEY, KEY_DOWN_EVENT } from '../constants';
 
 describe('useEscapeKey', () => {
   const mockOnEscape = jest.fn();
@@ -29,8 +29,10 @@ describe('useEscapeKey', () => {
     });
 
     describe('when another key is pressed', () => {
+      const mockOtherKey = 'Enter';
+
       beforeEach(() => {
-        fireEvent.keyDown(document.body, { key: 'Enter' });
+        fireEvent.keyDown(document.body, { key: mockOtherKey });
       });
 
       it('ignores it', () => {
@@ -68,7 +70,7 @@ describe('useEscapeKey', () => {
 
     beforeEach(() => {
       mockOtherListener.mockClear();
-      document.addEventListener('keydown', mockOtherListener);
+      document.addEventListener(KEY_DOWN_EVENT, mockOtherListener);
       renderHook(() =>
         useEscapeKey({
           isListening: true,
@@ -80,7 +82,7 @@ describe('useEscapeKey', () => {
     });
 
     afterEach(() => {
-      document.removeEventListener('keydown', mockOtherListener);
+      document.removeEventListener(KEY_DOWN_EVENT, mockOtherListener);
     });
 
     it('keeps Escape from reaching the other listener', () => {
