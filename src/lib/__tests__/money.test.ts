@@ -5,6 +5,7 @@ import {
   floorToShekels,
   nearestHalfShekel,
   shekelsToAgorot,
+  withoutAgorot,
 } from '../money';
 
 describe('agorotToShekels', () => {
@@ -81,5 +82,15 @@ describe('floorToShekels', () => {
 
   it('shows less than a shekel as nothing', () => {
     expect(floorToShekels(99)).toBe(0);
+  });
+});
+
+describe('withoutAgorot', () => {
+  it('drops the agorot and keeps the amount in agorot', () => {
+    expect(withoutAgorot(2399)).toBe(2300);
+  });
+
+  it('keeps an exact shekel amount', () => {
+    expect(withoutAgorot(2300)).toBe(2300);
   });
 });

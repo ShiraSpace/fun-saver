@@ -18,6 +18,10 @@ export function shekelsToAgorot(shekels: number): number {
   return shekels * AGOROT_PER_SHEKEL;
 }
 
+export function withoutAgorot(agorot: number): number {
+  return shekelsToAgorot(floorToShekels(agorot));
+}
+
 export function nearestHalfShekel(agorot: number): number | null {
   const halfShekels = Math.ceil(agorot / HALF_SHEKEL_AGOROT - 0.5);
 

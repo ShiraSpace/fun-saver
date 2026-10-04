@@ -1,19 +1,15 @@
-import { floorToShekels, shekelsToAgorot } from '@/lib/money';
+import { withoutAgorot } from '@/lib/money';
 import type { WalletSummary } from './types';
 
-export interface SavingsInWholeShekels {
+export interface SavingsWithoutAgorot {
   balance: number;
   principal: number;
   interestEarned: number;
 }
 
-function withoutAgorot(amountAgorot: number): number {
-  return shekelsToAgorot(floorToShekels(amountAgorot));
-}
-
-export function savingsInWholeShekels(
+export function savingsWithoutAgorot(
   savings: Pick<WalletSummary, 'balance' | 'interestEarned'>
-): SavingsInWholeShekels {
+): SavingsWithoutAgorot {
   const balance = withoutAgorot(savings.balance);
   const interestEarned = Math.min(
     withoutAgorot(savings.interestEarned),

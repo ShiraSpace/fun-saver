@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
-import { savingsInWholeShekels } from '@/lib/wallet/savings-in-whole-shekels';
+import { savingsWithoutAgorot } from '@/lib/wallet/savings-without-agorot';
 import { Money } from '@/components/Money';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
 import {
@@ -21,7 +21,7 @@ interface ChildSavingsProps {
 }
 
 export function ChildSavings({ savings }: ChildSavingsProps): JSX.Element {
-  const { balance, principal, interestEarned } = savingsInWholeShekels(savings);
+  const { balance, principal, interestEarned } = savingsWithoutAgorot(savings);
 
   return (
     <Card data-testid={CHILD_SAVINGS_TEST_IDS.card}>
