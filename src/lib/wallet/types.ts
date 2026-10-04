@@ -19,6 +19,10 @@ export interface WalletSummary extends Wallet {
   interestEarnedToday: number;
 }
 
+export interface SpendableWalletSummary extends WalletSummary {
+  name: SpendableWalletName;
+}
+
 export interface WalletConfig {
   name: WalletName;
   icon: string;

@@ -15,7 +15,7 @@ describe('an account stored in child view', () => {
   });
 
   it('opens straight on the child screen', async () => {
-    assert.equal(await childAccount.isShown(), true);
+    assert.equal(await childAccount.screenExists(), true);
   });
 });
 
@@ -27,17 +27,17 @@ describe('a parent turns child view on', () => {
   beforeEach(async () => {
     await menu.open();
     await menu.tapViewModeSwitch();
-    await childAccount.waitUntilShown();
+    await childAccount.waitForScreen();
   });
 
   it('shows the child screen', async () => {
-    assert.equal(await childAccount.isShown(), true);
+    assert.equal(await childAccount.screenExists(), true);
   });
 
   it('is still the child screen after a reload, with no cookie to remember it', async () => {
     await appBrowser.reload();
 
-    assert.equal(await childAccount.isShown(), true);
+    assert.equal(await childAccount.screenExists(), true);
   });
 });
 
@@ -69,7 +69,7 @@ for (const parentPage of [METHOD_ROUTE, TRANSACTIONS_ROUTE]) {
     });
 
     it('still gets the child menu', async () => {
-      assert.equal(await menu.childMenuIsShown(), true);
+      assert.equal(await menu.childMenuExists(), true);
     });
   });
 }

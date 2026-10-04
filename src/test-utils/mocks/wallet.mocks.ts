@@ -1,5 +1,6 @@
 import type {
   SpendableWalletName,
+  SpendableWalletSummary,
   Wallet,
   WalletSummary,
 } from '@/lib/wallet/types';
@@ -45,7 +46,7 @@ export function createMockWalletSummary(
 export function createMockSpendableWallet(
   name: SpendableWalletName,
   overrides: Partial<WalletSummary> = {}
-): WalletSummary & { name: SpendableWalletName } {
+): SpendableWalletSummary {
   return { ...createMockWalletSummary(overrides), name };
 }
 

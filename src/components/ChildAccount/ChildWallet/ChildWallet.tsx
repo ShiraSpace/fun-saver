@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import type { SpendableWalletName, WalletSummary } from '@/lib/wallet/types';
+import type { SpendableWalletSummary } from '@/lib/wallet/types';
 import { WALLET_LABEL } from '@/lib/wallet/constants';
 import { Money } from '@/components/Money';
 import { MONEY_ROUNDING } from '@/components/Money/constants';
@@ -9,7 +9,7 @@ import { CHILD_WALLET_COPY, CHILD_WALLET_TEST_IDS } from './constants';
 import { Amount, Card, Icon, Name, Note } from './ChildWallet.styles';
 
 interface ChildWalletProps {
-  wallet: WalletSummary & { name: SpendableWalletName };
+  wallet: SpendableWalletSummary;
 }
 
 export function ChildWallet({ wallet }: ChildWalletProps): JSX.Element {

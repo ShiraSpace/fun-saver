@@ -64,7 +64,7 @@ export class MenuDriver {
     return this.appBrowser.click(VIEW_MODE_SWITCH_TEST_IDS.switch);
   }
 
-  childMenuIsShown(): Promise<boolean> {
+  childMenuExists(): Promise<boolean> {
     return this.appBrowser.exists(CHILD_MENU_CONTENT_TEST_IDS.menu);
   }
 
