@@ -9,7 +9,7 @@ interface PictureTilesProps {
   pictures: string[];
   requestState: RequestState;
   query: string;
-  chosenPicture: string;
+  chosenPictureText: string;
   onChoosePicture: (picture: string) => void;
 }
 
@@ -34,7 +34,7 @@ export function PictureTiles({
   pictures,
   requestState,
   query,
-  chosenPicture,
+  chosenPictureText,
   onChoosePicture,
 }: PictureTilesProps): JSX.Element {
   const line = stateLine(pictures, requestState, query);
@@ -56,7 +56,7 @@ export function PictureTiles({
     <Tile
       key={picture}
       type="button"
-      aria-pressed={picture === chosenPicture}
+      aria-pressed={picture === chosenPictureText}
       data-testid={PICTURE_TILES_TEST_IDS.tile}
       onClick={(): void => onChoosePicture(picture)}
     >

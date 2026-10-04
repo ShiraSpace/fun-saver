@@ -51,7 +51,7 @@ export function GoalPictureSearch({
           pictures={search.pictures}
           requestState={search.requestState}
           query={search.searchedQuery}
-          chosenPicture={search.chosenPicture}
+          chosenPictureText={search.chosenPictureText}
           onChoosePicture={search.choosePicture}
         />
         <ChooseButton onConfirm={search.confirmChoice} />

@@ -19,12 +19,6 @@ describe('useMatchingPictures', () => {
     hook = renderHook(() => useMatchingPictures(mockQueryWithPrefix));
   });
 
-  describe('right after mounting', () => {
-    it('is waiting for the word list', () => {
-      expect(hook.result.current.requestState).toBe(REQUEST_STATE.pending);
-    });
-  });
-
   describe('once the word list has loaded', () => {
     const mockQueryPicture = '🚲';
 

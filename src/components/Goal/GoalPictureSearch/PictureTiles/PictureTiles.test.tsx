@@ -9,7 +9,7 @@ describe('PictureTiles', () => {
 
   describe('with matching pictures and one chosen', () => {
     const mockPictures = ['🚲', '🚴', '🛴'];
-    const mockChosenPicture = '🚴';
+    const mockChosenPictureText = '🚴';
     const mockOnChoosePicture = jest.fn();
 
     beforeEach(() => {
@@ -19,7 +19,7 @@ describe('PictureTiles', () => {
           pictures={mockPictures}
           requestState={REQUEST_STATE.idle}
           query={mockQuery}
-          chosenPicture={mockChosenPicture}
+          chosenPictureText={mockChosenPictureText}
           onChoosePicture={mockOnChoosePicture}
         />
       );
@@ -37,7 +37,7 @@ describe('PictureTiles', () => {
         .filter((tile) => tile.getAttribute('aria-pressed') === 'true');
 
       expect(pressed.map((tile) => tile.textContent)).toEqual([
-        mockChosenPicture,
+        mockChosenPictureText,
       ]);
     });
 
@@ -55,7 +55,7 @@ describe('PictureTiles', () => {
   });
 
   describe('with no tiles to show', () => {
-    const mockChosenPicture = '🎯';
+    const mockChosenPictureText = '🎯';
     const mockOnChoosePicture = jest.fn();
 
     function renderStateOnly(requestState: RequestState, query: string): void {
@@ -64,7 +64,7 @@ describe('PictureTiles', () => {
           pictures={[]}
           requestState={requestState}
           query={query}
-          chosenPicture={mockChosenPicture}
+          chosenPictureText={mockChosenPictureText}
           onChoosePicture={mockOnChoosePicture}
         />
       );
@@ -134,7 +134,7 @@ describe('PictureTiles', () => {
           pictures={[mockPicture]}
           requestState={REQUEST_STATE.idle}
           query={mockQuery}
-          chosenPicture={mockPicture}
+          chosenPictureText={mockPicture}
           onChoosePicture={mockOnChoosePicture}
         />,
         { themeId: THEME_ID.jungleQuest }

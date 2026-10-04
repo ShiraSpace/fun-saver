@@ -19,7 +19,7 @@ interface GoalPictureSearchState {
   searchedQuery: string;
   pictures: string[];
   requestState: RequestState;
-  chosenPicture: string;
+  chosenPictureText: string;
   editQuery: (query: string) => void;
   choosePicture: (picture: string) => void;
   confirmChoice: () => void;
@@ -31,7 +31,7 @@ export function useGoalPictureSearch({
   onChange,
 }: GoalPictureSearchOptions): GoalPictureSearchState {
   const [query, setQuery] = useState(goalName);
-  const [chosenPicture, setChosenPicture] = useState(
+  const [chosenPictureText, setChosenPictureText] = useState(
     (picture ?? DEFAULT_GOAL_PICTURE).emoji
   );
   const searchedQuery = useDebouncedValue(query, PICTURE_SEARCH_DELAY_MS);
@@ -42,10 +42,10 @@ export function useGoalPictureSearch({
     searchedQuery,
     pictures,
     requestState,
-    chosenPicture,
+    chosenPictureText,
     editQuery: setQuery,
-    choosePicture: setChosenPicture,
+    choosePicture: setChosenPictureText,
     confirmChoice: (): void =>
-      onChange({ kind: GOAL_PICTURE_KIND.emoji, emoji: chosenPicture }),
+      onChange({ kind: GOAL_PICTURE_KIND.emoji, emoji: chosenPictureText }),
   };
 }
