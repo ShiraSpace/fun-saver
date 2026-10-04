@@ -1,5 +1,7 @@
 export type WalletName = 'savings' | 'spending' | 'goodDeeds';
 
+export type SpendableWalletName = Exclude<WalletName, 'savings'>;
+
 export interface Wallet {
   id: string;
   name: WalletName;
@@ -15,6 +17,10 @@ export interface WalletSummary extends Wallet {
   withdrawn: number;
   interestEarned: number;
   interestEarnedToday: number;
+}
+
+export interface SpendableWalletSummary extends WalletSummary {
+  name: SpendableWalletName;
 }
 
 export interface WalletConfig {

@@ -5,6 +5,7 @@ import { today } from '@/lib/clock';
 import { newId } from '@/lib/ids';
 import { DEFAULT_WALLETS } from '@/lib/wallet/constants';
 import type { Account, AccountEdits } from './types';
+import { VIEW_MODE } from './view-mode';
 import type { Wallet } from '@/lib/wallet/types';
 
 export interface CreateAccountInput {
@@ -30,6 +31,7 @@ export class AccountsStore {
       avatarId,
       isActive: true,
       themeId: DEFAULT_THEME_ID,
+      viewMode: VIEW_MODE.parent,
       wallets: this.openDefaultWallets(),
     };
 

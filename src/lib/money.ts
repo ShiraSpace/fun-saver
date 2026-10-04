@@ -10,8 +10,16 @@ export function agorotToWholeShekels(agorot: number): number {
   return Math.round(agorotToShekels(agorot));
 }
 
+export function floorToShekels(agorot: number): number {
+  return Math.floor(agorot / AGOROT_PER_SHEKEL);
+}
+
 export function shekelsToAgorot(shekels: number): number {
   return shekels * AGOROT_PER_SHEKEL;
+}
+
+export function withoutAgorot(agorot: number): number {
+  return shekelsToAgorot(floorToShekels(agorot));
 }
 
 export function nearestHalfShekel(agorot: number): number | null {

@@ -8,6 +8,8 @@ import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from '@/components/Menu/AccountPicker/constants';
 import { MENU_ACCOUNT_SETTINGS_TEST_IDS } from '@/components/Menu/MenuAccountSettings/constants';
 import { SIGNED_IN_USER_SECTION_TEST_IDS } from '@/components/Menu/SignedInUserSection/constants';
+import { VIEW_MODE_SWITCH_TEST_IDS } from '@/components/Menu/ViewModeSwitch/constants';
+import { CHILD_MENU_CONTENT_TEST_IDS } from '@/components/Menu/ChildMenuContent/constants';
 import { SIGN_IN_TEST_IDS } from '@/components/SignIn/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '@/components/Menu/AppearanceSection/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
@@ -56,6 +58,14 @@ export class MenuDriver {
 
   tapEditAccount(): Promise<void> {
     return this.appBrowser.click(EDIT_ACCOUNT_BUTTON_TEST_IDS.button);
+  }
+
+  tapViewModeSwitch(): Promise<void> {
+    return this.appBrowser.click(VIEW_MODE_SWITCH_TEST_IDS.switch);
+  }
+
+  childMenuExists(): Promise<boolean> {
+    return this.appBrowser.exists(CHILD_MENU_CONTENT_TEST_IDS.menu);
   }
 
   tapHomeTab(): Promise<void> {
