@@ -13,9 +13,9 @@ and `eslint`. It is uncommitted and awaiting review. Tests have not been written
 
 ## Decisions (approved 2026-10-04)
 
-1. **Debounce:** the input updates on every keystroke, and `matchingPictures` runs on a query debounced by
-   `PICTURE_SEARCH_DELAY_MS = 200`. The debounce is a co-located `useDebouncedValue` (`setTimeout` plus a
-   cleanup). No dependency is added.
+1. **Typing stays responsive:** the input updates on every keystroke, and `matchingPictures` runs on
+   `useDeferredValue(query)`, so React searches when it has time. This replaced an earlier 200 ms
+   debounce hook (decided on #189). No dependency, no timer.
 2. **Tile colour:** the existing `colors.softBg`. No new `ThemeColors` fields, because the celebration lane
    edits the theme files.
 3. **Starting picture:** `picture: GoalPicture | null`. `null` means none chosen yet, and the sheet then
@@ -30,13 +30,13 @@ and `eslint`. It is uncommitted and awaiting review. Tests have not been written
 
 ## What the sheet does
 
-- It opens already searching for the goal name. Editing the text searches again, after the debounce.
+- It opens already searching for the goal name. Editing the text searches again, through `useDeferredValue`.
 - The word list loads with `import()` when the sheet mounts and is indexed once with `indexPictureWords`.
   `matchingPictures(searchedQuery, picturesByTerm)` is memoised on both. There is no module-level cache:
   reopening the sheet re-indexes in milliseconds.
 - Picture tiles fill a 3-column grid. The grid is as tall as it is wide (`aspect-ratio: 1`), so three rows
   of square tiles show and the rest scroll.
-- Tapping a tile chooses it, shown with a ✓. **בחירה** sends `{ kind: 'emoji', emoji: chosenEmoji }`
+- Tapping a tile chooses it, shown with a ✓. **בחירה** sends `{ kind: 'emoji', emoji: chosenPicture }`
   through `onChange`. A picture is always chosen (🎯 at first when `picture` is null), so **בחירה** is never
   disabled.
 - Nothing in the sheet says "emoji".
@@ -46,8 +46,8 @@ and `eslint`. It is uncommitted and awaiting review. Tests have not been written
 | When | Shows | Copy |
 |---|---|---|
 | Word list loading (`REQUEST_STATE.pending`) | status line | `מחפשים תמונות…` |
-| Load failed (`REQUEST_STATE.failed`) | status line in `alertText` | `אופס, התמונות לא נטענו. סגרו ונסו שוב.` |
-| Loaded, query blank after trim | hint line | `כתבו מה רוצים לחפש` |
+| Load failed (`REQUEST_STATE.failed`) | `NoPicturesReason` in `alertText` | `אופס, התמונות לא נטענו. סגרו ונסו שוב.` |
+| Loaded, query blank after trim | `NoPicturesReason` (nothing typed) | `כתבו מה רוצים לחפש` |
 | Loaded, no match | no-match line naming the query | `לא מצאנו תמונה ל„{query}”. נסו מילה אחרת.` |
 | Loaded, matches | the tiles | — |
 
@@ -59,13 +59,12 @@ and `eslint`. It is uncommitted and awaiting review. Tests have not been written
 | `docs/glossary.md` | +1 | the picture-tile row |
 | `GoalPictureSearch/GoalPictureSearch.tsx` | 118 | the sheet, plus three small parts in the same file: `SheetHeading` (title and ✕), `QueryField` and `ChooseButton` |
 | `GoalPictureSearch/GoalPictureSearch.styles.ts` | 72 | `Scrim`, `Sheet`, `TitleRow`, `SheetTitle`, `CloseButton`, `SearchBox` |
-| `GoalPictureSearch/use-goal-picture-search.ts` | 51 | the sheet's state: the query, the debounced `searchedQuery`, the chosen emoji, `confirmChoice` |
+| `GoalPictureSearch/use-goal-picture-search.ts` | 51 | the sheet's state: the query, the deferred `searchedQuery`, `chosenPicture`, `confirmChoice` |
 | `GoalPictureSearch/use-matching-pictures.ts` | 37 | loads, indexes and matches; returns `{ pictures, requestState }` |
-| `GoalPictureSearch/use-debounced-value.ts` | 14 | `useDebouncedValue(value, delayMs)` |
-| `GoalPictureSearch/constants.ts` | 18 | test ids, copy, `PICTURE_SEARCH_DELAY_MS` |
+| `GoalPictureSearch/constants.ts` | 4 | test ids |
 | `GoalPictureSearch/index.ts` | 2 | named re-exports |
-| `GoalPictureSearch/PictureTiles/PictureTiles.tsx` | 67 | `stateLine(...)` and the grid |
-| `GoalPictureSearch/PictureTiles/PictureTiles.styles.ts` | 64 | `Grid`, `Tile`, `StateLine` |
+| `GoalPictureSearch/PictureTiles/PictureTiles.tsx` | 85 | `whyNoPictures({ pictures, requestState, query })` and the found pictures |
+| `GoalPictureSearch/PictureTiles/PictureTiles.styles.ts` | 64 | `FoundPictures`, `PictureTile`, `NoPicturesReason` |
 | `GoalPictureSearch/PictureTiles/constants.ts` | 13 | test ids, copy (single-use style values sit inline in the `.styles.ts`) |
 | `GoalPictureSearch/PictureTiles/index.ts` | 1 | named re-export |
 
@@ -85,7 +84,8 @@ export interface GoalPictureSearchProps {
 
 - `picture` and `onChange` pair as in `NameField` and `TransactionTypeToggle`. `onClose` matches
   `TransactionDrawer`.
-- A tile tap is `chosenEmoji` / `onChoose`. Only **בחירה** changes the goal's picture.
+- A tile tap is `chosenPicture` / `onChoosePicture`. **בחירה** is `ChooseButton`'s `onChoose`, and only it
+  changes the goal's picture. `QueryField` hands the typed text up through `editQuery`.
 - The hook returns `pictures` and does not shadow the lib's `matchingPictures`.
 
 ## Look
@@ -106,16 +106,15 @@ break, using the snapshot method from AGENTS.md.
 |---|---|---|---|
 | 1 | PictureTiles | one tile per matching picture, in order | render `pictures.slice(1)` |
 | 2 | PictureTiles | only the chosen picture is `aria-pressed` | compare with `pictures[0]` |
-| 3 | PictureTiles | tapping a tile chooses its picture | `onChoose(pictures[0])` |
+| 3 | PictureTiles | tapping a tile chooses its picture | `onChoosePicture(pictures[0])` |
 | 4 | PictureTiles | loading shows the loading line and no tiles | drop the `pending` branch |
 | 5 | PictureTiles | a failed load shows the error line | treat `failed` like `idle` |
 | 6 | PictureTiles | no match names the typed words | leave `{query}` out |
 | 7 | PictureTiles | a blank query shows the hint | fold blank into no-match |
-| 8 | PictureTiles | on `midnightBlue` the chosen tile is ringed in `selectionRing` | ring with `primary` |
+| 8 | PictureTiles | on `jungleQuest` the chosen tile is ringed in `selectionRing` | ring with `primary` |
 | 9 | use-matching-pictures | `pending` until the list loads, then `idle` | start at `idle` |
 | 10 | use-matching-pictures | "האופניים" finds 🚲 from the real list | match `''` |
 | 11 | use-matching-pictures.failed | a list that fails to load gives `failed` | delete the `.catch` |
-| 12 | use-debounced-value | the value changes only after the delay (fake timers) | return `value` directly |
 | 13 | GoalPictureSearch | opens searching for the goal name, with 🚲 a tile for "אופניים" | `useState('')` |
 | 14 | GoalPictureSearch | typing "כלב" shows 🐶 and no ❤️ after the delay | input not wired |
 | 15 | GoalPictureSearch | opened with `picture: null`, בחירה sends 🎯 | start from `''` |

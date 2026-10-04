@@ -19,6 +19,7 @@ async function loadPicturesByTerm(): Promise<PicturesByTerm> {
   const { default: pictureWords } =
     await import('@/lib/goal/picture-search/picture-words.he.json');
   loadedPicturesByTerm = indexPictureWords(pictureWords);
+
   return loadedPicturesByTerm;
 }
 
@@ -32,9 +33,10 @@ export function useMatchingPictures(query: string): MatchingPictures {
     if (loadedPicturesByTerm) {
       return;
     }
+
     void loadPicturesByTerm()
-      .then((loaded) => {
-        setPicturesByTerm(loaded);
+      .then((picturesByTerm) => {
+        setPicturesByTerm(picturesByTerm);
         setRequestState(REQUEST_STATE.idle);
       })
       .catch(() => setRequestState(REQUEST_STATE.failed));

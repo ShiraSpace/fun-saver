@@ -3,30 +3,43 @@
 import { JSX } from 'react';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { PICTURE_TILES_COPY, PICTURE_TILES_TEST_IDS } from './constants';
-import { Grid, StateLine, Tile } from './PictureTiles.styles';
+import {
+  FoundPictures,
+  NoPicturesReason,
+  PictureTile,
+} from './PictureTiles.styles';
 
 interface PictureTilesProps {
   pictures: string[];
   requestState: RequestState;
   query: string;
-  chosenPictureText: string;
+  chosenPicture: string;
   onChoosePicture: (picture: string) => void;
 }
 
-function stateLine(
-  pictures: string[],
-  requestState: RequestState,
-  query: string
-): string | null {
+interface PictureSearchResult {
+  pictures: string[];
+  requestState: RequestState;
+  query: string;
+}
+
+function whyNoPictures({
+  pictures,
+  requestState,
+  query,
+}: PictureSearchResult): string | null {
   if (requestState === REQUEST_STATE.pending) {
     return PICTURE_TILES_COPY.loading;
   }
+
   if (requestState === REQUEST_STATE.failed) {
-    return PICTURE_TILES_COPY.failed;
+    return PICTURE_TILES_COPY.failedToLoad;
   }
+
   if (!query.trim()) {
-    return PICTURE_TILES_COPY.hint;
+    return PICTURE_TILES_COPY.nothingTyped;
   }
+
   return pictures.length === 0 ? PICTURE_TILES_COPY.noMatch(query) : null;
 }
 
@@ -34,35 +47,39 @@ export function PictureTiles({
   pictures,
   requestState,
   query,
-  chosenPictureText,
+  chosenPicture,
   onChoosePicture,
 }: PictureTilesProps): JSX.Element {
-  const line = stateLine(pictures, requestState, query);
-  const isFailed = requestState === REQUEST_STATE.failed;
+  const noPicturesReason = whyNoPictures({ pictures, requestState, query });
+  const failedToLoad = requestState === REQUEST_STATE.failed;
 
-  if (line) {
+  if (noPicturesReason) {
     return (
-      <StateLine
+      <NoPicturesReason
         role="status"
-        isAlert={isFailed}
-        data-testid={PICTURE_TILES_TEST_IDS.stateLine}
+        failedToLoad={failedToLoad}
+        data-testid={PICTURE_TILES_TEST_IDS.noPicturesReason}
       >
-        {line}
-      </StateLine>
+        {noPicturesReason}
+      </NoPicturesReason>
     );
   }
 
-  const tiles = pictures.map((picture) => (
-    <Tile
+  const pictureTiles = pictures.map((picture) => (
+    <PictureTile
       key={picture}
       type="button"
-      aria-pressed={picture === chosenPictureText}
-      data-testid={PICTURE_TILES_TEST_IDS.tile}
+      aria-pressed={picture === chosenPicture}
+      data-testid={PICTURE_TILES_TEST_IDS.pictureTile}
       onClick={(): void => onChoosePicture(picture)}
     >
       {picture}
-    </Tile>
+    </PictureTile>
   ));
 
-  return <Grid data-testid={PICTURE_TILES_TEST_IDS.grid}>{tiles}</Grid>;
+  return (
+    <FoundPictures data-testid={PICTURE_TILES_TEST_IDS.foundPictures}>
+      {pictureTiles}
+    </FoundPictures>
+  );
 }

@@ -51,10 +51,10 @@ export function GoalPictureSearch({
           pictures={search.pictures}
           requestState={search.requestState}
           query={search.searchedQuery}
-          chosenPictureText={search.chosenPictureText}
+          chosenPicture={search.chosenPicture}
           onChoosePicture={search.choosePicture}
         />
-        <ChooseButton onConfirm={search.confirmChoice} />
+        <ChooseButton onChoose={search.confirmChoice} />
       </Sheet>
     </>
   );

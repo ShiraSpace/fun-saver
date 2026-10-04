@@ -10,7 +10,7 @@ interface QueryFieldProps {
 }
 
 export function QueryField({ query, onChange }: QueryFieldProps): JSX.Element {
-  const reportQuery = (event: ChangeEvent<HTMLInputElement>): void =>
+  const editQuery = (event: ChangeEvent<HTMLInputElement>): void =>
     onChange(event.target.value);
 
   return (
@@ -20,7 +20,7 @@ export function QueryField({ query, onChange }: QueryFieldProps): JSX.Element {
       aria-label={QUERY_FIELD_COPY.label}
       data-testid={QUERY_FIELD_TEST_IDS.input}
       value={query}
-      onChange={reportQuery}
+      onChange={editQuery}
     />
   );
 }
