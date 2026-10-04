@@ -4,7 +4,8 @@ import { JSX } from 'react';
 import { AvatarBadge } from '@/components/AvatarBadge';
 import { useAccounts } from '@/components/Home/accounts-context';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import { VIEW_MODE, otherAccountsShownToChild } from '@/lib/account/view-mode';
+import { otherAccounts } from '@/lib/account/current-account';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { AppearanceSection } from '../AppearanceSection';
 import { ChildMenuAccountList } from '../ChildMenuAccountList';
 import { ViewModeSwitch } from '../ViewModeSwitch';
@@ -28,7 +29,7 @@ export function ChildMenuContent(): JSX.Element {
   const { accounts, currentAccount } = useAccounts();
   const { closeMenu } = useMenu();
   const openAccount = useOpenAccount();
-  const otherAccounts = otherAccountsShownToChild(accounts, currentAccount);
+  const siblings = otherAccounts(accounts, currentAccount);
 
   return (
     <Layout data-testid={CHILD_MENU_CONTENT_TEST_IDS.menu}>
@@ -48,12 +49,9 @@ export function ChildMenuContent(): JSX.Element {
         <span aria-hidden>{CHILD_MENU_CONTENT_COPY.homeIcon}</span>
         {CHILD_MENU_CONTENT_COPY.home}
       </HomeLink>
-      {otherAccounts.length > 0 && (
+      {siblings.length > 0 && (
         <Item>
-          <ChildMenuAccountList
-            accounts={otherAccounts}
-            onSelect={openAccount}
-          />
+          <ChildMenuAccountList accounts={siblings} onSelect={openAccount} />
         </Item>
       )}
       <Item>
