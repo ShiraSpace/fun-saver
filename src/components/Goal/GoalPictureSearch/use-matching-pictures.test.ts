@@ -20,7 +20,7 @@ describe('useMatchingPictures', () => {
   });
 
   describe('once the word list has loaded', () => {
-    const mockQueryPicture = '🚲';
+    const mockQueryEmoji = '🚲';
 
     beforeEach(async () => {
       await waitFor(() =>
@@ -33,7 +33,7 @@ describe('useMatchingPictures', () => {
     });
 
     it('finds the bicycle for a word typed with a prefix letter', () => {
-      expect(hook.result.current.pictures).toContain(mockQueryPicture);
+      expect(hook.result.current.foundEmoji).toContain(mockQueryEmoji);
     });
 
     describe('and the sheet opens again', () => {
@@ -47,8 +47,8 @@ describe('useMatchingPictures', () => {
       });
 
       it('starts with the pictures already found', () => {
-        expect(reopenedHook.result.current.pictures).toContain(
-          mockQueryPicture
+        expect(reopenedHook.result.current.foundEmoji).toContain(
+          mockQueryEmoji
         );
       });
     });
