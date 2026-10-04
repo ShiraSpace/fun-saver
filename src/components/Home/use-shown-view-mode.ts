@@ -6,7 +6,7 @@ import type { ViewModeChoice } from './accounts-context';
 interface ChosenViewMode {
   viewMode: ViewMode;
   chosenOn: AccountSummary;
-  isHeld: boolean;
+  isKeptUntilMenuCloses: boolean;
 }
 
 interface ShownViewMode {
@@ -15,7 +15,7 @@ interface ShownViewMode {
 }
 
 function isChosenFor(chosen: ChosenViewMode, account: AccountSummary): boolean {
-  if (chosen.isHeld) {
+  if (chosen.isKeptUntilMenuCloses) {
     return chosen.chosenOn.id === account.id;
   }
 
@@ -38,9 +38,9 @@ export function useShownViewMode(
 ): ShownViewMode {
   const [chosen, setChosen] = useState<ChosenViewMode>();
 
-  const choose = (viewMode: ViewMode, isHeld: boolean): void => {
+  const choose = (viewMode: ViewMode, isKeptUntilMenuCloses: boolean): void => {
     if (currentAccount) {
-      setChosen({ viewMode, chosenOn: currentAccount, isHeld });
+      setChosen({ viewMode, chosenOn: currentAccount, isKeptUntilMenuCloses });
     }
   };
 
@@ -48,7 +48,8 @@ export function useShownViewMode(
     shownAccount: withChosenViewMode(currentAccount, chosen),
     viewModeChoice: {
       showViewMode: (viewMode: ViewMode): void => choose(viewMode, false),
-      holdViewMode: (viewMode: ViewMode): void => choose(viewMode, true),
+      keepViewModeUntilMenuCloses: (viewMode: ViewMode): void =>
+        choose(viewMode, true),
     },
   };
 }

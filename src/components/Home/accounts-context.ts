@@ -6,7 +6,7 @@ import type { ViewMode } from '@/lib/account/view-mode';
 
 export interface ViewModeChoice {
   showViewMode: (viewMode: ViewMode) => void;
-  holdViewMode: (viewMode: ViewMode) => void;
+  keepViewModeUntilMenuCloses: (viewMode: ViewMode) => void;
 }
 
 export interface AccountsContextValue {

@@ -87,7 +87,7 @@ function useShowSavedViewMode(
     }
 
     if (account.id === currentAccount.id && viewModeChoice) {
-      viewModeChoice.holdViewMode(currentAccount.viewMode);
+      viewModeChoice.keepViewModeUntilMenuCloses(currentAccount.viewMode);
       whenMenuCloses(show);
     }
 
