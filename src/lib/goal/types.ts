@@ -30,5 +30,3 @@ export interface GoalEndRequest {
   endedAt: string;
   ending: GoalEnding;
 }
-
-export type PictureWords = Record<string, string[]>;

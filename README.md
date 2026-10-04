@@ -60,18 +60,19 @@ FUNSAVER_NOW=2026-01-01 npm run dev
 
 ## Common commands
 
-| Command                   | What it does                                                                                           |
-| ------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `npm run dev`             | Start the dev server                                                                                   |
-| `npm run dev:mobile`      | Dev server bound to `0.0.0.0`                                                                          |
-| `npm test`                | Run unit tests — matches `*.test.ts` only, so the live-database suites never load                      |
-| `npm run test:db`         | Run the `src/**/__tests__/*.e2e.ts` Postgres suites against the Neon `test` branch                      |
-| `npm run test:e2e`        | Postgres suites, then the visual build, then the browser suites — needs `TEST_DATABASE_URL`             |
-| `npm run lint`            | Lint and auto-fix                                                                                      |
-| `npm run build`           | Production build                                                                                       |
-| `npm run db:migrate`      | Apply `src/db/schema.sql` to the Neon `main` branch (uses `DATABASE_URL`)                              |
-| `npm run db:migrate-dev`  | Apply the same schema to the Neon `dev` branch (uses `DEV_DATABASE_URL`)                               |
-| `npm run db:migrate-test` | Apply the same schema to the Neon `test` branch (uses `TEST_DATABASE_URL`)                             |
+| Command                          | What it does                                                                                           |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `npm run dev`                    | Start the dev server                                                                                   |
+| `npm run dev:mobile`             | Dev server bound to `0.0.0.0`                                                                          |
+| `npm test`                       | Run unit tests — matches `*.test.ts` only, so the live-database suites never load                      |
+| `npm run test:db`                | Run the `src/**/__tests__/*.e2e.ts` Postgres suites against the Neon `test` branch                     |
+| `npm run test:e2e`               | Postgres suites, then the visual build, then the browser suites — needs `TEST_DATABASE_URL`            |
+| `npm run lint`                   | Lint and auto-fix                                                                                      |
+| `npm run build`                  | Production build                                                                                       |
+| `npm run db:migrate`             | Apply `src/db/schema.sql` to the Neon `main` branch (uses `DATABASE_URL`)                              |
+| `npm run db:migrate-dev`         | Apply the same schema to the Neon `dev` branch (uses `DEV_DATABASE_URL`)                               |
+| `npm run db:migrate-test`        | Apply the same schema to the Neon `test` branch (uses `TEST_DATABASE_URL`)                             |
+| `npm run download-picture-words` | After upgrading the Unicode emoji packages: rebuild the Hebrew words a child searches goal pictures by |
 
 ---
 

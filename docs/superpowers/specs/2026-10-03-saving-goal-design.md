@@ -258,7 +258,7 @@ throws on import there. So no client component imports
 - `goal-reached.ts`: `goalReached(goal, balance)`.
 - `goals.ts`: `setGoal` and `cancelGoal`.
 - `savings-withdrawal.ts`: the goal branch of a savings withdrawal (below).
-- `picture-search.ts`: `indexPictureWords(pictureWords)`, built once when the
+- `picture-search/picture-search.ts`: `indexPictureWords(pictureWords)`, built once when the
   word list loads, and `matchingPictures(query, picturesByTerm)` over that
   index on every keystroke.
 - `errors.ts`: `SavingsLockedError`, thrown like `OverdraftError`;
@@ -380,31 +380,27 @@ Its callers today are `use-add-transaction`, `use-update-account`,
 
 - **Source:** Unicode CLDR emoji annotations in Hebrew from the pinned
   `cldr-json` release 48.2.0 — `cldr-annotations-full/annotations/he` and
-  `cldr-annotations-derived-full/annotationsDerived/he` — plus
-  `emoji-test.txt` from `https://www.unicode.org/Public/<version>.0.0/emoji/`.
-  Unicode License v3. Checked (each finds these among others): אופניים →
+  `cldr-annotations-derived-full/annotationsDerived/he` — plus the emoji list
+  and versions from `unicode-emoji-json` (Emoji 17.0), all three exact-pinned
+  devDependencies. Unicode License v3. Checked (each finds these among others): אופניים →
   🚲🚴🚵, שמלה → 👗, קורקינט → 🛴, גיטרה → 🎸, אוזניות → 🎧, כלב → 🐶🐕.
-- **Generated, not installed.** `scripts/emoji-words.ts` (run with
-  `npx tsx scripts/emoji-words.ts`; `tsx` is already a devDependency) fetches
-  the pinned files once and writes `src/lib/goal/emoji-words.he.json`,
-  committed with the licence in `src/lib/goal/emoji-words.LICENSE` and listed
-  in `.prettierignore`, and run again with `npm run emoji-words`. The URLs,
-  the version floor and the byte limit live in the script's constants file.
-  No runtime or package dependency, so the `~/.npmrc` lockfile trap does not
-  apply. `tsconfig` includes `**/*.ts`, so the script is type-checked and
-  linted like the app.
+- **Generated, not shipped with its sources.**
+  `src/lib/goal/picture-search/download-picture-words.ts`, run with
+  `npm run download-picture-words`, reads the three devDependencies (no network) and
+  writes `picture-words.he.json` beside it, committed with the licence in
+  `picture-words.LICENSE` and listed in `.prettierignore`. The app imports only
+  the JSON, so no devDependency reaches the bundle. `tsconfig` includes
+  `**/*.ts`, so the script is type-checked and linted like the app.
 - **Fully-qualified emoji only.** CLDR keys leave out U+FE0F (`✈`, `🏎`, `❤`),
-  and `assertValidGoalRequest` refuses those. The script keys every emoji by its
-  `fully-qualified` line in `emoji-test.txt`, matches a CLDR key after removing
-  U+FE0F from both, and writes the fully-qualified string. It fails if any
+  and `assertValidGoalRequest` refuses those. The script walks
+  `unicode-emoji-json`, which lists only fully-qualified emoji, looks each up in
+  CLDR with U+FE0F removed, and writes the fully-qualified string. It fails if any
   emoji it writes does not pass `isValidPictureEmoji`.
-- **Trimmed while generating:** a sequence is dropped if it holds a skin-tone
-  modifier (U+1F3FB–1F3FF), a hair component (U+1F9B0–1F9B3) or ♀/♂
-  (U+2640/2642, which also drops the standalone ♀️ and ♂️), so one bicycle
-  does not fill the grid five times. (Those are
-  separate `fully-qualified` lines in `emoji-test.txt`, so filtering on status
-  alone removes nothing.) Emoji newer than **Emoji 13.0** are dropped, read
-  from each line's `E<n>`: Android 11, the oldest Android current Chrome
+- **Trimmed while generating:** `unicode-emoji-json` already leaves out
+  skin-tone variants; a sequence is also dropped if it holds a hair component
+  (U+1F9B0–1F9B3) or ♀/♂ (U+2640/2642, which also drops the standalone ♀️ and
+  ♂️), so one bicycle does not fill the grid five times. Emoji newer than
+  **Emoji 13.0** are dropped, read from each emoji's `emoji_version`: Android 11, the oldest Android current Chrome
   supports besides 10, draws all of them, and a goal picture is stored for
   good; 14.0 would add only 🛝 🪩 🪬. Only each emoji and its Hebrew words are
   kept. The script fails if the output exceeds **150 KB** raw (measured: about
@@ -542,7 +538,7 @@ cleanup needs no `goals` line, since deleting the run's accounts cascades.
 - **Logic:** `assertValidGoalRequest` at every boundary (name 0/1/30/31 after trimming,
   amount 0/1/100,000/100,001 and non-whole, extra fields, a picture that is
   text, two emoji or `🚲abc`, a flag that is accepted, `❤` without U+FE0F
-  refused and `❤️` accepted); every emoji in `emoji-words.he.json` passes
+  refused and `❤️` accepted); every emoji in `picture-words.he.json` passes
   `isValidPictureEmoji`; `goalReached` at `balance = amount − 1` and `= amount`; a
   locked withdrawal is refused; a reached withdrawal ends the goal as
   `completed` with `ended_at` equal to the withdrawal's `created_at`; a
