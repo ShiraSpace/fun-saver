@@ -6,7 +6,7 @@ import {
   mockChildAccountSummary,
   mockSiblingAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
-import { renderInOpenMenu, WithMenu } from '@/test-utils/menu';
+import { WithMenu } from '@/test-utils/menu';
 import {
   VIEW_MODE_SWITCH_COPY,
   VIEW_MODE_SWITCH_TEST_IDS,
@@ -19,13 +19,19 @@ import { ACCOUNT_LIST_TEST_IDS } from './constants';
 
 const mockOnSelect = jest.fn();
 
-function renderRow(account: AccountSummary, isCurrent: boolean): void {
-  renderInOpenMenu(
-    <AccountRow
-      account={account}
-      isCurrent={isCurrent}
-      onSelect={mockOnSelect}
-    />,
+function renderRow(
+  account: AccountSummary,
+  isCurrent: boolean,
+  closeMenu?: () => void
+): void {
+  render(
+    <WithMenu closeMenu={closeMenu}>
+      <AccountRow
+        account={account}
+        isCurrent={isCurrent}
+        onSelect={mockOnSelect}
+      />
+    </WithMenu>,
     { accounts: mockAccountsContext }
   );
 }
@@ -91,29 +97,40 @@ describe('AccountRow', () => {
   });
 
   describe('its child-view switch', () => {
-    it('is on for an account saved in child view', () => {
-      renderRow(mockChildAccountSummary, false);
+    describe('on an account saved in child view', () => {
+      beforeEach(() => {
+        renderRow(mockChildAccountSummary, false);
+      });
 
-      expect(childViewToggle()).toHaveAttribute('aria-checked', 'true');
+      it('is on', () => {
+        expect(childViewToggle()).toHaveAttribute('aria-checked', 'true');
+      });
     });
 
-    it('is off for an account saved in parent view', () => {
-      renderRow(mockAccountSummary, false);
+    describe('on an account saved in parent view', () => {
+      beforeEach(() => {
+        renderRow(mockAccountSummary, false);
+      });
 
-      expect(childViewToggle()).toHaveAttribute('aria-checked', 'false');
+      it('is off', () => {
+        expect(childViewToggle()).toHaveAttribute('aria-checked', 'false');
+      });
     });
 
-    it('saves the view mode of its own account, not the current one', () => {
-      renderRow(mockSiblingAccountSummary, false);
+    describe('tapped on another account', () => {
+      beforeEach(() => {
+        renderRow(mockSiblingAccountSummary, false);
+        fireEvent.click(childViewToggle());
+      });
 
-      fireEvent.click(childViewToggle());
-
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining(
-          `/api/accounts/${mockSiblingAccountSummary.id}/`
-        ),
-        expect.anything()
-      );
+      it('saves the view mode of its own account, not the current one', () => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining(
+            `/api/accounts/${mockSiblingAccountSummary.id}/`
+          ),
+          expect.anything()
+        );
+      });
     });
   });
 
@@ -125,16 +142,7 @@ describe('AccountRow', () => {
         ok: true,
         json: async () => mockSiblingAccountSummary,
       });
-      render(
-        <WithMenu closeMenu={mockCloseMenu}>
-          <AccountRow
-            account={mockSiblingAccountSummary}
-            isCurrent={false}
-            onSelect={mockOnSelect}
-          />
-        </WithMenu>,
-        { accounts: mockAccountsContext }
-      );
+      renderRow(mockSiblingAccountSummary, false, mockCloseMenu);
       fireEvent.click(childViewToggle());
       await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
     });

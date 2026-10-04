@@ -13,6 +13,7 @@ import {
   MENU_OVERLAY_TEST_IDS,
 } from '@/components/Menu/MenuOverlay/constants';
 import { openAccountPicker } from '@/test-utils/account-picker';
+import { MENU_TEST_IDS } from '@/components/Menu/constants';
 import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
 import type { AccountSummary } from '@/lib/account/types';
 import { wait } from '@/lib/wait';
@@ -70,8 +71,19 @@ function serverSays(viewMode: ViewMode): void {
   fireEvent.click(screen.getByTestId(SERVER_SAYS_TEST_IDS[viewMode]));
 }
 
-function closeMenu(): void {
-  openMenu();
+function tapMenuButton(): void {
+  fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
+}
+
+function createPendingSave(): {
+  save: Promise<unknown>;
+  answerSave: () => void;
+} {
+  const { promise, resolve } = Promise.withResolvers<unknown>();
+  const answerSave = (): void =>
+    resolve({ ok: true, json: async () => mockAccount });
+
+  return { save: promise, answerSave };
 }
 
 function saveAnswers(): Promise<void> {
@@ -83,7 +95,7 @@ function menuOverlay(): HTMLElement {
 }
 
 describe('Home switching between the parent and child screens', () => {
-  describe("a parent turns the current account's child view on and the save succeeds", () => {
+  describe("the current account's child view is saved", () => {
     beforeEach(async () => {
       global.fetch = jest
         .fn()
@@ -98,7 +110,7 @@ describe('Home switching between the parent and child screens', () => {
       expect(menuOverlay()).toHaveAttribute('data-open', 'true');
     });
 
-    it('keeps the parent screen while the menu is open, though the saved view is child', () => {
+    it('keeps the parent screen while the menu is open', () => {
       expect(
         screen.queryByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
       ).not.toBeInTheDocument();
@@ -106,7 +118,7 @@ describe('Home switching between the parent and child screens', () => {
 
     describe('and the menu closes', () => {
       beforeEach(() => {
-        closeMenu();
+        tapMenuButton();
       });
 
       it('shows the child screen', async () => {
@@ -117,7 +129,7 @@ describe('Home switching between the parent and child screens', () => {
     });
   });
 
-  describe("a parent turns the current account's child view on and the save fails", () => {
+  describe("the current account's child view fails to save", () => {
     beforeEach(async () => {
       global.fetch = jest.fn().mockResolvedValue({ ok: false });
       renderHomeWithServer();
@@ -126,7 +138,7 @@ describe('Home switching between the parent and child screens', () => {
     });
 
     it('shows no child screen once the menu closes', async () => {
-      closeMenu();
+      tapMenuButton();
       await act(() => wait(MENU_OVERLAY_STYLE.transitionMs * 2));
 
       expect(
@@ -142,19 +154,13 @@ describe('Home switching between the parent and child screens', () => {
   });
 
   describe('a parent closes the menu before the save answers', () => {
-    beforeEach(async () => {
-      let answerSave = (): void => {};
-      global.fetch = jest.fn().mockReturnValue(
-        new Promise((resolve) => {
-          answerSave = (): void =>
-            resolve({ ok: true, json: async () => mockAccount });
-        })
-      );
+    beforeEach(() => {
+      const { save, answerSave } = createPendingSave();
+      global.fetch = jest.fn().mockReturnValue(save);
       renderHomeWithServer();
       turnCurrentAccountChildViewOn();
-      closeMenu();
+      tapMenuButton();
       answerSave();
-      await saveAnswers();
     });
 
     it('still shows the child screen once the save answers', async () => {
@@ -173,7 +179,7 @@ describe('Home switching between the parent and child screens', () => {
       turnCurrentAccountChildViewOn();
       await saveAnswers();
       serverSays(VIEW_MODE.child);
-      closeMenu();
+      tapMenuButton();
       await screen.findByTestId(CHILD_ACCOUNT_TEST_IDS.screen);
       serverSays(VIEW_MODE.parent);
     });

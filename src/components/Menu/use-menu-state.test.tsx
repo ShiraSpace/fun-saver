@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { toggleMenu, WithToggleableMenu } from '@/test-utils/menu';
-import { useMenuState, useOnMenuClose } from './use-menu-state';
+import { type MenuState, useMenuState, useOnMenuClose } from './use-menu-state';
 
 const mockOnMenuClose = jest.fn();
 
@@ -24,32 +24,48 @@ describe('useOnMenuClose', () => {
   });
 });
 
-describe('whenMenuCloses', () => {
+function renderMenuState(): { current: MenuState } {
+  return renderHook(() => useMenuState()).result;
+}
+
+describe('useMenuState whenMenuCloses', () => {
   const mockStep = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('while the menu is open', () => {
-    it('waits for the menu to close before taking the step', () => {
-      const { result } = renderHook(() => useMenuState());
-      act(() => result.current.toggle());
+  describe('given a step while the menu is open', () => {
+    let menu: { current: MenuState };
 
-      act(() => result.current.whenMenuCloses(mockStep));
+    beforeEach(() => {
+      menu = renderMenuState();
+      act(() => menu.current.toggle());
+      act(() => menu.current.whenMenuCloses(mockStep));
+    });
+
+    it('waits for the menu to close', () => {
       expect(mockStep).not.toHaveBeenCalled();
+    });
 
-      act(() => result.current.closeMenu());
-      expect(mockStep).toHaveBeenCalledTimes(1);
+    describe('and the menu closes', () => {
+      beforeEach(() => {
+        act(() => menu.current.closeMenu());
+      });
+
+      it('takes the step once', () => {
+        expect(mockStep).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
-  describe('once the menu has closed', () => {
+  describe('given a step once the menu has closed', () => {
+    beforeEach(() => {
+      const menu = renderMenuState();
+      act(() => menu.current.whenMenuCloses(mockStep));
+    });
+
     it('takes the step at once', () => {
-      const { result } = renderHook(() => useMenuState());
-
-      act(() => result.current.whenMenuCloses(mockStep));
-
       expect(mockStep).toHaveBeenCalledTimes(1);
     });
   });
