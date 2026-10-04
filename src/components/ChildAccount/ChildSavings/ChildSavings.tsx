@@ -22,7 +22,7 @@ interface ChildSavingsProps {
 }
 
 export function ChildSavings({ savings }: ChildSavingsProps): JSX.Element {
-  const { principalShekels, interestEarnedShekels } =
+  const { balanceShekels, principalShekels, interestEarnedShekels } =
     savingsInWholeShekels(savings);
 
   return (
@@ -31,9 +31,8 @@ export function ChildSavings({ savings }: ChildSavingsProps): JSX.Element {
       <Title>{CHILD_SAVINGS_COPY.title}</Title>
       <Total>
         <Money
-          amountAgorot={savings.balance}
+          amountAgorot={shekelsToAgorot(balanceShekels)}
           testId={CHILD_SAVINGS_TEST_IDS.balance}
-          roundDown
         />
       </Total>
       <Split>

@@ -48,7 +48,7 @@ export function ChildMenuContent(): JSX.Element {
         <AppearanceSection />
       </Item>
       <ParentCorner>
-        <ViewModeSwitch viewMode={APP_VIEW_MODE.parent} isCompact />
+        <ViewModeSwitch viewMode={APP_VIEW_MODE.parent} />
       </ParentCorner>
     </Layout>
   );
