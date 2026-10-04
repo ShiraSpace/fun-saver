@@ -36,11 +36,13 @@ function menuFinishesFading(): Promise<void> {
   return wait(MENU_OVERLAY_STYLE.transitionMs);
 }
 
-function saveSucceeds(saved: Promise<unknown>): Promise<boolean> {
-  return saved.then(
-    (): boolean => true,
-    (): boolean => false
-  );
+async function saveSucceeds(saved: Promise<unknown>): Promise<boolean> {
+  try {
+    await saved;
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function showSavedViewMode(
@@ -66,7 +68,7 @@ export function useAccountViewMode(): AccountViewMode {
 
   useOnMenuClose((): void => setSaveFailed(false));
 
-  const chooseViewMode = async (viewMode: ViewMode): Promise<void> => {
+  const saveAndShowViewMode = async (viewMode: ViewMode): Promise<void> => {
     setChosenViewMode(viewMode);
     setSaveFailed(false);
 
@@ -91,7 +93,9 @@ export function useAccountViewMode(): AccountViewMode {
   };
 
   return {
-    chooseViewMode: (viewMode): void => void chooseViewMode(viewMode),
+    chooseViewMode: (viewMode: ViewMode): void => {
+      void saveAndShowViewMode(viewMode);
+    },
     chosenViewMode,
     saveFailed,
   };

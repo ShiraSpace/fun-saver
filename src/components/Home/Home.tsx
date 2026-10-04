@@ -37,14 +37,18 @@ export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
   );
   const startCreatingAccount = (): void => setMode(APP_MODE.creatingAccount);
   const showsEmptyState = !currentAccount && !navigation.isCreating;
+  const accountsContext = currentAccount && {
+    accounts,
+    currentAccount,
+    switchAccount,
+    viewModeChoice,
+  };
 
   return (
     <AccountManagement navigation={navigation}>
-      {currentAccount && (
-        <AccountsProvider
-          value={{ accounts, currentAccount, switchAccount, viewModeChoice }}
-        >
-          <AccountForViewMode account={currentAccount} />
+      {accountsContext && (
+        <AccountsProvider value={accountsContext}>
+          <AccountForViewMode account={accountsContext.currentAccount} />
         </AccountsProvider>
       )}
       {showsEmptyState && <EmptyState onCreate={startCreatingAccount} />}
