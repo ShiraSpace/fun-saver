@@ -54,26 +54,28 @@ function withoutPrefix(typedWord: string, prefixLength: number): string {
   return isPrefix && rest.length >= MIN_LETTERS_AFTER_PREFIX ? rest : '';
 }
 
+function wordsToLookUp(typedWord: string): string[] {
+  const prefixLengths = Array.from(
+    { length: MAX_PREFIX_LETTERS },
+    (_, index) => index + 1
+  );
+  return [
+    typedWord,
+    ...prefixLengths.map((prefixLength) =>
+      withoutPrefix(typedWord, prefixLength)
+    ),
+  ];
+}
+
 function picturesForWord(
   typedWord: string,
   picturesByTerm: PicturesByTerm
 ): Set<string> {
-  const exactMatch = picturesByTerm.get(typedWord);
+  for (const word of wordsToLookUp(typedWord)) {
+    const pictures = picturesByTerm.get(word);
 
-  if (exactMatch) {
-    return exactMatch;
-  }
-  for (
-    let prefixLength = 1;
-    prefixLength <= MAX_PREFIX_LETTERS;
-    prefixLength++
-  ) {
-    const wordWithoutPrefix = withoutPrefix(typedWord, prefixLength);
-    const prefixMatch =
-      wordWithoutPrefix && picturesByTerm.get(wordWithoutPrefix);
-
-    if (prefixMatch) {
-      return prefixMatch;
+    if (pictures) {
+      return pictures;
     }
   }
   return new Set();
