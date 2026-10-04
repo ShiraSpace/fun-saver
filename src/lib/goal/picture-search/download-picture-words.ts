@@ -3,60 +3,9 @@ import unicodeHebrewWords from 'cldr-annotations-full/annotations/he/annotations
 import unicodeHebrewCombinedWords from 'cldr-annotations-derived-full/annotationsDerived/he/annotations.json';
 import unicodeEmoji from 'unicode-emoji-json/data-by-emoji.json';
 import { isValidPictureEmoji } from '@/lib/goal/goal-request-validator';
-import {
-  HAIR_AND_GENDER_CODE_POINTS,
-  MAX_PICTURE_WORDS_BYTES,
-  OLDEST_SUPPORTED_ANDROID_EMOJI_VERSION,
-  PICTURE_WORDS_PATH,
-  VARIATION_SELECTOR,
-} from './constants';
+import { MAX_PICTURE_WORDS_BYTES, PICTURE_WORDS_PATH } from './constants';
+import { searchablePictureWords } from './searchable-picture-words';
 import type { PictureWords } from './types';
-
-interface UnicodeWords {
-  default?: string[];
-  tts?: string[];
-}
-
-const unicodeWordsByEmoji: Record<string, UnicodeWords> = {
-  ...unicodeHebrewWords.annotations.annotations,
-  ...unicodeHebrewCombinedWords.annotationsDerived.annotations,
-};
-
-function isDrawnOnOldestSupportedPhone(emojiVersion: string): boolean {
-  return Number(emojiVersion) <= OLDEST_SUPPORTED_ANDROID_EMOJI_VERSION;
-}
-
-function isVariantOfAnotherPicture(picture: string): boolean {
-  return HAIR_AND_GENDER_CODE_POINTS.test(picture);
-}
-
-function goalPictures(): string[] {
-  return Object.entries(unicodeEmoji)
-    .filter(
-      ([picture, { emoji_version: emojiVersion }]) =>
-        isDrawnOnOldestSupportedPhone(emojiVersion) &&
-        !isVariantOfAnotherPicture(picture)
-    )
-    .map(([picture]) => picture);
-}
-
-function hebrewWords(picture: string): string[] {
-  const { default: keywords = [], tts: spokenName = [] } =
-    unicodeWordsByEmoji[picture.replace(VARIATION_SELECTOR, '')] ?? {};
-  return [...new Set([...keywords, ...spokenName])];
-}
-
-function searchablePictureWords(): PictureWords {
-  const pictureWords: PictureWords = {};
-  for (const picture of goalPictures()) {
-    const words = hebrewWords(picture);
-
-    if (words.length > 0) {
-      pictureWords[picture] = words;
-    }
-  }
-  return pictureWords;
-}
 
 function assertEveryPictureIsAGoalPicture(pictureWords: PictureWords): void {
   const invalidPictures = Object.keys(pictureWords).filter(
@@ -84,7 +33,10 @@ function savePictureWords(pictureWords: PictureWords): void {
 }
 
 function downloadPictureWords(): void {
-  const pictureWords = searchablePictureWords();
+  const pictureWords = searchablePictureWords(unicodeEmoji, {
+    ...unicodeHebrewWords.annotations.annotations,
+    ...unicodeHebrewCombinedWords.annotationsDerived.annotations,
+  });
   assertEveryPictureIsAGoalPicture(pictureWords);
   savePictureWords(pictureWords);
 }
