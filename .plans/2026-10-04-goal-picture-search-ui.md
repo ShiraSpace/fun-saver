@@ -44,7 +44,8 @@ the debounce, `chosenPicture` held as a `GoalPicture`). The sections below descr
 - Tapping a tile chooses it, shown with a ✓. `chosenPicture` is a `GoalPicture` throughout; a tile compares
   on `.emoji` and hands back `{ kind: 'emoji', emoji }`. **בחירה** sends `chosenPicture` through `onChange`. A picture is always chosen (🎯 at first when `picture` is null), so **בחירה** is never
   disabled.
-- Nothing in the sheet says "emoji".
+- No text the child sees says "emoji" (the spec's rule). In code, the emoji the search found are
+  `foundEmoji`, and only a chosen one becomes a `GoalPicture`.
 
 ### Why no pictures show (`whyNoPictures`, drawn by `NoPicturesReason` in place of the tiles)
 
