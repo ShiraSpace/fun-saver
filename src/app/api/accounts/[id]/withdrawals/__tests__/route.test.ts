@@ -10,6 +10,8 @@ import type { Account } from '@/lib/account/types';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
+import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
+import { API_ERRORS } from '@/app/api/constants';
 import { POST } from '../route';
 
 jest.mock('@/auth');
@@ -114,5 +116,27 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
 
     expect(response.status).toBe(400);
     expect(await savingsBalance()).toBe(before);
+  });
+
+  describe('savings with an active goal not yet reached', () => {
+    let response: Response;
+
+    beforeEach(async () => {
+      await getStore().insertGoal(
+        createMockGoal({
+          accountId: account.id,
+          amount: (await savingsBalance()) + 1,
+        })
+      );
+      response = await postWithdraw(savingsId, 20, account.id);
+    });
+
+    it('answers 409', () => {
+      expect(response.status).toBe(409);
+    });
+
+    it('answers with savingsLocked', async () => {
+      expect((await response.json()).error).toBe(API_ERRORS.savingsLocked);
+    });
   });
 });
