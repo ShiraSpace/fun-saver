@@ -8,8 +8,8 @@ The search sheet, built on its own and not rendered anywhere. PR 4b puts it insi
 Out of scope: API routes, `AccountSummary`, `MenuGoal`, `SetGoal`, and wiring it into any screen. Those
 belong to PR 2 and PR 4b.
 
-**Status:** the plan was approved with the decisions below. The production code is written and passes `tsc`
-and `eslint`. It is uncommitted and awaiting review. Tests have not been written.
+**Status:** built and tested on PR #189, revised after review (domain names, `useDeferredValue` in place of
+the debounce, `chosenPicture` held as a `GoalPicture`). The sections below describe the code as it stands.
 
 ## Decisions (approved 2026-10-04)
 
@@ -25,51 +25,59 @@ and `eslint`. It is uncommitted and awaiting review. Tests have not been written
 5. **Closing:** ✕, a tap on the scrim, and Escape (`useEscapeKey`) call `onClose`. Phone Back, swipe-down,
    the grabber and a focus trap are left to 4b.
 6. **בחירה** only calls `onChange`. `SetGoal` closes the sheet.
-7. **Screenshots:** none in this PR, and no harness. PR 4b shoots the sheet in place.
-8. **Glossary:** the picture-tile row is added in this PR.
+7. **Screenshots:** added to #189 at the user's request, shot from a throwaway, uncommitted page that mounts
+   the sheet alone. PR 4b shoots it in place.
+8. **Glossary:** this PR adds two rows: picture tile (`PictureTile`, `PictureTiles`, `FoundPictures`) and why
+   no pictures show (`whyNoPictures`, `NoPicturesReason`).
+9. **`useEscapeKey`** moves from `Menu/` to `src/hooks/`, since the sheet is its first user outside the menu.
+   The sheet listens with `takesPrecedence`, so Escape closes only the sheet.
 
 ## What the sheet does
 
 - It opens already searching for the goal name. Editing the text searches again, through `useDeferredValue`.
-- The word list loads with `import()` when the sheet mounts and is indexed once with `indexPictureWords`.
-  `matchingPictures(searchedQuery, picturesByTerm)` is memoised on both. There is no module-level cache:
-  reopening the sheet re-indexes in milliseconds.
-- Picture tiles fill a 3-column grid. The grid is as tall as it is wide (`aspect-ratio: 1`), so three rows
-  of square tiles show and the rest scroll.
-- Tapping a tile chooses it, shown with a ✓. **בחירה** sends `{ kind: 'emoji', emoji: chosenPicture }`
-  through `onChange`. A picture is always chosen (🎯 at first when `picture` is null), so **בחירה** is never
+- The word list loads with `import()` the first time the sheet mounts and is indexed once with
+  `indexPictureWords`. The index is kept in a module-level cache (`loadedPicturesByTerm` in
+  `use-matching-pictures.ts`), so a sheet opened again starts with the pictures already found.
+  `matchingPictures(searchedQuery, picturesByTerm)` is memoised on both.
+- Picture tiles fill a 3-column grid (`FoundPictures`). It is as tall as it is wide (`aspect-ratio: 1`), so
+  three rows of square tiles show and the rest scroll. The sheet is capped at `90dvh`.
+- Tapping a tile chooses it, shown with a ✓. `chosenPicture` is a `GoalPicture` throughout; a tile compares
+  on `.emoji` and hands back `{ kind: 'emoji', emoji }`. **בחירה** sends `chosenPicture` through `onChange`. A picture is always chosen (🎯 at first when `picture` is null), so **בחירה** is never
   disabled.
 - Nothing in the sheet says "emoji".
 
-### States (the grid area shows exactly one)
+### Why no pictures show (`whyNoPictures`, drawn by `NoPicturesReason` in place of the tiles)
 
 | When | Shows | Copy |
 |---|---|---|
-| Word list loading (`REQUEST_STATE.pending`) | status line | `מחפשים תמונות…` |
+| Word list loading (`REQUEST_STATE.pending`) | `NoPicturesReason` | `מחפשים תמונות…` |
 | Load failed (`REQUEST_STATE.failed`) | `NoPicturesReason` in `alertText` | `אופס, התמונות לא נטענו. סגרו ונסו שוב.` |
 | Loaded, query blank after trim | `NoPicturesReason` (nothing typed) | `כתבו מה רוצים לחפש` |
-| Loaded, no match | no-match line naming the query | `לא מצאנו תמונה ל„{query}”. נסו מילה אחרת.` |
-| Loaded, matches | the tiles | — |
+| Loaded, no match | `NoPicturesReason` naming the query | `לא מצאנו תמונה ל„{query}”. נסו מילה אחרת.` |
+| Loaded, matches | `FoundPictures` | — |
 
 ## Files (as built)
+
+Under `src/components/Goal/GoalPictureSearch/` unless a path says otherwise.
 
 | File | Lines | Holds |
 |---|---|---|
 | `src/lib/goal/constants.ts` | +5 | `DEFAULT_GOAL_PICTURE` (🎯) |
-| `docs/glossary.md` | +1 | the picture-tile row |
-| `GoalPictureSearch/GoalPictureSearch.tsx` | 118 | the sheet, plus three small parts in the same file: `SheetHeading` (title and ✕), `QueryField` and `ChooseButton` |
-| `GoalPictureSearch/GoalPictureSearch.styles.ts` | 72 | `Scrim`, `Sheet`, `TitleRow`, `SheetTitle`, `CloseButton`, `SearchBox` |
-| `GoalPictureSearch/use-goal-picture-search.ts` | 51 | the sheet's state: the query, the deferred `searchedQuery`, `chosenPicture`, `confirmChoice` |
-| `GoalPictureSearch/use-matching-pictures.ts` | 37 | loads, indexes and matches; returns `{ pictures, requestState }` |
-| `GoalPictureSearch/constants.ts` | 4 | test ids |
-| `GoalPictureSearch/index.ts` | 2 | named re-exports |
-| `GoalPictureSearch/PictureTiles/PictureTiles.tsx` | 85 | `whyNoPictures({ pictures, requestState, query })` and the found pictures |
-| `GoalPictureSearch/PictureTiles/PictureTiles.styles.ts` | 64 | `FoundPictures`, `PictureTile`, `NoPicturesReason` |
-| `GoalPictureSearch/PictureTiles/constants.ts` | 13 | test ids, copy (single-use style values sit inline in the `.styles.ts`) |
-| `GoalPictureSearch/PictureTiles/index.ts` | 1 | named re-export |
+| `docs/glossary.md` | +2 | the picture-tile and why-no-pictures rows |
+| `src/hooks/use-escape-key.ts`, `src/hooks/constants.ts` | 39, 3 | moved from `Menu/`, with `ESCAPE_KEY` and `KEY_DOWN_EVENT` |
+| `GoalPictureSearch.tsx` | 61 | the sheet: scrim, dialog, Escape |
+| `GoalPictureSearch.styles.ts` | 33 | `Scrim`, `Sheet` |
+| `use-goal-picture-search.ts` | 48 | the query, the deferred `searchedQuery`, `chosenPicture` (a `GoalPicture`), `confirmChoice` |
+| `use-matching-pictures.ts` | 51 | loads and caches the index, matches; returns `{ foundEmoji, requestState }` |
+| `constants.ts`, `index.ts` | 4, 2 | sheet test ids; named re-exports |
+| `PictureTiles/PictureTiles.tsx` | 89 | `whyNoPictures({ foundEmoji, requestState, query })` and `FoundPictures` |
+| `PictureTiles/PictureTiles.styles.ts` | 66 | `FoundPictures`, `PictureTile`, `NoPicturesReason` |
+| `PictureTiles/constants.ts` | 13 | test ids and copy |
+| `SheetHeading/` | 31 + 28 + 10 | the title and ✕ |
+| `QueryField/` | 26 + 19 + 7 | the search box; hands the typed text up through `editQuery` |
+| `ChooseButton/` | 21 + 7 | **בחירה** |
 
-All component files live under `src/components/Goal/`. The largest function is `GoalPictureSearch`, at the
-40-line limit after the three parts were taken out.
+Every function is under 40 lines and every file under 200.
 
 ## Names
 
@@ -86,7 +94,8 @@ export interface GoalPictureSearchProps {
   `TransactionDrawer`.
 - A tile tap is `chosenPicture` / `onChoosePicture`. **בחירה** is `ChooseButton`'s `onChoose`, and only it
   changes the goal's picture. `QueryField` hands the typed text up through `editQuery`.
-- The hook returns `pictures` and does not shadow the lib's `matchingPictures`.
+- The hook returns `foundEmoji`, the emoji the search found, so it reads apart from `picture` (a `GoalPicture`)
+  and does not shadow the lib's `matchingPictures`.
 
 ## Look
 
@@ -97,33 +106,17 @@ export interface GoalPictureSearchProps {
 - The sheet is `role="dialog"` with `aria-modal`, labelled by its title through `useId`. The ✕ has
   `aria-label="סגירה"`. The search box is `type="search"` and is not auto-focused.
 
-## Tests (next step, after the production code is committed)
+## Tests (as built)
 
-The first three go in `PictureTiles/PictureTiles.test.tsx` (props only). Each test must redden on its own
-break, using the snapshot method from AGENTS.md.
+Each test was watched failing against its own deliberate break (the snapshot method from AGENTS.md).
 
-| # | File | Test | Break |
-|---|---|---|---|
-| 1 | PictureTiles | one tile per matching picture, in order | render `pictures.slice(1)` |
-| 2 | PictureTiles | only the chosen picture is `aria-pressed` | compare with `pictures[0]` |
-| 3 | PictureTiles | tapping a tile chooses its picture | `onChoosePicture(pictures[0])` |
-| 4 | PictureTiles | loading shows the loading line and no tiles | drop the `pending` branch |
-| 5 | PictureTiles | a failed load shows the error line | treat `failed` like `idle` |
-| 6 | PictureTiles | no match names the typed words | leave `{query}` out |
-| 7 | PictureTiles | a blank query shows the hint | fold blank into no-match |
-| 8 | PictureTiles | on `jungleQuest` the chosen tile is ringed in `selectionRing` | ring with `primary` |
-| 9 | use-matching-pictures | `pending` until the list loads, then `idle` | start at `idle` |
-| 10 | use-matching-pictures | "האופניים" finds 🚲 from the real list | match `''` |
-| 11 | use-matching-pictures.failed | a list that fails to load gives `failed` | delete the `.catch` |
-| 13 | GoalPictureSearch | opens searching for the goal name, with 🚲 a tile for "אופניים" | `useState('')` |
-| 14 | GoalPictureSearch | typing "כלב" shows 🐶 and no ❤️ after the delay | input not wired |
-| 15 | GoalPictureSearch | opened with `picture: null`, בחירה sends 🎯 | start from `''` |
-| 16 | GoalPictureSearch | choose 🚲, then בחירה sends `{ kind: 'emoji', emoji: '🚲' }` once | send `pictures[0]` |
-| 17 | GoalPictureSearch | opened with a picture, that tile shows chosen | ignore `picture` |
-| 18 | GoalPictureSearch | ✕ calls `onClose` and not `onChange` | wire ✕ to `confirmChoice` |
-| 19 | GoalPictureSearch | a tap on the scrim closes | drop the scrim's `onClick` |
-| 20 | GoalPictureSearch | Escape closes | drop `useEscapeKey` |
-| 21 | GoalPictureSearch | the dialog is named by its title | drop `aria-labelledby` |
-
-Risk: the plan assumes next/jest turns `import()` of the JSON into a `require`. If it does not, the
-fallback is `jest.mock` of the JSON path with a small word list.
+| File | Tests |
+|---|---|
+| `PictureTiles.test.tsx` | one tile per matching picture, in order; only the chosen picture is pressed; tapping a tile chooses its `GoalPicture`; the reason shown while loading, when the list failed to load, with nothing typed, and for no match; the chosen ring is `selectionRing` on jungle-quest |
+| `use-matching-pictures.loading.test.ts` | waiting for the word list before it has ever loaded |
+| `use-matching-pictures.first-load.test.ts` | pictures arrive on the first load (own file, so the cache is empty) |
+| `use-matching-pictures.test.ts` | no longer waiting once loaded; "האופניים" finds 🚲; a reopened sheet starts with the pictures |
+| `use-matching-pictures.failed.test.ts` | a list that cannot load reports `failed` |
+| `GoalPictureSearch.test.tsx` | opens searching for the goal name; is named by its title; typing searches again (waits with `findBy`, no timer); בחירה with no tap sends 🎯; a tap alone sends nothing; tap then בחירה sends that picture; ✕, a tap outside and Escape close, ✕ without changing the picture and Escape without closing the layer below; opened with a picture, it shows as chosen |
+| `SheetHeading`, `QueryField`, `ChooseButton` tests | the title's id; ✕ closes; the query shows; typing reports the query; tapping בחירה chooses |
+| `src/hooks/__tests__/use-escape-key.test.ts` | Escape calls `onEscape`; other keys, unmounted and not-listening are ignored; `takesPrecedence` keeps Escape from other listeners |
