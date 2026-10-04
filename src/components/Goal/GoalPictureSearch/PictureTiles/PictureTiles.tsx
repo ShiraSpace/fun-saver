@@ -19,17 +19,12 @@ interface PictureTilesProps {
   onChoosePicture: (picture: GoalPicture) => void;
 }
 
-interface PictureSearchResult {
-  foundEmoji: string[];
-  requestState: RequestState;
-  query: string;
-}
-
 function whyNoPictures({
   foundEmoji,
   requestState,
   query,
-}: PictureSearchResult): string | null {
+}: Pick<PictureTilesProps, 'foundEmoji' | 'requestState' | 'query'>):
+  string | null {
   if (requestState === REQUEST_STATE.pending) {
     return PICTURE_TILES_COPY.loading;
   }
