@@ -21,13 +21,13 @@ export function endActiveGoal(
     return;
   }
 
-  goal.endedAt = endedAt;
-  goal.ending = ending;
+  const endedGoal: Goal = { ...goal, endedAt, ending };
+  goals[goals.indexOf(goal)] = endedGoal;
 
-  return goal;
+  return endedGoal;
 }
 
-export function goalCompletedBy(
+export function completedGoalEndRequest(
   withdrawal: Transaction,
   goalId: string
 ): GoalEndRequest {

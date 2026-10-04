@@ -95,7 +95,7 @@ export interface GoalRow {
   account_id: string;
   name: string;
   amount: number;
-  picture: unknown;
+  picture: GoalPicture;
   started_at: string;
   ended_at: string | null;
   ending: GoalEnding | null;
@@ -107,7 +107,7 @@ export function goalFromRow(row: GoalRow): Goal {
     accountId: row.account_id,
     name: row.name,
     amount: row.amount,
-    picture: row.picture as GoalPicture,
+    picture: row.picture,
     startedAt: row.started_at,
     endedAt: row.ended_at ?? undefined,
     ending: row.ending ?? undefined,

@@ -2,7 +2,7 @@ import { NeonDbError } from '@neondatabase/serverless';
 import { DuplicateAccountError, UnknownOwnerError } from '@/lib/account/errors';
 import { GoalAlreadyActiveError } from '@/lib/goal/errors';
 
-const UNIQUE_VIOLATION = '23505';
+export const UNIQUE_VIOLATION = '23505';
 const FOREIGN_KEY_VIOLATION = '23503';
 
 export interface AttemptedAccountWrite {

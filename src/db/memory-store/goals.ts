@@ -2,7 +2,11 @@ import type { Goal, GoalEndRequest } from '@/lib/goal/types';
 import { GoalAlreadyActiveError } from '@/lib/goal/errors';
 import type { Transaction } from '@/lib/transaction/types';
 import type { GoalRepository } from '../data-store';
-import { endActiveGoal, findActiveGoal, goalCompletedBy } from '../goals';
+import {
+  endActiveGoal,
+  findActiveGoal,
+  completedGoalEndRequest,
+} from '../goals';
 import type { MemoryTransactions } from './transactions';
 
 export class MemoryGoals implements GoalRepository {
@@ -30,7 +34,7 @@ export class MemoryGoals implements GoalRepository {
     withdrawal: Transaction,
     goalId: string
   ): Promise<void> {
-    endActiveGoal(this.goals, goalCompletedBy(withdrawal, goalId));
+    endActiveGoal(this.goals, completedGoalEndRequest(withdrawal, goalId));
     await this.transactions.insert([withdrawal]);
   }
 }

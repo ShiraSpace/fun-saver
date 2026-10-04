@@ -7,13 +7,7 @@ import {
   MAX_GOAL_SHEKELS,
   MAX_PICTURE_EMOJI_LENGTH,
 } from './constants';
-import type { GoalPicture } from './types';
-
-export interface GoalRequest {
-  name: string;
-  amount: number;
-  picture: GoalPicture;
-}
+import type { GoalRequest } from './types';
 
 const GOAL_FIELDS = ['name', 'amount', 'picture'] as const;
 

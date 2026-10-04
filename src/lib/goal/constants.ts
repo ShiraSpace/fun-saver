@@ -1,5 +1,3 @@
-import type { GoalPicture } from './types';
-
 export const GOAL_ENDING = {
   completed: 'completed',
   cancelled: 'cancelled',
@@ -14,8 +12,3 @@ export const MAX_GOAL_NAME_LENGTH = 30;
 export const MAX_GOAL_SHEKELS = 100_000;
 
 export const MAX_PICTURE_EMOJI_LENGTH = 32;
-
-export const DEFAULT_GOAL_PICTURE: GoalPicture = {
-  kind: GOAL_PICTURE_KIND.emoji,
-  emoji: '🎯',
-};

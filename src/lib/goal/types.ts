@@ -7,6 +7,12 @@ export interface GoalPicture {
   emoji: string;
 }
 
+export interface GoalRequest {
+  name: string;
+  amount: number;
+  picture: GoalPicture;
+}
+
 export interface Goal {
   id: string;
   accountId: string;

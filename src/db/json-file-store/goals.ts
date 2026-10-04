@@ -2,7 +2,11 @@ import type { Goal, GoalEndRequest } from '@/lib/goal/types';
 import { GoalAlreadyActiveError } from '@/lib/goal/errors';
 import type { Transaction } from '@/lib/transaction/types';
 import type { GoalRepository } from '../data-store';
-import { endActiveGoal, findActiveGoal, goalCompletedBy } from '../goals';
+import {
+  endActiveGoal,
+  findActiveGoal,
+  completedGoalEndRequest,
+} from '../goals';
 import type { FileSession } from './file-session';
 
 export class JsonGoals implements GoalRepository {
@@ -44,7 +48,10 @@ export class JsonGoals implements GoalRepository {
     goalId: string
   ): Promise<void> {
     return this.session.write(async (contents, save): Promise<void> => {
-      endActiveGoal(contents.goals, goalCompletedBy(withdrawal, goalId));
+      endActiveGoal(
+        contents.goals,
+        completedGoalEndRequest(withdrawal, goalId)
+      );
       contents.transactions.push(withdrawal);
       await save();
     });

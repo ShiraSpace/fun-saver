@@ -1,7 +1,7 @@
 import type { Goal, GoalEndRequest } from '@/lib/goal/types';
 import type { Transaction } from '@/lib/transaction/types';
 import type { GoalRepository } from '../data-store';
-import { goalCompletedBy } from '../goals';
+import { completedGoalEndRequest } from '../goals';
 import { goalFromRow, type GoalRow } from '../rows';
 import { goalWriteError } from './errors';
 import { queryRows, type QueryParam, type Sql } from './query';
@@ -75,7 +75,7 @@ export class PostgresGoals implements GoalRepository {
       this.transactions.insertStatement([withdrawal]),
       this.sql.query(
         END_ACTIVE_GOAL,
-        endValues(goalCompletedBy(withdrawal, goalId))
+        endValues(completedGoalEndRequest(withdrawal, goalId))
       ),
     ]);
   }
