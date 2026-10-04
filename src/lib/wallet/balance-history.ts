@@ -2,6 +2,7 @@ import { eachDayInclusive } from '@/lib/dates';
 import { balanceChange } from './balance';
 import type { Transaction } from '@/lib/transaction/types';
 import type { Wallet, WalletName } from './types';
+import { walletNamed } from './wallet-named';
 
 export type WalletBalances = Record<WalletName, number[]>;
 
@@ -64,7 +65,7 @@ function walletTransactions(
   walletName: WalletName,
   { wallets, transactions }: BalanceHistoryInput
 ): BalanceHistoryInput['transactions'] {
-  const wallet = wallets.find((candidate) => candidate.name === walletName);
+  const wallet = walletNamed(wallets, walletName);
 
   return transactions.filter(
     (transaction) => transaction.walletId === wallet?.id

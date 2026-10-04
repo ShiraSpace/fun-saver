@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
-import type { WalletName, WalletSummary } from '@/lib/wallet/types';
+import { walletNamed } from '@/lib/wallet/wallet-named';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { ChildSavings } from './ChildSavings';
@@ -12,17 +12,6 @@ import { Wallets } from './ChildAccount.styles';
 
 interface ChildAccountProps {
   account: AccountSummary;
-}
-
-type NamedWallet<Name extends WalletName> = WalletSummary & { name: Name };
-
-function walletNamed<Name extends WalletName>(
-  wallets: WalletSummary[],
-  name: Name
-): NamedWallet<Name> | undefined {
-  return wallets.find(
-    (wallet): wallet is NamedWallet<Name> => wallet.name === name
-  );
 }
 
 export function ChildAccount({ account }: ChildAccountProps): JSX.Element {

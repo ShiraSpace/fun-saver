@@ -6,6 +6,7 @@ import {
 } from '@/components/Home/accounts-context';
 import type { AppViewMode } from '@/lib/account/view-mode';
 import { fetchJson } from '@/lib/fetch-json';
+import { motionIsReduced } from '@/theme/motion';
 import { useMenu, useOnMenuClose } from '../use-menu-state';
 import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
 import { VIEW_MODE_SWITCH_MOTION } from './constants';
@@ -33,7 +34,7 @@ function wait(ms: number): Promise<void> {
 }
 
 function switchFinishesSliding(): Promise<void> {
-  return wait(VIEW_MODE_SWITCH_MOTION.slideMs);
+  return wait(motionIsReduced() ? 0 : VIEW_MODE_SWITCH_MOTION.slideMs);
 }
 
 function menuFinishesFading(): Promise<void> {
