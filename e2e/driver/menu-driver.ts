@@ -22,6 +22,8 @@ const MIDDLE_BAR = `[data-testid="${MENU_TEST_IDS.menuIcon}"] > span:nth-of-type
 const OVERLAY = `[data-testid="${MENU_OVERLAY_TEST_IDS.overlay}"]`;
 const LISTED_ACCOUNT = `[data-testid="${ACCOUNT_LIST_TEST_IDS.row}"]`;
 const CHILD_MENU_ACCOUNT = `[data-testid="${CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row}"]`;
+const CHILD_VIEW_TOGGLE = `[data-testid="${ACCOUNT_LIST_TEST_IDS.childViewToggle}"]`;
+const SAVED_CHILD_VIEW_TOGGLE = `${CHILD_VIEW_TOGGLE}[aria-checked="true"]:enabled`;
 
 interface Point {
   x: number;
@@ -70,6 +72,14 @@ export class MenuDriver {
     return this.appBrowser.click(EDIT_ACCOUNT_BUTTON_TEST_IDS.button);
   }
 
+  tapChildViewToggle(index: number): Promise<void> {
+    return this.appBrowser.clickNth(CHILD_VIEW_TOGGLE, index);
+  }
+
+  waitForChildViewSaved(): Promise<void> {
+    return this.appBrowser.waitForSelector(SAVED_CHILD_VIEW_TOGGLE);
+  }
+
   tapViewModeSwitch(): Promise<void> {
     return this.appBrowser.click(VIEW_MODE_SWITCH_TEST_IDS.switch);
   }
@@ -114,6 +124,11 @@ export class MenuDriver {
     await this.appBrowser.waitForTestId(SIGN_IN_TEST_IDS.continueWithGoogle);
 
     return this.appBrowser.currentPath();
+  }
+
+  async close(): Promise<void> {
+    await this.startOpening();
+    await this.waitForClosed();
   }
 
   waitForClosed(): Promise<void> {

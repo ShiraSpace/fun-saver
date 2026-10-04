@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import {
+  mockAccountsContext,
   mockAccountSummary,
   mockSiblingAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
@@ -27,7 +28,8 @@ describe('AccountList', () => {
           currentAccountId={mockSiblingAccountSummary.id}
           onSelect={mockOnSelect}
         />
-      </WithMenu>
+      </WithMenu>,
+      { accounts: mockAccountsContext }
     );
   });
 
@@ -49,6 +51,18 @@ describe('AccountList', () => {
 
     expect(rows[0]).toHaveAttribute('aria-current', 'false');
     expect(rows[1]).toHaveAttribute('aria-current', 'true');
+  });
+
+  it('labels the column of child-view switches', () => {
+    expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.list)).toHaveTextContent(
+      ACCOUNT_LIST_COPY.childViewColumn
+    );
+  });
+
+  it('gives every account its own child-view switch', () => {
+    expect(
+      screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.childViewToggle)
+    ).toHaveLength(accounts.length);
   });
 
   it('labels the add-account button', () => {

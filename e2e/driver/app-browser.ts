@@ -208,6 +208,10 @@ export class AppBrowser {
     return waits.waitForTestId({ page: this.page, testId });
   }
 
+  waitForSelector(selector: string): Promise<void> {
+    return waits.waitForSelector(this.page, selector);
+  }
+
   waitForAnyTestId(testIds: readonly string[]): Promise<void> {
     return waits.waitForAnyTestId(this.page, testIds);
   }

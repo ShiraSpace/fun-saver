@@ -1,5 +1,5 @@
 import { Fragment, JSX, useState } from 'react';
-import { act, fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { act, fireEvent, render, screen } from '@/test-utils/render';
 import { CHILD_ACCOUNT_TEST_IDS } from '@/components/ChildAccount/constants';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import {
@@ -7,14 +7,19 @@ import {
   VIEW_MODE_SWITCH_MOTION,
   VIEW_MODE_SWITCH_TEST_IDS,
 } from '@/components/Menu/ViewModeSwitch/constants';
-import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
+import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
+import {
+  MENU_OVERLAY_STYLE,
+  MENU_OVERLAY_TEST_IDS,
+} from '@/components/Menu/MenuOverlay/constants';
+import { openAccountPicker } from '@/test-utils/account-picker';
 import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
 import type { AccountSummary } from '@/lib/account/types';
 import { wait } from '@/lib/wait';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { Home } from './Home';
-import { accounts, openMenu, renderHome } from './home-test-helpers';
+import { accounts, openMenu } from './home-test-helpers';
 
 function accountsInViewMode(viewMode: ViewMode): AccountSummary[] {
   return accounts.map((account) =>
@@ -49,63 +54,84 @@ function HomeWithServerAccounts(): JSX.Element {
   );
 }
 
-function tapViewModeSwitch(): void {
-  fireEvent.click(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch));
+function renderHomeWithServer(): void {
+  render(<HomeWithServerAccounts />, { user: mockUser });
+}
+
+function turnCurrentAccountChildViewOn(): void {
+  openMenu();
+  openAccountPicker();
+  fireEvent.click(
+    screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.childViewToggle)[0]
+  );
+}
+
+function serverSays(viewMode: ViewMode): void {
+  fireEvent.click(screen.getByTestId(SERVER_SAYS_TEST_IDS[viewMode]));
+}
+
+function closeMenu(): void {
+  openMenu();
+}
+
+function saveAnswers(): Promise<void> {
+  return act(() => wait(VIEW_MODE_SWITCH_MOTION.slideMs * 2));
+}
+
+function menuOverlay(): HTMLElement {
+  return screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay);
 }
 
 describe('Home switching between the parent and child screens', () => {
-  describe('a parent turns child view on and the save has not answered yet', () => {
-    beforeEach(async () => {
-      global.fetch = jest.fn().mockReturnValue(new Promise(() => {}));
-      renderHome();
-      openMenu();
-      tapViewModeSwitch();
-      await act(() => wait(VIEW_MODE_SWITCH_MOTION.slideMs * 2));
-    });
-
-    it('keeps the menu open until the save answers', () => {
-      expect(screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)).toHaveAttribute(
-        'data-open',
-        'true'
-      );
-    });
-  });
-
-  describe('a parent turns child view on and the menu starts closing', () => {
+  describe("a parent turns the current account's child view on and the save succeeds", () => {
     beforeEach(async () => {
       global.fetch = jest
         .fn()
         .mockResolvedValue({ ok: true, json: async () => mockAccount });
-      renderHome();
-      openMenu();
-      tapViewModeSwitch();
-      await waitFor(() =>
-        expect(
-          screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)
-        ).toHaveAttribute('data-open', 'false')
-      );
+      renderHomeWithServer();
+      turnCurrentAccountChildViewOn();
+      await saveAnswers();
+      serverSays(VIEW_MODE.child);
     });
 
-    it('keeps the parent screen while the menu fades away', () => {
+    it('keeps the menu open', () => {
+      expect(menuOverlay()).toHaveAttribute('data-open', 'true');
+    });
+
+    it('keeps the parent screen while the menu is open, though the saved view is child', () => {
       expect(
         screen.queryByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
       ).not.toBeInTheDocument();
     });
+
+    describe('and the menu closes', () => {
+      beforeEach(() => {
+        closeMenu();
+      });
+
+      it('shows the child screen', async () => {
+        expect(
+          await screen.findByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
+        ).toBeInTheDocument();
+      });
+    });
   });
 
-  describe('a parent turns child view on and the save fails', () => {
+  describe("a parent turns the current account's child view on and the save fails", () => {
     beforeEach(async () => {
       global.fetch = jest.fn().mockResolvedValue({ ok: false });
-      renderHome();
-      openMenu();
-      tapViewModeSwitch();
+      renderHomeWithServer();
+      turnCurrentAccountChildViewOn();
       await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError);
     });
 
-    it('stays on the parent screen', () => {
+    it('shows no child screen once the menu closes', async () => {
+      closeMenu();
+      await act(() => wait(MENU_OVERLAY_STYLE.transitionMs * 2));
+
       expect(
-        screen.getByTestId(ACCOUNT_TEST_IDS.newTransaction)
-      ).toBeInTheDocument();
+        screen.queryByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
+      ).not.toBeInTheDocument();
     });
 
     it('shows the error in the menu that is still open', () => {
@@ -115,17 +141,41 @@ describe('Home switching between the parent and child screens', () => {
     });
   });
 
+  describe('a parent closes the menu before the save answers', () => {
+    beforeEach(async () => {
+      let answerSave = (): void => {};
+      global.fetch = jest.fn().mockReturnValue(
+        new Promise((resolve) => {
+          answerSave = (): void =>
+            resolve({ ok: true, json: async () => mockAccount });
+        })
+      );
+      renderHomeWithServer();
+      turnCurrentAccountChildViewOn();
+      closeMenu();
+      answerSave();
+      await saveAnswers();
+    });
+
+    it('still shows the child screen once the save answers', async () => {
+      expect(
+        await screen.findByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
+      ).toBeInTheDocument();
+    });
+  });
+
   describe('the view is changed somewhere else after a parent turned child view on', () => {
     beforeEach(async () => {
       global.fetch = jest
         .fn()
         .mockResolvedValue({ ok: true, json: async () => mockAccount });
-      render(<HomeWithServerAccounts />, { user: mockUser });
-      openMenu();
-      tapViewModeSwitch();
+      renderHomeWithServer();
+      turnCurrentAccountChildViewOn();
+      await saveAnswers();
+      serverSays(VIEW_MODE.child);
+      closeMenu();
       await screen.findByTestId(CHILD_ACCOUNT_TEST_IDS.screen);
-      fireEvent.click(screen.getByTestId(SERVER_SAYS_TEST_IDS.child));
-      fireEvent.click(screen.getByTestId(SERVER_SAYS_TEST_IDS.parent));
+      serverSays(VIEW_MODE.parent);
     });
 
     it('follows the saved view rather than the earlier choice', () => {

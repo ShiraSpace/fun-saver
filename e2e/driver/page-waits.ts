@@ -26,6 +26,13 @@ export async function waitForTestId({
   await findByTest(page, testId);
 }
 
+export async function waitForSelector(
+  page: Page,
+  selector: string
+): Promise<void> {
+  await page.waitForSelector(selector);
+}
+
 export async function waitForAnyTestId(
   page: Page,
   testIds: readonly string[]

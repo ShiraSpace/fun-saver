@@ -1,6 +1,7 @@
 import { fireEvent, screen } from '@/test-utils/render';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import {
+  mockAccountsContext,
   mockAccountSummary,
   mockSiblingAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
@@ -18,7 +19,8 @@ describe('AccountPicker', () => {
         accounts={accounts}
         currentAccount={mockSiblingAccountSummary}
         onSelect={(): void => {}}
-      />
+      />,
+      { accounts: mockAccountsContext }
     );
   });
 

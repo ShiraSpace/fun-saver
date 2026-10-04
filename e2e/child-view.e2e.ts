@@ -26,17 +26,52 @@ describe('a parent turns child view on', () => {
 
   beforeEach(async () => {
     await menu.open();
-    await menu.tapViewModeSwitch();
+    await menu.openAccountPicker();
+    await menu.tapChildViewToggle(0);
+    await menu.waitForChildViewSaved();
+    await menu.close();
     await childAccount.waitForScreen();
   });
 
-  it('shows the child screen', async () => {
+  it('shows the child screen once the menu closes', async () => {
     assert.equal(await childAccount.screenExists(), true);
   });
 
   it('is still the child screen after a reload, with no cookie to remember it', async () => {
     await appBrowser.reload();
 
+    assert.equal(await childAccount.screenExists(), true);
+  });
+});
+
+describe('a parent turns child view on for a sibling from the list', () => {
+  const mockCurrentAccount = createMockAccount({ id: 'a1', name: 'אביגיל' });
+  const mockSiblingAccount = createMockAccount({
+    id: 'a2',
+    name: 'יואב',
+    avatarId: 'kid-08',
+  });
+  const { menu, header, childAccount, appBrowser } = useDriver({
+    accounts: [mockCurrentAccount, mockSiblingAccount],
+  });
+
+  beforeEach(async () => {
+    await menu.open();
+    await menu.openAccountPicker();
+    await menu.tapChildViewToggle(1);
+    await menu.waitForChildViewSaved();
+    await menu.switchAccount(1);
+    await header.waitForTitle(mockSiblingAccount.name);
+  });
+
+  it('opens the sibling on the child screen', async () => {
+    assert.equal(await childAccount.screenExists(), true);
+  });
+
+  it("is still the sibling's child screen after a reload", async () => {
+    await appBrowser.reload();
+
+    assert.equal(await header.title(), mockSiblingAccount.name);
     assert.equal(await childAccount.screenExists(), true);
   });
 });

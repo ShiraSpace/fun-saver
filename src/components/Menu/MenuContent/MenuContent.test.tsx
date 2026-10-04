@@ -5,6 +5,7 @@ import {
   mockChildAccountsContext,
 } from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
+import { openAccountPicker } from '@/test-utils/account-picker';
 import { MenuContent } from './MenuContent';
 import { CHILD_MENU_CONTENT_TEST_IDS } from '../ChildMenuContent/constants';
 import { NAVIGATION_TABS_TEST_IDS } from '../NavigationTabs/constants';
@@ -13,7 +14,6 @@ import { ACCOUNT_PICKER_TEST_IDS } from '../AccountPicker/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '../EditAccountButton/constants';
 import { MENU_ACCOUNT_SETTINGS_TEST_IDS } from '../MenuAccountSettings/constants';
 import { MENU_USER_SETTINGS_TEST_IDS } from '../MenuUserSettings/constants';
-import { VIEW_MODE_SWITCH_TEST_IDS } from '../ViewModeSwitch/constants';
 
 describe('MenuContent', () => {
   describe('for a parent who has no account yet', () => {
@@ -55,10 +55,14 @@ describe('MenuContent', () => {
       );
     });
 
-    it('offers child view right where the parent picks the child', () => {
+    it('offers child view on each account, where the parent picks the child', () => {
+      openAccountPicker();
+
       expect(
         screen.getByTestId(MENU_USER_SETTINGS_TEST_IDS.block)
-      ).toContainElement(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch));
+      ).toContainElement(
+        screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.childViewToggle)[0]
+      );
     });
   });
 

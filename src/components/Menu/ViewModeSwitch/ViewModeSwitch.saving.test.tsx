@@ -2,6 +2,8 @@ import { act, fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import {
   mockAccountsContext,
   mockAccountSummary,
+  mockChildAccountsContext,
+  mockChildAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
@@ -20,8 +22,11 @@ function tapSwitch(): void {
 
 function tapSwitchInHeaderMenu(): void {
   render(
-    <Header title={mockAccountSummary.name} account={mockAccountSummary} />,
-    { route: HOME_ROUTE, accounts: mockAccountsContext, user: mockUser }
+    <Header
+      title={mockChildAccountSummary.name}
+      account={mockChildAccountSummary}
+    />,
+    { route: HOME_ROUTE, accounts: mockChildAccountsContext, user: mockUser }
   );
   fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
   tapSwitch();
