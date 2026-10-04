@@ -2,6 +2,7 @@ import { RepositoryStore } from '../repository-store';
 import { JsonAccounts } from './accounts';
 import { FileSession } from './file-session';
 import { JsonAccountUsers } from './account-users';
+import { JsonGoals } from './goals';
 import { JsonTransactions } from './transactions';
 import { JsonUsers } from './users';
 
@@ -13,7 +14,8 @@ export class JsonFileStore extends RepositoryStore {
       new JsonAccounts(session),
       new JsonTransactions(session),
       new JsonUsers(session),
-      new JsonAccountUsers(session)
+      new JsonAccountUsers(session),
+      new JsonGoals(session)
     );
   }
 }

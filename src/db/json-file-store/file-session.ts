@@ -5,7 +5,13 @@ import type { StoreContents } from '../data-store';
 let writeSequence = 0;
 
 function emptyContents(): StoreContents {
-  return { accounts: [], transactions: [], users: [], accountUsers: [] };
+  return {
+    accounts: [],
+    transactions: [],
+    users: [],
+    accountUsers: [],
+    goals: [],
+  };
 }
 
 /**

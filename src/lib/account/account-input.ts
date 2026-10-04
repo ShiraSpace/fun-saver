@@ -2,26 +2,17 @@ import type { AccountEdits } from './types';
 import type { CreateAccountInput } from './accounts-store';
 import { AVATARS } from './avatars';
 import { MAX_ACCOUNT_NAME_LENGTH } from './constants';
-import { asObject } from '@/lib/json-object';
+import { asObject, hasOnlyFields } from '@/lib/json-object';
+import { isNameWithin } from '@/lib/name';
 
 const ACCOUNT_FIELDS = ['name', 'avatarId'] as const;
-
-function hasOnlyAccountFields(body: Record<string, unknown>): boolean {
-  return Object.keys(body).every((field) =>
-    ACCOUNT_FIELDS.some((editable) => editable === field)
-  );
-}
 
 function isValidName({ name }: Record<string, unknown>): boolean {
   if (name === undefined) {
     return true;
   }
 
-  return (
-    typeof name === 'string' &&
-    name.trim() !== '' &&
-    name.trim().length <= MAX_ACCOUNT_NAME_LENGTH
-  );
+  return isNameWithin(name, MAX_ACCOUNT_NAME_LENGTH);
 }
 
 function isValidAvatar({ avatarId }: Record<string, unknown>): boolean {
@@ -42,7 +33,7 @@ function validFields(body: unknown): AccountEdits | undefined {
 
   if (
     !requested ||
-    !hasOnlyAccountFields(requested) ||
+    !hasOnlyFields(requested, ACCOUNT_FIELDS) ||
     !isValidName(requested) ||
     !isValidAvatar(requested)
   ) {

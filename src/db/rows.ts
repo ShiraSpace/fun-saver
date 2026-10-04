@@ -8,6 +8,7 @@ import type { AuthProvider, User } from '@/lib/user/types';
 import type { Wallet } from '@/lib/wallet/types';
 import type { Transaction } from '@/lib/transaction/types';
 import type { ThemeId } from '@/theme/registry';
+import type { Goal, GoalEnding, GoalPicture } from '@/lib/goal/types';
 
 export interface AccountRow {
   id: string;
@@ -86,5 +87,29 @@ export function accountUserFromRow(row: AccountUserRow): AccountUser {
     userId: row.user_id,
     role: row.role as AccountUserRole,
     addedAt: row.added_at,
+  };
+}
+
+export interface GoalRow {
+  id: string;
+  account_id: string;
+  name: string;
+  amount: number;
+  picture: GoalPicture;
+  started_at: string;
+  ended_at: string | null;
+  ending: GoalEnding | null;
+}
+
+export function goalFromRow(row: GoalRow): Goal {
+  return {
+    id: row.id,
+    accountId: row.account_id,
+    name: row.name,
+    amount: row.amount,
+    picture: row.picture,
+    startedAt: row.started_at,
+    endedAt: row.ended_at ?? undefined,
+    ending: row.ending ?? undefined,
   };
 }

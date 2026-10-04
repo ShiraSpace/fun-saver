@@ -100,7 +100,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS goals_one_active_per_account_idx
 - There is no `wallet_id`. A goal is always on the account's `savings` wallet,
   found by `walletName`; goals on other wallets are out of scope.
 - `amount` is agorot, like every amount in the app. Its upper limit lives only
-  in `validGoal`, like `transactions.amount`, so the two cannot drift.
+  in `assertValidGoalRequest`, like `transactions.amount`, so the two cannot
+  drift.
 - `picture` is `{ "kind": "emoji", "emoji": "🚲" }` in v1. Photos later become
   `{ "kind": "photo", "url": "…" }`, so goals saved in v1 keep working without
   a data migration. This is the only part of the design shaped for a later
@@ -225,8 +226,11 @@ The page receives each account's active goal alongside its wallets, as
    scale.
 
 A valid goal request body is `{ name, amount, picture }`, with `amount` in
-shekels like the withdrawal body; `validGoal` returns `amountShekels` and
-`setGoal` stores agorot through `shekelsToAgorot`. It has:
+shekels like the withdrawal body. `setGoal` takes the raw body and first calls
+`assertValidGoalRequest(body)`, which narrows it to `GoalRequest` or throws
+`ValidationError`, the way `assertPositiveAmount` guards a deposit; it then
+stores the name trimmed and the amount in agorot through `shekelsToAgorot`.
+A valid body has:
 - a name of 1–`MAX_GOAL_NAME_LENGTH` (30) characters after trimming, stored
   trimmed;
 - an amount of whole shekels from 1 to `MAX_GOAL_SHEKELS` (100,000), which
@@ -239,16 +243,18 @@ shekels like the withdrawal body; `validGoal` returns `amountShekels` and
   (Next 16's minimum) runs it;
 - no other fields.
 
-`validGoal` is server-only. Safari 16.4 and Chrome 111, inside Next 16's
+`goal-request-validator.ts` is server-only. Safari 16.4 and Chrome 111, inside Next 16's
 supported browsers, have no `v` flag, and a module-level `new RegExp(…, 'v')`
-throws on import there. So no client component imports `goal-input.ts`;
+throws on import there. So no client component imports
+`goal-request-validator.ts`;
 `SetGoal` takes its limits from `constants.ts`.
 
 ## Server
 
 ### Logic — `src/lib/goal/`
 
-- `goal-input.ts`: `validGoal(body)`, mirroring `validAccountEdits`.
+- `goal-request-validator.ts`: `assertValidGoalRequest(body)` and
+  `isValidPictureEmoji(emoji)`, the picture check the word-list script reuses.
 - `goal-reached.ts`: `goalReached(goal, balance)`.
 - `goals.ts`: `setGoal` and `cancelGoal`.
 - `savings-withdrawal.ts`: the goal branch of a savings withdrawal (below).
@@ -348,7 +354,7 @@ today, so `src/app/api/responses.ts` gains `conflict(error)` beside
 
 | Route | Does | Refuses |
 |---|---|---|
-| `POST /api/accounts/[id]/goals` | sets a goal, returns it with `201`, like `POST /api/accounts` | 400 invalid input; 409 a goal is already active |
+| `POST /api/accounts/[id]/goals` | sets a goal, returns it with `201`, like `POST /api/accounts` | 400 invalid input (`ValidationError`, as the deposit route maps it); 409 a goal is already active |
 | `DELETE /api/accounts/[id]/goals/[goalId]` | cancels that goal, returns it as JSON (`200`) | 409 it is not this account's active goal |
 | `POST /api/accounts/[id]/withdrawals` | unchanged, plus rule 2 | 409 `SavingsLockedError`, in the same `catch` that maps `OverdraftError` |
 
@@ -388,10 +394,10 @@ Its callers today are `use-add-transaction`, `use-update-account`,
   apply. `tsconfig` includes `**/*.ts`, so the script is type-checked and
   linted like the app.
 - **Fully-qualified emoji only.** CLDR keys leave out U+FE0F (`✈`, `🏎`, `❤`),
-  and `validGoal` refuses those. The script keys every emoji by its
+  and `assertValidGoalRequest` refuses those. The script keys every emoji by its
   `fully-qualified` line in `emoji-test.txt`, matches a CLDR key after removing
   U+FE0F from both, and writes the fully-qualified string. It fails if any
-  emoji it writes does not pass `validGoal`'s picture check.
+  emoji it writes does not pass `isValidPictureEmoji`.
 - **Trimmed while generating:** a sequence is dropped if it holds a skin-tone
   modifier (U+1F3FB–1F3FF), a hair component (U+1F9B0–1F9B3) or ♀/♂
   (U+2640/2642, which also drops the standalone ♀️ and ♂️), so one bicycle
@@ -533,11 +539,11 @@ Fixtures `createMockGoal` / `mockGoal` go in `src/test-utils/mocks/goal.mocks.ts
 beside `account.mocks.ts`. `test-database.ts` gains `goalId(suffix)`; its
 cleanup needs no `goals` line, since deleting the run's accounts cascades.
 
-- **Logic:** `validGoal` at every boundary (name 0/1/30/31 after trimming,
+- **Logic:** `assertValidGoalRequest` at every boundary (name 0/1/30/31 after trimming,
   amount 0/1/100,000/100,001 and non-whole, extra fields, a picture that is
   text, two emoji or `🚲abc`, a flag that is accepted, `❤` without U+FE0F
   refused and `❤️` accepted); every emoji in `emoji-words.he.json` passes
-  `validGoal`; `goalReached` at `balance = amount − 1` and `= amount`; a
+  `isValidPictureEmoji`; `goalReached` at `balance = amount − 1` and `= amount`; a
   locked withdrawal is refused; a reached withdrawal ends the goal as
   `completed` with `ended_at` equal to the withdrawal's `created_at`; a
   reached withdrawal larger than the balance is refused as an overdraft and

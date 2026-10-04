@@ -1,6 +1,7 @@
 import type { Account, AccountEdits, AccountUser } from '@/lib/account/types';
 import type { AuthProvider, User } from '@/lib/user/types';
 import type { Transaction } from '@/lib/transaction/types';
+import type { Goal, GoalEndRequest } from '@/lib/goal/types';
 import type { ThemeId } from '@/theme/registry';
 import type { ViewMode } from '@/lib/account/view-mode';
 
@@ -9,6 +10,7 @@ export interface StoreContents {
   transactions: Transaction[];
   users: User[];
   accountUsers: AccountUser[];
+  goals: Goal[];
 }
 
 export interface AccountRepository {
@@ -45,6 +47,16 @@ export interface AccountUserRepository {
   insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void>;
 }
 
+export interface GoalRepository {
+  insert(goal: Goal): Promise<void>;
+  getActive(accountId: string): Promise<Goal | undefined>;
+  end(endRequest: GoalEndRequest): Promise<Goal | undefined>;
+  insertWithdrawalCompleting(
+    withdrawal: Transaction,
+    goalId: string
+  ): Promise<void>;
+}
+
 export interface DataStore {
   insertAccount(account: Account): Promise<void>;
   getAccount(id: string): Promise<Account | undefined>;
@@ -74,4 +86,11 @@ export interface DataStore {
   ): Promise<AccountUser | undefined>;
   listAccountsForUser(userId: string): Promise<Account[]>;
   insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void>;
+  insertGoal(goal: Goal): Promise<void>;
+  getActiveGoal(accountId: string): Promise<Goal | undefined>;
+  endGoal(endRequest: GoalEndRequest): Promise<Goal | undefined>;
+  insertWithdrawalCompletingGoal(
+    withdrawal: Transaction,
+    goalId: string
+  ): Promise<void>;
 }
