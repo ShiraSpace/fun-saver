@@ -1,8 +1,9 @@
+import { StatusCodes } from 'http-status-codes';
 import { API_ERRORS } from '@/app/api/constants';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { goTo } from '../navigate';
-import { fetchJson } from '../fetch-json';
+import { fetchJson, RequestFailedError } from '../fetch-json';
 
 jest.mock('../navigate', () => ({ goTo: jest.fn() }));
 
@@ -104,6 +105,47 @@ describe('fetchJson', () => {
 
     it('lets the failure through untouched', async () => {
       await expect(fetchJson(mockRequest)).rejects.toBe(connectionError);
+    });
+  });
+
+  describe('when the route answers with a conflict', () => {
+    let failure: unknown;
+
+    beforeEach(async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: StatusCodes.CONFLICT,
+        json: async () => ({ error: API_ERRORS.goalNotActive }),
+      }) as unknown as typeof fetch;
+      failure = await fetchJson(mockRequest).catch((error) => error);
+    });
+
+    it('throws a RequestFailedError', () => {
+      expect(failure).toBeInstanceOf(RequestFailedError);
+    });
+
+    it('carries the response status', () => {
+      expect(failure).toHaveProperty('status', StatusCodes.CONFLICT);
+    });
+  });
+
+  describe('a DELETE without a body', () => {
+    const mockDeleteRequest = {
+      url: '/api/accounts/a1/goals/g1',
+      method: 'DELETE',
+    } as const;
+
+    beforeEach(async () => {
+      fetchMock = jest
+        .fn()
+        .mockResolvedValue({ ok: true, json: async () => mockAccount });
+      global.fetch = fetchMock as unknown as typeof fetch;
+      await fetchJson(mockDeleteRequest);
+    });
+
+    it('sends no body', () => {
+      const [, init] = fetchMock.mock.calls[0];
+      expect(init.body).toBeUndefined();
     });
   });
 });
