@@ -1,6 +1,7 @@
 import type { ThemeId } from '@/theme/registry';
 import type { ViewMode } from './view-mode';
 import type { Wallet, WalletSummary } from '@/lib/wallet/types';
+import type { Goal } from '@/lib/goal/types';
 
 export interface Account {
   id: string;
@@ -19,6 +20,7 @@ export interface AccountEdits {
 
 export interface AccountSummary extends Account {
   wallets: WalletSummary[];
+  goal?: Goal;
 }
 
 export type AccountUserRole = 'owner' | 'editor' | 'viewer';
