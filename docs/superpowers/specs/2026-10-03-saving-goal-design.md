@@ -200,8 +200,8 @@ The page receives each account's active goal alongside its wallets, as
    "the account's active goal". A goal set by another parent between the read
    and the write is never ended by mistake, and a goal id from another account
    matches nothing. A completing withdrawal and a cancel of the same goal race
-   on that `WHERE`; the first wins, and the other either records the
-   withdrawal against a goal already `cancelled` or gets `409`.
+   on that `WHERE`; the first wins, and the other gets `409`: a completing
+   withdrawal is recorded only if its goal is still active when it is written.
 6. **Only an account editor** can set or cancel a goal, through the same
    `withAccountEditor` check (`src/app/api/with-account-access.ts`) that
    guards account edits and withdrawals today.
@@ -295,7 +295,9 @@ three backends (`postgres-store`, `memory-store`, `json-file-store`):
   `undefined` when none matched (rule 5).
 - `insertWithdrawalCompleting(withdrawal, goalId)` — the one write that
   spans two tables, owned by the goal repository the way
-  `insertAccountWithOwner` is owned by `AccountUserRepository`. It does not
+  `insertAccountWithOwner` is owned by `AccountUserRepository`. It records
+  the withdrawal only if it ends that goal, and returns whether it wrote;
+  `withdrawFromSavings` throws `SavingsLockedError` when it did not. It does not
   map `23505`: there it can only be a failed withdrawal insert, never a second
   active goal, so it rethrows.
 
@@ -310,19 +312,19 @@ casts `picture` to `GoalPicture`. No row has had a nullable column before, so
 
 The cross-table write per backend:
 
-- **Postgres:** one `sql.transaction([...])` holding the `INSERT` into
-  `transactions` and the rule-5 `UPDATE` on `goals`, the way
-  `insertAccountWithOwner` does today. `PostgresTransactions` exposes an
-  `insertStatement`, as `PostgresAccounts` does, so the insert is not written
-  twice. Neon's HTTP transaction is a batch and cannot branch on a read, so
-  every condition lives in the `WHERE` clause. An `UPDATE` that matches no
-  row (the goal was cancelled in between) still records the withdrawal; savings
-  is unlocked then anyway.
-- **JSON file:** both changes inside one `FileSession.write`, saved once.
+- **Postgres:** one statement. A CTE runs the rule-5 `UPDATE` on `goals`
+  (`RETURNING id`), and the `INSERT` into `transactions` selects the
+  withdrawal only `WHERE EXISTS` a row from it, returning whether it wrote. A
+  goal cancelled, or cancelled and replaced, between the read and the write
+  matches no row, so nothing is written; a failed insert rolls the `UPDATE`
+  back with it.
+- **JSON file:** inside one `FileSession.write`: end the goal, and only if it
+  ended, push the withdrawal and save.
 - **Memory:** `MemoryGoals` is built with the `MemoryTransactions` instance,
   the way `MemoryAccountUsers` is built with accounts and users. It ends the
-  goal first (if still active), then awaits `transactions.insert([withdrawal])`,
-  whose push runs before its first `await`, so nothing can interleave.
+  goal first and, only if it was still active, awaits
+  `transactions.insert([withdrawal])`, whose push runs before its first
+  `await`, so nothing can interleave.
 
 `StoreContents` in `data-store.ts` gains `goals`, and `FileSession`'s
 `emptyContents` gains `goals: []`, so store files written before this feature
@@ -547,8 +549,8 @@ cleanup needs no `goals` line, since deleting the run's accounts cascades.
   and no ❤, "יום הולדת" finds 🎂, "יד" does not match inside "תלמידה".
 - **Stores (memory and JSON):** a second active goal is refused;
   `end` with another account's id or an ended goal ends nothing; withdraw-and-
-  end on a goal already cancelled records the withdrawal and leaves the goal
-  `cancelled`; an old store file without `goals` reads as none.
+  end on a goal already cancelled records nothing, returns `false` and leaves
+  the goal `cancelled`; an old store file without `goals` reads as none.
 - **Database (`test:db`):** the index refuses a second active goal and it
   surfaces as `GoalAlreadyActiveError`; the `CHECK`s refuse `amount = 0` and
   an `ending` without `ended_at`; `end` fills `ended_at` and `ending`;

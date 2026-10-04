@@ -54,7 +54,7 @@ export interface GoalRepository {
   insertWithdrawalCompleting(
     withdrawal: Transaction,
     goalId: string
-  ): Promise<void>;
+  ): Promise<boolean>;
 }
 
 export interface DataStore {
@@ -92,5 +92,5 @@ export interface DataStore {
   insertWithdrawalCompletingGoal(
     withdrawal: Transaction,
     goalId: string
-  ): Promise<void>;
+  ): Promise<boolean>;
 }

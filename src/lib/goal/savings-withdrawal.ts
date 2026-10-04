@@ -26,5 +26,12 @@ export async function withdrawFromSavings({
     throw new SavingsLockedError();
   }
 
-  await store.insertWithdrawalCompletingGoal(withdrawal, goal.id);
+  const wroteWithdrawal = await store.insertWithdrawalCompletingGoal(
+    withdrawal,
+    goal.id
+  );
+
+  if (!wroteWithdrawal) {
+    throw new SavingsLockedError();
+  }
 }

@@ -5,12 +5,21 @@ import { completedGoalEndRequest } from '../goals';
 import { goalFromRow, type GoalRow } from '../rows';
 import { goalWriteError } from './errors';
 import { queryRows, type QueryParam, type Sql } from './query';
-import { PostgresTransactions } from './transactions';
+import { TRANSACTION_COLUMNS, transactionValues } from './transactions';
 
-const END_ACTIVE_GOAL = `
+const UPDATE_ACTIVE_GOAL = `
   UPDATE goals SET ended_at = $3, ending = $4
   WHERE id = $1 AND account_id = $2 AND ended_at IS NULL
-  RETURNING *
+`;
+
+const END_ACTIVE_GOAL = `${UPDATE_ACTIVE_GOAL} RETURNING *`;
+
+const INSERT_WITHDRAWAL_IF_GOAL_ENDS = `
+  WITH ended_goal AS (${UPDATE_ACTIVE_GOAL} RETURNING id)
+  INSERT INTO transactions (${TRANSACTION_COLUMNS})
+  SELECT $5, $6, $7, $8, $9::integer, $10, $11
+  WHERE EXISTS (SELECT 1 FROM ended_goal)
+  RETURNING id
 `;
 
 function endValues({
@@ -23,11 +32,7 @@ function endValues({
 }
 
 export class PostgresGoals implements GoalRepository {
-  private readonly transactions: PostgresTransactions;
-
-  constructor(private readonly sql: Sql) {
-    this.transactions = new PostgresTransactions(sql);
-  }
+  constructor(private readonly sql: Sql) {}
 
   async insert(goal: Goal): Promise<void> {
     try {
@@ -70,13 +75,16 @@ export class PostgresGoals implements GoalRepository {
   async insertWithdrawalCompleting(
     withdrawal: Transaction,
     goalId: string
-  ): Promise<void> {
-    await this.sql.transaction([
-      this.transactions.insertStatement([withdrawal]),
-      this.sql.query(
-        END_ACTIVE_GOAL,
-        endValues(completedGoalEndRequest(withdrawal, goalId))
-      ),
-    ]);
+  ): Promise<boolean> {
+    const insertedRows = await queryRows<{ id: string }>(
+      this.sql,
+      INSERT_WITHDRAWAL_IF_GOAL_ENDS,
+      [
+        ...endValues(completedGoalEndRequest(withdrawal, goalId)),
+        ...transactionValues(withdrawal),
+      ]
+    );
+
+    return insertedRows.length > 0;
   }
 }

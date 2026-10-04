@@ -105,7 +105,7 @@ export class RepositoryStore implements DataStore {
   insertWithdrawalCompletingGoal(
     withdrawal: Transaction,
     goalId: string
-  ): Promise<void> {
+  ): Promise<boolean> {
     return this.goals.insertWithdrawalCompleting(withdrawal, goalId);
   }
 }
