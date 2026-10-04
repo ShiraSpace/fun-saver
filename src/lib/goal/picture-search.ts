@@ -1,11 +1,14 @@
 import {
   APOSTROPHES,
   GERESH,
+  GERSHAYIM,
   MAX_PREFIX_LETTERS,
   MIN_LETTERS_AFTER_PREFIX,
   NIQQUD,
   PHRASE_WORD_SEPARATOR,
   PREFIX_LETTERS,
+  QUOTATION_MARKS,
+  WORD_EDGE_PUNCTUATION,
   WORD_SEPARATORS,
 } from './constants';
 import type { PictureWords } from './types';
@@ -16,7 +19,9 @@ function searchableWords(text: string): string[] {
   return text
     .replace(NIQQUD, '')
     .replace(APOSTROPHES, GERESH)
+    .replace(QUOTATION_MARKS, GERSHAYIM)
     .split(WORD_SEPARATORS)
+    .map((word) => word.replace(WORD_EDGE_PUNCTUATION, ''))
     .filter(Boolean);
 }
 

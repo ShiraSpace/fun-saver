@@ -28,3 +28,9 @@ export const PHRASE_WORD_SEPARATOR = ' ';
 export const APOSTROPHES = /['’]/g;
 
 export const GERESH = '׳';
+
+export const QUOTATION_MARKS = /["“”]/g;
+
+export const GERSHAYIM = '״';
+
+export const WORD_EDGE_PUNCTUATION = /^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu;
