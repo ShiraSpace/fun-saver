@@ -9,11 +9,17 @@ import {
 import { MONEY_COPY } from './constants';
 import { Amount, Currency, Shekels } from './Money.styles';
 
-function shownShekels(
-  amountAgorot: number,
-  allowHalf: boolean,
-  roundDown: boolean
-): number {
+interface ShownShekelsParams {
+  amountAgorot: number;
+  allowHalf: boolean;
+  roundDown: boolean;
+}
+
+function shownShekels({
+  amountAgorot,
+  allowHalf,
+  roundDown,
+}: ShownShekelsParams): number {
   if (roundDown) {
     return floorToShekels(amountAgorot);
   }
@@ -38,7 +44,7 @@ export function Money({
   fullSizeCurrency = false,
   roundDown = false,
 }: MoneyProps): JSX.Element {
-  const shekels = shownShekels(amountAgorot, allowHalf, roundDown);
+  const shekels = shownShekels({ amountAgorot, allowHalf, roundDown });
 
   return (
     <Amount dir="ltr" data-testid={testId}>
