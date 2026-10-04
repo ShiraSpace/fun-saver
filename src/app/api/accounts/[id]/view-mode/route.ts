@@ -4,9 +4,9 @@ import { isViewMode } from '@/lib/account/view-mode';
 import { jsonBody } from '@/app/api/json-body';
 import { API_ERRORS } from '@/app/api/constants';
 import { accountNotFound, badRequest } from '@/app/api/responses';
-import { withAccountEditor } from '../with-account-editor';
+import { withAccountUser } from '../with-account-access';
 
-export const PUT = withAccountEditor(async (request, id) => {
+export const PUT = withAccountUser(async (request, id) => {
   const body = asObject(await jsonBody(request));
 
   if (!body) {
