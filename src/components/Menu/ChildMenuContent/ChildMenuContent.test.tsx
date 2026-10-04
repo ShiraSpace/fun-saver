@@ -140,3 +140,25 @@ describe('ChildMenuContent for an only child', () => {
     ).not.toBeInTheDocument();
   });
 });
+
+describe('ChildMenuContent whose siblings are all in parent view', () => {
+  beforeEach(() => {
+    render(
+      <WithMenu>
+        <ChildMenuContent />
+      </WithMenu>,
+      {
+        user: mockUser,
+        accounts: createMockChildAccountsContext({
+          accounts: [mockAccountSummary, mockSiblingAccountSummary],
+        }),
+      }
+    );
+  });
+
+  it('shows no switch card', () => {
+    expect(
+      screen.queryByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.list)
+    ).not.toBeInTheDocument();
+  });
+});
