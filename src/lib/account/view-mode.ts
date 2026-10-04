@@ -20,3 +20,11 @@ export function resolveViewMode(stored: string | undefined): ViewMode {
 export function isShownToChild(account: Pick<Account, 'viewMode'>): boolean {
   return account.viewMode === VIEW_MODE.child;
 }
+
+export function otherAccountsShownToChild<
+  Shown extends Pick<Account, 'id' | 'viewMode'>,
+>(accounts: Shown[], currentAccount: Shown): Shown[] {
+  return accounts.filter(
+    (account) => isShownToChild(account) && account.id !== currentAccount.id
+  );
+}
