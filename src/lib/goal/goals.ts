@@ -3,13 +3,13 @@ import { newId } from '@/lib/ids';
 import { shekelsToAgorot } from '@/lib/money';
 import { GOAL_ENDING } from './constants';
 import { GoalNotActiveError } from './errors';
-import type { GoalInput } from './goal-input';
+import { assertValidGoalRequest } from './goal-request-validator';
 import type { Goal } from './types';
 
 interface SetGoalParams {
   store: DataStore;
   accountId: string;
-  input: GoalInput;
+  body: unknown;
 }
 
 interface CancelGoalParams {
@@ -21,14 +21,16 @@ interface CancelGoalParams {
 export async function setGoal({
   store,
   accountId,
-  input,
+  body,
 }: SetGoalParams): Promise<Goal> {
+  assertValidGoalRequest(body);
+
   const goal: Goal = {
     id: newId(),
     accountId,
-    name: input.name,
-    amount: shekelsToAgorot(input.amountShekels),
-    picture: input.picture,
+    name: body.name.trim(),
+    amount: shekelsToAgorot(body.amount),
+    picture: body.picture,
     startedAt: new Date().toISOString(),
   };
 
