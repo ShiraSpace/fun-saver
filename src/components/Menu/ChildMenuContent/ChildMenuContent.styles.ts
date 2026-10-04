@@ -44,14 +44,6 @@ export const HomeLink = styled(Link)`
   background: ${({ theme }): string => theme.colors.textStrong};
 `;
 
-export const Item = styled.div`
-  min-height: 76px;
-  padding: 16px 18px;
-  margin-bottom: 12px;
-  border-radius: 22px;
-  background: ${({ theme }): string => theme.colors.surface};
-`;
-
 export const ParentCorner = styled.div`
   display: flex;
   justify-content: center;

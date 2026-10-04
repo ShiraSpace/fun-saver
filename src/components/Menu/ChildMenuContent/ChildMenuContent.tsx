@@ -4,12 +4,16 @@ import { JSX } from 'react';
 import { AvatarBadge } from '@/components/AvatarBadge';
 import { useAccounts } from '@/components/Home/accounts-context';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import { VIEW_MODE, siblingsShownToChild } from '@/lib/account/view-mode';
+import {
+  VIEW_MODE,
+  siblingAccountsShownToChild,
+} from '@/lib/account/view-mode';
 import { AppearanceSection } from '../AppearanceSection';
 import { ChildMenuAccountList } from '../ChildMenuAccountList';
 import { ViewModeSwitch } from '../ViewModeSwitch';
 import { useMenu } from '../use-menu-state';
 import { useOpenAccount } from '../use-open-account';
+import { ChildMenuCard } from '../child-menu-parts';
 import { CHILD_MENU_AVATAR_PROPS } from '../constants';
 import {
   CHILD_MENU_CONTENT_COPY,
@@ -19,7 +23,6 @@ import {
   Child,
   ChildName,
   HomeLink,
-  Item,
   Layout,
   ParentCorner,
 } from './ChildMenuContent.styles';
@@ -28,7 +31,7 @@ export function ChildMenuContent(): JSX.Element {
   const { accounts, currentAccount } = useAccounts();
   const { closeMenu } = useMenu();
   const openAccount = useOpenAccount();
-  const siblings = siblingsShownToChild(accounts, currentAccount);
+  const siblingAccounts = siblingAccountsShownToChild(accounts, currentAccount);
 
   return (
     <Layout data-testid={CHILD_MENU_CONTENT_TEST_IDS.menu}>
@@ -48,14 +51,13 @@ export function ChildMenuContent(): JSX.Element {
         <span aria-hidden>{CHILD_MENU_CONTENT_COPY.homeIcon}</span>
         {CHILD_MENU_CONTENT_COPY.home}
       </HomeLink>
-      {siblings.length > 0 && (
-        <Item>
-          <ChildMenuAccountList accounts={siblings} onSelect={openAccount} />
-        </Item>
-      )}
-      <Item>
+      <ChildMenuAccountList
+        siblingAccounts={siblingAccounts}
+        onSelect={openAccount}
+      />
+      <ChildMenuCard>
         <AppearanceSection />
-      </Item>
+      </ChildMenuCard>
       <ParentCorner>
         <ViewModeSwitch viewMode={VIEW_MODE.parent} />
       </ParentCorner>

@@ -67,7 +67,7 @@ describe('ChildMenuContent', () => {
 });
 
 describe('ChildMenuContent with a sibling in each view', () => {
-  const mockChildSibling = {
+  const mockChildSiblingAccount = {
     ...mockSiblingAccountSummary,
     id: 'a3',
     name: 'יואב',
@@ -88,7 +88,7 @@ describe('ChildMenuContent with a sibling in each view', () => {
           accounts: [
             mockAccountSummary,
             mockSiblingAccountSummary,
-            mockChildSibling,
+            mockChildSiblingAccount,
           ],
           switchAccount: mockSwitchAccount,
         }),
@@ -101,7 +101,7 @@ describe('ChildMenuContent with a sibling in each view', () => {
       .getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)
       .map((name) => name.textContent);
 
-    expect(names).toEqual([mockChildSibling.name]);
+    expect(names).toEqual([mockChildSiblingAccount.name]);
   });
 
   describe('the child taps their sibling', () => {
@@ -110,7 +110,9 @@ describe('ChildMenuContent with a sibling in each view', () => {
     });
 
     it("switches to the sibling's account", () => {
-      expect(mockSwitchAccount).toHaveBeenCalledWith(mockChildSibling.id);
+      expect(mockSwitchAccount).toHaveBeenCalledWith(
+        mockChildSiblingAccount.id
+      );
     });
 
     it('closes the menu', () => {
@@ -119,7 +121,13 @@ describe('ChildMenuContent with a sibling in each view', () => {
   });
 });
 
-describe('ChildMenuContent for an only child', () => {
+describe.each([
+  ['for an only child', [mockAccountSummary]],
+  [
+    'whose siblings are all in parent view',
+    [mockAccountSummary, mockSiblingAccountSummary],
+  ],
+])('ChildMenuContent %s', (_, mockAccounts) => {
   beforeEach(() => {
     render(
       <WithMenu>
@@ -127,31 +135,7 @@ describe('ChildMenuContent for an only child', () => {
       </WithMenu>,
       {
         user: mockUser,
-        accounts: createMockChildAccountsContext({
-          accounts: [mockAccountSummary],
-        }),
-      }
-    );
-  });
-
-  it('shows no switch card', () => {
-    expect(
-      screen.queryByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.list)
-    ).not.toBeInTheDocument();
-  });
-});
-
-describe('ChildMenuContent whose siblings are all in parent view', () => {
-  beforeEach(() => {
-    render(
-      <WithMenu>
-        <ChildMenuContent />
-      </WithMenu>,
-      {
-        user: mockUser,
-        accounts: createMockChildAccountsContext({
-          accounts: [mockAccountSummary, mockSiblingAccountSummary],
-        }),
+        accounts: createMockChildAccountsContext({ accounts: mockAccounts }),
       }
     );
   });

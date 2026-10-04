@@ -1,7 +1,7 @@
 import {
   VIEW_MODE,
   isShownToChild,
-  siblingsShownToChild,
+  siblingAccountsShownToChild,
   resolveViewMode,
 } from '../view-mode';
 
@@ -29,17 +29,17 @@ describe('isShownToChild', () => {
   });
 });
 
-describe('siblingsShownToChild', () => {
+describe('siblingAccountsShownToChild', () => {
   it('leaves out an account in parent view', () => {
     const mockCurrentAccount = { id: 'a1', viewMode: VIEW_MODE.child };
-    const mockChildSibling = { id: 'a2', viewMode: VIEW_MODE.child };
-    const mockParentSibling = { id: 'a3', viewMode: VIEW_MODE.parent };
+    const mockChildSiblingAccount = { id: 'a2', viewMode: VIEW_MODE.child };
+    const mockParentSiblingAccount = { id: 'a3', viewMode: VIEW_MODE.parent };
 
     expect(
-      siblingsShownToChild(
-        [mockCurrentAccount, mockChildSibling, mockParentSibling],
+      siblingAccountsShownToChild(
+        [mockCurrentAccount, mockChildSiblingAccount, mockParentSiblingAccount],
         mockCurrentAccount
       )
-    ).toEqual([mockChildSibling]);
+    ).toEqual([mockChildSiblingAccount]);
   });
 });

@@ -7,13 +7,16 @@ import { ChildMenuAccountList } from './ChildMenuAccountList';
 import { CHILD_MENU_ACCOUNT_LIST_TEST_IDS } from './constants';
 
 describe('ChildMenuAccountList', () => {
-  const mockAccounts = [mockAccountSummary, mockSiblingAccountSummary];
+  const mockSiblingAccounts = [mockAccountSummary, mockSiblingAccountSummary];
   const mockOnSelect = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
     render(
-      <ChildMenuAccountList accounts={mockAccounts} onSelect={mockOnSelect} />
+      <ChildMenuAccountList
+        siblingAccounts={mockSiblingAccounts}
+        onSelect={mockOnSelect}
+      />
     );
   });
 
@@ -22,7 +25,9 @@ describe('ChildMenuAccountList', () => {
       .getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)
       .map((name) => name.textContent);
 
-    expect(names).toEqual(mockAccounts.map((account) => account.name));
+    expect(names).toEqual(
+      mockSiblingAccounts.map((siblingAccount) => siblingAccount.name)
+    );
   });
 
   it('selects the account whose row is tapped', () => {
