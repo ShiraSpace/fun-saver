@@ -96,6 +96,35 @@ describe('picture search', () => {
     ]);
   });
 
+  it('finds an acronym typed with a straight or a curly quote mark', () => {
+    const mockPicturesByAcronym = indexPictureWords({ '🚑': ['מד״א'] });
+
+    expect(matchingPictures('מד"א', mockPicturesByAcronym)).toEqual(['🚑']);
+    expect(matchingPictures('מד”א', mockPicturesByAcronym)).toEqual(['🚑']);
+  });
+
+  it('ignores a comma after an annotation word', () => {
+    const mockPicturesByListedWords = indexPictureWords({
+      '🤟': ['בוהן, אצבע וזרת מורמות'],
+    });
+
+    expect(matchingPictures('בוהן', mockPicturesByListedWords)).toEqual(['🤟']);
+  });
+
+  it('ignores a quote mark before an annotation word', () => {
+    const mockPicturesByQuotedWords = indexPictureWords({
+      '🙅': ['אישה מסמנת ״לא בסדר״'],
+    });
+
+    expect(matchingPictures('לא', mockPicturesByQuotedWords)).toEqual(['🙅']);
+  });
+
+  it('drops a word that is only punctuation from the index', () => {
+    expect(indexPictureWords({ '❗': ['קריאה !'] })).toEqual(
+      new Map([['קריאה', new Set(['❗'])]])
+    );
+  });
+
   it('searches a hyphen, a maqaf and a space alike', () => {
     const mockPicturesByJoinedWord = indexPictureWords({ '🛵': ['דו־גלגלי'] });
 
