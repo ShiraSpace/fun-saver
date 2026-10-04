@@ -119,6 +119,8 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
   });
 
   describe('savings with an active goal not yet reached', () => {
+    const mockWithdrawalShekels = 20;
+
     let response: Response;
 
     beforeEach(async () => {
@@ -128,7 +130,11 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
           amount: (await savingsBalance()) + 1,
         })
       );
-      response = await postWithdraw(savingsId, 20, account.id);
+      response = await postWithdraw(
+        savingsId,
+        mockWithdrawalShekels,
+        account.id
+      );
     });
 
     it('answers 409', () => {

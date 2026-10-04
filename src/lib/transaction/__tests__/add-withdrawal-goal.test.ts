@@ -13,6 +13,7 @@ import { addDeposit, addWithdrawal, splitDeposit } from '../transactions';
 describe('addWithdrawal from savings with a goal', () => {
   const mockDepositAgorot = 2000;
   const mockSavingsBalance = splitDeposit(mockDepositAgorot).savings;
+  const mockWithdrawalAgorot = 100;
 
   let store: InMemoryStore;
   let account: Account;
@@ -31,18 +32,21 @@ describe('addWithdrawal from savings with a goal', () => {
     });
   });
 
-  function addSavingsWithdrawal(amountAgorot: number): Promise<unknown> {
+  function withdrawFrom(
+    walletId: string,
+    amountAgorot: number
+  ): Promise<unknown> {
     return addWithdrawal({
       store,
       account,
-      walletId: savingsId,
+      walletId,
       amountAgorot,
       asOf: today(),
     });
   }
 
-  async function savingsBalance(): Promise<number> {
-    return balance(await store.listTransactionsByWallet(account.id, savingsId));
+  async function walletBalance(walletId: string): Promise<number> {
+    return balance(await store.listTransactionsByWallet(account.id, walletId));
   }
 
   describe('savings with an active goal not yet reached', () => {
@@ -55,7 +59,9 @@ describe('addWithdrawal from savings with a goal', () => {
           amount: mockSavingsBalance + 1,
         })
       );
-      refusal = await addSavingsWithdrawal(100).catch((error) => error);
+      refusal = await withdrawFrom(savingsId, mockWithdrawalAgorot).catch(
+        (error) => error
+      );
     });
 
     it('refuses with SavingsLockedError', () => {
@@ -63,7 +69,7 @@ describe('addWithdrawal from savings with a goal', () => {
     });
 
     it('records nothing', async () => {
-      expect(await savingsBalance()).toBe(mockSavingsBalance);
+      expect(await walletBalance(savingsId)).toBe(mockSavingsBalance);
     });
   });
 
@@ -72,7 +78,7 @@ describe('addWithdrawal from savings with a goal', () => {
       await store.insertGoal(
         createMockGoal({ accountId: account.id, amount: mockSavingsBalance })
       );
-      await addSavingsWithdrawal(100);
+      await withdrawFrom(savingsId, mockWithdrawalAgorot);
     });
 
     it('ends the goal', async () => {
@@ -87,7 +93,7 @@ describe('addWithdrawal from savings with a goal', () => {
       await store.insertGoal(
         createMockGoal({ accountId: account.id, amount: mockSavingsBalance })
       );
-      refusal = await addSavingsWithdrawal(mockSavingsBalance + 1).catch(
+      refusal = await withdrawFrom(savingsId, mockSavingsBalance + 1).catch(
         (error) => error
       );
     });
@@ -102,7 +108,6 @@ describe('addWithdrawal from savings with a goal', () => {
   });
 
   describe('spending while a goal is active', () => {
-    const mockWithdrawalAgorot = 100;
     const mockSpendingBalance = splitDeposit(mockDepositAgorot).spending;
 
     let spendingId: string;
@@ -115,19 +120,13 @@ describe('addWithdrawal from savings with a goal', () => {
           amount: mockSpendingBalance + 1,
         })
       );
-      await addWithdrawal({
-        store,
-        account,
-        walletId: spendingId,
-        amountAgorot: mockWithdrawalAgorot,
-        asOf: today(),
-      });
+      await withdrawFrom(spendingId, mockWithdrawalAgorot);
     });
 
     it('records the withdrawal', async () => {
-      expect(
-        balance(await store.listTransactionsByWallet(account.id, spendingId))
-      ).toBe(mockSpendingBalance - mockWithdrawalAgorot);
+      expect(await walletBalance(spendingId)).toBe(
+        mockSpendingBalance - mockWithdrawalAgorot
+      );
     });
 
     it('keeps the goal active', async () => {
