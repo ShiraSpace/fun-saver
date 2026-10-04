@@ -9,11 +9,7 @@ export const WALLET_NAME = {
   goodDeeds: 'goodDeeds',
 } as const satisfies Record<WalletName, WalletName>;
 
-export const WALLET_NAMES: readonly WalletName[] = [
-  'savings',
-  'spending',
-  'goodDeeds',
-];
+export const WALLET_NAMES: readonly WalletName[] = Object.values(WALLET_NAME);
 
 export const WALLET_LABEL: Record<WalletName, string> = {
   savings: 'חיסכון',
