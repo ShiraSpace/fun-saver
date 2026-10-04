@@ -1,4 +1,5 @@
 import { InMemoryStore } from '@/db/memory-store';
+import { ValidationError } from '@/lib/errors';
 import {
   mockAccount,
   mockSiblingAccount,
@@ -6,13 +7,12 @@ import {
 import { createMockGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { GOAL_ENDING } from '../constants';
 import { GoalAlreadyActiveError, GoalNotActiveError } from '../errors';
-import type { GoalInput } from '../goal-input';
 import { cancelGoal, setGoal } from '../goals';
 
 describe('setGoal', () => {
-  const mockGoalInput: GoalInput = {
+  const mockGoalBody = {
     name: mockGoal.name,
-    amountShekels: 300,
+    amount: 300,
     picture: mockGoal.picture,
   };
   let store: InMemoryStore;
@@ -22,7 +22,7 @@ describe('setGoal', () => {
   });
 
   it('stores the goal with its amount in agorot', async () => {
-    await setGoal({ store, accountId: mockAccount.id, input: mockGoalInput });
+    await setGoal({ store, accountId: mockAccount.id, body: mockGoalBody });
 
     expect(await store.getActiveGoal(mockAccount.id)).toEqual({
       id: expect.any(String),
@@ -34,11 +34,34 @@ describe('setGoal', () => {
     });
   });
 
+  it('stores the name trimmed', async () => {
+    await setGoal({
+      store,
+      accountId: mockAccount.id,
+      body: { ...mockGoalBody, name: `  ${mockGoal.name}  ` },
+    });
+
+    expect((await store.getActiveGoal(mockAccount.id))?.name).toBe(
+      mockGoal.name
+    );
+  });
+
+  it('refuses an invalid body with ValidationError and stores nothing', async () => {
+    await expect(
+      setGoal({
+        store,
+        accountId: mockAccount.id,
+        body: { ...mockGoalBody, amount: 0 },
+      })
+    ).rejects.toThrow(ValidationError);
+    expect(await store.getActiveGoal(mockAccount.id)).toBeUndefined();
+  });
+
   it('refuses a second goal while the first is still active', async () => {
-    await setGoal({ store, accountId: mockAccount.id, input: mockGoalInput });
+    await setGoal({ store, accountId: mockAccount.id, body: mockGoalBody });
 
     await expect(
-      setGoal({ store, accountId: mockAccount.id, input: mockGoalInput })
+      setGoal({ store, accountId: mockAccount.id, body: mockGoalBody })
     ).rejects.toThrow(GoalAlreadyActiveError);
   });
 });
