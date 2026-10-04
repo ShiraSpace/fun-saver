@@ -6,6 +6,7 @@ import { getStore } from '@/db';
 import { today } from '@/lib/clock';
 import { addDeposit } from '@/lib/transaction/transactions';
 import { balance } from '@/lib/wallet/balance';
+import { shekelsToAgorot } from '@/lib/money';
 import type { Account } from '@/lib/account/types';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
@@ -18,6 +19,8 @@ jest.mock('@/auth');
 
 describe('POST /api/accounts/[id]/withdrawals', () => {
   withTempStoreEnv();
+
+  const mockWithdrawalShekels = 20;
 
   let account: Account;
   let savingsId: string;
@@ -70,27 +73,45 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
   it('withdraws from the chosen wallet and persists it', async () => {
     const before = await savingsBalance();
 
-    const response = await postWithdraw(savingsId, 20, account.id);
+    const response = await postWithdraw(
+      savingsId,
+      mockWithdrawalShekels,
+      account.id
+    );
 
     expect(response.status).toBe(200);
-    expect(await savingsBalance()).toBe(before - 2000);
+    expect(await savingsBalance()).toBe(
+      before - shekelsToAgorot(mockWithdrawalShekels)
+    );
   });
 
   it('rejects an overdraft with 400', async () => {
-    const response = await postWithdraw(savingsId, 9999, account.id);
+    const mockOverdraftShekels = 9999;
+
+    const response = await postWithdraw(
+      savingsId,
+      mockOverdraftShekels,
+      account.id
+    );
 
     expect(response.status).toBe(400);
     expect((await response.json()).error).toBeTruthy();
   });
 
   it('rejects a non-positive amount with 400', async () => {
-    const response = await postWithdraw(savingsId, 0, account.id);
+    const mockZeroShekels = 0;
+
+    const response = await postWithdraw(savingsId, mockZeroShekels, account.id);
 
     expect(response.status).toBe(400);
   });
 
   it('refuses an unknown account with 403 rather than admitting it is gone', async () => {
-    const response = await postWithdraw(savingsId, 20, 'does-not-exist');
+    const response = await postWithdraw(
+      savingsId,
+      mockWithdrawalShekels,
+      'does-not-exist'
+    );
 
     expect(response.status).toBe(403);
   });
@@ -100,7 +121,11 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
 
     const before = await savingsBalance();
 
-    const response = await postWithdraw(savingsId, 20, account.id);
+    const response = await postWithdraw(
+      savingsId,
+      mockWithdrawalShekels,
+      account.id
+    );
 
     expect(response.status).toBe(403);
     expect(await savingsBalance()).toBe(before);
@@ -119,8 +144,6 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
   });
 
   describe('savings with an active goal not yet reached', () => {
-    const mockWithdrawalShekels = 20;
-
     let response: Response;
 
     beforeEach(async () => {

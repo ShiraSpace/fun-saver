@@ -13,7 +13,6 @@ import { addDeposit, addWithdrawal, splitDeposit } from '../transactions';
 describe('addWithdrawal from savings with a goal', () => {
   const mockDepositAgorot = 2000;
   const mockSavingsBalance = splitDeposit(mockDepositAgorot).savings;
-  const mockWithdrawalAgorot = 100;
 
   let store: InMemoryStore;
   let account: Account;
@@ -49,43 +48,6 @@ describe('addWithdrawal from savings with a goal', () => {
     return balance(await store.listTransactionsByWallet(account.id, walletId));
   }
 
-  describe('savings with an active goal not yet reached', () => {
-    let refusal: unknown;
-
-    beforeEach(async () => {
-      await store.insertGoal(
-        createMockGoal({
-          accountId: account.id,
-          amount: mockSavingsBalance + 1,
-        })
-      );
-      refusal = await withdrawFrom(savingsId, mockWithdrawalAgorot).catch(
-        (error) => error
-      );
-    });
-
-    it('refuses with SavingsLockedError', () => {
-      expect(refusal).toBeInstanceOf(SavingsLockedError);
-    });
-
-    it('records nothing', async () => {
-      expect(await walletBalance(savingsId)).toBe(mockSavingsBalance);
-    });
-  });
-
-  describe('savings with a reached goal', () => {
-    beforeEach(async () => {
-      await store.insertGoal(
-        createMockGoal({ accountId: account.id, amount: mockSavingsBalance })
-      );
-      await withdrawFrom(savingsId, mockWithdrawalAgorot);
-    });
-
-    it('ends the goal', async () => {
-      expect(await store.getActiveGoal(account.id)).toBeUndefined();
-    });
-  });
-
   describe('an overdraft while a goal is reached', () => {
     let refusal: unknown;
 
@@ -107,30 +69,71 @@ describe('addWithdrawal from savings with a goal', () => {
     });
   });
 
-  describe('spending while a goal is active', () => {
-    const mockSpendingBalance = splitDeposit(mockDepositAgorot).spending;
+  describe('a withdrawal within the balance', () => {
+    const mockWithdrawalAgorot = 100;
 
-    let spendingId: string;
+    describe('savings with an active goal not yet reached', () => {
+      let refusal: unknown;
 
-    beforeEach(async () => {
-      spendingId = walletNamed(account.wallets, WALLET_NAMES.spending)!.id;
-      await store.insertGoal(
-        createMockGoal({
-          accountId: account.id,
-          amount: mockSpendingBalance + 1,
-        })
-      );
-      await withdrawFrom(spendingId, mockWithdrawalAgorot);
+      beforeEach(async () => {
+        await store.insertGoal(
+          createMockGoal({
+            accountId: account.id,
+            amount: mockSavingsBalance + 1,
+          })
+        );
+        refusal = await withdrawFrom(savingsId, mockWithdrawalAgorot).catch(
+          (error) => error
+        );
+      });
+
+      it('refuses with SavingsLockedError', () => {
+        expect(refusal).toBeInstanceOf(SavingsLockedError);
+      });
+
+      it('records nothing', async () => {
+        expect(await walletBalance(savingsId)).toBe(mockSavingsBalance);
+      });
     });
 
-    it('records the withdrawal', async () => {
-      expect(await walletBalance(spendingId)).toBe(
-        mockSpendingBalance - mockWithdrawalAgorot
-      );
+    describe('savings with a reached goal', () => {
+      beforeEach(async () => {
+        await store.insertGoal(
+          createMockGoal({ accountId: account.id, amount: mockSavingsBalance })
+        );
+        await withdrawFrom(savingsId, mockWithdrawalAgorot);
+      });
+
+      it('ends the goal', async () => {
+        expect(await store.getActiveGoal(account.id)).toBeUndefined();
+      });
     });
 
-    it('keeps the goal active', async () => {
-      expect(await store.getActiveGoal(account.id)).toBeDefined();
+    describe('spending while a goal is active', () => {
+      const mockSpendingBalance = splitDeposit(mockDepositAgorot).spending;
+
+      let spendingId: string;
+
+      beforeEach(async () => {
+        spendingId = walletNamed(account.wallets, WALLET_NAMES.spending)!.id;
+        await store.insertGoal(
+          createMockGoal({
+            accountId: account.id,
+            amount: mockSpendingBalance + 1,
+          })
+        );
+        await withdrawFrom(spendingId, mockWithdrawalAgorot);
+      });
+
+      it('records the withdrawal', async () => {
+        expect(await walletBalance(spendingId)).toBe(
+          mockSpendingBalance - mockWithdrawalAgorot
+        );
+      });
+
+      it('keeps the goal active', async () => {
+        expect(await store.getActiveGoal(account.id)).toBeDefined();
+      });
     });
   });
 });
