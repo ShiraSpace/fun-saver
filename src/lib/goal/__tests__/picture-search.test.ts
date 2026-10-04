@@ -127,6 +127,10 @@ describe('picture search', () => {
     );
   });
 
+  it('indexes nothing for an annotation that is only punctuation', () => {
+    expect(indexPictureWords({ '❗': ['!'] })).toEqual(new Map());
+  });
+
   it('searches a hyphen, a maqaf and a space alike', () => {
     const mockPicturesByJoinedWord = indexPictureWords({ '🛵': ['דו־גלגלי'] });
 
