@@ -4,12 +4,17 @@ import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
 import { AvatarBadge } from '@/components/AvatarBadge';
 import { MenuSectionTitle } from '../MenuSectionTitle';
-import { CHILD_MENU_AVATAR_PROPS } from '../ChildMenuContent/constants';
+import { CHILD_MENU_AVATAR_PROPS } from '../constants';
 import {
   CHILD_MENU_ACCOUNT_LIST_COPY,
   CHILD_MENU_ACCOUNT_LIST_TEST_IDS,
 } from './constants';
-import { AccountRow, Arrow, List } from './ChildMenuAccountList.styles';
+import {
+  AccountRow,
+  Arrow,
+  List,
+  TitleIcon,
+} from './ChildMenuAccountList.styles';
 
 interface ChildMenuAccountListProps {
   accounts: AccountSummary[];
@@ -23,7 +28,7 @@ export function ChildMenuAccountList({
   return (
     <section>
       <MenuSectionTitle>
-        <span aria-hidden>{CHILD_MENU_ACCOUNT_LIST_COPY.icon}</span>{' '}
+        <TitleIcon aria-hidden>{CHILD_MENU_ACCOUNT_LIST_COPY.icon}</TitleIcon>
         {CHILD_MENU_ACCOUNT_LIST_COPY.title}
       </MenuSectionTitle>
       <List data-testid={CHILD_MENU_ACCOUNT_LIST_TEST_IDS.list}>

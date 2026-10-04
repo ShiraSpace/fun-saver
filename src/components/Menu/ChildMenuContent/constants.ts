@@ -3,10 +3,6 @@ export const CHILD_MENU_CONTENT_TEST_IDS = {
   home: 'child-menu-home',
 } as const;
 
-export const CHILD_MENU_AVATAR_PROPS = {
-  size: 40,
-} as const;
-
 export const CHILD_MENU_CONTENT_COPY = {
   homeIcon: '🏠',
   home: 'הכסף שלי',

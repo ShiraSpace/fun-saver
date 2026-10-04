@@ -12,6 +12,10 @@ export const AccountRow = styled(Row)`
   background: ${({ theme }): string => theme.colors.accountScopeBg};
 `;
 
+export const TitleIcon = styled.span`
+  margin-inline-end: 6px;
+`;
+
 export const Arrow = styled.span`
   margin-inline-start: auto;
   font-size: 22px;

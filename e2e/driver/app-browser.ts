@@ -46,7 +46,7 @@ export class AppBrowser {
     const browser = this.requireBrowser();
     this.baseUrl = baseUrl;
     this.activePage = await browser.newPage();
-    await browser.deleteCookie(...(await browser.cookies()));
+    await this.clearCookies(browser);
     await browser.setCookie(cookie);
     await this.activePage.emulateMediaFeatures(queries.motionFeatures(motion));
     await this.activePage.goto(baseUrl, { waitUntil: 'networkidle0' });
@@ -233,6 +233,10 @@ export class AppBrowser {
       throw new Error('no page is open; call open(baseUrl) first');
     }
     return this.activePage;
+  }
+
+  private async clearCookies(browser: Browser): Promise<void> {
+    await browser.deleteCookie(...(await browser.cookies()));
   }
 
   private requireBrowser(): Browser {
