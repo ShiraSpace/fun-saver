@@ -6,6 +6,7 @@ import {
 } from '@emotion/react';
 import styled from '@emotion/styled';
 import { LAYERS } from '@/theme/layers';
+import { REDUCED_MOTION } from '@/theme/motion';
 import type { ThemeColors } from '@/theme/theme-tokens';
 import { CELEBRATION_MOTION, type CelebrationPiece } from './constants';
 
@@ -32,6 +33,10 @@ export const Falling = styled.div`
   animation-timing-function: ease-in;
   animation-delay: ${CELEBRATION_MOTION.fadeDelayMs}ms;
   animation-fill-mode: forwards;
+
+  @media ${REDUCED_MOTION} {
+    display: none;
+  }
 `;
 
 interface PieceLook {
@@ -39,11 +44,15 @@ interface PieceLook {
   colorName: keyof ThemeColors;
 }
 
+interface ThemedPieceLook extends PieceLook {
+  theme: Theme;
+}
+
 function pieceLook({
   piece,
   colorName,
   theme,
-}: PieceLook & { theme: Theme }): SerializedStyles {
+}: ThemedPieceLook): SerializedStyles {
   const [rightPercent, widthPx, heightPx, fallMs, delayMs, swayPx] = piece;
 
   return css`

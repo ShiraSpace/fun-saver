@@ -5,14 +5,14 @@ export const CELEBRATION_TEST_IDS = {
   piece: 'celebration-piece',
 } as const;
 
-export const CELEBRATION_COLORS: readonly (keyof ThemeColors)[] = [
+export const CELEBRATION_COLORS = [
   'celebrationGold',
   'celebrationPink',
   'celebrationPurple',
   'celebrationGreen',
   'celebrationBlue',
   'celebrationOrange',
-];
+] as const satisfies readonly (keyof ThemeColors)[];
 
 export const CELEBRATION_MOTION = {
   fadeDelayMs: 9200,

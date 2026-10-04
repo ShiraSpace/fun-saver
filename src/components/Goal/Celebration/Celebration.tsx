@@ -7,15 +7,8 @@ import {
   CELEBRATION_TEST_IDS,
 } from './constants';
 import { Falling, Piece } from './Celebration.styles';
-import { useMotionIsReduced } from './use-motion-is-reduced';
 
-export function Celebration(): JSX.Element | null {
-  const motionIsReduced = useMotionIsReduced();
-
-  if (motionIsReduced) {
-    return null;
-  }
-
+export function Celebration(): JSX.Element {
   const pieces = CELEBRATION_PIECES.map((piece, index) => (
     <Piece
       key={index}

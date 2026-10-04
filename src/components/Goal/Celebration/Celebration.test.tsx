@@ -1,5 +1,4 @@
 import { render, screen } from '@/test-utils/render';
-import { prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
 import { LAYERS } from '@/theme/layers';
 import { THEME_ID, getThemeTokens } from '@/theme/registry';
 import { Celebration } from './Celebration';
@@ -8,11 +7,14 @@ import { CELEBRATION_TEST_IDS } from './constants';
 describe('Celebration', () => {
   let celebration: HTMLElement;
   let firstPiece: HTMLElement;
+  let secondPiece: HTMLElement;
 
   beforeEach(() => {
     render(<Celebration />);
     celebration = screen.getByTestId(CELEBRATION_TEST_IDS.celebration);
-    [firstPiece] = screen.getAllByTestId(CELEBRATION_TEST_IDS.piece);
+    [firstPiece, secondPiece] = screen.getAllByTestId(
+      CELEBRATION_TEST_IDS.piece
+    );
   });
 
   it('hides the celebration from screen readers', () => {
@@ -36,6 +38,10 @@ describe('Celebration', () => {
       animationDuration: '2600ms',
       animationDelay: '4000ms',
     });
+    expect(secondPiece).toHaveStyle({
+      animationDuration: '3500ms',
+      animationDelay: '1300ms',
+    });
   });
 
   it('places each piece where the mockup does, at its own size', () => {
@@ -43,6 +49,11 @@ describe('Celebration', () => {
       right: '32%',
       width: '6px',
       height: '14px',
+    });
+    expect(secondPiece).toHaveStyle({
+      right: '57%',
+      width: '6px',
+      height: '10px',
     });
   });
 
@@ -71,27 +82,9 @@ describe('Celebration in a theme other than the default', () => {
 
   it("colours the pieces with that theme's celebration colours in turn", () => {
     const { colors } = getThemeTokens(THEME_ID.midnightBlue);
-    const [first, second, , , , , seventh] = pieces;
 
-    expect(first).toHaveStyle({ backgroundColor: colors.celebrationGold });
-    expect(second).toHaveStyle({ backgroundColor: colors.celebrationPink });
-    expect(seventh).toHaveStyle({ backgroundColor: colors.celebrationGold });
-  });
-});
-
-describe('Celebration when the device asks for reduced motion', () => {
-  beforeEach(() => {
-    prefersReducedMotion();
-    render(<Celebration />);
-  });
-
-  afterEach(() => {
-    prefersMotion();
-  });
-
-  it('draws nothing', () => {
-    expect(
-      screen.queryByTestId(CELEBRATION_TEST_IDS.celebration)
-    ).not.toBeInTheDocument();
+    expect(pieces[0]).toHaveStyle({ backgroundColor: colors.celebrationGold });
+    expect(pieces[1]).toHaveStyle({ backgroundColor: colors.celebrationPink });
+    expect(pieces[6]).toHaveStyle({ backgroundColor: colors.celebrationGold });
   });
 });

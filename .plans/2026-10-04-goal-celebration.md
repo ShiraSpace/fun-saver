@@ -22,7 +22,8 @@ wiring PR), and nothing mounts it.
 - `pointer-events: none` and `aria-hidden`: nothing to tap, so **no dismiss
   callback**. It ends by itself (fade to opacity 0).
 - Drawn above the cards on a `LAYERS` value below `modal`.
-- Not mounted when `motionIsReduced()`.
+- Hidden when the device asks for reduced motion: `@media REDUCED_MOTION { display: none }`
+  on the layer, like `entrance()`; no hook.
 - Replays on remount only. CSS animations do not restart on re-render, so
   `router.refresh()` not replaying it comes for free; the caller (wiring PR)
   replays it by mounting it, and by `key` on an account switch.
@@ -48,7 +49,6 @@ export function Celebration(): JSX.Element | null;
 | `src/components/Goal/Celebration/` | Spec: new goal components live in `src/components/Goal/<Name>/`. |
 | `CELEBRATION_TEST_IDS`, `CELEBRATION_PIECES`, `CELEBRATION_COLORS`, `CELEBRATION_MOTION` | `<COMPONENT>_TEST_IDS` / `_ANIMATION` / `_STYLE` pattern (`EMPTY_STATE_ANIMATION`, `MENU_OVERLAY_STYLE`). "confetti" stays out of identifiers, per the glossary's Not column. |
 | `CelebrationPiece` (type) | one falling piece. |
-| `useMotionIsReduced` | the hook form of the existing `motionIsReduced()` in `src/theme/motion.ts`. Co-located (one user), kebab file `use-motion-is-reduced.ts`, like `use-oink-then-run.ts`. |
 | `LAYERS.celebration` | beside `overlay` / `modal`. |
 | `celebrationGold`, `celebrationPink`, `celebrationPurple`, `celebrationGreen`, `celebrationBlue`, `celebrationOrange` | new `ThemeColors` fields, as the spec asks ("confetti … colours are new `ThemeColors` fields"), named like the `chart*` / `wallet*` families. |
 | Styled: `Falling` (the full-screen layer), `Piece`; keyframes `fall`, `fadeAway` | name what is drawn. |
@@ -98,12 +98,11 @@ sunshine in at least one colour, or the theme test below cannot fail
 
 ### Reduced motion
 
-`useMotionIsReduced()` is `useSyncExternalStore(ignoreChanges, motionIsReduced,
-() => true)`. The server snapshot says "reduced", so the server and hydration
-render nothing (no `window` on the server, no mismatch), and the client render
-right after hydration shows the pieces when motion is allowed. No
-`setState` in an effect (react-hooks 7 flags it). A change of the OS setting
-mid-play is not followed: 10 seconds, not worth a listener.
+`Falling` carries `@media ${REDUCED_MOTION} { display: none; }`, as `entrance()`
+does with `animation: none`. The browser follows the setting, so there is no hook,
+no server snapshot and no hydration question. The pieces are mounted but never
+drawn; the layer is `aria-hidden`, so nothing reaches a screen reader either.
+jsdom does not evaluate `@media`, so this is not unit-tested.
 
 ## Tasks
 
@@ -125,8 +124,8 @@ Phase 0 is done: the branch is fresh off `origin/main`, the tree is clean, and
 
 - `constants.ts` (~90 lines):
   - `CELEBRATION_TEST_IDS = { celebration: 'celebration', piece: 'celebration-piece' }`
-  - `CELEBRATION_COLORS: readonly (keyof ThemeColors)[]`, the six fields in
-    mockup order (like `WALLET_COLOR`).
+  - `CELEBRATION_COLORS`, the six fields in mockup order (like `WALLET_COLOR`),
+    `as const satisfies readonly (keyof ThemeColors)[]`.
   - `CELEBRATION_MOTION = { fadeDelayMs: 9200, fadeMs: 800 }`.
   - `type CelebrationPiece = readonly [rightPercent: number, widthPx: number,
     heightPx: number, fallMs: number, delayMs: number, swayPx: number]` and
@@ -136,16 +135,15 @@ Phase 0 is done: the branch is fresh off `origin/main`, the tree is clean, and
     past `max-lines`. Transcribed with a one-off `node` read of line 383, not
     by hand.
 - `Celebration.styles.ts`: `fall` and `fadeAway` keyframes, `Falling`, and
-  `Piece` taking `{ piece: CelebrationPiece; color: string }` (non-HTML prop names,
-  so emotion does not forward them to the DOM). `Piece` sets `--sway`, `right`,
+  `Piece` taking `{ piece: CelebrationPiece; colorName: keyof ThemeColors }`
+  (non-HTML prop names, so emotion does not forward them to the DOM), reading
+  `theme.colors[colorName]` in its style helper. `Piece` sets `--sway`, `right`,
   `width`, `height`, `background`, `animation-duration`, `animation-delay`.
   Single-use px stay inline here (memory: style values inline). ~55 lines.
-- `use-motion-is-reduced.ts`: the hook above, ~10 lines.
 - `Celebration.tsx` (`'use client'`), ~25 lines, one function well under 40:
-  returns `null` when motion is reduced; otherwise `<Falling aria-hidden
+  `<Falling aria-hidden
   data-testid>` with one `<Piece>` per entry, `key` = index (a fixed list),
-  colour `theme.colors[CELEBRATION_COLORS[index % CELEBRATION_COLORS.length]]`
-  via `useTheme()`.
+  `colorName` `CELEBRATION_COLORS[index % CELEBRATION_COLORS.length]`.
 - `index.ts`: `export { Celebration } from './Celebration';`
 
 Checks before showing: `./node_modules/.bin/tsc --noEmit`,
@@ -166,25 +164,25 @@ run only this file, read which test reddens, restore from the copy, `cmp`.
 | --- | --- | --- |
 | hides the celebration from screen readers | the layer has `aria-hidden="true"` | drop `aria-hidden` |
 | lets a tap through to the cards under it | computed `pointer-events` is `none` | delete the `pointer-events` line |
-| draws nothing when the device asks for reduced motion | `prefersReducedMotion()` (inside that test), then no `celebration` test id | make the hook return `false` |
 
 **The rest, in bulk:**
 
 | Test | Asserts | Deliberate break |
 | --- | --- | --- |
 | drops every piece the mockup drops | 60 `piece` test ids (literal `mockupPieceCount`) | render `CELEBRATION_PIECES.slice(1)` |
-| lets each piece fall for its own time after its own wait | first piece: `animation-duration` 2600ms, `animation-delay` 4000ms | swap duration and delay in `Piece` |
-| places each piece where the mockup does | first piece: `right` 32%, `width` 6px, `height` 14px | swap width and height |
+| lets each piece fall for its own time after its own wait | first piece 2600ms / 4000ms, second 3500ms / 1300ms (`animation-duration` / `-delay`) | swap duration and delay in `Piece`; separately, draw every piece from `CELEBRATION_PIECES[0]` |
+| places each piece where the mockup does | first piece 32% / 6px / 14px, second 57% / 6px / 10px (`right` / `width` / `height`) | swap width and height; separately, draw every piece from `CELEBRATION_PIECES[0]` |
 | fades the whole celebration out once the pieces have fallen | layer: duration 800ms, delay 9200ms | drop the fade delay |
-| colours the pieces with the theme's celebration colours in turn | rendered with `themeId: midnight-blue`: pieces 0, 1 and 6 are its gold, pink, gold | read `getThemeTokens()` (default theme) instead of `useTheme()`; separately, cycle by `% 5` |
+| colours the pieces with the theme's celebration colours in turn | rendered with `themeId: midnight-blue`: pieces 0, 1 and 6 are its gold, pink, gold | read `getThemeTokens()` (default theme) in `pieceLook` instead of its `theme`; separately, cycle by `% 5` |
 | sits over the header and under the drawer | computed `z-index` above `LAYERS.overlayForeground`, below `LAYERS.modal` | set it to `LAYERS.modal` |
 
-Not tested here, on purpose: the sway (jsdom does not resolve custom properties
+Not tested here, on purpose: reduced motion (a CSS `@media` rule jsdom does not
+evaluate), the sway (jsdom does not resolve custom properties
 in keyframes; checked by eye against the mockup), replay on remount and "not on
 `router.refresh()`" (that is the caller's wiring, tested where it is mounted).
 
 STOP for "commit tests", then commit:
-`test(goal): the celebration's pieces, fade, layer, theme and reduced motion`.
+`test(goal): the celebration's pieces, fade, layer and theme`.
 
 ## Size limits
 
@@ -214,6 +212,5 @@ this PR". Mockup frames 4b and 2b remain the reference for motion.
 4. **No preview image** in this PR; the "Showing it for review" preview is dropped.
    The PR body says nothing on screen changes yet.
 5. **Mounting** on home and in `ViewGoal` goes in a later PR.
-6. `use-motion-is-reduced.ts` reuses `motionIsReduced()` from
-   `src/theme/motion.ts` (which holds `REDUCED_MOTION`); it defines no query of
-   its own.
+6. Reduced motion is CSS on `Falling`, using `REDUCED_MOTION` from
+   `src/theme/motion.ts`; no hook (changed on review, 2026-10-04).
