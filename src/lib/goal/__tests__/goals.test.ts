@@ -15,10 +15,13 @@ describe('setGoal', () => {
     amountShekels: 300,
     picture: mockGoal.picture,
   };
+  let store: InMemoryStore;
+
+  beforeEach(() => {
+    store = new InMemoryStore();
+  });
 
   it('stores the goal with its amount in agorot', async () => {
-    const store = new InMemoryStore();
-
     await setGoal({ store, accountId: mockAccount.id, input: mockGoalInput });
 
     expect(await store.getActiveGoal(mockAccount.id)).toEqual({
@@ -32,7 +35,6 @@ describe('setGoal', () => {
   });
 
   it('refuses a second goal while the first is still active', async () => {
-    const store = new InMemoryStore();
     await setGoal({ store, accountId: mockAccount.id, input: mockGoalInput });
 
     await expect(

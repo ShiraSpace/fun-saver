@@ -1,22 +1,19 @@
-import {
-  GOAL_PICTURE_KIND,
-  MAX_GOAL_NAME_LENGTH,
-  MAX_GOAL_SHEKELS,
-} from '../constants';
+import { MAX_GOAL_NAME_LENGTH, MAX_GOAL_SHEKELS } from '../constants';
 import { validGoal } from '../goal-input';
+import { createMockGoalPicture } from '@/test-utils/mocks/goal.mocks';
 
 describe('validGoal', () => {
   const mockGoalBody = {
     name: 'אופניים',
     amount: 300,
-    picture: { kind: GOAL_PICTURE_KIND.emoji, emoji: '🚲' },
+    picture: createMockGoalPicture('🚲'),
   };
 
   it('returns the trimmed name, the amount in shekels and the picture from a well formed body', () => {
     expect(validGoal({ ...mockGoalBody, name: '  אופניים  ' })).toEqual({
       name: 'אופניים',
       amountShekels: 300,
-      picture: { kind: GOAL_PICTURE_KIND.emoji, emoji: '🚲' },
+      picture: createMockGoalPicture('🚲'),
     });
   });
 
@@ -27,7 +24,7 @@ describe('validGoal', () => {
   });
 
   it('refuses a picture that is an emoji followed by text', () => {
-    const mockPicture = { kind: GOAL_PICTURE_KIND.emoji, emoji: '🚲abc' };
+    const mockPicture = createMockGoalPicture('🚲abc');
 
     expect(
       validGoal({ ...mockGoalBody, picture: mockPicture })
@@ -87,7 +84,7 @@ describe('validGoal', () => {
   });
 
   it('refuses a picture that is a word', () => {
-    const mockPicture = { kind: GOAL_PICTURE_KIND.emoji, emoji: 'bike' };
+    const mockPicture = createMockGoalPicture('bike');
 
     expect(
       validGoal({ ...mockGoalBody, picture: mockPicture })
@@ -95,7 +92,7 @@ describe('validGoal', () => {
   });
 
   it('refuses a picture that is two emoji', () => {
-    const mockPicture = { kind: GOAL_PICTURE_KIND.emoji, emoji: '🚲🚲' };
+    const mockPicture = createMockGoalPicture('🚲🚲');
 
     expect(
       validGoal({ ...mockGoalBody, picture: mockPicture })
@@ -103,7 +100,7 @@ describe('validGoal', () => {
   });
 
   it('returns a picture that is a flag', () => {
-    const mockPicture = { kind: GOAL_PICTURE_KIND.emoji, emoji: '🇮🇱' };
+    const mockPicture = createMockGoalPicture('🇮🇱');
 
     expect(
       validGoal({ ...mockGoalBody, picture: mockPicture })?.picture
@@ -111,7 +108,7 @@ describe('validGoal', () => {
   });
 
   it('refuses a heart drawn as text, without its emoji variation selector', () => {
-    const mockPicture = { kind: GOAL_PICTURE_KIND.emoji, emoji: '❤' };
+    const mockPicture = createMockGoalPicture('❤');
 
     expect(
       validGoal({ ...mockGoalBody, picture: mockPicture })
@@ -119,7 +116,7 @@ describe('validGoal', () => {
   });
 
   it('returns a heart drawn as an emoji, with its variation selector', () => {
-    const mockPicture = { kind: GOAL_PICTURE_KIND.emoji, emoji: '❤️' };
+    const mockPicture = createMockGoalPicture('❤️');
 
     expect(
       validGoal({ ...mockGoalBody, picture: mockPicture })?.picture

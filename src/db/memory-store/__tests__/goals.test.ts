@@ -70,6 +70,7 @@ describe('InMemoryStore goals', () => {
       expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
         mockWithdrawal,
       ]);
+      expect(await store.getActiveGoal(mockAccount.id)).toBeUndefined();
       expect(cancelledGoal).toEqual({
         ...mockGoal,
         endedAt: mockCancelledAt,

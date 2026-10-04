@@ -9,10 +9,13 @@ import { withdrawFromSavings } from '../savings-withdrawal';
 
 describe('withdrawFromSavings', () => {
   const mockWithdrawal = createMockWithdrawal(createMockWallet());
+  let store: InMemoryStore;
+
+  beforeEach(() => {
+    store = new InMemoryStore();
+  });
 
   it('records the withdrawal as before when there is no goal', async () => {
-    const store = new InMemoryStore();
-
     await withdrawFromSavings({
       store,
       withdrawal: mockWithdrawal,
@@ -26,7 +29,6 @@ describe('withdrawFromSavings', () => {
   });
 
   it('refuses with SavingsLockedError and writes nothing while the goal is not reached', async () => {
-    const store = new InMemoryStore();
     await store.insertGoal(mockGoal);
 
     await expect(
@@ -43,7 +45,6 @@ describe('withdrawFromSavings', () => {
   });
 
   it('ends a reached goal as completed, at the moment the withdrawal was made', async () => {
-    const store = new InMemoryStore();
     const storedGoal = createMockGoal();
     await store.insertGoal(storedGoal);
 
@@ -57,6 +58,7 @@ describe('withdrawFromSavings', () => {
     expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
       mockWithdrawal,
     ]);
+    expect(await store.getActiveGoal(mockAccount.id)).toBeUndefined();
     expect(storedGoal).toEqual({
       ...mockGoal,
       endedAt: mockWithdrawal.createdAt,

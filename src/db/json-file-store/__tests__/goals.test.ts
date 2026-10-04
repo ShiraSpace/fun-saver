@@ -12,6 +12,10 @@ import { createMockWithdrawal } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallet } from '@/test-utils/mocks/wallet.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
+function storedContents(storePath: string): StoreContents {
+  return JSON.parse(readFileSync(storePath, 'utf8'));
+}
+
 describe('JsonFileStore goals', () => {
   const file = withTempStoreFile();
 
@@ -73,9 +77,7 @@ describe('JsonFileStore goals', () => {
 
         await store.insertWithdrawalCompletingGoal(mockWithdrawal, mockGoal.id);
 
-        const storeContents = JSON.parse(
-          readFileSync(file.path, 'utf8')
-        ) as StoreContents;
+        const storeContents = storedContents(file.path);
         expect(storeContents.transactions).toEqual([mockWithdrawal]);
         expect(storeContents.goals).toEqual([
           {
