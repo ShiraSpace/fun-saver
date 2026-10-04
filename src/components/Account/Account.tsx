@@ -2,6 +2,8 @@
 
 import { JSX, useState } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
+import { walletNamed } from '@/lib/wallet/wallet-named';
+import { WALLET_NAME } from '@/lib/wallet/constants';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -9,8 +11,6 @@ import { BalanceBreakdown } from './BalanceBreakdown';
 import { WalletList } from './WalletList/WalletList';
 import { TransactionDrawer } from './TransactionDrawer';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
-import { walletNamed } from '@/lib/wallet/wallet-named';
-import { WALLET_NAME } from '@/lib/wallet/constants';
 
 interface AccountProps {
   account: AccountSummary;

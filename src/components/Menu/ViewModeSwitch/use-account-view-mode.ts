@@ -36,15 +36,6 @@ function menuFinishesFading(): Promise<void> {
   return wait(MENU_OVERLAY_STYLE.transitionMs);
 }
 
-async function saveSucceeds(saved: Promise<unknown>): Promise<boolean> {
-  try {
-    await saved;
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 async function showSavedViewMode(
   steps: SavedViewModeSteps,
   viewMode: ViewMode
@@ -77,12 +68,9 @@ export function useAccountViewMode(): AccountViewMode {
       method: 'PUT',
       body: { viewMode },
     });
-    const [isSaved] = await Promise.all([
-      saveSucceeds(saved),
-      switchFinishesSliding(),
-    ]);
+    const [save] = await Promise.allSettled([saved, switchFinishesSliding()]);
 
-    if (!isSaved) {
+    if (save.status === 'rejected') {
       setChosenViewMode(undefined);
       setSaveFailed(true);
       return;
