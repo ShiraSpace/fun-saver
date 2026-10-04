@@ -8,6 +8,7 @@ describe('PictureTiles', () => {
   describe('with matching pictures and one chosen', () => {
     const mockPictures = ['🚲', '🚴', '🛴'];
     const mockChosenEmoji = '🚴';
+    const mockQuery = 'אופניים';
     const mockOnChoose = jest.fn();
 
     beforeEach(() => {
@@ -16,7 +17,7 @@ describe('PictureTiles', () => {
         <PictureTiles
           pictures={mockPictures}
           requestState={REQUEST_STATE.idle}
-          query="אופניים"
+          query={mockQuery}
           chosenEmoji={mockChosenEmoji}
           onChoose={mockOnChoose}
         />
@@ -53,6 +54,8 @@ describe('PictureTiles', () => {
   });
 
   describe('with no tiles to show', () => {
+    const mockChosenEmoji = '🎯';
+    const mockQuery = 'אופניים';
     const mockOnChoose = jest.fn();
 
     function renderStateOnly(requestState: RequestState, query: string): void {
@@ -61,7 +64,7 @@ describe('PictureTiles', () => {
           pictures={[]}
           requestState={requestState}
           query={query}
-          chosenEmoji="🎯"
+          chosenEmoji={mockChosenEmoji}
           onChoose={mockOnChoose}
         />
       );
@@ -69,7 +72,7 @@ describe('PictureTiles', () => {
 
     describe('while the word list loads', () => {
       beforeEach(() => {
-        renderStateOnly(REQUEST_STATE.pending, 'אופניים');
+        renderStateOnly(REQUEST_STATE.pending, mockQuery);
       });
 
       it('says the pictures are being looked for', () => {
@@ -81,7 +84,7 @@ describe('PictureTiles', () => {
 
     describe('when the word list failed to load', () => {
       beforeEach(() => {
-        renderStateOnly(REQUEST_STATE.failed, 'אופניים');
+        renderStateOnly(REQUEST_STATE.failed, mockQuery);
       });
 
       it('says the pictures did not load', () => {
@@ -92,8 +95,10 @@ describe('PictureTiles', () => {
     });
 
     describe('with nothing typed but spaces', () => {
+      const mockBlankQuery = '  ';
+
       beforeEach(() => {
-        renderStateOnly(REQUEST_STATE.idle, '  ');
+        renderStateOnly(REQUEST_STATE.idle, mockBlankQuery);
       });
 
       it('hints at typing what to search for', () => {
@@ -104,32 +109,33 @@ describe('PictureTiles', () => {
     });
 
     describe('with no picture matching the typed words', () => {
-      const mockQuery = 'קקטוס';
+      const mockUnmatchedQuery = 'קקטוס';
 
       beforeEach(() => {
-        renderStateOnly(REQUEST_STATE.idle, mockQuery);
+        renderStateOnly(REQUEST_STATE.idle, mockUnmatchedQuery);
       });
 
       it('names the typed words in the no-match line', () => {
         expect(
           screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
-        ).toHaveTextContent(PICTURE_TILES_COPY.noMatch(mockQuery));
+        ).toHaveTextContent(PICTURE_TILES_COPY.noMatch(mockUnmatchedQuery));
       });
     });
   });
 
   describe('on jungle-quest, where the primary colour is not the ring', () => {
     const { selectionRing } = getThemeTokens(THEME_ID.jungleQuest).colors;
-
+    const mockPicture = '🚲';
+    const mockQuery = 'אופניים';
     const mockOnChoose = jest.fn();
 
     beforeEach(() => {
       render(
         <PictureTiles
-          pictures={['🚲']}
+          pictures={[mockPicture]}
           requestState={REQUEST_STATE.idle}
-          query="אופניים"
-          chosenEmoji="🚲"
+          query={mockQuery}
+          chosenEmoji={mockPicture}
           onChoose={mockOnChoose}
         />,
         { themeId: THEME_ID.jungleQuest }

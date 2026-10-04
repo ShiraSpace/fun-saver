@@ -12,10 +12,11 @@ type MatchingPicturesHook = RenderHookResult<
 >;
 
 describe('useMatchingPictures', () => {
+  const mockQueryWithPrefix = 'האופניים';
   let hook: MatchingPicturesHook;
 
   beforeEach(() => {
-    hook = renderHook(() => useMatchingPictures('האופניים'));
+    hook = renderHook(() => useMatchingPictures(mockQueryWithPrefix));
   });
 
   describe('right after mounting', () => {
@@ -25,6 +26,8 @@ describe('useMatchingPictures', () => {
   });
 
   describe('once the word list has loaded', () => {
+    const mockQueryPicture = '🚲';
+
     beforeEach(async () => {
       await waitFor(() =>
         expect(hook.result.current.requestState).not.toBe(REQUEST_STATE.pending)
@@ -36,7 +39,7 @@ describe('useMatchingPictures', () => {
     });
 
     it('finds the bicycle for a word typed with a prefix letter', () => {
-      expect(hook.result.current.pictures).toContain('🚲');
+      expect(hook.result.current.pictures).toContain(mockQueryPicture);
     });
   });
 });

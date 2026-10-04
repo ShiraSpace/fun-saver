@@ -18,9 +18,11 @@ describe('QueryField', () => {
   });
 
   describe('after typing', () => {
+    const mockTypedQuery = 'כלב';
+
     beforeEach(() => {
       fireEvent.change(screen.getByTestId(QUERY_FIELD_TEST_IDS.input), {
-        target: { value: 'כלב' },
+        target: { value: mockTypedQuery },
       });
     });
 

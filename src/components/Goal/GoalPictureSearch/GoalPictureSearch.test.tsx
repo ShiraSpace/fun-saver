@@ -47,12 +47,14 @@ describe('GoalPictureSearch', () => {
   });
 
   describe('opened with no picture', () => {
+    const mockGoalNamePicture = '🚲';
+
     beforeEach(async () => {
       await renderLoadedSheet(null);
     });
 
     it('opens searching for the goal name', () => {
-      expect(tilePictures()).toContain('🚲');
+      expect(tilePictures()).toContain(mockGoalNamePicture);
     });
 
     it('is named by its title', () => {
@@ -89,14 +91,14 @@ describe('GoalPictureSearch', () => {
 
     describe('after tapping the bicycle and choosing', () => {
       beforeEach(() => {
-        fireEvent.click(screen.getByText('🚲'));
+        fireEvent.click(screen.getByText(mockGoalNamePicture));
         fireEvent.click(screen.getByTestId(CHOOSE_BUTTON_TEST_IDS.button));
       });
 
       it('sends the bicycle as the goal picture', () => {
         expect(mockOnChange).toHaveBeenCalledWith({
           kind: GOAL_PICTURE_KIND.emoji,
-          emoji: '🚲',
+          emoji: mockGoalNamePicture,
         });
       });
     });

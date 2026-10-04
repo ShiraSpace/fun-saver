@@ -11,10 +11,11 @@ jest.mock('@/lib/goal/picture-search/picture-words.he.json', () => {
 });
 
 describe('useMatchingPictures when the word list cannot load', () => {
+  const mockQuery = 'אופניים';
   let hook: RenderHookResult<ReturnType<typeof useMatchingPictures>, unknown>;
 
   beforeEach(async () => {
-    hook = renderHook(() => useMatchingPictures('אופניים'));
+    hook = renderHook(() => useMatchingPictures(mockQuery));
     await waitFor(() =>
       expect(hook.result.current.requestState).not.toBe(REQUEST_STATE.pending)
     );
