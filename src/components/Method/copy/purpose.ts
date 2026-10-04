@@ -1,4 +1,4 @@
-export const GOAL_COPY = {
+export const PURPOSE_COPY = {
   eyebrow: 'מה אנחנו מנסים להשיג',
   title: 'שהילד יתאמן בלבחור',
   body: {

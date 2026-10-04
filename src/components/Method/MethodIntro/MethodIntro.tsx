@@ -15,14 +15,14 @@ import {
   Title,
 } from './MethodIntro.styles';
 
-const { goal, brief } = METHOD_COPY;
+const { purpose, brief } = METHOD_COPY;
 
 export function MethodIntro(): JSX.Element {
-  const eyebrow = emphasize(goal.eyebrow);
-  const title = emphasize(goal.title);
-  const lead = emphasize(goal.body.body);
-  const alongTheWay = emphasize(goal.alongTheWay);
-  const outcomes = Object.entries(goal.outcomes).map(
+  const eyebrow = emphasize(purpose.eyebrow);
+  const title = emphasize(purpose.title);
+  const lead = emphasize(purpose.body.body);
+  const alongTheWay = emphasize(purpose.alongTheWay);
+  const outcomes = Object.entries(purpose.outcomes).map(
     ([walletName, outcome]) => <KeyPoint key={walletName} {...outcome} />
   );
   const briefLine = emphasize(

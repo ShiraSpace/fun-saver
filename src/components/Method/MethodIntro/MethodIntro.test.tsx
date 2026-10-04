@@ -12,8 +12,8 @@ describe('the opener', () => {
   });
 
   it('shows an outcome for every one the copy carries, so a fourth needs no change here', () => {
-    expect(screen.getAllByTestId(KEY_POINT_TEST_IDS.outcome)).toHaveLength(
-      Object.keys(METHOD_COPY.goal.outcomes).length
+    expect(screen.getAllByTestId(KEY_POINT_TEST_IDS.point)).toHaveLength(
+      Object.keys(METHOD_COPY.purpose.outcomes).length
     );
   });
 

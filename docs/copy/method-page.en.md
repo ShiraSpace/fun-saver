@@ -31,32 +31,32 @@
 
 ## Opener — one block, divider in the middle
 
-`key: method.goal.eyebrow`
+`key: method.purpose.eyebrow`
 What we're trying to achieve
 
-`key: method.goal.title`
+`key: method.purpose.title`
 ## Giving him practice at choosing
 
-`key: method.goal.body` · `text`
+`key: method.purpose.body` · `text`
 The goal isn't that he saves. The goal is that he gets **weekly practice at
 delaying gratification** — choosing between "now" and "later" — and that he has
 a real reason to believe "later" actually arrives.
 
-`key: method.goal.outcome.spending`
+`key: method.purpose.outcome.spending`
 🛍️ **Feeling a limit** — money that runs out, and is gone.
 
-`key: method.goal.outcome.savings`
+`key: method.purpose.outcome.savings`
 🐷 **Practising the wait — and seeing it pay off.** Money left in savings grows
 on its own.
 
-`key: method.goal.outcome.savings.note`
+`key: method.purpose.outcome.savings.note`
 That's how the first understanding of interest arrives: not from an
 explanation, but from seeing a few more coins every day.
 
-`key: method.goal.outcome.goodDeeds`
+`key: method.purpose.outcome.goodDeeds`
 💛 **Discovering that giving feels good** — with money that's his.
 
-`key: method.goal.derived`
+`key: method.purpose.derived`
 And along the way he'll learn **money sense, saving and interest**. "No" stops
 being the end of the story: things we won't buy him, he can buy himself.
 
