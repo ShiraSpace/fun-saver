@@ -18,15 +18,18 @@ export function ChildAccount({ account }: ChildAccountProps): JSX.Element {
   const savings = walletNamed(account.wallets, 'savings');
   const spending = walletNamed(account.wallets, 'spending');
   const goodDeeds = walletNamed(account.wallets, 'goodDeeds');
+  const savingsCard = savings && <ChildSavings savings={savings} />;
+  const spendingCard = spending && <ChildWallet wallet={spending} />;
+  const goodDeedsCard = goodDeeds && <ChildWallet wallet={goodDeeds} />;
 
   return (
     <Screen align="top">
       <Column data-testid={CHILD_ACCOUNT_TEST_IDS.screen}>
         <Header title={account.name} account={account} />
         <Wallets data-testid={CHILD_ACCOUNT_TEST_IDS.wallets}>
-          {savings && <ChildSavings savings={savings} />}
-          {spending && <ChildWallet wallet={spending} />}
-          {goodDeeds && <ChildWallet wallet={goodDeeds} />}
+          {savingsCard}
+          {spendingCard}
+          {goodDeedsCard}
         </Wallets>
       </Column>
     </Screen>

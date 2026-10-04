@@ -93,9 +93,9 @@ describe('ViewModeSwitch', () => {
     });
 
     it('saves child view on the current account', () => {
-      const [url, options] = (global.fetch as jest.Mock).mock.calls[0];
+      const [url, options] = jest.mocked(global.fetch).mock.calls[0];
 
-      expect([url, JSON.parse(options.body)]).toEqual([
+      expect([url, JSON.parse(String(options?.body))]).toEqual([
         `/api/accounts/${mockAccountSummary.id}/view-mode`,
         { viewMode: APP_VIEW_MODE.child },
       ]);
@@ -157,9 +157,9 @@ describe('ViewModeSwitch', () => {
       });
 
       it('saves parent view on the current account', () => {
-        const [, options] = (global.fetch as jest.Mock).mock.calls[0];
+        const [, options] = jest.mocked(global.fetch).mock.calls[0];
 
-        expect(JSON.parse(options.body)).toEqual({
+        expect(JSON.parse(String(options?.body))).toEqual({
           viewMode: APP_VIEW_MODE.parent,
         });
       });

@@ -12,9 +12,21 @@ import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { AccountsProvider } from './accounts-context';
 import { useShownViewMode } from './use-shown-view-mode';
 
+interface AccountForViewModeProps {
+  account: AccountSummary;
+}
+
 interface HomeProps {
   accounts: AccountSummary[];
   initialAccountId: string;
+}
+
+function AccountForViewMode({ account }: AccountForViewModeProps): JSX.Element {
+  if (isChildView(account)) {
+    return <ChildAccount account={account} />;
+  }
+
+  return <Account account={account} />;
 }
 
 export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
@@ -32,11 +44,7 @@ export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
         <AccountsProvider
           value={{ accounts, currentAccount, switchAccount, viewModeChoice }}
         >
-          {isChildView(currentAccount) ? (
-            <ChildAccount account={currentAccount} />
-          ) : (
-            <Account account={currentAccount} />
-          )}
+          <AccountForViewMode account={currentAccount} />
         </AccountsProvider>
       )}
       {showsEmptyState && <EmptyState onCreate={startCreatingAccount} />}

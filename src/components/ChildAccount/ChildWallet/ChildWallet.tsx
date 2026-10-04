@@ -12,14 +12,17 @@ interface ChildWalletProps {
 }
 
 export function ChildWallet({ wallet }: ChildWalletProps): JSX.Element {
+  const label = WALLET_LABEL[wallet.name];
+  const note = CHILD_WALLET_COPY[wallet.name];
+
   return (
     <Card data-testid={CHILD_WALLET_TEST_IDS.card}>
       <Icon walletName={wallet.name} aria-hidden="true">
         {wallet.icon}
       </Icon>
       <Name>
-        {WALLET_LABEL[wallet.name]}
-        <Note>{CHILD_WALLET_COPY[wallet.name]}</Note>
+        {label}
+        <Note>{note}</Note>
       </Name>
       <Amount>
         <Money

@@ -27,8 +27,8 @@ function accountViewModeEndpoint(accountId: string): string {
   return `/api/accounts/${accountId}/view-mode`;
 }
 
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+function wait(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 function switchFinishesSliding(): Promise<void> {
@@ -41,8 +41,8 @@ function menuFinishesFading(): Promise<void> {
 
 function saveSucceeds(saved: Promise<unknown>): Promise<boolean> {
   return saved.then(
-    () => true,
-    () => false
+    (): boolean => true,
+    (): boolean => false
   );
 }
 
