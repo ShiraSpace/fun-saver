@@ -4,13 +4,13 @@ import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
+import { REQUEST_STATE } from '@/lib/request-state';
 import { Money } from '@/components/Money';
 import { WalletPicker } from '../WalletPicker';
 import { AmountKeypadWithSubmit } from '../AmountKeypadWithSubmit';
 import { useWithdrawalForm } from '../use-withdrawal-form';
 import { DrawerTitle } from '../drawer-parts';
 import { WithdrawalAlert } from './WithdrawalAlert';
-import { REQUEST_STATE } from '@/lib/request-state';
 import { withdrawalCopy } from './withdrawal-copy';
 import { WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { AmountValue } from './WithdrawalForm.styles';
@@ -27,6 +27,7 @@ export function WithdrawalForm({
   const wallets = account.wallets;
   const form = useWithdrawalForm(account.id, wallets, onClose);
   const { title, submitLabel } = withdrawalCopy(form);
+  const hasSaveFailed = form.requestState === REQUEST_STATE.failed;
 
   return (
     <>
@@ -44,7 +45,7 @@ export function WithdrawalForm({
       />
       <WithdrawalAlert
         isOverdraft={form.isOverdraft}
-        hasError={form.requestState === REQUEST_STATE.failed}
+        hasError={hasSaveFailed}
         balanceShekels={agorotToShekels(form.selectedBalance)}
       />
       <AmountKeypadWithSubmit

@@ -24,17 +24,18 @@ export function DepositForm({
   onClose,
 }: DepositFormProps): JSX.Element {
   const form = useDepositForm(account.id, onClose);
-  const submitLabel =
-    form.requestState === REQUEST_STATE.pending
-      ? TRANSACTION_DRAWER_COPY.submitting
-      : `${TRANSACTION_DRAWER_COPY.submit} ${MONEY_COPY.currencySign}${form.amountShekels}`;
+  const isSaving = form.requestState === REQUEST_STATE.pending;
+  const hasSaveFailed = form.requestState === REQUEST_STATE.failed;
+  const submitLabel = isSaving
+    ? TRANSACTION_DRAWER_COPY.submitting
+    : `${TRANSACTION_DRAWER_COPY.submit} ${MONEY_COPY.currencySign}${form.amountShekels}`;
 
   return (
     <>
       <DrawerTitle>{TRANSACTION_DRAWER_COPY.title}</DrawerTitle>
       <DepositAmount amountShekels={form.amountShekels} />
       <DepositSplitPreview split={form.split} />
-      {form.requestState === REQUEST_STATE.failed && (
+      {hasSaveFailed && (
         <DrawerError data-testid={TRANSACTION_DRAWER_TEST_IDS.error}>
           {TRANSACTION_DRAWER_COPY.error}
         </DrawerError>

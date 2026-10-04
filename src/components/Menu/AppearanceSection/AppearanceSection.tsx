@@ -13,6 +13,8 @@ import { Row, Swatch, SaveError } from './AppearanceSection.styles';
 
 export function AppearanceSection(): JSX.Element {
   const { activeThemeId, chooseTheme, requestState } = useAccountTheme();
+  const isSaving = requestState === REQUEST_STATE.pending;
+  const hasSaveFailed = requestState === REQUEST_STATE.failed;
 
   const themeSelectorComponents = APPEARANCE_SECTION_COPY.themes.map(
     ({ id, label }) => (
@@ -24,7 +26,7 @@ export function AppearanceSection(): JSX.Element {
         background={getThemeTokens(id).gradients.screen}
         data-testid={APPEARANCE_SECTION_TEST_IDS.swatch}
         data-selected={id === activeThemeId}
-        disabled={requestState === REQUEST_STATE.pending}
+        disabled={isSaving}
         onClick={(): void => chooseTheme(id)}
       />
     )
@@ -34,7 +36,7 @@ export function AppearanceSection(): JSX.Element {
     <section data-testid={APPEARANCE_SECTION_TEST_IDS.section}>
       <MenuSectionTitle>{APPEARANCE_SECTION_COPY.label}</MenuSectionTitle>
       <Row>{themeSelectorComponents}</Row>
-      {requestState === REQUEST_STATE.failed && (
+      {hasSaveFailed && (
         <SaveError data-testid={APPEARANCE_SECTION_TEST_IDS.saveError}>
           {APPEARANCE_SECTION_COPY.saveError}
         </SaveError>
