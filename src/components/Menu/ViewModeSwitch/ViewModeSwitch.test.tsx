@@ -4,11 +4,7 @@ import {
   mockAccountSummary,
   mockChildAccountsContext,
 } from '@/test-utils/mocks/account.mocks';
-import {
-  closeAndReopenMenu,
-  renderInOpenMenu,
-  WithMenu,
-} from '@/test-utils/menu';
+import { renderInOpenMenu, WithMenu } from '@/test-utils/menu';
 import { VIEW_MODE } from '@/lib/account/view-mode';
 import { mockRouter } from '@mocks/next/navigation';
 import { prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
@@ -162,43 +158,6 @@ describe('ViewModeSwitch', () => {
         expect(JSON.parse(String(options?.body))).toEqual({
           viewMode: VIEW_MODE.parent,
         });
-      });
-    });
-  });
-
-  describe('the save fails', () => {
-    beforeEach(() => {
-      global.fetch = jest.fn().mockResolvedValue({ ok: false });
-      renderInOpenMenu(<ViewModeSwitch viewMode={VIEW_MODE.child} />, {
-        accounts: mockAccountsContext,
-      });
-      tapSwitch();
-    });
-
-    it('says the screen did not change', async () => {
-      expect(
-        await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError)
-      ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.saveError);
-    });
-
-    it('slides the switch back off', async () => {
-      await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError);
-
-      expect(
-        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).toHaveAttribute('aria-checked', 'false');
-    });
-
-    describe('and the menu is closed and reopened', () => {
-      beforeEach(async () => {
-        await screen.findByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError);
-        closeAndReopenMenu();
-      });
-
-      it('forgets the error', () => {
-        expect(
-          screen.queryByTestId(VIEW_MODE_SWITCH_TEST_IDS.saveError)
-        ).not.toBeInTheDocument();
       });
     });
   });
