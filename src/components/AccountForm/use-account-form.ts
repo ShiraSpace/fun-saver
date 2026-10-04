@@ -1,4 +1,5 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from 'react';
+import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 
 export interface AccountFormValues {
   name: string;
@@ -16,7 +17,7 @@ interface AccountFormState {
   setName: Dispatch<SetStateAction<string>>;
   selectedAvatarId: string | null;
   setSelectedAvatarId: Dispatch<SetStateAction<string | null>>;
-  saveFailed: boolean;
+  requestState: RequestState;
   canSubmit: boolean;
   handleSubmit: (event: FormEvent<HTMLFormElement>) => Promise<void>;
 }
@@ -28,7 +29,9 @@ export function useAccountForm({
 }: AccountFormOptions): AccountFormState {
   const [name, setName] = useState(initialName);
   const [selectedAvatarId, setSelectedAvatarId] = useState(initialAvatarId);
-  const [saveFailed, setSaveFailed] = useState(false);
+  const [requestState, setRequestState] = useState<RequestState>(
+    REQUEST_STATE.idle
+  );
 
   const handleSubmit = async (
     event: FormEvent<HTMLFormElement>
@@ -38,22 +41,27 @@ export function useAccountForm({
       return;
     }
 
-    setSaveFailed(false);
+    setRequestState(REQUEST_STATE.pending);
 
     try {
       await onSubmit({ name: name.trim(), avatarId: selectedAvatarId });
     } catch {
-      setSaveFailed(true);
+      setRequestState(REQUEST_STATE.failed);
     }
   };
+
+  const canSubmit =
+    name.trim() !== '' &&
+    selectedAvatarId !== null &&
+    requestState !== REQUEST_STATE.pending;
 
   return {
     name,
     setName,
     selectedAvatarId,
     setSelectedAvatarId,
-    saveFailed,
-    canSubmit: name.trim() !== '' && selectedAvatarId !== null,
+    requestState,
+    canSubmit,
     handleSubmit,
   };
 }

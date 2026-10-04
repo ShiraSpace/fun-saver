@@ -1,4 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
+import { REQUEST_STATE } from '@/lib/request-state';
 import { useWithdrawalForm } from './use-withdrawal-form';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { mockRouter } from '@mocks/next/navigation';
@@ -98,7 +99,9 @@ describe('useWithdrawalForm', () => {
     act(() => result.current.onDigit(5));
     act(() => result.current.onSubmit());
 
-    await waitFor(() => expect(result.current.hasError).toBe(true));
+    await waitFor(() =>
+      expect(result.current.requestState).toBe(REQUEST_STATE.failed)
+    );
     expect(mockOnClose).not.toHaveBeenCalled();
     expect(result.current.amountShekels).toBe(5);
   });

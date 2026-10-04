@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { pushDigit, popDigit } from './amount-keypad';
 
 export interface AmountEntry {
   amountShekels: number;
-  isSubmitting: boolean;
-  hasError: boolean;
+  requestState: RequestState;
   onDigit: (digit: number) => void;
   onClear: () => void;
   onBackspace: () => void;
@@ -18,27 +18,25 @@ export function useAmountEntry(
 ): AmountEntry {
   const router = useRouter();
   const [amountShekels, setAmountShekels] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [requestState, setRequestState] = useState<RequestState>(
+    REQUEST_STATE.idle
+  );
 
   const submit = async (): Promise<void> => {
-    setIsSubmitting(true);
-    setHasError(false);
+    setRequestState(REQUEST_STATE.pending);
 
     try {
       await saveTransaction(amountShekels);
       router.refresh();
       onClose();
     } catch {
-      setHasError(true);
-      setIsSubmitting(false);
+      setRequestState(REQUEST_STATE.failed);
     }
   };
 
   return {
     amountShekels,
-    isSubmitting,
-    hasError,
+    requestState,
     onDigit: (digit) =>
       setAmountShekels((current) => pushDigit(current, digit)),
     onClear: () => setAmountShekels(0),

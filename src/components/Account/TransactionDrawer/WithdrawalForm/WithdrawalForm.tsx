@@ -10,6 +10,7 @@ import { AmountKeypadWithSubmit } from '../AmountKeypadWithSubmit';
 import { useWithdrawalForm } from '../use-withdrawal-form';
 import { DrawerTitle } from '../drawer-parts';
 import { WithdrawalAlert } from './WithdrawalAlert';
+import { REQUEST_STATE } from '@/lib/request-state';
 import { withdrawalCopy } from './withdrawal-copy';
 import { WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { AmountValue } from './WithdrawalForm.styles';
@@ -43,7 +44,7 @@ export function WithdrawalForm({
       />
       <WithdrawalAlert
         isOverdraft={form.isOverdraft}
-        hasError={form.hasError}
+        hasError={form.requestState === REQUEST_STATE.failed}
         balanceShekels={agorotToShekels(form.selectedBalance)}
       />
       <AmountKeypadWithSubmit

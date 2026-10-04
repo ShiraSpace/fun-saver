@@ -2,6 +2,7 @@
 
 import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
+import { REQUEST_STATE } from '@/lib/request-state';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { DepositAmount } from '../DepositAmount';
 import { DepositSplitPreview } from '../DepositSplitPreview';
@@ -23,16 +24,17 @@ export function DepositForm({
   onClose,
 }: DepositFormProps): JSX.Element {
   const form = useDepositForm(account.id, onClose);
-  const submitLabel = form.isSubmitting
-    ? TRANSACTION_DRAWER_COPY.submitting
-    : `${TRANSACTION_DRAWER_COPY.submit} ${MONEY_COPY.currencySign}${form.amountShekels}`;
+  const submitLabel =
+    form.requestState === REQUEST_STATE.pending
+      ? TRANSACTION_DRAWER_COPY.submitting
+      : `${TRANSACTION_DRAWER_COPY.submit} ${MONEY_COPY.currencySign}${form.amountShekels}`;
 
   return (
     <>
       <DrawerTitle>{TRANSACTION_DRAWER_COPY.title}</DrawerTitle>
       <DepositAmount amountShekels={form.amountShekels} />
       <DepositSplitPreview split={form.split} />
-      {form.hasError && (
+      {form.requestState === REQUEST_STATE.failed && (
         <DrawerError data-testid={TRANSACTION_DRAWER_TEST_IDS.error}>
           {TRANSACTION_DRAWER_COPY.error}
         </DrawerError>

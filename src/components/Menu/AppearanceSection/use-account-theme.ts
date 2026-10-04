@@ -4,12 +4,13 @@ import { useAccounts } from '@/components/Home/accounts-context';
 import { useSetThemeId, useThemeId } from '@/theme/AppThemeProvider';
 import type { ThemeId } from '@/theme/registry';
 import { fetchJson } from '@/lib/fetch-json';
+import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { useOnMenuClose } from '../use-menu-state';
 
 interface AccountTheme {
   activeThemeId: ThemeId;
   chooseTheme: (themeId: ThemeId) => void;
-  saveFailed: boolean;
+  requestState: RequestState;
 }
 
 function accountThemeEndpoint(accountId: string): string {
@@ -21,15 +22,21 @@ export function useAccountTheme(): AccountTheme {
   const applyTheme = useSetThemeId();
   const { currentAccount } = useAccounts();
   const router = useRouter();
-  const [saveFailed, setSaveFailed] = useState(false);
+  const [requestState, setRequestState] = useState<RequestState>(
+    REQUEST_STATE.idle
+  );
 
-  useOnMenuClose((): void => setSaveFailed(false));
+  useOnMenuClose((): void =>
+    setRequestState((current) =>
+      current === REQUEST_STATE.failed ? REQUEST_STATE.idle : current
+    )
+  );
 
   const chooseTheme = (themeId: ThemeId): void => {
     const themeBeforeChange = activeThemeId;
 
     applyTheme(themeId);
-    setSaveFailed(false);
+    setRequestState(REQUEST_STATE.pending);
 
     void rememberOnAccount();
 
@@ -41,13 +48,14 @@ export function useAccountTheme(): AccountTheme {
           body: { themeId },
         });
 
+        setRequestState(REQUEST_STATE.idle);
         router.refresh();
       } catch {
         applyTheme(themeBeforeChange);
-        setSaveFailed(true);
+        setRequestState(REQUEST_STATE.failed);
       }
     }
   };
 
-  return { activeThemeId, chooseTheme, saveFailed };
+  return { activeThemeId, chooseTheme, requestState };
 }

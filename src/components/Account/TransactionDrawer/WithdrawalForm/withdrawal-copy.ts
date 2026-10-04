@@ -1,9 +1,10 @@
+import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { WITHDRAWAL_FORM_COPY } from './constants';
 
 interface WithdrawalCopyInput {
   isDonation: boolean;
-  isSubmitting: boolean;
+  requestState: RequestState;
   amountShekels: number;
 }
 
@@ -14,7 +15,7 @@ interface WithdrawalCopy {
 
 export function withdrawalCopy({
   isDonation,
-  isSubmitting,
+  requestState,
   amountShekels,
 }: WithdrawalCopyInput): WithdrawalCopy {
   const submitVerb = isDonation
@@ -25,8 +26,9 @@ export function withdrawalCopy({
     title: isDonation
       ? WITHDRAWAL_FORM_COPY.donationTitle
       : WITHDRAWAL_FORM_COPY.title,
-    submitLabel: isSubmitting
-      ? WITHDRAWAL_FORM_COPY.submitting
-      : `${submitVerb} ${MONEY_COPY.currencySign}${amountShekels}`,
+    submitLabel:
+      requestState === REQUEST_STATE.pending
+        ? WITHDRAWAL_FORM_COPY.submitting
+        : `${submitVerb} ${MONEY_COPY.currencySign}${amountShekels}`,
   };
 }

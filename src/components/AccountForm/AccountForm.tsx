@@ -1,5 +1,6 @@
 'use client';
 
+import { REQUEST_STATE } from '@/lib/request-state';
 import { JSX, ReactNode } from 'react';
 import { Screen } from '@/components/Screen';
 import { AvatarPicker } from '@/components/AvatarPicker';
@@ -53,7 +54,7 @@ export function AccountForm({
         <SaveAccountButton
           submitLabel={submitLabel}
           canSubmit={form.canSubmit}
-          saveFailed={form.saveFailed}
+          saveFailed={form.requestState === REQUEST_STATE.failed}
         />
       </Form>
     </Screen>

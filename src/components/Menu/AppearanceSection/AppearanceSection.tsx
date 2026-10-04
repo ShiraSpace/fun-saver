@@ -2,6 +2,7 @@
 
 import { JSX } from 'react';
 import { getThemeTokens } from '@/theme/registry';
+import { REQUEST_STATE } from '@/lib/request-state';
 import { MenuSectionTitle } from '../MenuSectionTitle';
 import { useAccountTheme } from './use-account-theme';
 import {
@@ -11,7 +12,7 @@ import {
 import { Row, Swatch, SaveError } from './AppearanceSection.styles';
 
 export function AppearanceSection(): JSX.Element {
-  const { activeThemeId, chooseTheme, saveFailed } = useAccountTheme();
+  const { activeThemeId, chooseTheme, requestState } = useAccountTheme();
 
   const themeSelectorComponents = APPEARANCE_SECTION_COPY.themes.map(
     ({ id, label }) => (
@@ -23,6 +24,7 @@ export function AppearanceSection(): JSX.Element {
         background={getThemeTokens(id).gradients.screen}
         data-testid={APPEARANCE_SECTION_TEST_IDS.swatch}
         data-selected={id === activeThemeId}
+        disabled={requestState === REQUEST_STATE.pending}
         onClick={(): void => chooseTheme(id)}
       />
     )
@@ -32,7 +34,7 @@ export function AppearanceSection(): JSX.Element {
     <section data-testid={APPEARANCE_SECTION_TEST_IDS.section}>
       <MenuSectionTitle>{APPEARANCE_SECTION_COPY.label}</MenuSectionTitle>
       <Row>{themeSelectorComponents}</Row>
-      {saveFailed && (
+      {requestState === REQUEST_STATE.failed && (
         <SaveError data-testid={APPEARANCE_SECTION_TEST_IDS.saveError}>
           {APPEARANCE_SECTION_COPY.saveError}
         </SaveError>
