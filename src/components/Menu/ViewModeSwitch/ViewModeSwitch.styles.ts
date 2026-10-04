@@ -18,6 +18,10 @@ export const Row = styled.button`
   color: ${({ theme }): string => theme.colors.textStrong};
   cursor: pointer;
 
+  &:disabled {
+    cursor: default;
+  }
+
   &[data-compact='true'] {
     width: auto;
     min-height: 48px;
