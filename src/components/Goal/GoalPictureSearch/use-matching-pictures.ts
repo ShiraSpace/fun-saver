@@ -35,10 +35,8 @@ export function useMatchingPictures(query: string): MatchingPictures {
     }
 
     void loadPicturesByTerm()
-      .then((justLoadedPicturesByTerm) => {
-        setPicturesByTerm(justLoadedPicturesByTerm);
-        setRequestState(REQUEST_STATE.idle);
-      })
+      .then(setPicturesByTerm)
+      .then(() => setRequestState(REQUEST_STATE.idle))
       .catch(() => setRequestState(REQUEST_STATE.failed));
   }, []);
 
