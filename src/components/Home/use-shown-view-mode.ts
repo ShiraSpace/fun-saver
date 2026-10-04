@@ -5,7 +5,8 @@ import type { ViewModeChoice } from './accounts-context';
 
 interface ChosenViewMode {
   viewMode: ViewMode;
-  accountId: string;
+  chosenOn: AccountSummary;
+  isHeld: boolean;
 }
 
 interface ShownViewMode {
@@ -13,11 +14,19 @@ interface ShownViewMode {
   viewModeChoice: ViewModeChoice;
 }
 
+function isChosenFor(chosen: ChosenViewMode, account: AccountSummary): boolean {
+  if (chosen.isHeld) {
+    return chosen.chosenOn.id === account.id;
+  }
+
+  return chosen.chosenOn === account;
+}
+
 function withChosenViewMode(
   account: AccountSummary | undefined,
   chosen: ChosenViewMode | undefined
 ): AccountSummary | undefined {
-  if (!account || chosen?.accountId !== account.id) {
+  if (!account || !chosen || !isChosenFor(chosen, account)) {
     return account;
   }
 
@@ -29,14 +38,17 @@ export function useShownViewMode(
 ): ShownViewMode {
   const [chosen, setChosen] = useState<ChosenViewMode>();
 
-  const showViewMode = (viewMode: ViewMode): void => {
+  const choose = (viewMode: ViewMode, isHeld: boolean): void => {
     if (currentAccount) {
-      setChosen({ viewMode, accountId: currentAccount.id });
+      setChosen({ viewMode, chosenOn: currentAccount, isHeld });
     }
   };
 
   return {
     shownAccount: withChosenViewMode(currentAccount, chosen),
-    viewModeChoice: { showViewMode },
+    viewModeChoice: {
+      showViewMode: (viewMode: ViewMode): void => choose(viewMode, false),
+      holdViewMode: (viewMode: ViewMode): void => choose(viewMode, true),
+    },
   };
 }

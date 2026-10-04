@@ -15,8 +15,11 @@ export const [MenuProvider, useMenu] =
 
 function useStepsWhenClosed(isOpen: boolean): (step: () => void) => void {
   const stepsRef = useRef<Array<() => void>>([]);
+  const isOpenRef = useRef(isOpen);
 
   useEffect(() => {
+    isOpenRef.current = isOpen;
+
     if (isOpen) {
       return;
     }
@@ -27,6 +30,11 @@ function useStepsWhenClosed(isOpen: boolean): (step: () => void) => void {
   }, [isOpen]);
 
   return useCallback((step: () => void): void => {
+    if (!isOpenRef.current) {
+      step();
+      return;
+    }
+
     stepsRef.current.push(step);
   }, []);
 }
