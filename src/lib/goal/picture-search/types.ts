@@ -6,3 +6,5 @@ export interface UnicodeWords {
   default?: string[];
   tts?: string[];
 }
+
+export type PicturesByTerm = Map<string, Set<string>>;

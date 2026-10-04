@@ -385,8 +385,8 @@ Its callers today are `use-add-transaction`, `use-update-account`,
   devDependencies. Unicode License v3. Checked (each finds these among others): אופניים →
   🚲🚴🚵, שמלה → 👗, קורקינט → 🛴, גיטרה → 🎸, אוזניות → 🎧, כלב → 🐶🐕.
 - **Generated, not shipped with its sources.**
-  `src/lib/goal/picture-search/download-picture-words.ts`, run with
-  `npm run download-picture-words`, reads the three devDependencies (no network) and
+  `src/lib/goal/picture-search/generate-picture-words.ts`, run with
+  `npm run generate-picture-words`, reads the three devDependencies (no network) and
   writes `picture-words.he.json` beside it, committed with the licence in
   `picture-words.LICENSE` and listed in `.prettierignore`. The app imports only
   the JSON, so no devDependency reaches the bundle. `tsconfig` includes

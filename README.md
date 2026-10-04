@@ -72,7 +72,7 @@ FUNSAVER_NOW=2026-01-01 npm run dev
 | `npm run db:migrate`             | Apply `src/db/schema.sql` to the Neon `main` branch (uses `DATABASE_URL`)                              |
 | `npm run db:migrate-dev`         | Apply the same schema to the Neon `dev` branch (uses `DEV_DATABASE_URL`)                               |
 | `npm run db:migrate-test`        | Apply the same schema to the Neon `test` branch (uses `TEST_DATABASE_URL`)                             |
-| `npm run download-picture-words` | After upgrading the Unicode emoji packages: rebuild the Hebrew words a child searches goal pictures by |
+| `npm run generate-picture-words` | After upgrading the Unicode emoji packages: rebuild the Hebrew words a child searches goal pictures by |
 
 ---
 

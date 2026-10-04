@@ -11,11 +11,9 @@ import {
   WORD_EDGE_PUNCTUATION,
   WORD_SEPARATORS,
 } from './constants';
-import type { PictureWords } from './types';
+import type { PicturesByTerm, PictureWords } from './types';
 
-export type PicturesByTerm = Map<string, Set<string>>;
-
-function searchableWords(text: string): string[] {
+function wordsIn(text: string): string[] {
   return text
     .replace(NIQQUD, '')
     .replace(APOSTROPHES, GERESH)
@@ -26,7 +24,7 @@ function searchableWords(text: string): string[] {
 }
 
 function searchTerms(text: string): string[] {
-  const words = searchableWords(text);
+  const words = wordsIn(text);
   return words.length > 1
     ? [words.join(PHRASE_WORD_SEPARATOR), ...words]
     : words;
@@ -34,8 +32,8 @@ function searchTerms(text: string): string[] {
 
 export function indexPictureWords(pictureWords: PictureWords): PicturesByTerm {
   const picturesByTerm: PicturesByTerm = new Map();
-  for (const [picture, annotations] of Object.entries(pictureWords)) {
-    for (const term of annotations.flatMap(searchTerms)) {
+  for (const [picture, words] of Object.entries(pictureWords)) {
+    for (const term of words.flatMap(searchTerms)) {
       picturesByTerm.set(
         term,
         (picturesByTerm.get(term) ?? new Set()).add(picture)
@@ -45,13 +43,13 @@ export function indexPictureWords(pictureWords: PictureWords): PicturesByTerm {
   return picturesByTerm;
 }
 
-function withoutPrefix(typedWord: string, prefixLength: number): string {
+function withoutPrefix(typedWord: string, prefixLength: number): string[] {
   const prefix = typedWord.slice(0, prefixLength);
   const rest = typedWord.slice(prefixLength);
   const isPrefix = [...prefix].every((letter) =>
     PREFIX_LETTERS.includes(letter)
   );
-  return isPrefix && rest.length >= MIN_LETTERS_AFTER_PREFIX ? rest : '';
+  return isPrefix && rest.length >= MIN_LETTERS_AFTER_PREFIX ? [rest] : [];
 }
 
 function wordsToLookUp(typedWord: string): string[] {
@@ -61,7 +59,7 @@ function wordsToLookUp(typedWord: string): string[] {
   );
   return [
     typedWord,
-    ...prefixLengths.map((prefixLength) =>
+    ...prefixLengths.flatMap((prefixLength) =>
       withoutPrefix(typedWord, prefixLength)
     ),
   ];

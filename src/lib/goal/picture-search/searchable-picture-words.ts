@@ -27,9 +27,9 @@ function hebrewWords(
   picture: string,
   unicodeWordsByEmoji: Record<string, UnicodeWords>
 ): string[] {
-  const { default: keywords = [], tts: spokenName = [] } =
+  const { default: keywords = [], tts: spokenNames = [] } =
     unicodeWordsByEmoji[picture.replace(VARIATION_SELECTOR, '')] ?? {};
-  return [...new Set([...keywords, ...spokenName])];
+  return [...new Set([...keywords, ...spokenNames])];
 }
 
 export function searchablePictureWords(

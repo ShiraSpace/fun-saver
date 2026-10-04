@@ -32,7 +32,7 @@ function savePictureWords(pictureWords: PictureWords): void {
   );
 }
 
-function downloadPictureWords(): void {
+function generatePictureWords(): void {
   const pictureWords = searchablePictureWords(unicodeEmoji, {
     ...unicodeHebrewWords.annotations.annotations,
     ...unicodeHebrewCombinedWords.annotationsDerived.annotations,
@@ -41,4 +41,4 @@ function downloadPictureWords(): void {
   savePictureWords(pictureWords);
 }
 
-downloadPictureWords();
+generatePictureWords();

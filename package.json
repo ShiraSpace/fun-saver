@@ -17,7 +17,7 @@
     "db:migrate": "tsx --env-file=.env.local src/db/run-migration.ts",
     "db:migrate-dev": "tsx --env-file=.env.local src/db/run-migration.ts --dev",
     "db:migrate-test": "tsx --env-file=.env.local src/db/run-migration.ts --test",
-    "download-picture-words": "tsx src/lib/goal/picture-search/download-picture-words.ts"
+    "generate-picture-words": "tsx src/lib/goal/picture-search/generate-picture-words.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
