@@ -5,6 +5,7 @@ import { signedInUser } from '@/auth';
 import { API_ERRORS } from '@/app/api/constants';
 import { VIEW_MODE } from '@/lib/account/view-mode';
 import { getStore } from '@/db';
+import { createMockAccountUser } from '@/test-utils/mocks/account.mocks';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
@@ -77,6 +78,43 @@ describe('PUT /api/accounts/[id]/view-mode', () => {
       expect((await response.json()).error).toBe(
         API_ERRORS.invalidViewModeRequest
       );
+    });
+  });
+
+  describe('a co-parent who may only view the account', () => {
+    beforeEach(() => {
+      jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
+      jest.spyOn(getStore(), 'getAccountUser').mockResolvedValue(
+        createMockAccountUser({
+          accountId,
+          userId: mockCoParent.id,
+          role: 'viewer',
+        })
+      );
+    });
+
+    it('saves child view on the account', async () => {
+      await putViewMode(accountId, VIEW_MODE.child);
+
+      expect((await getStore().getAccount(accountId))?.viewMode).toBe(
+        VIEW_MODE.child
+      );
+    });
+
+    it('takes the account back to the parent screen', async () => {
+      await getStore().setAccountViewMode(accountId, VIEW_MODE.child);
+
+      await putViewMode(accountId, VIEW_MODE.parent);
+
+      expect((await getStore().getAccount(accountId))?.viewMode).toBe(
+        VIEW_MODE.parent
+      );
+    });
+
+    it('answers with the updated account', async () => {
+      const response = await putViewMode(accountId, VIEW_MODE.child);
+
+      expect((await response.json()).viewMode).toBe(VIEW_MODE.child);
     });
   });
 
