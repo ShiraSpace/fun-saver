@@ -41,6 +41,11 @@ reached, and ends when the child withdraws the money to buy it.
 - **Goals on spending or good deeds.**
 - **More than one active goal per child.**
 - **A history screen.** History is stored, not shown.
+- **Child mode.** The goal is not shown in child mode (`ChildAccount`,
+  `ChildMenuContent`), and the child-mode spec's goal lines (the picture in
+  the child savings card, tiles counted from the goal's start, its withdrawal
+  note) are left as they are. A separate feature after this one brings the
+  goal to child mode. Every screen below is the parent view.
 - **Hiding set and cancel from viewers.** The page does not know the signed-in
   user's role today; the menu's edit button is shown to viewers too and the
   server refuses them. Goals follow the same rule.
@@ -55,7 +60,7 @@ reached, and ends when the child withdraws the money to buy it.
 | Question | Decision |
 |---|---|
 | Where the goal shows on home | One line at the bottom of the savings `WalletCard` (mockup 4a), `GoalProgress`. Not a separate card. |
-| Progress text | Amounts only, `₪85 / ₪300` and `מתוך ₪300`. Never a percentage. |
+| Progress text | Amounts only, `₪85 / ₪300` and `מתוך ₪300`. Never a percentage. The saved amount, and the `עוד ₪…` still to go, use `MONEY_ROUNDING.floorToShekels`, so ₪299.50 shows `₪299 / ₪300` while savings is still locked; the goal amount is whole shekels, so the floored balance reaches it exactly when `goalReached` does. |
 | Progress bar at ₪0 | Drawn with a minimum visible sliver, never empty (endowed progress, backlog Roadmap § 1). |
 | When the goal is reached | Celebration, savings unlocks, and the **next savings withdrawal of any size** ends the goal as `completed`. The drawer says so before the child confirms (5c). A smaller withdrawal cannot leave the goal active: savings would fall below it and lock again with the money already spent. |
 | Savings with no active goal | Unlocked, as today. The rule is "locked until the goal", so with no goal there is nothing to wait for. |
@@ -132,7 +137,8 @@ no `;` inside a statement.
   and Vercel deployments, previews included, use `DATABASE_URL`. From PR 2
   every page load and every savings withdrawal reads `goals`, so PR 2's first
   preview would fail without it. The table is additive, so creating it early
-  is harmless.
+  is harmless. The replay also adds child mode's `accounts.view_mode` if
+  production does not have it yet; check before running.
 
 ### Types
 
@@ -196,7 +202,8 @@ The page receives each account's active goal alongside its wallets, as
    on that `WHERE`; the first wins, and the other either records the
    withdrawal against a goal already `cancelled` or gets `409`.
 6. **Only an account editor** can set or cancel a goal, through the same
-   `withAccountEditor` check that guards account edits and withdrawals today.
+   `withAccountEditor` check (`src/app/api/with-account-access.ts`) that
+   guards account edits and withdrawals today.
 7. **The balance the lock uses** is the one the overdraft check uses: the sum
    of the wallet's stored transactions (`balance(listTransactionsByWallet)`).
    Withdrawals do not settle interest; page loads do, and store what they
@@ -254,7 +261,9 @@ throws on import there. So no client component imports `goal-input.ts`;
   `DEFAULT_GOAL_PICTURE` (🎯).
 
 `addWithdrawal` in `src/lib/transaction/transactions.ts` gains the goal check
-when the wallet's `name` is `savings`, after the overdraft check (rule 8):
+when the wallet is the account's savings wallet
+(`walletNamed(wallets, WALLET_NAMES.savings)`), after the overdraft check
+(rule 8):
 
 - active goal, not reached → throw `SavingsLockedError`;
 - active goal, reached → `store.insertWithdrawalCompletingGoal(withdrawal,
@@ -345,8 +354,10 @@ today, so `src/app/api/responses.ts` gains `conflict(error)` beside
 
 `POST`, not `PUT`: setting is not idempotent, a repeat is refused. The goal id
 is in the cancel route's path, so a stale screen cannot cancel a goal it never
-displayed (rule 5). `withAccountEditor` passes the route's awaited params to
-its handler as a third argument, so the cancel route reads `goalId` there.
+displayed (rule 5). `withAccountAccess` passes the route's awaited params to
+its handler as a third argument (the `AccountHandler` type gains it, so
+`withAccountEditor` and `withAccountUser` both pass it through), and the
+cancel route reads `goalId` there.
 `409`, not `404`, for a goal that is not active: the conditional `UPDATE`
 cannot tell an unknown id from an ended one, the client does the same in both
 cases, and a `404` would reveal whether a foreign id exists.
@@ -458,7 +469,7 @@ rest in `src/components/Goal/<Name>/`.
 | `ViewGoal` | 2, 2b | Picture, name, bar, `₪85 נחסכו` / `מתוך ₪300`, the "עוד ₪215 ומגיעים!" line, the `🔒 שומרים עד היעד` badge and **חזרה**. Reached: the `הגעת ליעד!` heading, gold glow, full bar, "כל הכבוד! אפשר לקנות את …", badge without a lock. |
 | `GoalProgress` | 4a, 4b | One line at the bottom of the savings `WalletCard`. Tapping opens `viewingGoal`. Reached: green, `🎉 הגעת ליעד!`. |
 | `Celebration` | 2b, 4b | Confetti that falls for about 10 seconds, then fades; plays as the Decisions table says. Drawn above the cards, the celebrating savings card included, on a `LAYERS` value below `modal`, with `pointer-events: none` and `aria-hidden`. Not mounted when `motionIsReduced()`. |
-| `MenuGoal` | 3a, 3b | In `AccountControls`, between `AccountPicker` and `EditAccountButton`. The goal row with a thin bar and `₪85 / ₪300`, with a small **ביטול היעד** link under it, or **🎯 קביעת יעד חיסכון +** when there is no goal. Reads the goal from `useAccounts().currentAccount.goal`. |
+| `MenuGoal` | 3a, 3b | In `AccountControls`, right under `AccountPicker` and above `ViewModeSwitch` (🧒 מצב ילד); in the parent menu only, not in `ChildMenuContent`. The goal row with a thin bar and `₪85 / ₪300`, with a small **ביטול היעד** link under it, or **🎯 קביעת יעד חיסכון +** when there is no goal. Reads the goal from `useAccounts().currentAccount.goal`. |
 | `CancelGoal` | 3c | Dialog: picture, `לבטל את היעד „…”?`, how much was saved, that the money stays and savings unlocks. `role="alertdialog"`, `aria-modal`, labelled by its title, focus kept inside; **Escape** keeps the goal (`useEscapeKey`, which moves from `Menu/` to `src/hooks/` now that a component outside the menu uses it). Focus returns to the menu toggle on close. **משאירים את היעד** is the primary button and has focus. The red **לחיצה ארוכה לביטול היעד** fills over 2 seconds of holding and resets on release, `pointercancel` or leaving the button; it has no `onClick` and sets `touch-action: none`, so a small finger move is not a scroll. Space or Enter holds the same way: the hold starts on the first `keydown` (ignoring `event.repeat`) and stops on `keyup` or `blur`. It suppresses the long-press context menu and text selection (`contextmenu`, `user-select`, `-webkit-touch-callout`), and its label tells screen readers to hold for 2 seconds (VoiceOver and TalkBack pass double-tap-and-hold through). The fill still runs under `prefers-reduced-motion`: it is progress, not decoration. |
 
 ### Changes to existing components
@@ -564,7 +575,8 @@ Each PR merges on its own and leaves the app working.
    search, and the glossary additions. Nothing visible. **After it merges,
    migrate Neon `production`** (see Migration).
 2. **API and the server lock.** Check `goals` exists in production before
-   pushing. The set and cancel routes, `withAccountEditor`'s params, the
+   pushing. The set and cancel routes, the route params in
+   `withAccountAccess`, the
    withdrawal rules, the goal on `AccountSummary`, `fetchJson`'s `DELETE` and
    status. `docs/the-method.md` and the backlog are updated: the "not yet
    enforced" line becomes "The withdrawal-only-at-goal rule is enforced on the
