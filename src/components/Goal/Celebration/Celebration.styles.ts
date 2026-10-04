@@ -22,7 +22,7 @@ const fadeAway = keyframes`
   to { opacity: 0; }
 `;
 
-export const Falling = styled.div`
+export const CelebrationLayer = styled.div`
   position: fixed;
   inset: 0;
   z-index: ${LAYERS.celebration};

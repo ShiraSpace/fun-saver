@@ -6,7 +6,7 @@ import {
   CELEBRATION_PIECES,
   CELEBRATION_TEST_IDS,
 } from './constants';
-import { Falling, Piece } from './Celebration.styles';
+import { CelebrationLayer, Piece } from './Celebration.styles';
 
 export function Celebration(): JSX.Element {
   const pieces = CELEBRATION_PIECES.map((piece, index) => {
@@ -23,8 +23,11 @@ export function Celebration(): JSX.Element {
   });
 
   return (
-    <Falling aria-hidden data-testid={CELEBRATION_TEST_IDS.celebration}>
+    <CelebrationLayer
+      aria-hidden
+      data-testid={CELEBRATION_TEST_IDS.celebration}
+    >
       {pieces}
-    </Falling>
+    </CelebrationLayer>
   );
 }
