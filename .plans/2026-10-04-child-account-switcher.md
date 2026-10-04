@@ -1,23 +1,24 @@
 # The child menu switches between children
 
 > Status: **planned 2026-10-04**, reviewed against `origin/main` at `6db66d7`
-> the same day, not started. Mockup: `mockups/child-account-switcher.html`,
+> the same day (twice), not started. Mockup: `mockups/child-account-switcher.html`,
 > option **C** (chosen). Builds on child mode
 > (`.plans/2026-10-03-child-mode.md`, merged).
 
 ## Why
 
 On a shared phone, a child in child view can't get to a brother's or sister's
-screen. Today it takes four steps: turn child view off (which saves it on the
-account), open the account picker, pick the sibling, and turn child view on
-again for them. The child menu gets a simple "switch to…" list under
-«הכסף שלי».
+screen. Today a parent has to turn child view off, open the account picker and
+pick the sibling. Turning child view off is saved on the account, so the first
+child is left in parent view until a parent turns it back on. The child menu
+gets a simple "switch to…" list under «הכסף שלי». It changes no account's view.
 
 ## Behaviour
 
 - Under «הכסף שלי», a card titled `🔁 להחליף ל…` lists **the other accounts
   that are also in child view**, in the same order as the parent account
-  picker, leaving out the current one. Each row shows a face, a name and a `‹`.
+  picker (by name: every store returns `sortedByName`), leaving out the
+  current one. Each row shows a face, a name and a `‹`.
   It shows no money.
 - **Tapping a row** opens that account the same way the parent picker does:
   `switchAccount(id)`, then `closeMenu()`. The theme and the current-account
@@ -30,8 +31,9 @@ again for them. The child menu gets a simple "switch to…" list under
   view. A parent who wants a child listed turns child view on for that child.
 - **Same size as the top card.** The top child card shrinks from an 84px
   centred avatar to a row, so it matches the switcher rows. Both are 56px high,
-  with a 40px face and the name in `theme.typography.heading`. The menu fits a
-  360×760 screen with up to 5 children (measured in the mockup). With 6 or
+  with a 40px face and the name in `theme.typography.heading`. The mockup fits
+  a 360×760 screen with up to 5 children, but its card has 12px padding and
+  `Item` has 16px × 18px, so Phase 3 measures it again in the app. With 6 or
   more, the menu scrolls: `MenuOverlay` already has `overflow-y: auto`.
 - **Where it shows.** The child menu shows on Home, `/transactions` and
   `/method`, and all three already provide `switchAccount` through
@@ -40,7 +42,10 @@ again for them. The child menu gets a simple "switch to…" list under
   account, as it does after the parent picker.
 - **The list comes from the last server render**, like the parent picker's.
   If a parent changes a sibling's view mode on another phone, this list
-  catches up on the next page load. Nothing is cached beyond that.
+  catches up on the next page load. Until then a sibling who was just moved to
+  parent view is still listed, and tapping them shows their child screen until
+  the next load, which then shows the parent screen. The parent picker has the
+  same lag, so this plan accepts it rather than fetching on every tap.
 
 ## Reused, not new
 
@@ -52,9 +57,17 @@ again for them. The child menu gets a simple "switch to…" list under
   `<section>` with `MenuSectionTitle`, as `AppearanceSection` does in the card
   below it.
 - `Row` from `src/components/Menu/row-parts.ts` for each row, which is the
-  parent picker's row button. It brings the button reset, the press feedback
-  and `text-align: start`. `styled(Row)` changes only the size, the font and
-  the fill.
+  parent picker's row button. It brings the button reset, the press feedback,
+  `width: 100%` and `text-align: start`. Its own geometry doesn't fit (8px ×
+  11px padding, a 1.5px border, 14px radius, `body` font). Left as it is, a row
+  with a 40px face is 59px, not 56px. So `styled(Row)` takes the child-row
+  geometry below and its own fill.
+- The geometry the top card and the rows share (`min-height: 56px`,
+  `padding: 6px 16px`, `gap: 14px`, the name in `heading` at 700) is one
+  exported `childMenuRow` style helper (`({ theme }) => string`, since the
+  font comes from the theme) in `row-parts.ts`, beside the private
+  `row`. `Child` and the list row both use it, so the two can't drift apart.
+  CLAUDE.md puts a style shared by several components in a `*-parts.ts`.
 - `AvatarBadge`, as the top card uses it.
 - Row colours: `theme.colors.accountScopeBg` for the fill, `textStrong` for the
   name, `primary` for the `‹`.
@@ -66,11 +79,12 @@ again for them. The child menu gets a simple "switch to…" list under
 | `otherAccountsShownToChild(accounts, currentAccount)` | `src/lib/account/view-mode.ts` | sits next to `isShownToChild`; the glossary rejects `childView` |
 | `useOpenAccount()` | `src/components/Menu/use-open-account.ts` | named after `AccountControls.openAccount`, which it replaces; it sits next to `use-menu-state.ts` |
 | `ChildMenuAccountList` (`accounts`, `onSelect`) | `src/components/Menu/ChildMenuAccountList/` | it is the child menu's `AccountList`, with the same props. `ChildAccountSwitcher` would read as part of `ChildAccount`, the child screen |
-| `CHILD_MENU_ACCOUNT_LIST_COPY` (`icon`, `title`, `arrow`) and `CHILD_MENU_ACCOUNT_LIST_TEST_IDS` (`list`, `row`) | its `constants.ts` | mirrors `ACCOUNT_LIST_TEST_IDS.{list,row}` |
+| `CHILD_MENU_ACCOUNT_LIST_COPY` (`icon`, `title`, `arrow`) and `CHILD_MENU_ACCOUNT_LIST_TEST_IDS` (`list`, `row`, `name`) | its `constants.ts` | mirrors `ACCOUNT_LIST_TEST_IDS.{list,row}`. `name` sits on the name alone, because a row's `textContent` also holds the `aria-hidden` `‹` |
+
+| `childMenuRow` | `src/components/Menu/row-parts.ts` | the row geometry the child menu's top card and list share, next to the menu's `row` |
 
 `CHILD_MENU_AVATAR_PROPS.size` changes from 84 to 40. The list rows read the
-same constant, so the top card and the rows can't drift apart. Two modules
-read it, so it stays in `constants.ts`.
+same constant. Two modules read it, so it stays in `constants.ts`.
 
 ## Global constraints
 
@@ -100,8 +114,10 @@ fixtures are built in the test with `createMockAccount` and distinct ids:
 1. leaves out the account being viewed (break: drop the id check)
 2. leaves out an account in parent view (break: drop the `isShownToChild` check)
 3. keeps the family's order (two kept accounts; break: `.reverse()`)
-4. is empty when the child is the only one in child view (break: return
-   `accounts` when nothing is kept)
+
+An "is empty" case is left out on purpose. Its only break would be a special
+branch written to fail it, and 1 and 2 already cover it. The "no card" case
+belongs to `ChildMenuContent` (Phase 2, test 4).
 
 ## Phase 2 — the list in the child menu
 
@@ -113,8 +129,10 @@ fixtures are built in the test with `createMockAccount` and distinct ids:
   `.styles.ts`, `constants.ts`, `index.ts` and a test. It takes props, like
   `AccountList`: `accounts: AccountSummary[]` and `onSelect: (id: string) =>
   void`. It renders a `<section>` with `MenuSectionTitle`
-  (`icon` with `aria-hidden`, then `title`), and one `styled(Row)`
-  `type="button"` per account: `AvatarBadge` with `alt=""`, the name, and the
+  (`icon` with `aria-hidden`, then `title`), then a list holding the rows
+  (`display: grid; gap: 8px`, as in the mockup). Each row is a `styled(Row)`
+  with `childMenuRow`, `border-radius: 18px` and the `accountScopeBg` fill,
+  `type="button"`, one per account: `AvatarBadge` with `alt=""`, the name, and the
   `arrow` with `aria-hidden`. The row's accessible name is the child's name.
 - `ChildMenuContent.tsx` computes `otherAccountsShownToChild(accounts,
   currentAccount)`. When the list isn't empty, it renders
@@ -122,18 +140,22 @@ fixtures are built in the test with `createMockAccount` and distinct ids:
   between `HomeLink` and the appearance `Item`. With an empty list, no `Item`
   renders, so there is no empty card.
 - `ChildMenuContent.styles.ts`: `Child` becomes a row (`display: flex`,
-  `align-items: center`, `gap: 14px`, `min-height: 56px`, `padding: 6px 16px`,
-  `margin-bottom: 12px`). `ChildName` takes `typography.heading`.
+  `align-items: center`, `childMenuRow`, `margin-bottom: 12px`). `ChildName`
+  drops its own font size and takes the one from `childMenuRow`.
 - `ChildMenuContent/constants.ts`: `CHILD_MENU_AVATAR_PROPS.size` is 40.
 
-**Fixtures:** in `src/test-utils/mocks/account.mocks.ts`, add
-`mockChildSiblingAccountSummary` (id `a3`, its own name and avatar,
-`viewMode: VIEW_MODE.child`) and `mockChildFamilyAccountsContext`. The family
-context holds `[mockAccountSummary, mockSiblingAccountSummary,
-mockChildSiblingAccountSummary]`, with the current account in child view.
-Leave `mockAccountsContext` and `mockChildAccountsContext` as they are, since
-the parent picker tests count their rows. `mockChildAccountsContext` has only
-a parent-view sibling, so it is the "no card" case as it stands.
+**Fixtures:** nothing new in `src/test-utils/mocks/account.mocks.ts`. Only
+the new `ChildMenuContent` `describe` uses a family with a second child, so
+CLAUDE.md's narrowest-scope rule puts it there: `mockChildSibling`
+(`{ ...mockSiblingAccountSummary, id: 'a3', name: …, viewMode:
+VIEW_MODE.child }`), `mockSwitchAccount = jest.fn()`, and a context of
+`{ ...mockChildAccountsContext, accounts: [mockAccountSummary,
+mockSiblingAccountSummary, mockChildSibling], switchAccount:
+mockSwitchAccount }`. The shared contexts' `switchAccount` is `() => {}`, so
+they can't prove a switch. Leave `mockAccountsContext` and
+`mockChildAccountsContext` as they are: the parent picker tests count their
+rows. `mockChildAccountsContext` has only a parent-view sibling, so it is the
+"no card" case as it stands.
 
 **Tests:** `ChildMenuAccountList.test.tsx` (props only, no context):
 1. shows each account it is given, in order (break: render
@@ -144,18 +166,18 @@ a parent-view sibling, so it is the "no card" case as it stands.
 
 `ChildMenuContent.test.tsx`. Its top-level `beforeEach` renders with
 `mockChildAccountsContext`, so the new cases go in a sibling `describe` that
-renders with `mockChildFamilyAccountsContext`:
-1. lists the sibling in child view (break: return `[]`)
-2. does not list the sibling in parent view (break: drop the `isShownToChild`
-   check)
-3. does not list the child being viewed (break: drop the id check)
-4. tapping the sibling switches to their account (break: `switchAccount`
+renders with the family above. The rule itself is tested in lib (Phase 1), so
+these tests check the wiring, not the rule again:
+1. lists only the other child in child view (the row names equal
+   `[mockChildSibling.name]`. Breaks: pass `accounts` unfiltered; pass `[]`)
+2. tapping the sibling switches to their account (break: `switchAccount`
    called with the current id)
-5. tapping the sibling closes the menu (break: drop `closeMenu()`)
+3. tapping the sibling closes the menu (break: drop `closeMenu()` from
+   `useOpenAccount`)
 
 In the existing `describe`, with only a sibling in parent view:
 
-6. shows no switch card (break: always render the `Item`)
+4. shows no switch card (break: always render the `Item`)
 
 `AccountControls.test.tsx` "leaves the menu when another account is picked"
 already covers `AccountControls` after the `useOpenAccount` swap. Run it, and
@@ -164,20 +186,27 @@ watch it fail against `useOpenAccount` without `closeMenu()`.
 ## Phase 3 — proof in a real browser
 
 - `e2e/driver/menu-driver.ts`: add `childMenuAccountNames()` (via
-  `appBrowser.texts(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)`) and
-  `switchAccountFromChildMenu(index)` (via `clickNth`), mirroring
-  `switchAccount(index)`. No new `AppBrowser` helper is needed.
+  `appBrowser.texts(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)`, not `row`,
+  whose text ends in `‹`) and `switchAccountFromChildMenu(index)` (via
+  `clickNth` on the `row` selector), mirroring `switchAccount(index)`. No new
+  `AppBrowser` helper is needed.
 - `e2e/child-view.e2e.ts`: add a `describe('a child switches to a sibling')`
-  block with three accounts, in this order: the child (child view, `a1`), the
-  sibling (child view, `a2`), and one in parent view (`a3`), each with its own
-  name. The child must come first. With no cookie the app falls back to
-  `accounts[0]`, so if the sibling came first, the reload check would pass
-  without the cookie ever moving.
+  block with three accounts: the child (child view), the sibling (child view)
+  and one in parent view, each with its own name. Every store returns accounts
+  `sortedByName`, and with no cookie the app opens `accounts[0]`. So the
+  child's name must sort first. The default mock names don't: `מתן` sorts
+  before `נועה`. Give the child a name starting with `א`. If the sibling
+  opened first, the reload check would pass without the cookie ever moving.
+  - before tapping, the header shows the child's name. This guards the order
+    above, so a fixture change can't make the reload check pass vacuously
   - the menu offers only the sibling in child view (`childMenuAccountNames()`
     equals `[siblingName]`)
   - tapping it shows the child screen with the sibling's name, and still does
     after a reload (`childAccount.screenExists()` and `header.title()`)
-- One shot of the child menu for the PR with the `pr-screenshots` skill.
+- One shot of the child menu for the PR with the `pr-screenshots` skill, with
+  5 children at 360×760 (the e2e `PHONE` is 402×874). It checks the "fits
+  without scrolling" claim in the app's real `Item` padding. If it doesn't fit,
+  say so in the PR. Don't shrink the rows.
 
 ## One PR
 
