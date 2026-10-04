@@ -3,7 +3,7 @@ import { VIEW_MODE } from '@/lib/account/view-mode';
 import type { AccountOwner } from '@/db/data-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import type { AccountsContextValue } from '@/components/Home/accounts-context';
-import { mockUser } from './user.mocks';
+import { mockCoParent, mockUser } from './user.mocks';
 import {
   createMockWallets,
   createMockWalletSummary,
@@ -33,6 +33,14 @@ export function createMockAccountUser(
     addedAt: '2026-01-01T00:00:00.000Z',
     ...overrides,
   };
+}
+
+export function createMockViewer(accountId: string): AccountUser {
+  return createMockAccountUser({
+    accountId,
+    userId: mockCoParent.id,
+    role: 'viewer',
+  });
 }
 
 export const mockAccount: Account = createMockAccount();

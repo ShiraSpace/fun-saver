@@ -1,5 +1,5 @@
 import { InMemoryStore } from '@/db/memory-store';
-import { createMockAccountUser } from '@/test-utils/mocks/account.mocks';
+import { createMockViewer } from '@/test-utils/mocks/account.mocks';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import type { AccountUser } from '../types';
@@ -23,17 +23,13 @@ describe('canEditAccount', () => {
   it('refuses a viewer, who may look at the account but not edit it', async () => {
     const mockViewerReader = {
       getAccountUser: async (): Promise<AccountUser> =>
-        createMockAccountUser({
-          accountId,
-          userId: mockUser.id,
-          role: 'viewer',
-        }),
+        createMockViewer(accountId),
     };
 
     expect(
       await canEditAccount({
         store: mockViewerReader,
-        userId: mockUser.id,
+        userId: mockCoParent.id,
         accountId,
       })
     ).toBe(false);
@@ -68,11 +64,7 @@ describe('isAccountUser', () => {
   it('lets a viewer in, who may look at the account', async () => {
     const mockViewerReader = {
       getAccountUser: async (): Promise<AccountUser> =>
-        createMockAccountUser({
-          accountId,
-          userId: mockCoParent.id,
-          role: 'viewer',
-        }),
+        createMockViewer(accountId),
     };
 
     expect(

@@ -5,7 +5,7 @@ import { signedInUser } from '@/auth';
 import { API_ERRORS } from '@/app/api/constants';
 import { VIEW_MODE } from '@/lib/account/view-mode';
 import { getStore } from '@/db';
-import { createMockAccountUser } from '@/test-utils/mocks/account.mocks';
+import { createMockViewer } from '@/test-utils/mocks/account.mocks';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
@@ -84,13 +84,9 @@ describe('PUT /api/accounts/[id]/view-mode', () => {
   describe('a co-parent who may only view the account', () => {
     beforeEach(() => {
       jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
-      jest.spyOn(getStore(), 'getAccountUser').mockResolvedValue(
-        createMockAccountUser({
-          accountId,
-          userId: mockCoParent.id,
-          role: 'viewer',
-        })
-      );
+      jest
+        .spyOn(getStore(), 'getAccountUser')
+        .mockResolvedValue(createMockViewer(accountId));
     });
 
     it('saves child view on the account', async () => {
