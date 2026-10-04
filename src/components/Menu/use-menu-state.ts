@@ -7,13 +7,33 @@ export interface MenuState {
   isOpen: boolean;
   toggle: () => void;
   closeMenu: () => void;
+  whenMenuCloses: (step: () => void) => void;
 }
 
 export const [MenuProvider, useMenu] =
   createRequiredContext<MenuState>('MenuProvider');
 
+function useStepsWhenClosed(isOpen: boolean): (step: () => void) => void {
+  const stepsRef = useRef<Array<() => void>>([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      return;
+    }
+
+    const steps = stepsRef.current;
+    stepsRef.current = [];
+    steps.forEach((step) => step());
+  }, [isOpen]);
+
+  return useCallback((step: () => void): void => {
+    stepsRef.current.push(step);
+  }, []);
+}
+
 export function useMenuState(): MenuState {
   const [isOpen, setIsOpen] = useState(false);
+  const whenMenuCloses = useStepsWhenClosed(isOpen);
 
   const toggle = useCallback((): void => {
     setIsOpen((wasOpen) => !wasOpen);
@@ -24,8 +44,8 @@ export function useMenuState(): MenuState {
   }, []);
 
   return useMemo(
-    () => ({ isOpen, toggle, closeMenu }),
-    [isOpen, toggle, closeMenu]
+    () => ({ isOpen, toggle, closeMenu, whenMenuCloses }),
+    [isOpen, toggle, closeMenu, whenMenuCloses]
   );
 }
 

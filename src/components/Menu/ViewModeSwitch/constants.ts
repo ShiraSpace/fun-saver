@@ -22,3 +22,11 @@ export const VIEW_MODE_SWITCH_COPY = {
 export const VIEW_MODE_SWITCH_MOTION = {
   slideMs: 220,
 } as const;
+
+export const SAVED_VIEW_MODE_SHOWN = {
+  immediately: 'immediately',
+  whenMenuCloses: 'whenMenuCloses',
+} as const;
+
+export type SavedViewModeShown =
+  (typeof SAVED_VIEW_MODE_SHOWN)[keyof typeof SAVED_VIEW_MODE_SHOWN];

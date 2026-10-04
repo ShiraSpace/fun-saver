@@ -18,7 +18,14 @@ export function WithMenu({
   closeMenu = (): void => {},
 }: WithMenuProps): JSX.Element {
   return (
-    <MenuProvider value={{ isOpen: true, toggle: (): void => {}, closeMenu }}>
+    <MenuProvider
+      value={{
+        isOpen: true,
+        toggle: (): void => {},
+        closeMenu,
+        whenMenuCloses: (): void => {},
+      }}
+    >
       {children}
     </MenuProvider>
   );

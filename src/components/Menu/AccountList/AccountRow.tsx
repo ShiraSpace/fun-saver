@@ -2,12 +2,14 @@
 
 import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
-import { Avatar } from '@/components/Avatar/Avatar';
-import { Money } from '@/components/Money';
-import { totalBalance } from '@/lib/wallet/balance';
-import { ACCOUNT_LIST_STYLE, ACCOUNT_LIST_TEST_IDS } from './constants';
-import { Name, Total } from './AccountList.styles';
-import { Row } from '../row-parts';
+import { VIEW_MODE } from '@/lib/account/view-mode';
+import { REQUEST_STATE } from '@/lib/request-state';
+import { ListedAccount } from './AccountList.styles';
+import { AccountPickButton } from './AccountPickButton';
+import { ChildViewToggle } from './ChildViewToggle';
+import { useAccountViewMode } from '../ViewModeSwitch/use-account-view-mode';
+import { ViewModeSaveError } from '../ViewModeSwitch/ViewModeSaveError';
+import { SAVED_VIEW_MODE_SHOWN } from '../ViewModeSwitch/constants';
 
 interface AccountRowProps {
   account: AccountSummary;
@@ -20,30 +22,32 @@ export function AccountRow({
   isCurrent,
   onSelect,
 }: AccountRowProps): JSX.Element {
-  const totalBalanceAgorot = totalBalance(account.wallets);
+  const { chooseViewMode, chosenViewMode, requestState } = useAccountViewMode(
+    account,
+    SAVED_VIEW_MODE_SHOWN.whenMenuCloses
+  );
+  const isShownToChild =
+    (chosenViewMode ?? account.viewMode) === VIEW_MODE.child;
 
-  const handleSelect = (): void => onSelect(account.id);
+  const toggleChildView = (): void =>
+    chooseViewMode(isShownToChild ? VIEW_MODE.parent : VIEW_MODE.child);
 
   return (
-    <Row
-      type="button"
-      data-testid={ACCOUNT_LIST_TEST_IDS.row}
-      aria-current={isCurrent}
-      onClick={handleSelect}
-    >
-      <Avatar
-        avatarId={account.avatarId}
-        alt={account.name}
-        size={ACCOUNT_LIST_STYLE.avatarSize}
-      />
-      <Name>{account.name}</Name>
-      <Total>
-        <Money
-          amountAgorot={totalBalanceAgorot}
-          fullSizeCurrency
-          testId={ACCOUNT_LIST_TEST_IDS.total}
+    <div>
+      <ListedAccount data-current={isCurrent}>
+        <AccountPickButton
+          account={account}
+          isCurrent={isCurrent}
+          onSelect={onSelect}
         />
-      </Total>
-    </Row>
+        <ChildViewToggle
+          accountName={account.name}
+          isShownToChild={isShownToChild}
+          isSaving={requestState === REQUEST_STATE.pending}
+          onToggle={toggleChildView}
+        />
+      </ListedAccount>
+      <ViewModeSaveError requestState={requestState} />
+    </div>
   );
 }

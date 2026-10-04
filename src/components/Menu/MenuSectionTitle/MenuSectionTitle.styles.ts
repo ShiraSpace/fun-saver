@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
-import { MENU_SECTION_TITLE_STYLE } from './constants';
+import {
+  MENU_SECTION_TITLE_SIZE_VARIABLE,
+  MENU_SECTION_TITLE_STYLE,
+} from './constants';
 
 const sheetText = ({ theme }: { theme: Theme }): string =>
   theme.colors.softText;
@@ -12,7 +15,7 @@ export const Label = styled.div`
   margin: ${MENU_SECTION_TITLE_STYLE.marginTop}px 2px
     ${MENU_SECTION_TITLE_STYLE.marginBottom}px;
   text-align: start;
-  font-size: ${labelSize}px;
+  font-size: var(${MENU_SECTION_TITLE_SIZE_VARIABLE}, ${labelSize}px);
   font-weight: 700;
   letter-spacing: ${MENU_SECTION_TITLE_STYLE.letterSpacing}px;
   text-transform: uppercase;

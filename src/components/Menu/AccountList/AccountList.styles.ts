@@ -5,8 +5,16 @@ import { MENU_ROW_STYLE } from '../constants';
 
 const surface = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 
+const strongText = ({ theme }: { theme: Theme }): string =>
+  theme.colors.textStrong;
+
 const mutedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textMuted;
+
+const selectedFill = ({ theme }: { theme: Theme }): string =>
+  theme.colors.accountScopeBg;
+
+const rowSize = ({ theme }: { theme: Theme }): number => theme.typography.body;
 
 const scopeBorder = ({ theme }: { theme: Theme }): string =>
   theme.colors.accountScopeBorder;
@@ -39,4 +47,60 @@ export const Total = styled.span`
   font-size: ${totalSize}px;
   font-weight: 700;
   color: ${mutedText};
+`;
+
+export const ColumnLabels = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 6px 4px;
+  font-size: ${totalSize}px;
+  color: ${mutedText};
+`;
+
+export const ListedAccount = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${MENU_ROW_STYLE.gap}px;
+  padding: ${MENU_ROW_STYLE.paddingY}px ${MENU_ROW_STYLE.paddingX}px;
+  border: ${MENU_ROW_STYLE.borderWidth}px solid transparent;
+  border-radius: ${MENU_ROW_STYLE.radius}px;
+  background: ${surface};
+
+  &[data-current='true'] {
+    border-color: ${scopeBorder};
+    background: ${selectedFill};
+  }
+`;
+
+export const PickButton = styled.button`
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: ${MENU_ROW_STYLE.gap}px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: ${strongText};
+  font: inherit;
+  font-size: ${rowSize}px;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+  transition: transform ${MENU_ROW_STYLE.pressMs}ms ease;
+
+  &:active {
+    transform: scale(${MENU_ROW_STYLE.pressScale});
+  }
+`;
+
+export const ToggleButton = styled.button`
+  display: flex;
+  padding: 8px 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
 `;

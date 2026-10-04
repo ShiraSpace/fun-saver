@@ -4,10 +4,7 @@ import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
 import { AvatarBadge } from '@/components/AvatarBadge';
 import { CHILD_MENU_AVATAR_PROPS } from '../constants';
-import {
-  CHILD_MENU_ACCOUNT_LIST_COPY,
-  CHILD_MENU_ACCOUNT_LIST_TEST_IDS,
-} from './constants';
+import { CHILD_MENU_ACCOUNT_LIST_TEST_IDS } from './constants';
 import { AccountRow, Arrow } from './ChildMenuAccountList.styles';
 
 interface ChildMenuAccountRowProps {
@@ -35,7 +32,7 @@ export function ChildMenuAccountRow({
       <span data-testid={CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name}>
         {siblingAccount.name}
       </span>
-      <Arrow aria-hidden>{CHILD_MENU_ACCOUNT_LIST_COPY.arrow}</Arrow>
+      <Arrow aria-hidden />
     </AccountRow>
   );
 }

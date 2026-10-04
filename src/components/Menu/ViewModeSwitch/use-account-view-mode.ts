@@ -4,6 +4,7 @@ import {
   useAccounts,
   type ViewModeChoice,
 } from '@/components/Home/accounts-context';
+import type { AccountSummary } from '@/lib/account/types';
 import type { ViewMode } from '@/lib/account/view-mode';
 import { fetchJson } from '@/lib/fetch-json';
 import { wait } from '@/lib/wait';
@@ -12,7 +13,11 @@ import { motionIsReduced } from '@/theme/motion';
 import { useReportPendingNavigation } from '@/components/Header/navigation-pending-context';
 import { useMenu, useOnMenuClose } from '../use-menu-state';
 import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
-import { VIEW_MODE_SWITCH_MOTION } from './constants';
+import {
+  SAVED_VIEW_MODE_SHOWN,
+  VIEW_MODE_SWITCH_MOTION,
+  type SavedViewModeShown,
+} from './constants';
 
 interface AccountViewMode {
   chooseViewMode: (viewMode: ViewMode) => void;
@@ -21,7 +26,6 @@ interface AccountViewMode {
 }
 
 interface SavedViewModeSteps {
-  closeMenu: () => void;
   refresh: () => void;
   viewModeChoice?: ViewModeChoice;
 }
@@ -38,12 +42,24 @@ function menuFinishesFading(): Promise<void> {
   return wait(MENU_OVERLAY_STYLE.transitionMs);
 }
 
+async function saveViewMode(
+  accountId: string,
+  viewMode: ViewMode
+): Promise<boolean> {
+  const saved = fetchJson({
+    url: accountViewModeEndpoint(accountId),
+    method: 'PUT',
+    body: { viewMode },
+  });
+  const [save] = await Promise.allSettled([saved, switchFinishesSliding()]);
+
+  return save.status === 'fulfilled';
+}
+
 async function showSavedViewMode(
   steps: SavedViewModeSteps,
   viewMode: ViewMode
 ): Promise<void> {
-  steps.closeMenu();
-
   if (steps.viewModeChoice) {
     await menuFinishesFading();
     steps.viewModeChoice.showViewMode(viewMode);
@@ -52,10 +68,38 @@ async function showSavedViewMode(
   steps.refresh();
 }
 
-export function useAccountViewMode(): AccountViewMode {
+function useShowSavedViewMode(
+  account: AccountSummary,
+  shown: SavedViewModeShown
+): (viewMode: ViewMode) => void {
   const { currentAccount, viewModeChoice } = useAccounts();
-  const { closeMenu } = useMenu();
+  const { closeMenu, whenMenuCloses } = useMenu();
   const router = useRouter();
+
+  return (viewMode: ViewMode): void => {
+    const steps = { refresh: (): void => router.refresh(), viewModeChoice };
+    const show = (): void => void showSavedViewMode(steps, viewMode);
+
+    if (shown === SAVED_VIEW_MODE_SHOWN.immediately) {
+      closeMenu();
+      show();
+      return;
+    }
+
+    if (account.id === currentAccount.id && viewModeChoice) {
+      viewModeChoice.showViewMode(currentAccount.viewMode);
+      whenMenuCloses(show);
+    }
+
+    steps.refresh();
+  };
+}
+
+export function useAccountViewMode(
+  account: AccountSummary,
+  shown: SavedViewModeShown
+): AccountViewMode {
+  const showViewMode = useShowSavedViewMode(account, shown);
   const [chosenViewMode, setChosenViewMode] = useState<ViewMode>();
   const [requestState, setRequestState] = useState<RequestState>(
     REQUEST_STATE.idle
@@ -74,21 +118,19 @@ export function useAccountViewMode(): AccountViewMode {
     setChosenViewMode(viewMode);
     setRequestState(REQUEST_STATE.pending);
 
-    const saved = fetchJson({
-      url: accountViewModeEndpoint(currentAccount.id),
-      method: 'PUT',
-      body: { viewMode },
-    });
-    const [save] = await Promise.allSettled([saved, switchFinishesSliding()]);
+    const isSaved = await saveViewMode(account.id, viewMode);
 
-    if (save.status === 'rejected') {
+    if (!isSaved) {
       setChosenViewMode(undefined);
       setRequestState(REQUEST_STATE.failed);
       return;
     }
 
-    const refresh = (): void => router.refresh();
-    await showSavedViewMode({ closeMenu, refresh, viewModeChoice }, viewMode);
+    if (shown === SAVED_VIEW_MODE_SHOWN.whenMenuCloses) {
+      setRequestState(REQUEST_STATE.idle);
+    }
+
+    showViewMode(viewMode);
   };
 
   return {

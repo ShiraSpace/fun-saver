@@ -5,11 +5,16 @@ export const ACCOUNT_LIST_TEST_IDS = {
   row: 'menu-account-row',
   total: 'menu-account-total',
   addAccount: 'menu-account-add',
+  childViewToggle: 'menu-account-child-view-toggle',
 } as const;
 
 export const ACCOUNT_LIST_COPY = {
   addLabel: '＋ חשבון חדש',
   addAccessibleLabel: 'הוספת חשבון',
+  accountColumn: 'חשבון',
+  childViewColumn: '🧒 מצב ילד',
+  childViewToggleLabel: (accountName: string): string =>
+    `מצב ילד ל${accountName}`,
 } as const;
 
 export const ACCOUNT_LIST_STYLE = {

@@ -17,7 +17,11 @@ export const TitleIcon = styled.span`
 `;
 
 export const Arrow = styled.span`
+  width: 9px;
+  height: 9px;
   margin-inline-start: auto;
-  font-size: 22px;
-  color: ${({ theme }): string => theme.colors.primary};
+  border-bottom: 3px solid ${({ theme }): string => theme.colors.primary};
+  border-inline-end: 3px solid ${({ theme }): string => theme.colors.primary};
+  border-radius: 1px;
+  transform: rotate(45deg);
 `;
