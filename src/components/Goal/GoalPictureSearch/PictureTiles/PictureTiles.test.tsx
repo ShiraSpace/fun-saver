@@ -9,7 +9,7 @@ describe('PictureTiles', () => {
 
   describe('with matching pictures and one chosen', () => {
     const mockPictures = ['🚲', '🚴', '🛴'];
-    const mockChosenPictureText = '🚴';
+    const mockChosenPicture = '🚴';
     const mockOnChoosePicture = jest.fn();
 
     beforeEach(() => {
@@ -19,25 +19,25 @@ describe('PictureTiles', () => {
           pictures={mockPictures}
           requestState={REQUEST_STATE.idle}
           query={mockQuery}
-          chosenPictureText={mockChosenPictureText}
+          chosenPicture={mockChosenPicture}
           onChoosePicture={mockOnChoosePicture}
         />
       );
     });
 
     it('shows one tile per matching picture, in order', () => {
-      const tiles = screen.getAllByTestId(PICTURE_TILES_TEST_IDS.tile);
+      const tiles = screen.getAllByTestId(PICTURE_TILES_TEST_IDS.pictureTile);
 
       expect(tiles.map((tile) => tile.textContent)).toEqual(mockPictures);
     });
 
     it('marks only the chosen picture as pressed', () => {
       const pressed = screen
-        .getAllByTestId(PICTURE_TILES_TEST_IDS.tile)
+        .getAllByTestId(PICTURE_TILES_TEST_IDS.pictureTile)
         .filter((tile) => tile.getAttribute('aria-pressed') === 'true');
 
       expect(pressed.map((tile) => tile.textContent)).toEqual([
-        mockChosenPictureText,
+        mockChosenPicture,
       ]);
     });
 
@@ -55,7 +55,7 @@ describe('PictureTiles', () => {
   });
 
   describe('with no tiles to show', () => {
-    const mockChosenPictureText = '🎯';
+    const mockChosenPicture = '🎯';
     const mockOnChoosePicture = jest.fn();
 
     function renderStateOnly(requestState: RequestState, query: string): void {
@@ -64,7 +64,7 @@ describe('PictureTiles', () => {
           pictures={[]}
           requestState={requestState}
           query={query}
-          chosenPictureText={mockChosenPictureText}
+          chosenPicture={mockChosenPicture}
           onChoosePicture={mockOnChoosePicture}
         />
       );
@@ -77,7 +77,7 @@ describe('PictureTiles', () => {
 
       it('says the pictures are being looked for', () => {
         expect(
-          screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
+          screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)
         ).toHaveTextContent(PICTURE_TILES_COPY.loading);
       });
     });
@@ -89,8 +89,8 @@ describe('PictureTiles', () => {
 
       it('says the pictures did not load', () => {
         expect(
-          screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
-        ).toHaveTextContent(PICTURE_TILES_COPY.failed);
+          screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)
+        ).toHaveTextContent(PICTURE_TILES_COPY.failedToLoad);
       });
     });
 
@@ -103,8 +103,8 @@ describe('PictureTiles', () => {
 
       it('hints at typing what to search for', () => {
         expect(
-          screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
-        ).toHaveTextContent(PICTURE_TILES_COPY.hint);
+          screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)
+        ).toHaveTextContent(PICTURE_TILES_COPY.nothingTyped);
       });
     });
 
@@ -117,7 +117,7 @@ describe('PictureTiles', () => {
 
       it('names the typed words in the no-match line', () => {
         expect(
-          screen.getByTestId(PICTURE_TILES_TEST_IDS.stateLine)
+          screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)
         ).toHaveTextContent(PICTURE_TILES_COPY.noMatch(mockUnmatchedQuery));
       });
     });
@@ -134,7 +134,7 @@ describe('PictureTiles', () => {
           pictures={[mockPicture]}
           requestState={REQUEST_STATE.idle}
           query={mockQuery}
-          chosenPictureText={mockPicture}
+          chosenPicture={mockPicture}
           onChoosePicture={mockOnChoosePicture}
         />,
         { themeId: THEME_ID.jungleQuest }
@@ -143,7 +143,7 @@ describe('PictureTiles', () => {
 
     it('rings the chosen tile in the selection ring colour', () => {
       expect(
-        getComputedStyle(screen.getByTestId(PICTURE_TILES_TEST_IDS.tile))
+        getComputedStyle(screen.getByTestId(PICTURE_TILES_TEST_IDS.pictureTile))
           .outline
       ).toContain(selectionRing);
     });

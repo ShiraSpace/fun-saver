@@ -3,15 +3,15 @@ import { ChooseButton } from './ChooseButton';
 import { CHOOSE_BUTTON_TEST_IDS } from './constants';
 
 describe('ChooseButton', () => {
-  const mockOnConfirm = jest.fn();
+  const mockOnChoose = jest.fn();
 
   beforeEach(() => {
-    mockOnConfirm.mockClear();
-    render(<ChooseButton onConfirm={mockOnConfirm} />);
+    mockOnChoose.mockClear();
+    render(<ChooseButton onChoose={mockOnChoose} />);
     fireEvent.click(screen.getByTestId(CHOOSE_BUTTON_TEST_IDS.button));
   });
 
-  it('confirms when tapped', () => {
-    expect(mockOnConfirm).toHaveBeenCalledTimes(1);
+  it('chooses when tapped', () => {
+    expect(mockOnChoose).toHaveBeenCalledTimes(1);
   });
 });

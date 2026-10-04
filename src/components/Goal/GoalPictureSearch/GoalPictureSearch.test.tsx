@@ -36,7 +36,7 @@ async function renderLoadedSheet(picture: GoalPicture | null): Promise<void> {
 
 function tilePictures(): (string | null)[] {
   return screen
-    .getAllByTestId(PICTURE_TILES_TEST_IDS.tile)
+    .getAllByTestId(PICTURE_TILES_TEST_IDS.pictureTile)
     .map((tile) => tile.textContent);
 }
 
