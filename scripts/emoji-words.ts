@@ -14,8 +14,8 @@ import {
   TRIMMED_CODE_POINTS,
   VARIATION_SELECTOR,
 } from './constants';
-import { isValidPictureEmoji } from '../src/lib/goal/goal-request-validator';
-import type { PictureWords } from '../src/lib/goal/types';
+import { isValidPictureEmoji } from '@/lib/goal/goal-request-validator';
+import type { PictureWords } from '@/lib/goal/types';
 
 interface CldrAnnotation {
   default?: string[];
