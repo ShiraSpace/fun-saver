@@ -451,8 +451,12 @@ or one with a different id, `viewingGoal` and `cancellingGoal` return to
 
 After a goal is set or cancelled, the page calls `router.refresh()`, the way
 `finishEditing` does. On a `409`, `SetGoal` and `CancelGoal` close to
-`viewing` and refresh, since it means the screen was stale. Any other failure
-keeps the overlay open with a save error.
+`viewing` and refresh, since it means the screen was stale. Both track the
+request as a `requestState` (`REQUEST_STATE` idle · pending · failed), the way
+`useAccountForm` does: while it is `pending` the submit, ✕, ביטול and the
+cancel hold are disabled, so a double tap cannot send a second request; any
+failure other than `409` sets `failed` and keeps the overlay open with a save
+error.
 
 ### New components
 
@@ -464,7 +468,7 @@ rest in `src/components/Goal/<Name>/`.
 
 | Component | Frames | What it is |
 |---|---|---|
-| `SetGoal` | 1a | Name, picture, amount, the lock note, **קובעים יעד** and **ביטול**. Same ✕ and title as `AccountForm`, reusing its `CancelButton` (the ✕) and `FormTitle` (`AccountForm/index.ts` exports both; today it exports only `AccountForm`). **קובעים יעד** is a `PrimaryButton`, disabled until there is a name and an amount; **ביטול** is a new text button. Both ✕ and ביטול close without saving. Upload and link are disabled with a בקרוב tag. With the amount at or below the savings balance, the lock note gives way to the reached line. |
+| `SetGoal` | 1a | Name, picture, amount, the lock note, **קובעים יעד** and **ביטול**. Same ✕ and title as `AccountForm`, reusing its `CancelButton` (the ✕, passed `disabled` while saving) and `FormTitle` (`AccountForm/index.ts` exports both; today it exports only `AccountForm`). **קובעים יעד** is a `PrimaryButton`, disabled until there is a name and an amount, and while the request is pending; **ביטול** is a new text button. Both ✕ and ביטול close without saving. Upload and link are disabled with a בקרוב tag. With the amount at or below the savings balance, the lock note gives way to the reached line. |
 | `GoalPictureSearch` | 1b | The search sheet: search box, picture tiles in a 3×3 grid that scrolls, a ✓ on the chosen one, **בחירה**. |
 | `ViewGoal` | 2, 2b | Picture, name, bar, `₪85 נחסכו` / `מתוך ₪300`, the "עוד ₪215 ומגיעים!" line, the `🔒 שומרים עד היעד` badge and **חזרה**. Reached: the `הגעת ליעד!` heading, gold glow, full bar, "כל הכבוד! אפשר לקנות את …", badge without a lock. |
 | `GoalProgress` | 4a, 4b | One line at the bottom of the savings `WalletCard`. Tapping opens `viewingGoal`. Reached: green, `🎉 הגעת ליעד!`. |
@@ -498,9 +502,10 @@ rest in `src/components/Goal/<Name>/`.
   line reads `🎉 משיכה מהחיסכון תסיים את היעד „…”` (5c).
 - **`useAmountEntry`.** The drawer never shows a server message (they are
   English, and `fetchJson` never reads the error body). On a `409` it calls
-  `router.refresh()` and does not set `hasError`: the refreshed account shows
-  savings as locked, and the lock panel is the message. Any other failure sets
-  `hasError` and shows `WithdrawalAlert` as today.
+  `router.refresh()` and returns `requestState` to `idle` instead of `failed`:
+  the refreshed account shows savings as locked, and the lock panel is the
+  message. Any other failure sets `failed` and shows `WithdrawalAlert` as
+  today.
 
 All text goes in each component's `constants.ts`. Colours come from the theme:
 the reached green is `gainText` / `gainSoftBg`. The confetti, border and gold
