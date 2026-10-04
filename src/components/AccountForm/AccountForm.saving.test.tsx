@@ -8,6 +8,7 @@ import { AccountForm } from './AccountForm';
 import { ACCOUNT_FORM_TEST_IDS } from './constants';
 
 const mockOnSubmit = jest.fn();
+const mockOnCancel = jest.fn();
 
 describe('AccountForm saving', () => {
   beforeEach(() => {
@@ -18,7 +19,7 @@ describe('AccountForm saving', () => {
         title="עריכת חשבון"
         submitLabel="✓ שמירת שינויים"
         onSubmit={mockOnSubmit}
-        onCancel={jest.fn()}
+        onCancel={mockOnCancel}
       />
     );
     fillName('רוני');
