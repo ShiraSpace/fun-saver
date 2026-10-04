@@ -62,15 +62,18 @@ describe('GoalPictureSearch', () => {
     });
 
     describe('after typing another word', () => {
+      const mockTypedWord = 'כלב';
+      const mockTypedWordPicture = '🐶';
+
       beforeEach(async () => {
         fireEvent.change(screen.getByTestId(QUERY_FIELD_TEST_IDS.input), {
-          target: { value: 'כלב' },
+          target: { value: mockTypedWord },
         });
-        await screen.findByText('🐶');
+        await screen.findByText(mockTypedWordPicture);
       });
 
       it('searches for what was typed', () => {
-        expect(tilePictures()).toContain('🐶');
+        expect(tilePictures()).toContain(mockTypedWordPicture);
       });
     });
 
