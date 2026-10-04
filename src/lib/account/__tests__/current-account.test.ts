@@ -1,4 +1,4 @@
-import { findCurrentAccount } from '../current-account';
+import { findCurrentAccount, otherAccounts } from '../current-account';
 
 const first = { id: 'a1' };
 const second = { id: 'a2' };
@@ -15,5 +15,20 @@ describe('findCurrentAccount', () => {
 
   it('has nothing to fall back to when there are no accounts', () => {
     expect(findCurrentAccount([], first.id)).toBeUndefined();
+  });
+});
+
+describe('otherAccounts', () => {
+  it('leaves out the current account', () => {
+    expect(otherAccounts(accounts, first)).toEqual([second]);
+  });
+
+  it("keeps the family's order", () => {
+    const third = { id: 'a3' };
+
+    expect(otherAccounts([first, second, third], second)).toEqual([
+      first,
+      third,
+    ]);
   });
 });

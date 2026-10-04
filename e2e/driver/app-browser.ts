@@ -46,6 +46,7 @@ export class AppBrowser {
     const browser = this.requireBrowser();
     this.baseUrl = baseUrl;
     this.activePage = await browser.newPage();
+    await browser.deleteCookie(...(await browser.cookies()));
     await browser.setCookie(cookie);
     await this.activePage.emulateMediaFeatures(queries.motionFeatures(motion));
     await this.activePage.goto(baseUrl, { waitUntil: 'networkidle0' });

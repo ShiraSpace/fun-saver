@@ -10,6 +10,7 @@ import { MENU_ACCOUNT_SETTINGS_TEST_IDS } from '@/components/Menu/MenuAccountSet
 import { SIGNED_IN_USER_SECTION_TEST_IDS } from '@/components/Menu/SignedInUserSection/constants';
 import { VIEW_MODE_SWITCH_TEST_IDS } from '@/components/Menu/ViewModeSwitch/constants';
 import { CHILD_MENU_CONTENT_TEST_IDS } from '@/components/Menu/ChildMenuContent/constants';
+import { CHILD_MENU_ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/ChildMenuAccountList/constants';
 import { SIGN_IN_TEST_IDS } from '@/components/SignIn/constants';
 import { APPEARANCE_SECTION_TEST_IDS } from '@/components/Menu/AppearanceSection/constants';
 import { METHOD_COPY } from '@/components/Method/copy';
@@ -20,6 +21,7 @@ import { AppBrowser } from './app-browser';
 const MIDDLE_BAR = `[data-testid="${MENU_TEST_IDS.menuIcon}"] > span:nth-of-type(2)`;
 const OVERLAY = `[data-testid="${MENU_OVERLAY_TEST_IDS.overlay}"]`;
 const LISTED_ACCOUNT = `[data-testid="${ACCOUNT_LIST_TEST_IDS.row}"]`;
+const CHILD_MENU_ACCOUNT = `[data-testid="${CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row}"]`;
 
 interface Point {
   x: number;
@@ -50,6 +52,14 @@ export class MenuDriver {
 
   switchAccount(index: number): Promise<void> {
     return this.appBrowser.clickNth(LISTED_ACCOUNT, index);
+  }
+
+  childMenuAccountNames(): Promise<string[]> {
+    return this.appBrowser.texts(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name);
+  }
+
+  switchAccountFromChildMenu(index: number): Promise<void> {
+    return this.appBrowser.clickNth(CHILD_MENU_ACCOUNT, index);
   }
 
   tapAddAccount(): Promise<void> {

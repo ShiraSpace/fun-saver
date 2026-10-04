@@ -55,12 +55,6 @@ describe('ChildMenuContent', () => {
     ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[VIEW_MODE.parent]);
   });
 
-  it('shows no switch card when no other child is in child view', () => {
-    expect(
-      screen.queryByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.list)
-    ).not.toBeInTheDocument();
-  });
-
   describe('the child goes home', () => {
     beforeEach(() => {
       fireEvent.click(screen.getByTestId(CHILD_MENU_CONTENT_TEST_IDS.home));
@@ -72,7 +66,7 @@ describe('ChildMenuContent', () => {
   });
 });
 
-describe('ChildMenuContent with another child in child view', () => {
+describe('ChildMenuContent with siblings in either view', () => {
   const mockChildSibling = {
     ...mockSiblingAccountSummary,
     id: 'a3',
@@ -102,17 +96,22 @@ describe('ChildMenuContent with another child in child view', () => {
     );
   });
 
-  it('lists only the other child in child view', () => {
+  it('lists every sibling, whatever their view', () => {
     const names = screen
       .getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)
       .map((name) => name.textContent);
 
-    expect(names).toEqual([mockChildSibling.name]);
+    expect(names).toEqual([
+      mockSiblingAccountSummary.name,
+      mockChildSibling.name,
+    ]);
   });
 
-  describe('the child taps their sibling', () => {
+  describe('the child taps a sibling', () => {
     beforeEach(() => {
-      fireEvent.click(screen.getByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row));
+      fireEvent.click(
+        screen.getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)[1]
+      );
     });
 
     it("switches to the sibling's account", () => {
@@ -122,5 +121,27 @@ describe('ChildMenuContent with another child in child view', () => {
     it('closes the menu', () => {
       expect(mockCloseMenu).toHaveBeenCalledTimes(1);
     });
+  });
+});
+
+describe('ChildMenuContent for an only child', () => {
+  beforeEach(() => {
+    render(
+      <WithMenu>
+        <ChildMenuContent />
+      </WithMenu>,
+      {
+        user: mockUser,
+        accounts: createMockChildAccountsContext({
+          accounts: [mockAccountSummary],
+        }),
+      }
+    );
+  });
+
+  it('shows no switch card', () => {
+    expect(
+      screen.queryByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.list)
+    ).not.toBeInTheDocument();
   });
 });
