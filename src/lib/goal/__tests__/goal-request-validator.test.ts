@@ -82,6 +82,31 @@ describe('assertValidGoalRequest', () => {
     ).toThrow(ValidationError);
   });
 
+  it('refuses an amount sent as text', () => {
+    expect(() =>
+      assertValidGoalRequest({ ...mockGoalBody, amount: '300' })
+    ).toThrow(ValidationError);
+  });
+
+  it('refuses a body without a name', () => {
+    const mockBodyWithoutName = {
+      amount: mockGoalBody.amount,
+      picture: mockGoalBody.picture,
+    };
+
+    expect(() => assertValidGoalRequest(mockBodyWithoutName)).toThrow(
+      ValidationError
+    );
+  });
+
+  it('refuses a picture of a kind other than emoji', () => {
+    const mockPicture = { ...mockGoalBody.picture, kind: 'photo' };
+
+    expect(() =>
+      assertValidGoalRequest({ ...mockGoalBody, picture: mockPicture })
+    ).toThrow(ValidationError);
+  });
+
   it('refuses a body with a field a goal does not have', () => {
     expect(() =>
       assertValidGoalRequest({ ...mockGoalBody, accountId: 'a1' })

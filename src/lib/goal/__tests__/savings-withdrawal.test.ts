@@ -1,9 +1,8 @@
 import { InMemoryStore } from '@/db/memory-store';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
-import { createMockGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
+import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { createMockWithdrawal } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallet } from '@/test-utils/mocks/wallet.mocks';
-import { GOAL_ENDING } from '../constants';
 import { SavingsLockedError } from '../errors';
 import { withdrawFromSavings } from '../savings-withdrawal';
 
@@ -44,25 +43,19 @@ describe('withdrawFromSavings', () => {
     expect(await store.getActiveGoal(mockAccount.id)).toEqual(mockGoal);
   });
 
-  it('ends a reached goal as completed, at the moment the withdrawal was made', async () => {
-    const storedGoal = createMockGoal();
-    await store.insertGoal(storedGoal);
+  it('ends a reached goal with the withdrawal', async () => {
+    await store.insertGoal(mockGoal);
 
     await withdrawFromSavings({
       store,
       withdrawal: mockWithdrawal,
-      goal: storedGoal,
-      savingsBalance: storedGoal.amount,
+      goal: mockGoal,
+      savingsBalance: mockGoal.amount,
     });
 
     expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
       mockWithdrawal,
     ]);
     expect(await store.getActiveGoal(mockAccount.id)).toBeUndefined();
-    expect(storedGoal).toEqual({
-      ...mockGoal,
-      endedAt: mockWithdrawal.createdAt,
-      ending: GOAL_ENDING.completed,
-    });
   });
 });

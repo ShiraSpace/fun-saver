@@ -7,10 +7,10 @@ import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { createMockAccount } from '@/test-utils/mocks/account.mocks';
 import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
+import { UNIQUE_VIOLATION } from '../errors';
 import { withTestDatabase } from './test-database';
 
 const CHECK_VIOLATION = '23514';
-const UNIQUE_VIOLATION = '23505';
 
 describe('PostgresGoals', () => {
   const { store, sql, accountId, goalId, transactionId } = withTestDatabase();
