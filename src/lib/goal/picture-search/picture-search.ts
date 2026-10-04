@@ -71,6 +71,7 @@ function picturesForWord(
 ): Map<string, number> {
   const lookups = wordsToLookUp(typedWord);
   const scoreByPicture = new Map<string, number>();
+
   lookups.forEach((word, strippedLetters) => {
     for (const picture of picturesByTerm.get(word) ?? []) {
       if (!scoreByPicture.has(picture)) {

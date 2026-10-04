@@ -29,6 +29,7 @@ function savePictureWords(pictureWords: PictureWords): void {
       `${PICTURE_WORDS_PATH} is ${bytes} bytes, over ${MAX_PICTURE_WORDS_BYTES}`
     );
   }
+
   writeFileSync(PICTURE_WORDS_PATH, savedText);
   console.log(
     `${PICTURE_WORDS_PATH}: ${Object.keys(pictureWords).length} pictures, ${bytes} bytes`
