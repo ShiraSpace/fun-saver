@@ -8,14 +8,13 @@ import {
   HEX_RADIX,
   LINE_BREAK,
   MAX_OUTPUT_BYTES,
-  MAX_PICTURE_LENGTH,
   NEWEST_EMOJI_VERSION,
   OUTPUT_PATH,
   PICTURE_LIST_SEPARATOR,
-  PICTURE_PATTERN,
   TRIMMED_CODE_POINTS,
   VARIATION_SELECTOR,
 } from './constants';
+import { isValidPictureEmoji } from '../src/lib/goal/goal-request-validator';
 import type { PictureWords } from '../src/lib/goal/types';
 
 interface CldrAnnotation {
@@ -105,13 +104,9 @@ function pictureWords(
   return words;
 }
 
-function isGoalPicture(picture: string): boolean {
-  return picture.length <= MAX_PICTURE_LENGTH && PICTURE_PATTERN.test(picture);
-}
-
 function assertAllGoalPictures(words: PictureWords): void {
   const invalidPictures = Object.keys(words).filter(
-    (picture) => !isGoalPicture(picture)
+    (picture) => !isValidPictureEmoji(picture)
   );
   if (invalidPictures.length > 0) {
     throw new Error(

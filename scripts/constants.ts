@@ -12,10 +12,6 @@ export const NEWEST_EMOJI_VERSION = 13.0;
 
 export const MAX_OUTPUT_BYTES = 150 * 1024;
 
-export const MAX_PICTURE_LENGTH = 32;
-
-export const PICTURE_PATTERN = new RegExp('^\\p{RGI_Emoji}$', 'v');
-
 export const FULLY_QUALIFIED_LINE =
   /^([0-9A-F ]+?)\s*;\s*fully-qualified\s*#\s*\S+\s+E(\d+\.\d+)/;
 
