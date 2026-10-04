@@ -1,13 +1,16 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import {
+  createMockChildAccountsContext,
   mockAccountSummary,
   mockChildAccountsContext,
+  mockSiblingAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { VIEW_MODE } from '@/lib/account/view-mode';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
+import { CHILD_MENU_ACCOUNT_LIST_TEST_IDS } from '../ChildMenuAccountList/constants';
 import {
   VIEW_MODE_SWITCH_COPY,
   VIEW_MODE_SWITCH_TEST_IDS,
@@ -52,12 +55,71 @@ describe('ChildMenuContent', () => {
     ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[VIEW_MODE.parent]);
   });
 
+  it('shows no switch card when no other child is in child view', () => {
+    expect(
+      screen.queryByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.list)
+    ).not.toBeInTheDocument();
+  });
+
   describe('the child goes home', () => {
     beforeEach(() => {
       fireEvent.click(screen.getByTestId(CHILD_MENU_CONTENT_TEST_IDS.home));
     });
 
     it('closes the menu on the way', () => {
+      expect(mockCloseMenu).toHaveBeenCalledTimes(1);
+    });
+  });
+});
+
+describe('ChildMenuContent with another child in child view', () => {
+  const mockChildSibling = {
+    ...mockSiblingAccountSummary,
+    id: 'a3',
+    name: 'יואב',
+    viewMode: VIEW_MODE.child,
+  };
+  const mockSwitchAccount = jest.fn();
+  const mockCloseMenu = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    render(
+      <WithMenu closeMenu={mockCloseMenu}>
+        <ChildMenuContent />
+      </WithMenu>,
+      {
+        user: mockUser,
+        accounts: createMockChildAccountsContext({
+          accounts: [
+            mockAccountSummary,
+            mockSiblingAccountSummary,
+            mockChildSibling,
+          ],
+          switchAccount: mockSwitchAccount,
+        }),
+      }
+    );
+  });
+
+  it('lists only the other child in child view', () => {
+    const names = screen
+      .getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)
+      .map((name) => name.textContent);
+
+    expect(names).toEqual([mockChildSibling.name]);
+  });
+
+  describe('the child taps their sibling', () => {
+    beforeEach(() => {
+      fireEvent.click(screen.getByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row));
+    });
+
+    it("switches to the sibling's account", () => {
+      expect(mockSwitchAccount).toHaveBeenCalledWith(mockChildSibling.id);
+    });
+
+    it('closes the menu', () => {
       expect(mockCloseMenu).toHaveBeenCalledTimes(1);
     });
   });
