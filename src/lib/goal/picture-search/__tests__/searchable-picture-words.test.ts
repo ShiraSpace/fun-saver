@@ -32,11 +32,13 @@ describe('searchable picture words', () => {
       '🧑‍🎓': { emoji_version: '12.1' },
       '👨‍🦰': { emoji_version: '11.0' },
       '🏃‍♀️': { emoji_version: '4.0' },
+      '👩‍🎓': { emoji_version: '4.0' },
     };
     const mockUnicodeWords = {
       '🧑‍🎓': { default: ['סטודנט'] },
       '👨‍🦰': { default: ['ג׳ינג׳י'] },
       '🏃‍♀': { default: ['ריצה'] },
+      '👩‍🎓': { default: ['סטודנטית'] },
     };
 
     expect(searchablePictureWords(mockUnicodeEmoji, mockUnicodeWords)).toEqual({

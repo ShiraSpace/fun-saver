@@ -1,5 +1,6 @@
 import {
   HAIR_AND_GENDER_CODE_POINTS,
+  MAN_OR_WOMAN_SEQUENCE,
   OLDEST_SUPPORTED_ANDROID_EMOJI_VERSION,
   VARIATION_SELECTOR,
 } from './constants';
@@ -10,7 +11,10 @@ function isDrawnOnOldestSupportedPhone(emojiVersion: string): boolean {
 }
 
 function isVariantOfAnotherPicture(picture: string): boolean {
-  return HAIR_AND_GENDER_CODE_POINTS.test(picture);
+  return (
+    HAIR_AND_GENDER_CODE_POINTS.test(picture) ||
+    MAN_OR_WOMAN_SEQUENCE.test(picture)
+  );
 }
 
 function goalPictures(unicodeEmoji: UnicodeEmoji): string[] {

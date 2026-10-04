@@ -385,9 +385,9 @@ Its callers today are `use-add-transaction`, `use-update-account`,
   devDependencies. Unicode License v3. Checked (each finds these among others): אופניים →
   🚲🚴🚵, שמלה → 👗, קורקינט → 🛴, גיטרה → 🎸, אוזניות → 🎧, כלב → 🐶🐕.
 - **Generated, not shipped with its sources.**
-  `src/lib/goal/picture-search/generate-picture-words.ts`, run with
+  `scripts/generate-picture-words.ts`, run with
   `npm run generate-picture-words`, reads the three devDependencies (no network) and
-  writes `picture-words.he.json` beside it, committed with the licence in
+  writes `src/lib/goal/picture-search/picture-words.he.json`, committed with the licence in
   `picture-words.LICENSE` and listed in `.prettierignore`. The app imports only
   the JSON, so no devDependency reaches the bundle. `tsconfig` includes
   `**/*.ts`, so the script is type-checked and linted like the app.
@@ -399,7 +399,7 @@ Its callers today are `use-add-transaction`, `use-update-account`,
 - **Trimmed while generating:** `unicode-emoji-json` already leaves out
   skin-tone variants; a sequence is also dropped if it holds a hair component
   (U+1F9B0–1F9B3) or ♀/♂ (U+2640/2642, which also drops the standalone ♀️ and
-  ♂️), so one bicycle does not fill the grid five times. Emoji newer than
+  ♂️), or starts with 👨 or 👩 and a ZWJ (👨‍🎓 and 👩‍🎓 go, 🧑‍🎓 stays), so one bicycle does not fill the grid five times. Emoji newer than
   **Emoji 13.0** are dropped, read from each emoji's `emoji_version`: Android 11, the oldest Android current Chrome
   supports besides 10, draws all of them, and a goal picture is stored for
   good; 14.0 would add only 🛝 🪩 🪬. Only each emoji and its Hebrew words are
@@ -410,15 +410,13 @@ Its callers today are `use-add-transaction`, `use-update-account`,
   drop niqqud (U+0591–U+05C7, except the maqaf U+05BE), and `'` / `’` become
   `׳` (ג׳ויסטיק). Each annotation is split into words on spaces, `-` and the
   maqaf `־`, and the whole phrase is kept too, so "יום הולדת" finds 🎂 and
-  "דו-גלגלי", "דו־גלגלי" and "דו גלגלי" search alike. A typed word is tried as typed first; only if it
-  matches no word in the list is it tried again with one, then two, leading
-  prefix letters (`ה ו ב ל מ ש כ`) removed, and only while at least 2 letters
-  remain, stopping at the first step that matches. So "האופניים" finds
-  "אופניים", while "כלב" stays 🐶 and never becomes "לב" ❤. The price:
-  "ולאופניים" stops at "לאופניים", a word of 🚳 ("אין כניסה לאופניים"), and
-  finds only 🚳; merging every step's results would instead let "הכלב" find ❤. Plain "appears inside" is not used: short
-  words like "יד" would match inside "תלמידה". Results are ranked by how many
-  typed words matched, plus one when the whole typed phrase matched, with ties
+  "דו-גלגלי", "דו־גלגלי" and "דו גלגלי" search alike. A typed word is tried as typed, then with one, then
+  two, leading prefix letters (`ה ו ב ל מ ש כ`) removed, only while at least 2
+  letters remain, and every step's pictures are kept, an earlier step scoring
+  higher. So "האופניים" finds "אופניים", "ולאופניים" finds 🚳 ("אין כניסה
+  לאופניים") and then 🚲, and "כלב" shows every 🐶 before the ❤ of "לב". Plain "appears inside" is not used: short
+  words like "יד" would match inside "תלמידה". Results are ranked by the scores of
+  the typed words they match, plus the whole typed phrase's score, with ties
   in the word list's order (so "כלב" shows 🦴 first, since "כלב" is one of
   its words); the grid shows the first 9 and scrolls for the rest.
   Plurals (`כלבים`) do not match in v1.

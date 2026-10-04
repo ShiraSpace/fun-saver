@@ -3,9 +3,12 @@ import unicodeHebrewWords from 'cldr-annotations-full/annotations/he/annotations
 import unicodeHebrewCombinedWords from 'cldr-annotations-derived-full/annotationsDerived/he/annotations.json';
 import unicodeEmoji from 'unicode-emoji-json/data-by-emoji.json';
 import { isValidPictureEmoji } from '@/lib/goal/goal-request-validator';
-import { MAX_PICTURE_WORDS_BYTES, PICTURE_WORDS_PATH } from './constants';
-import { searchablePictureWords } from './searchable-picture-words';
-import type { PictureWords } from './types';
+import {
+  MAX_PICTURE_WORDS_BYTES,
+  PICTURE_WORDS_PATH,
+} from '@/lib/goal/picture-search/constants';
+import { searchablePictureWords } from '@/lib/goal/picture-search/searchable-picture-words';
+import type { PictureWords } from '@/lib/goal/picture-search/types';
 
 function assertEveryPictureIsAGoalPicture(pictureWords: PictureWords): void {
   const invalidPictures = Object.keys(pictureWords).filter(

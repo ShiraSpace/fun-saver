@@ -68,20 +68,22 @@ function wordsToLookUp(typedWord: string): string[] {
 function picturesForWord(
   typedWord: string,
   picturesByTerm: PicturesByTerm
-): Set<string> {
-  for (const word of wordsToLookUp(typedWord)) {
-    const pictures = picturesByTerm.get(word);
-
-    if (pictures) {
-      return pictures;
+): Map<string, number> {
+  const lookups = wordsToLookUp(typedWord);
+  const scoreByPicture = new Map<string, number>();
+  lookups.forEach((word, strippedLetters) => {
+    for (const picture of picturesByTerm.get(word) ?? []) {
+      if (!scoreByPicture.has(picture)) {
+        scoreByPicture.set(picture, lookups.length - strippedLetters);
+      }
     }
-  }
-  return new Set();
+  });
+  return scoreByPicture;
 }
 
-function rankedPictures(matchCountByPicture: Map<string, number>): string[] {
-  return [...matchCountByPicture.entries()]
-    .sort(([, firstCount], [, secondCount]) => secondCount - firstCount)
+function rankedPictures(scoreByPicture: Map<string, number>): string[] {
+  return [...scoreByPicture.entries()]
+    .sort(([, firstScore], [, secondScore]) => secondScore - firstScore)
     .map(([picture]) => picture);
 }
 
@@ -89,14 +91,11 @@ export function matchingPictures(
   query: string,
   picturesByTerm: PicturesByTerm
 ): string[] {
-  const matchCountByPicture = new Map<string, number>();
+  const scoreByPicture = new Map<string, number>();
   for (const term of searchTerms(query)) {
-    for (const picture of picturesForWord(term, picturesByTerm)) {
-      matchCountByPicture.set(
-        picture,
-        (matchCountByPicture.get(picture) ?? 0) + 1
-      );
+    for (const [picture, score] of picturesForWord(term, picturesByTerm)) {
+      scoreByPicture.set(picture, (scoreByPicture.get(picture) ?? 0) + score);
     }
   }
-  return rankedPictures(matchCountByPicture);
+  return rankedPictures(scoreByPicture);
 }

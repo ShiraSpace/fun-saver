@@ -2,6 +2,8 @@ export const OLDEST_SUPPORTED_ANDROID_EMOJI_VERSION = 13.0;
 
 export const HAIR_AND_GENDER_CODE_POINTS = /[\u{1F9B0}-\u{1F9B3}\u2640\u2642]/u;
 
+export const MAN_OR_WOMAN_SEQUENCE = /^[\u{1F468}\u{1F469}]\u200D/u;
+
 export const VARIATION_SELECTOR = /\uFE0F/g;
 
 export const PICTURE_WORDS_PATH =

@@ -15,8 +15,8 @@ describe('picture search', () => {
       expect(matchingPictures('האופניים', mockPicturesByTerm)).toEqual(['🚲']);
     });
 
-    it('keeps a word that matches as typed, so כלב never becomes לב', () => {
-      expect(matchingPictures('כלב', mockPicturesByTerm)).toEqual(['🐶']);
+    it('ranks the word as typed above the word with its prefix letter stripped, so כלב comes before לב', () => {
+      expect(matchingPictures('כלב', mockPicturesByTerm)).toEqual(['🐶', '❤️']);
     });
 
     it('never matches a short word inside a longer one', () => {
@@ -155,7 +155,7 @@ describe('picture search', () => {
     expect(matchingPictures('ביד', mockPicturesByShortWord)).toEqual(['✋']);
   });
 
-  it('stops stripping prefix letters at the first step that matches', () => {
+  it('finds the picture for the bare word after the one holding the word with a prefix letter', () => {
     const mockPicturesByPrefixedWord = indexPictureWords({
       '🚲': ['אופניים'],
       '🚳': ['אין כניסה לאופניים'],
@@ -163,6 +163,7 @@ describe('picture search', () => {
 
     expect(matchingPictures('ולאופניים', mockPicturesByPrefixedWord)).toEqual([
       '🚳',
+      '🚲',
     ]);
   });
 
