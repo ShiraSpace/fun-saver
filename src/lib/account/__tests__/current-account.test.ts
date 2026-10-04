@@ -1,4 +1,4 @@
-import { findCurrentAccount, otherAccounts } from '../current-account';
+import { findCurrentAccount } from '../current-account';
 
 const mockFirstAccount = { id: 'a1' };
 const mockSecondAccount = { id: 'a2' };
@@ -19,24 +19,5 @@ describe('findCurrentAccount', () => {
 
   it('has nothing to fall back to when there are no accounts', () => {
     expect(findCurrentAccount([], mockFirstAccount.id)).toBeUndefined();
-  });
-});
-
-describe('otherAccounts', () => {
-  it('leaves out the current account', () => {
-    expect(otherAccounts(mockAccounts, mockFirstAccount)).toEqual([
-      mockSecondAccount,
-    ]);
-  });
-
-  it("keeps the family's order", () => {
-    const mockThirdAccount = { id: 'a3' };
-
-    expect(
-      otherAccounts(
-        [mockFirstAccount, mockSecondAccount, mockThirdAccount],
-        mockSecondAccount
-      )
-    ).toEqual([mockFirstAccount, mockThirdAccount]);
   });
 });

@@ -4,10 +4,7 @@ import { JSX } from 'react';
 import { AvatarBadge } from '@/components/AvatarBadge';
 import { useAccounts } from '@/components/Home/accounts-context';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import {
-  VIEW_MODE,
-  siblingAccountsShownToChild,
-} from '@/lib/account/view-mode';
+import { VIEW_MODE, isShownToChild } from '@/lib/account/view-mode';
 import { AppearanceSection } from '../AppearanceSection';
 import { ChildMenuAccountList } from '../ChildMenuAccountList';
 import { ViewModeSwitch } from '../ViewModeSwitch';
@@ -31,7 +28,9 @@ export function ChildMenuContent(): JSX.Element {
   const { accounts, currentAccount } = useAccounts();
   const { closeMenu } = useMenu();
   const openAccount = useOpenAccount();
-  const siblingAccounts = siblingAccountsShownToChild(accounts, currentAccount);
+  const siblingAccounts = accounts.filter(
+    (account) => account.id !== currentAccount.id && isShownToChild(account)
+  );
 
   return (
     <Layout data-testid={CHILD_MENU_CONTENT_TEST_IDS.menu}>

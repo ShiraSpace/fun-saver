@@ -1,4 +1,3 @@
-import { otherAccounts } from './current-account';
 import type { Account } from './types';
 
 export const VIEW_MODE = {
@@ -20,10 +19,4 @@ export function resolveViewMode(stored: string | undefined): ViewMode {
 
 export function isShownToChild(account: Pick<Account, 'viewMode'>): boolean {
   return account.viewMode === VIEW_MODE.child;
-}
-
-export function siblingAccountsShownToChild<
-  ShownAccount extends Pick<Account, 'id' | 'viewMode'>,
->(accounts: ShownAccount[], currentAccount: ShownAccount): ShownAccount[] {
-  return otherAccounts(accounts, currentAccount).filter(isShownToChild);
 }
