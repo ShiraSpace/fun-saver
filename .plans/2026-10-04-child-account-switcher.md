@@ -55,7 +55,7 @@ gets a simple "switch to…" list under «הכסף שלי».
 | `CHILD_MENU_AVATAR_PROPS` (`size: 40`) | `src/components/Menu/constants.ts` | read by the top card and the rows |
 | `useOpenAccount()` | `src/components/Menu/use-open-account.ts` | `switchAccount` then `closeMenu`; both pickers use it |
 | `createMockAccountsContext`, `createMockChildAccountsContext` | `src/test-utils/mocks/account.mocks.ts` | context builders; tests no longer spread contexts inline |
-| `sibling`, `siblings` | `docs/glossary.md` | another child's account in the family |
+| `siblingAccount`, `siblingAccounts` | `docs/glossary.md` | another child's account in the family; a bare `sibling` is banned |
 
 The e2e harness clears the browser's cookies on every `open`
 (`e2e/driver/app-browser.ts`). One browser serves a whole `describe`, so a
@@ -121,9 +121,10 @@ over the per-account block", "takes a tap meant for…") on `main` itself, so
   (`role="switch"`, `aria-checked`, `aria-label` with the account's name, its
   own test id). Check `Row` in `row-parts.ts`: `AddButton` shares its private
   `row` string, so the split must not change the add button.
-- The switch: either a `compact` use of `ViewModeSwitch` given the account, or
-  a small `AccountViewModeSwitch` beside `AccountRow`. Pick whichever keeps
-  `ViewModeSwitch` under 200 lines and its saving tests intact.
+- The switch: either `ViewModeSwitch` given the account (it already has an
+  `isCompact` branch, today used for the parent view), or a small switch
+  component beside `AccountRow`. Keep `ViewModeSwitch`'s saving tests
+  (`ViewModeSwitch.saving.test.tsx`) passing either way.
 - `AccountControls` drops `ChildViewSetting` and its `.styles.ts` if empty.
 - `MenuDriver.tapViewModeSwitch()` is used by `e2e/child-view.e2e.ts` for the
   parent's switch; add `tapChildViewToggle(index)` for the list and keep
@@ -141,8 +142,13 @@ over the per-account block", "takes a tap meant for…") on `main` itself, so
 5. Toggling another account keeps the menu open (break: always `closeMenu`).
 6. A failed save shows the error under that row (break: drop the error).
 7. e2e: a parent turns child view on for a sibling from the list, opens that
-   sibling, and sees the child screen; the existing "a parent turns child view
-   on" flow uses the current account's row.
+   sibling, and sees the child screen.
+8. e2e: the existing `describe('a parent turns child view on')` in
+   `e2e/child-view.e2e.ts` calls `menu.tapViewModeSwitch()`, which taps the
+   switch PR 2 removes. Change it to open the account list and tap the
+   current account's row switch (`tapChildViewToggle(0)`).
+   `describe('the child goes back to the parent screen')` keeps
+   `tapViewModeSwitch()` until PR 3 replaces that switch too.
 
 **Open questions for the user before coding**
 
