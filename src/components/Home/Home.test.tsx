@@ -17,7 +17,9 @@ import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { AccountSummary } from '@/lib/account/types';
 import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { openAccountPicker } from '@/test-utils/account-picker';
-import { openMenu, renderHome } from './home-test-helpers';
+import { accounts, openMenu, renderHome } from './home-test-helpers';
+import { CHILD_ACCOUNT_TEST_IDS } from '@/components/ChildAccount/constants';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 
 const mockWriteCookie = jest.fn();
 
@@ -142,5 +144,19 @@ describe('Home', () => {
     expect(
       screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)
     ).toBeInTheDocument();
+  });
+
+  describe('an account in child view', () => {
+    beforeEach(() => {
+      renderHome({
+        accounts: [{ ...accounts[0], viewMode: VIEW_MODE.child }, accounts[1]],
+      });
+    });
+
+    it('opens on the child screen', () => {
+      expect(
+        screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
+      ).toBeInTheDocument();
+    });
   });
 });

@@ -2,6 +2,15 @@ export const MONEY_COPY = {
   currencySign: '₪',
 } as const;
 
+export const MONEY_ROUNDING = {
+  nearestShekel: 'nearestShekel',
+  nearestHalfShekel: 'nearestHalfShekel',
+  floorToShekels: 'floorToShekels',
+} as const;
+
+export type MoneyRounding =
+  (typeof MONEY_ROUNDING)[keyof typeof MONEY_ROUNDING];
+
 export const MONEY_STYLE = {
   currencyScale: 0.4,
   currencyOpacity: 0.65,

@@ -1,6 +1,7 @@
 import type { Account, AccountEdits } from '@/lib/account/types';
 import { DuplicateAccountError } from '@/lib/account/errors';
 import type { ThemeId } from '@/theme/registry';
+import type { ViewMode } from '@/lib/account/view-mode';
 import type { AccountRepository, StoreContents } from '../data-store';
 import type { FileSession } from './file-session';
 
@@ -45,6 +46,23 @@ export class JsonAccounts implements AccountRepository {
         }
 
         account.themeId = themeId;
+        await save();
+
+        return account;
+      }
+    );
+  }
+
+  setViewMode(id: string, viewMode: ViewMode): Promise<Account | undefined> {
+    return this.session.write(
+      async (contents, save): Promise<Account | undefined> => {
+        const account = findAccount(contents, id);
+
+        if (!account) {
+          return;
+        }
+
+        account.viewMode = viewMode;
         await save();
 
         return account;

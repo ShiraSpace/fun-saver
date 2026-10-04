@@ -2,6 +2,7 @@ import type { Account, AccountEdits, AccountUser } from '@/lib/account/types';
 import type { AuthProvider, User } from '@/lib/user/types';
 import type { Transaction } from '@/lib/transaction/types';
 import type { ThemeId } from '@/theme/registry';
+import type { ViewMode } from '@/lib/account/view-mode';
 import type {
   AccountOwner,
   AccountRepository,
@@ -29,6 +30,13 @@ export class RepositoryStore implements DataStore {
 
   setAccountTheme(id: string, themeId: ThemeId): Promise<Account | undefined> {
     return this.accounts.setTheme(id, themeId);
+  }
+
+  setAccountViewMode(
+    id: string,
+    viewMode: ViewMode
+  ): Promise<Account | undefined> {
+    return this.accounts.setViewMode(id, viewMode);
   }
 
   updateAccount(

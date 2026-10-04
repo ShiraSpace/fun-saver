@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX, ReactNode } from 'react';
-import type { WalletName, WalletSummary } from '@/lib/wallet/types';
+import type { SpendableWalletName, WalletSummary } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { Money } from '@/components/Money';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
@@ -20,7 +20,7 @@ type CardWallet = Pick<
 >;
 
 const WITHDRAWALS_SUMMARY: Record<
-  Exclude<WalletName, 'savings'>,
+  SpendableWalletName,
   (wallet: CardWallet) => string
 > = {
   spending: WALLET_CARD_COPY.spendingSummary,

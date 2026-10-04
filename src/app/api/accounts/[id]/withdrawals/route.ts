@@ -8,7 +8,7 @@ import { validWithdrawal } from '@/lib/transaction/transaction-input';
 import { jsonBody } from '@/app/api/json-body';
 import { API_ERRORS } from '@/app/api/constants';
 import { accountNotFound, badRequest } from '@/app/api/responses';
-import { withAccountEditor } from '../with-account-editor';
+import { withAccountEditor } from '../with-account-access';
 
 export const POST = withAccountEditor(async (request, id) => {
   const store = getStore();
