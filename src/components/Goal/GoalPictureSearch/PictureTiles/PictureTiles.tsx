@@ -1,6 +1,8 @@
 'use client';
 
 import { JSX } from 'react';
+import { GOAL_PICTURE_KIND } from '@/lib/goal/constants';
+import type { GoalPicture } from '@/lib/goal/types';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { PICTURE_TILES_COPY, PICTURE_TILES_TEST_IDS } from './constants';
 import {
@@ -10,21 +12,21 @@ import {
 } from './PictureTiles.styles';
 
 interface PictureTilesProps {
-  pictures: string[];
+  foundEmoji: string[];
   requestState: RequestState;
   query: string;
-  chosenPicture: string;
-  onChoosePicture: (picture: string) => void;
+  chosenPicture: GoalPicture;
+  onChoosePicture: (picture: GoalPicture) => void;
 }
 
 interface PictureSearchResult {
-  pictures: string[];
+  foundEmoji: string[];
   requestState: RequestState;
   query: string;
 }
 
 function whyNoPictures({
-  pictures,
+  foundEmoji,
   requestState,
   query,
 }: PictureSearchResult): string | null {
@@ -40,17 +42,17 @@ function whyNoPictures({
     return PICTURE_TILES_COPY.nothingTyped;
   }
 
-  return pictures.length === 0 ? PICTURE_TILES_COPY.noMatch(query) : null;
+  return foundEmoji.length === 0 ? PICTURE_TILES_COPY.noMatch(query) : null;
 }
 
 export function PictureTiles({
-  pictures,
+  foundEmoji,
   requestState,
   query,
   chosenPicture,
   onChoosePicture,
 }: PictureTilesProps): JSX.Element {
-  const noPicturesReason = whyNoPictures({ pictures, requestState, query });
+  const noPicturesReason = whyNoPictures({ foundEmoji, requestState, query });
   const failedToLoad = requestState === REQUEST_STATE.failed;
 
   if (noPicturesReason) {
@@ -65,15 +67,17 @@ export function PictureTiles({
     );
   }
 
-  const pictureTiles = pictures.map((picture) => (
+  const pictureTiles = foundEmoji.map((emoji) => (
     <PictureTile
-      key={picture}
+      key={emoji}
       type="button"
-      aria-pressed={picture === chosenPicture}
+      aria-pressed={emoji === chosenPicture.emoji}
       data-testid={PICTURE_TILES_TEST_IDS.pictureTile}
-      onClick={(): void => onChoosePicture(picture)}
+      onClick={(): void =>
+        onChoosePicture({ kind: GOAL_PICTURE_KIND.emoji, emoji })
+      }
     >
-      {picture}
+      {emoji}
     </PictureTile>
   ));
 

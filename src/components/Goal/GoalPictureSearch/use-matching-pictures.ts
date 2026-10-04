@@ -9,7 +9,7 @@ import type { PicturesByTerm } from '@/lib/goal/picture-search/types';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 
 interface MatchingPictures {
-  pictures: string[];
+  foundEmoji: string[];
   requestState: RequestState;
 }
 
@@ -35,17 +35,17 @@ export function useMatchingPictures(query: string): MatchingPictures {
     }
 
     void loadPicturesByTerm()
-      .then((picturesByTerm) => {
-        setPicturesByTerm(picturesByTerm);
+      .then((justLoadedPicturesByTerm) => {
+        setPicturesByTerm(justLoadedPicturesByTerm);
         setRequestState(REQUEST_STATE.idle);
       })
       .catch(() => setRequestState(REQUEST_STATE.failed));
   }, []);
 
-  const pictures = useMemo(
+  const foundEmoji = useMemo(
     () => (picturesByTerm ? matchingPictures(query, picturesByTerm) : []),
     [query, picturesByTerm]
   );
 
-  return { pictures, requestState };
+  return { foundEmoji, requestState };
 }

@@ -48,7 +48,7 @@ export function GoalPictureSearch({
         <SheetHeading titleId={titleId} onClose={onClose} />
         <QueryField query={search.query} onChange={search.editQuery} />
         <PictureTiles
-          pictures={search.pictures}
+          foundEmoji={search.foundEmoji}
           requestState={search.requestState}
           query={search.searchedQuery}
           chosenPicture={search.chosenPicture}

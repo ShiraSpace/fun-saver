@@ -1,7 +1,7 @@
 'use client';
 
 import { useDeferredValue, useState } from 'react';
-import { DEFAULT_GOAL_PICTURE, GOAL_PICTURE_KIND } from '@/lib/goal/constants';
+import { DEFAULT_GOAL_PICTURE } from '@/lib/goal/constants';
 import type { GoalPicture } from '@/lib/goal/types';
 import type { RequestState } from '@/lib/request-state';
 import { useMatchingPictures } from './use-matching-pictures';
@@ -15,11 +15,11 @@ interface GoalPictureSearchOptions {
 interface GoalPictureSearchState {
   query: string;
   searchedQuery: string;
-  pictures: string[];
+  foundEmoji: string[];
   requestState: RequestState;
-  chosenPicture: string;
+  chosenPicture: GoalPicture;
   editQuery: (query: string) => void;
-  choosePicture: (picture: string) => void;
+  choosePicture: (picture: GoalPicture) => void;
   confirmChoice: () => void;
 }
 
@@ -29,21 +29,20 @@ export function useGoalPictureSearch({
   onChange,
 }: GoalPictureSearchOptions): GoalPictureSearchState {
   const [query, setQuery] = useState(goalName);
-  const [chosenPicture, setChosenPicture] = useState(
-    (picture ?? DEFAULT_GOAL_PICTURE).emoji
+  const [chosenPicture, setChosenPicture] = useState<GoalPicture>(
+    picture ?? DEFAULT_GOAL_PICTURE
   );
   const searchedQuery = useDeferredValue(query);
-  const { pictures, requestState } = useMatchingPictures(searchedQuery);
+  const { foundEmoji, requestState } = useMatchingPictures(searchedQuery);
 
   return {
     query,
     searchedQuery,
-    pictures,
+    foundEmoji,
     requestState,
     chosenPicture,
     editQuery: setQuery,
     choosePicture: setChosenPicture,
-    confirmChoice: (): void =>
-      onChange({ kind: GOAL_PICTURE_KIND.emoji, emoji: chosenPicture }),
+    confirmChoice: (): void => onChange(chosenPicture),
   };
 }
