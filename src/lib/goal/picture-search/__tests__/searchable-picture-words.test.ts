@@ -43,4 +43,51 @@ describe('searchable picture words', () => {
       '🧑‍🎓': ['סטודנט'],
     });
   });
+
+  it('adds the spoken name after the keywords', () => {
+    const mockUnicodeEmoji = { '🛴': { emoji_version: '3.0' } };
+    const mockUnicodeWords = {
+      '🛴': { default: ['קורקינט'], tts: ['קורקינט ילדים'] },
+    };
+
+    expect(searchablePictureWords(mockUnicodeEmoji, mockUnicodeWords)).toEqual({
+      '🛴': ['קורקינט', 'קורקינט ילדים'],
+    });
+  });
+
+  it('drops a picture with no Hebrew words', () => {
+    const mockUnicodeEmoji = {
+      '🐶': { emoji_version: '0.6' },
+      '🦴': { emoji_version: '11.0' },
+    };
+    const mockUnicodeWords = { '🐶': { default: ['כלב'] } };
+
+    expect(searchablePictureWords(mockUnicodeEmoji, mockUnicodeWords)).toEqual({
+      '🐶': ['כלב'],
+    });
+  });
+
+  it('finds the words for ❤️ under the Unicode key that leaves out its variation selector', () => {
+    const mockUnicodeEmoji = { '❤️': { emoji_version: '0.6' } };
+    const mockUnicodeWords = { '❤': { default: ['לב'] } };
+
+    expect(searchablePictureWords(mockUnicodeEmoji, mockUnicodeWords)).toEqual({
+      '❤️': ['לב'],
+    });
+  });
+
+  it('keeps the pictures in Unicode order', () => {
+    const mockUnicodeEmoji = {
+      '🚲': { emoji_version: '0.6' },
+      '🐶': { emoji_version: '0.6' },
+    };
+    const mockUnicodeWords = {
+      '🚲': { default: ['אופניים'] },
+      '🐶': { default: ['כלב'] },
+    };
+
+    expect(
+      Object.keys(searchablePictureWords(mockUnicodeEmoji, mockUnicodeWords))
+    ).toEqual(['🚲', '🐶']);
+  });
 });
