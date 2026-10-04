@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
+import { act, fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import {
   mockAccountsContext,
   mockAccountSummary,
@@ -11,6 +11,7 @@ import {
 } from '@/test-utils/menu';
 import { APP_VIEW_MODE } from '@/lib/account/view-mode';
 import { mockRouter } from '@mocks/next/navigation';
+import { prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
 import { ViewModeSwitch } from './ViewModeSwitch';
 import { VIEW_MODE_SWITCH_COPY, VIEW_MODE_SWITCH_TEST_IDS } from './constants';
 
@@ -24,6 +25,32 @@ describe('ViewModeSwitch', () => {
     global.fetch = jest
       .fn()
       .mockResolvedValue({ ok: true, json: async () => mockAccountSummary });
+  });
+
+  describe('for someone who turned animations off', () => {
+    const mockCloseMenu = jest.fn();
+
+    beforeEach(async () => {
+      prefersReducedMotion();
+      jest.useFakeTimers();
+      render(
+        <WithMenu closeMenu={mockCloseMenu}>
+          <ViewModeSwitch viewMode={APP_VIEW_MODE.child} />
+        </WithMenu>,
+        { accounts: mockAccountsContext }
+      );
+      tapSwitch();
+      await act(() => jest.advanceTimersByTimeAsync(1));
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+      prefersMotion();
+    });
+
+    it('closes the menu without waiting for a slide that does not play', () => {
+      expect(mockCloseMenu).toHaveBeenCalled();
+    });
   });
 
   describe('the parent switch', () => {
