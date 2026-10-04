@@ -10,4 +10,8 @@ export const API_ERRORS = {
   unknownTheme: 'unknown theme',
   invalidViewModeRequest: 'invalid view mode request',
   unknownViewMode: 'unknown view mode',
+  invalidGoal: 'invalid goal',
+  goalAlreadyActive: 'a goal is already active',
+  goalNotActive: 'goal is not active',
+  savingsLocked: 'savings are kept until the goal is reached',
 } as const;

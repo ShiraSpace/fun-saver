@@ -7,28 +7,33 @@ import {
 } from '@/lib/account/account-access';
 import { notSignedIn, notYourAccount } from '@/app/api/responses';
 
-interface RouteContext {
-  params: Promise<{ id: string }>;
+export interface AccountRouteParams {
+  id: string;
 }
 
-type AccountHandler = (
+interface RouteContext<Params extends AccountRouteParams> {
+  params: Promise<Params>;
+}
+
+type AccountHandler<Params extends AccountRouteParams> = (
   request: Request,
-  accountId: string
+  accountId: string,
+  params: Params
 ) => Promise<Response>;
 
-type RouteHandler = (
+type RouteHandler<Params extends AccountRouteParams> = (
   request: Request,
-  context: RouteContext
+  context: RouteContext<Params>
 ) => Promise<Response>;
 
 type AccountAccessRule = (params: AccountAccessParams) => Promise<boolean>;
 
-function withAccountAccess(
+function withAccountAccess<Params extends AccountRouteParams>(
   hasAccess: AccountAccessRule,
-  handle: AccountHandler
-): RouteHandler {
+  handle: AccountHandler<Params>
+): RouteHandler<Params> {
   return async (request, context) => {
-    const [user, { id }] = await Promise.all([signedInUser(), context.params]);
+    const [user, params] = await Promise.all([signedInUser(), context.params]);
 
     if (!user) {
       return notSignedIn();
@@ -37,21 +42,25 @@ function withAccountAccess(
     const allowed = await hasAccess({
       store: getStore(),
       userId: user.id,
-      accountId: id,
+      accountId: params.id,
     });
 
     if (!allowed) {
       return notYourAccount();
     }
 
-    return handle(request, id);
+    return handle(request, params.id, params);
   };
 }
 
-export function withAccountEditor(handle: AccountHandler): RouteHandler {
+export function withAccountEditor<
+  Params extends AccountRouteParams = AccountRouteParams,
+>(handle: AccountHandler<Params>): RouteHandler<Params> {
   return withAccountAccess(canEditAccount, handle);
 }
 
-export function withAccountUser(handle: AccountHandler): RouteHandler {
+export function withAccountUser<
+  Params extends AccountRouteParams = AccountRouteParams,
+>(handle: AccountHandler<Params>): RouteHandler<Params> {
   return withAccountAccess(isAccountUser, handle);
 }
