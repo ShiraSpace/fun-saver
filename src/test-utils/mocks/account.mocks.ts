@@ -95,11 +95,17 @@ export function createMockAccountsContext(
   };
 }
 
+export const mockChildAccountSummary: AccountSummary = {
+  ...mockAccountSummary,
+  viewMode: VIEW_MODE.child,
+};
+
 export function createMockChildAccountsContext(
   overrides: Partial<AccountsContextValue> = {}
 ): AccountsContextValue {
   return createMockAccountsContext({
-    currentAccount: { ...mockAccountSummary, viewMode: VIEW_MODE.child },
+    accounts: [mockChildAccountSummary, mockSiblingAccountSummary],
+    currentAccount: mockChildAccountSummary,
     ...overrides,
   });
 }

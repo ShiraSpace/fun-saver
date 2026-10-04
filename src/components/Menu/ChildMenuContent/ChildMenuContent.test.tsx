@@ -3,6 +3,7 @@ import { mockUser } from '@/test-utils/mocks/user.mocks';
 import {
   createMockChildAccountsContext,
   mockAccountSummary,
+  mockChildAccountSummary,
   mockChildAccountsContext,
   mockSiblingAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
@@ -86,7 +87,7 @@ describe('ChildMenuContent with a sibling in each view', () => {
         user: mockUser,
         accounts: createMockChildAccountsContext({
           accounts: [
-            mockAccountSummary,
+            mockChildAccountSummary,
             mockSiblingAccountSummary,
             mockChildSiblingAccount,
           ],
@@ -122,10 +123,10 @@ describe('ChildMenuContent with a sibling in each view', () => {
 });
 
 describe.each([
-  ['for an only child', [mockAccountSummary]],
+  ['for an only child', [mockChildAccountSummary]],
   [
     'whose siblings are all in parent view',
-    [mockAccountSummary, mockSiblingAccountSummary],
+    [mockChildAccountSummary, mockSiblingAccountSummary],
   ],
 ])('ChildMenuContent %s', (_, mockAccounts) => {
   beforeEach(() => {
