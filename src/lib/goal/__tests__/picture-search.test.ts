@@ -1,38 +1,40 @@
 import { indexPictureWords, matchingPictures } from '../picture-search';
 
 describe('picture search', () => {
-  const mockPictureWords = {
-    '🚲': ['אופניים'],
-    '🐶': ['כלב'],
-    '❤️': ['לב'],
-    '✋': ['יד'],
-    '🧑‍🎓': ['תלמידה'],
-  };
-  const mockPicturesByTerm = indexPictureWords(mockPictureWords);
+  describe('over a small word list', () => {
+    const mockPictureWords = {
+      '🚲': ['אופניים'],
+      '🐶': ['כלב'],
+      '❤️': ['לב'],
+      '✋': ['יד'],
+      '🧑‍🎓': ['תלמידה'],
+    };
+    const mockPicturesByTerm = indexPictureWords(mockPictureWords);
 
-  it('finds the picture for a word typed with a prefix letter', () => {
-    expect(matchingPictures('האופניים', mockPicturesByTerm)).toEqual(['🚲']);
-  });
+    it('finds the picture for a word typed with a prefix letter', () => {
+      expect(matchingPictures('האופניים', mockPicturesByTerm)).toEqual(['🚲']);
+    });
 
-  it('keeps a word that matches as typed, so כלב never becomes לב', () => {
-    expect(matchingPictures('כלב', mockPicturesByTerm)).toEqual(['🐶']);
-  });
+    it('keeps a word that matches as typed, so כלב never becomes לב', () => {
+      expect(matchingPictures('כלב', mockPicturesByTerm)).toEqual(['🐶']);
+    });
 
-  it('never matches a short word inside a longer one', () => {
-    expect(matchingPictures('יד', mockPicturesByTerm)).toEqual(['✋']);
-  });
+    it('never matches a short word inside a longer one', () => {
+      expect(matchingPictures('יד', mockPicturesByTerm)).toEqual(['✋']);
+    });
 
-  it('finds the picture for a word typed with two prefix letters', () => {
-    expect(matchingPictures('ולאופניים', mockPicturesByTerm)).toEqual(['🚲']);
-  });
+    it('finds the picture for a word typed with two prefix letters', () => {
+      expect(matchingPictures('ולאופניים', mockPicturesByTerm)).toEqual(['🚲']);
+    });
 
-  it('never finds a plural from its singular', () => {
-    expect(matchingPictures('כלבים', mockPicturesByTerm)).toEqual([]);
-  });
+    it('never finds a plural from its singular', () => {
+      expect(matchingPictures('כלבים', mockPicturesByTerm)).toEqual([]);
+    });
 
-  it('finds nothing for an empty or blank search', () => {
-    expect(matchingPictures('', mockPicturesByTerm)).toEqual([]);
-    expect(matchingPictures('   ', mockPicturesByTerm)).toEqual([]);
+    it('finds nothing for an empty or blank search', () => {
+      expect(matchingPictures('', mockPicturesByTerm)).toEqual([]);
+      expect(matchingPictures('   ', mockPicturesByTerm)).toEqual([]);
+    });
   });
 
   it('ranks the picture whose annotation is the whole typed phrase above one holding its words apart', () => {

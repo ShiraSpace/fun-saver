@@ -8,10 +8,10 @@ import {
   HEX_RADIX,
   LINE_BREAK,
   MAX_OUTPUT_BYTES,
-  NEWEST_EMOJI_VERSION,
+  OLDEST_SUPPORTED_ANDROID_EMOJI_VERSION,
   OUTPUT_PATH,
   PICTURE_LIST_SEPARATOR,
-  TRIMMED_CODE_POINTS,
+  SKIN_TONE_HAIR_AND_GENDER_CODE_POINTS,
   VARIATION_SELECTOR,
 } from './constants';
 import { isValidPictureEmoji } from '@/lib/goal/goal-request-validator';
@@ -79,7 +79,10 @@ function fullyQualifiedEmojiByCldrKey(
 }
 
 function isSupportedPicture({ emoji, version }: FullyQualifiedEmoji): boolean {
-  return version <= NEWEST_EMOJI_VERSION && !TRIMMED_CODE_POINTS.test(emoji);
+  return (
+    version <= OLDEST_SUPPORTED_ANDROID_EMOJI_VERSION &&
+    !SKIN_TONE_HAIR_AND_GENDER_CODE_POINTS.test(emoji)
+  );
 }
 
 function hebrewWords(annotation: CldrAnnotation): string[] {

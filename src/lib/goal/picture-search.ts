@@ -27,7 +27,7 @@ function searchableWords(text: string): string[] {
 
 function annotationTerms(annotation: string): string[] {
   const words = searchableWords(annotation);
-  return [words.join(PHRASE_WORD_SEPARATOR), ...words];
+  return words.length > 0 ? [words.join(PHRASE_WORD_SEPARATOR), ...words] : [];
 }
 
 export function indexPictureWords(pictureWords: PictureWords): PicturesByTerm {
@@ -43,16 +43,13 @@ export function indexPictureWords(pictureWords: PictureWords): PicturesByTerm {
   return picturesByTerm;
 }
 
-function withoutPrefix(
-  typedWord: string,
-  prefixLength: number
-): string | undefined {
+function withoutPrefix(typedWord: string, prefixLength: number): string {
   const prefix = typedWord.slice(0, prefixLength);
   const rest = typedWord.slice(prefixLength);
   const isPrefix = [...prefix].every((letter) =>
     PREFIX_LETTERS.includes(letter)
   );
-  return isPrefix && rest.length >= MIN_LETTERS_AFTER_PREFIX ? rest : undefined;
+  return isPrefix && rest.length >= MIN_LETTERS_AFTER_PREFIX ? rest : '';
 }
 
 function picturesForWord(
