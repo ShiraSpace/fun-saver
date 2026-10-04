@@ -16,7 +16,8 @@
     "test:visual": "next build && tsx --test --test-concurrency=4 e2e/*.visual.ts",
     "db:migrate": "tsx --env-file=.env.local src/db/run-migration.ts",
     "db:migrate-dev": "tsx --env-file=.env.local src/db/run-migration.ts --dev",
-    "db:migrate-test": "tsx --env-file=.env.local src/db/run-migration.ts --test"
+    "db:migrate-test": "tsx --env-file=.env.local src/db/run-migration.ts --test",
+    "generate-picture-words": "tsx scripts/generate-picture-words.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -45,6 +46,8 @@
     "@types/stylis": "^4.2.7",
     "@typescript-eslint/eslint-plugin": "^8.60.0",
     "@typescript-eslint/parser": "^8.60.0",
+    "cldr-annotations-derived-full": "48.2.0",
+    "cldr-annotations-full": "48.2.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.6",
     "eslint-config-prettier": "^10.1.8",
@@ -57,6 +60,7 @@
     "puppeteer": "^25.1.0",
     "tailwindcss": "^4",
     "tsx": "^4.22.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "unicode-emoji-json": "0.9.0"
   }
 }
