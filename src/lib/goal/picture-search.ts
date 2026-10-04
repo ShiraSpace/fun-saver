@@ -25,15 +25,17 @@ function searchableWords(text: string): string[] {
     .filter(Boolean);
 }
 
-function annotationTerms(annotation: string): string[] {
-  const words = searchableWords(annotation);
-  return words.length > 0 ? [words.join(PHRASE_WORD_SEPARATOR), ...words] : [];
+function searchTerms(text: string): string[] {
+  const words = searchableWords(text);
+  return words.length > 1
+    ? [words.join(PHRASE_WORD_SEPARATOR), ...words]
+    : words;
 }
 
 export function indexPictureWords(pictureWords: PictureWords): PicturesByTerm {
   const picturesByTerm: PicturesByTerm = new Map();
   for (const [picture, annotations] of Object.entries(pictureWords)) {
-    for (const term of annotations.flatMap(annotationTerms)) {
+    for (const term of annotations.flatMap(searchTerms)) {
       picturesByTerm.set(
         term,
         (picturesByTerm.get(term) ?? new Set()).add(picture)
@@ -57,6 +59,7 @@ function picturesForWord(
   picturesByTerm: PicturesByTerm
 ): Set<string> {
   const exactMatch = picturesByTerm.get(typedWord);
+
   if (exactMatch) {
     return exactMatch;
   }
@@ -68,18 +71,12 @@ function picturesForWord(
     const wordWithoutPrefix = withoutPrefix(typedWord, prefixLength);
     const prefixMatch =
       wordWithoutPrefix && picturesByTerm.get(wordWithoutPrefix);
+
     if (prefixMatch) {
       return prefixMatch;
     }
   }
   return new Set();
-}
-
-function typedTerms(query: string): string[] {
-  const words = searchableWords(query);
-  return words.length > 1
-    ? [words.join(PHRASE_WORD_SEPARATOR), ...words]
-    : words;
 }
 
 function rankedPictures(matchCountByPicture: Map<string, number>): string[] {
@@ -93,7 +90,7 @@ export function matchingPictures(
   picturesByTerm: PicturesByTerm
 ): string[] {
   const matchCountByPicture = new Map<string, number>();
-  for (const term of typedTerms(query)) {
+  for (const term of searchTerms(query)) {
     for (const picture of picturesForWord(term, picturesByTerm)) {
       matchCountByPicture.set(
         picture,

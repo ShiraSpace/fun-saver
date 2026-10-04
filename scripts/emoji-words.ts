@@ -39,6 +39,7 @@ interface FullyQualifiedEmoji {
 
 async function download(url: string): Promise<string> {
   const response = await fetch(url);
+
   if (!response.ok) {
     throw new Error(`${url} answered ${response.status}`);
   }
@@ -67,6 +68,7 @@ function fullyQualifiedEmojiByCldrKey(
   const emojiByCldrKey = new Map<string, FullyQualifiedEmoji>();
   for (const line of emojiTest.split(LINE_BREAK)) {
     const match = FULLY_QUALIFIED_LINE.exec(line);
+
     if (match) {
       const emoji = emojiFromCodePoints(match[1]);
       emojiByCldrKey.set(withoutVariationSelector(emoji), {
@@ -100,6 +102,7 @@ function pictureWords(
     const fullyQualified = emojiByCldrKey.get(
       withoutVariationSelector(cldrKey)
     );
+
     if (fullyQualified && isSupportedPicture(fullyQualified)) {
       words[fullyQualified.emoji] = hebrewWords(annotation);
     }
@@ -111,6 +114,7 @@ function assertAllGoalPictures(words: PictureWords): void {
   const invalidPictures = Object.keys(words).filter(
     (picture) => !isValidPictureEmoji(picture)
   );
+
   if (invalidPictures.length > 0) {
     throw new Error(
       `Not a goal picture: ${invalidPictures.join(PICTURE_LIST_SEPARATOR)}`
@@ -121,6 +125,7 @@ function assertAllGoalPictures(words: PictureWords): void {
 function serializedPictureWords(words: PictureWords): string {
   const serialized = JSON.stringify(words);
   const bytes = Buffer.byteLength(serialized);
+
   if (bytes > MAX_OUTPUT_BYTES) {
     throw new Error(
       `${OUTPUT_PATH} is ${bytes} bytes, over ${MAX_OUTPUT_BYTES}`
