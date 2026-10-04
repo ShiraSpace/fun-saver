@@ -6,6 +6,7 @@ import {
 } from '@/components/Home/accounts-context';
 import type { AppViewMode } from '@/lib/account/view-mode';
 import { fetchJson } from '@/lib/fetch-json';
+import { wait } from '@/lib/wait';
 import { motionIsReduced } from '@/theme/motion';
 import { useMenu, useOnMenuClose } from '../use-menu-state';
 import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
@@ -25,10 +26,6 @@ interface SavedViewModeSteps {
 
 function accountViewModeEndpoint(accountId: string): string {
   return `/api/accounts/${accountId}/view-mode`;
-}
-
-function wait(milliseconds: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 function switchFinishesSliding(): Promise<void> {

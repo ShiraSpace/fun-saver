@@ -10,6 +10,7 @@ import {
 import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { APP_VIEW_MODE, type AppViewMode } from '@/lib/account/view-mode';
 import type { AccountSummary } from '@/lib/account/types';
+import { wait } from '@/lib/wait';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { Home } from './Home';
@@ -46,10 +47,6 @@ function HomeWithServerAccounts(): JSX.Element {
       <Home accounts={serverAccounts} initialAccountId={mockAccount.id} />
     </Fragment>
   );
-}
-
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function tapViewModeSwitch(): void {
