@@ -10,6 +10,7 @@ import { WalletList } from './WalletList/WalletList';
 import { TransactionDrawer } from './TransactionDrawer';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
 import { walletNamed } from '@/lib/wallet/wallet-named';
+import { WALLET_NAME } from '@/lib/wallet/constants';
 
 interface AccountProps {
   account: AccountSummary;
@@ -17,8 +18,10 @@ interface AccountProps {
 
 export function Account({ account }: AccountProps): JSX.Element {
   const { wallets } = account;
-  const savings = walletNamed(wallets, 'savings');
-  const otherWallets = wallets.filter((wallet) => wallet.name !== 'savings');
+  const savings = walletNamed(wallets, WALLET_NAME.savings);
+  const otherWallets = wallets.filter(
+    (wallet) => wallet.name !== WALLET_NAME.savings
+  );
   const savingsFirst = savings ? [savings, ...otherWallets] : otherWallets;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 

@@ -3,6 +3,12 @@ import type { WalletConfig, WalletName } from './types';
 
 export const PERCENT_TOTAL = 100;
 
+export const WALLET_NAME = {
+  savings: 'savings',
+  spending: 'spending',
+  goodDeeds: 'goodDeeds',
+} as const satisfies Record<WalletName, WalletName>;
+
 export const WALLET_NAMES: readonly WalletName[] = [
   'savings',
   'spending',
