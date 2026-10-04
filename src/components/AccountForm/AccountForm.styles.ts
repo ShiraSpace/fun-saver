@@ -63,4 +63,8 @@ export const Cancel = styled.button`
   font-weight: 700;
   color: ${titleColor};
   cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
 `;

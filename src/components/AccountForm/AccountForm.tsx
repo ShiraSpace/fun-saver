@@ -40,7 +40,10 @@ export function AccountForm({
   return (
     <Screen align="top" data-testid={testId}>
       <Form onSubmit={(event): void => void form.handleSubmit(event)}>
-        <CancelButton onCancel={onCancel} />
+        <CancelButton
+          onCancel={onCancel}
+          disabled={form.requestState === REQUEST_STATE.pending}
+        />
         <FormTitle title={title} titleIcon={titleIcon} />
         <NameField
           value={form.name}
