@@ -4,7 +4,7 @@ export const CHILD_MENU_CONTENT_TEST_IDS = {
 } as const;
 
 export const CHILD_MENU_AVATAR_PROPS = {
-  size: 84,
+  size: 40,
 } as const;
 
 export const CHILD_MENU_CONTENT_COPY = {

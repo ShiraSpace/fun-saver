@@ -11,17 +11,14 @@ import { AccountPicker } from '../AccountPicker';
 import { EditAccountButton } from '../EditAccountButton';
 import { ViewModeSwitch } from '../ViewModeSwitch';
 import { useMenu } from '../use-menu-state';
+import { useOpenAccount } from '../use-open-account';
 import { ChildViewSetting } from './AccountControls.styles';
 
 export function AccountControls(): JSX.Element {
-  const { accounts, currentAccount, switchAccount } = useAccounts();
+  const { accounts, currentAccount } = useAccounts();
   const { closeMenu } = useMenu();
   const { setMode } = useAppMode();
-
-  const openAccount = (id: string): void => {
-    switchAccount(id);
-    closeMenu();
-  };
+  const openAccount = useOpenAccount();
 
   const startEditingAccount = (): void => {
     closeMenu();
