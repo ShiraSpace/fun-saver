@@ -4,25 +4,25 @@ import { SavingsLockedError } from './errors';
 import { goalReached } from './goal-reached';
 import type { Goal } from './types';
 
-interface WithdrawFromSavingsParams {
+interface InsertWithdrawalParams {
   store: DataStore;
   withdrawal: Transaction;
   goal: Goal | undefined;
-  savingsBalance: number;
+  walletBalance: number;
 }
 
-export async function withdrawFromSavings({
+export async function insertWithdrawal({
   store,
   withdrawal,
   goal,
-  savingsBalance,
-}: WithdrawFromSavingsParams): Promise<void> {
+  walletBalance,
+}: InsertWithdrawalParams): Promise<void> {
   if (!goal) {
     await store.insertTransactions([withdrawal]);
     return;
   }
 
-  if (!goalReached(goal, savingsBalance)) {
+  if (!goalReached(goal, walletBalance)) {
     throw new SavingsLockedError();
   }
 

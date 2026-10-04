@@ -257,7 +257,8 @@ throws on import there. So no client component imports
   `isValidPictureEmoji(emoji)`, the picture check the word-list script reuses.
 - `goal-reached.ts`: `goalReached(goal, balance)`.
 - `goals.ts`: `setGoal` and `cancelGoal`.
-- `savings-withdrawal.ts`: the goal branch of a savings withdrawal (below).
+- `insert-withdrawal.ts`: `insertWithdrawal`, which records a withdrawal and
+  applies the goal branch when a goal is passed (below).
 - `picture-search/picture-search.ts`: `indexPictureWords(pictureWords)`, built once when the
   word list loads, and `matchingPictures(query, picturesByTerm)` over that
   index on every keystroke.
@@ -279,8 +280,8 @@ when the wallet is the account's savings wallet
 For savings, the wallet's transactions and the active goal are read together
 (`Promise.all`), so the lock adds no round trip in sequence. `addWithdrawal`
 counts 28 of 40 lines today; the parallel read and a three-way branch would
-take it to the limit, so the goal branch is its own function in
-`savings-withdrawal.ts`.
+take it to the limit, so every withdrawal is recorded through
+`insertWithdrawal` in `insert-withdrawal.ts`, which holds the goal branch.
 
 ### Store
 
@@ -297,7 +298,7 @@ three backends (`postgres-store`, `memory-store`, `json-file-store`):
   spans two tables, owned by the goal repository the way
   `insertAccountWithOwner` is owned by `AccountUserRepository`. It records
   the withdrawal only if it ends that goal, and returns whether it wrote;
-  `withdrawFromSavings` throws `SavingsLockedError` when it did not. It does not
+  `insertWithdrawal` throws `SavingsLockedError` when it did not. It does not
   map `23505`: there it can only be a failed withdrawal insert, never a second
   active goal, so it rethrows.
 

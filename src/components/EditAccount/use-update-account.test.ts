@@ -4,8 +4,8 @@ import {
   mockAccount,
   mockAccountEdits,
 } from '@/test-utils/mocks/account.mocks';
-import { useUpdateAccount } from './use-update-account';
 import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
+import { useUpdateAccount } from './use-update-account';
 
 describe('useUpdateAccount', () => {
   let mockFetch: jest.Mock;

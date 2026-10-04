@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
-import { useAddTransaction } from './use-add-transaction';
 import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
+import { useAddTransaction } from './use-add-transaction';
 
 describe('useAddTransaction', () => {
   const mockAccountId = 'account-1';

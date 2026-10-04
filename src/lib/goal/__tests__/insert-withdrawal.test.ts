@@ -5,9 +5,9 @@ import { createMockWithdrawal } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallet } from '@/test-utils/mocks/wallet.mocks';
 import { GOAL_ENDING } from '../constants';
 import { SavingsLockedError } from '../errors';
-import { withdrawFromSavings } from '../savings-withdrawal';
+import { insertWithdrawal } from '../insert-withdrawal';
 
-describe('withdrawFromSavings', () => {
+describe('insertWithdrawal', () => {
   const mockWithdrawal = createMockWithdrawal(createMockWallet());
   let store: InMemoryStore;
 
@@ -16,11 +16,11 @@ describe('withdrawFromSavings', () => {
   });
 
   it('records the withdrawal as before when there is no goal', async () => {
-    await withdrawFromSavings({
+    await insertWithdrawal({
       store,
       withdrawal: mockWithdrawal,
       goal: undefined,
-      savingsBalance: 0,
+      walletBalance: 0,
     });
 
     expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
@@ -32,11 +32,11 @@ describe('withdrawFromSavings', () => {
     await store.insertGoal(mockGoal);
 
     await expect(
-      withdrawFromSavings({
+      insertWithdrawal({
         store,
         withdrawal: mockWithdrawal,
         goal: mockGoal,
-        savingsBalance: mockGoal.amount - 1,
+        walletBalance: mockGoal.amount - 1,
       })
     ).rejects.toThrow(SavingsLockedError);
 
@@ -47,11 +47,11 @@ describe('withdrawFromSavings', () => {
   it('ends a reached goal with the withdrawal', async () => {
     await store.insertGoal(mockGoal);
 
-    await withdrawFromSavings({
+    await insertWithdrawal({
       store,
       withdrawal: mockWithdrawal,
       goal: mockGoal,
-      savingsBalance: mockGoal.amount,
+      walletBalance: mockGoal.amount,
     });
 
     expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
@@ -71,11 +71,11 @@ describe('withdrawFromSavings', () => {
         endedAt: mockGoal.startedAt,
         ending: GOAL_ENDING.cancelled,
       });
-      refusal = await withdrawFromSavings({
+      refusal = await insertWithdrawal({
         store,
         withdrawal: mockWithdrawal,
         goal: mockGoal,
-        savingsBalance: mockGoal.amount,
+        walletBalance: mockGoal.amount,
       }).catch((error) => error);
     });
 

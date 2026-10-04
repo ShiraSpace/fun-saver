@@ -2,9 +2,9 @@ import { StatusCodes } from 'http-status-codes';
 import { API_ERRORS } from '@/app/api/constants';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { SIGN_IN_PATH } from '@/lib/user/constants';
+import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 import { goTo } from '../navigate';
 import { fetchJson, RequestFailedError } from '../fetch-json';
-import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 
 jest.mock('../navigate', () => ({ goTo: jest.fn() }));
 

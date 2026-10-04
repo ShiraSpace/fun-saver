@@ -3,8 +3,8 @@ import {
   mockAccount,
   mockCreateAccountInput,
 } from '@/test-utils/mocks/account.mocks';
-import { useCreateAccount } from './use-create-account';
 import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
+import { useCreateAccount } from './use-create-account';
 
 describe('useCreateAccount', () => {
   restoreFetchAfterEach();
