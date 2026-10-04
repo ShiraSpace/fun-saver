@@ -36,6 +36,12 @@ export interface ThemeColors {
   readonly chartSpending: string;
   readonly chartGoodDeeds: string;
   readonly chartTotalBalanceFill: string;
+  readonly celebrationGold: string;
+  readonly celebrationPink: string;
+  readonly celebrationPurple: string;
+  readonly celebrationGreen: string;
+  readonly celebrationBlue: string;
+  readonly celebrationOrange: string;
 }
 
 export interface ThemeGradientStops {
