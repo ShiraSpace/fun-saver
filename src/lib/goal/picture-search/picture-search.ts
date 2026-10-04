@@ -75,7 +75,7 @@ function picturesForWord(
   lookups.forEach((word, strippedLetters) => {
     for (const picture of picturesByTerm.get(word) ?? []) {
       if (!scoreByPicture.has(picture)) {
-        scoreByPicture.set(picture, lookups.length - strippedLetters);
+        scoreByPicture.set(picture, MAX_PREFIX_LETTERS + 1 - strippedLetters);
       }
     }
   });

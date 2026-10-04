@@ -2,18 +2,18 @@ import { writeFileSync } from 'node:fs';
 import unicodeHebrewWords from 'cldr-annotations-full/annotations/he/annotations.json';
 import unicodeHebrewCombinedWords from 'cldr-annotations-derived-full/annotationsDerived/he/annotations.json';
 import unicodeEmoji from 'unicode-emoji-json/data-by-emoji.json';
-import { isValidPictureEmoji } from '@/lib/goal/goal-request-validator';
 import {
   MAX_PICTURE_WORDS_BYTES,
   PICTURE_WORDS_PATH,
 } from '@/lib/goal/picture-search/constants';
-import { searchablePictureWords } from '@/lib/goal/picture-search/searchable-picture-words';
+import {
+  invalidGoalPictures,
+  searchablePictureWords,
+} from '@/lib/goal/picture-search/searchable-picture-words';
 import type { PictureWords } from '@/lib/goal/picture-search/types';
 
 function assertEveryPictureIsAGoalPicture(pictureWords: PictureWords): void {
-  const invalidPictures = Object.keys(pictureWords).filter(
-    (picture) => !isValidPictureEmoji(picture)
-  );
+  const invalidPictures = invalidGoalPictures(pictureWords);
 
   if (invalidPictures.length > 0) {
     throw new Error(`Not a goal picture: ${invalidPictures.join()}`);

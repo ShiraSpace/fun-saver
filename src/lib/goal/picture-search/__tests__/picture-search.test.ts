@@ -31,10 +31,12 @@ describe('picture search', () => {
       expect(matchingPictures('כלבים', mockPicturesByTerm)).toEqual([]);
     });
 
-    it('finds nothing for an empty or blank search', () => {
-      expect(matchingPictures('', mockPicturesByTerm)).toEqual([]);
-      expect(matchingPictures('   ', mockPicturesByTerm)).toEqual([]);
-    });
+    it.each(['', '   '])(
+      'finds nothing for the empty or blank search %j',
+      (typed) => {
+        expect(matchingPictures(typed, mockPicturesByTerm)).toEqual([]);
+      }
+    );
   });
 
   it('ranks the picture whose annotation is the whole typed phrase above one holding its words apart', () => {
@@ -73,36 +75,37 @@ describe('picture search', () => {
     ]);
   });
 
-  it('ignores niqqud on the typed word and on the annotation', () => {
+  describe('ignoring niqqud', () => {
     const mockPicturesByVowelledWord = indexPictureWords({
       '🎈': ['בָּלוֹן'],
       '🐶': ['כלב'],
     });
 
-    expect(matchingPictures('בלון', mockPicturesByVowelledWord)).toEqual([
-      '🎈',
-    ]);
-    expect(matchingPictures('כֶּלֶב', mockPicturesByVowelledWord)).toEqual([
-      '🐶',
-    ]);
+    it.each([
+      ['on the annotation', 'בלון', '🎈'],
+      ['on the typed word', 'כֶּלֶב', '🐶'],
+    ])('ignores niqqud %s', (_, typed, picture) => {
+      expect(matchingPictures(typed, mockPicturesByVowelledWord)).toEqual([
+        picture,
+      ]);
+    });
   });
 
-  it('finds a geresh word typed with either apostrophe', () => {
-    const mockPicturesByGereshWord = indexPictureWords({ '🕹️': ['ג׳ויסטיק'] });
+  it.each(["ג'ויסטיק", 'ג’ויסטיק'])(
+    'finds a geresh word typed as %s',
+    (typed) => {
+      const mockPicturesByGereshWord = indexPictureWords({
+        '🕹️': ['ג׳ויסטיק'],
+      });
 
-    expect(matchingPictures("ג'ויסטיק", mockPicturesByGereshWord)).toEqual([
-      '🕹️',
-    ]);
-    expect(matchingPictures('ג’ויסטיק', mockPicturesByGereshWord)).toEqual([
-      '🕹️',
-    ]);
-  });
+      expect(matchingPictures(typed, mockPicturesByGereshWord)).toEqual(['🕹️']);
+    }
+  );
 
-  it('finds an acronym typed with a straight or a curly quote mark', () => {
+  it.each(['מד"א', 'מד”א'])('finds an acronym typed as %s', (typed) => {
     const mockPicturesByAcronym = indexPictureWords({ '🚑': ['מד״א'] });
 
-    expect(matchingPictures('מד"א', mockPicturesByAcronym)).toEqual(['🚑']);
-    expect(matchingPictures('מד”א', mockPicturesByAcronym)).toEqual(['🚑']);
+    expect(matchingPictures(typed, mockPicturesByAcronym)).toEqual(['🚑']);
   });
 
   it('ignores a comma after an annotation word', () => {
@@ -131,28 +134,44 @@ describe('picture search', () => {
     expect(indexPictureWords({ '❗': ['!'] })).toEqual(new Map());
   });
 
-  it('searches a hyphen, a maqaf and a space alike', () => {
-    const mockPicturesByJoinedWord = indexPictureWords({ '🛵': ['דו־גלגלי'] });
+  it.each(['דו-גלגלי', 'דו־גלגלי', 'דו גלגלי'])(
+    'searches a hyphen, a maqaf and a space alike: %s',
+    (typed) => {
+      const mockPicturesByJoinedWord = indexPictureWords({
+        '🛵': ['דו־גלגלי'],
+      });
 
-    expect(matchingPictures('דו-גלגלי', mockPicturesByJoinedWord)).toEqual([
-      '🛵',
-    ]);
-    expect(matchingPictures('דו־גלגלי', mockPicturesByJoinedWord)).toEqual([
-      '🛵',
-    ]);
-    expect(matchingPictures('דו גלגלי', mockPicturesByJoinedWord)).toEqual([
-      '🛵',
-    ]);
-  });
+      expect(matchingPictures(typed, mockPicturesByJoinedWord)).toEqual(['🛵']);
+    }
+  );
 
-  it('never strips a prefix letter when fewer than two letters would remain', () => {
+  describe('a prefix letter on a short word', () => {
     const mockPicturesByShortWord = indexPictureWords({
       '🔤': ['ד'],
       '✋': ['יד'],
     });
 
-    expect(matchingPictures('בד', mockPicturesByShortWord)).toEqual([]);
-    expect(matchingPictures('ביד', mockPicturesByShortWord)).toEqual(['✋']);
+    it('is never stripped when fewer than two letters would remain', () => {
+      expect(matchingPictures('בד', mockPicturesByShortWord)).toEqual([]);
+    });
+
+    it('is stripped when two letters remain', () => {
+      expect(matchingPictures('ביד', mockPicturesByShortWord)).toEqual(['✋']);
+    });
+  });
+
+  it('ranks an exact match on any typed word above a match with its prefix letter stripped', () => {
+    const mockPicturesBySeaAndBlue = indexPictureWords({
+      '⌛': ['חול'],
+      '💙': ['כחול'],
+      '🌊': ['ים'],
+    });
+
+    expect(matchingPictures('ים כחול', mockPicturesBySeaAndBlue)).toEqual([
+      '🌊',
+      '💙',
+      '⌛',
+    ]);
   });
 
   it('finds the picture for the bare word after the one holding the word with a prefix letter', () => {

@@ -1,4 +1,15 @@
-import { searchablePictureWords } from '../searchable-picture-words';
+import {
+  invalidGoalPictures,
+  searchablePictureWords,
+} from '../searchable-picture-words';
+
+describe('invalid goal pictures', () => {
+  it('lists the pictures a goal request refuses and only those', () => {
+    expect(
+      invalidGoalPictures({ '❤️': ['לב'], '❤': ['לב'], '🚲': ['אופניים'] })
+    ).toEqual(['❤']);
+  });
+});
 
 describe('searchable picture words', () => {
   it('keeps a picture with its Hebrew words, each word once', () => {

@@ -1,3 +1,4 @@
+import { isValidPictureEmoji } from '@/lib/goal/goal-request-validator';
 import {
   HAIR_AND_GENDER_CODE_POINTS,
   MAN_OR_WOMAN_SEQUENCE,
@@ -34,6 +35,12 @@ function hebrewWords(
   const { default: keywords = [], tts: spokenNames = [] } =
     unicodeWordsByEmoji[picture.replace(VARIATION_SELECTOR, '')] ?? {};
   return [...new Set([...keywords, ...spokenNames])];
+}
+
+export function invalidGoalPictures(pictureWords: PictureWords): string[] {
+  return Object.keys(pictureWords).filter(
+    (picture) => !isValidPictureEmoji(picture)
+  );
 }
 
 export function searchablePictureWords(
