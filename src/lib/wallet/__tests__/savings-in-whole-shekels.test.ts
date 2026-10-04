@@ -5,20 +5,19 @@ describe('savingsInWholeShekels', () => {
     const mockSavings = { balance: 14890, interestEarned: 640 };
 
     it('shows the balance without the agorot the child cannot count yet', () => {
-      expect(savingsInWholeShekels(mockSavings).balanceShekels).toBe(148);
+      expect(savingsInWholeShekels(mockSavings).balance).toBe(14800);
     });
 
     it('shows what the money earned by itself in whole shekels', () => {
-      expect(savingsInWholeShekels(mockSavings).interestEarnedShekels).toBe(6);
+      expect(savingsInWholeShekels(mockSavings).interestEarned).toBe(600);
     });
   });
 
   describe('savings of ₪148.50, ₪6.90 of it interest', () => {
     it('shows what the child put in as the rest, so the two add up to the balance', () => {
       expect(
-        savingsInWholeShekels({ balance: 14850, interestEarned: 690 })
-          .principalShekels
-      ).toBe(142);
+        savingsInWholeShekels({ balance: 14850, interestEarned: 690 }).principal
+      ).toBe(14200);
     });
   });
 
@@ -26,11 +25,11 @@ describe('savingsInWholeShekels', () => {
     const mockSavings = { balance: 300, interestEarned: 500 };
 
     it('never shows a negative amount put in', () => {
-      expect(savingsInWholeShekels(mockSavings).principalShekels).toBe(0);
+      expect(savingsInWholeShekels(mockSavings).principal).toBe(0);
     });
 
     it('counts the whole balance as earned, so the tiles still add up', () => {
-      expect(savingsInWholeShekels(mockSavings).interestEarnedShekels).toBe(3);
+      expect(savingsInWholeShekels(mockSavings).interestEarned).toBe(300);
     });
   });
 
@@ -38,7 +37,7 @@ describe('savingsInWholeShekels', () => {
     it('shows nothing earned', () => {
       expect(
         savingsInWholeShekels({ balance: 1200, interestEarned: 0 })
-          .interestEarnedShekels
+          .interestEarned
       ).toBe(0);
     });
   });

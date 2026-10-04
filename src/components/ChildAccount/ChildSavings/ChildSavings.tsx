@@ -3,7 +3,6 @@
 import { JSX } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
 import { savingsInWholeShekels } from '@/lib/wallet/savings-in-whole-shekels';
-import { shekelsToAgorot } from '@/lib/money';
 import { Money } from '@/components/Money';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
 import {
@@ -22,25 +21,21 @@ interface ChildSavingsProps {
 }
 
 export function ChildSavings({ savings }: ChildSavingsProps): JSX.Element {
-  const { balanceShekels, principalShekels, interestEarnedShekels } =
-    savingsInWholeShekels(savings);
+  const { balance, principal, interestEarned } = savingsInWholeShekels(savings);
 
   return (
     <Card data-testid={CHILD_SAVINGS_TEST_IDS.card}>
       <Icon aria-hidden="true">{savings.icon}</Icon>
       <Title>{CHILD_SAVINGS_COPY.title}</Title>
       <Total>
-        <Money
-          amountAgorot={shekelsToAgorot(balanceShekels)}
-          testId={CHILD_SAVINGS_TEST_IDS.balance}
-        />
+        <Money amountAgorot={balance} testId={CHILD_SAVINGS_TEST_IDS.balance} />
       </Total>
       <Split>
         <Tile>
           {CHILD_SAVINGS_COPY.principal}
           <TileAmount>
             <Money
-              amountAgorot={shekelsToAgorot(principalShekels)}
+              amountAgorot={principal}
               testId={CHILD_SAVINGS_TEST_IDS.principal}
               fullSizeCurrency
             />
@@ -51,7 +46,7 @@ export function ChildSavings({ savings }: ChildSavingsProps): JSX.Element {
           <TileAmount dir="ltr">
             {CHILD_SAVINGS_COPY.earnedSign}
             <Money
-              amountAgorot={shekelsToAgorot(interestEarnedShekels)}
+              amountAgorot={interestEarned}
               testId={CHILD_SAVINGS_TEST_IDS.interestEarned}
               fullSizeCurrency
             />
