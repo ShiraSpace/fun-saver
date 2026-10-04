@@ -24,7 +24,7 @@ Instead of putting allowance into a single wallet, the money is divided into thr
 - **Withdrawal Rule:** Money can only be withdrawn once the predetermined goal is fully reached.
 - **Teaching Interest/Yield:** Parents can act as the "bank" and add a fixed percentage (e.g., 10%) to the remaining balance at the end of each month. This demonstrates how saved money can generate a return over time.
 
-> **In the app:** represented as the `savings` wallet. Yield is modeled by `Wallet.monthlyInterestRate` and accrued via the `interest` transaction type; `lastInterestDate` tracks the last accrual so interest is idempotent per period (see `src/lib/interest/`). The withdrawal-only-at-goal rule is a product policy, not yet enforced in code — worth flagging on the roadmap.
+> **In the app:** represented as the `savings` wallet. Yield is modeled by `Wallet.monthlyInterestRate` and accrued via the `interest` transaction type; `lastInterestDate` tracks the last accrual so interest is idempotent per period (see `src/lib/interest/`). The withdrawal-only-at-goal rule is enforced on the server (`SavingsLockedError`) while a goal is active. With no active goal, savings is open, so families without a goal keep today's behaviour.
 
 ## 3. The Share Jar (Giving Back)
 

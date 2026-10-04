@@ -14,10 +14,10 @@ task-by-task plan in its own session before any code.
 | 0 | Method opener `goal` → `purpose`, so `goal` is free | Merged #173 (`69585c5`) |
 | 1 | `goals` table, `GoalRepository` in all three stores, `src/lib/goal` rules | Merged #174 (`6db66d7`) |
 | 4a | Picture search: generated Hebrew emoji list and `matchingPictures` (no UI) | Merged #181 (`3bc65f3`) |
-| 2 | API and the server lock | **Next** |
+| 2 | API and the server lock | Built on `feat/goal-api`, not merged (plan: `.plans/2026-10-04-goal-api.md`) |
 | 3 | Showing a goal | Not started |
-| 4b | Setting and cancelling (`SetGoal`, `GoalPictureSearch` UI, `CancelGoal`) | Not started |
-| 5 | Celebration | Not started |
+| 4b | Setting and cancelling (`SetGoal`, `GoalPictureSearch` UI, `CancelGoal`) | `GoalPictureSearch` UI open as #189; `SetGoal`, `CancelGoal` not started |
+| 5 | Celebration | Merged #188 |
 | later | The goal in child mode | Separate feature, after this one |
 
 **Migrations:** the `goals` table is on Neon `test`, `dev` and `production`
@@ -41,7 +41,7 @@ task-by-task plan in its own session before any code.
 - Fixtures: `createMockGoal`, `mockGoal`, `createMockGoalPicture` in
   `src/test-utils/mocks/goal.mocks.ts`; `goalId(suffix)` in `test-database.ts`.
 
-## PR 2 — API and the server lock (next)
+## PR 2 — API and the server lock (built)
 
 Scope as in the spec's Delivery § 2. Things found since the spec was written:
 
@@ -56,6 +56,10 @@ Scope as in the spec's Delivery § 2. Things found since the spec was written:
 - The set-goal route catches `ValidationError` → 400 and
   `GoalAlreadyActiveError` → 409; the withdrawal route maps
   `SavingsLockedError` → 409 beside `OverdraftError`.
+- As built: `settleAccountInterest` stayed under 40 lines, so
+  `readAccountRecords` was not needed. `AccountSummary.goal?: Goal` carries
+  the active goal (the contract is in `.plans/2026-10-04-goal-api.md`);
+  `fetchJson` sends `DELETE` and throws `RequestFailedError` with `status`.
 
 ## PR 3 onwards — notes
 
