@@ -1,7 +1,7 @@
 import {
   VIEW_MODE,
   isShownToChild,
-  otherAccountsShownToChild,
+  siblingsShownToChild,
   resolveViewMode,
 } from '../view-mode';
 
@@ -29,14 +29,14 @@ describe('isShownToChild', () => {
   });
 });
 
-describe('otherAccountsShownToChild', () => {
+describe('siblingsShownToChild', () => {
   it('leaves out an account in parent view', () => {
     const mockCurrentAccount = { id: 'a1', viewMode: VIEW_MODE.child };
     const mockChildSibling = { id: 'a2', viewMode: VIEW_MODE.child };
     const mockParentSibling = { id: 'a3', viewMode: VIEW_MODE.parent };
 
     expect(
-      otherAccountsShownToChild(
+      siblingsShownToChild(
         [mockCurrentAccount, mockChildSibling, mockParentSibling],
         mockCurrentAccount
       )

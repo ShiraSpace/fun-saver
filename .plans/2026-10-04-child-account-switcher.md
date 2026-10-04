@@ -47,7 +47,7 @@ gets a simple "switch to…" list under «הכסף שלי».
 | Name | Where | What |
 | --- | --- | --- |
 | `otherAccounts(accounts, currentAccount)` | `src/lib/account/current-account.ts` | every account but the current one, in order; next to `findCurrentAccount` |
-| `otherAccountsShownToChild(accounts, currentAccount)` | `src/lib/account/view-mode.ts` | `otherAccounts` kept to those `isShownToChild` |
+| `siblingsShownToChild(accounts, currentAccount)` | `src/lib/account/view-mode.ts` | `otherAccounts` kept to those `isShownToChild` |
 | `useOpenAccount()` | `src/components/Menu/use-open-account.ts` | `switchAccount` then `closeMenu`; both pickers use it |
 | `ChildMenuAccountList` (`accounts`, `onSelect`) | `src/components/Menu/ChildMenuAccountList/` | the card's section and rows; a `styled(Row)` per account |
 | `childMenuRow` | `src/components/Menu/row-parts.ts` | the row geometry the top card and the rows share |
@@ -60,7 +60,7 @@ serves a whole `describe`, so a current-account cookie set by one test used to
 open the next test on a different account.
 
 **Tests:** `otherAccounts` (leaves out the current account, keeps the order),
-`otherAccountsShownToChild` (leaves out an account in parent view),
+`siblingsShownToChild` (leaves out an account in parent view),
 `ChildMenuAccountList` (names in order, a tap selects that row's account, the
 face is left out of the row's name), `ChildMenuContent` (only the sibling in
 child view is listed, a tap switches and closes the menu, an only child gets

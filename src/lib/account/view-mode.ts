@@ -22,8 +22,8 @@ export function isShownToChild(account: Pick<Account, 'viewMode'>): boolean {
   return account.viewMode === VIEW_MODE.child;
 }
 
-export function otherAccountsShownToChild<
-  Shown extends Pick<Account, 'id' | 'viewMode'>,
->(accounts: Shown[], currentAccount: Shown): Shown[] {
+export function siblingsShownToChild<
+  ShownAccount extends Pick<Account, 'id' | 'viewMode'>,
+>(accounts: ShownAccount[], currentAccount: ShownAccount): ShownAccount[] {
   return otherAccounts(accounts, currentAccount).filter(isShownToChild);
 }
