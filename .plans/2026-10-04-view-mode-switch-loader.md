@@ -1,7 +1,7 @@
 # The view-mode switch locks and shows the loader while it works
 
-> Status: **built 2026-10-04**, PR #177. Branch
-> `feat/view-mode-switch-loader`, on `main` after #175 (fec8288).
+> Status: **merged 2026-10-04** as #177 (3773ad1), on `main` after #175
+> (fec8288).
 
 ## Why
 
@@ -77,9 +77,10 @@ break, and against no other.
 | The header loader runs while the save is open | Drop `useReportPendingNavigation(isSaving)` |
 | After a failed save the switch unlocks | Lock whenever the state is not `idle` |
 | After a failed save the header loader goes away | Report pending whenever the state is not `idle` |
+| After a successful save, closing the menu leaves the switch locked and the loader running | Closing the menu resets any state to `idle` |
 
 The bar goes away one render after the error shows, because the counter
-changes in an effect cleanup. That is why the last test waits for it.
+changes in an effect cleanup. That is why the failed-save loader test waits for it.
 
 ## Verification
 
