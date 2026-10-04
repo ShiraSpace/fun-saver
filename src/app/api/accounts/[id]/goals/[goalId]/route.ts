@@ -3,14 +3,8 @@ import { GoalNotActiveError } from '@/lib/goal/errors';
 import { cancelGoal } from '@/lib/goal/goals';
 import { API_ERRORS } from '@/app/api/constants';
 import { conflict } from '@/app/api/responses';
-import {
-  withAccountEditor,
-  type AccountRouteParams,
-} from '../../with-account-access';
-
-interface GoalRouteParams extends AccountRouteParams {
-  goalId: string;
-}
+import { withAccountEditor } from '../../with-account-access';
+import type { GoalRouteParams } from './goal-route-params';
 
 export const DELETE = withAccountEditor<GoalRouteParams>(
   async (_request, accountId, { goalId }) => {

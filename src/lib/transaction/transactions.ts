@@ -115,16 +115,12 @@ export async function addWithdrawal({
 
   const withdrawal = newWithdrawal({ account, walletId, amountAgorot, asOf });
 
-  if (isSavings) {
-    await withdrawFromSavings({
-      store,
-      withdrawal,
-      goal,
-      savingsBalance: walletBalance,
-    });
-  } else {
-    await store.insertTransactions([withdrawal]);
-  }
+  await withdrawFromSavings({
+    store,
+    withdrawal,
+    goal,
+    savingsBalance: walletBalance,
+  });
 
   return withdrawal;
 }
