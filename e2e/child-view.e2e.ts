@@ -6,6 +6,8 @@ import {
   mockAccount,
 } from '@/test-utils/mocks/account.mocks';
 import { useDriver } from './driver/use-driver';
+import { METHOD_ROUTE } from '@/components/Method/constants';
+import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
 
 describe('an account stored in child view', () => {
   const { childAccount } = useDriver({
@@ -55,32 +57,19 @@ describe('the child goes back to the parent screen', () => {
   });
 });
 
-describe('a child who opens a parent page by its address', () => {
-  const { menu, appBrowser } = useDriver({
-    accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
-  });
+for (const parentPage of [METHOD_ROUTE, TRANSACTIONS_ROUTE]) {
+  describe(`a child who opens ${parentPage} by its address`, () => {
+    const { menu, appBrowser } = useDriver({
+      accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
+    });
 
-  beforeEach(async () => {
-    await appBrowser.visit('/method');
-    await menu.open();
-  });
+    beforeEach(async () => {
+      await appBrowser.visit(parentPage);
+      await menu.open();
+    });
 
-  it('still gets the child menu', async () => {
-    assert.equal(await menu.childMenuIsShown(), true);
+    it('still gets the child menu', async () => {
+      assert.equal(await menu.childMenuIsShown(), true);
+    });
   });
-});
-
-describe('a child who opens the transactions page by its address', () => {
-  const { menu, appBrowser } = useDriver({
-    accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
-  });
-
-  beforeEach(async () => {
-    await appBrowser.visit('/transactions');
-    await menu.open();
-  });
-
-  it('still gets the child menu', async () => {
-    assert.equal(await menu.childMenuIsShown(), true);
-  });
-});
+}
