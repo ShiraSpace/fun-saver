@@ -75,10 +75,12 @@ function tapMenuButton(): void {
   fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
 }
 
-function createPendingSave(): {
+interface PendingSave {
   save: Promise<unknown>;
   answerSave: () => void;
-} {
+}
+
+function createPendingSave(): PendingSave {
   const { promise, resolve } = Promise.withResolvers<unknown>();
   const answerSave = (): void =>
     resolve({ ok: true, json: async () => mockAccount });

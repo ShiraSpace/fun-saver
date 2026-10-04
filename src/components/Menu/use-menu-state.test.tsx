@@ -24,7 +24,11 @@ describe('useOnMenuClose', () => {
   });
 });
 
-function renderMenuState(): { current: MenuState } {
+interface RenderedMenuState {
+  current: MenuState;
+}
+
+function renderMenuState(): RenderedMenuState {
   return renderHook(() => useMenuState()).result;
 }
 
@@ -36,7 +40,7 @@ describe('useMenuState whenMenuCloses', () => {
   });
 
   describe('given a step while the menu is open', () => {
-    let menu: { current: MenuState };
+    let menu: RenderedMenuState;
 
     beforeEach(() => {
       menu = renderMenuState();
