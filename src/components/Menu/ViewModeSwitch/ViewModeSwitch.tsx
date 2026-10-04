@@ -22,6 +22,7 @@ export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
   const { currentAccount } = useAccounts();
   const { chooseViewMode, chosenViewMode, saveFailed } = useAccountViewMode();
   const isOn = (chosenViewMode ?? currentAccount.viewMode) === viewMode;
+  const isCompact = viewMode === APP_VIEW_MODE.parent;
 
   return (
     <div>
@@ -29,7 +30,7 @@ export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
         type="button"
         role="switch"
         aria-checked={isOn}
-        data-compact={viewMode === APP_VIEW_MODE.parent}
+        data-compact={isCompact}
         data-testid={VIEW_MODE_SWITCH_TEST_IDS.switch}
         onClick={(): void => chooseViewMode(viewMode)}
       >
