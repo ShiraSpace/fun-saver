@@ -1,12 +1,12 @@
 # The child menu switches between children
 
-> Status: **PR 1 merged** as #183 (`7afb741`, 2026-10-04). **PR 2 and PR 3
-> are next**, specified below; each starts from a fresh branch off `main`.
-> The list holds the other accounts **in child view**; the rest are reached
-> through the parent view (decided 2026-10-04, after a round that listed
-> everyone). Mockups: `mockups/child-account-switcher.html` (row layout,
-> option **C**) and `mockups/child-mode-in-menu.html` (where the child-view
-> toggle lives, option **A**). Builds on child mode
+> Status: **PR 1 merged** as #183 (`7afb741`). **PR 2 built** on
+> `feat/child-view-toggle-per-account` (the per-row child-view toggle).
+> **PR 3 is next**, specified below, from a fresh branch off `main` once PR 2
+> merges. The list holds the other accounts **in child view**; the rest are
+> reached through the parent view. Mockups: `mockups/child-account-switcher.html`
+> (row layout, option **C**) and `mockups/child-mode-in-menu.html` (where the
+> child-view toggle lives, option **A**). Builds on child mode
 > (`.plans/2026-10-03-child-mode.md`, merged).
 
 ## Why
@@ -63,98 +63,54 @@ current-account cookie set by one test used to open the next test on another
 account. `MenuDriver` has `childMenuAccountNames()` and
 `switchAccountFromChildMenu(index)`.
 
-**Known, not ours:** `e2e/menu-morph.visual.ts` fails 2 tests ("reaches down
-over the per-account block", "takes a tap meant for…") on `main` itself, so
-`npm run test:e2e` stops before the browser suites. Run
-`npx tsx --test e2e/*.e2e.ts` after a `next build` to reach them.
+## How the view mode works after PR 2 (read before PR 3)
 
-## How the view mode works today (read before PR 2 and PR 3)
-
-- **Saved:** `PUT /api/accounts/[id]/view-mode`
-  (`src/app/api/accounts/[id]/view-mode/route.ts`).
-  `useAccountViewMode()` in `src/components/Menu/ViewModeSwitch/` sends it
-  **for `currentAccount` only**, then closes the menu, calls
-  `viewModeChoice.showViewMode(viewMode)` and `router.refresh()`.
-- **Shown:** `useShownViewMode(currentAccount)` in
-  `src/components/Home/use-shown-view-mode.ts` holds an **in-memory** override
-  `{ viewMode, chosenOn }`. It applies only while `chosenOn` is the same
-  `currentAccount` object, so switching accounts, `router.refresh()` and a
-  reload all drop it. Only **Home** uses it: it puts the shown account in
-  `AccountsProvider` as `currentAccount` and keeps the saved list in
-  `accounts`. `/transactions` and `/method` have no `viewModeChoice`.
-- **Which menu:** `MenuContent` shows `ChildMenuContent` when
-  `isShownToChild(currentAccount)`; `ShownAccount` picks the screen the same
-  way. So in the **parent** menu the current account is always shown in
-  parent view.
-- **Where the switch sits:** `AccountControls` renders
-  `<ViewModeSwitch viewMode={VIEW_MODE.child} />` in `ChildViewSetting` under
-  the picker (it shows through the open list: the stacking bug).
-  `ChildMenuContent` renders `<ViewModeSwitch viewMode={VIEW_MODE.parent} />`
+- **Saved:** `PUT /api/accounts/[id]/view-mode`.
+  `useAccountViewMode(account, shown)` in `src/components/Menu/ViewModeSwitch/`
+  saves **the account it is given**. `shown` is `SAVED_VIEW_MODE_SHOWN`:
+  `immediately` (the child menu's `מצב הורה` switch: close the menu, show the
+  view, refresh) or `whenMenuCloses` (the list's rows: refresh at once so the
+  list shows saved data; for the current account, keep the shown view until
+  the menu closes, then show the saved one).
+- **Shown:** `useShownViewMode(currentAccount)` (Home only) holds an
+  in-memory choice. `showViewMode` is tied to the account **object**, so a
+  refresh, switching accounts or a reload drops it.
+  `keepViewModeUntilMenuCloses` is tied to the account **id**, so it survives
+  the refresh after a save; the next `showViewMode` replaces it.
+  `/transactions` and `/method` have no `viewModeChoice`: there the current
+  account's toggle turns the open menu into the child menu at once.
+- **Why the screen waits for the menu:** each screen (`Account`,
+  `ChildAccount`) renders its own `Header`, which owns the menu state, so
+  swapping the screen under an open menu would drop the menu.
+- **Menu state:** `whenMenuCloses(step)` (`use-menu-state.ts`) runs a step once
+  the menu closes, or at once if it is already closed.
+- **Where the switches sit:** each row of `AccountList` has a `ChildViewToggle`
+  under a `חשבון · 🧒 מצב ילד` header; `ChildViewSetting` under the picker is
+  gone. `ChildMenuContent` still renders `<ViewModeSwitch viewMode={VIEW_MODE.parent} />`
   in `ParentCorner`.
 
-## PR 2 — a child-view toggle on each account row (mockup A)
+## PR 2 — a child-view toggle on each account row (built)
 
-**Behaviour**
+Decisions (2026-10-04): toggling **another** account keeps the list open; rows
+save independently (each locks only its own switch); toggling the **current**
+account saves and keeps the menu open, and its child screen shows **when the
+menu closes**. `ChildViewToggle` is the name (glossary updated).
 
-- Each row of the parent account list (`AccountList` → `AccountRow`) gets a
-  `🧒` switch showing that account's **saved** view mode. Tapping it saves
-  that account's view mode.
-- Toggling the **current** account on behaves as the switch does today: the
-  menu closes and the child screen shows.
-- Toggling **another** account saves it and refreshes; the menu and the list
-  stay open, and that row's switch shows the new state.
-- A header line at the top of the list labels the switch column
-  (`🧒 מצב ילד`), as in the mockup.
-- The child-view setting under the picker (`ChildViewSetting`) is removed,
-  which also ends the stacking bug.
-- A failed save shows `VIEW_MODE_SWITCH_COPY.saveError` under that row and
-  puts its switch back.
+| Name | Where | What |
+| --- | --- | --- |
+| `ChildViewToggle` | `Menu/AccountList/` | the row's `role="switch"`, labelled `מצב ילד ל{name}` |
+| `AccountPickButton` | `Menu/AccountList/` | avatar, name, total; keeps the `row` test id and `aria-current` |
+| `ViewModeSaveError` | `Menu/ViewModeSwitch/` | the save error, shared by both switches |
+| `Track` | `Menu/switch-parts.ts` | the switch track, shared by both switches |
+| `SAVED_VIEW_MODE_SHOWN` | `ViewModeSwitch/constants.ts` | when a saved view mode is shown |
+| `keepViewModeUntilMenuCloses` | `ViewModeChoice` | the id-tied choice above |
+| `whenMenuCloses` | `MenuState` | the step queue above |
+| `tapChildViewToggle`, `waitForChildViewSaved`, `close` | `MenuDriver` | e2e |
 
-**Code (proposals; re-check names against the glossary)**
-
-- `useAccountViewMode(account: AccountSummary)` takes the account it saves,
-  instead of reading `currentAccount`. The close-menu-and-show steps run only
-  when `account.id === currentAccount.id`; otherwise it only refreshes.
-- `AccountRow` stops being one `<button>`: a switch can't sit inside a
-  button. It becomes a row holding the pick button (avatar, name, total; keeps
-  `ACCOUNT_LIST_TEST_IDS.row` and `aria-current`) and a switch button
-  (`role="switch"`, `aria-checked`, `aria-label` with the account's name, its
-  own test id). Check `Row` in `row-parts.ts`: `AddButton` shares its private
-  `row` string, so the split must not change the add button.
-- The switch: either `ViewModeSwitch` given the account (it already has an
-  `isCompact` branch, today used for the parent view), or a small switch
-  component beside `AccountRow`. Keep `ViewModeSwitch`'s saving tests
-  (`ViewModeSwitch.saving.test.tsx`) passing either way.
-- `AccountControls` drops `ChildViewSetting` and its `.styles.ts` if empty.
-- `MenuDriver.tapViewModeSwitch()` is used by `e2e/child-view.e2e.ts` for the
-  parent's switch; add `tapChildViewToggle(index)` for the list and keep
-  `tapViewModeSwitch()` for the child menu's parent switch.
-
-**Tests (first three, then the rest; each watched failing against its break)**
-
-1. `AccountRow`: the switch is on for an account saved in child view and off
-   for one in parent view (fixtures with **both**; break: always off).
-2. `AccountRow`/`AccountList`: tapping a row's switch saves **that** account
-   (`fetch` URL has its id; break: use `currentAccount.id`).
-3. `AccountRow`: tapping the name still selects the account and does not
-   toggle (break: wire the switch's handler to the pick button).
-4. `AccountControls`: no child-view setting under the picker (break: render it).
-5. Toggling another account keeps the menu open (break: always `closeMenu`).
-6. A failed save shows the error under that row (break: drop the error).
-7. e2e: a parent turns child view on for a sibling from the list, opens that
-   sibling, and sees the child screen.
-8. e2e: the existing `describe('a parent turns child view on')` in
-   `e2e/child-view.e2e.ts` calls `menu.tapViewModeSwitch()`, which taps the
-   switch PR 2 removes. Change it to open the account list and tap the
-   current account's row switch (`tapChildViewToggle(0)`).
-   `describe('the child goes back to the parent screen')` keeps
-   `tapViewModeSwitch()` until PR 3 replaces that switch too.
-
-**Open questions for the user before coding**
-
-- When toggling another account, should the list stay open (the mockup's
-  behaviour) or close like today?
-- Saving while another row is still saving: allow, or disable all switches?
+Also in PR 2: the child menu's section titles use `typography.heading` through
+`--menu-section-title-size` set on `ChildMenuCard`; the switcher's arrow is a
+CSS chevron drawn with `border-inline-end`, because `stylis-plugin-rtl` flips
+physical left and right (and a lone `‹`/`›` did not render reliably).
 
 ## PR 3 — view in parent mode, without saving
 
