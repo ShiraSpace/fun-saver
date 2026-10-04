@@ -12,3 +12,8 @@ export const MAX_GOAL_NAME_LENGTH = 30;
 export const MAX_GOAL_SHEKELS = 100_000;
 
 export const MAX_PICTURE_EMOJI_LENGTH = 32;
+
+export const DEFAULT_GOAL_PICTURE = {
+  kind: GOAL_PICTURE_KIND.emoji,
+  emoji: '🎯',
+} as const;
