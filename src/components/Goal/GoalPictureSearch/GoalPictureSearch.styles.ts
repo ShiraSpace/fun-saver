@@ -6,11 +6,6 @@ import type { Themed } from '@/theme/themed';
 const shade = ({ theme }: Themed): string => theme.tints.shade;
 const surface = ({ theme }: Themed): string => theme.colors.surface;
 const deepShadow = ({ theme }: Themed): string => theme.shadows.deep;
-const strongText = ({ theme }: Themed): string => theme.colors.textStrong;
-const mutedText = ({ theme }: Themed): string => theme.colors.textMuted;
-const searchFill = ({ theme }: Themed): string => theme.colors.walletTrack;
-const headingSize = ({ theme }: Themed): number => theme.typography.heading;
-const bodySize = ({ theme }: Themed): number => theme.typography.body;
 
 export const Scrim = styled.div`
   position: fixed;
@@ -34,39 +29,4 @@ export const Sheet = styled.div`
   background: ${surface};
   border-radius: 26px 26px 0 0;
   box-shadow: 0 -10px 30px ${deepShadow};
-`;
-
-export const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-export const SheetTitle = styled.h2`
-  margin: 0;
-  font-size: ${headingSize}px;
-  font-weight: 800;
-  color: ${strongText};
-`;
-
-export const CloseButton = styled.button`
-  padding: 4px;
-  border: none;
-  background: transparent;
-  font-size: ${headingSize}px;
-  color: ${mutedText};
-  cursor: pointer;
-`;
-
-export const SearchBox = styled.input`
-  width: 100%;
-  padding: 10px 12px;
-  border: none;
-  border-radius: 14px;
-  outline: none;
-  background: ${searchFill};
-  font: inherit;
-  font-size: ${bodySize}px;
-  font-weight: 600;
-  color: ${strongText};
 `;

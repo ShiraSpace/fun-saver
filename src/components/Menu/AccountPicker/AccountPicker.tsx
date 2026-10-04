@@ -5,7 +5,7 @@ import type { AccountSummary } from '@/lib/account/types';
 import { AccountList } from '../AccountList';
 import { CurrentAccountButton } from './CurrentAccountButton';
 import { useCloseOnOutsideClick } from './use-close-on-outside-click';
-import { useEscapeKey } from '../use-escape-key';
+import { useEscapeKey } from '@/hooks/use-escape-key';
 import { useOnMenuClose } from '../use-menu-state';
 import { ACCOUNT_PICKER_TEST_IDS } from './constants';
 import { Picker } from './AccountPicker.styles';

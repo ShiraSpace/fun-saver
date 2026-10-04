@@ -1,82 +1,21 @@
 'use client';
 
-import { ChangeEvent, JSX, useId } from 'react';
-import { PrimaryButton } from '@/components/PrimaryButton';
-import { useEscapeKey } from '@/components/Menu/use-escape-key';
+import { JSX, useId } from 'react';
+import { useEscapeKey } from '@/hooks/use-escape-key';
 import type { GoalPicture } from '@/lib/goal/types';
+import { ChooseButton } from './ChooseButton';
 import { PictureTiles } from './PictureTiles';
+import { QueryField } from './QueryField';
+import { SheetHeading } from './SheetHeading';
 import { useGoalPictureSearch } from './use-goal-picture-search';
-import {
-  GOAL_PICTURE_SEARCH_COPY,
-  GOAL_PICTURE_SEARCH_TEST_IDS,
-} from './constants';
-import {
-  CloseButton,
-  Scrim,
-  SearchBox,
-  Sheet,
-  SheetTitle,
-  TitleRow,
-} from './GoalPictureSearch.styles';
+import { GOAL_PICTURE_SEARCH_TEST_IDS } from './constants';
+import { Scrim, Sheet } from './GoalPictureSearch.styles';
 
 export interface GoalPictureSearchProps {
   goalName: string;
   picture: GoalPicture | null;
   onChange: (picture: GoalPicture) => void;
   onClose: () => void;
-}
-
-interface SheetHeadingProps {
-  titleId: string;
-  onClose: () => void;
-}
-
-function SheetHeading({ titleId, onClose }: SheetHeadingProps): JSX.Element {
-  return (
-    <TitleRow>
-      <SheetTitle id={titleId} data-testid={GOAL_PICTURE_SEARCH_TEST_IDS.title}>
-        {GOAL_PICTURE_SEARCH_COPY.title}
-      </SheetTitle>
-      <CloseButton
-        type="button"
-        aria-label={GOAL_PICTURE_SEARCH_COPY.closeLabel}
-        data-testid={GOAL_PICTURE_SEARCH_TEST_IDS.close}
-        onClick={onClose}
-      >
-        {GOAL_PICTURE_SEARCH_COPY.close}
-      </CloseButton>
-    </TitleRow>
-  );
-}
-
-interface QueryFieldProps {
-  query: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-}
-
-function QueryField({ query, onChange }: QueryFieldProps): JSX.Element {
-  return (
-    <SearchBox
-      type="search"
-      enterKeyHint="search"
-      aria-label={GOAL_PICTURE_SEARCH_COPY.queryLabel}
-      data-testid={GOAL_PICTURE_SEARCH_TEST_IDS.query}
-      value={query}
-      onChange={onChange}
-    />
-  );
-}
-
-function ChooseButton({ onChoose }: { onChoose: () => void }): JSX.Element {
-  return (
-    <PrimaryButton
-      type="button"
-      data-testid={GOAL_PICTURE_SEARCH_TEST_IDS.choose}
-      onClick={onChoose}
-    >
-      {GOAL_PICTURE_SEARCH_COPY.choose}
-    </PrimaryButton>
-  );
 }
 
 export function GoalPictureSearch({

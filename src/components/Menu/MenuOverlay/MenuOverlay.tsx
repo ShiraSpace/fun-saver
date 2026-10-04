@@ -4,7 +4,7 @@ import { JSX, memo } from 'react';
 import { MenuContent } from '../MenuContent';
 import { useMenu } from '../use-menu-state';
 import { MENU_OVERLAY_COPY, MENU_OVERLAY_TEST_IDS } from './constants';
-import { useEscapeKey } from '../use-escape-key';
+import { useEscapeKey } from '@/hooks/use-escape-key';
 import { Panel, Content } from './MenuOverlay.styles';
 
 export const MenuOverlay = memo(function MenuOverlay(): JSX.Element {
