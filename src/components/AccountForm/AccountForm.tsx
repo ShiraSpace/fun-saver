@@ -1,6 +1,7 @@
 'use client';
 
 import { JSX, ReactNode } from 'react';
+import { REQUEST_STATE } from '@/lib/request-state';
 import { Screen } from '@/components/Screen';
 import { AvatarPicker } from '@/components/AvatarPicker';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
@@ -35,11 +36,13 @@ export function AccountForm({
   'data-testid': testId,
 }: AccountFormProps): JSX.Element {
   const form = useAccountForm({ initialName, initialAvatarId, onSubmit });
+  const isSaving = form.requestState === REQUEST_STATE.pending;
+  const hasSaveFailed = form.requestState === REQUEST_STATE.failed;
 
   return (
     <Screen align="top" data-testid={testId}>
       <Form onSubmit={(event): void => void form.handleSubmit(event)}>
-        <CancelButton onCancel={onCancel} />
+        <CancelButton onCancel={onCancel} disabled={isSaving} />
         <FormTitle title={title} titleIcon={titleIcon} />
         <NameField
           value={form.name}
@@ -53,7 +56,7 @@ export function AccountForm({
         <SaveAccountButton
           submitLabel={submitLabel}
           canSubmit={form.canSubmit}
-          saveFailed={form.saveFailed}
+          saveFailed={hasSaveFailed}
         />
       </Form>
     </Screen>

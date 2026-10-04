@@ -1,5 +1,5 @@
 import { SETUP_COPY } from './setup';
-import { BRIEF_COPY, GOAL_COPY } from './goal';
+import { BRIEF_COPY, PURPOSE_COPY } from './purpose';
 import { LIMITS_COPY } from './limits';
 import { PROMISE_COPY } from './promise';
 import { SCRIPTS_COPY } from './scripts';
@@ -22,7 +22,7 @@ export type {
 
 export const METHOD_COPY = {
   title: 'השיטה',
-  goal: GOAL_COPY,
+  purpose: PURPOSE_COPY,
   brief: BRIEF_COPY,
   why: WHY_COPY,
   wallets: WALLETS_COPY,

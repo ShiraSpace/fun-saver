@@ -11,7 +11,7 @@ export function KeyPoint({ icon, body, note }: KeyPointCopy): JSX.Element {
   );
 
   return (
-    <Point data-testid={KEY_POINT_TEST_IDS.outcome}>
+    <Point data-testid={KEY_POINT_TEST_IDS.point}>
       <Icon aria-hidden="true">{icon}</Icon>
       <Text>
         {emphasizedBody}

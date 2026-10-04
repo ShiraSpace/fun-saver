@@ -156,6 +156,8 @@ only looks. See `docs/superpowers/specs/2026-10-03-child-mode-design.md`.
 - Child view: no deposit, no settings, no rate, view only.
 - Parent view: everything.
 - Still deferred: child withdrawals and a parent PIN.
+- The view-mode switch stays locked, with the header bar running, until a
+  reload if its save succeeds but `router.refresh()` never renders.
 
 ## 6b. Live action checklist on the method page
 

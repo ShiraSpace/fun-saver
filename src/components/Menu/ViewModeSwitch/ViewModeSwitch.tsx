@@ -3,6 +3,7 @@
 import { JSX } from 'react';
 import { useAccounts } from '@/components/Home/accounts-context';
 import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
+import { REQUEST_STATE } from '@/lib/request-state';
 import { useAccountViewMode } from './use-account-view-mode';
 import { VIEW_MODE_SWITCH_COPY, VIEW_MODE_SWITCH_TEST_IDS } from './constants';
 import {
@@ -20,7 +21,9 @@ interface ViewModeSwitchProps {
 
 export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
   const { currentAccount } = useAccounts();
-  const { chooseViewMode, chosenViewMode, saveFailed } = useAccountViewMode();
+  const { chooseViewMode, chosenViewMode, requestState } = useAccountViewMode();
+  const isSaving = requestState === REQUEST_STATE.pending;
+  const hasSaveFailed = requestState === REQUEST_STATE.failed;
   const isOn = (chosenViewMode ?? currentAccount.viewMode) === viewMode;
   const isCompact = viewMode === VIEW_MODE.parent;
   const icon = VIEW_MODE_SWITCH_COPY.icon[viewMode];
@@ -28,7 +31,7 @@ export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
   const childNote = viewMode === VIEW_MODE.child && (
     <Note>{VIEW_MODE_SWITCH_COPY.childNote(currentAccount.name)}</Note>
   );
-  const saveError = saveFailed && (
+  const saveError = hasSaveFailed && (
     <SaveError data-testid={VIEW_MODE_SWITCH_TEST_IDS.saveError}>
       {VIEW_MODE_SWITCH_COPY.saveError}
     </SaveError>
@@ -41,6 +44,7 @@ export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
         type="button"
         role="switch"
         aria-checked={isOn}
+        disabled={isSaving}
         data-compact={isCompact}
         data-testid={VIEW_MODE_SWITCH_TEST_IDS.switch}
         onClick={chooseThisViewMode}

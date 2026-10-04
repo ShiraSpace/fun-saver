@@ -52,6 +52,18 @@ describe('AppearanceSection', () => {
     });
   });
 
+  describe('while the save has not answered', () => {
+    beforeEach(() => {
+      global.fetch = jest.fn().mockReturnValue(new Promise(() => {}));
+      renderSection();
+      fireEvent.click(swatches()[1]);
+    });
+
+    it('locks every swatch so a second tap sends no second save', () => {
+      swatches().forEach((swatch) => expect(swatch).toBeDisabled());
+    });
+  });
+
   describe('when a swatch is chosen', () => {
     const chosenTheme = APPEARANCE_SECTION_COPY.themes[1];
 
@@ -79,6 +91,12 @@ describe('AppearanceSection', () => {
     it('refreshes so the saved theme survives a later switch', () => {
       expect(mockRouter.refresh).toHaveBeenCalled();
     });
+
+    it('unlocks the swatches once the theme is saved', async () => {
+      await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
+
+      swatches().forEach((swatch) => expect(swatch).toBeEnabled());
+    });
   });
 
   describe('when the save fails', () => {
@@ -91,6 +109,10 @@ describe('AppearanceSection', () => {
       fireEvent.click(swatches()[1]);
 
       error = await screen.findByTestId(APPEARANCE_SECTION_TEST_IDS.saveError);
+    });
+
+    it('unlocks the swatches so the user can try again', () => {
+      swatches().forEach((swatch) => expect(swatch).toBeEnabled());
     });
 
     it('tells the user it did not save', () => {

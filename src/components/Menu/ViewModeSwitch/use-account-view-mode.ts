@@ -7,7 +7,9 @@ import {
 import type { ViewMode } from '@/lib/account/view-mode';
 import { fetchJson } from '@/lib/fetch-json';
 import { wait } from '@/lib/wait';
+import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { motionIsReduced } from '@/theme/motion';
+import { useReportPendingNavigation } from '@/components/Header/navigation-pending-context';
 import { useMenu, useOnMenuClose } from '../use-menu-state';
 import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
 import { VIEW_MODE_SWITCH_MOTION } from './constants';
@@ -15,7 +17,7 @@ import { VIEW_MODE_SWITCH_MOTION } from './constants';
 interface AccountViewMode {
   chooseViewMode: (viewMode: ViewMode) => void;
   chosenViewMode?: ViewMode;
-  saveFailed: boolean;
+  requestState: RequestState;
 }
 
 interface SavedViewModeSteps {
@@ -55,13 +57,22 @@ export function useAccountViewMode(): AccountViewMode {
   const { closeMenu } = useMenu();
   const router = useRouter();
   const [chosenViewMode, setChosenViewMode] = useState<ViewMode>();
-  const [saveFailed, setSaveFailed] = useState(false);
+  const [requestState, setRequestState] = useState<RequestState>(
+    REQUEST_STATE.idle
+  );
 
-  useOnMenuClose((): void => setSaveFailed(false));
+  const isSaving = requestState === REQUEST_STATE.pending;
+
+  useReportPendingNavigation(isSaving);
+  useOnMenuClose((): void =>
+    setRequestState((current) =>
+      current === REQUEST_STATE.failed ? REQUEST_STATE.idle : current
+    )
+  );
 
   const saveAndShowViewMode = async (viewMode: ViewMode): Promise<void> => {
     setChosenViewMode(viewMode);
-    setSaveFailed(false);
+    setRequestState(REQUEST_STATE.pending);
 
     const saved = fetchJson({
       url: accountViewModeEndpoint(currentAccount.id),
@@ -72,7 +83,7 @@ export function useAccountViewMode(): AccountViewMode {
 
     if (save.status === 'rejected') {
       setChosenViewMode(undefined);
-      setSaveFailed(true);
+      setRequestState(REQUEST_STATE.failed);
       return;
     }
 
@@ -85,6 +96,6 @@ export function useAccountViewMode(): AccountViewMode {
       void saveAndShowViewMode(viewMode);
     },
     chosenViewMode,
-    saveFailed,
+    requestState,
   };
 }

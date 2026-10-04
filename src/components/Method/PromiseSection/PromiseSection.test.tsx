@@ -18,7 +18,7 @@ describe('the section on the promise the parent has to keep', () => {
   });
 
   it('spells out both halves of the promise, since half a promise is not one', () => {
-    expect(screen.getAllByTestId(KEY_POINT_TEST_IDS.outcome)).toHaveLength(
+    expect(screen.getAllByTestId(KEY_POINT_TEST_IDS.point)).toHaveLength(
       Object.keys(METHOD_COPY.promise.rule).length
     );
   });

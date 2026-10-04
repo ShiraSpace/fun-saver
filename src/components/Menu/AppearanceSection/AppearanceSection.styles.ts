@@ -19,6 +19,10 @@ export const Swatch = styled.button<{ background: string }>`
   background: ${({ background }): string => background};
   cursor: pointer;
 
+  &:disabled {
+    cursor: default;
+  }
+
   &[data-selected='true'] {
     border-color: ${selectedRing};
   }
