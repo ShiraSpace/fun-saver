@@ -2,30 +2,29 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
+import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { GOOGLE_PROVIDER_ID } from './constants';
 
 interface GoogleSignIn {
-  isSigningIn: boolean;
-  hasFailed: boolean;
+  requestState: RequestState;
   continueWithGoogle: () => Promise<void>;
 }
 
 export function useGoogleSignIn(): GoogleSignIn {
-  const [isSigningIn, setIsSigningIn] = useState(false);
-  const [hasFailed, setHasFailed] = useState(false);
+  const [requestState, setRequestState] = useState<RequestState>(
+    REQUEST_STATE.idle
+  );
 
   const continueWithGoogle = async (): Promise<void> => {
-    setIsSigningIn(true);
-    setHasFailed(false);
+    setRequestState(REQUEST_STATE.pending);
 
     try {
       await signIn(GOOGLE_PROVIDER_ID, { redirectTo: HOME_ROUTE });
     } catch {
-      setHasFailed(true);
-      setIsSigningIn(false);
+      setRequestState(REQUEST_STATE.failed);
     }
   };
 
-  return { isSigningIn, hasFailed, continueWithGoogle };
+  return { requestState, continueWithGoogle };
 }

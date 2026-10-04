@@ -4,10 +4,12 @@ import { Cancel } from './AccountForm.styles';
 
 interface CancelButtonProps {
   onCancel?: () => void;
+  disabled: boolean;
 }
 
 export function CancelButton({
   onCancel,
+  disabled,
 }: CancelButtonProps): JSX.Element | null {
   if (!onCancel) {
     return null;
@@ -18,6 +20,7 @@ export function CancelButton({
       type="button"
       aria-label={ACCOUNT_FORM_COPY.cancelLabel}
       onClick={onCancel}
+      disabled={disabled}
       data-testid={ACCOUNT_FORM_TEST_IDS.cancel}
     >
       {ACCOUNT_FORM_COPY.cancel}
