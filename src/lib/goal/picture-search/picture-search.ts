@@ -43,7 +43,7 @@ export function indexPictureWords(pictureWords: PictureWords): PicturesByTerm {
   return picturesByTerm;
 }
 
-function withoutPrefix(typedWord: string, prefixLength: number): string[] {
+function restsWithoutPrefix(typedWord: string, prefixLength: number): string[] {
   const prefix = typedWord.slice(0, prefixLength);
   const rest = typedWord.slice(prefixLength);
   const isPrefix = [...prefix].every((letter) =>
@@ -60,7 +60,7 @@ function wordsToLookUp(typedWord: string): string[] {
   return [
     typedWord,
     ...prefixLengths.flatMap((prefixLength) =>
-      withoutPrefix(typedWord, prefixLength)
+      restsWithoutPrefix(typedWord, prefixLength)
     ),
   ];
 }
