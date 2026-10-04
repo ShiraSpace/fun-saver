@@ -38,7 +38,7 @@ decides whether to render it (`goalReached(goal, balance)`), which is wiring.
 export { Celebration } from './Celebration';
 
 // Celebration.tsx
-export function Celebration(): JSX.Element | null;
+export function Celebration(): JSX.Element;
 ```
 
 ## Names (checked against the glossary and siblings)
@@ -164,14 +164,16 @@ run only this file, read which test reddens, restore from the copy, `cmp`.
 | --- | --- | --- |
 | hides the celebration from screen readers | the layer has `aria-hidden="true"` | drop `aria-hidden` |
 | lets a tap through to the cards under it | computed `pointer-events` is `none` | delete the `pointer-events` line |
+| drops every piece the mockup drops | 60 `piece` test ids (literal `mockupPieceCount`) | render `CELEBRATION_PIECES.slice(1)` |
 
 **The rest, in bulk:**
 
 | Test | Asserts | Deliberate break |
 | --- | --- | --- |
-| drops every piece the mockup drops | 60 `piece` test ids (literal `mockupPieceCount`) | render `CELEBRATION_PIECES.slice(1)` |
-| lets each piece fall for its own time after its own wait | first piece 2600ms / 4000ms, second 3500ms / 1300ms (`animation-duration` / `-delay`) | swap duration and delay in `Piece`; separately, draw every piece from `CELEBRATION_PIECES[0]` |
-| places each piece where the mockup does | first piece 32% / 6px / 14px, second 57% / 6px / 10px (`right` / `width` / `height`) | swap width and height; separately, draw every piece from `CELEBRATION_PIECES[0]` |
+| each piece: falls for its own time | first piece 2600ms, second 3500ms (`animation-duration`) | add 1 to `fallMs` |
+| each piece: waits its own time before it falls | first piece 4000ms, second 1300ms (`animation-delay`) | add 1 to `delayMs` |
+| each piece: starts where the mockup places it | first piece 32%, second 57% (`right`) | add 1 to `rightPercent` |
+| each piece: is drawn at its own size | first piece 6px × 14px, second 6px × 10px (`width` / `height`) | draw `width` from `heightPx` |
 | fades the whole celebration out once the pieces have fallen | layer: duration 800ms, delay 9200ms | drop the fade delay |
 | colours the pieces with the theme's celebration colours in turn | rendered with `themeId: midnight-blue`: pieces 0, 1 and 6 are its gold, pink, gold | read `getThemeTokens()` (default theme) in `pieceLook` instead of its `theme`; separately, cycle by `% 5` |
 | sits over the header and under the drawer | computed `z-index` above `LAYERS.overlayForeground`, below `LAYERS.modal` | set it to `LAYERS.modal` |

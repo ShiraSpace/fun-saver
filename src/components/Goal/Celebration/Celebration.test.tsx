@@ -6,15 +6,10 @@ import { CELEBRATION_TEST_IDS } from './constants';
 
 describe('Celebration', () => {
   let celebration: HTMLElement;
-  let firstPiece: HTMLElement;
-  let secondPiece: HTMLElement;
 
   beforeEach(() => {
     render(<Celebration />);
     celebration = screen.getByTestId(CELEBRATION_TEST_IDS.celebration);
-    [firstPiece, secondPiece] = screen.getAllByTestId(
-      CELEBRATION_TEST_IDS.piece
-    );
   });
 
   it('hides the celebration from screen readers', () => {
@@ -33,30 +28,6 @@ describe('Celebration', () => {
     );
   });
 
-  it('lets each piece fall for its own time after its own wait', () => {
-    expect(firstPiece).toHaveStyle({
-      animationDuration: '2600ms',
-      animationDelay: '4000ms',
-    });
-    expect(secondPiece).toHaveStyle({
-      animationDuration: '3500ms',
-      animationDelay: '1300ms',
-    });
-  });
-
-  it('places each piece where the mockup does, at its own size', () => {
-    expect(firstPiece).toHaveStyle({
-      right: '32%',
-      width: '6px',
-      height: '14px',
-    });
-    expect(secondPiece).toHaveStyle({
-      right: '57%',
-      width: '6px',
-      height: '10px',
-    });
-  });
-
   it('fades the whole celebration out once the pieces have fallen', () => {
     expect(celebration).toHaveStyle({
       animationDuration: '800ms',
@@ -69,6 +40,37 @@ describe('Celebration', () => {
 
     expect(layer).toBeGreaterThan(LAYERS.overlayForeground);
     expect(layer).toBeLessThan(LAYERS.modal);
+  });
+
+  describe('each piece', () => {
+    let firstPiece: HTMLElement;
+    let secondPiece: HTMLElement;
+
+    beforeEach(() => {
+      [firstPiece, secondPiece] = screen.getAllByTestId(
+        CELEBRATION_TEST_IDS.piece
+      );
+    });
+
+    it('falls for its own time', () => {
+      expect(firstPiece).toHaveStyle({ animationDuration: '2600ms' });
+      expect(secondPiece).toHaveStyle({ animationDuration: '3500ms' });
+    });
+
+    it('waits its own time before it falls', () => {
+      expect(firstPiece).toHaveStyle({ animationDelay: '4000ms' });
+      expect(secondPiece).toHaveStyle({ animationDelay: '1300ms' });
+    });
+
+    it('starts where the mockup places it', () => {
+      expect(firstPiece).toHaveStyle({ right: '32%' });
+      expect(secondPiece).toHaveStyle({ right: '57%' });
+    });
+
+    it('is drawn at its own size', () => {
+      expect(firstPiece).toHaveStyle({ width: '6px', height: '14px' });
+      expect(secondPiece).toHaveStyle({ width: '6px', height: '10px' });
+    });
   });
 });
 
