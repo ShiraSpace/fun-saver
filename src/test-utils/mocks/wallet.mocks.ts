@@ -1,4 +1,9 @@
-import type { Wallet, WalletSummary } from '@/lib/wallet/types';
+import type {
+  SpendableWalletName,
+  SpendableWalletSummary,
+  Wallet,
+  WalletSummary,
+} from '@/lib/wallet/types';
 import { DEFAULT_WALLETS } from '@/lib/wallet/constants';
 
 export function createMockWallet(overrides: Partial<Wallet> = {}): Wallet {
@@ -36,6 +41,13 @@ export function createMockWalletSummary(
     interestEarnedToday: 150,
     ...overrides,
   };
+}
+
+export function createMockSpendableWallet(
+  name: SpendableWalletName,
+  overrides: Partial<WalletSummary> = {}
+): SpendableWalletSummary {
+  return { ...createMockWalletSummary(overrides), name };
 }
 
 const mockWalletBalances: Pick<

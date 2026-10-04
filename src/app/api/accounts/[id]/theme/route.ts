@@ -4,7 +4,7 @@ import { isThemeId } from '@/theme/registry';
 import { jsonBody } from '@/app/api/json-body';
 import { API_ERRORS } from '@/app/api/constants';
 import { accountNotFound, badRequest } from '@/app/api/responses';
-import { withAccountEditor } from '../with-account-editor';
+import { withAccountEditor } from '../with-account-access';
 
 export const PUT = withAccountEditor(async (request, id) => {
   const body = asObject(await jsonBody(request));

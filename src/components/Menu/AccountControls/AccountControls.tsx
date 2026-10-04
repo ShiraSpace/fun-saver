@@ -1,14 +1,17 @@
 'use client';
 
 import { Fragment, JSX } from 'react';
-import { AccountPicker } from '../AccountPicker';
-import { EditAccountButton } from '../EditAccountButton';
-import { useMenu } from '../use-menu-state';
 import { useAccounts } from '@/components/Home/accounts-context';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import {
   APP_MODE,
   useAppMode,
 } from '@/components/AccountManagement/app-mode-context';
+import { AccountPicker } from '../AccountPicker';
+import { EditAccountButton } from '../EditAccountButton';
+import { ViewModeSwitch } from '../ViewModeSwitch';
+import { useMenu } from '../use-menu-state';
+import { ChildViewSetting } from './AccountControls.styles';
 
 export function AccountControls(): JSX.Element {
   const { accounts, currentAccount, switchAccount } = useAccounts();
@@ -32,6 +35,9 @@ export function AccountControls(): JSX.Element {
         currentAccount={currentAccount}
         onSelect={openAccount}
       />
+      <ChildViewSetting>
+        <ViewModeSwitch viewMode={VIEW_MODE.child} />
+      </ChildViewSetting>
       <EditAccountButton
         accountName={currentAccount.name}
         onEditAccount={startEditingAccount}

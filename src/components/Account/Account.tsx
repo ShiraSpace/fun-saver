@@ -2,6 +2,7 @@
 
 import { JSX, useState } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
+import { walletNamed } from '@/lib/wallet/wallet-named';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
@@ -17,9 +18,7 @@ interface AccountProps {
 
 export function Account({ account }: AccountProps): JSX.Element {
   const { wallets } = account;
-  const savings = wallets.find(
-    (wallet) => wallet.name === WALLET_NAMES.savings
-  );
+  const savings = walletNamed(wallets, WALLET_NAMES.savings);
   const otherWallets = wallets.filter(
     (wallet) => wallet.name !== WALLET_NAMES.savings
   );

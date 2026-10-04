@@ -11,6 +11,7 @@ import {
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 
 const mockAccountRow: AccountRow = {
@@ -19,6 +20,7 @@ const mockAccountRow: AccountRow = {
   avatar_id: mockAccount.avatarId,
   is_active: mockAccount.isActive,
   theme_id: DEFAULT_THEME_ID,
+  view_mode: mockAccount.viewMode,
   wallets: createMockWallets(),
 };
 
@@ -53,6 +55,20 @@ const accountUserRow: AccountUserRow = {
 describe('accountFromRow', () => {
   it('maps an account row to an Account', () => {
     expect(accountFromRow(mockAccountRow)).toEqual(mockAccount);
+  });
+});
+
+describe('accountFromRow view mode', () => {
+  it('reads a stored child view', () => {
+    expect(
+      accountFromRow({ ...mockAccountRow, view_mode: VIEW_MODE.child }).viewMode
+    ).toBe(VIEW_MODE.child);
+  });
+
+  it('shows an unknown stored view as the parent screen', () => {
+    expect(
+      accountFromRow({ ...mockAccountRow, view_mode: 'toddler' }).viewMode
+    ).toBe(VIEW_MODE.parent);
   });
 });
 
