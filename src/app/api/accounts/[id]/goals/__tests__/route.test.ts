@@ -14,7 +14,13 @@ import { POST } from '../route';
 jest.mock('@/auth');
 
 describe('POST /api/accounts/[id]/goals', () => {
-  withTempStoreEnv();
+  const storeFile = withTempStoreEnv();
+
+  const mockGoalRequest = {
+    name: 'אופניים',
+    amount: 300,
+    picture: createMockGoalPicture('🚲'),
+  };
 
   let accountId: string;
 
@@ -22,12 +28,6 @@ describe('POST /api/accounts/[id]/goals', () => {
     accountId = (await createOwnedAccount(getStore())).id;
     jest.mocked(signedInUser).mockResolvedValue(mockUser);
   });
-
-  const mockGoalRequest = {
-    name: 'אופניים',
-    amount: 300,
-    picture: createMockGoalPicture('🚲'),
-  };
 
   function postGoal(body: unknown): Promise<Response> {
     return postRawBody(JSON.stringify(body));
@@ -110,7 +110,11 @@ describe('POST /api/accounts/[id]/goals', () => {
     let response: Response;
 
     beforeEach(async () => {
-      await addAccountViewerToStoreFile(accountId, mockCoParent);
+      await addAccountViewerToStoreFile(
+        storeFile.path,
+        accountId,
+        mockCoParent
+      );
       jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
       response = await postGoal(mockGoalRequest);
     });

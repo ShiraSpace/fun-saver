@@ -3,10 +3,10 @@ import type { StoreContents } from '@/db/data-store';
 import type { User } from '@/lib/user/types';
 
 export async function addAccountViewerToStoreFile(
+  storePath: string,
   accountId: string,
   viewer: User
 ): Promise<void> {
-  const storePath = process.env.FUNSAVER_DATA_PATH!;
   const contents: StoreContents = JSON.parse(await readFile(storePath, 'utf8'));
 
   contents.accountUsers.push({

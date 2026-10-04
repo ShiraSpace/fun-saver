@@ -38,22 +38,38 @@ describe('withAccountEditor', () => {
     );
   }
 
-  it('answers 401 without a session and never runs the handler', async () => {
-    jest.mocked(signedInUser).mockResolvedValue(undefined);
+  describe('without a session', () => {
+    let response: Response;
 
-    const response = await callGuarded(accountId);
+    beforeEach(async () => {
+      jest.mocked(signedInUser).mockResolvedValue(undefined);
+      response = await callGuarded(accountId);
+    });
 
-    expect(response.status).toBe(401);
-    expect(mockRouteHandler).not.toHaveBeenCalled();
+    it('answers 401', () => {
+      expect(response.status).toBe(401);
+    });
+
+    it('does not call the handler', () => {
+      expect(mockRouteHandler).not.toHaveBeenCalled();
+    });
   });
 
-  it('answers 403 to a member of no account and never runs the handler', async () => {
-    jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
+  describe('a stranger to the account', () => {
+    let response: Response;
 
-    const response = await callGuarded(accountId);
+    beforeEach(async () => {
+      jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
+      response = await callGuarded(accountId);
+    });
 
-    expect(response.status).toBe(403);
-    expect(mockRouteHandler).not.toHaveBeenCalled();
+    it('answers 403', () => {
+      expect(response.status).toBe(403);
+    });
+
+    it('does not call the handler', () => {
+      expect(mockRouteHandler).not.toHaveBeenCalled();
+    });
   });
 
   describe('a member', () => {

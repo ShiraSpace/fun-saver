@@ -16,7 +16,7 @@ import { DELETE } from '../route';
 jest.mock('@/auth');
 
 describe('DELETE /api/accounts/[id]/goals/[goalId]', () => {
-  withTempStoreEnv();
+  const storeFile = withTempStoreEnv();
 
   let accountId: string;
   let mockGoal: Goal;
@@ -78,7 +78,11 @@ describe('DELETE /api/accounts/[id]/goals/[goalId]', () => {
     let response: Response;
 
     beforeEach(async () => {
-      await addAccountViewerToStoreFile(accountId, mockCoParent);
+      await addAccountViewerToStoreFile(
+        storeFile.path,
+        accountId,
+        mockCoParent
+      );
       jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
       response = await cancelGoal();
     });
