@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { Avatar } from '@/components/Avatar/Avatar';
+import { AvatarBadge } from '@/components/AvatarBadge';
 import { useAccounts } from '@/components/Home/accounts-context';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { APP_VIEW_MODE } from '@/lib/account/view-mode';
@@ -29,7 +29,7 @@ export function ChildMenuContent(): JSX.Element {
   return (
     <Layout data-testid={CHILD_MENU_CONTENT_TEST_IDS.menu}>
       <Child>
-        <Avatar
+        <AvatarBadge
           avatarId={currentAccount.avatarId}
           alt=""
           size={CHILD_MENU_AVATAR_PROPS.size}

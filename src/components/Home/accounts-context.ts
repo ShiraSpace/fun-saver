@@ -6,9 +6,6 @@ import type { AppViewMode } from '@/lib/account/view-mode';
 
 export interface ViewModeChoice {
   showViewMode: (viewMode: AppViewMode) => void;
-  returnToSavedViewMode: () => void;
-  saveFailed: boolean;
-  reportSaveFailed: (saveFailed: boolean) => void;
 }
 
 export interface AccountsContextValue {

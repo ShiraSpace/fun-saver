@@ -88,9 +88,10 @@ like that. Add a cookie only if something ever needs the mode before the data.
   `AccountSummary` extends `Account`, so `Home` and the menu read
   `currentAccount.viewMode` with no new prop. The first paint is already the
   right view, with no flash of the parent screen.
-- **Switching:** the switch PUTs the new mode, then calls `router.refresh()`.
-  If the save fails, it stays in the current view and shows an error, the
-  same as `useAccountTheme`.
+- **Switching:** the knob slides while the switch PUTs the new mode. Once
+  the save answers, the menu closes and fades, the screen swaps, and
+  `router.refresh()` runs. If the save fails, the knob slides back, the
+  menu stays open on the current view, and the switch shows the error.
 - **The mode belongs to the account.** Turning on child mode for Noa doesn't
   touch her sibling's account. The only login is the parent's, so the
   database can't tell devices apart. If the parent opens Noa's account on
@@ -182,7 +183,8 @@ Add these to `docs/glossary.md` in the same PR that introduces them:
   `resolveThemeId` falls back to the default theme.
 - **No interest yet:** "✨ +₪0" is shown, so the layout never jumps.
 - **A wallet under ₪1:** shows ₪0.
-- **Save fails:** the view doesn't change, and the switch shows an error.
+- **Save fails:** the view doesn't change, the menu stays open, and the
+  switch shows the error.
 
 ## Testing
 

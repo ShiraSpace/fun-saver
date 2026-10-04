@@ -28,7 +28,6 @@ export function useShownViewMode(
   currentAccount: AccountSummary | undefined
 ): ShownViewMode {
   const [chosen, setChosen] = useState<ChosenViewMode>();
-  const [saveFailed, reportSaveFailed] = useState(false);
 
   const showViewMode = (viewMode: AppViewMode): void => {
     if (currentAccount) {
@@ -38,11 +37,6 @@ export function useShownViewMode(
 
   return {
     shownAccount: withChosenViewMode(currentAccount, chosen),
-    viewModeChoice: {
-      showViewMode,
-      returnToSavedViewMode: (): void => setChosen(undefined),
-      saveFailed,
-      reportSaveFailed,
-    },
+    viewModeChoice: { showViewMode },
   };
 }
