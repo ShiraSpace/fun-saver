@@ -6,6 +6,7 @@ import { getStore } from '@/db';
 import { today } from '@/lib/clock';
 import { addDeposit } from '@/lib/transaction/transactions';
 import { balance } from '@/lib/wallet/balance';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { shekelsToAgorot } from '@/lib/money';
 import type { Account } from '@/lib/account/types';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
@@ -20,6 +21,7 @@ jest.mock('@/auth');
 describe('POST /api/accounts/[id]/withdrawals', () => {
   withTempStoreEnv();
 
+  const mockDepositAgorot = 10000;
   const mockWithdrawalShekels = 20;
 
   let account: Account;
@@ -27,11 +29,13 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
 
   beforeEach(async () => {
     account = await createOwnedAccount(getStore());
-    savingsId = account.wallets.find((wallet) => wallet.name === 'savings')!.id;
+    savingsId = account.wallets.find(
+      (wallet) => wallet.name === WALLET_NAMES.savings
+    )!.id;
     await addDeposit({
       store: getStore(),
       account,
-      amountAgorot: 10000,
+      amountAgorot: mockDepositAgorot,
       asOf: today(),
     });
     jest.mocked(signedInUser).mockResolvedValue(mockUser);
@@ -107,10 +111,12 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
   });
 
   it('refuses an unknown account with 403 rather than admitting it is gone', async () => {
+    const mockUnknownAccountId = 'does-not-exist';
+
     const response = await postWithdraw(
       savingsId,
       mockWithdrawalShekels,
-      'does-not-exist'
+      mockUnknownAccountId
     );
 
     expect(response.status).toBe(403);
