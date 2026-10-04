@@ -1,7 +1,7 @@
-import { WALLET_NAMES } from '../constants';
+import { WALLET_NAME_LIST } from '../constants';
 
-describe('WALLET_NAMES', () => {
+describe('WALLET_NAME_LIST', () => {
   it('lists savings first, then spending, then good deeds', () => {
-    expect(WALLET_NAMES).toEqual(['savings', 'spending', 'goodDeeds']);
+    expect(WALLET_NAME_LIST).toEqual(['savings', 'spending', 'goodDeeds']);
   });
 });

@@ -1,6 +1,7 @@
 import { eachDayInclusive } from '@/lib/dates';
 import { balanceChange } from './balance';
 import type { Transaction } from '@/lib/transaction/types';
+import { WALLET_NAMES } from './constants';
 import type { Wallet, WalletName } from './types';
 import { walletNamed } from './wallet-named';
 
@@ -90,9 +91,9 @@ function perWallet(
   balancesOf: (walletName: WalletName) => number[]
 ): WalletBalances {
   return {
-    savings: balancesOf('savings'),
-    spending: balancesOf('spending'),
-    goodDeeds: balancesOf('goodDeeds'),
+    savings: balancesOf(WALLET_NAMES.savings),
+    spending: balancesOf(WALLET_NAMES.spending),
+    goodDeeds: balancesOf(WALLET_NAMES.goodDeeds),
   };
 }
 

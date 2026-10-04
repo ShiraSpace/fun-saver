@@ -40,13 +40,13 @@ describe('WithdrawalForm', () => {
     );
   });
 
-  it('renders a wallet picker with the savings wallet selected by default', () => {
-    expect(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(savings.name))
-    ).toHaveAttribute('aria-pressed', 'true');
+  it('renders a wallet picker with the spending wallet selected by default', () => {
     expect(
       screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(spending.name))
-    ).toBeInTheDocument();
+    ).toHaveAttribute('aria-pressed', 'true');
+    expect(
+      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(savings.name))
+    ).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('disables submit until a valid amount is entered', () => {
@@ -66,7 +66,7 @@ describe('WithdrawalForm', () => {
 
     expect(
       screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)
-    ).toHaveTextContent(String(agorotToShekels(savings.balance)));
+    ).toHaveTextContent(String(agorotToShekels(spending.balance)));
     expect(
       screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
     ).toBeDisabled();
@@ -85,14 +85,14 @@ describe('WithdrawalForm', () => {
 
   it('withdraws from the chosen wallet, refreshes, and closes on submit', async () => {
     fireEvent.click(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(spending.name))
+      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(savings.name))
     );
     type('1', '0');
 
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
 
     await waitFor(() =>
-      expect(mockAddWithdrawal).toHaveBeenCalledWith(spending.id, 10)
+      expect(mockAddWithdrawal).toHaveBeenCalledWith(savings.id, 10)
     );
     await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
     await waitFor(() => expect(mockOnClose).toHaveBeenCalled());

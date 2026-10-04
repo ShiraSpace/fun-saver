@@ -17,7 +17,7 @@ jest.mock('./use-add-transaction', () => ({
 }));
 
 const mockAccountId = 'a1';
-const [savings, , goodDeeds] = mockWalletSummaries;
+const [, spending, goodDeeds] = mockWalletSummaries;
 
 function setup(): ReturnType<
   typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>
@@ -34,10 +34,15 @@ describe('useWithdrawalForm', () => {
     mockOnClose.mockClear();
   });
 
-  it('selects the first wallet by default', () => {
+  it('starts on the default withdrawal wallet', () => {
     const { result } = setup();
 
-    expect(result.current.selectedWalletId).toBe(savings.id);
+    expect(result.current.selectedWalletId).toBe(spending.id);
+  });
+
+  it('starts with no amount and submit disabled', () => {
+    const { result } = setup();
+
     expect(result.current.amountShekels).toBe(0);
     expect(result.current.canSubmit).toBe(false);
   });
@@ -80,7 +85,7 @@ describe('useWithdrawalForm', () => {
     act(() => result.current.onSubmit());
 
     await waitFor(() =>
-      expect(mockAddWithdrawal).toHaveBeenCalledWith(savings.id, 10)
+      expect(mockAddWithdrawal).toHaveBeenCalledWith(spending.id, 10)
     );
     await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
     await waitFor(() => expect(mockOnClose).toHaveBeenCalled());

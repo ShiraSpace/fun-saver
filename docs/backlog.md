@@ -32,13 +32,6 @@ The deposit/withdrawal amount input currently accepts whole units only. Allow no
 - **Display:** amounts already rendered as major units should show the decimal when non-zero (e.g. `₪5.50`, but `₪5` when whole).
 - **Validation:** reject more than 2 decimal places and negative values.
 
-### Default wallet for withdrawals
-
-When opening the withdraw action, preselect `spending` as the source wallet. Matches the Three Jars method — spending is the everyday jar, savings is protected by the goal rule, and goodDeeds is purpose-specific.
-
-- **UI:** wallet selector defaults to `spending` on open; user can still change it.
-- **Edge case:** if `spending` is missing or has 0 balance, fall back to the first wallet with a positive balance (or leave unselected — decide during design).
-
 ## Product policy — not yet enforced in code
 
 - **Withdrawal-only-at-goal on `savings`** — see `docs/the-method.md`. Blocked on the savings-goal feature above.

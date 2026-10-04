@@ -3,7 +3,7 @@
 import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
 import { walletNamed } from '@/lib/wallet/wallet-named';
-import { WALLET_NAME } from '@/lib/wallet/constants';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { ChildSavings } from './ChildSavings';
@@ -16,9 +16,9 @@ interface ChildAccountProps {
 }
 
 export function ChildAccount({ account }: ChildAccountProps): JSX.Element {
-  const savings = walletNamed(account.wallets, WALLET_NAME.savings);
-  const spending = walletNamed(account.wallets, WALLET_NAME.spending);
-  const goodDeeds = walletNamed(account.wallets, WALLET_NAME.goodDeeds);
+  const savings = walletNamed(account.wallets, WALLET_NAMES.savings);
+  const spending = walletNamed(account.wallets, WALLET_NAMES.spending);
+  const goodDeeds = walletNamed(account.wallets, WALLET_NAMES.goodDeeds);
   const savingsCard = savings && <ChildSavings savings={savings} />;
   const spendingCard = spending && <ChildWallet wallet={spending} />;
   const goodDeedsCard = goodDeeds && <ChildWallet wallet={goodDeeds} />;

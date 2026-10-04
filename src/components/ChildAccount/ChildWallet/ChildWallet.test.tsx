@@ -1,6 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { createMockSpendableWallet } from '@/test-utils/mocks/wallet.mocks';
-import { WALLET_NAME } from '@/lib/wallet/constants';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { ChildWallet } from './ChildWallet';
 import { CHILD_WALLET_COPY, CHILD_WALLET_TEST_IDS } from './constants';
 
@@ -9,7 +9,7 @@ describe('ChildWallet', () => {
     beforeEach(() => {
       render(
         <ChildWallet
-          wallet={createMockSpendableWallet(WALLET_NAME.spending, {
+          wallet={createMockSpendableWallet(WALLET_NAMES.spending, {
             balance: 2399,
           })}
         />
@@ -33,7 +33,7 @@ describe('ChildWallet', () => {
     beforeEach(() => {
       render(
         <ChildWallet
-          wallet={createMockSpendableWallet(WALLET_NAME.goodDeeds)}
+          wallet={createMockSpendableWallet(WALLET_NAMES.goodDeeds)}
         />
       );
     });

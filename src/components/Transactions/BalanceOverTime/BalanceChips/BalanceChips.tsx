@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { WALLET_NAMES } from '@/lib/wallet/constants';
+import { WALLET_NAME_LIST } from '@/lib/wallet/constants';
 import { SHOWN_BALANCE, type ShownBalance } from '../../constants';
 import { BalanceChip } from '../chip-parts';
 import { shownBalanceLabel } from '../constants';
@@ -34,7 +34,7 @@ function chipOf(
 
 export function BalanceChips(props: BalanceChipsProps): JSX.Element {
   const totalBalanceChip = chipOf(SHOWN_BALANCE.totalBalance, props);
-  const walletChips = WALLET_NAMES.map((walletName) => {
+  const walletChips = WALLET_NAME_LIST.map((walletName) => {
     const walletChip = chipOf(walletName, props);
 
     return (
