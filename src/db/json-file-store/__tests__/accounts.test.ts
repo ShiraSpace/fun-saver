@@ -60,6 +60,14 @@ describe('JsonFileStore accounts', () => {
     ).toBe(VIEW_MODE.child);
   });
 
+  it('ignores a view change for an account that does not exist', async () => {
+    await store.insertAccount(mockAccount);
+
+    expect(
+      await store.setAccountViewMode('missing', VIEW_MODE.child)
+    ).toBeUndefined();
+  });
+
   describe('edit account', () => {
     beforeEach(async () => {
       await store.insertAccount(mockAccount);

@@ -80,6 +80,12 @@ describe('PostgresAccounts', () => {
         VIEW_MODE.parent
       );
     });
+
+    it('ignores a view change for an account that does not exist', async () => {
+      expect(
+        await store.setAccountViewMode(accountId('missing'), VIEW_MODE.child)
+      ).toBeUndefined();
+    });
   });
 
   describe('edit account', () => {

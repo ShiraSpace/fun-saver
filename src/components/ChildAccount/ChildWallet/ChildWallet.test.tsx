@@ -28,4 +28,20 @@ describe('ChildWallet', () => {
       );
     });
   });
+
+  describe('a good-deeds wallet', () => {
+    beforeEach(() => {
+      render(
+        <ChildWallet
+          wallet={createMockSpendableWallet(WALLET_NAME.goodDeeds)}
+        />
+      );
+    });
+
+    it('tells the child this is the money to give', () => {
+      expect(screen.getByTestId(CHILD_WALLET_TEST_IDS.card)).toHaveTextContent(
+        CHILD_WALLET_COPY.goodDeeds
+      );
+    });
+  });
 });
