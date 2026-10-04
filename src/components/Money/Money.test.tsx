@@ -72,7 +72,7 @@ describe('Money', () => {
         <Money
           amountAgorot={26484}
           testId="amount"
-          rounding={MONEY_ROUNDING.downToShekel}
+          rounding={MONEY_ROUNDING.floorToShekels}
         />
       );
     });

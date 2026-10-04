@@ -4,7 +4,7 @@
 
 **Goal:** A view-only child screen per account (savings first, then spending and good deeds, in whole shekels) and a child menu. The parent turns it on from the menu, and it is saved on the account.
 
-**Architecture:** A new `accounts.view_mode` column (`APP_VIEW_MODE`) travels with the account row that every page already loads, so `Home` and `MenuContent` branch on `currentAccount.viewMode` with no new props and no cookie. A thin `PUT /api/accounts/[id]/view-mode` route saves it, copying the theme route. The child screens reuse `Header`, `Money`, `Avatar` and `AppearanceSection`.
+**Architecture:** A new `accounts.view_mode` column (`VIEW_MODE`) travels with the account row that every page already loads, so `Home` and `MenuContent` branch on `currentAccount.viewMode` with no new props and no cookie. A thin `PUT /api/accounts/[id]/view-mode` route saves it, copying the theme route. The child screens reuse `Header`, `Money`, `Avatar` and `AppearanceSection`.
 
 **Tech Stack:** Next.js 16 App Router, React, Emotion, Jest + RTL, Postgres (Neon), puppeteer `node:test` e2e.
 
@@ -19,14 +19,14 @@
 - Copy and test IDs go in each component's `constants.ts` (`*_COPY`, `*_TEST_IDS`).
 - Names come from `docs/glossary.md`. Names in this plan are proposals; re-check each one when implementing, and ask if in doubt.
 - Tests: the scenario goes in `describe` plus `beforeEach`, with one `expect` per `it`. Name tests in domain language. Stand-ins take a `mock` prefix. Shared mocks live in `src/test-utils/mocks/<domain>.mocks.ts`. Driver classes are e2e-only.
-- The view-mode values are always `APP_VIEW_MODE.parent` / `APP_VIEW_MODE.child`, never a bare string. The SQL default and CHECK are the only literals.
+- The view-mode values are always `VIEW_MODE.parent` / `VIEW_MODE.child`, never a bare string. The SQL default and CHECK are the only literals.
 - Child amounts are whole shekels, **rounded down** (`floorToShekels`).
 - `rtk` output isn't trusted for facts. Use `./node_modules/.bin/<tool>` and `rtk proxy git …`.
 - **Fresh worktree setup (once, before Task 1):** run `npm install`, and copy `.env.local` from `../fun-saver/.env.local`.
 
 ## Review Focus
 
-1. **Stored mode not in the enum** (an old JSON-store account with no `viewMode`, or a manual DB edit) → the account shows the parent view. Pinned in Task 1 (`resolveAppViewMode`) and Task 2 (`accountFromRow`).
+1. **Stored mode not in the enum** (an old JSON-store account with no `viewMode`, or a manual DB edit) → the account shows the parent view. Pinned in Task 1 (`resolveViewMode`) and Task 2 (`accountFromRow`).
 2. **Withdrawals larger than deposits** (interest is more than the balance) → "הפקדת" shows ₪0, never negative, and the tiles still add up. Pinned in Task 1.
 3. **Save fails while switching** (offline, 403) → the view stays the same and an error shows. Pinned in Task 5.
 4. **A child opens `/transactions` or `/method` by URL** → the menu there is the child menu. Pinned in Task 6.
@@ -38,7 +38,7 @@
 
 | File | Responsibility |
 | --- | --- |
-| `src/lib/account/view-mode.ts` (new) | `APP_VIEW_MODE`, `AppViewMode`, `isAppViewMode`, `resolveAppViewMode`, `isChildView` |
+| `src/lib/account/view-mode.ts` (new) | `VIEW_MODE`, `ViewMode`, `isViewMode`, `resolveViewMode`, `isShownToChild` |
 | `src/lib/money.ts` | `floorToShekels` |
 | `src/lib/wallet/savings-in-whole-shekels.ts` (new) | splits savings into the shekels the child put in and the shekels interest earned |
 | `docs/glossary.md` | three new rows |
@@ -64,32 +64,32 @@
 - Test: `src/lib/account/__tests__/view-mode.test.ts`, `src/lib/__tests__/money.test.ts`, `src/lib/wallet/__tests__/savings-in-whole-shekels.test.ts`
 
 **Interfaces:**
-- Produces: `APP_VIEW_MODE`, `type AppViewMode`, `isAppViewMode(value: unknown): value is AppViewMode`, `resolveAppViewMode(stored: string | undefined): AppViewMode`, `isChildView(account: Pick<Account, 'viewMode'>): boolean`, `floorToShekels(agorot: number): number`, `savingsInWholeShekels(savings: Pick<WalletSummary, 'balance' | 'interestEarned'>): SavingsInWholeShekels`, `interface SavingsInWholeShekels { balanceShekels; principalShekels; interestEarnedShekels }`.
+- Produces: `VIEW_MODE`, `type ViewMode`, `isViewMode(value: unknown): value is ViewMode`, `resolveViewMode(stored: string | undefined): ViewMode`, `isShownToChild(account: Pick<Account, 'viewMode'>): boolean`, `floorToShekels(agorot: number): number`, `savingsInWholeShekels(savings: Pick<WalletSummary, 'balance' | 'interestEarned'>): SavingsInWholeShekels`, `interface SavingsInWholeShekels { balanceShekels; principalShekels; interestEarnedShekels }`.
 
 - [ ] **Step 1: Production code**
 
-`src/lib/account/view-mode.ts`. It imports `Account` as a type only, and `viewMode` is added to `Account` in Task 2. Until then, type the parameter as `{ viewMode?: AppViewMode }` and switch it to `Pick<Account, 'viewMode'>` in Task 2.
+`src/lib/account/view-mode.ts`. It imports `Account` as a type only, and `viewMode` is added to `Account` in Task 2. Until then, type the parameter as `{ viewMode?: ViewMode }` and switch it to `Pick<Account, 'viewMode'>` in Task 2.
 
 ```ts
-export const APP_VIEW_MODE = {
+export const VIEW_MODE = {
   parent: 'parent',
   child: 'child',
 } as const;
 
-export type AppViewMode = (typeof APP_VIEW_MODE)[keyof typeof APP_VIEW_MODE];
+export type ViewMode = (typeof VIEW_MODE)[keyof typeof VIEW_MODE];
 
-const APP_VIEW_MODES: readonly string[] = Object.values(APP_VIEW_MODE);
+const VIEW_MODES: readonly string[] = Object.values(VIEW_MODE);
 
-export function isAppViewMode(value: unknown): value is AppViewMode {
-  return typeof value === 'string' && APP_VIEW_MODES.includes(value);
+export function isViewMode(value: unknown): value is ViewMode {
+  return typeof value === 'string' && VIEW_MODES.includes(value);
 }
 
-export function resolveAppViewMode(stored: string | undefined): AppViewMode {
-  return isAppViewMode(stored) ? stored : APP_VIEW_MODE.parent;
+export function resolveViewMode(stored: string | undefined): ViewMode {
+  return isViewMode(stored) ? stored : VIEW_MODE.parent;
 }
 
-export function isChildView(account: { viewMode?: AppViewMode }): boolean {
-  return account.viewMode === APP_VIEW_MODE.child;
+export function isShownToChild(account: { viewMode?: ViewMode }): boolean {
+  return account.viewMode === VIEW_MODE.child;
 }
 ```
 
@@ -133,7 +133,7 @@ export function savingsInWholeShekels(
 `docs/glossary.md`: add these rows to Terms, after "The account being viewed":
 
 ```md
-| Which screen the account is shown in | מצב ילד · מצב הורה             | `AppViewMode`: `APP_VIEW_MODE.parent`, `APP_VIEW_MODE.child`; column `view_mode` | `AppMode` (viewing/creating/editing), childView    |
+| Which screen the account is shown in | מצב ילד · מצב הורה             | `ViewMode`: `VIEW_MODE.parent`, `VIEW_MODE.child`; column `view_mode` | `AppMode` (viewing/creating/editing), childView    |
 | Whole shekels, never more than there is | ₪                           | `floorToShekels`                                                          | rounding to nearest on a child's screen             |
 | Savings as the child sees it         | הפקדת · הרוויח לבד             | `savingsInWholeShekels`: `principalShekels`, `interestEarnedShekels`      | deposited, gain                                     |
 ```
@@ -235,32 +235,32 @@ describe('floorToShekels', () => {
 
 ```ts
 import {
-  APP_VIEW_MODE,
-  isChildView,
-  resolveAppViewMode,
+  VIEW_MODE,
+  isShownToChild,
+  resolveViewMode,
 } from '../view-mode';
 
-describe('resolveAppViewMode', () => {
+describe('resolveViewMode', () => {
   it('keeps a stored child view', () => {
-    expect(resolveAppViewMode(APP_VIEW_MODE.child)).toBe(APP_VIEW_MODE.child);
+    expect(resolveViewMode(VIEW_MODE.child)).toBe(VIEW_MODE.child);
   });
 
   it('shows an account with no stored view the parent screen', () => {
-    expect(resolveAppViewMode(undefined)).toBe(APP_VIEW_MODE.parent);
+    expect(resolveViewMode(undefined)).toBe(VIEW_MODE.parent);
   });
 
   it('shows an account with an unknown stored view the parent screen', () => {
-    expect(resolveAppViewMode('toddler')).toBe(APP_VIEW_MODE.parent);
+    expect(resolveViewMode('toddler')).toBe(VIEW_MODE.parent);
   });
 });
 
-describe('isChildView', () => {
+describe('isShownToChild', () => {
   it('is true for an account in child view', () => {
-    expect(isChildView({ viewMode: APP_VIEW_MODE.child })).toBe(true);
+    expect(isShownToChild({ viewMode: VIEW_MODE.child })).toBe(true);
   });
 
   it('is false for an account in parent view', () => {
-    expect(isChildView({ viewMode: APP_VIEW_MODE.parent })).toBe(false);
+    expect(isShownToChild({ viewMode: VIEW_MODE.parent })).toBe(false);
   });
 });
 ```
@@ -278,22 +278,22 @@ rtk proxy git commit -m "test(child-mode): whole shekels and the savings split"
 ### Task 2: The account remembers its view mode
 
 **Files:**
-- Modify: `src/lib/account/types.ts` (`Account`), `src/lib/account/view-mode.ts` (`isChildView` param), `src/lib/account/accounts-store.ts:28-35`
+- Modify: `src/lib/account/types.ts` (`Account`), `src/lib/account/view-mode.ts` (`isShownToChild` param), `src/lib/account/accounts-store.ts:28-35`
 - Modify: `src/db/schema.sql` (after the `accounts` CREATE), `src/db/rows.ts`, `src/db/data-store.ts`, `src/db/repository-store.ts`
 - Modify: `src/db/memory-store/accounts.ts`, `src/db/json-file-store/accounts.ts`, `src/db/postgres-store/accounts.ts`
 - Modify: `src/test-utils/mocks/account.mocks.ts` (`createMockAccount`)
 - Test: `src/db/memory-store/__tests__/accounts.test.ts`, `src/db/json-file-store/__tests__/accounts.test.ts`, `src/db/__tests__/rows.test.ts`, `src/lib/account/__tests__/accounts-store.test.ts`, `src/db/postgres-store/__tests__/accounts.e2e.ts`
 
 **Interfaces:**
-- Consumes: `APP_VIEW_MODE`, `AppViewMode`, `resolveAppViewMode` (Task 1).
-- Produces: `Account.viewMode: AppViewMode`; `DataStore.setAccountViewMode(id: string, viewMode: AppViewMode): Promise<Account | undefined>`; `AccountRepository.setViewMode(id, viewMode)`; `isChildView(account: Pick<Account, 'viewMode'>): boolean`.
+- Consumes: `VIEW_MODE`, `ViewMode`, `resolveViewMode` (Task 1).
+- Produces: `Account.viewMode: ViewMode`; `DataStore.setAccountViewMode(id: string, viewMode: ViewMode): Promise<Account | undefined>`; `AccountRepository.setViewMode(id, viewMode)`; `isShownToChild(account: Pick<Account, 'viewMode'>): boolean`.
 
 - [ ] **Step 1: Production code**
 
-`src/lib/account/types.ts`: add `import type { AppViewMode } from './view-mode';` and, in `Account` after `themeId`:
+`src/lib/account/types.ts`: add `import type { ViewMode } from './view-mode';` and, in `Account` after `themeId`:
 
 ```ts
-  viewMode: AppViewMode;
+  viewMode: ViewMode;
 ```
 
 `src/lib/account/view-mode.ts`: add `import type { Account } from './types';`, then change the param to `account: Pick<Account, 'viewMode'>`.
@@ -301,12 +301,12 @@ rtk proxy git commit -m "test(child-mode): whole shekels and the savings split"
 `src/lib/account/accounts-store.ts`, in `createAccount` after `themeId: DEFAULT_THEME_ID,`:
 
 ```ts
-      viewMode: APP_VIEW_MODE.parent,
+      viewMode: VIEW_MODE.parent,
 ```
 
-(import `APP_VIEW_MODE` from `./view-mode`).
+(import `VIEW_MODE` from `./view-mode`).
 
-`src/db/schema.sql`, right after the `CREATE TABLE IF NOT EXISTS accounts (...)` block. The replay is idempotent, and the default must match `APP_VIEW_MODE.parent`:
+`src/db/schema.sql`, right after the `CREATE TABLE IF NOT EXISTS accounts (...)` block. The replay is idempotent, and the default must match `VIEW_MODE.parent`:
 
 ```sql
 ALTER TABLE accounts ADD COLUMN IF NOT EXISTS view_mode TEXT NOT NULL DEFAULT 'parent'
@@ -316,15 +316,15 @@ ALTER TABLE accounts ADD COLUMN IF NOT EXISTS view_mode TEXT NOT NULL DEFAULT 'p
 `src/db/rows.ts`: add `view_mode: string;` to `AccountRow` after `theme_id`, and in `accountFromRow` after `themeId`:
 
 ```ts
-    viewMode: resolveAppViewMode(row.view_mode),
+    viewMode: resolveViewMode(row.view_mode),
 ```
 
-(import `resolveAppViewMode` from `@/lib/account/view-mode`).
+(import `resolveViewMode` from `@/lib/account/view-mode`).
 
-`src/db/data-store.ts`: import `type AppViewMode`. In `AccountRepository`, after `setTheme`:
+`src/db/data-store.ts`: import `type ViewMode`. In `AccountRepository`, after `setTheme`:
 
 ```ts
-  setViewMode(id: string, viewMode: AppViewMode): Promise<Account | undefined>;
+  setViewMode(id: string, viewMode: ViewMode): Promise<Account | undefined>;
 ```
 
 In `DataStore`, after `setAccountTheme`:
@@ -332,7 +332,7 @@ In `DataStore`, after `setAccountTheme`:
 ```ts
   setAccountViewMode(
     id: string,
-    viewMode: AppViewMode
+    viewMode: ViewMode
   ): Promise<Account | undefined>;
 ```
 
@@ -341,7 +341,7 @@ In `DataStore`, after `setAccountTheme`:
 ```ts
   setAccountViewMode(
     id: string,
-    viewMode: AppViewMode
+    viewMode: ViewMode
   ): Promise<Account | undefined> {
     return this.accounts.setViewMode(id, viewMode);
   }
@@ -352,7 +352,7 @@ In `DataStore`, after `setAccountTheme`:
 ```ts
   async setViewMode(
     id: string,
-    viewMode: AppViewMode
+    viewMode: ViewMode
   ): Promise<Account | undefined> {
     const account = this.find(id);
 
@@ -369,7 +369,7 @@ In `DataStore`, after `setAccountTheme`:
 `src/db/json-file-store/accounts.ts`, after `setTheme`:
 
 ```ts
-  setViewMode(id: string, viewMode: AppViewMode): Promise<Account | undefined> {
+  setViewMode(id: string, viewMode: ViewMode): Promise<Account | undefined> {
     return this.session.write(
       async (contents, save): Promise<Account | undefined> => {
         const account = findAccount(contents, id);
@@ -394,7 +394,7 @@ If `setTheme` and `setViewMode` push the file over 200 lines, or ESLint flags th
 ```ts
   async setViewMode(
     id: string,
-    viewMode: AppViewMode
+    viewMode: ViewMode
   ): Promise<Account | undefined> {
     const rows = await this.query(
       'UPDATE accounts SET view_mode = $1 WHERE id = $2 RETURNING *',
@@ -408,7 +408,7 @@ If `setTheme` and `setViewMode` push the file over 200 lines, or ESLint flags th
 `src/test-utils/mocks/account.mocks.ts`, in `createMockAccount` after `themeId`:
 
 ```ts
-    viewMode: APP_VIEW_MODE.parent,
+    viewMode: VIEW_MODE.parent,
 ```
 
 Run: `./node_modules/.bin/tsc --noEmit` (it lists every `Account` literal that still needs `viewMode`; fix each one at its source, and add `view_mode` to `mockAccountRow` in `rows.test.ts`), then `./node_modules/.bin/eslint src`, then `./node_modules/.bin/jest`. Expected: clean, and the existing tests still pass.
@@ -429,25 +429,25 @@ rtk proxy git commit -m "feat(child-mode): an account remembers which screen it 
     beforeEach(async () => {
       await store.insertAccount(createMockAccount());
       await store.insertAccount(mockSiblingAccount);
-      await store.setAccountViewMode(mockAccount.id, APP_VIEW_MODE.child);
+      await store.setAccountViewMode(mockAccount.id, VIEW_MODE.child);
     });
 
     it('shows that child the child screen', async () => {
       expect((await store.getAccount(mockAccount.id))?.viewMode).toBe(
-        APP_VIEW_MODE.child
+        VIEW_MODE.child
       );
     });
 
     it('leaves the sibling on the parent screen', async () => {
       expect((await store.getAccount(mockSiblingAccount.id))?.viewMode).toBe(
-        APP_VIEW_MODE.parent
+        VIEW_MODE.parent
       );
     });
   });
 
   it('ignores a view change for an account that does not exist', async () => {
     expect(
-      await store.setAccountViewMode('missing', APP_VIEW_MODE.child)
+      await store.setAccountViewMode('missing', VIEW_MODE.child)
     ).toBeUndefined();
   });
 ```
@@ -465,12 +465,12 @@ Break-watch: (1) remove `account.viewMode = viewMode;`, and the first test redde
     await new JsonFileStore(file.path).insertAccount(mockAccount);
     await new JsonFileStore(file.path).setAccountViewMode(
       mockAccount.id,
-      APP_VIEW_MODE.child
+      VIEW_MODE.child
     );
 
     expect(
       (await new JsonFileStore(file.path).getAccount(mockAccount.id))?.viewMode
-    ).toBe(APP_VIEW_MODE.child);
+    ).toBe(VIEW_MODE.child);
   });
 ```
 
@@ -480,15 +480,15 @@ Break-watch: (1) remove `account.viewMode = viewMode;`, and the first test redde
 describe('accountFromRow view mode', () => {
   it('reads a stored child view', () => {
     expect(
-      accountFromRow({ ...mockAccountRow, view_mode: APP_VIEW_MODE.child })
+      accountFromRow({ ...mockAccountRow, view_mode: VIEW_MODE.child })
         .viewMode
-    ).toBe(APP_VIEW_MODE.child);
+    ).toBe(VIEW_MODE.child);
   });
 
   it('shows an unknown stored view as the parent screen', () => {
     expect(
       accountFromRow({ ...mockAccountRow, view_mode: 'toddler' }).viewMode
-    ).toBe(APP_VIEW_MODE.parent);
+    ).toBe(VIEW_MODE.parent);
   });
 });
 ```
@@ -497,7 +497,7 @@ describe('accountFromRow view mode', () => {
 
 ```ts
   it('opens a new account on the parent screen', () => {
-    expect(account.viewMode).toBe(APP_VIEW_MODE.parent);
+    expect(account.viewMode).toBe(VIEW_MODE.parent);
   });
 ```
 
@@ -508,10 +508,10 @@ describe('accountFromRow view mode', () => {
     it('saves child view and reads it back', async () => {
       const mockAccount = createMockAccount({ id: accountId('view-mode') });
       await store.insertAccount(mockAccount);
-      await store.setAccountViewMode(mockAccount.id, APP_VIEW_MODE.child);
+      await store.setAccountViewMode(mockAccount.id, VIEW_MODE.child);
 
       expect((await store.getAccount(mockAccount.id))?.viewMode).toBe(
-        APP_VIEW_MODE.child
+        VIEW_MODE.child
       );
     });
 
@@ -520,7 +520,7 @@ describe('accountFromRow view mode', () => {
       await store.insertAccount(mockAccount);
 
       expect((await store.getAccount(mockAccount.id))?.viewMode).toBe(
-        APP_VIEW_MODE.parent
+        VIEW_MODE.parent
       );
     });
   });
@@ -544,8 +544,8 @@ rtk proxy git commit -m "test(child-mode): the account keeps its view mode in ev
 - Test: `src/app/api/accounts/[id]/view-mode/__tests__/route.test.ts`
 
 **Interfaces:**
-- Consumes: `isAppViewMode` (Task 1), `getStore().setAccountViewMode` (Task 2), `withAccountEditor` (existing, `src/app/api/accounts/[id]/with-account-editor.ts`).
-- Produces: `PUT` taking body `{ viewMode: AppViewMode }`. Responses: 200 with the updated `Account`; 400 `{ error: API_ERRORS.invalidViewModeRequest | API_ERRORS.unknownViewMode }`; 403 for a stranger or a missing account (from `withAccountEditor`).
+- Consumes: `isViewMode` (Task 1), `getStore().setAccountViewMode` (Task 2), `withAccountEditor` (existing, `src/app/api/accounts/[id]/with-account-editor.ts`).
+- Produces: `PUT` taking body `{ viewMode: ViewMode }`. Responses: 200 with the updated `Account`; 400 `{ error: API_ERRORS.invalidViewModeRequest | API_ERRORS.unknownViewMode }`; 403 for a stranger or a missing account (from `withAccountEditor`).
 
 - [ ] **Step 1: Production code**
 
@@ -561,7 +561,7 @@ rtk proxy git commit -m "test(child-mode): the account keeps its view mode in ev
 ```ts
 import { getStore } from '@/db';
 import { asObject } from '@/lib/json-object';
-import { isAppViewMode } from '@/lib/account/view-mode';
+import { isViewMode } from '@/lib/account/view-mode';
 import { jsonBody } from '@/app/api/json-body';
 import { API_ERRORS } from '@/app/api/constants';
 import { accountNotFound, badRequest } from '@/app/api/responses';
@@ -574,7 +574,7 @@ export const PUT = withAccountEditor(async (request, id) => {
     return badRequest(API_ERRORS.invalidViewModeRequest);
   }
 
-  if (!isAppViewMode(body.viewMode)) {
+  if (!isViewMode(body.viewMode)) {
     return badRequest(API_ERRORS.unknownViewMode);
   }
 
@@ -605,7 +605,7 @@ rtk proxy git commit -m "feat(child-mode): a parent saves which screen an accoun
  */
 import { signedInUser } from '@/auth';
 import { API_ERRORS } from '@/app/api/constants';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { getStore } from '@/db';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
@@ -636,12 +636,12 @@ describe('PUT /api/accounts/[id]/view-mode', () => {
 
   describe('a parent turns child view on', () => {
     beforeEach(async () => {
-      await putViewMode(APP_VIEW_MODE.child, accountId);
+      await putViewMode(VIEW_MODE.child, accountId);
     });
 
     it('saves child view on the account', async () => {
       expect((await getStore().getAccount(accountId))?.viewMode).toBe(
-        APP_VIEW_MODE.child
+        VIEW_MODE.child
       );
     });
   });
@@ -664,7 +664,7 @@ describe('PUT /api/accounts/[id]/view-mode', () => {
 });
 ```
 
-Break-watch: (1) remove the `setAccountViewMode` call and return `Response.json({})`, and the save test reddens; (2) delete the `isAppViewMode` guard, and both bad-request tests redden. For the second one alone, return `badRequest(API_ERRORS.invalidViewModeRequest)` from the guard: only "says the view mode is unknown" reddens.
+Break-watch: (1) remove the `setAccountViewMode` call and return `Response.json({})`, and the save test reddens; (2) delete the `isViewMode` guard, and both bad-request tests redden. For the second one alone, return `badRequest(API_ERRORS.invalidViewModeRequest)` from the guard: only "says the view mode is unknown" reddens.
 
 - [ ] **Step 4: STOP** for test review.
 
@@ -673,9 +673,9 @@ Break-watch: (1) remove the `setAccountViewMode` call and return `Response.json(
 ```ts
   describe('a parent turns child view on', () => {
     it('answers with the updated account', async () => {
-      const response = await putViewMode(APP_VIEW_MODE.child, accountId);
+      const response = await putViewMode(VIEW_MODE.child, accountId);
 
-      expect((await response.json()).viewMode).toBe(APP_VIEW_MODE.child);
+      expect((await response.json()).viewMode).toBe(VIEW_MODE.child);
     });
   });
 
@@ -702,7 +702,7 @@ Break-watch: (1) remove the `setAccountViewMode` call and return `Response.json(
 
     beforeEach(async () => {
       jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
-      response = await putViewMode(APP_VIEW_MODE.child, accountId);
+      response = await putViewMode(VIEW_MODE.child, accountId);
     });
 
     it('is refused', () => {
@@ -711,7 +711,7 @@ Break-watch: (1) remove the `setAccountViewMode` call and return `Response.json(
 
     it('leaves the account on the parent screen', async () => {
       expect((await getStore().getAccount(accountId))?.viewMode).toBe(
-        APP_VIEW_MODE.parent
+        VIEW_MODE.parent
       );
     });
   });
@@ -738,7 +738,7 @@ rtk proxy git commit -m "test(child-mode): only a parent of the account can chan
 - Test: `src/components/ChildAccount/ChildSavings/ChildSavings.test.tsx`, `ChildWallet/ChildWallet.test.tsx`, `ChildAccount.test.tsx`, `src/components/Money/Money.test.tsx`, `src/components/Home/Home.test.tsx`
 
 **Interfaces:**
-- Consumes: `floorToShekels`, `shekelsToAgorot` (`src/lib/money.ts`), `savingsInWholeShekels` (Task 1), `isChildView` (Tasks 1–2), `Header`, `Screen`/`Column`, `WALLET_LABEL`, `WALLET_GRADIENT`.
+- Consumes: `floorToShekels`, `shekelsToAgorot` (`src/lib/money.ts`), `savingsInWholeShekels` (Task 1), `isShownToChild` (Tasks 1–2), `Header`, `Screen`/`Column`, `WALLET_LABEL`, `WALLET_GRADIENT`.
 - Produces: `ChildAccount({ account }: { account: AccountSummary })`; `CHILD_ACCOUNT_TEST_IDS.screen`; `CHILD_SAVINGS_TEST_IDS.{balance,principal,interestEarned}`; `CHILD_WALLET_TEST_IDS.{card,balance}`.
 
 - [ ] **Step 1: Production code**
@@ -1100,11 +1100,11 @@ export const Wallets = styled.div`
 
 ```tsx
 import { ChildAccount } from '@/components/ChildAccount';
-import { isChildView } from '@/lib/account/view-mode';
+import { isShownToChild } from '@/lib/account/view-mode';
 …
       {currentAccount && (
         <AccountsProvider value={{ accounts, currentAccount, switchAccount }}>
-          {isChildView(currentAccount) ? (
+          {isShownToChild(currentAccount) ? (
             <ChildAccount account={currentAccount} />
           ) : (
             <Account account={currentAccount} />
@@ -1227,7 +1227,7 @@ describe('ChildWallet', () => {
     beforeEach(() => {
       renderHome({
         accounts: [
-          { ...accounts[0], viewMode: APP_VIEW_MODE.child },
+          { ...accounts[0], viewMode: VIEW_MODE.child },
           accounts[1],
         ],
       });
@@ -1259,15 +1259,15 @@ rtk proxy git commit -m "test(child-mode): the child's screen shows whole shekel
 - Test: `src/components/Menu/ViewModeSwitch/ViewModeSwitch.test.tsx`, `src/components/Menu/MenuContent/MenuContent.test.tsx`
 
 **Interfaces:**
-- Consumes: `APP_VIEW_MODE`, `AppViewMode` (Task 1); `PUT /api/accounts/[id]/view-mode` (Task 3); `useAccounts`, `useMenu`, `fetchJson`, `useRouter`.
-- Produces: `ViewModeSwitch({ viewMode }: { viewMode: AppViewMode })`. The switch turns *that* mode on: the parent menu passes `child`, and the child menu (Task 6) passes `parent`. Also `VIEW_MODE_SWITCH_TEST_IDS.{switch,saveError}` and `VIEW_MODE_SWITCH_COPY`.
+- Consumes: `VIEW_MODE`, `ViewMode` (Task 1); `PUT /api/accounts/[id]/view-mode` (Task 3); `useAccounts`, `useMenu`, `fetchJson`, `useRouter`.
+- Produces: `ViewModeSwitch({ viewMode }: { viewMode: ViewMode })`. The switch turns *that* mode on: the parent menu passes `child`, and the child menu (Task 6) passes `parent`. Also `VIEW_MODE_SWITCH_TEST_IDS.{switch,saveError}` and `VIEW_MODE_SWITCH_COPY`.
 
 - [ ] **Step 1: Production code**
 
 `constants.ts`:
 
 ```ts
-import { APP_VIEW_MODE, type AppViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
 
 export const VIEW_MODE_SWITCH_TEST_IDS = {
   switch: 'menu-view-mode-switch',
@@ -1276,13 +1276,13 @@ export const VIEW_MODE_SWITCH_TEST_IDS = {
 
 export const VIEW_MODE_SWITCH_COPY = {
   icon: {
-    [APP_VIEW_MODE.child]: '🧒',
-    [APP_VIEW_MODE.parent]: '👤',
-  } satisfies Record<AppViewMode, string>,
+    [VIEW_MODE.child]: '🧒',
+    [VIEW_MODE.parent]: '👤',
+  } satisfies Record<ViewMode, string>,
   label: {
-    [APP_VIEW_MODE.child]: 'מצב ילד',
-    [APP_VIEW_MODE.parent]: 'מצב הורה',
-  } satisfies Record<AppViewMode, string>,
+    [VIEW_MODE.child]: 'מצב ילד',
+    [VIEW_MODE.parent]: 'מצב הורה',
+  } satisfies Record<ViewMode, string>,
   childNote: (accountName: string): string =>
     `מסך פשוט ל${accountName}, רק לצפייה`,
   saveError: 'לא הצלחנו להחליף מסך, נסו שוב',
@@ -1295,12 +1295,12 @@ export const VIEW_MODE_SWITCH_COPY = {
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAccounts } from '@/components/Home/accounts-context';
-import type { AppViewMode } from '@/lib/account/view-mode';
+import type { ViewMode } from '@/lib/account/view-mode';
 import { fetchJson } from '@/lib/fetch-json';
 import { useMenu, useOnMenuClose } from '../use-menu-state';
 
 interface AccountViewMode {
-  chooseViewMode: (viewMode: AppViewMode) => void;
+  chooseViewMode: (viewMode: ViewMode) => void;
   saveFailed: boolean;
 }
 
@@ -1316,7 +1316,7 @@ export function useAccountViewMode(): AccountViewMode {
 
   useOnMenuClose((): void => setSaveFailed(false));
 
-  const chooseViewMode = (viewMode: AppViewMode): void => {
+  const chooseViewMode = (viewMode: ViewMode): void => {
     setSaveFailed(false);
 
     void saveOnAccount();
@@ -1348,7 +1348,7 @@ export function useAccountViewMode(): AccountViewMode {
 
 import { JSX } from 'react';
 import { useAccounts } from '@/components/Home/accounts-context';
-import { APP_VIEW_MODE, type AppViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
 import { useAccountViewMode } from './use-account-view-mode';
 import { VIEW_MODE_SWITCH_COPY, VIEW_MODE_SWITCH_TEST_IDS } from './constants';
 import {
@@ -1361,7 +1361,7 @@ import {
 } from './ViewModeSwitch.styles';
 
 interface ViewModeSwitchProps {
-  viewMode: AppViewMode;
+  viewMode: ViewMode;
 }
 
 export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
@@ -1381,7 +1381,7 @@ export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
         <Icon aria-hidden>{VIEW_MODE_SWITCH_COPY.icon[viewMode]}</Icon>
         <Label>
           {VIEW_MODE_SWITCH_COPY.label[viewMode]}
-          {viewMode === APP_VIEW_MODE.child && (
+          {viewMode === VIEW_MODE.child && (
             <Note>{VIEW_MODE_SWITCH_COPY.childNote(currentAccount.name)}</Note>
           )}
         </Label>
@@ -1474,7 +1474,7 @@ export const SaveError = styled.span`
 `MenuContent.tsx`: inside `<MenuAccountSettings>`, after `<LanguageSection />`:
 
 ```tsx
-          <ViewModeSwitch viewMode={APP_VIEW_MODE.child} />
+          <ViewModeSwitch viewMode={VIEW_MODE.child} />
 ```
 
 Run: `./node_modules/.bin/tsc --noEmit && ./node_modules/.bin/eslint src/components/Menu`. In the browser (dev), open the menu, tap "מצב ילד", and the child home appears (Task 4).
@@ -1495,7 +1495,7 @@ import {
   mockAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
 import { renderInOpenMenu, WithMenu } from '@/test-utils/menu';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { mockRouter } from '@mocks/next/navigation';
 import { ViewModeSwitch } from './ViewModeSwitch';
 import { VIEW_MODE_SWITCH_COPY, VIEW_MODE_SWITCH_TEST_IDS } from './constants';
@@ -1518,7 +1518,7 @@ describe('ViewModeSwitch', () => {
     beforeEach(async () => {
       render(
         <WithMenu closeMenu={mockCloseMenu}>
-          <ViewModeSwitch viewMode={APP_VIEW_MODE.child} />
+          <ViewModeSwitch viewMode={VIEW_MODE.child} />
         </WithMenu>,
         { accounts: mockAccountsContext }
       );
@@ -1531,7 +1531,7 @@ describe('ViewModeSwitch', () => {
 
       expect([url, JSON.parse(options.body)]).toEqual([
         `/api/accounts/${mockAccountSummary.id}/view-mode`,
-        { viewMode: APP_VIEW_MODE.child },
+        { viewMode: VIEW_MODE.child },
       ]);
     });
 
@@ -1543,7 +1543,7 @@ describe('ViewModeSwitch', () => {
   describe('the save fails', () => {
     beforeEach(() => {
       global.fetch = jest.fn().mockResolvedValue({ ok: false });
-      renderInOpenMenu(<ViewModeSwitch viewMode={APP_VIEW_MODE.child} />, {
+      renderInOpenMenu(<ViewModeSwitch viewMode={VIEW_MODE.child} />, {
         accounts: mockAccountsContext,
       });
       tapSwitch();
@@ -1560,7 +1560,7 @@ describe('ViewModeSwitch', () => {
 
 The `waitFor` in the `beforeEach` waits for the save to finish; it is not the test's assertion. `AppearanceSection.test.tsx` waits the same way.
 
-Break-watch: (1) send `{ viewMode: APP_VIEW_MODE.parent }` in the body; (2) remove `closeMenu()`; (3) swallow the error without `setSaveFailed(true)`.
+Break-watch: (1) send `{ viewMode: VIEW_MODE.parent }` in the body; (2) remove `closeMenu()`; (3) swallow the error without `setSaveFailed(true)`.
 
 - [ ] **Step 4: STOP** for test review.
 
@@ -1592,7 +1592,7 @@ rtk proxy git commit -m "test(child-mode): the parent's switch saves child view 
 - Test: `src/components/Menu/ChildMenuContent/ChildMenuContent.test.tsx`, `src/components/Menu/MenuContent/MenuContent.test.tsx`
 
 **Interfaces:**
-- Consumes: `ViewModeSwitch` (Task 5), `isChildView` (Tasks 1–2), `AppearanceSection`, `Avatar`, `HOME_ROUTE`, `useMenu`, `useOptionalAccounts`.
+- Consumes: `ViewModeSwitch` (Task 5), `isShownToChild` (Tasks 1–2), `AppearanceSection`, `Avatar`, `HOME_ROUTE`, `useMenu`, `useOptionalAccounts`.
 - Produces: `ChildMenuContent(): JSX.Element`; `CHILD_MENU_CONTENT_TEST_IDS.{menu,home}`.
 
 - [ ] **Step 1: Production code**
@@ -1620,7 +1620,7 @@ import { JSX } from 'react';
 import { Avatar } from '@/components/Avatar/Avatar';
 import { useAccounts } from '@/components/Home/accounts-context';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { AppearanceSection } from '../AppearanceSection';
 import { ViewModeSwitch } from '../ViewModeSwitch';
 import { useMenu } from '../use-menu-state';
@@ -1658,7 +1658,7 @@ export function ChildMenuContent(): JSX.Element {
         <AppearanceSection />
       </Item>
       <ParentCorner>
-        <ViewModeSwitch viewMode={APP_VIEW_MODE.parent} />
+        <ViewModeSwitch viewMode={VIEW_MODE.parent} />
       </ParentCorner>
     </div>
   );
@@ -1723,7 +1723,7 @@ export function MenuContent(): JSX.Element {
   const hasAccount = Boolean(accounts);
   const { closeMenu } = useMenu();
 
-  if (accounts && isChildView(accounts.currentAccount)) {
+  if (accounts && isShownToChild(accounts.currentAccount)) {
     return <ChildMenuContent />;
   }
   … (parent menu as before)
@@ -1747,7 +1747,7 @@ rtk proxy git commit -m "feat(child-mode): the child's menu: their name, home, c
     beforeEach(() => {
       const mockChildAccount = {
         ...mockAccountSummary,
-        viewMode: APP_VIEW_MODE.child,
+        viewMode: VIEW_MODE.child,
       };
 
       render(
@@ -1793,7 +1793,7 @@ Break-watch: (1) delete the early return, and all three redden; (2) render `<Chi
 - 'takes the child home': the home link `toHaveAttribute('href', HOME_ROUTE)`.
 - 'closes the menu on the way home': a click on the home link calls `mockCloseMenu` (passed to `WithMenu`).
 - 'lets the child pick colours': `getByTestId(APPEARANCE_SECTION_TEST_IDS.section)` exists.
-- 'offers the parent the way back': the switch `toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[APP_VIEW_MODE.parent])`.
+- 'offers the parent the way back': the switch `toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[VIEW_MODE.parent])`.
 
 `MenuContent.test.tsx`, 'for an account in child view':
 - 'hides signing out': `queryByTestId(MENU_USER_SETTINGS_TEST_IDS.block)` is null.
@@ -1815,7 +1815,7 @@ rtk proxy git commit -m "test(child-mode): the child's menu keeps parent things 
 - Modify: `e2e/driver/menu-driver.ts`, `e2e/driver/use-driver.ts` (`AppDriver`, `createAppDriver`)
 
 **Interfaces:**
-- Consumes: `CHILD_ACCOUNT_TEST_IDS`, `CHILD_WALLET_TEST_IDS` (Task 4), `VIEW_MODE_SWITCH_TEST_IDS` (Task 5), `CHILD_MENU_CONTENT_TEST_IDS` (Task 6), `APP_VIEW_MODE`.
+- Consumes: `CHILD_ACCOUNT_TEST_IDS`, `CHILD_WALLET_TEST_IDS` (Task 4), `VIEW_MODE_SWITCH_TEST_IDS` (Task 5), `CHILD_MENU_CONTENT_TEST_IDS` (Task 6), `VIEW_MODE`.
 - Produces: `AppDriver.childAccount: ChildAccountDriver`; `MenuDriver.tapViewModeSwitch()`, `MenuDriver.childMenuIsShown()`.
 
 This task is test code only, so the CLAUDE.md production-then-tests split collapses into: drivers plus the first three cases, STOP, the rest, then commit.
@@ -1860,13 +1860,13 @@ export class ChildAccountDriver {
 ```ts
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { APP_VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { createMockAccount, mockAccount } from '@/test-utils/mocks/account.mocks';
 import { useDriver } from './driver/use-driver';
 
 describe('an account stored in child view', () => {
   const { childAccount } = useDriver({
-    accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
+    accounts: [createMockAccount({ viewMode: VIEW_MODE.child })],
   });
 
   it('opens straight on the child screen', async () => {
@@ -1899,7 +1899,7 @@ describe('a parent turns child view on', () => {
 
 Check that `useDriver` gives each `describe` a fresh store. `edit-account.e2e.ts` relies on that.
 
-Break-watch: (1) in `Home.tsx`, always render `Account`, and all three redden; (2) make `accountFromRow` and the JSON store ignore `viewMode` (have `JsonAccounts.get` return `{ ...account, viewMode: APP_VIEW_MODE.parent }`): the stored-child and reload cases redden, and the in-session one may stay green, which proves the reload case is what pins persistence; (3) remove `router.refresh()` from `useAccountViewMode`, and "shows the child screen" reddens.
+Break-watch: (1) in `Home.tsx`, always render `Account`, and all three redden; (2) make `accountFromRow` and the JSON store ignore `viewMode` (have `JsonAccounts.get` return `{ ...account, viewMode: VIEW_MODE.parent }`): the stored-child and reload cases redden, and the in-session one may stay green, which proves the reload case is what pins persistence; (3) remove `router.refresh()` from `useAccountViewMode`, and "shows the child screen" reddens.
 
 Run: `npm run test:e2e`. It also runs `test:db` and `test:visual` first, so read the e2e summary.
 
@@ -1910,7 +1910,7 @@ Run: `npm run test:e2e`. It also runs `test:db` and `test:visual` first, so read
 ```ts
 describe('the child goes back to the parent screen', () => {
   const { menu, childAccount, account } = useDriver({
-    accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
+    accounts: [createMockAccount({ viewMode: VIEW_MODE.child })],
   });
 
   beforeEach(async () => {
@@ -1926,7 +1926,7 @@ describe('the child goes back to the parent screen', () => {
 
 describe('a child who opens a parent page by its address', () => {
   const { menu, appBrowser } = useDriver({
-    accounts: [createMockAccount({ viewMode: APP_VIEW_MODE.child })],
+    accounts: [createMockAccount({ viewMode: VIEW_MODE.child })],
   });
 
   beforeEach(async () => {

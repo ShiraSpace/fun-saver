@@ -29,7 +29,7 @@ export function ChildWallet({ wallet }: ChildWalletProps): JSX.Element {
         <Money
           amountAgorot={wallet.balance}
           testId={CHILD_WALLET_TEST_IDS.balance}
-          rounding={MONEY_ROUNDING.downToShekel}
+          rounding={MONEY_ROUNDING.floorToShekels}
         />
       </Amount>
     </Card>

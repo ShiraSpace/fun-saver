@@ -5,7 +5,7 @@ export const MONEY_COPY = {
 export const MONEY_ROUNDING = {
   nearestShekel: 'nearestShekel',
   nearestHalfShekel: 'nearestHalfShekel',
-  downToShekel: 'downToShekel',
+  floorToShekels: 'floorToShekels',
 } as const;
 
 export type MoneyRounding =

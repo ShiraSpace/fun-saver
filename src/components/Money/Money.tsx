@@ -20,7 +20,7 @@ const ROUND_TO_SHEKELS: Record<MoneyRounding, RoundToShekels> = {
   nearestShekel: agorotToWholeShekels,
   nearestHalfShekel: (amountAgorot: number): number =>
     nearestHalfShekel(amountAgorot) ?? 0,
-  downToShekel: floorToShekels,
+  floorToShekels: floorToShekels,
 };
 
 function shownShekels({ amountAgorot, rounding }: ShownShekelsParams): number {
