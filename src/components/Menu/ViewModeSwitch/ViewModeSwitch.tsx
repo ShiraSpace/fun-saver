@@ -11,7 +11,7 @@ interface ViewModeSwitchProps {
 }
 
 export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
-  const { shownViewMode, switchViewMode } = useViewModeSwitch();
+  const { shownViewMode, isSwitching, switchViewMode } = useViewModeSwitch();
   const isOn = shownViewMode === viewMode;
   const isCompact = viewMode === VIEW_MODE.parent;
   const icon = VIEW_MODE_SWITCH_COPY.icon[viewMode];
@@ -26,6 +26,7 @@ export function ViewModeSwitch({ viewMode }: ViewModeSwitchProps): JSX.Element {
       type="button"
       role="switch"
       aria-checked={isOn}
+      disabled={isSwitching}
       data-compact={isCompact}
       data-testid={VIEW_MODE_SWITCH_TEST_IDS.switch}
       onClick={switchToThisViewMode}

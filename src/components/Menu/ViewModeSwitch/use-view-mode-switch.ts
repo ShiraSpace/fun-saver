@@ -3,12 +3,14 @@ import { useViewMode } from '@/components/Home/view-mode-context';
 import type { ViewMode } from '@/lib/account/view-mode';
 import { wait } from '@/lib/wait';
 import { motionIsReduced } from '@/theme/motion';
+import { useReportPendingNavigation } from '@/components/Header/navigation-pending-context';
 import { useMenu } from '../use-menu-state';
 import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
 import { VIEW_MODE_SWITCH_MOTION } from './constants';
 
 interface ViewModeSwitchState {
   shownViewMode: ViewMode;
+  isSwitching: boolean;
   switchViewMode: (viewMode: ViewMode) => void;
 }
 
@@ -24,6 +26,9 @@ export function useViewModeSwitch(): ViewModeSwitchState {
   const { viewMode, chooseViewMode } = useViewMode();
   const { closeMenu } = useMenu();
   const [chosenViewMode, setChosenViewMode] = useState<ViewMode>();
+  const isSwitching = chosenViewMode !== undefined;
+
+  useReportPendingNavigation(isSwitching);
 
   const slideThenChoose = async (nextViewMode: ViewMode): Promise<void> => {
     setChosenViewMode(nextViewMode);
@@ -31,10 +36,12 @@ export function useViewModeSwitch(): ViewModeSwitchState {
     closeMenu();
     await menuFinishesFading();
     chooseViewMode(nextViewMode);
+    setChosenViewMode(undefined);
   };
 
   return {
     shownViewMode: chosenViewMode ?? viewMode,
+    isSwitching,
     switchViewMode: (nextViewMode: ViewMode): void => {
       void slideThenChoose(nextViewMode);
     },
