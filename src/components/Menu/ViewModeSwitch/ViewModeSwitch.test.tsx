@@ -123,6 +123,12 @@ describe('ViewModeSwitch', () => {
         ).toHaveAttribute('aria-checked', 'true');
       });
 
+      it('cannot be tapped again while it slides', () => {
+        expect(
+          screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+        ).toBeDisabled();
+      });
+
       describe('once the knob has slid', () => {
         beforeEach(async () => {
           await passTime(VIEW_MODE_SWITCH_MOTION.slideMs);
@@ -151,6 +157,12 @@ describe('ViewModeSwitch', () => {
 
       it(`turns ${switchTo} mode on once the menu has faded`, () => {
         expect(readCookie(VIEW_MODE_COOKIE)).toBe(switchTo);
+      });
+
+      it(`can be tapped again once ${switchTo} mode is on`, () => {
+        expect(
+          screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+        ).toBeEnabled();
       });
     });
   });
