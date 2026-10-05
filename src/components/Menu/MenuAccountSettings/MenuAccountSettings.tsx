@@ -4,7 +4,7 @@ import { JSX, ReactNode } from 'react';
 import { Avatar } from '@/components/Avatar/Avatar';
 import { useAccounts } from '@/components/Home/accounts-context';
 import {
-  ScopedSettingsBlock,
+  SettingsSection,
   SettingsHeading,
   SettingsNote,
 } from '../settings-parts';
@@ -24,7 +24,7 @@ export function MenuAccountSettings({
   const { currentAccount } = useAccounts();
 
   return (
-    <ScopedSettingsBlock data-testid={MENU_ACCOUNT_SETTINGS_TEST_IDS.block}>
+    <SettingsSection data-testid={MENU_ACCOUNT_SETTINGS_TEST_IDS.block}>
       <SettingsHeading data-testid={MENU_ACCOUNT_SETTINGS_TEST_IDS.heading}>
         {MENU_ACCOUNT_SETTINGS_COPY.headingPrefix} {currentAccount.name}
         <Avatar
@@ -35,6 +35,6 @@ export function MenuAccountSettings({
       </SettingsHeading>
       <SettingsNote>{MENU_ACCOUNT_SETTINGS_COPY.note}</SettingsNote>
       {children}
-    </ScopedSettingsBlock>
+    </SettingsSection>
   );
 }

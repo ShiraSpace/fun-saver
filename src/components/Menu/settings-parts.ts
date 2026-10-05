@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { MENU_LAYOUT, MENU_ROW_STYLE } from './constants';
 
-const scopeBorder = ({ theme }: { theme: Theme }): string =>
+const sectionBorder = ({ theme }: { theme: Theme }): string =>
   theme.colors.accountScopeBorder;
 
 const stripe = ({ theme }: { theme: Theme }): string => theme.colors.softBorder;
@@ -23,8 +23,8 @@ export const SettingsBlock = styled.div`
   border-radius: 20px;
 `;
 
-export const ScopedSettingsBlock = styled(SettingsBlock)`
-  border: ${MENU_ROW_STYLE.borderWidth}px dashed ${scopeBorder};
+export const SettingsSection = styled(SettingsBlock)`
+  border: ${MENU_ROW_STYLE.borderWidth}px dashed ${sectionBorder};
   background: transparent;
   box-shadow: inset 4px 0 0 ${stripe};
 `;

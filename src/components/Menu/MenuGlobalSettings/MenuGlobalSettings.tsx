@@ -3,7 +3,7 @@
 import { JSX } from 'react';
 import { ViewModeSwitch } from '../ViewModeSwitch';
 import {
-  ScopedSettingsBlock,
+  SettingsSection,
   SettingsHeading,
   SettingsNote,
 } from '../settings-parts';
@@ -14,12 +14,12 @@ import {
 
 export function MenuGlobalSettings(): JSX.Element {
   return (
-    <ScopedSettingsBlock data-testid={MENU_GLOBAL_SETTINGS_TEST_IDS.block}>
+    <SettingsSection data-testid={MENU_GLOBAL_SETTINGS_TEST_IDS.block}>
       <SettingsHeading data-testid={MENU_GLOBAL_SETTINGS_TEST_IDS.heading}>
         {MENU_GLOBAL_SETTINGS_COPY.heading}
       </SettingsHeading>
       <SettingsNote>{MENU_GLOBAL_SETTINGS_COPY.note}</SettingsNote>
       <ViewModeSwitch />
-    </ScopedSettingsBlock>
+    </SettingsSection>
   );
 }
