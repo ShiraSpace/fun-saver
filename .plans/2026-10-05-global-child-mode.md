@@ -1,6 +1,6 @@
 # Child mode for the whole app, on this phone
 
-> Status: **approved** (2026-10-05), PR 1 next. Mockup:
+> Status: PR 1 **merged** as #193 (2026-10-05); PR 2 next. Mockup:
 > `mockups/global-child-mode.html`. Replaces the per-account view mode from
 > `.plans/2026-10-03-child-mode.md` and the unbuilt PRs 2–3 of
 > `.plans/2026-10-04-child-account-switcher.md` (#191 is superseded).
@@ -101,6 +101,15 @@ the whole app into child mode on this phone, and back.
   `db:migrate`, which is **production** (`DATABASE_URL`).
 
 ## PR 1 — the mode belongs to the phone
+
+> **Merged** as #193 (`c5c3542`). Where the build differs from the text below:
+> - The context is `view-mode-context.ts` (no JSX in it), not `.tsx`.
+> - The switch's hook is `use-view-mode-switch.ts`: `useViewModeSwitch()` returns
+>   `{ shownViewMode, isSwitching, switchViewMode }`.
+> - The header loader stayed: the hook still reports `isSwitching` through
+>   `useReportPendingNavigation`, and the switch is `disabled` while it is true.
+>   That already ignores a second tap until the mode has changed, which PR 2's
+>   flipping switch needs.
 
 The behaviour change, with the switches where they are today.
 
