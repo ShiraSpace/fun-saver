@@ -1,5 +1,11 @@
 # Child Mode Implementation Plan
 
+> **Partly superseded (2026-10-05)** by `.plans/2026-10-05-global-child-mode.md`:
+> the child screen and child menu stay, but the view mode is no longer saved
+> on the account (`accounts.view_mode`, `PUT /api/accounts/[id]/view-mode`).
+> It becomes one mode for the whole app on this phone, kept in a cookie. Kept
+> intact as the record of how per-account child view was built.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** A view-only child screen per account (savings first, then spending and good deeds, in whole shekels) and a child menu. The parent turns it on from the menu, and it is saved on the account.
