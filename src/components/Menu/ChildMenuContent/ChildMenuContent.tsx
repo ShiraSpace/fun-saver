@@ -4,7 +4,7 @@ import { JSX } from 'react';
 import { AvatarBadge } from '@/components/AvatarBadge';
 import { useAccounts } from '@/components/Home/accounts-context';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import { VIEW_MODE, isShownToChild } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { AppearanceSection } from '../AppearanceSection';
 import { ChildMenuAccountList } from '../ChildMenuAccountList';
 import { ViewModeSwitch } from '../ViewModeSwitch';
@@ -29,7 +29,7 @@ export function ChildMenuContent(): JSX.Element {
   const { closeMenu } = useMenu();
   const openAccount = useOpenAccount();
   const siblingAccounts = accounts.filter(
-    (account) => account.id !== currentAccount.id && isShownToChild(account)
+    (account) => account.id !== currentAccount.id
   );
 
   return (

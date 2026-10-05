@@ -18,10 +18,6 @@ export const Row = styled.button`
   color: ${({ theme }): string => theme.colors.textStrong};
   cursor: pointer;
 
-  &:disabled {
-    cursor: default;
-  }
-
   &[data-compact='true'] {
     width: auto;
     min-height: 48px;
@@ -85,11 +81,4 @@ export const Track = styled.span`
   &[data-on='true']::after {
     inset-inline-start: 23px;
   }
-`;
-
-export const SaveError = styled.span`
-  display: block;
-  margin-top: 8px;
-  font-size: ${({ theme }): number => theme.typography.label}px;
-  color: ${({ theme }): string => theme.colors.alertText};
 `;

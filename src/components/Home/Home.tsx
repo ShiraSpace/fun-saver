@@ -8,7 +8,6 @@ import { EmptyState } from '@/components/EmptyState';
 import { useAccountNavigation } from '@/hooks/use-account-navigation';
 import { AccountsProvider } from './accounts-context';
 import { ShownAccount } from './ShownAccount';
-import { useShownViewMode } from './use-shown-view-mode';
 
 interface HomeProps {
   accounts: AccountSummary[];
@@ -17,17 +16,13 @@ interface HomeProps {
 
 export function Home({ accounts, initialAccountId }: HomeProps): JSX.Element {
   const navigation = useAccountNavigation(accounts, initialAccountId);
-  const { switchAccount, setMode } = navigation;
-  const { shownAccount: currentAccount, viewModeChoice } = useShownViewMode(
-    navigation.currentAccount
-  );
+  const { currentAccount, switchAccount, setMode } = navigation;
   const startCreatingAccount = (): void => setMode(APP_MODE.creatingAccount);
   const showsEmptyState = !currentAccount && !navigation.isCreating;
   const accountsContext = currentAccount && {
     accounts,
     currentAccount,
     switchAccount,
-    viewModeChoice,
   };
 
   return (
