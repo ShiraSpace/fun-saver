@@ -50,7 +50,7 @@ describe('MenuContent', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows no settings for every child, there being no child', () => {
+    it('shows no global settings without an account', () => {
       expect(
         screen.queryByTestId(MENU_GLOBAL_SETTINGS_TEST_IDS.block)
       ).not.toBeInTheDocument();

@@ -48,12 +48,6 @@ describe('ViewModeSwitch', () => {
         ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.knobFace[viewMode]);
       });
 
-      it('is on only in child mode', () => {
-        expect(
-          screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-        ).toHaveAttribute('aria-checked', String(viewMode === VIEW_MODE.child));
-      });
-
       it('is named by its label alone, without the face', () => {
         expect(
           screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
@@ -61,6 +55,21 @@ describe('ViewModeSwitch', () => {
       });
     }
   );
+
+  describe.each([
+    [VIEW_MODE.parent, 'false'],
+    [VIEW_MODE.child, 'true'],
+  ])('in %s mode', (viewMode, isOn) => {
+    beforeEach(() => {
+      renderSwitch({ viewMode });
+    });
+
+    it(`has aria-checked ${isOn}`, () => {
+      expect(
+        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+      ).toHaveAttribute('aria-checked', isOn);
+    });
+  });
 
   describe('as time passes', () => {
     beforeEach(() => {
