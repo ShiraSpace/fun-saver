@@ -120,7 +120,7 @@ describe('menu morph', () => {
 
     it('keeps its column on the header card edges, not the window edges', async () => {
       const bar = await header.box();
-      const block = await menu.globalScopeBox();
+      const block = await menu.userSettingsBox();
 
       assert.ok(
         Math.abs(block.x - bar.x) <= EDGE_TOLERANCE &&

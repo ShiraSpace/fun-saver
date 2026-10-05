@@ -55,7 +55,7 @@ describe('edit account from the menu', () => {
     await appBrowser.resize(PHONE);
     await menu.open();
 
-    const scope = await menu.globalScopeBox();
+    const scope = await menu.userSettingsBox();
     const editButton = await menu.editAccountButtonBox();
 
     assert.ok(
