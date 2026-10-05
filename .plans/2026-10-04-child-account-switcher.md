@@ -1,5 +1,16 @@
 # The child menu switches between children
 
+> **Superseded (2026-10-05)** by `.plans/2026-10-05-global-child-mode.md`:
+> child mode now belongs to the phone (a cookie), not to an account, and one
+> «מצב הורה/ילד» switch in a new «הגדרות כלליות» section replaces the
+> per-account switches. Kept intact in case we come back to per-account child
+> view. PR 1 (#183) is on `main`. PR 2 was built as #191
+> (`feat/child-view-toggle-per-account`, worktree
+> `fun-saver-child-account-list`; its last review fixes are local commit
+> `c3d1da1`, unpushed, with the tests not yet updated). It was closed unmerged
+> when the new plan was approved. #191's branch also holds this plan updated
+> with what PR 2 built. PR 3 was never started.
+
 > Status: **PR 1 merged** as #183 (`7afb741`, 2026-10-04). **PR 2 and PR 3
 > are next**, specified below; each starts from a fresh branch off `main`.
 > The list holds the other accounts **in child view**; the rest are reached
