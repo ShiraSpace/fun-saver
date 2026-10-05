@@ -1,15 +1,18 @@
 import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
-import { isShownToChild } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { Account } from '@/components/Account';
 import { ChildAccount } from '@/components/ChildAccount';
+import { useViewMode } from '../view-mode-context';
 
 interface ShownAccountProps {
   account: AccountSummary;
 }
 
 export function ShownAccount({ account }: ShownAccountProps): JSX.Element {
-  if (isShownToChild(account)) {
+  const { viewMode } = useViewMode();
+
+  if (viewMode === VIEW_MODE.child) {
     return <ChildAccount account={account} />;
   }
 

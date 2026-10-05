@@ -15,6 +15,7 @@ import {
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { AccountSummary } from '@/lib/account/types';
+import type { ViewMode } from '@/lib/account/view-mode';
 import { Home } from './Home';
 
 export const accounts: AccountSummary[] = [
@@ -34,14 +35,17 @@ export const renamedAccount = createMockAccount({
 interface RenderHomeParams {
   accounts?: AccountSummary[];
   initialAccountId?: string;
+  viewMode?: ViewMode;
 }
 
 export function renderHome({
   accounts: accountsProp = accounts,
   initialAccountId = mockAccount.id,
+  viewMode,
 }: RenderHomeParams = {}): void {
   render(<Home accounts={accountsProp} initialAccountId={initialAccountId} />, {
     user: mockUser,
+    viewMode,
   });
 }
 

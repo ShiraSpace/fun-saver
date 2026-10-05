@@ -9,12 +9,13 @@ import { today } from '@/lib/clock';
 import { findCurrentAccount } from '@/lib/account/current-account';
 import { ThemedPage } from '@/theme/ThemedPage';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
+import { ViewModeProvider } from '@/components/Home/view-mode-context';
 import { signedInAccounts } from '../signed-in-accounts';
 
 export const dynamic = 'force-dynamic';
 
 export default async function TransactionsPage(): Promise<JSX.Element> {
-  const { user, accounts, currentAccountId, themeId } =
+  const { user, accounts, currentAccountId, themeId, viewMode } =
     await signedInAccounts();
   const asOf = today();
 
@@ -37,12 +38,14 @@ export default async function TransactionsPage(): Promise<JSX.Element> {
   return (
     <ThemedPage themeId={themeId}>
       <SignedInUserProvider value={user}>
-        <Transactions
-          accounts={accountSummaries}
-          initialAccount={initialAccount}
-          transactionsByAccount={settledTransactionsByAccount}
-          asOf={asOf}
-        />
+        <ViewModeProvider value={viewMode}>
+          <Transactions
+            accounts={accountSummaries}
+            initialAccount={initialAccount}
+            transactionsByAccount={settledTransactionsByAccount}
+            asOf={asOf}
+          />
+        </ViewModeProvider>
       </SignedInUserProvider>
     </ThemedPage>
   );

@@ -1,6 +1,7 @@
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { StoreContents } from '@/db/data-store';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { AppBrowser } from './driver/app-browser';
 import { PHONE, RETINA_SCALE } from './driver/viewports';
 import {
@@ -26,7 +27,13 @@ export async function withShots(
   const server = await startApp(appBrowser);
 
   try {
-    await openApp({ appBrowser, server, initialStore, motion: 'reduce' });
+    await openApp({
+      appBrowser,
+      server,
+      initialStore,
+      motion: 'reduce',
+      viewMode: VIEW_MODE.parent,
+    });
     await appBrowser.resize({ ...PHONE, deviceScaleFactor: RETINA_SCALE });
     await takeShots(createAppDriver(appBrowser), (name) =>
       shoot(appBrowser, name)

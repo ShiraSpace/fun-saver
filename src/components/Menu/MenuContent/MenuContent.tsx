@@ -1,8 +1,9 @@
 'use client';
 
 import { Fragment, JSX } from 'react';
-import { isShownToChild } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { useOptionalAccounts } from '@/components/Home/accounts-context';
+import { useViewMode } from '@/components/Home/view-mode-context';
 import { MenuUserSettings } from '../MenuUserSettings';
 import { MenuAccountSettings } from '../MenuAccountSettings';
 import { AccountControls } from '../AccountControls';
@@ -15,10 +16,11 @@ import { useMenu } from '../use-menu-state';
 
 export function MenuContent(): JSX.Element {
   const accounts = useOptionalAccounts();
-  const hasAccount = Boolean(accounts);
   const { closeMenu } = useMenu();
+  const { viewMode } = useViewMode();
+  const hasAccount = Boolean(accounts);
 
-  if (accounts && isShownToChild(accounts.currentAccount)) {
+  if (hasAccount && viewMode === VIEW_MODE.child) {
     return <ChildMenuContent />;
   }
 

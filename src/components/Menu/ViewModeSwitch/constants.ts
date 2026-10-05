@@ -2,7 +2,6 @@ import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
 
 export const VIEW_MODE_SWITCH_TEST_IDS = {
   switch: 'menu-view-mode-switch',
-  saveError: 'menu-view-mode-save-error',
 } as const;
 
 export const VIEW_MODE_SWITCH_COPY = {
@@ -14,9 +13,7 @@ export const VIEW_MODE_SWITCH_COPY = {
     [VIEW_MODE.child]: 'מצב ילד',
     [VIEW_MODE.parent]: 'מצב הורה',
   } satisfies Record<ViewMode, string>,
-  childNote: (accountName: string): string =>
-    `מסך פשוט ל${accountName}, רק לצפייה`,
-  saveError: 'לא הצלחנו להחליף מסך, נסו שוב',
+  childNote: 'לכל הילדים, במכשיר הזה.',
 } as const;
 
 export const VIEW_MODE_SWITCH_MOTION = {

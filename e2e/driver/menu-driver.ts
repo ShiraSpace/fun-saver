@@ -74,6 +74,10 @@ export class MenuDriver {
     return this.appBrowser.click(VIEW_MODE_SWITCH_TEST_IDS.switch);
   }
 
+  async waitForChildMenu(): Promise<void> {
+    await this.appBrowser.waitForTestId(CHILD_MENU_CONTENT_TEST_IDS.menu);
+  }
+
   childMenuExists(): Promise<boolean> {
     return this.appBrowser.exists(CHILD_MENU_CONTENT_TEST_IDS.menu);
   }
