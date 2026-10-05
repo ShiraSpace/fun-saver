@@ -7,21 +7,22 @@ import { VIEW_MODE } from '@/lib/account/view-mode';
 import { useViewMode, ViewModeProvider } from './view-mode-context';
 import { VIEW_MODE_PROBE_TEST_IDS } from './constants';
 
-function ShownViewMode(): JSX.Element {
+function ChildModeChooser(): JSX.Element {
   const { viewMode, chooseViewMode } = useViewMode();
+  const chooseChildMode = (): void => chooseViewMode(VIEW_MODE.child);
 
   return (
     <button
       type="button"
       data-testid={VIEW_MODE_PROBE_TEST_IDS.chooseChild}
-      onClick={(): void => chooseViewMode(VIEW_MODE.child)}
+      onClick={chooseChildMode}
     >
       <span data-testid={VIEW_MODE_PROBE_TEST_IDS.viewMode}>{viewMode}</span>
     </button>
   );
 }
 
-function OtherReader(): JSX.Element {
+function ViewModeReader(): JSX.Element {
   const { viewMode } = useViewMode();
 
   return (
@@ -32,7 +33,7 @@ function OtherReader(): JSX.Element {
 function pageRenderedInParentMode(): JSX.Element {
   return (
     <ViewModeProvider value={VIEW_MODE.parent}>
-      <ShownViewMode />
+      <ChildModeChooser />
     </ViewModeProvider>
   );
 }
@@ -63,8 +64,8 @@ describe('useViewMode', () => {
   it('tells every reader on the page when the mode is chosen', () => {
     render(
       <ViewModeProvider value={VIEW_MODE.parent}>
-        <ShownViewMode />
-        <OtherReader />
+        <ChildModeChooser />
+        <ViewModeReader />
       </ViewModeProvider>
     );
 
