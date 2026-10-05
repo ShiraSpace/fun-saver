@@ -1,6 +1,7 @@
 # Child mode for the whole app, on this phone
 
-> Status: PR 1 **merged** as #193 (2026-10-05); PR 2 next. Mockup:
+> Status: PR 1 **merged** as #193 (2026-10-05); PR 2 built on
+> `feat/global-settings`, in review. Mockup:
 > `mockups/global-child-mode.html`. Replaces the per-account view mode from
 > `.plans/2026-10-03-child-mode.md` and the unbuilt PRs 2–3 of
 > `.plans/2026-10-04-child-account-switcher.md` (#191 is superseded).
@@ -213,6 +214,15 @@ Tests (each watched failing against its own break):
     against the `useState` seed.
 
 ## PR 2 — «הגדרות כלליות» and the one switch
+
+> **Built** on `feat/global-settings`. Where the build differs from the text below:
+> - The dashed frame, heading and note are `SettingsSection`, `SettingsHeading`
+>   and `SettingsNote` in `settings-parts.ts` (the glossary has no "scope").
+> - `useViewModeSwitch()` keeps `{ shownViewMode, isSwitching, switchViewMode }`;
+>   `switchViewMode()` takes no argument and flips from the saved mode, so a
+>   double tap is ignored twice over: by `disabled` and by the target.
+> - The e2e driver's `globalScopeBox()`, which measured the user settings, is
+>   `userSettingsBox()`, since "global" now names the new section.
 
 The menu from the mockup.
 
