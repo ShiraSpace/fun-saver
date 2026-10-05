@@ -2,7 +2,8 @@ import { JSX } from 'react';
 import { render, screen } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { captureCookies } from '@/test-utils/cookies';
-import { THEME_COOKIE } from '@/lib/cookies';
+import { THEME_COOKIE, VIEW_MODE_COOKIE } from '@/lib/cookies';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { THEME_ID } from '@/theme/registry';
 import { missingProviderMessage } from '@/hooks/create-required-context';
 import { useSignedInUser } from './signed-in-user-context';
@@ -45,8 +46,6 @@ describe('remembering the theme for the next cold load', () => {
   it('stores nothing on a screen with no signed-in user', () => {
     render(<span />, { themeId: THEME_ID.midnightBlue });
 
-    expect(written).not.toContainEqual(
-      expect.stringContaining(`${THEME_COOKIE}=`)
-    );
+    expect(written).toEqual([`${VIEW_MODE_COOKIE}=${VIEW_MODE.parent}`]);
   });
 });

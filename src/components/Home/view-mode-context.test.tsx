@@ -5,10 +5,7 @@ import { captureCookies } from '@/test-utils/cookies';
 import { VIEW_MODE_COOKIE } from '@/lib/cookies';
 import { VIEW_MODE } from '@/lib/account/view-mode';
 import { useViewMode, ViewModeProvider } from './view-mode-context';
-
-const VIEW_MODE_TESTID = 'shown-view-mode';
-const CHOOSE_CHILD_TESTID = 'choose-child-mode';
-const OTHER_READER_TESTID = 'other-reader-view-mode';
+import { VIEW_MODE_PROBE_TEST_IDS } from './constants';
 
 function ShownViewMode(): JSX.Element {
   const { viewMode, chooseViewMode } = useViewMode();
@@ -16,10 +13,10 @@ function ShownViewMode(): JSX.Element {
   return (
     <button
       type="button"
-      data-testid={CHOOSE_CHILD_TESTID}
+      data-testid={VIEW_MODE_PROBE_TEST_IDS.chooseChild}
       onClick={(): void => chooseViewMode(VIEW_MODE.child)}
     >
-      <span data-testid={VIEW_MODE_TESTID}>{viewMode}</span>
+      <span data-testid={VIEW_MODE_PROBE_TEST_IDS.viewMode}>{viewMode}</span>
     </button>
   );
 }
@@ -27,7 +24,9 @@ function ShownViewMode(): JSX.Element {
 function OtherReader(): JSX.Element {
   const { viewMode } = useViewMode();
 
-  return <span data-testid={OTHER_READER_TESTID}>{viewMode}</span>;
+  return (
+    <span data-testid={VIEW_MODE_PROBE_TEST_IDS.otherReader}>{viewMode}</span>
+  );
 }
 
 function pageRenderedInParentMode(): JSX.Element {
@@ -55,9 +54,9 @@ describe('useViewMode', () => {
     it('shows the mode in the cookie once the page is running', () => {
       render(pageRenderedInParentMode());
 
-      expect(screen.getByTestId(VIEW_MODE_TESTID)).toHaveTextContent(
-        VIEW_MODE.child
-      );
+      expect(
+        screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.viewMode)
+      ).toHaveTextContent(VIEW_MODE.child);
     });
   });
 
@@ -69,11 +68,11 @@ describe('useViewMode', () => {
       </ViewModeProvider>
     );
 
-    fireEvent.click(screen.getByTestId(CHOOSE_CHILD_TESTID));
+    fireEvent.click(screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.chooseChild));
 
-    expect(screen.getByTestId(OTHER_READER_TESTID)).toHaveTextContent(
-      VIEW_MODE.child
-    );
+    expect(
+      screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.otherReader)
+    ).toHaveTextContent(VIEW_MODE.child);
   });
 
   describe('on a page rendered in parent mode', () => {
@@ -82,7 +81,7 @@ describe('useViewMode', () => {
     });
 
     it('keeps the chosen mode in the cookie, for every page on this phone', () => {
-      fireEvent.click(screen.getByTestId(CHOOSE_CHILD_TESTID));
+      fireEvent.click(screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.chooseChild));
 
       expect(written).toContainEqual(
         expect.stringContaining(`${VIEW_MODE_COOKIE}=${VIEW_MODE.child}`)
@@ -98,9 +97,9 @@ describe('useViewMode', () => {
         eventTarget.dispatchEvent(new Event(eventName));
       });
 
-      expect(screen.getByTestId(VIEW_MODE_TESTID)).toHaveTextContent(
-        VIEW_MODE.child
-      );
+      expect(
+        screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.viewMode)
+      ).toHaveTextContent(VIEW_MODE.child);
     });
   });
 });
