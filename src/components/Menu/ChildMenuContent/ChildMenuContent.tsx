@@ -4,7 +4,6 @@ import { JSX } from 'react';
 import { AvatarBadge } from '@/components/AvatarBadge';
 import { useAccounts } from '@/components/Home/accounts-context';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import { VIEW_MODE } from '@/lib/account/view-mode';
 import { AppearanceSection } from '../AppearanceSection';
 import { ChildMenuAccountList } from '../ChildMenuAccountList';
 import { ViewModeSwitch } from '../ViewModeSwitch';
@@ -21,7 +20,7 @@ import {
   ChildName,
   HomeLink,
   Layout,
-  ParentCorner,
+  ViewModeSwitchCard,
 } from './ChildMenuContent.styles';
 
 export function ChildMenuContent(): JSX.Element {
@@ -57,9 +56,9 @@ export function ChildMenuContent(): JSX.Element {
       <ChildMenuCard>
         <AppearanceSection />
       </ChildMenuCard>
-      <ParentCorner>
-        <ViewModeSwitch viewMode={VIEW_MODE.parent} />
-      </ParentCorner>
+      <ViewModeSwitchCard>
+        <ViewModeSwitch />
+      </ViewModeSwitchCard>
     </Layout>
   );
 }

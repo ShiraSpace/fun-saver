@@ -6,6 +6,7 @@ import { useOptionalAccounts } from '@/components/Home/accounts-context';
 import { useViewMode } from '@/components/Home/view-mode-context';
 import { MenuUserSettings } from '../MenuUserSettings';
 import { MenuAccountSettings } from '../MenuAccountSettings';
+import { MenuGlobalSettings } from '../MenuGlobalSettings';
 import { AccountControls } from '../AccountControls';
 import { AddAccountButton } from '../AddAccountButton';
 import { AppearanceSection } from '../AppearanceSection';
@@ -35,10 +36,13 @@ export function MenuContent(): JSX.Element {
       <NavigationTabs onNavigate={closeMenu} />
       <MenuUserSettings>{accountControls}</MenuUserSettings>
       {hasAccount && (
-        <MenuAccountSettings>
-          <AppearanceSection />
-          <LanguageSection />
-        </MenuAccountSettings>
+        <Fragment>
+          <MenuAccountSettings>
+            <AppearanceSection />
+            <LanguageSection />
+          </MenuAccountSettings>
+          <MenuGlobalSettings />
+        </Fragment>
       )}
     </Fragment>
   );

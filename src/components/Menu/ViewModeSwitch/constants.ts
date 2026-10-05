@@ -5,15 +5,11 @@ export const VIEW_MODE_SWITCH_TEST_IDS = {
 } as const;
 
 export const VIEW_MODE_SWITCH_COPY = {
-  icon: {
-    [VIEW_MODE.child]: '🧒',
-    [VIEW_MODE.parent]: '👤',
+  label: 'מצב הורה/ילד',
+  knobFace: {
+    [VIEW_MODE.child]: '🧒🏼',
+    [VIEW_MODE.parent]: '👵🏼',
   } satisfies Record<ViewMode, string>,
-  label: {
-    [VIEW_MODE.child]: 'מצב ילד',
-    [VIEW_MODE.parent]: 'מצב הורה',
-  } satisfies Record<ViewMode, string>,
-  childNote: 'לכל הילדים, במכשיר הזה.',
 } as const;
 
 export const VIEW_MODE_SWITCH_MOTION = {
