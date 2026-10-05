@@ -36,37 +36,6 @@ function passTime(milliseconds: number): Promise<void> {
 }
 
 describe('ViewModeSwitch', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
-  describe('for someone who turned animations off', () => {
-    const mockCloseMenu = jest.fn();
-
-    beforeEach(async () => {
-      prefersReducedMotion();
-      renderSwitch({
-        switchTo: VIEW_MODE.child,
-        viewMode: VIEW_MODE.parent,
-        closeMenu: mockCloseMenu,
-      });
-      tapSwitch();
-      await passTime(1);
-    });
-
-    afterEach(() => {
-      prefersMotion();
-    });
-
-    it('closes the menu without waiting for a slide that does not play', () => {
-      expect(mockCloseMenu).toHaveBeenCalled();
-    });
-  });
-
   describe('the parent switch', () => {
     beforeEach(() => {
       renderSwitch({ switchTo: VIEW_MODE.child, viewMode: VIEW_MODE.parent });
@@ -85,56 +54,6 @@ describe('ViewModeSwitch', () => {
     });
   });
 
-  describe('a parent turns child mode on', () => {
-    const mockCloseMenu = jest.fn();
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-      renderSwitch({
-        switchTo: VIEW_MODE.child,
-        viewMode: VIEW_MODE.parent,
-        closeMenu: mockCloseMenu,
-      });
-      tapSwitch();
-    });
-
-    it('slides on the moment it is tapped', () => {
-      expect(
-        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).toHaveAttribute('aria-checked', 'true');
-    });
-
-    describe('once the knob has slid', () => {
-      beforeEach(async () => {
-        await passTime(VIEW_MODE_SWITCH_MOTION.slideMs);
-      });
-
-      it('closes the menu', () => {
-        expect(mockCloseMenu).toHaveBeenCalledTimes(1);
-      });
-
-      it('keeps parent mode while the menu fades', () => {
-        expect(readCookie(VIEW_MODE_COOKIE)).toBe(VIEW_MODE.parent);
-      });
-    });
-  });
-
-  describe.each([
-    [VIEW_MODE.parent, VIEW_MODE.child],
-    [VIEW_MODE.child, VIEW_MODE.parent],
-  ])('switching from %s mode to %s mode', (viewMode, switchTo) => {
-    beforeEach(async () => {
-      renderSwitch({ switchTo, viewMode });
-      tapSwitch();
-      await passTime(VIEW_MODE_SWITCH_MOTION.slideMs);
-      await passTime(MENU_OVERLAY_STYLE.transitionMs);
-    });
-
-    it(`turns ${switchTo} mode on once the menu has faded`, () => {
-      expect(readCookie(VIEW_MODE_COOKIE)).toBe(switchTo);
-    });
-  });
-
   describe("the child's way back", () => {
     beforeEach(() => {
       renderSwitch({ switchTo: VIEW_MODE.parent, viewMode: VIEW_MODE.child });
@@ -150,6 +69,89 @@ describe('ViewModeSwitch', () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
       ).not.toHaveTextContent(VIEW_MODE_SWITCH_COPY.childNote);
+    });
+  });
+
+  describe('as time passes', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    describe('for someone who turned animations off', () => {
+      const mockCloseMenu = jest.fn();
+
+      beforeEach(async () => {
+        prefersReducedMotion();
+        renderSwitch({
+          switchTo: VIEW_MODE.child,
+          viewMode: VIEW_MODE.parent,
+          closeMenu: mockCloseMenu,
+        });
+        tapSwitch();
+        await passTime(1);
+      });
+
+      afterEach(() => {
+        prefersMotion();
+      });
+
+      it('closes the menu without waiting for a slide that does not play', () => {
+        expect(mockCloseMenu).toHaveBeenCalled();
+      });
+    });
+
+    describe('a parent turns child mode on', () => {
+      const mockCloseMenu = jest.fn();
+
+      beforeEach(() => {
+        jest.clearAllMocks();
+        renderSwitch({
+          switchTo: VIEW_MODE.child,
+          viewMode: VIEW_MODE.parent,
+          closeMenu: mockCloseMenu,
+        });
+        tapSwitch();
+      });
+
+      it('slides on the moment it is tapped', () => {
+        expect(
+          screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+        ).toHaveAttribute('aria-checked', 'true');
+      });
+
+      describe('once the knob has slid', () => {
+        beforeEach(async () => {
+          await passTime(VIEW_MODE_SWITCH_MOTION.slideMs);
+        });
+
+        it('closes the menu', () => {
+          expect(mockCloseMenu).toHaveBeenCalledTimes(1);
+        });
+
+        it('keeps parent mode while the menu fades', () => {
+          expect(readCookie(VIEW_MODE_COOKIE)).toBe(VIEW_MODE.parent);
+        });
+      });
+    });
+
+    describe.each([
+      [VIEW_MODE.parent, VIEW_MODE.child],
+      [VIEW_MODE.child, VIEW_MODE.parent],
+    ])('switching from %s mode to %s mode', (viewMode, switchTo) => {
+      beforeEach(async () => {
+        renderSwitch({ switchTo, viewMode });
+        tapSwitch();
+        await passTime(VIEW_MODE_SWITCH_MOTION.slideMs);
+        await passTime(MENU_OVERLAY_STYLE.transitionMs);
+      });
+
+      it(`turns ${switchTo} mode on once the menu has faded`, () => {
+        expect(readCookie(VIEW_MODE_COOKIE)).toBe(switchTo);
+      });
     });
   });
 });

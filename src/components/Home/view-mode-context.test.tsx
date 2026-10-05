@@ -30,7 +30,7 @@ function OtherReader(): JSX.Element {
   return <span data-testid={OTHER_READER_TESTID}>{viewMode}</span>;
 }
 
-function shownInParentModeOnServer(): JSX.Element {
+function pageRenderedInParentMode(): JSX.Element {
   return (
     <ViewModeProvider value={VIEW_MODE.parent}>
       <ShownViewMode />
@@ -47,28 +47,18 @@ describe('useViewMode', () => {
     });
 
     it('paints the server’s mode first, so the page matches the server', () => {
-      const html = renderToString(shownInParentModeOnServer());
+      const html = renderToString(pageRenderedInParentMode());
 
       expect(html).toContain(`>${VIEW_MODE.parent}<`);
     });
 
     it('shows the mode in the cookie once the page is running', () => {
-      render(shownInParentModeOnServer());
+      render(pageRenderedInParentMode());
 
       expect(screen.getByTestId(VIEW_MODE_TESTID)).toHaveTextContent(
         VIEW_MODE.child
       );
     });
-  });
-
-  it('keeps the chosen mode in the cookie, for every page on this phone', () => {
-    render(shownInParentModeOnServer());
-
-    fireEvent.click(screen.getByTestId(CHOOSE_CHILD_TESTID));
-
-    expect(written).toContainEqual(
-      expect.stringContaining(`${VIEW_MODE_COOKIE}=${VIEW_MODE.child}`)
-    );
   });
 
   it('tells every reader on the page when the mode is chosen', () => {
@@ -86,19 +76,31 @@ describe('useViewMode', () => {
     );
   });
 
-  it.each([
-    ['visibilitychange', document],
-    ['pageshow', window],
-  ])('picks up a mode chosen elsewhere on %s', (eventName, eventTarget) => {
-    render(shownInParentModeOnServer());
-
-    document.cookie = `${VIEW_MODE_COOKIE}=${VIEW_MODE.child}`;
-    act(() => {
-      eventTarget.dispatchEvent(new Event(eventName));
+  describe('on a page rendered in parent mode', () => {
+    beforeEach(() => {
+      render(pageRenderedInParentMode());
     });
 
-    expect(screen.getByTestId(VIEW_MODE_TESTID)).toHaveTextContent(
-      VIEW_MODE.child
-    );
+    it('keeps the chosen mode in the cookie, for every page on this phone', () => {
+      fireEvent.click(screen.getByTestId(CHOOSE_CHILD_TESTID));
+
+      expect(written).toContainEqual(
+        expect.stringContaining(`${VIEW_MODE_COOKIE}=${VIEW_MODE.child}`)
+      );
+    });
+
+    it.each([
+      ['visibilitychange', document],
+      ['pageshow', window],
+    ])('picks up a mode chosen elsewhere on %s', (eventName, eventTarget) => {
+      document.cookie = `${VIEW_MODE_COOKIE}=${VIEW_MODE.child}`;
+      act(() => {
+        eventTarget.dispatchEvent(new Event(eventName));
+      });
+
+      expect(screen.getByTestId(VIEW_MODE_TESTID)).toHaveTextContent(
+        VIEW_MODE.child
+      );
+    });
   });
 });

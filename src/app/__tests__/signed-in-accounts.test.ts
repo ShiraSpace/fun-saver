@@ -101,13 +101,12 @@ describe('signedInAccounts', () => {
     expect((await signedInAccounts()).viewMode).toBe(VIEW_MODE.child);
   });
 
-  it.each([
-    ['no mode cookie', undefined],
-    ['an unknown mode cookie', 'grandparent'],
-  ])('opens a phone with %s in parent mode', async (_, mockViewModeCookie) => {
-    if (mockViewModeCookie) {
-      mockCookies[VIEW_MODE_COOKIE] = { value: mockViewModeCookie };
-    }
+  it('opens a phone with no mode cookie in parent mode', async () => {
+    expect((await signedInAccounts()).viewMode).toBe(VIEW_MODE.parent);
+  });
+
+  it('opens a phone whose mode cookie is unknown in parent mode', async () => {
+    mockCookies[VIEW_MODE_COOKIE] = { value: 'grandparent' };
 
     expect((await signedInAccounts()).viewMode).toBe(VIEW_MODE.parent);
   });
