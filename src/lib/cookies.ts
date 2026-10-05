@@ -14,7 +14,7 @@ export function writeCookie(name: string, value: string): void {
 
 export function readCookie(name: string): string | undefined {
   if (typeof document === 'undefined') {
-    return undefined;
+    return;
   }
 
   const prefix = `${name}=`;

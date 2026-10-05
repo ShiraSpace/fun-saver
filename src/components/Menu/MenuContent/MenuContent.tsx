@@ -16,9 +16,9 @@ import { useMenu } from '../use-menu-state';
 
 export function MenuContent(): JSX.Element {
   const accounts = useOptionalAccounts();
-  const hasAccount = Boolean(accounts);
   const { closeMenu } = useMenu();
   const { viewMode } = useViewMode();
+  const hasAccount = Boolean(accounts);
 
   if (hasAccount && viewMode === VIEW_MODE.child) {
     return <ChildMenuContent />;

@@ -1,5 +1,11 @@
 import { captureCookies } from '@/test-utils/cookies';
-import { CURRENT_ACCOUNT_COOKIE, THEME_COOKIE, writeCookie } from '../cookies';
+import {
+  CURRENT_ACCOUNT_COOKIE,
+  readCookie,
+  THEME_COOKIE,
+  VIEW_MODE_COOKIE,
+  writeCookie,
+} from '../cookies';
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 
@@ -34,5 +40,26 @@ describe('writeCookie', () => {
     writeCookie(CURRENT_ACCOUNT_COOKIE, 'account-1');
 
     expect(document.cookie).toBe('selectedAccountId=account-1');
+  });
+});
+
+describe('readCookie', () => {
+  captureCookies();
+
+  beforeEach(() => {
+    writeCookie(THEME_COOKIE, 'jungle-quest');
+    writeCookie(VIEW_MODE_COOKIE, 'child');
+    writeCookie(CURRENT_ACCOUNT_COOKIE, 'account-1');
+  });
+
+  it('finds a cookie among several', () => {
+    expect(readCookie(VIEW_MODE_COOKIE)).toBe('child');
+  });
+
+  it.each([
+    ['that was never written', 'neverWritten'],
+    ['whose name only starts one that was', 'theme'],
+  ])('answers undefined for a cookie %s', (_, name) => {
+    expect(readCookie(name)).toBeUndefined();
   });
 });

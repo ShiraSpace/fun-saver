@@ -1,26 +1,47 @@
-import { act, fireEvent, render, screen, waitFor } from '@/test-utils/render';
-import {
-  mockAccountsContext,
-  mockAccountSummary,
-  mockChildAccountsContext,
-} from '@/test-utils/mocks/account.mocks';
-import { renderInOpenMenu, WithMenu } from '@/test-utils/menu';
-import { VIEW_MODE } from '@/lib/account/view-mode';
-import { mockRouter } from '@mocks/next/navigation';
+import { act, fireEvent, render, screen } from '@/test-utils/render';
+import { mockAccountsContext } from '@/test-utils/mocks/account.mocks';
+import { WithMenu } from '@/test-utils/menu';
+import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
+import { readCookie, VIEW_MODE_COOKIE } from '@/lib/cookies';
 import { prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
+import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
 import { ViewModeSwitch } from './ViewModeSwitch';
-import { VIEW_MODE_SWITCH_COPY, VIEW_MODE_SWITCH_TEST_IDS } from './constants';
+import {
+  VIEW_MODE_SWITCH_COPY,
+  VIEW_MODE_SWITCH_MOTION,
+  VIEW_MODE_SWITCH_TEST_IDS,
+} from './constants';
+
+interface SwitchScene {
+  switchTo: ViewMode;
+  viewMode: ViewMode;
+  closeMenu?: () => void;
+}
+
+function renderSwitch({ switchTo, viewMode, closeMenu }: SwitchScene): void {
+  render(
+    <WithMenu closeMenu={closeMenu}>
+      <ViewModeSwitch viewMode={switchTo} />
+    </WithMenu>,
+    { accounts: mockAccountsContext, viewMode }
+  );
+}
 
 function tapSwitch(): void {
   fireEvent.click(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch));
 }
 
+function passTime(milliseconds: number): Promise<void> {
+  return act(() => jest.advanceTimersByTimeAsync(milliseconds));
+}
+
 describe('ViewModeSwitch', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue({ ok: true, json: async () => mockAccountSummary });
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('for someone who turned animations off', () => {
@@ -28,19 +49,16 @@ describe('ViewModeSwitch', () => {
 
     beforeEach(async () => {
       prefersReducedMotion();
-      jest.useFakeTimers();
-      render(
-        <WithMenu closeMenu={mockCloseMenu}>
-          <ViewModeSwitch viewMode={VIEW_MODE.child} />
-        </WithMenu>,
-        { accounts: mockAccountsContext }
-      );
+      renderSwitch({
+        switchTo: VIEW_MODE.child,
+        viewMode: VIEW_MODE.parent,
+        closeMenu: mockCloseMenu,
+      });
       tapSwitch();
-      await act(() => jest.advanceTimersByTimeAsync(1));
+      await passTime(1);
     });
 
     afterEach(() => {
-      jest.useRealTimers();
       prefersMotion();
     });
 
@@ -51,85 +69,75 @@ describe('ViewModeSwitch', () => {
 
   describe('the parent switch', () => {
     beforeEach(() => {
-      render(
-        <WithMenu>
-          <ViewModeSwitch viewMode={VIEW_MODE.child} />
-        </WithMenu>,
-        { accounts: mockAccountsContext }
-      );
+      renderSwitch({ switchTo: VIEW_MODE.child, viewMode: VIEW_MODE.parent });
     });
 
-    it('names the child it simplifies the screen for', () => {
+    it('says it is for every child on this phone', () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).toHaveTextContent(
-        VIEW_MODE_SWITCH_COPY.childNote(mockAccountSummary.name)
-      );
+      ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.childNote);
     });
 
-    it('is off while the account is on the parent screen', () => {
+    it('is off in parent mode', () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
       ).toHaveAttribute('aria-checked', 'false');
     });
   });
 
-  describe('a parent turns child view on', () => {
+  describe('a parent turns child mode on', () => {
     const mockCloseMenu = jest.fn();
 
-    beforeEach(async () => {
-      render(
-        <WithMenu closeMenu={mockCloseMenu}>
-          <ViewModeSwitch viewMode={VIEW_MODE.child} />
-        </WithMenu>,
-        { accounts: mockAccountsContext }
-      );
-      tapSwitch();
-      await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-    });
-
-    it('saves child view on the current account', () => {
-      const [url, options] = jest.mocked(global.fetch).mock.calls[0];
-
-      expect([url, JSON.parse(String(options?.body))]).toEqual([
-        `/api/accounts/${mockAccountSummary.id}/view-mode`,
-        { viewMode: VIEW_MODE.child },
-      ]);
-    });
-
-    it('closes the menu so the child screen is what shows', () => {
-      expect(mockCloseMenu).toHaveBeenCalled();
-    });
-
-    it('refreshes so the page loads in child view', () => {
-      expect(mockRouter.refresh).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('the moment a parent taps the switch', () => {
     beforeEach(() => {
-      global.fetch = jest.fn().mockReturnValue(new Promise(() => {}));
-      renderInOpenMenu(<ViewModeSwitch viewMode={VIEW_MODE.child} />, {
-        accounts: mockAccountsContext,
+      jest.clearAllMocks();
+      renderSwitch({
+        switchTo: VIEW_MODE.child,
+        viewMode: VIEW_MODE.parent,
+        closeMenu: mockCloseMenu,
       });
       tapSwitch();
     });
 
-    it('slides on before the save answers', () => {
+    it('slides on the moment it is tapped', () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
       ).toHaveAttribute('aria-checked', 'true');
+    });
+
+    describe('once the knob has slid', () => {
+      beforeEach(async () => {
+        await passTime(VIEW_MODE_SWITCH_MOTION.slideMs);
+      });
+
+      it('closes the menu', () => {
+        expect(mockCloseMenu).toHaveBeenCalledTimes(1);
+      });
+
+      it('keeps parent mode while the menu fades', () => {
+        expect(readCookie(VIEW_MODE_COOKIE)).toBe(VIEW_MODE.parent);
+      });
+    });
+  });
+
+  describe.each([
+    [VIEW_MODE.parent, VIEW_MODE.child],
+    [VIEW_MODE.child, VIEW_MODE.parent],
+  ])('switching from %s mode to %s mode', (viewMode, switchTo) => {
+    beforeEach(async () => {
+      renderSwitch({ switchTo, viewMode });
+      tapSwitch();
+      await passTime(VIEW_MODE_SWITCH_MOTION.slideMs);
+      await passTime(MENU_OVERLAY_STYLE.transitionMs);
+    });
+
+    it(`turns ${switchTo} mode on once the menu has faded`, () => {
+      expect(readCookie(VIEW_MODE_COOKIE)).toBe(switchTo);
     });
   });
 
   describe("the child's way back", () => {
     beforeEach(() => {
-      render(
-        <WithMenu>
-          <ViewModeSwitch viewMode={VIEW_MODE.parent} />
-        </WithMenu>,
-        { accounts: mockChildAccountsContext }
-      );
+      renderSwitch({ switchTo: VIEW_MODE.parent, viewMode: VIEW_MODE.child });
     });
 
     it('is labelled for the parent', () => {
@@ -138,27 +146,10 @@ describe('ViewModeSwitch', () => {
       ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[VIEW_MODE.parent]);
     });
 
-    it('carries no note about a child', () => {
+    it('carries no note about the children', () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).not.toHaveTextContent(
-        VIEW_MODE_SWITCH_COPY.childNote(mockAccountSummary.name)
-      );
-    });
-
-    describe('and the child taps it', () => {
-      beforeEach(async () => {
-        tapSwitch();
-        await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-      });
-
-      it('saves parent view on the current account', () => {
-        const [, options] = jest.mocked(global.fetch).mock.calls[0];
-
-        expect(JSON.parse(String(options?.body))).toEqual({
-          viewMode: VIEW_MODE.parent,
-        });
-      });
+      ).not.toHaveTextContent(VIEW_MODE_SWITCH_COPY.childNote);
     });
   });
 });

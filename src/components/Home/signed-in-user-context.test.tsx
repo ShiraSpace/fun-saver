@@ -45,6 +45,8 @@ describe('remembering the theme for the next cold load', () => {
   it('stores nothing on a screen with no signed-in user', () => {
     render(<span />, { themeId: THEME_ID.midnightBlue });
 
-    expect(written).toEqual([]);
+    expect(written).not.toContainEqual(
+      expect.stringContaining(`${THEME_COOKIE}=`)
+    );
   });
 });
