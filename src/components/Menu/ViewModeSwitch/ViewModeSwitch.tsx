@@ -9,6 +9,7 @@ import { Knob, Row, Track } from './ViewModeSwitch.styles';
 export function ViewModeSwitch(): JSX.Element {
   const { shownViewMode, isSwitching, switchViewMode } = useViewModeSwitch();
   const isChildMode = shownViewMode === VIEW_MODE.child;
+  const knobFace = VIEW_MODE_SWITCH_COPY.knobFace[shownViewMode];
 
   return (
     <Row
@@ -21,7 +22,7 @@ export function ViewModeSwitch(): JSX.Element {
     >
       {VIEW_MODE_SWITCH_COPY.label}
       <Track data-on={isChildMode}>
-        <Knob aria-hidden>{VIEW_MODE_SWITCH_COPY.knobFace[shownViewMode]}</Knob>
+        <Knob aria-hidden>{knobFace}</Knob>
       </Track>
     </Row>
   );

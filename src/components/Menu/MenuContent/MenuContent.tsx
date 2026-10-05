@@ -31,19 +31,21 @@ export function MenuContent(): JSX.Element {
     <AddAccountButton />
   );
 
+  const settings = hasAccount && (
+    <Fragment>
+      <MenuAccountSettings>
+        <AppearanceSection />
+        <LanguageSection />
+      </MenuAccountSettings>
+      <MenuGlobalSettings />
+    </Fragment>
+  );
+
   return (
     <Fragment>
       <NavigationTabs onNavigate={closeMenu} />
       <MenuUserSettings>{accountControls}</MenuUserSettings>
-      {hasAccount && (
-        <Fragment>
-          <MenuAccountSettings>
-            <AppearanceSection />
-            <LanguageSection />
-          </MenuAccountSettings>
-          <MenuGlobalSettings />
-        </Fragment>
-      )}
+      {settings}
     </Fragment>
   );
 }

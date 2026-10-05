@@ -49,7 +49,7 @@ export const Knob = styled.span`
   height: 30px;
   border-radius: 50%;
   background: ${({ theme }): string => theme.colors.surface};
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px ${({ theme }): string => theme.shadows.mid};
   font-size: 19px;
   transition: inset-inline-start ${VIEW_MODE_SWITCH_MOTION.slideMs}ms ease;
 
