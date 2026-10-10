@@ -1,4 +1,9 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import {
+  act,
+  renderHook,
+  waitFor,
+  type RenderHookResult,
+} from '@/test-utils/render';
 import { REQUEST_STATE } from '@/lib/request-state';
 import { useWithdrawalForm } from './use-withdrawal-form';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
@@ -23,7 +28,7 @@ const [mockSavings, mockSpending, mockGoodDeeds] = mockWalletSummaries;
 
 function setup(
   account: AccountSummary = mockAccountSummary
-): ReturnType<typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>> {
+): RenderHookResult<ReturnType<typeof useWithdrawalForm>, void> {
   return renderHook(() =>
     useWithdrawalForm({
       account,

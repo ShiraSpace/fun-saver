@@ -3,10 +3,12 @@
 import {
   useEffect,
   useState,
+  useTransition,
   type Dispatch,
   type JSX,
   type ReactNode,
   type SetStateAction,
+  type TransitionStartFunction,
 } from 'react';
 import { useLinkStatus } from 'next/link';
 import { createRequiredContext } from './create-required-context';
@@ -14,6 +16,7 @@ import { createRequiredContext } from './create-required-context';
 interface Loader {
   isLoaderShown: boolean;
   setPendingLoaderCount: Dispatch<SetStateAction<number>>;
+  runWithLoader: TransitionStartFunction;
 }
 
 const [LoaderContextProvider, useLoader] =
@@ -25,9 +28,11 @@ interface LoaderProviderProps {
 
 export function LoaderProvider({ children }: LoaderProviderProps): JSX.Element {
   const [pendingLoaderCount, setPendingLoaderCount] = useState(0);
+  const [isRunning, runWithLoader] = useTransition();
   const loader: Loader = {
-    isLoaderShown: pendingLoaderCount > 0,
+    isLoaderShown: isRunning || pendingLoaderCount > 0,
     setPendingLoaderCount,
+    runWithLoader,
   };
 
   return (
@@ -37,6 +42,10 @@ export function LoaderProvider({ children }: LoaderProviderProps): JSX.Element {
 
 export function useIsLoaderShown(): boolean {
   return useLoader().isLoaderShown;
+}
+
+export function useRunWithLoader(): TransitionStartFunction {
+  return useLoader().runWithLoader;
 }
 
 export function useReportLoader(isPending: boolean): void {

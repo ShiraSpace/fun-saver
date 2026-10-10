@@ -1,4 +1,9 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import {
+  act,
+  renderHook,
+  waitFor,
+  type RenderHookResult,
+} from '@/test-utils/render';
 import { StatusCodes } from 'http-status-codes';
 import { RequestFailedError } from '@/lib/fetch-json';
 import { REQUEST_STATE } from '@/lib/request-state';
@@ -7,7 +12,7 @@ import { useAmountEntry } from './use-amount-entry';
 
 function submitRefusedWith(
   status: number
-): ReturnType<typeof renderHook<ReturnType<typeof useAmountEntry>, void>> {
+): RenderHookResult<ReturnType<typeof useAmountEntry>, void> {
   const mockSaveTransaction = jest
     .fn()
     .mockRejectedValue(new RequestFailedError('refused', status));

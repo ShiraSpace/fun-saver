@@ -1,6 +1,8 @@
 import { ReactElement, ReactNode } from 'react';
 import {
   render as renderWithRtl,
+  renderHook as renderHookWithRtl,
+  type RenderHookResult,
   type RenderResult,
 } from '@testing-library/react';
 import { AppThemeProvider } from '@/theme/AppThemeProvider';
@@ -48,33 +50,44 @@ interface AppProvidersProps {
   children: ReactNode;
 }
 
-export function render(
-  element: ReactElement,
-  {
-    themeId = DEFAULT_THEME_ID,
-    user,
-    accounts,
-    route,
-    viewMode = VIEW_MODE.parent,
-  }: RenderOptions = {}
-): RenderResult {
+function appProviders({
+  themeId = DEFAULT_THEME_ID,
+  user,
+  accounts,
+  route,
+  viewMode = VIEW_MODE.parent,
+}: RenderOptions): (props: AppProvidersProps) => ReactElement {
   if (route) {
     setMockPathname(route);
   }
 
   document.cookie = `${VIEW_MODE_COOKIE}=${viewMode}`;
 
-  const AppProviders = ({ children }: AppProvidersProps): ReactElement => (
-    <AppThemeProvider initialThemeId={themeId}>
-      <ViewModeProvider value={viewMode}>
-        <LoaderProvider>
-          {withUser(withAccounts(children, accounts), user)}
-        </LoaderProvider>
-      </ViewModeProvider>
-    </AppThemeProvider>
-  );
+  return function AppProviders({ children }: AppProvidersProps): ReactElement {
+    return (
+      <AppThemeProvider initialThemeId={themeId}>
+        <ViewModeProvider value={viewMode}>
+          <LoaderProvider>
+            {withUser(withAccounts(children, accounts), user)}
+          </LoaderProvider>
+        </ViewModeProvider>
+      </AppThemeProvider>
+    );
+  };
+}
 
-  return renderWithRtl(element, { wrapper: AppProviders });
+export function render(
+  element: ReactElement,
+  options: RenderOptions = {}
+): RenderResult {
+  return renderWithRtl(element, { wrapper: appProviders(options) });
+}
+
+export function renderHook<Result>(
+  hook: () => Result,
+  options: RenderOptions = {}
+): RenderHookResult<Result, void> {
+  return renderHookWithRtl(hook, { wrapper: appProviders(options) });
 }
 
 export * from '@testing-library/react';

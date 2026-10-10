@@ -9,6 +9,7 @@ import { CURRENT_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
 import { findCurrentAccount } from '@/lib/account/current-account';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/AppThemeProvider';
+import { useRunWithLoader } from './loader-context';
 
 export interface AccountNavigation {
   mode: AppMode;
@@ -27,6 +28,7 @@ export function useAccountNavigation(
   initialAccountId: string
 ): AccountNavigation {
   const router = useRouter();
+  const runWithLoader = useRunWithLoader();
   const setThemeId = useSetThemeId();
 
   const [mode, setMode] = useState<AppMode>(APP_MODE.viewing);
@@ -44,7 +46,7 @@ export function useAccountNavigation(
 
   const finishEditing = (): void => {
     returnToViewing();
-    router.refresh();
+    runWithLoader(() => router.refresh());
   };
 
   const currentAccount = findCurrentAccount(accounts, currentAccountId);
