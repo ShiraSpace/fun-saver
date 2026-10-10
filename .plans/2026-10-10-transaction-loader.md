@@ -28,7 +28,7 @@ so new numbers just snap in.
 ## Phase 1: production code (one commit)
 
 1. **`navigation-pending-context.tsx`:** the counter's state moves out of
-   `Header` into a `PendingNavigations` provider, mounted once in `layout.tsx`,
+   `Header` into a `NavigationProvider`, mounted once in `layout.tsx`,
    so anything on the screen can report — not only what renders inside the
    header. `Header` reads `useIsNavigating()`. The drawer is a sibling of
    `Header`, which is why it could not reach the counter before.
@@ -48,8 +48,7 @@ so new numbers just snap in.
 - `useRefreshBalances` reports pending until the refresh transition ends.
 - A successful save calls `onSaved`; a failed one does not.
 - `Account` remounts `BalanceBreakdown` when the total changes.
-- Existing Header / navigation-pending tests move to the `PendingNavigations`
-  provider.
+- Existing Header / navigation-pending tests move to the `NavigationProvider`.
 
 ## Out of scope
 

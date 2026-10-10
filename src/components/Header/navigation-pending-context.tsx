@@ -18,13 +18,13 @@ const PendingNavigationsContext = createContext<
 
 const IsNavigatingContext = createContext(false);
 
-interface PendingNavigationsProps {
+interface NavigationProviderProps {
   children: ReactNode;
 }
 
-export function PendingNavigations({
+export function NavigationProvider({
   children,
-}: PendingNavigationsProps): JSX.Element {
+}: NavigationProviderProps): JSX.Element {
   const [pendingNavigationCount, setPendingNavigationCount] = useState(0);
 
   return (

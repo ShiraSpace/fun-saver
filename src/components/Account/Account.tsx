@@ -27,9 +27,9 @@ export function Account({ account }: AccountProps): JSX.Element {
   const savingsFirst = savings ? [savings, ...otherWallets] : otherWallets;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const refreshBalances = useRefreshBalances();
-  const breakdownKey = `${account.id}:${totalBalance(wallets)}`;
+  const balancesShown = `${account.id}:${totalBalance(wallets)}`;
 
-  const closeDrawerAndRefreshBalances = (): void => {
+  const showNewBalances = (): void => {
     setIsDrawerOpen(false);
     refreshBalances();
   };
@@ -38,7 +38,7 @@ export function Account({ account }: AccountProps): JSX.Element {
     <Screen align="top">
       <Column>
         <Header title={account.name} account={account} />
-        <BalanceBreakdown key={breakdownKey} wallets={savingsFirst} />
+        <BalanceBreakdown key={balancesShown} wallets={savingsFirst} />
         <WalletList wallets={savingsFirst} />
         <PrimaryButton
           type="button"
@@ -52,7 +52,7 @@ export function Account({ account }: AccountProps): JSX.Element {
         <TransactionDrawer
           account={account}
           onClose={() => setIsDrawerOpen(false)}
-          onSaved={closeDrawerAndRefreshBalances}
+          onSaved={showNewBalances}
         />
       )}
     </Screen>
