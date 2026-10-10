@@ -1,4 +1,3 @@
-import { GOAL_COPY } from '@/components/Goal/constants';
 import type { WalletSummary } from '@/lib/wallet/types';
 import { PERCENT_TOTAL, WALLET_LABEL } from '@/lib/wallet/constants';
 import { dayMonth } from '@/lib/dates';
@@ -13,7 +12,6 @@ export const WALLET_CARD_TEST_IDS = {
 
 export const WALLET_CARD_COPY = {
   name: WALLET_LABEL,
-  lock: GOAL_COPY.lock,
   savingsSummary: (
     wallet: Pick<WalletSummary, 'monthlyInterestRate' | 'openedAt'>
   ): string =>

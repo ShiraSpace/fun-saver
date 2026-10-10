@@ -25,6 +25,9 @@ export function WithdrawalForm({
 }: WithdrawalFormProps): JSX.Element {
   const form = useWithdrawalForm(account, onClose);
   const { title, submitLabel } = withdrawalCopy(form);
+  const lockedSavingsPanel = form.savingsLockedFor && (
+    <LockedSavings savedTowardGoal={form.savingsLockedFor} />
+  );
 
   return (
     <>
@@ -46,11 +49,7 @@ export function WithdrawalForm({
         entry={form}
         canSubmit={form.canSubmit}
         submitLabel={submitLabel}
-        inPlaceOfKeypad={
-          form.savingsLockedFor && (
-            <LockedSavings savedTowardGoal={form.savingsLockedFor} />
-          )
-        }
+        inPlaceOfKeypad={lockedSavingsPanel}
       />
     </>
   );

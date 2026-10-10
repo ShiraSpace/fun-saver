@@ -25,17 +25,19 @@ export function AmountKeypadWithSubmit({
   submitLabel,
   inPlaceOfKeypad,
 }: AmountKeypadWithSubmitProps): JSX.Element {
+  const isKeypadCovered = Boolean(inPlaceOfKeypad);
+
   return (
     <>
       <KeypadSpace>
-        <Keypad covered={Boolean(inPlaceOfKeypad)}>
+        <Keypad covered={isKeypadCovered}>
           <AmountKeypad
             onDigit={entry.onDigit}
             onClear={entry.onClear}
             onBackspace={entry.onBackspace}
           />
         </Keypad>
-        {inPlaceOfKeypad && (
+        {isKeypadCovered && (
           <InPlaceOfKeypad
             data-testid={AMOUNT_KEYPAD_WITH_SUBMIT_TEST_IDS.inPlaceOfKeypad}
           >

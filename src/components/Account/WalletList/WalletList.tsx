@@ -2,8 +2,10 @@
 
 import { JSX } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
-import { WALLET_NAMES } from '@/lib/wallet/constants';
-import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
+import {
+  savedTowardGoalIn,
+  type SavedTowardGoal,
+} from '@/lib/goal/saved-toward-goal';
 import { WalletCard } from '../WalletCard/WalletCard';
 import { GoalProgress } from '../WalletCard/GoalProgress';
 import { SavingsInterestStats } from './SavingsInterestStats';
@@ -20,8 +22,7 @@ export function WalletList({
   savedTowardGoal,
 }: WalletListProps): JSX.Element {
   const cards = wallets.map((wallet) => {
-    const savingsTowardGoal =
-      wallet.name === WALLET_NAMES.savings ? savedTowardGoal : undefined;
+    const savingsTowardGoal = savedTowardGoalIn(wallet, savedTowardGoal);
 
     return (
       <WalletCard

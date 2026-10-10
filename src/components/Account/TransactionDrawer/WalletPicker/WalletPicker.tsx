@@ -2,9 +2,9 @@
 
 import { JSX } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
-import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { withoutAgorot } from '@/lib/money';
 import {
+  savedTowardGoalIn,
   savingsLocked,
   type SavedTowardGoal,
 } from '@/lib/goal/saved-toward-goal';
@@ -27,28 +27,25 @@ export function WalletPicker({
   onSelect,
   savedTowardGoal,
 }: WalletPickerProps): JSX.Element {
-  const isSavingsLocked = savingsLocked(savedTowardGoal);
-
   return (
     <Wallets>
       {wallets.map((wallet) => {
-        const isSavings = wallet.name === WALLET_NAMES.savings;
+        const savedInWallet = savedTowardGoalIn(wallet, savedTowardGoal);
+        const tileAmount = savedInWallet
+          ? withoutAgorot(wallet.balance)
+          : wallet.balance;
 
         return (
           <WalletTile
             key={wallet.id}
             walletName={wallet.name}
             icon={wallet.icon}
-            amountAgorot={
-              isSavings && savedTowardGoal
-                ? withoutAgorot(wallet.balance)
-                : wallet.balance
-            }
+            amountAgorot={tileAmount}
             testId={WALLET_PICKER_TEST_IDS.wallet(wallet.name)}
             amountTestId={WALLET_PICKER_TEST_IDS.balance(wallet.name)}
             selected={wallet.id === selectedWalletId}
             onSelect={(): void => onSelect(wallet.id)}
-            locked={isSavings && isSavingsLocked}
+            locked={savingsLocked(savedInWallet)}
           />
         );
       })}

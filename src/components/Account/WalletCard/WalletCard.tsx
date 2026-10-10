@@ -9,6 +9,7 @@ import {
 } from '@/lib/goal/saved-toward-goal';
 import { Money } from '@/components/Money';
 import { MONEY_ROUNDING } from '@/components/Money/constants';
+import { GOAL_COPY } from '@/components/Goal/constants';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import {
   Card,
@@ -77,7 +78,7 @@ export function WalletCard({
         <Balance>
           {isSavingsLocked && (
             <Lock aria-hidden="true" data-testid={WALLET_CARD_TEST_IDS.lock}>
-              {WALLET_CARD_COPY.lock}
+              {GOAL_COPY.lock}
             </Lock>
           )}
           <Money

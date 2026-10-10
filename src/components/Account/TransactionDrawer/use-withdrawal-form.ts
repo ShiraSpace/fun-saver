@@ -6,6 +6,7 @@ import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { defaultWithdrawalWallet } from '@/lib/wallet/default-withdrawal-wallet';
 import type { Goal } from '@/lib/goal/types';
 import {
+  savedTowardGoalIn,
   savedTowardGoalOf,
   savingsLocked,
   type SavedTowardGoal,
@@ -33,13 +34,15 @@ function goalOnPickedWallet(
   pickedWallet: WalletSummary | undefined,
   savedTowardGoal: SavedTowardGoal | undefined
 ): GoalOnPickedWallet {
-  if (pickedWallet?.name !== WALLET_NAMES.savings || !savedTowardGoal) {
+  const savedInPickedWallet = savedTowardGoalIn(pickedWallet, savedTowardGoal);
+
+  if (!savedInPickedWallet) {
     return {};
   }
 
-  return savingsLocked(savedTowardGoal)
-    ? { savingsLockedFor: savedTowardGoal }
-    : { goalToComplete: savedTowardGoal.goal };
+  return savingsLocked(savedInPickedWallet)
+    ? { savingsLockedFor: savedInPickedWallet }
+    : { goalToComplete: savedInPickedWallet.goal };
 }
 
 export function useWithdrawalForm(

@@ -4,8 +4,15 @@ import {
   createMockGoal,
   createMockSavedTowardGoal,
 } from '@/test-utils/mocks/goal.mocks';
-import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
-import { savedTowardGoalOf, savingsLocked } from '../saved-toward-goal';
+import {
+  createMockWalletSummary,
+  mockWalletSummaries,
+} from '@/test-utils/mocks/wallet.mocks';
+import {
+  savedTowardGoalIn,
+  savedTowardGoalOf,
+  savingsLocked,
+} from '../saved-toward-goal';
 
 const mockGoalAmount = 30000;
 
@@ -73,5 +80,26 @@ describe('savingsLocked', () => {
 
   it('keeps nothing without a goal', () => {
     expect(savingsLocked(undefined)).toBe(false);
+  });
+});
+
+describe('savedTowardGoalIn', () => {
+  const mockSavedTowardGoal = createMockSavedTowardGoal();
+  const [mockSavings, mockSpending] = mockWalletSummaries;
+
+  it('is what is saved toward the goal, in savings', () => {
+    expect(savedTowardGoalIn(mockSavings, mockSavedTowardGoal)).toBe(
+      mockSavedTowardGoal
+    );
+  });
+
+  it('is nothing in any other wallet', () => {
+    expect(
+      savedTowardGoalIn(mockSpending, mockSavedTowardGoal)
+    ).toBeUndefined();
+  });
+
+  it('is nothing when no wallet is picked', () => {
+    expect(savedTowardGoalIn(undefined, mockSavedTowardGoal)).toBeUndefined();
   });
 });

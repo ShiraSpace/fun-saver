@@ -1,4 +1,5 @@
 import type { AccountSummary } from '@/lib/account/types';
+import type { WalletSummary } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { walletNamed } from '@/lib/wallet/wallet-named';
 import { withoutAgorot } from '@/lib/money';
@@ -14,6 +15,13 @@ export interface SavedTowardGoal {
 
 export function savingsLocked(savedTowardGoal?: SavedTowardGoal): boolean {
   return !!savedTowardGoal && !savedTowardGoal.reached;
+}
+
+export function savedTowardGoalIn(
+  wallet: Pick<WalletSummary, 'name'> | undefined,
+  savedTowardGoal: SavedTowardGoal | undefined
+): SavedTowardGoal | undefined {
+  return wallet?.name === WALLET_NAMES.savings ? savedTowardGoal : undefined;
 }
 
 export function savedTowardGoalOf(

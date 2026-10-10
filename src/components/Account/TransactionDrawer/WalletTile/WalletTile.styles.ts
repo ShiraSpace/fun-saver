@@ -1,9 +1,27 @@
 import styled from '@emotion/styled';
+import type { Theme } from '@emotion/react';
 import type { WalletName } from '@/lib/wallet/types';
 import { WALLET_GRADIENT } from '@/theme/wallet-gradient';
 import { WALLET_TILE_STYLE } from './constants';
 
-export const Tile = styled.button<{ selected: boolean; locked: boolean }>`
+interface TileState {
+  selected: boolean;
+  locked: boolean;
+}
+
+function tileBorderColor({
+  theme,
+  selected,
+  locked,
+}: TileState & { theme: Theme }): string {
+  if (!selected) {
+    return 'transparent';
+  }
+
+  return locked ? theme.colors.textMuted : theme.colors.primary;
+}
+
+export const Tile = styled.button<TileState>`
   position: relative;
   flex: 1;
   display: flex;
@@ -12,13 +30,7 @@ export const Tile = styled.button<{ selected: boolean; locked: boolean }>`
   gap: ${WALLET_TILE_STYLE.contentGap}px;
   border-radius: ${WALLET_TILE_STYLE.radius}px;
   border: ${WALLET_TILE_STYLE.borderWidth}px
-    ${({ locked }): string => (locked ? 'dashed' : 'solid')}
-    ${({ theme, selected, locked }): string =>
-      selected
-        ? locked
-          ? theme.colors.textMuted
-          : theme.colors.primary
-        : 'transparent'};
+    ${({ locked }): string => (locked ? 'dashed' : 'solid')} ${tileBorderColor};
   background: ${({ theme }): string => theme.colors.softBg};
   cursor: pointer;
   font-family: inherit;

@@ -4,7 +4,8 @@ import { JSX } from 'react';
 import type { WalletName } from '@/lib/wallet/types';
 import { Money } from '@/components/Money';
 import { WALLET_CARD_COPY } from '../../WalletCard/constants';
-import { WALLET_TILE_COPY, WALLET_TILE_TEST_IDS } from './constants';
+import { GOAL_COPY } from '@/components/Goal/constants';
+import { WALLET_TILE_TEST_IDS } from './constants';
 import {
   Tile,
   Head,
@@ -49,7 +50,7 @@ export function WalletTile({
     >
       {locked && (
         <LockTag aria-hidden="true" data-testid={WALLET_TILE_TEST_IDS.lock}>
-          {WALLET_TILE_COPY.lock}
+          {GOAL_COPY.lock}
         </LockTag>
       )}
       <Head>
