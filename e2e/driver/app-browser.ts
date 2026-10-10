@@ -12,7 +12,7 @@ import { holdNextPage, type HeldPage } from './hold-next-page';
 interface OpenOptions {
   baseUrl: string;
   motion: queries.MotionPreference;
-  cookie: CookieData;
+  cookies: CookieData[];
 }
 
 interface ViewportOptions {
@@ -42,12 +42,12 @@ export class AppBrowser {
     this.browser = await puppeteer.launch({ headless: true });
   }
 
-  async open({ baseUrl, motion, cookie }: OpenOptions): Promise<void> {
+  async open({ baseUrl, motion, cookies }: OpenOptions): Promise<void> {
     const browser = this.requireBrowser();
     this.baseUrl = baseUrl;
     this.activePage = await browser.newPage();
     await this.clearCookies(browser);
-    await browser.setCookie(cookie);
+    await browser.setCookie(...cookies);
     await this.activePage.emulateMediaFeatures(queries.motionFeatures(motion));
     await this.activePage.goto(baseUrl, { waitUntil: 'networkidle0' });
   }
@@ -60,6 +60,10 @@ export class AppBrowser {
 
   async reload(): Promise<void> {
     await this.page.reload({ waitUntil: 'networkidle0' });
+  }
+
+  async back(): Promise<void> {
+    await this.page.evaluate((): void => window.history.back());
   }
 
   async resize({

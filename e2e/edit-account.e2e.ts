@@ -55,16 +55,16 @@ describe('edit account from the menu', () => {
     await appBrowser.resize(PHONE);
     await menu.open();
 
-    const scope = await menu.globalScopeBox();
+    const userSettings = await menu.userSettingsBox();
     const editButton = await menu.editAccountButtonBox();
 
     assert.ok(
-      editButton.width <= scope.width,
-      `edit button is ${editButton.width}px wide inside a ${scope.width}px block`
+      editButton.width <= userSettings.width,
+      `edit button is ${editButton.width}px wide inside a ${userSettings.width}px block`
     );
     assert.ok(
-      editButton.x >= scope.x,
-      `edit button starts at ${editButton.x}px, left of the ${scope.x}px block`
+      editButton.x >= userSettings.x,
+      `edit button starts at ${editButton.x}px, left of the ${userSettings.x}px block`
     );
   });
 

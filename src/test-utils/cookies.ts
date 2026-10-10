@@ -4,14 +4,15 @@ export function captureCookies(): string[] {
   beforeEach(() => {
     written.length = 0;
 
-    let jar = '';
+    const jar = new Map<string, string>();
 
     Object.defineProperty(document, 'cookie', {
       configurable: true,
-      get: () => jar,
-      set: (value: string) => {
-        written.push(value);
-        jar = value.split(';')[0];
+      get: () => [...jar].map(([name, value]) => `${name}=${value}`).join('; '),
+      set: (cookie: string) => {
+        written.push(cookie);
+        const [name, value] = cookie.split(';')[0].split('=');
+        jar.set(name, value);
       },
     });
   });

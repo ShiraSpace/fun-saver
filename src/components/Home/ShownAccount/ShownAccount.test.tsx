@@ -9,17 +9,18 @@ import {
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { ShownAccount } from './ShownAccount';
 
-function renderInViewMode(viewMode: ViewMode): void {
-  render(<ShownAccount account={{ ...mockAccountSummary, viewMode }} />, {
+function renderShownAccount(viewMode: ViewMode): void {
+  render(<ShownAccount account={mockAccountSummary} />, {
     accounts: mockAccountsContext,
     user: mockUser,
+    viewMode,
   });
 }
 
 describe('ShownAccount', () => {
-  describe('an account in child view', () => {
+  describe('in child mode', () => {
     beforeEach(() => {
-      renderInViewMode(VIEW_MODE.child);
+      renderShownAccount(VIEW_MODE.child);
     });
 
     it('shows the child screen', () => {
@@ -35,9 +36,9 @@ describe('ShownAccount', () => {
     });
   });
 
-  describe('an account in parent view', () => {
+  describe('in parent mode', () => {
     beforeEach(() => {
-      renderInViewMode(VIEW_MODE.parent);
+      renderShownAccount(VIEW_MODE.parent);
     });
 
     it('shows the parent new-transaction button', () => {

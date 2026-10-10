@@ -3,15 +3,15 @@ import type { Theme } from '@emotion/react';
 import { SettingsBlock } from '../settings-parts';
 import { MENU_ROW_STYLE } from '../constants';
 
-const scopeFill = ({ theme }: { theme: Theme }): string =>
-  theme.colors.accountScopeBg;
+const settingsFill = ({ theme }: { theme: Theme }): string =>
+  theme.colors.settingsBg;
 
-const scopeBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.accountScopeBorder;
+const settingsBorder = ({ theme }: { theme: Theme }): string =>
+  theme.colors.settingsBorder;
 
 export const UserSettingsBlock = styled(SettingsBlock)`
   position: relative;
   z-index: 1;
-  border: ${MENU_ROW_STYLE.borderWidth}px solid ${scopeBorder};
-  background: ${scopeFill};
+  border: ${MENU_ROW_STYLE.borderWidth}px solid ${settingsBorder};
+  background: ${settingsFill};
 `;

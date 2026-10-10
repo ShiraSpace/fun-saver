@@ -1,10 +1,12 @@
 'use client';
 
 import { Fragment, JSX } from 'react';
-import { isShownToChild } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/account/view-mode';
 import { useOptionalAccounts } from '@/components/Home/accounts-context';
+import { useViewMode } from '@/components/Home/view-mode-context';
 import { MenuUserSettings } from '../MenuUserSettings';
 import { MenuAccountSettings } from '../MenuAccountSettings';
+import { MenuGlobalSettings } from '../MenuGlobalSettings';
 import { AccountControls } from '../AccountControls';
 import { AddAccountButton } from '../AddAccountButton';
 import { AppearanceSection } from '../AppearanceSection';
@@ -15,10 +17,11 @@ import { useMenu } from '../use-menu-state';
 
 export function MenuContent(): JSX.Element {
   const accounts = useOptionalAccounts();
-  const hasAccount = Boolean(accounts);
   const { closeMenu } = useMenu();
+  const { viewMode } = useViewMode();
+  const hasAccount = Boolean(accounts);
 
-  if (accounts && isShownToChild(accounts.currentAccount)) {
+  if (hasAccount && viewMode === VIEW_MODE.child) {
     return <ChildMenuContent />;
   }
 
@@ -28,16 +31,21 @@ export function MenuContent(): JSX.Element {
     <AddAccountButton />
   );
 
+  const accountAndGlobalSettings = hasAccount && (
+    <Fragment>
+      <MenuAccountSettings>
+        <AppearanceSection />
+        <LanguageSection />
+      </MenuAccountSettings>
+      <MenuGlobalSettings />
+    </Fragment>
+  );
+
   return (
     <Fragment>
       <NavigationTabs onNavigate={closeMenu} />
       <MenuUserSettings>{accountControls}</MenuUserSettings>
-      {hasAccount && (
-        <MenuAccountSettings>
-          <AppearanceSection />
-          <LanguageSection />
-        </MenuAccountSettings>
-      )}
+      {accountAndGlobalSettings}
     </Fragment>
   );
 }

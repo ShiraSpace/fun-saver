@@ -8,11 +8,6 @@ import {
   mockAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
-import { VIEW_MODE } from '@/lib/account/view-mode';
-import {
-  VIEW_MODE_SWITCH_COPY,
-  VIEW_MODE_SWITCH_TEST_IDS,
-} from '../ViewModeSwitch/constants';
 
 const mockCloseMenu = jest.fn();
 
@@ -53,12 +48,6 @@ describe('AccountControls', () => {
 
       expect(mockCloseMenu).toHaveBeenCalled();
     });
-  });
-
-  it('offers the switch to child view', () => {
-    expect(
-      screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-    ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[VIEW_MODE.child]);
   });
 
   it('leaves the menu when the edit button is tapped', () => {
