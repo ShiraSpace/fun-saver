@@ -68,11 +68,10 @@ describe('ChildMenuContent', () => {
 });
 
 describe('ChildMenuContent with siblings', () => {
-  const mockSiblingInChildView = {
+  const mockOtherSibling = {
     ...mockSiblingAccountSummary,
     id: 'a3',
     name: 'יואב',
-    viewMode: VIEW_MODE.child,
   };
   const mockSwitchAccount = jest.fn();
   const mockCloseMenu = jest.fn();
@@ -90,7 +89,7 @@ describe('ChildMenuContent with siblings', () => {
           accounts: [
             mockAccountSummary,
             mockSiblingAccountSummary,
-            mockSiblingInChildView,
+            mockOtherSibling,
           ],
           switchAccount: mockSwitchAccount,
         }),
@@ -98,14 +97,14 @@ describe('ChildMenuContent with siblings', () => {
     );
   });
 
-  it('lists every sibling, whatever view their account was saved in', () => {
+  it('lists every sibling', () => {
     const names = screen
       .getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)
       .map((name) => name.textContent);
 
     expect(names).toEqual([
       mockSiblingAccountSummary.name,
-      mockSiblingInChildView.name,
+      mockOtherSibling.name,
     ]);
   });
 

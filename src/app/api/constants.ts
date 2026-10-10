@@ -8,6 +8,4 @@ export const API_ERRORS = {
   invalidWithdrawal: 'invalid withdrawal',
   invalidThemeRequest: 'invalid theme request',
   unknownTheme: 'unknown theme',
-  invalidViewModeRequest: 'invalid view mode request',
-  unknownViewMode: 'unknown view mode',
 } as const;
