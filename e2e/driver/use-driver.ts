@@ -24,6 +24,8 @@ import { AccountDriver } from './account-driver';
 import { ChildAccountDriver } from './child-account-driver';
 import { MethodDriver } from './method-driver';
 import { LoadingShellDriver } from './loading-shell-driver';
+import { GoalDriver } from './goal-driver';
+import { AnotherPhoneDriver } from './another-phone-driver';
 import { startServer, type RunningServer } from '../server';
 
 interface OpenAppOptions {
@@ -51,6 +53,11 @@ export interface AppDriver {
   childAccount: ChildAccountDriver;
   method: MethodDriver;
   loadingShell: LoadingShellDriver;
+  goal: GoalDriver;
+}
+
+export interface TestDriver extends AppDriver {
+  anotherPhone: AnotherPhoneDriver;
 }
 
 export function createAppDriver(appBrowser: AppBrowser): AppDriver {
@@ -72,6 +79,7 @@ export function createAppDriver(appBrowser: AppBrowser): AppDriver {
     childAccount: new ChildAccountDriver(appBrowser),
     method: new MethodDriver(appBrowser),
     loadingShell: new LoadingShellDriver(appBrowser),
+    goal: new GoalDriver(appBrowser),
   };
 }
 
@@ -138,10 +146,13 @@ async function writeInitialStore(
 export function useDriver(
   initialStore: Partial<StoreContents> = {},
   { motion = 'reduce', viewMode = VIEW_MODE.parent }: DriverOptions = {}
-): AppDriver {
+): TestDriver {
   const appBrowser = AppBrowser.create();
-  const appDriver = createAppDriver(appBrowser);
   let server: RunningServer;
+  const appDriver = {
+    ...createAppDriver(appBrowser),
+    anotherPhone: new AnotherPhoneDriver(() => server),
+  };
 
   before(async () => {
     server = await startApp(appBrowser);
