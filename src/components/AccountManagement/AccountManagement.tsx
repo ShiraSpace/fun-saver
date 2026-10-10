@@ -5,6 +5,7 @@ import { CreateAccount } from '@/components/CreateAccount';
 import { EditAccount } from '@/components/EditAccount';
 import type { AccountNavigation } from '@/hooks/use-account-navigation';
 import { AppModeProvider } from './app-mode-context';
+import { GoalOverlays } from './GoalOverlays';
 import { Overlay } from './AccountManagement.styles';
 
 interface AccountManagementProps {
@@ -39,6 +40,11 @@ export function AccountManagement({
           />
         </Overlay>
       )}
+      <GoalOverlays
+        mode={mode}
+        currentAccount={navigation.currentAccount}
+        onClose={cancel}
+      />
     </AppModeProvider>
   );
 }

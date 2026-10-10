@@ -6,6 +6,7 @@ export const APP_MODE = {
   viewing: 'viewing',
   creatingAccount: 'creatingAccount',
   editingAccount: 'editingAccount',
+  viewingGoal: 'viewingGoal',
 } as const;
 
 export type AppMode = (typeof APP_MODE)[keyof typeof APP_MODE];
