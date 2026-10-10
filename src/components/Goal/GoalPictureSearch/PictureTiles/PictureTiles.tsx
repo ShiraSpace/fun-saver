@@ -1,15 +1,11 @@
 'use client';
 
 import { JSX } from 'react';
-import { GOAL_PICTURE_KIND } from '@/lib/goal/constants';
 import type { GoalPicture } from '@/lib/goal/types';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { PICTURE_TILES_COPY, PICTURE_TILES_TEST_IDS } from './constants';
-import {
-  FoundPictures,
-  NoPicturesReason,
-  PictureTile,
-} from './PictureTiles.styles';
+import { PictureTile } from './PictureTile';
+import { FoundPictures, NoPicturesReason } from './PictureTiles.styles';
 
 interface PictureTilesProps {
   foundEmoji: string[];
@@ -65,15 +61,10 @@ export function PictureTiles({
   const pictureTiles = foundEmoji.map((emoji) => (
     <PictureTile
       key={emoji}
-      type="button"
-      aria-pressed={emoji === chosenPicture.emoji}
-      data-testid={PICTURE_TILES_TEST_IDS.pictureTile}
-      onClick={(): void =>
-        onChoosePicture({ kind: GOAL_PICTURE_KIND.emoji, emoji })
-      }
-    >
-      {emoji}
-    </PictureTile>
+      emoji={emoji}
+      isChosen={emoji === chosenPicture.emoji}
+      onChoosePicture={onChoosePicture}
+    />
   ));
 
   return (

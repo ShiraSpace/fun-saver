@@ -1,13 +1,13 @@
 'use client';
 
 import { JSX, useId } from 'react';
-import { useEscapeKey } from '@/hooks/use-escape-key';
 import type { GoalPicture } from '@/lib/goal/types';
 import { ChooseButton } from './ChooseButton';
 import { PictureTiles } from './PictureTiles';
 import { QueryField } from './QueryField';
 import { SheetHeading } from './SheetHeading';
 import { useGoalPictureSearch } from './use-goal-picture-search';
+import { useModalSheet } from './use-modal-sheet';
 import { GOAL_PICTURE_SEARCH_TEST_IDS } from './constants';
 import { Scrim, Sheet } from './GoalPictureSearch.styles';
 
@@ -26,12 +26,7 @@ export function GoalPictureSearch({
 }: GoalPictureSearchProps): JSX.Element {
   const titleId = useId();
   const search = useGoalPictureSearch({ goalName, picture, onChange });
-
-  useEscapeKey({
-    isListening: true,
-    onEscape: onClose,
-    takesPrecedence: true,
-  });
+  const sheetRef = useModalSheet(onClose);
 
   return (
     <>
@@ -40,6 +35,8 @@ export function GoalPictureSearch({
         onClick={onClose}
       />
       <Sheet
+        ref={sheetRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}

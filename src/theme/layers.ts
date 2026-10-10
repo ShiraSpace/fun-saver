@@ -3,4 +3,6 @@ export const LAYERS = {
   overlayForeground: 60,
   modal: 70,
   modalForeground: 80,
+  modalOverModal: 90,
+  modalOverModalForeground: 100,
 } as const;

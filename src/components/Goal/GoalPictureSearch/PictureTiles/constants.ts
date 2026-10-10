@@ -1,7 +1,6 @@
 export const PICTURE_TILES_TEST_IDS = {
-  foundPictures: 'found-pictures',
-  pictureTile: 'picture-tile',
-  noPicturesReason: 'no-pictures-reason',
+  foundPictures: 'goal-picture-search-found-pictures',
+  noPicturesReason: 'goal-picture-search-no-pictures-reason',
 } as const;
 
 export const PICTURE_TILES_COPY = {

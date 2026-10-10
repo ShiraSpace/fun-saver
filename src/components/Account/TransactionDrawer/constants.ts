@@ -1,4 +1,3 @@
-import { SCREEN_LAYOUT } from '@/components/Screen/constants';
 import type { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { TransactionType } from '@/lib/transaction/types';
 
@@ -27,9 +26,7 @@ export const TRANSACTION_DRAWER_COPY = {
 } as const;
 
 export const TRANSACTION_DRAWER_STYLE = {
-  maxWidth: SCREEN_LAYOUT.maxWidth,
   maxHeight: '80svh',
-  sheetRadius: 28,
   gap: 8,
   messageExtraTop: 6,
   padding: '8px 16px 0px',
