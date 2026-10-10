@@ -9,67 +9,75 @@ const fill = (): HTMLElement =>
   screen.getByTestId(GOAL_PROGRESS_BAR_TEST_IDS.fill);
 
 describe('GoalProgressBar', () => {
-  it('fills as much of the bar as is saved', () => {
-    render(
-      <GoalProgressBar
-        savedTowardGoal={createMockSavedTowardGoal({ saved: 15000 })}
-      />
-    );
+  describe('halfway to the goal', () => {
+    beforeEach(() => {
+      render(
+        <GoalProgressBar
+          savedTowardGoal={createMockSavedTowardGoal({ saved: 15000 })}
+        />
+      );
+    });
 
-    expect(fill().style.width).toBe('50%');
+    it('fills as much of the bar as is saved', () => {
+      expect(fill().style.width).toBe('50%');
+    });
+
+    it('tells assistive technology how much is saved, in shekels', () => {
+      expect(screen.getByRole('progressbar')).toHaveAttribute(
+        'aria-valuenow',
+        '150'
+      );
+    });
+
+    it('tells assistive technology the goal amount, in shekels', () => {
+      expect(screen.getByRole('progressbar')).toHaveAttribute(
+        'aria-valuemax',
+        '300'
+      );
+    });
   });
 
-  it('shows a sliver when nothing is saved yet', () => {
-    render(
-      <GoalProgressBar
-        savedTowardGoal={createMockSavedTowardGoal({ saved: 0 })}
-      />
-    );
+  describe('with nothing saved yet', () => {
+    beforeEach(() => {
+      render(
+        <GoalProgressBar
+          savedTowardGoal={createMockSavedTowardGoal({ saved: 0 })}
+        />
+      );
+    });
 
-    expect(fill().style.width).toBe(`${HEAD_START_PERCENT}%`);
+    it('shows a sliver', () => {
+      expect(fill().style.width).toBe(`${HEAD_START_PERCENT}%`);
+    });
   });
 
-  it('tells assistive technology how much is saved, in shekels', () => {
-    render(
-      <GoalProgressBar
-        savedTowardGoal={createMockSavedTowardGoal({ saved: 8500 })}
-      />
-    );
+  describe('with more saved than the goal', () => {
+    beforeEach(() => {
+      render(
+        <GoalProgressBar
+          savedTowardGoal={createMockSavedTowardGoal({
+            saved: 40000,
+            reached: true,
+          })}
+        />
+      );
+    });
 
-    expect(screen.getByRole('progressbar')).toHaveAttribute(
-      'aria-valuenow',
-      '85'
-    );
-  });
+    it('never fills past the whole bar', () => {
+      expect(fill().style.width).toBe('100%');
+    });
 
-  it('tells assistive technology the goal amount, in shekels', () => {
-    render(<GoalProgressBar savedTowardGoal={createMockSavedTowardGoal()} />);
+    it('never tells assistive technology more is saved than the goal', () => {
+      expect(screen.getByRole('progressbar')).toHaveAttribute(
+        'aria-valuenow',
+        '300'
+      );
+    });
 
-    expect(screen.getByRole('progressbar')).toHaveAttribute(
-      'aria-valuemax',
-      '300'
-    );
-  });
-
-  it('never fills past the whole bar', () => {
-    render(
-      <GoalProgressBar
-        savedTowardGoal={createMockSavedTowardGoal({ saved: 40000 })}
-      />
-    );
-
-    expect(fill().style.width).toBe('100%');
-  });
-
-  it('turns the gain colour once the goal is reached', () => {
-    render(
-      <GoalProgressBar
-        savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
-      />
-    );
-
-    expect(getComputedStyle(fill()).backgroundColor).toBe(
-      hexToRgb(getThemeTokens().colors.gainText)
-    );
+    it('turns the gain colour', () => {
+      expect(getComputedStyle(fill()).backgroundColor).toBe(
+        hexToRgb(getThemeTokens().colors.gainText)
+      );
+    });
   });
 });

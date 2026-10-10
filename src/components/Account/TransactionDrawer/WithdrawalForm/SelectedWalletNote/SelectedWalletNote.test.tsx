@@ -6,6 +6,7 @@ import {
 import { REQUEST_STATE } from '@/lib/request-state';
 import { SelectedWalletNote } from './SelectedWalletNote';
 import { WITHDRAWAL_FORM_COPY, WITHDRAWAL_FORM_TEST_IDS } from '../constants';
+import { TRANSACTION_DRAWER_TEST_IDS } from '../../constants';
 
 const mockForm = {
   isOverdraft: false,
@@ -22,6 +23,34 @@ describe('SelectedWalletNote', () => {
     expect(
       screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.completesGoal)
     ).toHaveTextContent(WITHDRAWAL_FORM_COPY.completesGoal(mockGoal.name));
+  });
+
+  it('warns of an overdraft before the goal it would complete', () => {
+    render(
+      <SelectedWalletNote
+        form={{ ...mockForm, goalToComplete: mockGoal, isOverdraft: true }}
+      />
+    );
+
+    expect(
+      screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)
+    ).toBeInTheDocument();
+  });
+
+  it('says the save failed before the goal it would complete', () => {
+    render(
+      <SelectedWalletNote
+        form={{
+          ...mockForm,
+          goalToComplete: mockGoal,
+          requestState: REQUEST_STATE.failed,
+        }}
+      />
+    );
+
+    expect(
+      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
+    ).toBeInTheDocument();
   });
 
   it('shows the overdraft alert otherwise', () => {

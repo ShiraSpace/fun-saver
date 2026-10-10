@@ -20,7 +20,7 @@ jest.mock('./use-add-transaction', () => ({
   }),
 }));
 
-const [savings, spending, goodDeeds] = mockWalletSummaries;
+const [mockSavings, mockSpending, mockGoodDeeds] = mockWalletSummaries;
 
 function setup(
   account: AccountSummary = mockAccountSummary
@@ -38,7 +38,7 @@ describe('useWithdrawalForm', () => {
   it('starts on the default withdrawal wallet', () => {
     const { result } = setup();
 
-    expect(result.current.selectedWalletId).toBe(spending.id);
+    expect(result.current.selectedWalletId).toBe(mockSpending.id);
   });
 
   it('starts with no amount and submit disabled', () => {
@@ -72,9 +72,9 @@ describe('useWithdrawalForm', () => {
   it('marks a good-deeds withdrawal as a donation', () => {
     const { result } = setup();
 
-    act(() => result.current.onSelectWallet(goodDeeds.id));
+    act(() => result.current.onSelectWallet(mockGoodDeeds.id));
 
-    expect(result.current.selectedWalletId).toBe(goodDeeds.id);
+    expect(result.current.selectedWalletId).toBe(mockGoodDeeds.id);
     expect(result.current.isDonation).toBe(true);
   });
 
@@ -86,7 +86,7 @@ describe('useWithdrawalForm', () => {
     act(() => result.current.onSubmit());
 
     await waitFor(() =>
-      expect(mockAddWithdrawal).toHaveBeenCalledWith(spending.id, 10)
+      expect(mockAddWithdrawal).toHaveBeenCalledWith(mockSpending.id, 10)
     );
     await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
     await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
@@ -109,13 +109,13 @@ describe('useWithdrawalForm', () => {
   describe('with a goal not yet reached', () => {
     const mockAccountSavingForGoal = {
       ...mockAccountSummary,
-      goal: createMockGoal({ amount: savings.balance + 100 }),
+      goal: createMockGoal({ amount: mockSavings.balance + 100 }),
     };
 
     it('keeps savings from being submitted', () => {
       const { result } = setup(mockAccountSavingForGoal);
 
-      act(() => result.current.onSelectWallet(savings.id));
+      act(() => result.current.onSelectWallet(mockSavings.id));
       act(() => result.current.onDigit(5));
 
       expect(result.current.canSubmit).toBe(false);
@@ -124,7 +124,7 @@ describe('useWithdrawalForm', () => {
     it('says which goal savings are locked for once picked', () => {
       const { result } = setup(mockAccountSavingForGoal);
 
-      act(() => result.current.onSelectWallet(savings.id));
+      act(() => result.current.onSelectWallet(mockSavings.id));
 
       expect(result.current.savingsLockedFor?.goal).toBe(
         mockAccountSavingForGoal.goal
@@ -143,13 +143,13 @@ describe('useWithdrawalForm', () => {
   describe('with a goal reached', () => {
     const mockAccountWithGoalReached = {
       ...mockAccountSummary,
-      goal: createMockGoal({ amount: savings.balance }),
+      goal: createMockGoal({ amount: mockSavings.balance }),
     };
 
     it('lets savings be submitted', () => {
       const { result } = setup(mockAccountWithGoalReached);
 
-      act(() => result.current.onSelectWallet(savings.id));
+      act(() => result.current.onSelectWallet(mockSavings.id));
       act(() => result.current.onDigit(5));
 
       expect(result.current.canSubmit).toBe(true);
@@ -158,7 +158,7 @@ describe('useWithdrawalForm', () => {
     it('names the goal a savings withdrawal completes', () => {
       const { result } = setup(mockAccountWithGoalReached);
 
-      act(() => result.current.onSelectWallet(savings.id));
+      act(() => result.current.onSelectWallet(mockSavings.id));
 
       expect(result.current.goalToComplete).toBe(
         mockAccountWithGoalReached.goal

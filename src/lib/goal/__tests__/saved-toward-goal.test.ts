@@ -1,8 +1,11 @@
 import type { AccountSummary } from '@/lib/account/types';
 import { createMockAccount } from '@/test-utils/mocks/account.mocks';
-import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
+import {
+  createMockGoal,
+  createMockSavedTowardGoal,
+} from '@/test-utils/mocks/goal.mocks';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
-import { savedTowardGoalOf } from '../saved-toward-goal';
+import { savedTowardGoalOf, savingsLocked } from '../saved-toward-goal';
 
 const mockGoalAmount = 30000;
 
@@ -52,5 +55,23 @@ describe('savedTowardGoalOf', () => {
     expect(savedTowardGoalOf(createMockAccountSaving(40000))?.stillToSave).toBe(
       0
     );
+  });
+});
+
+describe('savingsLocked', () => {
+  it('keeps savings while the goal is not reached', () => {
+    expect(savingsLocked(createMockSavedTowardGoal({ reached: false }))).toBe(
+      true
+    );
+  });
+
+  it('lets savings go once the goal is reached', () => {
+    expect(savingsLocked(createMockSavedTowardGoal({ reached: true }))).toBe(
+      false
+    );
+  });
+
+  it('keeps nothing without a goal', () => {
+    expect(savingsLocked(undefined)).toBe(false);
   });
 });

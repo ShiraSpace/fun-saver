@@ -19,10 +19,10 @@ jest.mock('../use-add-transaction', () => ({
   }),
 }));
 
-const [savings] = mockWalletSummaries;
+const [mockSavings] = mockWalletSummaries;
 const mockAccountSavingForGoal = {
   ...mockAccountSummary,
-  goal: createMockGoal({ amount: savings.balance + 100 }),
+  goal: createMockGoal({ amount: mockSavings.balance + 100 }),
 };
 
 function type(...digits: string[]): void {
@@ -33,7 +33,7 @@ function type(...digits: string[]): void {
 
 function pickSavings(): void {
   fireEvent.click(
-    screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(savings.name))
+    screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name))
   );
 }
 
@@ -75,32 +75,43 @@ describe('WithdrawalForm with a goal', () => {
     });
   });
 
-  it('shows no overdraft alert over a locked goal', () => {
-    render(
-      <WithdrawalForm account={mockAccountSavingForGoal} onClose={jest.fn()} />
-    );
-    type('9', '9');
-    pickSavings();
+  describe('not yet reached, with more typed than savings hold', () => {
+    beforeEach(() => {
+      render(
+        <WithdrawalForm
+          account={mockAccountSavingForGoal}
+          onClose={jest.fn()}
+        />
+      );
+      type('9', '9');
+      pickSavings();
+    });
 
-    expect(
-      screen.queryByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)
-    ).not.toBeInTheDocument();
+    it('shows no overdraft alert over the lock', () => {
+      expect(
+        screen.queryByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)
+      ).not.toBeInTheDocument();
+    });
   });
 
-  it('warns that withdrawing savings completes a reached goal', () => {
-    render(
-      <WithdrawalForm
-        account={{
-          ...mockAccountSummary,
-          goal: createMockGoal({ amount: savings.balance }),
-        }}
-        onClose={jest.fn()}
-      />
-    );
-    pickSavings();
+  describe('reached, with savings picked', () => {
+    beforeEach(() => {
+      render(
+        <WithdrawalForm
+          account={{
+            ...mockAccountSummary,
+            goal: createMockGoal({ amount: mockSavings.balance }),
+          }}
+          onClose={jest.fn()}
+        />
+      );
+      pickSavings();
+    });
 
-    expect(
-      screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.completesGoal)
-    ).toBeInTheDocument();
+    it('warns that withdrawing savings completes the goal', () => {
+      expect(
+        screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.completesGoal)
+      ).toBeInTheDocument();
+    });
   });
 });
