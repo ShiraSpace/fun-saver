@@ -1,7 +1,7 @@
 # Child mode for the whole app, on this phone
 
-> Status: PR 1 **merged** as #193 (2026-10-05); PR 2 built on
-> `feat/global-settings`, in review. Mockup:
+> Status: PR 1 **merged** as #193 (2026-10-05); PR 2 **merged** as #195
+> (2026-10-10); PR 3 next, once PR 1 is deployed to production. Mockup:
 > `mockups/global-child-mode.html`. Replaces the per-account view mode from
 > `.plans/2026-10-03-child-mode.md` and the unbuilt PRs 2–3 of
 > `.plans/2026-10-04-child-account-switcher.md` (#191 is superseded).
@@ -215,14 +215,18 @@ Tests (each watched failing against its own break):
 
 ## PR 2 — «הגדרות כלליות» and the one switch
 
-> **Built** on `feat/global-settings`. Where the build differs from the text below:
+> **Merged** as #195 (`081f361`). Where the build differs from the text below:
 > - The dashed frame, heading and note are `SettingsSection`, `SettingsHeading`
 >   and `SettingsNote` in `settings-parts.ts` (the glossary has no "scope").
 > - `useViewModeSwitch()` keeps `{ shownViewMode, isSwitching, switchViewMode }`;
 >   `switchViewMode()` takes no argument and flips from the saved mode, so a
 >   double tap is ignored twice over: by `disabled` and by the target.
-> - The e2e driver's `globalScopeBox()`, which measured the user settings, is
->   `userSettingsBox()`, since "global" now names the new section.
+> - "scope" is gone from the menu, as the glossary asks: the e2e driver's
+>   `globalScopeBox()`/`accountScopeBox()` are `userSettingsBox()`/`accountSettingsBox()`,
+>   the theme tokens `accountScopeBg`/`accountScopeBorder` are `settingsBg`/`settingsBorder`,
+>   and the test ids are `menu-user-settings` and `menu-account-settings`.
+> - The midnight-blue off track (`divider`) is barely visible on the dark section;
+>   unchanged from `main`, left as is.
 
 The menu from the mockup.
 
