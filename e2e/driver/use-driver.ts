@@ -1,7 +1,10 @@
 import { mkdir, rename, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { after, afterEach, before, beforeEach } from 'node:test';
+import type { CookieData } from 'puppeteer';
 import type { StoreContents } from '@/db/data-store';
+import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
+import { VIEW_MODE_COOKIE } from '@/lib/cookies';
 import {
   createMockAccountUser,
   mockOwner,
@@ -9,7 +12,7 @@ import {
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
-import { sessionCookie } from './auth-session';
+import { APP_COOKIE_DOMAIN, sessionCookie } from './auth-session';
 import { AppBrowser } from './app-browser';
 import type { MotionPreference } from './page-queries';
 import { MenuDriver } from './menu-driver';
@@ -28,6 +31,12 @@ interface OpenAppOptions {
   server: RunningServer;
   initialStore: Partial<StoreContents>;
   motion: MotionPreference;
+  viewMode: ViewMode;
+}
+
+interface DriverOptions {
+  motion?: MotionPreference;
+  viewMode?: ViewMode;
 }
 
 export interface AppDriver {
@@ -77,13 +86,26 @@ export async function openApp({
   server,
   initialStore,
   motion,
+  viewMode,
 }: OpenAppOptions): Promise<void> {
   await writeInitialStore(server.storePath, initialStore);
   await appBrowser.open({
     baseUrl: server.baseUrl,
     motion,
-    cookie: await sessionCookie(mockUser, server.authSecret),
+    cookies: [
+      await sessionCookie(mockUser, server.authSecret),
+      viewModeCookie(viewMode),
+    ],
   });
+}
+
+function viewModeCookie(viewMode: ViewMode): CookieData {
+  return {
+    name: VIEW_MODE_COOKIE,
+    value: viewMode,
+    domain: APP_COOKIE_DOMAIN,
+    path: '/',
+  };
 }
 
 async function writeInitialStore(
@@ -115,7 +137,7 @@ async function writeInitialStore(
 
 export function useDriver(
   initialStore: Partial<StoreContents> = {},
-  motion: MotionPreference = 'reduce'
+  { motion = 'reduce', viewMode = VIEW_MODE.parent }: DriverOptions = {}
 ): AppDriver {
   const appBrowser = AppBrowser.create();
   const appDriver = createAppDriver(appBrowser);
@@ -126,7 +148,7 @@ export function useDriver(
   });
 
   beforeEach(async () => {
-    await openApp({ appBrowser, server, initialStore, motion });
+    await openApp({ appBrowser, server, initialStore, motion, viewMode });
   });
 
   afterEach(async () => {

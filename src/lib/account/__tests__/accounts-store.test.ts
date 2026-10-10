@@ -9,7 +9,6 @@ import {
 } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { Account } from '../types';
-import { VIEW_MODE } from '../view-mode';
 
 describe('AccountsStore', () => {
   let store: InMemoryStore;
@@ -34,10 +33,6 @@ describe('AccountsStore', () => {
       avatarId: mockCreateAccountInput.avatarId,
       isActive: true,
     });
-  });
-
-  it('opens a new account on the parent screen', () => {
-    expect(account.viewMode).toBe(VIEW_MODE.parent);
   });
 
   it('seeds the three default wallets at their configured rate', () => {

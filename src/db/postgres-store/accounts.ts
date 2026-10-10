@@ -1,6 +1,5 @@
 import type { Account, AccountEdits } from '@/lib/account/types';
 import type { ThemeId } from '@/theme/registry';
-import type { ViewMode } from '@/lib/account/view-mode';
 import type { AccountRepository } from '../data-store';
 import { accountFromRow, type AccountRow } from '../rows';
 import { accountWriteError } from './errors';
@@ -38,14 +37,13 @@ export class PostgresAccounts implements AccountRepository {
 
   insertStatement(account: Account): ReturnType<Sql> {
     return this.sql`
-      INSERT INTO accounts (id, name, avatar_id, is_active, theme_id, view_mode, wallets)
+      INSERT INTO accounts (id, name, avatar_id, is_active, theme_id, wallets)
       VALUES (
         ${account.id},
         ${account.name},
         ${account.avatarId},
         ${account.isActive},
         ${account.themeId},
-        ${account.viewMode},
         ${JSON.stringify(account.wallets)}::jsonb
       )
     `;
@@ -75,18 +73,6 @@ export class PostgresAccounts implements AccountRepository {
     const rows = await this.query(
       'UPDATE accounts SET theme_id = $1 WHERE id = $2 RETURNING *',
       [themeId, id]
-    );
-
-    return rows[0] ? accountFromRow(rows[0]) : undefined;
-  }
-
-  async setViewMode(
-    id: string,
-    viewMode: ViewMode
-  ): Promise<Account | undefined> {
-    const rows = await this.query(
-      'UPDATE accounts SET view_mode = $1 WHERE id = $2 RETURNING *',
-      [viewMode, id]
     );
 
     return rows[0] ? accountFromRow(rows[0]) : undefined;

@@ -6,7 +6,7 @@ const mutedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textMuted;
 
 const underlineColor = ({ theme }: { theme: Theme }): string =>
-  theme.colors.accountScopeBorder;
+  theme.colors.settingsBorder;
 
 const labelSize = ({ theme }: { theme: Theme }): number =>
   theme.typography.label;

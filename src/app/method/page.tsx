@@ -8,12 +8,13 @@ import { today } from '@/lib/clock';
 import { findCurrentAccount } from '@/lib/account/current-account';
 import { ThemedPage } from '@/theme/ThemedPage';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
+import { ViewModeProvider } from '@/components/Home/view-mode-context';
 import { signedInAccounts } from '../signed-in-accounts';
 
 export const dynamic = 'force-dynamic';
 
 export default async function MethodPage(): Promise<JSX.Element> {
-  const { user, accounts, currentAccountId, themeId } =
+  const { user, accounts, currentAccountId, themeId, viewMode } =
     await signedInAccounts();
   const accountSummaries = await summarizeAccounts({
     store: getStore(),
@@ -29,7 +30,9 @@ export default async function MethodPage(): Promise<JSX.Element> {
   return (
     <ThemedPage themeId={themeId}>
       <SignedInUserProvider value={user}>
-        <Method accounts={accountSummaries} initialAccount={initialAccount} />
+        <ViewModeProvider value={viewMode}>
+          <Method accounts={accountSummaries} initialAccount={initialAccount} />
+        </ViewModeProvider>
       </SignedInUserProvider>
     </ThemedPage>
   );

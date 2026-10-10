@@ -12,7 +12,7 @@ const mutedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textMuted;
 
 const triggerBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.accountScopeBorder;
+  theme.colors.settingsBorder;
 
 const nameSize = ({ theme }: { theme: Theme }): number => theme.typography.body;
 

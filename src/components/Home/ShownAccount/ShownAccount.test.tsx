@@ -1,7 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { CHILD_ACCOUNT_TEST_IDS } from '@/components/ChildAccount/constants';
-import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import {
   mockAccountSummary,
   mockAccountsContext,
@@ -9,17 +9,18 @@ import {
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { ShownAccount } from './ShownAccount';
 
-function renderInViewMode(viewMode: ViewMode): void {
-  render(<ShownAccount account={{ ...mockAccountSummary, viewMode }} />, {
+function renderShownAccount(viewMode: ViewMode): void {
+  render(<ShownAccount account={mockAccountSummary} />, {
     accounts: mockAccountsContext,
     user: mockUser,
+    viewMode,
   });
 }
 
 describe('ShownAccount', () => {
-  describe('an account in child view', () => {
+  describe('in child mode', () => {
     beforeEach(() => {
-      renderInViewMode(VIEW_MODE.child);
+      renderShownAccount(VIEW_MODE.child);
     });
 
     it('shows the child screen', () => {
@@ -35,9 +36,9 @@ describe('ShownAccount', () => {
     });
   });
 
-  describe('an account in parent view', () => {
+  describe('in parent mode', () => {
     beforeEach(() => {
-      renderInViewMode(VIEW_MODE.parent);
+      renderShownAccount(VIEW_MODE.parent);
     });
 
     it('shows the parent new-transaction button', () => {

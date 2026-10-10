@@ -19,8 +19,8 @@ export interface ThemeColors {
   readonly softBg: string;
   readonly softBorder: string;
   readonly softText: string;
-  readonly accountScopeBg: string;
-  readonly accountScopeBorder: string;
+  readonly settingsBg: string;
+  readonly settingsBorder: string;
   readonly depositBg: string;
   readonly gainText: string;
   readonly gainSoftBg: string;
@@ -36,6 +36,12 @@ export interface ThemeColors {
   readonly chartSpending: string;
   readonly chartGoodDeeds: string;
   readonly chartTotalBalanceFill: string;
+  readonly celebrationGold: string;
+  readonly celebrationPink: string;
+  readonly celebrationPurple: string;
+  readonly celebrationGreen: string;
+  readonly celebrationBlue: string;
+  readonly celebrationOrange: string;
 }
 
 export interface ThemeGradientStops {

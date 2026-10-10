@@ -5,8 +5,8 @@ import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { getThemeTokens } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
+import { bottomOf } from './driver/box-geometry';
 
-const bottomOf = (box: BoundingBox): number => box.y + box.height;
 const centreX = (box: BoundingBox): number => box.x + box.width / 2;
 const justInsideTop = (box: BoundingBox): number => box.y + 1;
 const spanOf = (box: BoundingBox): string => `${box.y}-${bottomOf(box)}`;
@@ -77,29 +77,29 @@ describe('menu morph', () => {
     });
 
     describe('with the account list open', () => {
-      let accountScope: BoundingBox;
+      let accountSettings: BoundingBox;
       let list: BoundingBox;
 
       beforeEach(async () => {
         await menu.openAccountPicker();
 
-        accountScope = await menu.accountScopeBox();
+        accountSettings = await menu.accountSettingsBox();
         list = await menu.accountListBox();
       });
 
       it('reaches down over the per-account block', () => {
-        const listReachesOverIt = overlapVertically(list, accountScope);
+        const listReachesOverIt = overlapVertically(list, accountSettings);
 
         assert.ok(
           listReachesOverIt,
-          `list spans ${spanOf(list)}, per-account block spans ${spanOf(accountScope)}`
+          `list spans ${spanOf(list)}, per-account block spans ${spanOf(accountSettings)}`
         );
       });
 
       it('takes a tap meant for the per-account block underneath', async () => {
         const whereTheyOverlap = {
-          x: centreX(accountScope),
-          y: justInsideTop(accountScope),
+          x: centreX(accountSettings),
+          y: justInsideTop(accountSettings),
         };
         const listTakesTheTap =
           await menu.accountListReceivesTapAt(whereTheyOverlap);
@@ -120,7 +120,7 @@ describe('menu morph', () => {
 
     it('keeps its column on the header card edges, not the window edges', async () => {
       const bar = await header.box();
-      const block = await menu.globalScopeBox();
+      const block = await menu.userSettingsBox();
 
       assert.ok(
         Math.abs(block.x - bar.x) <= EDGE_TOLERANCE &&

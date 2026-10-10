@@ -12,11 +12,11 @@ const mutedText = ({ theme }: { theme: Theme }): string =>
 
 const divider = ({ theme }: { theme: Theme }): string => theme.colors.divider;
 
-const scopeBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.accountScopeBorder;
+const settingsBorder = ({ theme }: { theme: Theme }): string =>
+  theme.colors.settingsBorder;
 
 const selectedFill = ({ theme }: { theme: Theme }): string =>
-  theme.colors.accountScopeBg;
+  theme.colors.settingsBg;
 
 const rowSize = ({ theme }: { theme: Theme }): number => theme.typography.body;
 
@@ -47,7 +47,7 @@ export const Row = styled.button`
   font-weight: 600;
 
   &[aria-current='true'] {
-    border-color: ${scopeBorder};
+    border-color: ${settingsBorder};
     background: ${selectedFill};
   }
 `;

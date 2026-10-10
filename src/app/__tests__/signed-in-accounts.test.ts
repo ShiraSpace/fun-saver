@@ -10,17 +10,19 @@ import type { Account } from '@/lib/account/types';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
+import { CURRENT_ACCOUNT_COOKIE, VIEW_MODE_COOKIE } from '@/lib/cookies';
+import { VIEW_MODE } from '@/lib/view-mode';
 import { signedInAccounts } from '../signed-in-accounts';
 
-interface CurrentAccountCookie {
+interface Cookie {
   value: string;
 }
 
 interface CookieStore {
-  get: () => CurrentAccountCookie | undefined;
+  get: (name: string) => Cookie | undefined;
 }
 
-let mockCurrentAccountCookie: CurrentAccountCookie | undefined;
+let mockCookies: Record<string, Cookie>;
 
 jest.mock('@/auth', () => ({ signedInUser: jest.fn() }));
 jest.mock('next/navigation', () => ({
@@ -30,7 +32,7 @@ jest.mock('next/navigation', () => ({
 }));
 jest.mock('next/headers', () => ({
   cookies: async (): Promise<CookieStore> => ({
-    get: (): CurrentAccountCookie | undefined => mockCurrentAccountCookie,
+    get: (name: string): Cookie | undefined => mockCookies[name],
   }),
 }));
 
@@ -40,7 +42,7 @@ describe('signedInAccounts', () => {
   let owned: Account[];
 
   beforeEach(async () => {
-    mockCurrentAccountCookie = undefined;
+    mockCookies = {};
     jest.mocked(signedInUser).mockResolvedValue(mockUser);
 
     owned = sortedByName([
@@ -67,7 +69,7 @@ describe('signedInAccounts', () => {
   });
 
   it('selects the account the cookie names', async () => {
-    mockCurrentAccountCookie = { value: owned[1].id };
+    mockCookies[CURRENT_ACCOUNT_COOKIE] = { value: owned[1].id };
 
     expect(await signedInAccounts()).toMatchObject({
       currentAccountId: owned[1].id,
@@ -76,7 +78,7 @@ describe('signedInAccounts', () => {
   });
 
   it('falls back to the first account when the cookie names nothing', async () => {
-    mockCurrentAccountCookie = { value: 'not-an-account' };
+    mockCookies[CURRENT_ACCOUNT_COOKIE] = { value: 'not-an-account' };
 
     expect((await signedInAccounts()).currentAccountId).toBe(owned[0].id);
   });
@@ -91,5 +93,21 @@ describe('signedInAccounts', () => {
 
     expect(accounts).toEqual(owned);
     expect(accounts).not.toContainEqual(theirs);
+  });
+
+  it('opens a phone whose cookie says child in child mode', async () => {
+    mockCookies[VIEW_MODE_COOKIE] = { value: VIEW_MODE.child };
+
+    expect((await signedInAccounts()).viewMode).toBe(VIEW_MODE.child);
+  });
+
+  it('opens a phone with no mode cookie in parent mode', async () => {
+    expect((await signedInAccounts()).viewMode).toBe(VIEW_MODE.parent);
+  });
+
+  it('opens a phone whose mode cookie is unknown in parent mode', async () => {
+    mockCookies[VIEW_MODE_COOKIE] = { value: 'grandparent' };
+
+    expect((await signedInAccounts()).viewMode).toBe(VIEW_MODE.parent);
   });
 });

@@ -17,9 +17,10 @@ import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { AccountSummary } from '@/lib/account/types';
 import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { openAccountPicker } from '@/test-utils/account-picker';
-import { accounts, openMenu, renderHome } from './home-test-helpers';
+import { openMenu, renderHome } from './home-test-helpers';
 import { CHILD_ACCOUNT_TEST_IDS } from '@/components/ChildAccount/constants';
-import { VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/view-mode';
+import { CHILD_MENU_ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/ChildMenuAccountList/constants';
 
 const mockWriteCookie = jest.fn();
 
@@ -146,17 +147,36 @@ describe('Home', () => {
     ).toBeInTheDocument();
   });
 
-  describe('an account in child view', () => {
+  describe('in child mode', () => {
     beforeEach(() => {
-      renderHome({
-        accounts: [{ ...accounts[0], viewMode: VIEW_MODE.child }, accounts[1]],
-      });
+      renderHome({ viewMode: VIEW_MODE.child });
     });
 
     it('opens on the child screen', () => {
       expect(
         screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
       ).toBeInTheDocument();
+    });
+
+    describe('the child switches to a sibling', () => {
+      beforeEach(() => {
+        openMenu();
+        fireEvent.click(
+          screen.getByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)
+        );
+      });
+
+      it("shows the sibling's account", () => {
+        expect(
+          screen.getByTestId(HEADER_TITLE_TEST_IDS.title)
+        ).toHaveTextContent(mockSiblingAccount.name);
+      });
+
+      it('stays on the child screen', () => {
+        expect(
+          screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
+        ).toBeInTheDocument();
+      });
     });
   });
 });

@@ -1,5 +1,4 @@
 import type { ThemeId } from '@/theme/registry';
-import type { ViewMode } from './view-mode';
 import type { Wallet, WalletSummary } from '@/lib/wallet/types';
 import type { Goal } from '@/lib/goal/types';
 
@@ -9,7 +8,6 @@ export interface Account {
   avatarId: string;
   isActive: boolean;
   themeId: ThemeId;
-  viewMode: ViewMode;
   wallets: Wallet[];
 }
 

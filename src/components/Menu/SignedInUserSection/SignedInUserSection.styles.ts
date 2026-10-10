@@ -10,8 +10,8 @@ const mutedText = ({ theme }: { theme: Theme }): string =>
 const strongText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textStrong;
 
-const scopeBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.accountScopeBorder;
+const settingsBorder = ({ theme }: { theme: Theme }): string =>
+  theme.colors.settingsBorder;
 
 const softFill = ({ theme }: { theme: Theme }): string => theme.colors.softBg;
 
@@ -27,7 +27,7 @@ const subSize = ({ theme }: { theme: Theme }): number => theme.typography.label;
 export const Block = styled.div`
   padding-bottom: 9px;
   margin-bottom: 9px;
-  border-bottom: 1px solid ${scopeBorder};
+  border-bottom: 1px solid ${settingsBorder};
 `;
 
 export const Strip = styled.div`
@@ -86,7 +86,7 @@ export const Email = styled.span`
 export const SignOut = styled.button`
   flex-shrink: 0;
   padding: 5px 10px;
-  border: ${MENU_ROW_STYLE.borderWidth}px solid ${scopeBorder};
+  border: ${MENU_ROW_STYLE.borderWidth}px solid ${settingsBorder};
   border-radius: 12px;
   background: ${surface};
   color: ${mutedText};

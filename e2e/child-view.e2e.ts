@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/view-mode';
 import {
   createMockAccount,
   mockAccount,
@@ -9,17 +9,7 @@ import { useDriver } from './driver/use-driver';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
 
-describe('an account stored in child view', () => {
-  const { childAccount } = useDriver({
-    accounts: [createMockAccount({ viewMode: VIEW_MODE.child })],
-  });
-
-  it('opens straight on the child screen', async () => {
-    assert.equal(await childAccount.screenExists(), true);
-  });
-});
-
-describe('a parent turns child view on', () => {
+describe('a parent turns child mode on', () => {
   const { menu, childAccount, appBrowser } = useDriver({
     accounts: [mockAccount],
   });
@@ -34,7 +24,7 @@ describe('a parent turns child view on', () => {
     assert.equal(await childAccount.screenExists(), true);
   });
 
-  it('is still the child screen after a reload, with no cookie to remember it', async () => {
+  it('stays in child mode after a reload', async () => {
     await appBrowser.reload();
 
     assert.equal(await childAccount.screenExists(), true);
@@ -42,9 +32,10 @@ describe('a parent turns child view on', () => {
 });
 
 describe('the child goes back to the parent screen', () => {
-  const { menu, account } = useDriver({
-    accounts: [createMockAccount({ viewMode: VIEW_MODE.child })],
-  });
+  const { menu, account } = useDriver(
+    { accounts: [mockAccount] },
+    { viewMode: VIEW_MODE.child }
+  );
 
   beforeEach(async () => {
     await menu.open();
@@ -58,26 +49,21 @@ describe('the child goes back to the parent screen', () => {
 });
 
 describe('a child switches to a sibling', () => {
-  const mockChild = createMockAccount({
-    id: 'a1',
-    name: 'אביגיל',
-    viewMode: VIEW_MODE.child,
-  });
-  const mockChildSiblingAccount = createMockAccount({
+  const mockChild = createMockAccount({ id: 'a1', name: 'אביגיל' });
+  const mockSibling = createMockAccount({
     id: 'a2',
     name: 'יואב',
     avatarId: 'kid-08',
-    viewMode: VIEW_MODE.child,
   });
-  const mockParentSiblingAccount = createMockAccount({
+  const mockOtherSibling = createMockAccount({
     id: 'a3',
     name: 'מתן',
     avatarId: 'kid-07',
-    viewMode: VIEW_MODE.parent,
   });
-  const { menu, header, childAccount, appBrowser } = useDriver({
-    accounts: [mockChild, mockChildSiblingAccount, mockParentSiblingAccount],
-  });
+  const { menu, header, childAccount, appBrowser } = useDriver(
+    { accounts: [mockChild, mockSibling, mockOtherSibling] },
+    { viewMode: VIEW_MODE.child }
+  );
 
   beforeEach(async () => {
     await menu.open();
@@ -87,16 +73,17 @@ describe('a child switches to a sibling', () => {
     assert.equal(await header.title(), mockChild.name);
   });
 
-  it('offers only the sibling who is also in child view', async () => {
+  it('offers every sibling', async () => {
     assert.deepEqual(await menu.childMenuAccountNames(), [
-      mockChildSiblingAccount.name,
+      mockSibling.name,
+      mockOtherSibling.name,
     ]);
   });
 
-  describe('the child taps the sibling', () => {
+  describe('the child taps a sibling', () => {
     beforeEach(async () => {
       await menu.switchAccountFromChildMenu(0);
-      await header.waitForTitle(mockChildSiblingAccount.name);
+      await header.waitForTitle(mockSibling.name);
     });
 
     it("shows the sibling's child screen", async () => {
@@ -106,7 +93,7 @@ describe('a child switches to a sibling', () => {
     it("is still the sibling's child screen after a reload", async () => {
       await appBrowser.reload();
 
-      assert.equal(await header.title(), mockChildSiblingAccount.name);
+      assert.equal(await header.title(), mockSibling.name);
       assert.equal(await childAccount.screenExists(), true);
     });
   });
@@ -114,9 +101,10 @@ describe('a child switches to a sibling', () => {
 
 for (const parentPage of [METHOD_ROUTE, TRANSACTIONS_ROUTE]) {
   describe(`a child who opens ${parentPage} by its address`, () => {
-    const { menu, appBrowser } = useDriver({
-      accounts: [createMockAccount({ viewMode: VIEW_MODE.child })],
-    });
+    const { menu, appBrowser } = useDriver(
+      { accounts: [mockAccount] },
+      { viewMode: VIEW_MODE.child }
+    );
 
     beforeEach(async () => {
       await appBrowser.visit(parentPage);
@@ -128,3 +116,24 @@ for (const parentPage of [METHOD_ROUTE, TRANSACTIONS_ROUTE]) {
     });
   });
 }
+
+describe('a parent turns child mode on away from home, then presses back', () => {
+  const { menu, childAccount, appBrowser } = useDriver({
+    accounts: [mockAccount],
+  });
+
+  beforeEach(async () => {
+    await menu.open();
+    await menu.openMethodPage();
+    await menu.open();
+    await menu.tapViewModeSwitch();
+    await menu.open();
+    await menu.waitForChildMenu();
+    await appBrowser.back();
+    await childAccount.waitForScreen();
+  });
+
+  it('comes home to the child screen', async () => {
+    assert.equal(await childAccount.screenExists(), true);
+  });
+});

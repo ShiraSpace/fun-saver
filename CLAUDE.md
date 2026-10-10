@@ -88,6 +88,7 @@ agreed before the volume. Once they are approved, the rest follow in one go.
 - **NEVER** start a new feature on top of an unrelated branch — Phase 0 is mandatory
 - **ALWAYS** start new features from a fresh branch off updated master, unless user explicitly says otherwise
 - **ALWAYS** stop and wait after showing work
+- **ALWAYS** fix every code-review finding unless it is wrong, cannot be reproduced when running the code (we must be sure the "problem" is not theoretical), or goes against a decision the user already made. Dismiss a finding only for one of those three reasons, and name which
 ---
 
 ## Code Style Guidelines

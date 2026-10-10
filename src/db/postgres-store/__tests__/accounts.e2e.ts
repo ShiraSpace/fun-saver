@@ -2,7 +2,6 @@
  * @jest-environment node
  */
 import { DuplicateAccountError } from '@/lib/account/errors';
-import { VIEW_MODE } from '@/lib/account/view-mode';
 import { THEME_ID } from '@/theme/registry';
 import {
   createMockAccount,
@@ -59,33 +58,6 @@ describe('PostgresAccounts', () => {
     expect(
       await store.setAccountTheme(accountId('missing'), THEME_ID.sunshineQuest)
     ).toBeUndefined();
-  });
-
-  describe('view mode', () => {
-    it('saves child view and reads it back', async () => {
-      const mockAccount = createMockAccount({ id: accountId('view-mode') });
-      await store.insertAccount(mockAccount);
-      await store.setAccountViewMode(mockAccount.id, VIEW_MODE.child);
-
-      expect((await store.getAccount(mockAccount.id))?.viewMode).toBe(
-        VIEW_MODE.child
-      );
-    });
-
-    it('opens an inserted account on the parent screen', async () => {
-      const mockAccount = createMockAccount({ id: accountId('view-default') });
-      await store.insertAccount(mockAccount);
-
-      expect((await store.getAccount(mockAccount.id))?.viewMode).toBe(
-        VIEW_MODE.parent
-      );
-    });
-
-    it('ignores a view change for an account that does not exist', async () => {
-      expect(
-        await store.setAccountViewMode(accountId('missing'), VIEW_MODE.child)
-      ).toBeUndefined();
-    });
   });
 
   describe('edit account', () => {

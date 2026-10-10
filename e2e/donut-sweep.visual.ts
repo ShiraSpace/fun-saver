@@ -12,7 +12,7 @@ const ARCS_PER_RING = 3;
 const STILL = 'none';
 
 describe('donut sweep', () => {
-  const { account } = useDriver(mockInitialStore, 'no-preference');
+  const { account } = useDriver(mockInitialStore, { motion: 'no-preference' });
 
   it('draws every arc of the ring', async () => {
     const animations = await account.walletShareAnimations();

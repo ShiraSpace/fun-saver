@@ -10,14 +10,18 @@ import {
   type AccountsContextValue,
 } from '@/components/Home/accounts-context';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
+import { ViewModeProvider } from '@/components/Home/view-mode-context';
+import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
+import { VIEW_MODE_COOKIE } from '@/lib/cookies';
 import type { SignedInUser } from '@/lib/user/types';
 import { setMockPathname } from '@mocks/next/navigation';
 
-interface RenderOptions {
+export interface RenderOptions {
   themeId?: ThemeId;
   user?: SignedInUser;
   accounts?: AccountsContextValue;
   route?: string;
+  viewMode?: ViewMode;
 }
 
 function withAccounts(
@@ -41,15 +45,25 @@ function withUser(element: ReactElement, user?: SignedInUser): ReactElement {
 
 export function render(
   element: ReactElement,
-  { themeId = DEFAULT_THEME_ID, user, accounts, route }: RenderOptions = {}
+  {
+    themeId = DEFAULT_THEME_ID,
+    user,
+    accounts,
+    route,
+    viewMode = VIEW_MODE.parent,
+  }: RenderOptions = {}
 ): RenderResult {
   if (route) {
     setMockPathname(route);
   }
 
+  document.cookie = `${VIEW_MODE_COOKIE}=${viewMode}`;
+
   return renderWithRtl(
     <AppThemeProvider initialThemeId={themeId}>
-      {withUser(withAccounts(element, accounts), user)}
+      <ViewModeProvider value={viewMode}>
+        {withUser(withAccounts(element, accounts), user)}
+      </ViewModeProvider>
     </AppThemeProvider>
   );
 }

@@ -5,7 +5,7 @@ import type { User } from '@/lib/user/types';
 export const TEST_AUTH_SECRET = 'fun-saver-e2e-auth-secret';
 
 export const SESSION_COOKIE_NAME = 'authjs.session-token';
-const SESSION_COOKIE_DOMAIN = 'localhost';
+export const APP_COOKIE_DOMAIN = 'localhost';
 
 export async function sessionCookie(
   user: User,
@@ -25,7 +25,7 @@ export async function sessionCookie(
   return {
     name: SESSION_COOKIE_NAME,
     value,
-    domain: SESSION_COOKIE_DOMAIN,
+    domain: APP_COOKIE_DOMAIN,
     path: '/',
     httpOnly: true,
   };
