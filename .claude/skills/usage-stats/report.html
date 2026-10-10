@@ -1,0 +1,297 @@
+<title>Fun Saver Usage</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap">
+<style>
+/* Layout: one column; headline tiles, then the balance chart, then two charts side by side, then the tables. */
+:root {
+  --page: #f6f8f9; --surface: #ffffff; --ink: #10202b; --ink-2: #4b5a64; --muted: #86929a;
+  --grid: #e3e8eb; --axis: #c2cbd0; --border: rgba(16, 32, 43, 0.10);
+  --savings: #2a78d6; --spending: #eb6834; --good-deeds: #1baf7a;
+  --good: #0ca30c; --warning: #fab219; --critical: #d03b3b; --quiet: #a9b3b9;
+  --display: 'Rubik', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --page: #0e1418; --surface: #172026; --ink: #eef2f4; --ink-2: #bcc7cd; --muted: #87939a;
+  --grid: #26323a; --axis: #3a4851; --border: rgba(255, 255, 255, 0.10);
+  --savings: #3987e5; --spending: #d95926; --good-deeds: #199e70; --quiet: #5c6a72; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --page: #0e1418; --surface: #172026; --ink: #eef2f4; --ink-2: #bcc7cd; --muted: #87939a;
+  --grid: #26323a; --axis: #3a4851; --border: rgba(255, 255, 255, 0.10);
+  --savings: #3987e5; --spending: #d95926; --good-deeds: #199e70; --quiet: #5c6a72; color-scheme: dark;
+}
+body { background: var(--page); color: var(--ink); font-family: var(--body); }
+main { max-width: 1120px; margin: 0 auto; padding: 28px 16px 48px; display: grid; gap: 20px; }
+h1, h2 { font-family: var(--display); font-weight: 600; margin: 0; text-wrap: balance; }
+h1 { font-size: 28px; }
+h2 { font-size: 17px; }
+header p, .note { color: var(--ink-2); margin: 4px 0 0; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.tile, .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; min-width: 0; }
+.tile span { color: var(--ink-2); font-size: 13px; }
+.tile strong { display: block; font-family: var(--display); font-size: 30px; font-weight: 600; margin-top: 4px; }
+.tile small { color: var(--muted); }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.card { display: grid; gap: 12px; align-content: start; }
+.chart { position: relative; min-height: 220px; }
+svg text { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-inline-end: 6px; vertical-align: -1px; }
+.rows { display: grid; gap: 10px; }
+.row { display: grid; grid-template-columns: minmax(64px, 120px) 1fr auto; gap: 10px; align-items: center; font-size: 13px; }
+.row .bar { display: flex; gap: 2px; height: 18px; min-width: 2px; }
+.row .bar div { min-width: 0; }
+.row .bar div:last-child { border-radius: 0 4px 4px 0; }
+.row b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: start; color: var(--muted); font-weight: 500; font-size: 12px; letter-spacing: 0.02em; padding: 8px 10px; border-bottom: 1px solid var(--axis); white-space: nowrap; }
+td { padding: 9px 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+td.num, th.num { text-align: end; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.email { color: var(--ink-2); word-break: break-all; }
+.chip { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.chip::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--dot); }
+.meter { height: 6px; border-radius: 3px; background: var(--grid); margin-top: 4px; overflow: hidden; }
+.meter div { height: 100%; background: var(--savings); }
+.tooltip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.12); white-space: nowrap; z-index: 2; }
+.tooltip strong { display: block; font-size: 14px; }
+.tooltip span { color: var(--ink-2); }
+</style>
+
+<main>
+  <header>
+    <h1>Fun Saver Usage</h1>
+    <p id="generated"></p>
+  </header>
+  <section class="tiles" id="tiles"></section>
+  <section class="card">
+    <h2>Total balance over time</h2>
+    <p class="note">All accounts together, at the end of each week, interest included.</p>
+    <div class="chart" id="balance-chart"></div>
+  </section>
+  <div class="pair">
+    <section class="card">
+      <h2>Deposits and withdrawals per week</h2>
+      <p class="note">Last 12 weeks. Interest is left out.</p>
+      <div class="chart" id="weekly-chart"></div>
+    </section>
+    <section class="card">
+      <h2>Balance per account</h2>
+      <div class="legend" id="jar-legend"></div>
+      <div class="rows" id="account-bars"></div>
+    </section>
+  </div>
+  <section class="card">
+    <h2>Accounts</h2>
+    <div class="scroll"><table id="accounts"></table></div>
+  </section>
+  <section class="card" id="without-account-card">
+    <h2>Signed up, no account yet</h2>
+    <div class="scroll"><table id="without-account"></table></div>
+  </section>
+  <section class="card">
+    <h2>By month</h2>
+    <div class="scroll"><table id="monthly"></table></div>
+  </section>
+</main>
+
+<script id="report-data" type="application/json">
+__REPORT_DATA__
+</script>
+<script>
+const report = JSON.parse(document.getElementById('report-data').textContent);
+const JARS = [
+  { key: 'savings', label: 'Savings', color: 'var(--savings)' },
+  { key: 'spending', label: 'Spending', color: 'var(--spending)' },
+  { key: 'goodDeeds', label: 'Good deeds', color: 'var(--good-deeds)' },
+];
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+const shekels = (agorot, digits = 2) => '₪' + (agorot / 100).toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+const compactShekels = (value) => '₪' + (value >= 1000 ? (value / 1000).toLocaleString('en-US', { maximumFractionDigits: 1 }) + 'K' : value);
+const day = (iso) => iso ? new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—';
+const fullDay = (iso) => iso ? new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+const daysSince = (iso) => Math.floor((Date.now() - new Date(iso + 'T00:00:00')) / 86400000);
+const niceMax = (value) => { if (value <= 0) return 1; const step = 10 ** Math.floor(Math.log10(value)); return Math.ceil(value / step) * step; };
+
+function element(tag, props = {}, children = []) {
+  const node = document.createElement(tag);
+  Object.assign(node, props);
+  children.forEach((child) => node.append(child));
+  return node;
+}
+
+function svgElement(tag, attributes) {
+  const node = document.createElementNS(SVG_NS, tag);
+  Object.entries(attributes).forEach(([key, value]) => node.setAttribute(key, value));
+  return node;
+}
+
+function showTooltip(container, x, y, value, label) {
+  let tooltip = container.querySelector('.tooltip');
+  if (!tooltip) { tooltip = element('div', { className: 'tooltip' }); container.append(tooltip); }
+  tooltip.replaceChildren(element('strong', { textContent: value }), element('span', { textContent: label }));
+  const left = Math.min(Math.max(x - tooltip.offsetWidth / 2, 0), container.clientWidth - tooltip.offsetWidth);
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = Math.max(y - tooltip.offsetHeight - 10, 0) + 'px';
+  tooltip.hidden = false;
+}
+
+function hideTooltip(container) {
+  const tooltip = container.querySelector('.tooltip');
+  if (tooltip) tooltip.hidden = true;
+}
+
+function chartFrame(container, maxValue, formatTick) {
+  const width = container.clientWidth, height = 220;
+  const plot = { left: 44, right: width - 12, top: 12, bottom: height - 26 };
+  const svg = svgElement('svg', { width, height, viewBox: `0 0 ${width} ${height}`, role: 'img' });
+  const top = niceMax(maxValue);
+  const yOf = (value) => plot.bottom - (value / top) * (plot.bottom - plot.top);
+  [0, 0.25, 0.5, 0.75, 1].forEach((fraction) => {
+    const value = top * fraction, y = yOf(value);
+    svg.append(svgElement('line', { x1: plot.left, x2: plot.right, y1: y, y2: y, stroke: fraction === 0 ? 'var(--axis)' : 'var(--grid)', 'stroke-width': 1 }));
+    const tick = svgElement('text', { x: plot.left - 8, y: y + 4, 'text-anchor': 'end' });
+    tick.textContent = formatTick(value);
+    svg.append(tick);
+  });
+  container.replaceChildren(svg);
+  return { svg, plot, yOf };
+}
+
+function drawBalanceChart(container) {
+  const points = report.balanceHistory.map((point) => ({ week: point.week, value: point.totalBalance / 100 }));
+  const { svg, plot, yOf } = chartFrame(container, Math.max(...points.map((point) => point.value)), compactShekels);
+  const xOf = (index) => plot.left + (index / Math.max(points.length - 1, 1)) * (plot.right - plot.left);
+  const line = points.map((point, index) => `${index ? 'L' : 'M'}${xOf(index)},${yOf(point.value)}`).join('');
+  svg.append(svgElement('path', { d: `${line}L${xOf(points.length - 1)},${plot.bottom}L${plot.left},${plot.bottom}Z`, fill: 'var(--savings)', 'fill-opacity': 0.1 }));
+  svg.append(svgElement('path', { d: line, fill: 'none', stroke: 'var(--savings)', 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+  const labelEvery = Math.ceil(points.length / 6);
+  points.forEach((point, index) => {
+    if ((points.length - 1 - index) % labelEvery) return;
+    const label = svgElement('text', { x: xOf(index), y: plot.bottom + 17, 'text-anchor': 'middle' });
+    label.textContent = day(point.week);
+    svg.append(label);
+  });
+  const last = points.length - 1;
+  svg.append(svgElement('circle', { cx: xOf(last), cy: yOf(points[last].value), r: 4, fill: 'var(--savings)', stroke: 'var(--surface)', 'stroke-width': 2 }));
+  const crosshair = svgElement('line', { y1: plot.top, y2: plot.bottom, stroke: 'var(--axis)', 'stroke-width': 1, visibility: 'hidden' });
+  svg.append(crosshair);
+  svg.addEventListener('pointermove', (event) => {
+    const box = svg.getBoundingClientRect();
+    const index = Math.round(((event.clientX - box.left - plot.left) / (plot.right - plot.left)) * last);
+    const point = points[Math.min(Math.max(index, 0), last)];
+    const x = xOf(points.indexOf(point));
+    crosshair.setAttribute('x1', x); crosshair.setAttribute('x2', x); crosshair.setAttribute('visibility', 'visible');
+    showTooltip(container, x, yOf(point.value), shekels(point.value * 100), 'Week of ' + fullDay(point.week));
+  });
+  svg.addEventListener('pointerleave', () => { crosshair.setAttribute('visibility', 'hidden'); hideTooltip(container); });
+}
+
+function drawWeeklyChart(container) {
+  const weeks = report.weekly;
+  const { svg, plot, yOf } = chartFrame(container, Math.max(...weeks.map((week) => week.manualTransactions)), (value) => Math.round(value));
+  const band = (plot.right - plot.left) / weeks.length;
+  const barWidth = Math.min(24, band * 0.6);
+  weeks.forEach((week, index) => {
+    const center = plot.left + band * (index + 0.5);
+    const y = yOf(week.manualTransactions), height = plot.bottom - y, radius = Math.min(4, height);
+    const x = center - barWidth / 2;
+    if (height > 0) {
+      svg.append(svgElement('path', { fill: 'var(--savings)', d: `M${x},${plot.bottom}V${y + radius}Q${x},${y} ${x + radius},${y}H${x + barWidth - radius}Q${x + barWidth},${y} ${x + barWidth},${y + radius}V${plot.bottom}Z` }));
+    }
+    const hit = svgElement('rect', { x: center - band / 2, y: plot.top, width: band, height: plot.bottom - plot.top, fill: 'transparent' });
+    const detail = `${week.accountsWithActivity} of ${report.totals.accounts} accounts · week of ${fullDay(week.week)}`;
+    hit.addEventListener('pointermove', () => showTooltip(container, center, y, `${week.manualTransactions} deposits and withdrawals`, detail));
+    hit.addEventListener('pointerleave', () => hideTooltip(container));
+    svg.append(hit);
+    if (index % 2 === (weeks.length - 1) % 2) {
+      const label = svgElement('text', { x: center, y: plot.bottom + 17, 'text-anchor': 'middle' });
+      label.textContent = day(week.week);
+      svg.append(label);
+    }
+  });
+}
+
+function drawAccountBars() {
+  document.getElementById('jar-legend').replaceChildren(...JARS.map((jar) => element('span', {}, [element('i', { style: `background:${jar.color}` }), jar.label])));
+  const totalOf = (account) => JARS.reduce((sum, jar) => sum + account.balances[jar.key], 0);
+  const largest = Math.max(...report.accounts.map(totalOf), 1);
+  const rows = [...report.accounts].sort((a, b) => totalOf(b) - totalOf(a)).map((account) => {
+    const total = totalOf(account);
+    const bar = element('div', { className: 'bar', style: `width:${(total / largest) * 100}%` });
+    bar.append(...JARS.filter((jar) => account.balances[jar.key] > 0).map((jar) => element('div', {
+      title: `${jar.label}: ${shekels(account.balances[jar.key])}`,
+      style: `flex:${account.balances[jar.key]} 0 0;background:${jar.color}`,
+    })));
+    return element('div', { className: 'row' }, [element('span', { textContent: account.name, dir: 'auto' }), bar, element('b', { textContent: shekels(total, 0) })]);
+  });
+  document.getElementById('account-bars').replaceChildren(...rows);
+}
+
+function engagement(account) {
+  if (!account.lastActivityOn) return { label: 'Never used', dot: 'var(--critical)' };
+  const days = daysSince(account.lastActivityOn);
+  if (days <= 7) return { label: 'This week', dot: 'var(--good)' };
+  if (days <= 30) return { label: 'This month', dot: 'var(--warning)' };
+  return { label: `Quiet ${days} days`, dot: 'var(--quiet)' };
+}
+
+function table(id, headers, rows) {
+  const head = element('tr', {}, headers.map(([label, numeric]) => element('th', { textContent: label, className: numeric ? 'num' : '' })));
+  const body = rows.map((cells) => element('tr', {}, cells.map((cell, index) =>
+    element('td', { className: headers[index][1] ? 'num' : '' }, [cell]))));
+  document.getElementById(id).replaceChildren(element('thead', {}, [head]), element('tbody', {}, body));
+}
+
+function goalCell(account) {
+  if (!account.goal) return '—';
+  const saved = Math.min(account.balances.savings / account.goal.amount, 1);
+  return element('div', {}, [
+    element('span', { textContent: account.goal.name, dir: 'auto' }),
+    element('div', { className: 'note', textContent: `${shekels(account.balances.savings, 0)} of ${shekels(account.goal.amount, 0)}` }),
+    element('div', { className: 'meter' }, [element('div', { style: `width:${saved * 100}%` })]),
+  ]);
+}
+
+function drawAccountsTable() {
+  table('accounts', [['Account'], ['Parent'], ['Used'], ['Opened'], ['Last activity'], ['Deposits + withdrawals', true],
+    ['Savings', true], ['Spending', true], ['Good deeds', true], ['Interest earned', true], ['Goal']],
+  report.accounts.map((account) => {
+    const state = engagement(account);
+    return [
+      element('span', { textContent: account.name + (account.isActive ? '' : ' (inactive)'), dir: 'auto' }),
+      element('div', {}, account.parents.map((parent) => element('div', { className: 'email', textContent: parent.email }))),
+      element('span', { className: 'chip', textContent: state.label, style: `--dot:${state.dot}` }),
+      fullDay(account.openedOn), fullDay(account.lastActivityOn), String(account.manualTransactions),
+      ...JARS.map((jar) => shekels(account.balances[jar.key])), shekels(account.interestEarned), goalCell(account),
+    ];
+  }));
+}
+
+function drawTiles() {
+  const { totals } = report;
+  const tiles = [
+    ['Parents signed up', totals.users, `${totals.usersWithoutAccount} without an account`],
+    ['Child accounts', totals.accounts, `${totals.neverUsed} never used`],
+    ['Used this week', `${totals.usedLast7Days} of ${totals.accounts}`, `${totals.usedLast30Days} in the last 30 days`],
+    ['Total balance', shekels(totals.totalBalance, 0), `${shekels(totals.interestPaid)} of it interest`],
+    ['Deposits + withdrawals', totals.manualTransactions, `${shekels(totals.deposited, 0)} in · ${shekels(totals.withdrawn, 0)} out`],
+  ];
+  document.getElementById('tiles').replaceChildren(...tiles.map(([label, value, detail]) =>
+    element('div', { className: 'tile' }, [element('span', { textContent: label }), element('strong', { textContent: value }), element('small', { textContent: detail })])));
+}
+
+document.getElementById('generated').textContent = `Production data as of ${report.generatedAt} (Israel time)`;
+drawTiles();
+drawAccountBars();
+drawAccountsTable();
+table('monthly', [['Month'], ['New parents', true], ['New accounts', true], ['Deposits + withdrawals', true], ['Accounts used', true]],
+  report.monthly.map((month) => [month.month, String(month.newUsers), String(month.newAccounts), String(month.manualTransactions), String(month.accountsWithActivity)]));
+document.getElementById('without-account-card').hidden = report.usersWithoutAccount.length === 0;
+table('without-account', [['Parent'], ['Email'], ['Signed up']],
+  report.usersWithoutAccount.map((user) => [user.name, element('span', { className: 'email', textContent: user.email }), fullDay(user.joinedOn)]));
+
+const charts = [[document.getElementById('balance-chart'), drawBalanceChart], [document.getElementById('weekly-chart'), drawWeeklyChart]];
+new ResizeObserver(() => charts.forEach(([container, draw]) => draw(container))).observe(document.querySelector('main'));
+</script>

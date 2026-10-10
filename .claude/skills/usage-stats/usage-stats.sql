@@ -1,75 +1,92 @@
-\pset footer off
-
-\set account_opened '(SELECT a.id, a.theme_id, (SELECT min((w->>''openedAt'')::date) FROM jsonb_array_elements(a.wallets) w) AS opened_on FROM accounts a)'
-\set user_joined '(SELECT id, created_at::timestamptz::date AS joined_on FROM users)'
-\set activity '(SELECT account_id, type, amount, occurred_at::date AS occurred_on FROM transactions)'
-
-\qecho '== All time'
-SELECT
-  (SELECT count(*) FROM users)                                   AS users,
-  (SELECT count(*) FROM accounts)                                AS accounts,
-  (SELECT count(*) FROM accounts WHERE is_active)                AS active_accounts,
-  (SELECT round(count(*)::numeric / nullif((SELECT count(*) FROM users), 0), 2) FROM account_users) AS accounts_per_user,
-  (SELECT count(*) FROM (SELECT account_id FROM account_users GROUP BY 1 HAVING count(*) > 1) s) AS shared_accounts,
-  (SELECT count(*) FROM users u WHERE NOT EXISTS (SELECT 1 FROM account_users au WHERE au.user_id = u.id)) AS users_without_account,
-  (SELECT count(*) FROM transactions WHERE type <> 'interest')   AS manual_transactions;
-
-\qecho '== Money (shekels)'
-SELECT
-  round(sum(amount) FILTER (WHERE type = 'deposit')    / 100.0, 2) AS deposited,
-  round(sum(amount) FILTER (WHERE type = 'withdrawal') / 100.0, 2) AS withdrawn,
-  round(sum(amount) FILTER (WHERE type = 'interest')   / 100.0, 2) AS interest_paid,
-  round(sum(CASE WHEN type = 'withdrawal' THEN -amount ELSE amount END) / 100.0, 2) AS total_balance
-FROM transactions;
-
-\qecho '== Transactions by type and wallet'
-SELECT type, wallet_id, count(*), round(sum(amount) / 100.0, 2) AS shekels
-FROM transactions GROUP BY 1, 2 ORDER BY 1, 2;
-
-\qecho '== Monthly'
-WITH months AS (
-  SELECT generate_series(date_trunc('month', least((SELECT min(occurred_on) FROM :activity AS activity), (SELECT min(joined_on) FROM :user_joined AS user_joined), (SELECT min(opened_on) FROM :account_opened AS account_opened))),
-                         date_trunc('month', now()), '1 month')::date AS month
-)
-SELECT to_char(m.month, 'YYYY-MM') AS month,
-  (SELECT count(*) FROM :user_joined AS user_joined    WHERE date_trunc('month', joined_on) = m.month) AS new_users,
-  (SELECT count(*) FROM :account_opened AS account_opened WHERE date_trunc('month', opened_on) = m.month) AS new_accounts,
-  (SELECT count(*) FROM :activity AS activity WHERE type <> 'interest' AND date_trunc('month', occurred_on) = m.month) AS manual_transactions,
-  (SELECT count(DISTINCT account_id) FROM :activity AS activity WHERE type <> 'interest' AND date_trunc('month', occurred_on) = m.month) AS accounts_with_activity
-FROM months m ORDER BY 1 DESC;
-
-\qecho '== Weekly (weeks start Monday)'
-WITH weeks AS (
+WITH
+account_opened AS (
+  SELECT a.id, (SELECT min((w->>'openedAt')::date) FROM jsonb_array_elements(a.wallets) w) AS opened_on
+  FROM accounts a
+),
+user_joined AS (
+  SELECT id, email, name, created_at::timestamptz::date AS joined_on FROM users
+),
+activity AS (
+  SELECT account_id, wallet_id, type, amount, occurred_at::date AS occurred_on,
+         CASE WHEN type = 'withdrawal' THEN -amount ELSE amount END AS balance_change
+  FROM transactions
+),
+manual AS (
+  SELECT * FROM activity WHERE type <> 'interest'
+),
+weeks AS (
   SELECT generate_series(date_trunc('week', now()) - interval '11 weeks',
-                         date_trunc('week', now()), '1 week')::date AS week_start
+                         date_trunc('week', now()), '1 week')::date AS week
+),
+months AS (
+  SELECT generate_series(date_trunc('month', least((SELECT min(occurred_on) FROM activity),
+                                                   (SELECT min(joined_on) FROM user_joined),
+                                                   (SELECT min(opened_on) FROM account_opened))),
+                         date_trunc('month', now()), '1 month')::date AS month
+),
+history_weeks AS (
+  SELECT generate_series(date_trunc('week', (SELECT min(occurred_on) FROM activity)),
+                         date_trunc('week', now()), '1 week')::date AS week
+),
+per_account AS (
+  SELECT a.id, a.name, a.is_active, a.view_mode, a.theme_id, o.opened_on,
+    (SELECT coalesce(jsonb_agg(jsonb_build_object('email', u.email, 'name', u.name, 'role', au.role) ORDER BY au.added_at), '[]')
+       FROM account_users au JOIN users u ON u.id = au.user_id WHERE au.account_id = a.id) AS parents,
+    jsonb_build_object(
+      'savings',   (SELECT coalesce(sum(balance_change), 0) FROM activity t WHERE t.account_id = a.id AND t.wallet_id = 'savings'),
+      'spending',  (SELECT coalesce(sum(balance_change), 0) FROM activity t WHERE t.account_id = a.id AND t.wallet_id = 'spending'),
+      'goodDeeds', (SELECT coalesce(sum(balance_change), 0) FROM activity t WHERE t.account_id = a.id AND t.wallet_id = 'goodDeeds')
+    ) AS balances,
+    (SELECT coalesce(sum(amount) FILTER (WHERE type = 'deposit'), 0)    FROM activity t WHERE t.account_id = a.id) AS deposited,
+    (SELECT coalesce(sum(amount) FILTER (WHERE type = 'withdrawal'), 0) FROM activity t WHERE t.account_id = a.id) AS withdrawn,
+    (SELECT coalesce(sum(amount) FILTER (WHERE type = 'interest'), 0)   FROM activity t WHERE t.account_id = a.id) AS interest_earned,
+    (SELECT count(*) FROM manual t WHERE t.account_id = a.id) AS manual_transactions,
+    (SELECT max(occurred_on) FROM manual t WHERE t.account_id = a.id) AS last_activity_on,
+    (SELECT jsonb_build_object('name', g.name, 'amount', g.amount, 'startedOn', g.started_at::date)
+       FROM goals g WHERE g.account_id = a.id AND g.ended_at IS NULL) AS goal
+  FROM accounts a JOIN account_opened o ON o.id = a.id
 )
-SELECT weeks.week_start AS week,
-  (SELECT count(*) FROM :user_joined AS user_joined    WHERE date_trunc('week', joined_on) = weeks.week_start) AS new_users,
-  (SELECT count(*) FROM :account_opened AS account_opened WHERE date_trunc('week', opened_on) = weeks.week_start) AS new_accounts,
-  (SELECT count(*) FROM :activity AS activity WHERE type <> 'interest' AND date_trunc('week', occurred_on) = weeks.week_start) AS manual_transactions,
-  (SELECT count(DISTINCT account_id) FROM :activity AS activity WHERE type <> 'interest' AND date_trunc('week', occurred_on) = weeks.week_start) AS accounts_with_activity
-FROM weeks ORDER BY 1 DESC;
-
-\qecho '== Accounts per user'
-SELECT accounts, count(*) AS users FROM (
-  SELECT u.id, count(au.account_id) AS accounts
-  FROM users u LEFT JOIN account_users au ON au.user_id = u.id GROUP BY u.id
-) s GROUP BY 1 ORDER BY 1;
-
-\qecho '== Roles'
-SELECT role, count(*) FROM account_users GROUP BY 1 ORDER BY 2 DESC;
-
-\qecho '== Themes'
-SELECT theme_id, count(*) FROM accounts GROUP BY 1 ORDER BY 2 DESC;
-
-\qecho '== Account engagement'
-SELECT
-  count(*) FILTER (WHERE last_manual IS NULL)                        AS never_used,
-  count(*) FILTER (WHERE last_manual >= current_date - 7)            AS used_last_7_days,
-  count(*) FILTER (WHERE last_manual >= current_date - 30)           AS used_last_30_days,
-  round(avg(extract(day FROM now() - opened_on::timestamp)))         AS avg_age_days
-FROM (
-  SELECT o.id, o.opened_on,
-         (SELECT max(occurred_on) FROM :activity AS t WHERE t.account_id = o.id AND t.type <> 'interest') AS last_manual
-  FROM :account_opened AS o
-) s;
+SELECT replace(jsonb_pretty(jsonb_build_object(
+  'generatedAt', to_char(now() AT TIME ZONE 'Asia/Jerusalem', 'YYYY-MM-DD HH24:MI'),
+  'totals', jsonb_build_object(
+    'users',               (SELECT count(*) FROM users),
+    'accounts',            (SELECT count(*) FROM accounts),
+    'activeAccounts',      (SELECT count(*) FROM accounts WHERE is_active),
+    'sharedAccounts',      (SELECT count(*) FROM (SELECT account_id FROM account_users GROUP BY 1 HAVING count(*) > 1) s),
+    'usersWithoutAccount', (SELECT count(*) FROM users u WHERE NOT EXISTS (SELECT 1 FROM account_users au WHERE au.user_id = u.id)),
+    'manualTransactions',  (SELECT count(*) FROM manual),
+    'deposited',           (SELECT coalesce(sum(amount), 0) FROM activity WHERE type = 'deposit'),
+    'withdrawn',           (SELECT coalesce(sum(amount), 0) FROM activity WHERE type = 'withdrawal'),
+    'interestPaid',        (SELECT coalesce(sum(amount), 0) FROM activity WHERE type = 'interest'),
+    'totalBalance',        (SELECT coalesce(sum(balance_change), 0) FROM activity),
+    'usedLast7Days',       (SELECT count(DISTINCT account_id) FROM manual WHERE occurred_on >= current_date - 7),
+    'usedLast30Days',      (SELECT count(DISTINCT account_id) FROM manual WHERE occurred_on >= current_date - 30),
+    'neverUsed',           (SELECT count(*) FROM accounts a WHERE NOT EXISTS (SELECT 1 FROM manual t WHERE t.account_id = a.id))
+  ),
+  'accounts', (SELECT coalesce(jsonb_agg(jsonb_build_object(
+      'name', name, 'isActive', is_active, 'viewMode', view_mode, 'themeId', theme_id, 'openedOn', opened_on,
+      'parents', parents, 'balances', balances, 'deposited', deposited, 'withdrawn', withdrawn,
+      'interestEarned', interest_earned, 'manualTransactions', manual_transactions,
+      'lastActivityOn', last_activity_on, 'goal', goal
+    ) ORDER BY last_activity_on DESC NULLS LAST, name), '[]') FROM per_account),
+  'usersWithoutAccount', (SELECT coalesce(jsonb_agg(jsonb_build_object('email', email, 'name', name, 'joinedOn', joined_on) ORDER BY joined_on), '[]')
+    FROM user_joined u WHERE NOT EXISTS (SELECT 1 FROM account_users au WHERE au.user_id = u.id)),
+  'weekly', (SELECT jsonb_agg(jsonb_build_object(
+      'week', w.week,
+      'newUsers',             (SELECT count(*) FROM user_joined WHERE date_trunc('week', joined_on) = w.week),
+      'newAccounts',          (SELECT count(*) FROM account_opened WHERE date_trunc('week', opened_on) = w.week),
+      'manualTransactions',   (SELECT count(*) FROM manual WHERE date_trunc('week', occurred_on) = w.week),
+      'accountsWithActivity', (SELECT count(DISTINCT account_id) FROM manual WHERE date_trunc('week', occurred_on) = w.week)
+    ) ORDER BY w.week) FROM weeks w),
+  'monthly', (SELECT jsonb_agg(jsonb_build_object(
+      'month', to_char(m.month, 'YYYY-MM'),
+      'newUsers',             (SELECT count(*) FROM user_joined WHERE date_trunc('month', joined_on) = m.month),
+      'newAccounts',          (SELECT count(*) FROM account_opened WHERE date_trunc('month', opened_on) = m.month),
+      'manualTransactions',   (SELECT count(*) FROM manual WHERE date_trunc('month', occurred_on) = m.month),
+      'accountsWithActivity', (SELECT count(DISTINCT account_id) FROM manual WHERE date_trunc('month', occurred_on) = m.month)
+    ) ORDER BY m.month DESC) FROM months m),
+  'balanceHistory', (SELECT jsonb_agg(jsonb_build_object(
+      'week', h.week,
+      'totalBalance', (SELECT coalesce(sum(balance_change), 0) FROM activity WHERE occurred_on < h.week + 7)
+    ) ORDER BY h.week) FROM history_weeks h)
+)), '<', '\u003c');
