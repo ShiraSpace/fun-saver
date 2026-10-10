@@ -1,8 +1,19 @@
 import { useEffect, useRef } from 'react';
+import { newId } from '@/lib/ids';
 import { DRAWER_HISTORY_KEY } from './constants';
 
-function isDrawerEntry(state: Record<string, unknown> | null): boolean {
-  return state?.[DRAWER_HISTORY_KEY] === true;
+const entriesLeftBehind = new Set<string>();
+
+function drawerEntryId(
+  state: Record<string, unknown> | null
+): string | undefined {
+  const entryId = state?.[DRAWER_HISTORY_KEY];
+
+  return typeof entryId === 'string' ? entryId : undefined;
+}
+
+function isLeftBehind(entryId: string | undefined): boolean {
+  return entryId !== undefined && entriesLeftBehind.has(entryId);
 }
 
 export function useCloseOnBack(onClose: () => void): void {
@@ -13,10 +24,13 @@ export function useCloseOnBack(onClose: () => void): void {
   });
 
   useEffect(() => {
-    window.history.pushState({ [DRAWER_HISTORY_KEY]: true }, '');
+    const entryId = newId();
+    window.history.pushState({ [DRAWER_HISTORY_KEY]: entryId }, '');
 
     const handlePopState = (event: PopStateEvent): void => {
-      if (!isDrawerEntry(event.state)) {
+      const landedOn = drawerEntryId(event.state);
+
+      if (landedOn !== entryId && !isLeftBehind(landedOn)) {
         onCloseRef.current();
       }
     };
@@ -25,7 +39,8 @@ export function useCloseOnBack(onClose: () => void): void {
     return (): void => {
       window.removeEventListener('popstate', handlePopState);
 
-      if (isDrawerEntry(window.history.state)) {
+      if (drawerEntryId(window.history.state) === entryId) {
+        entriesLeftBehind.add(entryId);
         window.history.back();
       }
     };
