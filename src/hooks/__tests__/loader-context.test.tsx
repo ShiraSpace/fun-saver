@@ -1,4 +1,4 @@
-import { Context, JSX } from 'react';
+import { JSX } from 'react';
 import {
   render,
   renderHook,
@@ -7,7 +7,6 @@ import {
 } from '@testing-library/react';
 import {
   LoaderProvider,
-  LinkLoaderReporter,
   useIsLoaderShown,
   useReportLoader,
 } from '../loader-context';
@@ -17,39 +16,29 @@ import {
   IsLoaderShown,
 } from '@/test-utils/is-loader-shown';
 
-jest.mock('next/link', () => {
-  const { createContext, useContext } = jest.requireActual('react');
-  const MockLinkPending = createContext(false);
-
-  return {
-    ...jest.requireActual('next/link'),
-    MockLinkPending,
-    useLinkStatus: (): { pending: boolean } => ({
-      pending: useContext(MockLinkPending),
-    }),
-  };
-});
-
-const LinkPending: Context<boolean> =
-  jest.requireMock('next/link').MockLinkPending;
-
-interface LinksProps {
-  homeLinkPending: boolean;
-  homeTabPending: boolean;
+interface PendingWorkProps {
+  isPending: boolean;
 }
 
-function TwoLinks({
-  homeLinkPending,
-  homeTabPending,
-}: LinksProps): JSX.Element {
+function PendingWork({ isPending }: PendingWorkProps): null {
+  useReportLoader(isPending);
+
+  return null;
+}
+
+interface TwoPiecesOfWorkProps {
+  firstPending: boolean;
+  secondPending: boolean;
+}
+
+function TwoPiecesOfWork({
+  firstPending,
+  secondPending,
+}: TwoPiecesOfWorkProps): JSX.Element {
   return (
     <LoaderProvider>
-      <LinkPending.Provider value={homeLinkPending}>
-        <LinkLoaderReporter />
-      </LinkPending.Provider>
-      <LinkPending.Provider value={homeTabPending}>
-        <LinkLoaderReporter />
-      </LinkPending.Provider>
+      <PendingWork isPending={firstPending} />
+      <PendingWork isPending={secondPending} />
       <IsLoaderShown />
     </LoaderProvider>
   );
@@ -59,25 +48,42 @@ describe('the loader', () => {
   let view: RenderResult;
 
   beforeEach(() => {
-    view = render(<TwoLinks homeLinkPending={false} homeTabPending={true} />);
+    view = render(
+      <TwoPiecesOfWork firstPending={false} secondPending={true} />
+    );
   });
 
-  it('shows while a link is pending', () => {
+  it('shows while any work is pending', () => {
     expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
       'true'
     );
   });
 
-  it('still shows when two links swap in a single update', () => {
-    view.rerender(<TwoLinks homeLinkPending={true} homeTabPending={false} />);
+  it('still shows when two pieces of work swap in a single update', () => {
+    view.rerender(
+      <TwoPiecesOfWork firstPending={true} secondPending={false} />
+    );
 
     expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
       'true'
     );
   });
 
-  it('hides once the navigation has landed', () => {
-    view.rerender(<TwoLinks homeLinkPending={false} homeTabPending={false} />);
+  it('still shows while one piece of work is pending after the other is done', () => {
+    view.rerender(<TwoPiecesOfWork firstPending={true} secondPending={true} />);
+    view.rerender(
+      <TwoPiecesOfWork firstPending={false} secondPending={true} />
+    );
+
+    expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
+      'true'
+    );
+  });
+
+  it('hides once all work is done', () => {
+    view.rerender(
+      <TwoPiecesOfWork firstPending={false} secondPending={false} />
+    );
 
     expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
       'false'
