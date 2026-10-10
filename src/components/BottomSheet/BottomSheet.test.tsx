@@ -1,6 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { getThemeTokens } from '@/theme/registry';
-import { BottomSheet, BottomSheetScrim } from './BottomSheet';
+import { BottomSheet, BottomSheetScrim } from './BottomSheet.styles';
 
 describe('BottomSheet', () => {
   const mockSheetTestId = 'mock-bottom-sheet';
