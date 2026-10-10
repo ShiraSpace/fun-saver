@@ -1,11 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { DRAWER_HISTORY_KEY } from './constants';
 
-interface HistoryEntryState {
-  funsaverDrawer?: boolean;
-}
-
-function isDrawerEntry(state: HistoryEntryState | null): boolean {
-  return state?.funsaverDrawer === true;
+function isDrawerEntry(state: Record<string, unknown> | null): boolean {
+  return state?.[DRAWER_HISTORY_KEY] === true;
 }
 
 export function useCloseOnBack(onClose: () => void): void {
@@ -16,7 +13,7 @@ export function useCloseOnBack(onClose: () => void): void {
   });
 
   useEffect(() => {
-    window.history.pushState({ funsaverDrawer: true }, '');
+    window.history.pushState({ [DRAWER_HISTORY_KEY]: true }, '');
 
     const handlePopState = (event: PopStateEvent): void => {
       if (!isDrawerEntry(event.state)) {
