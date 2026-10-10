@@ -72,6 +72,10 @@ Scope as in the spec's Delivery § 2. Things found since the spec was written:
 - The memory store has no read for an ended goal, so two memory-store tests
   check `ending` on the stored object. Kept on purpose; add `getGoal(goalId)`
   only if a feature needs it.
+- PR 4b: `GoalPictureSearch` closes on Back through `useCloseOnBack`. If
+  `SetGoal` uses it too, both listen for the same `popstate`, so one Back press
+  closes the picture sheet and `SetGoal` together. Only the topmost open sheet
+  should close.
 
 ## Working rules learned on this feature
 
