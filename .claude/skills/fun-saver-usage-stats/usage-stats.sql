@@ -32,7 +32,7 @@ history_weeks AS (
                          date_trunc('week', now()), '1 week')::date AS week
 ),
 per_account AS (
-  SELECT account.id, account.name, account.is_active, account.view_mode, account.theme_id, opened.opened_on,
+  SELECT account.id, account.name, account.is_active, account.theme_id, opened.opened_on,
     (SELECT coalesce(jsonb_agg(jsonb_build_object('email', parent.email, 'name', parent.name, 'role', account_user.role) ORDER BY account_user.added_at), '[]')
        FROM account_users account_user JOIN users parent ON parent.id = account_user.user_id
        WHERE account_user.account_id = account.id) AS parents,
@@ -79,7 +79,7 @@ SELECT replace(jsonb_pretty(jsonb_build_object(
     'neverUsed',           (SELECT count(*) FROM account_usage WHERE used = 'neverUsed')
   ),
   'accounts', (SELECT coalesce(jsonb_agg(jsonb_build_object(
-      'name', name, 'isActive', is_active, 'viewMode', view_mode, 'themeId', theme_id, 'openedOn', opened_on,
+      'name', name, 'isActive', is_active, 'themeId', theme_id, 'openedOn', opened_on,
       'parents', parents, 'balances', balances, 'deposited', deposited, 'withdrawn', withdrawn,
       'interestEarned', interest_earned, 'manualTransactions', manual_transactions,
       'lastActivityOn', last_activity_on, 'daysSinceActivity', days_since_activity, 'used', used, 'goal', goal
