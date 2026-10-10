@@ -7,13 +7,10 @@ export const Row = styled.button`
   align-items: center;
   gap: 10px;
   width: 100%;
-  min-height: 56px;
-  padding: 12px;
-  border: 1.5px solid ${({ theme }): string => theme.colors.softBorder};
-  border-radius: 18px;
-  background: ${({ theme }): string => theme.colors.surface};
+  padding: 0;
+  border: none;
+  background: none;
   font: inherit;
-  font-size: ${({ theme }): number => theme.typography.body}px;
   font-weight: 700;
   color: ${({ theme }): string => theme.colors.textStrong};
   cursor: pointer;
@@ -21,68 +18,46 @@ export const Row = styled.button`
   &:disabled {
     cursor: default;
   }
-
-  &[data-compact='true'] {
-    width: auto;
-    min-height: 48px;
-    padding: 8px 16px;
-    border-color: ${({ theme }): string => theme.colors.divider};
-    border-radius: 999px;
-    font-weight: 600;
-    color: ${({ theme }): string => theme.colors.textMuted};
-  }
-`;
-
-export const Icon = styled.span`
-  font-size: ${({ theme }): number => theme.typography.title}px;
-`;
-
-export const Label = styled.span`
-  flex: 1;
-  text-align: start;
-`;
-
-export const Note = styled.small`
-  display: block;
-  font-size: ${({ theme }): number => theme.typography.label}px;
-  font-weight: 600;
-  color: ${({ theme }): string => theme.colors.textMuted};
 `;
 
 export const Track = styled.span`
   position: relative;
   flex-shrink: 0;
-  width: 48px;
-  height: 28px;
+  width: 64px;
+  height: 36px;
+  margin-inline-start: auto;
   border-radius: 999px;
   background: ${({ theme }): string => theme.colors.divider};
   transition: background ${VIEW_MODE_SWITCH_MOTION.slideMs}ms ease;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    inset-inline-start: 3px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: ${({ theme }): string => theme.colors.surface};
-    transition: inset-inline-start ${VIEW_MODE_SWITCH_MOTION.slideMs}ms ease;
-  }
-
-  @media ${REDUCED_MOTION} {
-    transition: none;
-
-    &::after {
-      transition: none;
-    }
-  }
 
   &[data-on='true'] {
     background: ${({ theme }): string => theme.colors.primary};
   }
 
-  &[data-on='true']::after {
-    inset-inline-start: 23px;
+  @media ${REDUCED_MOTION} {
+    transition: none;
+  }
+`;
+
+export const Knob = styled.span`
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: ${({ theme }): string => theme.colors.surface};
+  box-shadow: 0 1px 2px ${({ theme }): string => theme.shadows.mid};
+  font-size: 19px;
+  transition: inset-inline-start ${VIEW_MODE_SWITCH_MOTION.slideMs}ms ease;
+
+  [data-on='true'] > & {
+    inset-inline-start: 31px;
+  }
+
+  @media ${REDUCED_MOTION} {
+    transition: none;
   }
 `;

@@ -7,6 +7,7 @@ import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '@/components/Menu/EditAccountButto
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { ACCOUNT_PICKER_TEST_IDS } from '@/components/Menu/AccountPicker/constants';
 import { MENU_ACCOUNT_SETTINGS_TEST_IDS } from '@/components/Menu/MenuAccountSettings/constants';
+import { MENU_GLOBAL_SETTINGS_TEST_IDS } from '@/components/Menu/MenuGlobalSettings/constants';
 import { SIGNED_IN_USER_SECTION_TEST_IDS } from '@/components/Menu/SignedInUserSection/constants';
 import { VIEW_MODE_SWITCH_TEST_IDS } from '@/components/Menu/ViewModeSwitch/constants';
 import { CHILD_MENU_CONTENT_TEST_IDS } from '@/components/Menu/ChildMenuContent/constants';
@@ -128,12 +129,31 @@ export class MenuDriver {
     return this.appBrowser.box(MENU_TEST_IDS.menuButton);
   }
 
-  globalScopeBox(): Promise<BoundingBox> {
+  userSettingsBox(): Promise<BoundingBox> {
     return this.appBrowser.box(MENU_USER_SETTINGS_TEST_IDS.block);
   }
 
-  accountScopeBox(): Promise<BoundingBox> {
+  accountSettingsBox(): Promise<BoundingBox> {
     return this.appBrowser.box(MENU_ACCOUNT_SETTINGS_TEST_IDS.block);
+  }
+
+  globalSettingsBox(): Promise<BoundingBox> {
+    return this.appBrowser.box(MENU_GLOBAL_SETTINGS_TEST_IDS.block);
+  }
+
+  viewModeSwitchBox(): Promise<BoundingBox> {
+    return this.appBrowser.box(VIEW_MODE_SWITCH_TEST_IDS.switch);
+  }
+
+  viewModeSwitchTrackBox(): Promise<BoundingBox> {
+    return this.appBrowser.box(VIEW_MODE_SWITCH_TEST_IDS.track);
+  }
+
+  viewModeSwitchTrackBackground(): Promise<string> {
+    return this.appBrowser.computedStyle(
+      VIEW_MODE_SWITCH_TEST_IDS.track,
+      'background-color'
+    );
   }
 
   appearanceSectionBox(): Promise<BoundingBox> {

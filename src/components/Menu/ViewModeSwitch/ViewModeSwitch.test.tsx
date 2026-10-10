@@ -13,15 +13,14 @@ import {
 } from './constants';
 
 interface SwitchScene {
-  switchTo: ViewMode;
   viewMode: ViewMode;
   closeMenu?: () => void;
 }
 
-function renderSwitch({ switchTo, viewMode, closeMenu }: SwitchScene): void {
+function renderSwitch({ viewMode, closeMenu }: SwitchScene): void {
   render(
     <WithMenu closeMenu={closeMenu}>
-      <ViewModeSwitch viewMode={switchTo} />
+      <ViewModeSwitch />
     </WithMenu>,
     { accounts: mockAccountsContext, viewMode }
   );
@@ -36,39 +35,30 @@ function passTime(milliseconds: number): Promise<void> {
 }
 
 describe('ViewModeSwitch', () => {
-  describe('the parent switch', () => {
+  describe.each([
+    [VIEW_MODE.parent, 'false'],
+    [VIEW_MODE.child, 'true'],
+  ])('in %s mode', (viewMode, isOn) => {
     beforeEach(() => {
-      renderSwitch({ switchTo: VIEW_MODE.child, viewMode: VIEW_MODE.parent });
+      renderSwitch({ viewMode });
     });
 
-    it('says it is for every child on this phone', () => {
+    it(`shows the ${viewMode} face on the knob`, () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.childNote);
+      ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.knobFace[viewMode]);
     });
 
-    it('is off in parent mode', () => {
+    it('is named by its label alone, without the face', () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).toHaveAttribute('aria-checked', 'false');
-    });
-  });
-
-  describe("the child's way back", () => {
-    beforeEach(() => {
-      renderSwitch({ switchTo: VIEW_MODE.parent, viewMode: VIEW_MODE.child });
+      ).toHaveAccessibleName(VIEW_MODE_SWITCH_COPY.label);
     });
 
-    it('is labelled for the parent', () => {
+    it(`has aria-checked ${isOn}`, () => {
       expect(
         screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.label[VIEW_MODE.parent]);
-    });
-
-    it('carries no note about the children', () => {
-      expect(
-        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).not.toHaveTextContent(VIEW_MODE_SWITCH_COPY.childNote);
+      ).toHaveAttribute('aria-checked', isOn);
     });
   });
 
@@ -87,7 +77,6 @@ describe('ViewModeSwitch', () => {
       beforeEach(async () => {
         prefersReducedMotion();
         renderSwitch({
-          switchTo: VIEW_MODE.child,
           viewMode: VIEW_MODE.parent,
           closeMenu: mockCloseMenu,
         });
@@ -110,7 +99,6 @@ describe('ViewModeSwitch', () => {
       beforeEach(() => {
         jest.clearAllMocks();
         renderSwitch({
-          switchTo: VIEW_MODE.child,
           viewMode: VIEW_MODE.parent,
           closeMenu: mockCloseMenu,
         });
@@ -144,12 +132,26 @@ describe('ViewModeSwitch', () => {
       });
     });
 
+    describe('a parent taps twice in a row', () => {
+      beforeEach(async () => {
+        renderSwitch({ viewMode: VIEW_MODE.parent });
+        tapSwitch();
+        tapSwitch();
+        await passTime(VIEW_MODE_SWITCH_MOTION.slideMs);
+        await passTime(MENU_OVERLAY_STYLE.transitionMs);
+      });
+
+      it('turns child mode on once', () => {
+        expect(readCookie(VIEW_MODE_COOKIE)).toBe(VIEW_MODE.child);
+      });
+    });
+
     describe.each([
       [VIEW_MODE.parent, VIEW_MODE.child],
       [VIEW_MODE.child, VIEW_MODE.parent],
     ])('switching from %s mode to %s mode', (viewMode, switchTo) => {
       beforeEach(async () => {
-        renderSwitch({ switchTo, viewMode });
+        renderSwitch({ viewMode });
         tapSwitch();
         await passTime(VIEW_MODE_SWITCH_MOTION.slideMs);
         await passTime(MENU_OVERLAY_STYLE.transitionMs);

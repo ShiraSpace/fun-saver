@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useViewMode } from '@/components/Home/view-mode-context';
-import type { ViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
 import { wait } from '@/lib/wait';
 import { motionIsReduced } from '@/theme/motion';
 import { useReportPendingNavigation } from '@/components/Header/navigation-pending-context';
@@ -11,7 +11,11 @@ import { VIEW_MODE_SWITCH_MOTION } from './constants';
 interface ViewModeSwitchState {
   shownViewMode: ViewMode;
   isSwitching: boolean;
-  switchViewMode: (viewMode: ViewMode) => void;
+  switchViewMode: () => void;
+}
+
+function otherViewMode(viewMode: ViewMode): ViewMode {
+  return viewMode === VIEW_MODE.child ? VIEW_MODE.parent : VIEW_MODE.child;
 }
 
 function switchFinishesSliding(): Promise<void> {
@@ -42,8 +46,8 @@ export function useViewModeSwitch(): ViewModeSwitchState {
   return {
     shownViewMode: chosenViewMode ?? viewMode,
     isSwitching,
-    switchViewMode: (nextViewMode: ViewMode): void => {
-      void slideThenChoose(nextViewMode);
+    switchViewMode: (): void => {
+      void slideThenChoose(otherViewMode(viewMode));
     },
   };
 }

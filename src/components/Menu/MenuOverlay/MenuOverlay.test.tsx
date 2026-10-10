@@ -50,14 +50,14 @@ describe('MenuOverlay', () => {
     });
 
     it('puts what is saved on the account inside the per-account block', () => {
-      const accountScope = screen.getByTestId(
+      const accountSettings = screen.getByTestId(
         MENU_ACCOUNT_SETTINGS_TEST_IDS.block
       );
 
-      expect(accountScope).toContainElement(
+      expect(accountSettings).toContainElement(
         screen.getByTestId(APPEARANCE_SECTION_TEST_IDS.section)
       );
-      expect(accountScope).toContainElement(
+      expect(accountSettings).toContainElement(
         screen.getByTestId(LANGUAGE_SECTION_TEST_IDS.section)
       );
     });

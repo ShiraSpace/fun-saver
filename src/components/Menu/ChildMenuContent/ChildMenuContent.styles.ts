@@ -5,6 +5,7 @@ import {
   MENU_OVERLAY_STYLE,
 } from '../MenuOverlay/constants';
 import { childMenuRow } from '../row-parts';
+import { ChildMenuCard } from '../child-menu-parts';
 
 export const Layout = styled.div`
   display: flex;
@@ -44,9 +45,10 @@ export const HomeLink = styled(Link)`
   background: ${({ theme }): string => theme.colors.textStrong};
 `;
 
-export const ParentCorner = styled.div`
+export const ViewModeSwitchCard = styled(ChildMenuCard)`
   display: flex;
-  justify-content: center;
+  align-items: center;
   margin-top: auto;
-  padding-top: 28px;
+  margin-bottom: 0;
+  font-size: ${({ theme }): number => theme.typography.heading}px;
 `;

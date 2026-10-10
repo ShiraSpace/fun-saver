@@ -9,7 +9,7 @@ export const List = styled.div`
 export const AccountRow = styled(Row)`
   ${childMenuRow}
   border-radius: 18px;
-  background: ${({ theme }): string => theme.colors.accountScopeBg};
+  background: ${({ theme }): string => theme.colors.settingsBg};
 `;
 
 export const TitleIcon = styled.span`

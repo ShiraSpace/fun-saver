@@ -8,8 +8,8 @@ const surface = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 const mutedText = ({ theme }: { theme: Theme }): string =>
   theme.colors.textMuted;
 
-const scopeBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.accountScopeBorder;
+const settingsBorder = ({ theme }: { theme: Theme }): string =>
+  theme.colors.settingsBorder;
 
 const deepShadow = ({ theme }: { theme: Theme }): string => theme.shadows.deep;
 
@@ -25,7 +25,7 @@ export const List = styled.div`
   gap: ${ACCOUNT_LIST_STYLE.gap}px;
   box-sizing: border-box;
   padding: ${ACCOUNT_LIST_STYLE.popoverPadding}px;
-  border: ${MENU_ROW_STYLE.borderWidth}px solid ${scopeBorder};
+  border: ${MENU_ROW_STYLE.borderWidth}px solid ${settingsBorder};
   border-radius: ${ACCOUNT_LIST_STYLE.popoverRadius}px;
   background: ${surface};
   box-shadow: 0 14px 30px ${deepShadow};

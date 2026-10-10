@@ -1,6 +1,6 @@
 export const MENU_ACCOUNT_SETTINGS_TEST_IDS = {
-  block: 'menu-account-scope',
-  heading: 'menu-account-scope-heading',
+  block: 'menu-account-settings',
+  heading: 'menu-account-settings-heading',
 } as const;
 
 export const MENU_ACCOUNT_SETTINGS_COPY = {
