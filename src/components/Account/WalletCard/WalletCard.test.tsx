@@ -2,6 +2,7 @@ import { render, screen } from '@/test-utils/render';
 import { WalletCard } from './WalletCard';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
+import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
 
 const mockSavingsSubLine = 'צובר 15% בחודש · פעיל מאז 1 בינואר';
 
@@ -135,5 +136,39 @@ describe('WalletCard', () => {
     it('renders what it is given below the head', () => {
       expect(screen.getByTestId('extra')).toBeInTheDocument();
     });
+  });
+
+  describe('savings kept for a goal', () => {
+    beforeEach(() => {
+      render(
+        <WalletCard
+          wallet={createMockWalletSummary({ balance: 29950 })}
+          savedTowardGoal={createMockSavedTowardGoal({ saved: 29900 })}
+        />
+      );
+    });
+
+    it('shows a lock on the balance', () => {
+      expect(screen.getByTestId(WALLET_CARD_TEST_IDS.lock)).toBeInTheDocument();
+    });
+
+    it('floors the balance, as the goal line does', () => {
+      expect(
+        screen.getByTestId(WALLET_CARD_TEST_IDS.balance)
+      ).toHaveTextContent('₪299');
+    });
+  });
+
+  it('shows no lock once the goal is reached', () => {
+    render(
+      <WalletCard
+        wallet={createMockWalletSummary()}
+        savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
+      />
+    );
+
+    expect(
+      screen.queryByTestId(WALLET_CARD_TEST_IDS.lock)
+    ).not.toBeInTheDocument();
   });
 });
