@@ -62,6 +62,21 @@ describe('WalletTile', () => {
     expect(screen.getByTestId(TILE_TEST_ID)).toBeDisabled();
   });
 
+  it('shows no lock when not kept for a goal', () => {
+    render(
+      <WalletTile
+        walletName="savings"
+        icon="🐷"
+        amountAgorot={8500}
+        amountTestId={VALUE_TEST_ID}
+      />
+    );
+
+    expect(
+      screen.queryByTestId(WALLET_TILE_TEST_IDS.lock)
+    ).not.toBeInTheDocument();
+  });
+
   describe('kept for a goal', () => {
     beforeEach(() => {
       render(

@@ -1,7 +1,9 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
-import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
+import {
+  mockAccountSavingForGoal,
+  mockAccountWithGoalReached,
+} from '@/test-utils/mocks/goal.mocks';
 import { WithdrawalForm } from './WithdrawalForm';
 import { WITHDRAWAL_FORM_COPY, WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { LOCKED_SAVINGS_TEST_IDS } from './LockedSavings/constants';
@@ -9,21 +11,7 @@ import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { WALLET_PICKER_TEST_IDS } from '../WalletPicker/constants';
 import { AMOUNT_KEYPAD_TEST_IDS } from '../AmountKeypad/constants';
 
-jest.mock('../use-add-transaction', () => ({
-  useAddTransaction: (): {
-    addDeposit: jest.Mock;
-    addWithdrawal: jest.Mock;
-  } => ({
-    addDeposit: jest.fn(),
-    addWithdrawal: jest.fn(),
-  }),
-}));
-
 const [mockSavings] = mockWalletSummaries;
-const mockAccountSavingForGoal = {
-  ...mockAccountSummary,
-  goal: createMockGoal({ amount: mockSavings.balance + 100 }),
-};
 
 function type(...digits: string[]): void {
   for (const digit of digits) {
@@ -98,10 +86,7 @@ describe('WithdrawalForm with a goal', () => {
     beforeEach(() => {
       render(
         <WithdrawalForm
-          account={{
-            ...mockAccountSummary,
-            goal: createMockGoal({ amount: mockSavings.balance }),
-          }}
+          account={mockAccountWithGoalReached}
           onClose={jest.fn()}
         />
       );

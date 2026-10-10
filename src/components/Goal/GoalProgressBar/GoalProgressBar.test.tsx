@@ -80,4 +80,21 @@ describe('GoalProgressBar', () => {
       );
     });
   });
+
+  it('is thinner when thin', () => {
+    const mockSavedTowardGoal = createMockSavedTowardGoal();
+    render(
+      <>
+        <GoalProgressBar savedTowardGoal={mockSavedTowardGoal} />
+        <GoalProgressBar savedTowardGoal={mockSavedTowardGoal} thin />
+      </>
+    );
+
+    const [fullBar, thinBar] = screen.getAllByTestId(
+      GOAL_PROGRESS_BAR_TEST_IDS.bar
+    );
+    expect(parseFloat(getComputedStyle(thinBar).height)).toBeLessThan(
+      parseFloat(getComputedStyle(fullBar).height)
+    );
+  });
 });

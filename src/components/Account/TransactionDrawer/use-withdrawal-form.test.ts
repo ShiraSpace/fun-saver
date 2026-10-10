@@ -3,7 +3,10 @@ import { REQUEST_STATE } from '@/lib/request-state';
 import { useWithdrawalForm } from './use-withdrawal-form';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
-import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
+import {
+  mockAccountSavingForGoal,
+  mockAccountWithGoalReached,
+} from '@/test-utils/mocks/goal.mocks';
 import type { AccountSummary } from '@/lib/account/types';
 import { mockRouter } from '@mocks/next/navigation';
 
@@ -107,11 +110,6 @@ describe('useWithdrawalForm', () => {
   });
 
   describe('with a goal not yet reached', () => {
-    const mockAccountSavingForGoal = {
-      ...mockAccountSummary,
-      goal: createMockGoal({ amount: mockSavings.balance + 100 }),
-    };
-
     it('keeps savings from being submitted', () => {
       const { result } = setup(mockAccountSavingForGoal);
 
@@ -141,11 +139,6 @@ describe('useWithdrawalForm', () => {
   });
 
   describe('with a goal reached', () => {
-    const mockAccountWithGoalReached = {
-      ...mockAccountSummary,
-      goal: createMockGoal({ amount: mockSavings.balance }),
-    };
-
     it('lets savings be submitted', () => {
       const { result } = setup(mockAccountWithGoalReached);
 
