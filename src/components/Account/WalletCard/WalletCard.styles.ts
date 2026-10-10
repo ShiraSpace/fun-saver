@@ -46,6 +46,9 @@ export const Summary = styled.small`
 `;
 
 export const Balance = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 4px;
   padding: ${WALLET_CARD_STYLE.balancePaddingY}px
     ${WALLET_CARD_STYLE.balancePaddingX}px;
   border-radius: 999px;
@@ -53,4 +56,8 @@ export const Balance = styled.span`
   border: 1.5px solid ${({ theme }): string => theme.colors.softBorder};
   font-size: ${({ theme }): number => theme.typography.body}px;
   color: ${({ theme }): string => theme.colors.textStrong};
+`;
+
+export const Lock = styled.span`
+  font-size: ${({ theme }): number => theme.typography.label}px;
 `;

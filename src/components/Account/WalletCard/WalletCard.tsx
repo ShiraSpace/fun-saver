@@ -3,7 +3,9 @@
 import { JSX, ReactNode } from 'react';
 import type { SpendableWalletName, WalletSummary } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
+import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { Money } from '@/components/Money';
+import { MONEY_ROUNDING } from '@/components/Money/constants';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import {
   Card,
@@ -12,6 +14,7 @@ import {
   Name,
   Balance,
   Summary,
+  Lock,
 } from './WalletCard.styles';
 
 type CardWallet = Pick<
@@ -29,6 +32,7 @@ const WITHDRAWALS_SUMMARY: Record<
 
 interface WalletCardProps {
   wallet: CardWallet;
+  savedTowardGoal?: SavedTowardGoal;
   children?: ReactNode;
 }
 
@@ -44,8 +48,13 @@ function walletSummaryText(wallet: CardWallet): string | undefined {
   return WITHDRAWALS_SUMMARY[wallet.name](wallet);
 }
 
-export function WalletCard({ wallet, children }: WalletCardProps): JSX.Element {
+export function WalletCard({
+  wallet,
+  savedTowardGoal,
+  children,
+}: WalletCardProps): JSX.Element {
   const summaryText = walletSummaryText(wallet);
+  const isLocked = savedTowardGoal && !savedTowardGoal.reached;
 
   return (
     <Card data-testid={WALLET_CARD_TEST_IDS.card}>
@@ -60,9 +69,17 @@ export function WalletCard({ wallet, children }: WalletCardProps): JSX.Element {
           )}
         </Name>
         <Balance>
+          {isLocked && (
+            <Lock aria-hidden="true" data-testid={WALLET_CARD_TEST_IDS.lock}>
+              {WALLET_CARD_COPY.lock}
+            </Lock>
+          )}
           <Money
             amountAgorot={wallet.balance}
             testId={WALLET_CARD_TEST_IDS.balance}
+            rounding={
+              savedTowardGoal ? MONEY_ROUNDING.floorToShekels : undefined
+            }
           />
         </Balance>
       </Head>

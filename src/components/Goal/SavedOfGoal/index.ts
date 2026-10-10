@@ -1,0 +1,1 @@
+export { SavedOfGoal } from './SavedOfGoal';

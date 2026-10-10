@@ -8,6 +8,7 @@ import {
 } from '@/components/AccountManagement/app-mode-context';
 import { AccountPicker } from '../AccountPicker';
 import { EditAccountButton } from '../EditAccountButton';
+import { MenuGoal } from '../MenuGoal';
 import { useMenu } from '../use-menu-state';
 import { useOpenAccount } from '../use-open-account';
 
@@ -29,6 +30,7 @@ export function AccountControls(): JSX.Element {
         currentAccount={currentAccount}
         onSelect={openAccount}
       />
+      <MenuGoal />
       <EditAccountButton
         accountName={currentAccount.name}
         onEditAccount={startEditingAccount}
