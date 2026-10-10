@@ -1,33 +1,27 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountSummary } from '@/lib/account/types';
-import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import { REQUEST_STATE } from '@/lib/request-state';
 import { Money } from '@/components/Money';
 import { WalletPicker } from '../WalletPicker';
 import { AmountKeypadWithSubmit } from '../AmountKeypadWithSubmit';
-import { useWithdrawalForm } from '../use-withdrawal-form';
+import {
+  useWithdrawalForm,
+  type WithdrawalFormProps,
+} from '../use-withdrawal-form';
 import { DrawerTitle } from '../drawer-parts';
-import { WithdrawalAlert } from './WithdrawalAlert';
+import { LockedSavings } from './LockedSavings';
+import { SelectedWalletNote } from './SelectedWalletNote';
 import { withdrawalCopy } from './withdrawal-copy';
 import { WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { AmountValue } from './WithdrawalForm.styles';
 
-interface WithdrawalFormProps {
-  account: AccountSummary;
-  onSaved: () => void;
-}
-
-export function WithdrawalForm({
-  account,
-  onSaved,
-}: WithdrawalFormProps): JSX.Element {
-  const wallets = account.wallets;
-  const form = useWithdrawalForm(account.id, wallets, onSaved);
+export function WithdrawalForm(props: WithdrawalFormProps): JSX.Element {
+  const form = useWithdrawalForm(props);
   const { title, submitLabel } = withdrawalCopy(form);
-  const hasSaveFailed = form.requestState === REQUEST_STATE.failed;
+  const lockedSavingsPanel = form.savingsLockedFor && (
+    <LockedSavings savedTowardGoal={form.savingsLockedFor} />
+  );
 
   return (
     <>
@@ -39,19 +33,17 @@ export function WithdrawalForm({
         />
       </AmountValue>
       <WalletPicker
-        wallets={wallets}
+        wallets={props.account.wallets}
         selectedWalletId={form.selectedWalletId}
         onSelect={form.onSelectWallet}
+        savedTowardGoal={form.savedTowardGoal}
       />
-      <WithdrawalAlert
-        isOverdraft={form.isOverdraft}
-        hasError={hasSaveFailed}
-        balanceShekels={agorotToShekels(form.selectedBalance)}
-      />
+      <SelectedWalletNote form={form} />
       <AmountKeypadWithSubmit
         entry={form}
         canSubmit={form.canSubmit}
         submitLabel={submitLabel}
+        inPlaceOfKeypad={lockedSavingsPanel}
       />
     </>
   );

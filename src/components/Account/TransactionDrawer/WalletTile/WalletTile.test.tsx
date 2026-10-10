@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { WalletTile } from './WalletTile';
 import { agorotToShekels } from '@/lib/money';
+import { WALLET_TILE_TEST_IDS } from './constants';
 
 const VALUE_TEST_ID = 'tile-value';
 const TILE_TEST_ID = 'tile';
@@ -59,5 +60,52 @@ describe('WalletTile', () => {
     );
 
     expect(screen.getByTestId(TILE_TEST_ID)).toBeDisabled();
+  });
+
+  it('shows no lock when not kept for a goal', () => {
+    render(
+      <WalletTile
+        walletName="savings"
+        icon="🐷"
+        amountAgorot={8500}
+        amountTestId={VALUE_TEST_ID}
+      />
+    );
+
+    expect(
+      screen.queryByTestId(WALLET_TILE_TEST_IDS.lock)
+    ).not.toBeInTheDocument();
+  });
+
+  describe('kept for a goal', () => {
+    beforeEach(() => {
+      render(
+        <WalletTile
+          walletName="savings"
+          icon="🐷"
+          amountAgorot={8500}
+          amountTestId={VALUE_TEST_ID}
+          testId={TILE_TEST_ID}
+          onSelect={mockOnSelect}
+          locked
+        />
+      );
+    });
+
+    it('shows a lock', () => {
+      expect(screen.getByTestId(WALLET_TILE_TEST_IDS.lock)).toBeInTheDocument();
+    });
+
+    it('is greyed out', () => {
+      expect(getComputedStyle(screen.getByTestId(TILE_TEST_ID)).filter).toBe(
+        'grayscale(1)'
+      );
+    });
+
+    it('can still be picked', () => {
+      fireEvent.click(screen.getByTestId(TILE_TEST_ID));
+
+      expect(mockOnSelect).toHaveBeenCalledTimes(1);
+    });
   });
 });
