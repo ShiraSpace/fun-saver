@@ -6,7 +6,7 @@ import puppeteer, {
 } from 'puppeteer';
 import * as actions from './page-actions';
 import * as queries from './page-queries';
-import * as waits from './page-waits';
+import { PageWaits } from './page-waits';
 import { holdNextPage, type HeldPage } from './hold-next-page';
 
 interface OpenOptions {
@@ -31,6 +31,8 @@ export class AppBrowser {
   private browser?: Browser;
   private activePage?: Page;
   private baseUrl = '';
+
+  readonly waits = new PageWaits(() => this.page);
 
   private constructor() {}
 
@@ -120,10 +122,6 @@ export class AppBrowser {
     return queries.signedInUserId(this.page);
   }
 
-  async waitForNavigation(): Promise<void> {
-    await this.page.waitForNavigation({ waitUntil: 'domcontentloaded' });
-  }
-
   canTakeFocus(testId: string): Promise<boolean> {
     return queries.canTakeFocus(this.page, testId);
   }
@@ -181,7 +179,7 @@ export class AppBrowser {
   }
 
   tapAt(x: number, y: number): Promise<void> {
-    return this.page.mouse.click(x, y);
+    return actions.tapAt(this.page, x, y);
   }
 
   hover(testId: string): Promise<void> {
@@ -206,30 +204,6 @@ export class AppBrowser {
 
   clickNth(selector: string, index: number): Promise<void> {
     return actions.clickNth({ page: this.page, selector, index });
-  }
-
-  waitForTestId(testId: string): Promise<void> {
-    return waits.waitForTestId({ page: this.page, testId });
-  }
-
-  waitForAnyTestId(testIds: readonly string[]): Promise<void> {
-    return waits.waitForAnyTestId(this.page, testIds);
-  }
-
-  waitForStyle(
-    selector: string,
-    property: string,
-    value: string
-  ): Promise<void> {
-    return waits.waitForStyle({ page: this.page, selector, property, value });
-  }
-
-  waitForText(testId: string, expected: string): Promise<void> {
-    return waits.waitForText({ page: this.page, testId, expected });
-  }
-
-  waitForImageSource(testId: string, expected: string): Promise<void> {
-    return waits.waitForImageSource({ page: this.page, testId, expected });
   }
 
   private get page(): Page {

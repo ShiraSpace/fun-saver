@@ -26,6 +26,13 @@ export async function waitForTestId({
   await findByTest(page, testId);
 }
 
+export async function waitForTestIdGone({
+  page,
+  testId,
+}: ElementWait): Promise<void> {
+  await page.waitForSelector(`[data-testid="${testId}"]`, { hidden: true });
+}
+
 export async function waitForAnyTestId(
   page: Page,
   testIds: readonly string[]
@@ -87,4 +94,43 @@ export async function waitForImageSource({
     testId,
     expected
   );
+}
+
+export class PageWaits {
+  constructor(private readonly currentPage: () => Page) {}
+
+  testId(testId: string): Promise<void> {
+    return waitForTestId({ page: this.currentPage(), testId });
+  }
+
+  testIdGone(testId: string): Promise<void> {
+    return waitForTestIdGone({ page: this.currentPage(), testId });
+  }
+
+  anyTestId(testIds: readonly string[]): Promise<void> {
+    return waitForAnyTestId(this.currentPage(), testIds);
+  }
+
+  style(selector: string, property: string, value: string): Promise<void> {
+    return waitForStyle({
+      page: this.currentPage(),
+      selector,
+      property,
+      value,
+    });
+  }
+
+  text(testId: string, expected: string): Promise<void> {
+    return waitForText({ page: this.currentPage(), testId, expected });
+  }
+
+  imageSource(testId: string, expected: string): Promise<void> {
+    return waitForImageSource({ page: this.currentPage(), testId, expected });
+  }
+
+  async navigation(): Promise<void> {
+    await this.currentPage().waitForNavigation({
+      waitUntil: 'domcontentloaded',
+    });
+  }
 }

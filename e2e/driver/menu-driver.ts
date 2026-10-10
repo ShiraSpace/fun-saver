@@ -34,8 +34,8 @@ export class MenuDriver {
 
   async open(): Promise<void> {
     await this.startOpening();
-    await this.appBrowser.waitForStyle(MIDDLE_BAR, 'opacity', '0');
-    await this.appBrowser.waitForStyle(OVERLAY, 'opacity', '1');
+    await this.appBrowser.waits.style(MIDDLE_BAR, 'opacity', '0');
+    await this.appBrowser.waits.style(OVERLAY, 'opacity', '1');
   }
 
   startOpening(): Promise<void> {
@@ -44,7 +44,7 @@ export class MenuDriver {
 
   async openAccountPicker(): Promise<void> {
     await this.appBrowser.click(ACCOUNT_PICKER_TEST_IDS.trigger);
-    await this.appBrowser.waitForTestId(ACCOUNT_LIST_TEST_IDS.list);
+    await this.appBrowser.waits.testId(ACCOUNT_LIST_TEST_IDS.list);
   }
 
   listedAccountCount(): Promise<number> {
@@ -76,7 +76,7 @@ export class MenuDriver {
   }
 
   async waitForChildMenu(): Promise<void> {
-    await this.appBrowser.waitForTestId(CHILD_MENU_CONTENT_TEST_IDS.menu);
+    await this.appBrowser.waits.testId(CHILD_MENU_CONTENT_TEST_IDS.menu);
   }
 
   childMenuExists(): Promise<boolean> {
@@ -93,7 +93,7 @@ export class MenuDriver {
 
   async openMethodPage(): Promise<string> {
     await this.appBrowser.click(NAVIGATION_TABS_TEST_IDS.methodTab);
-    await this.appBrowser.waitForText(
+    await this.appBrowser.waits.text(
       HEADER_TITLE_TEST_IDS.title,
       METHOD_COPY.title
     );
@@ -103,7 +103,7 @@ export class MenuDriver {
 
   async openTransactionsPage(): Promise<string> {
     await this.appBrowser.click(NAVIGATION_TABS_TEST_IDS.transactionsTab);
-    await this.appBrowser.waitForText(
+    await this.appBrowser.waits.text(
       HEADER_TITLE_TEST_IDS.title,
       TRANSACTIONS_COPY.title
     );
@@ -112,17 +112,17 @@ export class MenuDriver {
   }
 
   async signOut(): Promise<string> {
-    const left = this.appBrowser.waitForNavigation();
+    const left = this.appBrowser.waits.navigation();
 
     await this.appBrowser.click(SIGNED_IN_USER_SECTION_TEST_IDS.signOut);
     await left;
-    await this.appBrowser.waitForTestId(SIGN_IN_TEST_IDS.continueWithGoogle);
+    await this.appBrowser.waits.testId(SIGN_IN_TEST_IDS.continueWithGoogle);
 
     return this.appBrowser.currentPath();
   }
 
   waitForClosed(): Promise<void> {
-    return this.appBrowser.waitForStyle(OVERLAY, 'opacity', '0');
+    return this.appBrowser.waits.style(OVERLAY, 'opacity', '0');
   }
 
   buttonBox(): Promise<BoundingBox> {

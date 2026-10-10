@@ -18,7 +18,7 @@ export class AccountDriver {
   }
 
   async waitForOverview(): Promise<void> {
-    await this.appBrowser.waitForTestId(BALANCE_BREAKDOWN_TEST_IDS.card);
+    await this.appBrowser.waits.testId(BALANCE_BREAKDOWN_TEST_IDS.card);
   }
 
   savingsTodayInterest(): Promise<string> {
@@ -54,7 +54,7 @@ export class AccountDriver {
 
   async openTransactionDrawer(): Promise<void> {
     await this.appBrowser.click(ACCOUNT_TEST_IDS.newTransaction);
-    await this.appBrowser.waitForTestId(TRANSACTION_DRAWER_TEST_IDS.drawer);
+    await this.appBrowser.waits.testId(TRANSACTION_DRAWER_TEST_IDS.drawer);
   }
 
   async closeTransactionDrawer(): Promise<void> {
@@ -83,9 +83,6 @@ export class AccountDriver {
   }
 
   waitForSavingsPrincipal(value: string): Promise<void> {
-    return this.appBrowser.waitForText(
-      INTEREST_STATS_TEST_IDS.principal,
-      value
-    );
+    return this.appBrowser.waits.text(INTEREST_STATS_TEST_IDS.principal, value);
   }
 }
