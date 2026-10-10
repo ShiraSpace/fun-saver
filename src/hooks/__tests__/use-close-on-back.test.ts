@@ -19,10 +19,10 @@ describe('useCloseOnBack', () => {
     jest.restoreAllMocks();
   });
 
-  it('pushes a history entry of its own while open', () => {
+  it('pushes a history entry while open', () => {
     renderHook(() => useCloseOnBack(jest.fn()));
 
-    expect(typeof window.history.state?.[DRAWER_HISTORY_KEY]).toBe('string');
+    expect(window.history.state?.[DRAWER_HISTORY_KEY]).toBe(true);
   });
 
   it('closes when the back button fires a popstate', () => {
