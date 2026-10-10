@@ -30,8 +30,11 @@ export function WalletPicker({
   return (
     <Wallets>
       {wallets.map((wallet) => {
-        const savedInWallet = savedTowardGoalIn(wallet, savedTowardGoal);
-        const tileAmount = savedInWallet
+        const savedTowardGoalInWallet = savedTowardGoalIn(
+          wallet,
+          savedTowardGoal
+        );
+        const tileAmount = savedTowardGoalInWallet
           ? withoutAgorot(wallet.balance)
           : wallet.balance;
 
@@ -45,7 +48,7 @@ export function WalletPicker({
             amountTestId={WALLET_PICKER_TEST_IDS.balance(wallet.name)}
             selected={wallet.id === selectedWalletId}
             onSelect={(): void => onSelect(wallet.id)}
-            locked={savingsLocked(savedInWallet)}
+            locked={savingsLocked(savedTowardGoalInWallet)}
           />
         );
       })}

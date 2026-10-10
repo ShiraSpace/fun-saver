@@ -34,15 +34,18 @@ function goalOnPickedWallet(
   pickedWallet: WalletSummary | undefined,
   savedTowardGoal: SavedTowardGoal | undefined
 ): GoalOnPickedWallet {
-  const savedInPickedWallet = savedTowardGoalIn(pickedWallet, savedTowardGoal);
+  const savedTowardGoalInWallet = savedTowardGoalIn(
+    pickedWallet,
+    savedTowardGoal
+  );
 
-  if (!savedInPickedWallet) {
+  if (!savedTowardGoalInWallet) {
     return {};
   }
 
-  return savingsLocked(savedInPickedWallet)
-    ? { savingsLockedFor: savedInPickedWallet }
-    : { goalToComplete: savedInPickedWallet.goal };
+  return savingsLocked(savedTowardGoalInWallet)
+    ? { savingsLockedFor: savedTowardGoalInWallet }
+    : { goalToComplete: savedTowardGoalInWallet.goal };
 }
 
 export function useWithdrawalForm(

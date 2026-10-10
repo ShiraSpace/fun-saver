@@ -22,17 +22,17 @@ export function WalletList({
   savedTowardGoal,
 }: WalletListProps): JSX.Element {
   const cards = wallets.map((wallet) => {
-    const savingsTowardGoal = savedTowardGoalIn(wallet, savedTowardGoal);
+    const savedTowardGoalInWallet = savedTowardGoalIn(wallet, savedTowardGoal);
 
     return (
       <WalletCard
         key={wallet.id}
         wallet={wallet}
-        savedTowardGoal={savingsTowardGoal}
+        savedTowardGoal={savedTowardGoalInWallet}
       >
         <SavingsInterestStats wallet={wallet} />
-        {savingsTowardGoal && (
-          <GoalProgress savedTowardGoal={savingsTowardGoal} />
+        {savedTowardGoalInWallet && (
+          <GoalProgress savedTowardGoal={savedTowardGoalInWallet} />
         )}
       </WalletCard>
     );
