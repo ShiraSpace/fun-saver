@@ -118,11 +118,12 @@ describe('Account', () => {
       const breakdownBefore = screen.getByTestId(
         BALANCE_BREAKDOWN_TEST_IDS.card
       );
+      const mockDepositAgorot = 500;
       const [savings, ...otherWallets] = mockWalletSummaries;
       const mockAccountAfterDeposit: AccountSummary = {
         ...mockAccount,
         wallets: [
-          { ...savings, balance: savings.balance + 500 },
+          { ...savings, balance: savings.balance + mockDepositAgorot },
           ...otherWallets,
         ],
       };

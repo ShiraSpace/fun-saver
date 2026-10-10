@@ -1,5 +1,11 @@
 import { JSX, Suspense, use, useEffect, useState } from 'react';
-import { act, fireEvent, render, screen } from '@/test-utils/render';
+import {
+  act,
+  fireEvent,
+  render,
+  renderHook,
+  screen,
+} from '@/test-utils/render';
 import { mockRouter } from '@mocks/next/navigation';
 import { useIsNavigating } from '@/components/Header/navigation-pending-context';
 import { useRefreshBalances } from './use-refresh-balances';
@@ -87,5 +93,16 @@ describe('useRefreshBalances', () => {
     expect(
       screen.getByTestId(REFRESH_BALANCES_TEST_IDS.headerLoader)
     ).toHaveTextContent('false');
+  });
+});
+
+describe('useRefreshBalances across renders', () => {
+  it('hands back the same refresh every render', () => {
+    const { result, rerender } = renderHook(() => useRefreshBalances());
+    const refreshBeforeRerender = result.current;
+
+    rerender();
+
+    expect(result.current).toBe(refreshBeforeRerender);
   });
 });
