@@ -1,7 +1,6 @@
 <title>Fun Saver Usage</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap">
 <style>
-/* Layout: one column; headline tiles, then the balance chart, then two charts side by side, then the tables. */
 :root {
   --page: #f6f8f9; --surface: #ffffff; --ink: #10202b; --ink-2: #4b5a64; --muted: #86929a;
   --grid: #e3e8eb; --axis: #c2cbd0; --border: rgba(16, 32, 43, 0.10);
@@ -111,7 +110,7 @@ const shekels = (agorot, digits = 2) => '₪' + (agorot / 100).toLocaleString('e
 const compactShekels = (value) => '₪' + (value >= 1000 ? (value / 1000).toLocaleString('en-US', { maximumFractionDigits: 1 }) + 'K' : value);
 const day = (iso) => iso ? new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—';
 const fullDay = (iso) => iso ? new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
-const daysSince = (iso) => Math.floor((Date.now() - new Date(iso + 'T00:00:00')) / 86400000);
+const niceCount = (value) => Math.max(4, Math.ceil(value / 4) * 4);
 const niceMax = (value) => { if (value <= 0) return 1; const step = 10 ** Math.floor(Math.log10(value)); return Math.ceil(value / step) * step; };
 
 function element(tag, props = {}, children = []) {
@@ -142,11 +141,10 @@ function hideTooltip(container) {
   if (tooltip) tooltip.hidden = true;
 }
 
-function chartFrame(container, maxValue, formatTick) {
+function chartFrame(container, top, formatTick) {
   const width = container.clientWidth, height = 220;
   const plot = { left: 44, right: width - 12, top: 12, bottom: height - 26 };
   const svg = svgElement('svg', { width, height, viewBox: `0 0 ${width} ${height}`, role: 'img' });
-  const top = niceMax(maxValue);
   const yOf = (value) => plot.bottom - (value / top) * (plot.bottom - plot.top);
   [0, 0.25, 0.5, 0.75, 1].forEach((fraction) => {
     const value = top * fraction, y = yOf(value);
@@ -161,7 +159,11 @@ function chartFrame(container, maxValue, formatTick) {
 
 function drawBalanceChart(container) {
   const points = report.balanceHistory.map((point) => ({ week: point.week, value: point.totalBalance / 100 }));
-  const { svg, plot, yOf } = chartFrame(container, Math.max(...points.map((point) => point.value)), compactShekels);
+  if (points.length === 0) {
+    container.replaceChildren(element('p', { className: 'note', textContent: 'No transactions yet.' }));
+    return;
+  }
+  const { svg, plot, yOf } = chartFrame(container, niceMax(Math.max(...points.map((point) => point.value))), compactShekels);
   const xOf = (index) => plot.left + (index / Math.max(points.length - 1, 1)) * (plot.right - plot.left);
   const line = points.map((point, index) => `${index ? 'L' : 'M'}${xOf(index)},${yOf(point.value)}`).join('');
   svg.append(svgElement('path', { d: `${line}L${xOf(points.length - 1)},${plot.bottom}L${plot.left},${plot.bottom}Z`, fill: 'var(--savings)', 'fill-opacity': 0.1 }));
@@ -190,7 +192,7 @@ function drawBalanceChart(container) {
 
 function drawWeeklyChart(container) {
   const weeks = report.weekly;
-  const { svg, plot, yOf } = chartFrame(container, Math.max(...weeks.map((week) => week.manualTransactions)), (value) => Math.round(value));
+  const { svg, plot, yOf } = chartFrame(container, niceCount(Math.max(...weeks.map((week) => week.manualTransactions))), String);
   const band = (plot.right - plot.left) / weeks.length;
   const barWidth = Math.min(24, band * 0.6);
   weeks.forEach((week, index) => {
@@ -217,7 +219,7 @@ function drawAccountBars() {
   document.getElementById('jar-legend').replaceChildren(...JARS.map((jar) => element('span', {}, [element('i', { style: `background:${jar.color}` }), jar.label])));
   const totalOf = (account) => JARS.reduce((sum, jar) => sum + account.balances[jar.key], 0);
   const largest = Math.max(...report.accounts.map(totalOf), 1);
-  const rows = [...report.accounts].sort((a, b) => totalOf(b) - totalOf(a)).map((account) => {
+  const rows = [...report.accounts].sort((first, second) => totalOf(second) - totalOf(first)).map((account) => {
     const total = totalOf(account);
     const bar = element('div', { className: 'bar', style: `width:${(total / largest) * 100}%` });
     bar.append(...JARS.filter((jar) => account.balances[jar.key] > 0).map((jar) => element('div', {
@@ -229,12 +231,15 @@ function drawAccountBars() {
   document.getElementById('account-bars').replaceChildren(...rows);
 }
 
+const USED = {
+  thisWeek: () => ({ label: 'This week', dot: 'var(--good)' }),
+  thisMonth: () => ({ label: 'This month', dot: 'var(--warning)' }),
+  quiet: (account) => ({ label: `Quiet ${account.daysSinceActivity} days`, dot: 'var(--quiet)' }),
+  neverUsed: () => ({ label: 'Never used', dot: 'var(--critical)' }),
+};
+
 function engagement(account) {
-  if (!account.lastActivityOn) return { label: 'Never used', dot: 'var(--critical)' };
-  const days = daysSince(account.lastActivityOn);
-  if (days <= 7) return { label: 'This week', dot: 'var(--good)' };
-  if (days <= 30) return { label: 'This month', dot: 'var(--warning)' };
-  return { label: `Quiet ${days} days`, dot: 'var(--quiet)' };
+  return USED[account.used](account);
 }
 
 function table(id, headers, rows) {
@@ -274,7 +279,7 @@ function drawTiles() {
   const tiles = [
     ['Parents signed up', totals.users, `${totals.usersWithoutAccount} without an account`],
     ['Child accounts', totals.accounts, `${totals.neverUsed} never used`],
-    ['Used this week', `${totals.usedLast7Days} of ${totals.accounts}`, `${totals.usedLast30Days} in the last 30 days`],
+    ['Used this week', `${totals.usedThisWeek} of ${totals.accounts}`, `${totals.usedThisMonth} in the last 30 days`],
     ['Total balance', shekels(totals.totalBalance, 0), `${shekels(totals.interestPaid)} of it interest`],
     ['Deposits + withdrawals', totals.manualTransactions, `${shekels(totals.deposited, 0)} in · ${shekels(totals.withdrawn, 0)} out`],
   ];

@@ -58,5 +58,6 @@ emails to the page.
 - **Weeks** start Monday; `weekly` covers the last 12 weeks, `monthly` goes back
   to the first sign-up, account or transaction, and `balanceHistory` to the first
   transaction.
-- **Used** on the page: this week (7 days), this month (30 days), quiet, or
-  never used, from the last manual transaction.
+- **Used** is decided by the query from the last manual transaction, counted in
+  Israel days: `thisWeek` (the last 7 days), `thisMonth` (the last 30), `quiet`,
+  or `neverUsed`. The tiles and the table both read it.
