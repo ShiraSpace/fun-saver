@@ -1,5 +1,3 @@
-'use client';
-
 import styled from '@emotion/styled';
 import { SCREEN_LAYOUT } from '@/components/Screen/constants';
 import type { Themed } from '@/theme/themed';

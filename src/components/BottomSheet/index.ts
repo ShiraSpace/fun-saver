@@ -1,1 +1,1 @@
-export { BottomSheet, BottomSheetScrim } from './BottomSheet';
+export { BottomSheet, BottomSheetScrim } from './BottomSheet.styles';
