@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { useCloseOnBack } from './use-close-on-back';
+import { useCloseOnBack } from '../use-close-on-back';
 
 const flushAsync = (): Promise<void> =>
   act(async () => {

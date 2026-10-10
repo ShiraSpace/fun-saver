@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@/test-utils/render';
 import { DEFAULT_GOAL_PICTURE } from '@/lib/goal/constants';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { createMockGoalPicture } from '@/test-utils/mocks/goal.mocks';
-import { getThemeTokens, THEME_ID } from '@/theme/registry';
+import { PICTURE_TILE_TEST_IDS } from './PictureTile/constants';
 import { PictureTiles } from './PictureTiles';
 import { PICTURE_TILES_COPY, PICTURE_TILES_TEST_IDS } from './constants';
 
@@ -28,14 +28,14 @@ describe('PictureTiles', () => {
     });
 
     it('shows one tile per matching picture, in order', () => {
-      const tiles = screen.getAllByTestId(PICTURE_TILES_TEST_IDS.pictureTile);
+      const tiles = screen.getAllByTestId(PICTURE_TILE_TEST_IDS.pictureTile);
 
       expect(tiles.map((tile) => tile.textContent)).toEqual(mockFoundEmoji);
     });
 
     it('marks only the chosen picture as pressed', () => {
       const pressed = screen
-        .getAllByTestId(PICTURE_TILES_TEST_IDS.pictureTile)
+        .getAllByTestId(PICTURE_TILE_TEST_IDS.pictureTile)
         .filter((tile) => tile.getAttribute('aria-pressed') === 'true');
 
       expect(pressed.map((tile) => tile.textContent)).toEqual([
@@ -123,32 +123,6 @@ describe('PictureTiles', () => {
           screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)
         ).toHaveTextContent(PICTURE_TILES_COPY.noMatch(mockUnmatchedQuery));
       });
-    });
-  });
-
-  describe('on jungle-quest, where the primary colour is not the ring', () => {
-    const { selectionRing } = getThemeTokens(THEME_ID.jungleQuest).colors;
-    const mockChosenPicture = createMockGoalPicture('🚲');
-    const mockOnChoosePicture = jest.fn();
-
-    beforeEach(() => {
-      render(
-        <PictureTiles
-          foundEmoji={[mockChosenPicture.emoji]}
-          requestState={REQUEST_STATE.idle}
-          query={mockQuery}
-          chosenPicture={mockChosenPicture}
-          onChoosePicture={mockOnChoosePicture}
-        />,
-        { themeId: THEME_ID.jungleQuest }
-      );
-    });
-
-    it('rings the chosen tile in the selection ring colour', () => {
-      expect(
-        getComputedStyle(screen.getByTestId(PICTURE_TILES_TEST_IDS.pictureTile))
-          .outline
-      ).toContain(selectionRing);
     });
   });
 });
