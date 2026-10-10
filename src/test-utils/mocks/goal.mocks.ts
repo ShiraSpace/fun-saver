@@ -1,5 +1,6 @@
 import { GOAL_PICTURE_KIND } from '@/lib/goal/constants';
 import type { Goal, GoalPicture } from '@/lib/goal/types';
+import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { mockAccount } from './account.mocks';
 
 export function createMockGoalPicture(emoji: string): GoalPicture {
@@ -19,3 +20,15 @@ export function createMockGoal(overrides: Partial<Goal> = {}): Goal {
 }
 
 export const mockGoal: Goal = createMockGoal();
+
+export function createMockSavedTowardGoal(
+  overrides: Partial<SavedTowardGoal> = {}
+): SavedTowardGoal {
+  return {
+    goal: mockGoal,
+    saved: 8500,
+    stillToSave: 21500,
+    reached: false,
+    ...overrides,
+  };
+}
