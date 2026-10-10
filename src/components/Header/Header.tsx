@@ -16,8 +16,8 @@ import { HeaderTitle } from './HeaderTitle';
 import { HeaderAccountAvatar } from './HeaderAccountAvatar';
 import { HEADER_TEST_IDS } from './constants';
 import { Bar } from './Header.styles';
-import { NavigationProgress } from './NavigationProgress';
-import { useIsNavigating } from '@/hooks/navigation-pending-context';
+import { LoaderBar } from './LoaderBar';
+import { useIsLoaderShown } from '@/hooks/loader-context';
 
 export interface HeaderProps {
   title: string;
@@ -27,7 +27,7 @@ export interface HeaderProps {
 export function Header({ title, account }: HeaderProps): JSX.Element {
   const menu = useMenuState();
   const isHome = usePathname() === HOME_ROUTE;
-  const isNavigating = useIsNavigating();
+  const isLoaderShown = useIsLoaderShown();
 
   return (
     <>
@@ -45,9 +45,7 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
             isHidden={menu.isOpen}
           />
         )}
-        {isNavigating && (
-          <NavigationProgress data-testid={HEADER_TEST_IDS.progress} />
-        )}
+        {isLoaderShown && <LoaderBar data-testid={HEADER_TEST_IDS.progress} />}
       </Bar>
       <MenuProvider value={menu}>
         <MenuOverlay />

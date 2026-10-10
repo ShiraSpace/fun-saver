@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { PendingNavigationReporter } from '@/hooks/navigation-pending-context';
+import { LinkLoaderReporter } from '@/hooks/loader-context';
 import { NavigationDestination } from './constants';
 import { CurrentTab, InertTab, Tab, TabIcon } from './NavigationTabs.styles';
 
@@ -46,7 +46,7 @@ export function NavigationTab({
       onClick={onNavigate}
     >
       {tabContent}
-      <PendingNavigationReporter />
+      <LinkLoaderReporter />
     </Tab>
   );
 }

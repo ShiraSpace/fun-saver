@@ -8,7 +8,7 @@ import {
   HEADER_TEST_IDS,
 } from '../constants';
 import { HeaderAvatar } from '../header-parts';
-import { PendingNavigationReporter } from '@/hooks/navigation-pending-context';
+import { LinkLoaderReporter } from '@/hooks/loader-context';
 import { HouseBadge, Ring } from './HomeAvatarLink.styles';
 
 interface HomeAvatarLinkProps {
@@ -37,7 +37,7 @@ export function HomeAvatarLink({
         isHidden={false}
       />
       <HouseBadge aria-hidden>{HEADER_COPY.homeIcon}</HouseBadge>
-      <PendingNavigationReporter />
+      <LinkLoaderReporter />
     </Ring>
   );
 }

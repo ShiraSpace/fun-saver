@@ -2,9 +2,9 @@ import { JSX, Suspense, use, useEffect, useState } from 'react';
 import { act, fireEvent, render, screen } from '@/test-utils/render';
 import { mockRouter } from '@mocks/next/navigation';
 import {
-  IS_NAVIGATING_TEST_ID,
-  IsNavigating,
-} from '@/test-utils/is-navigating';
+  IS_LOADER_SHOWN_TEST_ID,
+  IsLoaderShown,
+} from '@/test-utils/is-loader-shown';
 import { useRefreshBalances } from './use-refresh-balances';
 
 const SHOW_NEW_BALANCES_TEST_ID = 'show-new-balances';
@@ -42,7 +42,7 @@ function AccountScreen({ newBalances }: AccountScreenProps): JSX.Element {
         data-testid={SHOW_NEW_BALANCES_TEST_ID}
         onClick={refreshBalances}
       />
-      <IsNavigating />
+      <IsLoaderShown />
     </>
   );
 }
@@ -67,13 +67,15 @@ describe('useRefreshBalances', () => {
   });
 
   it('runs the header loader while the new balances load', () => {
-    expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent('true');
+    expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
+      'true'
+    );
   });
 
   it('stops the header loader once the new balances have arrived', async () => {
     await act(async () => newBalancesArrive());
 
-    expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent(
+    expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
       'false'
     );
   });

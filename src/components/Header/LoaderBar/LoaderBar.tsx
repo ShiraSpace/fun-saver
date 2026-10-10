@@ -14,7 +14,7 @@ const sweep = keyframes`
   }
 `;
 
-export const NavigationProgress = styled.span`
+export const LoaderBar = styled.span`
   position: absolute;
   inset-inline: ${HEADER_LAYOUT.radius}px;
   bottom: 0;

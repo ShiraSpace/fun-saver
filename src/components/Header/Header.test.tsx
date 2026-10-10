@@ -5,7 +5,7 @@ import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
-import { useReportPendingNavigation } from '@/hooks/navigation-pending-context';
+import { useReportLoader } from '@/hooks/loader-context';
 import { getThemeTokens } from '@/theme/registry';
 import { HEADER_TITLE_TEST_IDS } from './HeaderTitle/constants';
 import { MENU_TEST_IDS } from '../Menu/constants';
@@ -39,7 +39,7 @@ interface PendingBesideHeaderProps {
 }
 
 function PendingBesideHeader({ isPending }: PendingBesideHeaderProps): null {
-  useReportPendingNavigation(isPending);
+  useReportLoader(isPending);
 
   return null;
 }

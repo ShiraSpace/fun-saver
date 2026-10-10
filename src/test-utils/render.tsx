@@ -11,7 +11,7 @@ import {
 } from '@/components/Home/accounts-context';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { ViewModeProvider } from '@/components/Home/view-mode-context';
-import { NavigationProvider } from '@/hooks/navigation-pending-context';
+import { LoaderProvider } from '@/hooks/loader-context';
 import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import { VIEW_MODE_COOKIE } from '@/lib/cookies';
 import type { SignedInUser } from '@/lib/user/types';
@@ -67,9 +67,9 @@ export function render(
   const AppProviders = ({ children }: AppProvidersProps): ReactElement => (
     <AppThemeProvider initialThemeId={themeId}>
       <ViewModeProvider value={viewMode}>
-        <NavigationProvider>
+        <LoaderProvider>
           {withUser(withAccounts(children, accounts), user)}
-        </NavigationProvider>
+        </LoaderProvider>
       </ViewModeProvider>
     </AppThemeProvider>
   );

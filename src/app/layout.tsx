@@ -6,7 +6,7 @@ import {
   everyThemeAsCss,
 } from '@/theme/theme-at-first-paint';
 import { LoadingShell } from '@/components/LoadingShell';
-import { NavigationProvider } from '@/hooks/navigation-pending-context';
+import { LoaderProvider } from '@/hooks/loader-context';
 import { EmotionStyleRegistry } from './EmotionStyleRegistry';
 
 export const metadata: Metadata = {
@@ -28,9 +28,9 @@ export default function RootLayout({
         <style>{themeCss}</style>
         <script>{themeScript}</script>
         <EmotionStyleRegistry>
-          <NavigationProvider>
+          <LoaderProvider>
             <Suspense fallback={<LoadingShell />}>{children}</Suspense>
-          </NavigationProvider>
+          </LoaderProvider>
         </EmotionStyleRegistry>
       </body>
     </html>

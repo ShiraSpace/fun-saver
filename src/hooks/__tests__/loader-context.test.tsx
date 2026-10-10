@@ -1,13 +1,10 @@
 import { Context, JSX } from 'react';
 import { render, screen, type RenderResult } from '@testing-library/react';
+import { LoaderProvider, LinkLoaderReporter } from '../loader-context';
 import {
-  NavigationProvider,
-  PendingNavigationReporter,
-} from '../navigation-pending-context';
-import {
-  IS_NAVIGATING_TEST_ID,
-  IsNavigating,
-} from '@/test-utils/is-navigating';
+  IS_LOADER_SHOWN_TEST_ID,
+  IsLoaderShown,
+} from '@/test-utils/is-loader-shown';
 
 jest.mock('next/link', () => {
   const { createContext, useContext } = jest.requireActual('react');
@@ -35,39 +32,43 @@ function TwoLinks({
   homeTabPending,
 }: LinksProps): JSX.Element {
   return (
-    <NavigationProvider>
+    <LoaderProvider>
       <LinkPending.Provider value={homeLinkPending}>
-        <PendingNavigationReporter />
+        <LinkLoaderReporter />
       </LinkPending.Provider>
       <LinkPending.Provider value={homeTabPending}>
-        <PendingNavigationReporter />
+        <LinkLoaderReporter />
       </LinkPending.Provider>
-      <IsNavigating />
-    </NavigationProvider>
+      <IsLoaderShown />
+    </LoaderProvider>
   );
 }
 
-describe('pending navigations', () => {
+describe('the loader', () => {
   let view: RenderResult;
 
   beforeEach(() => {
     view = render(<TwoLinks homeLinkPending={false} homeTabPending={true} />);
   });
 
-  it('is navigating while a link is pending', () => {
-    expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent('true');
+  it('shows while a link is pending', () => {
+    expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
+      'true'
+    );
   });
 
-  it('is still navigating when two links swap in a single update', () => {
+  it('still shows when two links swap in a single update', () => {
     view.rerender(<TwoLinks homeLinkPending={true} homeTabPending={false} />);
 
-    expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent('true');
+    expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
+      'true'
+    );
   });
 
-  it('stops navigating once the navigation has landed', () => {
+  it('hides once the navigation has landed', () => {
     view.rerender(<TwoLinks homeLinkPending={false} homeTabPending={false} />);
 
-    expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent(
+    expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
       'false'
     );
   });
