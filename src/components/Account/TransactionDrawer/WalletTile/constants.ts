@@ -1,3 +1,11 @@
+export const WALLET_TILE_TEST_IDS = {
+  lock: 'wallet-tile-lock',
+} as const;
+
+export const WALLET_TILE_COPY = {
+  lock: '🔒',
+} as const;
+
 export const WALLET_TILE_STYLE = {
   rowGap: 6,
   radius: 12,

@@ -2,6 +2,8 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { REQUEST_STATE } from '@/lib/request-state';
 import { useWithdrawalForm } from './use-withdrawal-form';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
+import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
+import type { AccountSummary } from '@/lib/account/types';
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddWithdrawal = jest.fn();
@@ -17,15 +19,12 @@ jest.mock('./use-add-transaction', () => ({
   }),
 }));
 
-const mockAccountId = 'a1';
 const [, spending, goodDeeds] = mockWalletSummaries;
 
-function setup(): ReturnType<
-  typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>
-> {
-  return renderHook(() =>
-    useWithdrawalForm(mockAccountId, mockWalletSummaries, mockOnClose)
-  );
+function setup(
+  account: AccountSummary = mockAccountSummary
+): ReturnType<typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>> {
+  return renderHook(() => useWithdrawalForm(account, mockOnClose));
 }
 
 describe('useWithdrawalForm', () => {
@@ -105,4 +104,5 @@ describe('useWithdrawalForm', () => {
     expect(mockOnClose).not.toHaveBeenCalled();
     expect(result.current.amountShekels).toBe(5);
   });
+
 });

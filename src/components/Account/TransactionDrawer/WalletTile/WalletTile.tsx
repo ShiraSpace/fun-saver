@@ -4,7 +4,15 @@ import { JSX } from 'react';
 import type { WalletName } from '@/lib/wallet/types';
 import { Money } from '@/components/Money';
 import { WALLET_CARD_COPY } from '../../WalletCard/constants';
-import { Tile, Head, WalletIcon, Name, Amount } from './WalletTile.styles';
+import { WALLET_TILE_COPY, WALLET_TILE_TEST_IDS } from './constants';
+import {
+  Tile,
+  Head,
+  WalletIcon,
+  Name,
+  Amount,
+  LockTag,
+} from './WalletTile.styles';
 
 interface WalletTileProps {
   walletName: WalletName;
@@ -14,6 +22,7 @@ interface WalletTileProps {
   testId?: string;
   selected?: boolean;
   onSelect?: () => void;
+  locked?: boolean;
 }
 
 export function WalletTile({
@@ -24,6 +33,7 @@ export function WalletTile({
   testId,
   selected = false,
   onSelect,
+  locked = false,
 }: WalletTileProps): JSX.Element {
   const isSelectable = Boolean(onSelect);
 
@@ -34,8 +44,14 @@ export function WalletTile({
       disabled={!isSelectable}
       aria-pressed={isSelectable ? selected : undefined}
       selected={selected}
+      locked={locked}
       onClick={onSelect}
     >
+      {locked && (
+        <LockTag aria-hidden="true" data-testid={WALLET_TILE_TEST_IDS.lock}>
+          {WALLET_TILE_COPY.lock}
+        </LockTag>
+      )}
       <Head>
         <WalletIcon walletName={walletName}>{icon}</WalletIcon>
         <Name>{WALLET_CARD_COPY.name[walletName]}</Name>
