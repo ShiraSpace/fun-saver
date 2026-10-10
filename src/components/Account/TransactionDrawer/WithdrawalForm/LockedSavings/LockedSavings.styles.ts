@@ -14,7 +14,7 @@ export const Panel = styled.div`
   text-align: center;
 `;
 
-export const Thumb = styled.span`
+export const Picture = styled.span`
   display: grid;
   place-items: center;
   width: 56px;

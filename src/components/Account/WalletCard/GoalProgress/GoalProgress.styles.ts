@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Line = styled.div`
+export const GoalLine = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -11,7 +11,7 @@ export const Line = styled.div`
   border-top: 1.5px dashed ${({ theme }): string => theme.colors.divider};
 `;
 
-export const Thumb = styled.span`
+export const Picture = styled.span`
   flex-shrink: 0;
   display: grid;
   place-items: center;
@@ -29,7 +29,7 @@ export const Body = styled.span`
   gap: 5px;
 `;
 
-export const Top = styled.span<{ reached: boolean }>`
+export const GoalHeading = styled.span<{ reached: boolean }>`
   display: flex;
   justify-content: space-between;
   font-size: ${({ theme }): number => theme.typography.label + 1}px;

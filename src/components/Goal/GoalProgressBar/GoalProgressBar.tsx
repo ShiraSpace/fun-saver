@@ -25,6 +25,7 @@ export function GoalProgressBar({
   thin = false,
 }: GoalProgressBarProps): JSX.Element {
   const { saved, goal, reached } = savedTowardGoal;
+  const fillWidth = `${savedPercent(savedTowardGoal)}%`;
 
   return (
     <Track
@@ -39,7 +40,7 @@ export function GoalProgressBar({
       <Fill
         data-testid={GOAL_PROGRESS_BAR_TEST_IDS.fill}
         reached={reached}
-        style={{ width: `${savedPercent(savedTowardGoal)}%` }}
+        style={{ width: fillWidth }}
       />
     </Track>
   );

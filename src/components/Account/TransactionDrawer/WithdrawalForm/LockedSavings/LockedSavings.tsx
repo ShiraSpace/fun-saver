@@ -3,7 +3,7 @@ import { agorotToShekels } from '@/lib/money';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { GoalProgressBar } from '@/components/Goal/GoalProgressBar';
 import { LOCKED_SAVINGS_COPY, LOCKED_SAVINGS_TEST_IDS } from './constants';
-import { Heading, Panel, StillToSave, Thumb } from './LockedSavings.styles';
+import { Heading, Panel, StillToSave, Picture } from './LockedSavings.styles';
 
 interface LockedSavingsProps {
   savedTowardGoal: SavedTowardGoal;
@@ -16,7 +16,7 @@ export function LockedSavings({
 
   return (
     <Panel data-testid={LOCKED_SAVINGS_TEST_IDS.panel}>
-      <Thumb aria-hidden="true">{goal.picture.emoji}</Thumb>
+      <Picture aria-hidden="true">{goal.picture.emoji}</Picture>
       <Heading data-testid={LOCKED_SAVINGS_TEST_IDS.heading}>
         {LOCKED_SAVINGS_COPY.heading(goal.name)}
       </Heading>

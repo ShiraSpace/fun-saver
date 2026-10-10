@@ -24,9 +24,9 @@ export function SelectedWalletNote({
     return null;
   }
 
-  const hasError = form.requestState === REQUEST_STATE.failed;
+  const requestFailed = form.requestState === REQUEST_STATE.failed;
 
-  if (form.goalToComplete && !form.isOverdraft && !hasError) {
+  if (form.goalToComplete && !form.isOverdraft && !requestFailed) {
     return (
       <GoalCompletionNote data-testid={WITHDRAWAL_FORM_TEST_IDS.completesGoal}>
         {WITHDRAWAL_FORM_COPY.completesGoal(form.goalToComplete.name)}
@@ -37,7 +37,7 @@ export function SelectedWalletNote({
   return (
     <WithdrawalAlert
       isOverdraft={form.isOverdraft}
-      hasError={hasError}
+      hasError={requestFailed}
       balanceShekels={agorotToShekels(form.selectedBalance)}
     />
   );
