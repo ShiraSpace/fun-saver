@@ -7,10 +7,12 @@ export const WALLET_CARD_TEST_IDS = {
   card: 'wallet-card',
   balance: 'wallet-balance',
   summary: 'wallet-sub-line',
+  lock: 'wallet-lock',
 } as const;
 
 export const WALLET_CARD_COPY = {
   name: WALLET_LABEL,
+  lock: '🔒',
   savingsSummary: (
     wallet: Pick<WalletSummary, 'monthlyInterestRate' | 'openedAt'>
   ): string =>

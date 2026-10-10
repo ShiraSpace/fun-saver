@@ -4,6 +4,7 @@ import { JSX, useState } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
 import { walletNamed } from '@/lib/wallet/wallet-named';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
+import { savedTowardGoalOf } from '@/lib/goal/saved-toward-goal';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -30,7 +31,10 @@ export function Account({ account }: AccountProps): JSX.Element {
       <Column>
         <Header title={account.name} account={account} />
         <BalanceBreakdown key={account.id} wallets={savingsFirst} />
-        <WalletList wallets={savingsFirst} />
+        <WalletList
+          wallets={savingsFirst}
+          savedTowardGoal={savedTowardGoalOf(account)}
+        />
         <PrimaryButton
           type="button"
           data-testid={ACCOUNT_TEST_IDS.newTransaction}
