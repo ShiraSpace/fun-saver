@@ -1,21 +1,12 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { type BoundingBox } from 'puppeteer';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { VIEW_MODE } from '@/lib/account/view-mode';
 import { THEMES, THEME_ID } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
 import { PHONE } from './driver/viewports';
-
-const bottomOf = (box: BoundingBox): number => box.y + box.height;
-const rightOf = (box: BoundingBox): number => box.x + box.width;
-
-const holds = (outer: BoundingBox, inner: BoundingBox): boolean =>
-  inner.x >= outer.x &&
-  rightOf(inner) <= rightOf(outer) &&
-  inner.y >= outer.y &&
-  bottomOf(inner) <= bottomOf(outer);
+import { bottomOf, holds } from './driver/box-geometry';
 
 const mockMidnightAccount = { ...mockAccount, themeId: THEME_ID.midnightBlue };
 const MIDNIGHT_PRIMARY = hexToRgb(THEMES[THEME_ID.midnightBlue].colors.primary);
@@ -30,7 +21,7 @@ describe('the parent menu at phone size', () => {
   });
 
   it("puts «הגדרות כלליות» below the account's settings", async () => {
-    const accountSettings = await menu.accountScopeBox();
+    const accountSettings = await menu.accountSettingsBox();
     const globalSettings = await menu.globalSettingsBox();
 
     assert.ok(

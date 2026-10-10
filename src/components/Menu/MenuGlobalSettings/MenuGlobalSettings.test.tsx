@@ -18,7 +18,7 @@ describe('MenuGlobalSettings', () => {
     );
   });
 
-  it('heads the block as settings for the whole app', () => {
+  it('heads the block as settings for every child on this phone', () => {
     expect(
       screen.getByTestId(MENU_GLOBAL_SETTINGS_TEST_IDS.heading)
     ).toHaveTextContent(MENU_GLOBAL_SETTINGS_COPY.heading);

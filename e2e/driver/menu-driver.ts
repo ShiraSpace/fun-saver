@@ -133,7 +133,7 @@ export class MenuDriver {
     return this.appBrowser.box(MENU_USER_SETTINGS_TEST_IDS.block);
   }
 
-  accountScopeBox(): Promise<BoundingBox> {
+  accountSettingsBox(): Promise<BoundingBox> {
     return this.appBrowser.box(MENU_ACCOUNT_SETTINGS_TEST_IDS.block);
   }
 

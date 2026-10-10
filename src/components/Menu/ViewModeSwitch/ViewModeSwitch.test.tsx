@@ -35,33 +35,24 @@ function passTime(milliseconds: number): Promise<void> {
 }
 
 describe('ViewModeSwitch', () => {
-  describe.each([VIEW_MODE.parent, VIEW_MODE.child])(
-    'in %s mode',
-    (viewMode) => {
-      beforeEach(() => {
-        renderSwitch({ viewMode });
-      });
-
-      it(`shows the ${viewMode} face on the knob`, () => {
-        expect(
-          screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-        ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.knobFace[viewMode]);
-      });
-
-      it('is named by its label alone, without the face', () => {
-        expect(
-          screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-        ).toHaveAccessibleName(VIEW_MODE_SWITCH_COPY.label);
-      });
-    }
-  );
-
   describe.each([
     [VIEW_MODE.parent, 'false'],
     [VIEW_MODE.child, 'true'],
   ])('in %s mode', (viewMode, isOn) => {
     beforeEach(() => {
       renderSwitch({ viewMode });
+    });
+
+    it(`shows the ${viewMode} face on the knob`, () => {
+      expect(
+        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+      ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.knobFace[viewMode]);
+    });
+
+    it('is named by its label alone, without the face', () => {
+      expect(
+        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+      ).toHaveAccessibleName(VIEW_MODE_SWITCH_COPY.label);
     });
 
     it(`has aria-checked ${isOn}`, () => {
