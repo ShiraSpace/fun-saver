@@ -25,7 +25,7 @@ export function GoalProgressBar({
   thin = false,
 }: GoalProgressBarProps): JSX.Element {
   const { saved, goal, reached } = savedTowardGoal;
-  const fillWidth = `${savedPercent(savedTowardGoal)}%`;
+  const fillStyle = { width: `${savedPercent(savedTowardGoal)}%` };
   const goalShekels = floorToShekels(goal.amount);
   const savedShekels = floorToShekels(Math.min(saved, goal.amount));
 
@@ -42,7 +42,7 @@ export function GoalProgressBar({
       <Fill
         data-testid={GOAL_PROGRESS_BAR_TEST_IDS.fill}
         reached={reached}
-        fillWidth={fillWidth}
+        style={fillStyle}
       />
     </Track>
   );
