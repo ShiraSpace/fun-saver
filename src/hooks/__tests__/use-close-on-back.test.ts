@@ -14,6 +14,10 @@ describe('useCloseOnBack', () => {
     window.history.replaceState(null, '');
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('pushes a history entry while open', () => {
     renderHook(() => useCloseOnBack(jest.fn()));
 
@@ -45,21 +49,18 @@ describe('useCloseOnBack', () => {
 
   it('stays open under StrictMode remount', async () => {
     const mockOnClose = jest.fn();
-    const mockHistoryBack = jest
-      .spyOn(window.history, 'back')
-      .mockImplementation(() => {
-        setTimeout(() =>
-          window.dispatchEvent(
-            new PopStateEvent('popstate', {
-              state: { [DRAWER_HISTORY_KEY]: true },
-            })
-          )
-        );
-      });
+    jest.spyOn(window.history, 'back').mockImplementation(() => {
+      setTimeout(() =>
+        window.dispatchEvent(
+          new PopStateEvent('popstate', {
+            state: { [DRAWER_HISTORY_KEY]: true },
+          })
+        )
+      );
+    });
 
     renderHook(() => useCloseOnBack(mockOnClose), { wrapper: StrictMode });
     await historySettles();
-    mockHistoryBack.mockRestore();
 
     expect(mockOnClose).not.toHaveBeenCalled();
   });
@@ -80,9 +81,7 @@ describe('useCloseOnBack', () => {
     const mockHistoryBack = jest.spyOn(window.history, 'back');
 
     unmount();
-    const historyBackCalls = mockHistoryBack.mock.calls.length;
-    mockHistoryBack.mockRestore();
 
-    expect(historyBackCalls).toBe(0);
+    expect(mockHistoryBack).not.toHaveBeenCalled();
   });
 });
