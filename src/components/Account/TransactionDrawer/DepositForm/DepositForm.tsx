@@ -16,14 +16,14 @@ import {
 
 interface DepositFormProps {
   account: AccountSummary;
-  onClose: () => void;
+  onSaved: () => void;
 }
 
 export function DepositForm({
   account,
-  onClose,
+  onSaved,
 }: DepositFormProps): JSX.Element {
-  const form = useDepositForm(account.id, onClose);
+  const form = useDepositForm(account.id, onSaved);
   const isSaving = form.requestState === REQUEST_STATE.pending;
   const hasSaveFailed = form.requestState === REQUEST_STATE.failed;
   const submitLabel = isSaving

@@ -15,11 +15,13 @@ import { Scrim, Sheet, Handle, Body } from './TransactionDrawer.styles';
 interface TransactionDrawerProps {
   account: AccountSummary;
   onClose: () => void;
+  onSaved: () => void;
 }
 
 export function TransactionDrawer({
   account,
   onClose,
+  onSaved,
 }: TransactionDrawerProps): JSX.Element {
   const [transactionType, setTransactionType] =
     useState<EnteredTransactionType>(TRANSACTION_TYPE.deposit);
@@ -27,12 +29,8 @@ export function TransactionDrawer({
 
   useCloseOnBack(onClose);
 
-  const transactionForm =
-    transactionType === TRANSACTION_TYPE.deposit ? (
-      <DepositForm account={account} onClose={onClose} />
-    ) : (
-      <WithdrawalForm account={account} onClose={onClose} />
-    );
+  const TransactionForm =
+    transactionType === TRANSACTION_TYPE.deposit ? DepositForm : WithdrawalForm;
 
   return (
     <>
@@ -55,7 +53,9 @@ export function TransactionDrawer({
           transactionType={transactionType}
           onChange={setTransactionType}
         />
-        <Body key={transactionType}>{transactionForm}</Body>
+        <Body key={transactionType}>
+          <TransactionForm account={account} onSaved={onSaved} />
+        </Body>
       </Sheet>
     </>
   );

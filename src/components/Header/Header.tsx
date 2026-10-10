@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX, useState } from 'react';
+import { JSX } from 'react';
 import { usePathname } from 'next/navigation';
 import type { Account } from '@/lib/account/types';
 import {
@@ -17,7 +17,7 @@ import { HeaderAccountAvatar } from './HeaderAccountAvatar';
 import { HEADER_TEST_IDS } from './constants';
 import { Bar } from './Header.styles';
 import { NavigationProgress } from './NavigationProgress';
-import { PendingNavigationsProvider } from './navigation-pending-context';
+import { useIsNavigating } from './navigation-pending-context';
 
 export interface HeaderProps {
   title: string;
@@ -27,11 +27,10 @@ export interface HeaderProps {
 export function Header({ title, account }: HeaderProps): JSX.Element {
   const menu = useMenuState();
   const isHome = usePathname() === HOME_ROUTE;
-  const [pendingNavigationCount, setPendingNavigationCount] = useState(0);
-  const isNavigating = pendingNavigationCount > 0;
+  const isNavigating = useIsNavigating();
 
   return (
-    <PendingNavigationsProvider value={setPendingNavigationCount}>
+    <>
       <MenuHeaderBackdrop
         data-open={menu.isOpen}
         data-testid={MENU_HEADER_BACKDROP_TEST_IDS.backdrop}
@@ -53,6 +52,6 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
       <MenuProvider value={menu}>
         <MenuOverlay />
       </MenuProvider>
-    </PendingNavigationsProvider>
+    </>
   );
 }

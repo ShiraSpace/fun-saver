@@ -17,15 +17,15 @@ import { AmountValue } from './WithdrawalForm.styles';
 
 interface WithdrawalFormProps {
   account: AccountSummary;
-  onClose: () => void;
+  onSaved: () => void;
 }
 
 export function WithdrawalForm({
   account,
-  onClose,
+  onSaved,
 }: WithdrawalFormProps): JSX.Element {
   const wallets = account.wallets;
-  const form = useWithdrawalForm(account.id, wallets, onClose);
+  const form = useWithdrawalForm(account.id, wallets, onSaved);
   const { title, submitLabel } = withdrawalCopy(form);
   const hasSaveFailed = form.requestState === REQUEST_STATE.failed;
 
