@@ -32,7 +32,7 @@ export function GoalProgressBar({
       aria-label={GOAL_PROGRESS_BAR_COPY.label}
       aria-valuemin={0}
       aria-valuemax={floorToShekels(goal.amount)}
-      aria-valuenow={floorToShekels(saved)}
+      aria-valuenow={floorToShekels(Math.min(saved, goal.amount))}
       data-testid={GOAL_PROGRESS_BAR_TEST_IDS.bar}
       thin={thin}
     >

@@ -1,9 +1,10 @@
+import { GOAL_COPY } from '@/components/Goal/constants';
 export const WALLET_TILE_TEST_IDS = {
   lock: 'wallet-tile-lock',
 } as const;
 
 export const WALLET_TILE_COPY = {
-  lock: '🔒',
+  lock: GOAL_COPY.lock,
 } as const;
 
 export const WALLET_TILE_STYLE = {

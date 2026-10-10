@@ -3,7 +3,10 @@
 import { JSX, ReactNode } from 'react';
 import type { SpendableWalletName, WalletSummary } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
-import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
+import {
+  savingsLocked,
+  type SavedTowardGoal,
+} from '@/lib/goal/saved-toward-goal';
 import { Money } from '@/components/Money';
 import { MONEY_ROUNDING } from '@/components/Money/constants';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
@@ -54,7 +57,7 @@ export function WalletCard({
   children,
 }: WalletCardProps): JSX.Element {
   const summaryText = walletSummaryText(wallet);
-  const isSavingsLocked = !!savedTowardGoal && !savedTowardGoal.reached;
+  const isSavingsLocked = savingsLocked(savedTowardGoal);
   const balanceRounding = savedTowardGoal
     ? MONEY_ROUNDING.floorToShekels
     : MONEY_ROUNDING.nearestShekel;

@@ -12,6 +12,10 @@ export interface SavedTowardGoal {
   reached: boolean;
 }
 
+export function savingsLocked(savedTowardGoal?: SavedTowardGoal): boolean {
+  return !!savedTowardGoal && !savedTowardGoal.reached;
+}
+
 export function savedTowardGoalOf(
   account: AccountSummary
 ): SavedTowardGoal | undefined {

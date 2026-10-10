@@ -4,7 +4,10 @@ import { JSX } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { withoutAgorot } from '@/lib/money';
-import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
+import {
+  savingsLocked,
+  type SavedTowardGoal,
+} from '@/lib/goal/saved-toward-goal';
 import { WalletTile } from '../WalletTile';
 import { WALLET_PICKER_TEST_IDS } from './constants';
 import { Wallets } from './WalletPicker.styles';
@@ -24,7 +27,7 @@ export function WalletPicker({
   onSelect,
   savedTowardGoal,
 }: WalletPickerProps): JSX.Element {
-  const isSavingsLocked = !!savedTowardGoal && !savedTowardGoal.reached;
+  const isSavingsLocked = savingsLocked(savedTowardGoal);
 
   return (
     <Wallets>

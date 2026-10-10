@@ -7,6 +7,7 @@ import { defaultWithdrawalWallet } from '@/lib/wallet/default-withdrawal-wallet'
 import type { Goal } from '@/lib/goal/types';
 import {
   savedTowardGoalOf,
+  savingsLocked,
   type SavedTowardGoal,
 } from '@/lib/goal/saved-toward-goal';
 import { REQUEST_STATE } from '@/lib/request-state';
@@ -36,9 +37,9 @@ function goalOnPickedWallet(
     return {};
   }
 
-  return savedTowardGoal.reached
-    ? { goalToComplete: savedTowardGoal.goal }
-    : { savingsLockedFor: savedTowardGoal };
+  return savingsLocked(savedTowardGoal)
+    ? { savingsLockedFor: savedTowardGoal }
+    : { goalToComplete: savedTowardGoal.goal };
 }
 
 export function useWithdrawalForm(

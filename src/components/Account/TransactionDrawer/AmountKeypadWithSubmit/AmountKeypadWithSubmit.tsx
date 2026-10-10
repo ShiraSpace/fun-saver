@@ -5,6 +5,7 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { AmountKeypad } from '../AmountKeypad';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import type { AmountEntry } from '../use-amount-entry';
+import { AMOUNT_KEYPAD_WITH_SUBMIT_TEST_IDS } from './constants';
 import {
   Keypad,
   KeypadSpace,
@@ -35,7 +36,11 @@ export function AmountKeypadWithSubmit({
           />
         </Keypad>
         {inPlaceOfKeypad && (
-          <InPlaceOfKeypad>{inPlaceOfKeypad}</InPlaceOfKeypad>
+          <InPlaceOfKeypad
+            data-testid={AMOUNT_KEYPAD_WITH_SUBMIT_TEST_IDS.inPlaceOfKeypad}
+          >
+            {inPlaceOfKeypad}
+          </InPlaceOfKeypad>
         )}
       </KeypadSpace>
       <PrimaryButton
