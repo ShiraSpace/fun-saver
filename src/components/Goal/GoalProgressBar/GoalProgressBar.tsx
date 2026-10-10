@@ -5,7 +5,7 @@ import {
   GOAL_PERCENT,
   GOAL_PROGRESS_BAR_COPY,
   GOAL_PROGRESS_BAR_TEST_IDS,
-  HEAD_START_PERCENT,
+  HEAD_START_FILL_PERCENT,
 } from './constants';
 import { Fill, Track } from './GoalProgressBar.styles';
 
@@ -17,7 +17,7 @@ interface GoalProgressBarProps {
 function savedPercent({ saved, goal }: SavedTowardGoal): number {
   const percent = (saved / goal.amount) * GOAL_PERCENT;
 
-  return Math.min(Math.max(percent, HEAD_START_PERCENT), GOAL_PERCENT);
+  return Math.min(Math.max(percent, HEAD_START_FILL_PERCENT), GOAL_PERCENT);
 }
 
 export function GoalProgressBar({

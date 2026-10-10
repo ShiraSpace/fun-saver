@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { SWIPE_TO_CLOSE } from './constants';
 
-interface SwipeToClose {
+export interface SwipeToClose {
   offset: number;
   isDragging: boolean;
   onPointerDown: (event: ReactPointerEvent<HTMLElement>) => void;

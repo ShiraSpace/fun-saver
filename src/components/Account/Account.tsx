@@ -44,6 +44,7 @@ export function Account({ account }: AccountProps): JSX.Element {
       {isDrawerOpen && (
         <TransactionDrawer
           account={account}
+          savedTowardGoal={savedTowardGoal}
           onClose={() => setIsDrawerOpen(false)}
         />
       )}

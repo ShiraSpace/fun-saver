@@ -7,7 +7,6 @@ import { defaultWithdrawalWallet } from '@/lib/wallet/default-withdrawal-wallet'
 import type { Goal } from '@/lib/goal/types';
 import {
   savedTowardGoalIn,
-  savedTowardGoalOf,
   savingsLocked,
   type SavedTowardGoal,
 } from '@/lib/goal/saved-toward-goal';
@@ -18,6 +17,12 @@ import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 interface GoalOnPickedWallet {
   savingsLockedFor?: SavedTowardGoal;
   goalToComplete?: Goal;
+}
+
+export interface WithdrawalFormProps {
+  account: AccountSummary;
+  savedTowardGoal?: SavedTowardGoal;
+  onClose: () => void;
 }
 
 export interface WithdrawalFormState extends AmountEntry, GoalOnPickedWallet {
@@ -48,10 +53,11 @@ function goalOnPickedWallet(
     : { goalToComplete: savedTowardGoalInWallet.goal };
 }
 
-export function useWithdrawalForm(
-  account: AccountSummary,
-  onClose: () => void
-): WithdrawalFormState {
+export function useWithdrawalForm({
+  account,
+  savedTowardGoal,
+  onClose,
+}: WithdrawalFormProps): WithdrawalFormState {
   const { wallets } = account;
   const { addWithdrawal } = useAddTransaction(account.id);
   const [selectedWalletId, setSelectedWalletId] = useState(
@@ -65,7 +71,6 @@ export function useWithdrawalForm(
   const selectedWallet = wallets.find(
     (wallet) => wallet.id === selectedWalletId
   );
-  const savedTowardGoal = savedTowardGoalOf(account);
   const goalOnWallet = goalOnPickedWallet(selectedWallet, savedTowardGoal);
   const isOverdraft =
     !!selectedWallet &&

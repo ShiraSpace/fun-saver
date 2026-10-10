@@ -1,4 +1,5 @@
 import { GOAL_COPY } from '@/components/Goal/constants';
+
 export const WITHDRAWAL_FORM_TEST_IDS = {
   amount: 'withdraw-amount',
   overdraft: 'withdraw-overdraft',

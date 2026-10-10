@@ -1,12 +1,14 @@
 'use client';
 
 import { JSX } from 'react';
-import type { AccountSummary } from '@/lib/account/types';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { Money } from '@/components/Money';
 import { WalletPicker } from '../WalletPicker';
 import { AmountKeypadWithSubmit } from '../AmountKeypadWithSubmit';
-import { useWithdrawalForm } from '../use-withdrawal-form';
+import {
+  useWithdrawalForm,
+  type WithdrawalFormProps,
+} from '../use-withdrawal-form';
 import { DrawerTitle } from '../drawer-parts';
 import { LockedSavings } from './LockedSavings';
 import { SelectedWalletNote } from './SelectedWalletNote';
@@ -14,16 +16,8 @@ import { withdrawalCopy } from './withdrawal-copy';
 import { WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { AmountValue } from './WithdrawalForm.styles';
 
-interface WithdrawalFormProps {
-  account: AccountSummary;
-  onClose: () => void;
-}
-
-export function WithdrawalForm({
-  account,
-  onClose,
-}: WithdrawalFormProps): JSX.Element {
-  const form = useWithdrawalForm(account, onClose);
+export function WithdrawalForm(props: WithdrawalFormProps): JSX.Element {
+  const form = useWithdrawalForm(props);
   const { title, submitLabel } = withdrawalCopy(form);
   const lockedSavingsPanel = form.savingsLockedFor && (
     <LockedSavings savedTowardGoal={form.savingsLockedFor} />
@@ -39,7 +33,7 @@ export function WithdrawalForm({
         />
       </AmountValue>
       <WalletPicker
-        wallets={account.wallets}
+        wallets={props.account.wallets}
         selectedWalletId={form.selectedWalletId}
         onSelect={form.onSelectWallet}
         savedTowardGoal={form.savedTowardGoal}
