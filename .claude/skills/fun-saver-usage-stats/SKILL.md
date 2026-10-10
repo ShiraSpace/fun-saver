@@ -1,5 +1,5 @@
 ---
-name: usage-stats
+name: fun-saver-usage-stats
 description: Use when asked how fun-saver is being used — how many users or accounts there are, which parents and children use it, sign-ups or activity this week or month, money deposited, interest paid, engagement. Runs a read-only SQL report against the production Neon database, publishes it as the Fun Saver Usage artifact with graphs, and summarises it.
 ---
 
@@ -14,9 +14,9 @@ when the user asks for dev.
 DB=$(grep '^DATABASE_URL=' .env.local | cut -d= -f2- | tr -d "'\"")
 OUT=<your scratchpad directory>
 PGOPTIONS='-c default_transaction_read_only=on' psql "$DB" -X -q -At -v ON_ERROR_STOP=1 \
-  -o "$OUT/usage-stats.json" -f .claude/skills/usage-stats/usage-stats.sql
+  -o "$OUT/usage-stats.json" -f .claude/skills/fun-saver-usage-stats/usage-stats.sql
 sed -e '/__REPORT_DATA__/{' -e "r $OUT/usage-stats.json" -e 'd' -e '}' \
-  .claude/skills/usage-stats/report.html > "$OUT/fun-saver-usage.html"
+  .claude/skills/fun-saver-usage-stats/report.html > "$OUT/fun-saver-usage.html"
 ```
 
 The session is read-only: never drop that flag, and never write to production
