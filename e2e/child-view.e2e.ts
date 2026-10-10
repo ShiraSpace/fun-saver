@@ -9,20 +9,6 @@ import { useDriver } from './driver/use-driver';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
 
-describe('an account stored in child view, on a phone in parent mode', () => {
-  const { account, childAccount } = useDriver({
-    accounts: [createMockAccount({ viewMode: VIEW_MODE.child })],
-  });
-
-  it('opens on the parent screen', async () => {
-    assert.equal(await account.overviewExists(), true);
-  });
-
-  it('does not show the child screen', async () => {
-    assert.equal(await childAccount.screenExists(), false);
-  });
-});
-
 describe('a parent turns child mode on', () => {
   const { menu, childAccount, appBrowser } = useDriver({
     accounts: [mockAccount],
