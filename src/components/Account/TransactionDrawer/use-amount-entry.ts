@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { StatusCodes } from 'http-status-codes';
+import { RequestFailedError } from '@/lib/fetch-json';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { pushDigit, popDigit } from './amount-keypad';
 
@@ -10,6 +12,12 @@ export interface AmountEntry {
   onClear: () => void;
   onBackspace: () => void;
   onSubmit: () => void;
+}
+
+function isConflict(error: unknown): boolean {
+  return (
+    error instanceof RequestFailedError && error.status === StatusCodes.CONFLICT
+  );
 }
 
 export function useAmountEntry(
@@ -29,7 +37,13 @@ export function useAmountEntry(
       await saveTransaction(amountShekels);
       router.refresh();
       onClose();
-    } catch {
+    } catch (error) {
+      if (isConflict(error)) {
+        router.refresh();
+        setRequestState(REQUEST_STATE.idle);
+        return;
+      }
+
       setRequestState(REQUEST_STATE.failed);
     }
   };
