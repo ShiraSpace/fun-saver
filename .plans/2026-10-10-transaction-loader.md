@@ -12,7 +12,7 @@ so new numbers just snap in.
 ## Behaviour
 
 - From the moment the save succeeds until the refreshed balances render, the
-  header progress bar (`NavigationProgress`) runs — the same loader every
+  header loader (`LoaderBar`) runs — the same loader every
   screen uses. While the save itself is sending, the drawer stays open and its
   button says «submitting…», as today.
 - When the refreshed total arrives, `BalanceBreakdown` remounts and replays its
@@ -20,17 +20,17 @@ so new numbers just snap in.
 
 ## Reused, not new
 
-- **The loader:** `NavigationProgress` and the pending counter in
-  `navigation-pending-context.tsx`, through `useReportPendingNavigation`.
+- **The loader:** `LoaderBar` and the pending counter in
+  `src/hooks/loader-context.tsx`, through `useReportLoader`.
 - **The replay:** `BalanceBreakdown`'s own mount animation, already replayed on
   account switch through `key={account.id}`.
 
 ## Phase 1: production code (one commit)
 
-1. **`navigation-pending-context.tsx`:** the counter's state moves out of
-   `Header` into a `NavigationProvider`, mounted once in `layout.tsx`,
+1. **`src/hooks/loader-context.tsx`:** the counter's state moves out of
+   `Header` into a `LoaderProvider`, mounted once in `layout.tsx`,
    so anything on the screen can report — not only what renders inside the
-   header. `Header` reads `useIsNavigating()`. The drawer is a sibling of
+   header. `Header` reads `useIsLoaderShown()`. The drawer is a sibling of
    `Header`, which is why it could not reach the counter before.
 2. **`use-amount-entry.ts`:** on success it calls `onSaved()` instead of
    `router.refresh(); onClose()`. The forms' success callback is renamed
@@ -48,9 +48,9 @@ so new numbers just snap in.
 - `useRefreshBalances` reports pending until the refresh transition ends.
 - A successful save calls `onSaved`; a failed one does not.
 - `Account` remounts `BalanceBreakdown` when the total changes.
-- Existing Header / navigation-pending tests move to the `NavigationProvider`.
+- Existing Header / navigation-pending tests move to `loader-context.test.tsx`.
 
 ## Out of scope
 
 Create, edit and theme saves also refresh with no loader; each can adopt
-`useReportPendingNavigation` later.
+`useReportLoader` later.

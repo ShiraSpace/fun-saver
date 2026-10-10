@@ -114,10 +114,13 @@ describe('Account', () => {
   });
 
   describe('when the new balances arrive', () => {
+    let breakdownBefore: HTMLElement;
+
+    beforeEach(() => {
+      breakdownBefore = screen.getByTestId(BALANCE_BREAKDOWN_TEST_IDS.card);
+    });
+
     it('redraws the balance breakdown for a new total', () => {
-      const breakdownBefore = screen.getByTestId(
-        BALANCE_BREAKDOWN_TEST_IDS.card
-      );
       const mockDepositAgorot = 500;
       const [savings, ...otherWallets] = mockWalletSummaries;
       const mockAccountAfterDeposit: AccountSummary = {
@@ -136,10 +139,6 @@ describe('Account', () => {
     });
 
     it('leaves the balance breakdown alone when the total is the same', () => {
-      const breakdownBefore = screen.getByTestId(
-        BALANCE_BREAKDOWN_TEST_IDS.card
-      );
-
       view.rerender(<Account account={{ ...mockAccount }} />);
 
       expect(screen.getByTestId(BALANCE_BREAKDOWN_TEST_IDS.card)).toBe(
