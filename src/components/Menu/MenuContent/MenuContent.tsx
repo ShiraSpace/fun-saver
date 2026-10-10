@@ -31,7 +31,7 @@ export function MenuContent(): JSX.Element {
     <AddAccountButton />
   );
 
-  const settings = hasAccount && (
+  const accountAndGlobalSettings = hasAccount && (
     <Fragment>
       <MenuAccountSettings>
         <AppearanceSection />
@@ -45,7 +45,7 @@ export function MenuContent(): JSX.Element {
     <Fragment>
       <NavigationTabs onNavigate={closeMenu} />
       <MenuUserSettings>{accountControls}</MenuUserSettings>
-      {settings}
+      {accountAndGlobalSettings}
     </Fragment>
   );
 }
