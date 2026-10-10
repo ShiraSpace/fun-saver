@@ -33,8 +33,18 @@ export class MemoryGoals implements GoalRepository {
   async insertWithdrawalCompleting(
     withdrawal: Transaction,
     goalId: string
-  ): Promise<void> {
-    endActiveGoal(this.goals, completedGoalEndRequest(withdrawal, goalId));
+  ): Promise<boolean> {
+    const completedGoal = endActiveGoal(
+      this.goals,
+      completedGoalEndRequest(withdrawal, goalId)
+    );
+
+    if (!completedGoal) {
+      return false;
+    }
+
     await this.transactions.insert([withdrawal]);
+
+    return true;
   }
 }

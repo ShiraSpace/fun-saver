@@ -9,6 +9,10 @@ export function badRequest(error: string): Response {
   return errorResponse(error, StatusCodes.BAD_REQUEST);
 }
 
+export function conflict(error: string): Response {
+  return errorResponse(error, StatusCodes.CONFLICT);
+}
+
 export function notSignedIn(): Response {
   return errorResponse(API_ERRORS.notSignedIn, StatusCodes.UNAUTHORIZED);
 }

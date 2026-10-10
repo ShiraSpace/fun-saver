@@ -6,7 +6,10 @@ import { getStore } from '@/db';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
-import { withAccountEditor } from '../with-account-access';
+import {
+  withAccountEditor,
+  type AccountRouteParams,
+} from '../with-account-access';
 
 jest.mock('@/auth');
 
@@ -31,34 +34,77 @@ describe('withAccountEditor', () => {
     );
   }
 
-  it('answers 401 without a session and never runs the handler', async () => {
-    jest.mocked(signedInUser).mockResolvedValue(undefined);
+  describe('without a session', () => {
+    let response: Response;
 
-    const response = await callGuarded(accountId);
+    beforeEach(async () => {
+      jest.mocked(signedInUser).mockResolvedValue(undefined);
+      response = await callGuarded(accountId);
+    });
 
-    expect(response.status).toBe(401);
-    expect(mockRouteHandler).not.toHaveBeenCalled();
+    it('answers 401', () => {
+      expect(response.status).toBe(401);
+    });
+
+    it('does not call the handler', () => {
+      expect(mockRouteHandler).not.toHaveBeenCalled();
+    });
   });
 
-  it('answers 403 to a member of no account and never runs the handler', async () => {
-    jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
+  describe('a stranger to the account', () => {
+    let response: Response;
 
-    const response = await callGuarded(accountId);
+    beforeEach(async () => {
+      jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
+      response = await callGuarded(accountId);
+    });
 
-    expect(response.status).toBe(403);
-    expect(mockRouteHandler).not.toHaveBeenCalled();
+    it('answers 403', () => {
+      expect(response.status).toBe(403);
+    });
+
+    it('does not call the handler', () => {
+      expect(mockRouteHandler).not.toHaveBeenCalled();
+    });
   });
 
-  it('passes a member through to the handler with the account id', async () => {
-    jest.mocked(signedInUser).mockResolvedValue(mockUser);
+  describe('a member', () => {
+    interface NestedRouteParams extends AccountRouteParams {
+      goalId: string;
+    }
 
-    const response = await callGuarded(accountId);
+    const mockGoalId = 'g1';
 
-    expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ edited: true });
-    expect(mockRouteHandler).toHaveBeenCalledWith(
-      expect.any(Request),
-      accountId
-    );
+    let response: Response;
+
+    beforeEach(async () => {
+      jest.mocked(signedInUser).mockResolvedValue(mockUser);
+      response = await withAccountEditor<NestedRouteParams>(mockRouteHandler)(
+        new Request('http://localhost/api/accounts/a1/goals/g1', {
+          method: 'DELETE',
+        }),
+        { params: Promise.resolve({ id: accountId, goalId: mockGoalId }) }
+      );
+    });
+
+    it("answers with the handler's response", async () => {
+      expect(await response.json()).toEqual({ edited: true });
+    });
+
+    it('passes the account id to the handler', () => {
+      expect(mockRouteHandler).toHaveBeenCalledWith(
+        expect.any(Request),
+        accountId,
+        expect.anything()
+      );
+    });
+
+    it('passes every route param to the handler', () => {
+      expect(mockRouteHandler).toHaveBeenCalledWith(
+        expect.any(Request),
+        expect.any(String),
+        { id: accountId, goalId: mockGoalId }
+      );
+    });
   });
 });

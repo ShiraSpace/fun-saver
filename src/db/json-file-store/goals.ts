@@ -46,14 +46,21 @@ export class JsonGoals implements GoalRepository {
   insertWithdrawalCompleting(
     withdrawal: Transaction,
     goalId: string
-  ): Promise<void> {
-    return this.session.write(async (contents, save): Promise<void> => {
-      endActiveGoal(
+  ): Promise<boolean> {
+    return this.session.write(async (contents, save): Promise<boolean> => {
+      const completedGoal = endActiveGoal(
         contents.goals,
         completedGoalEndRequest(withdrawal, goalId)
       );
+
+      if (!completedGoal) {
+        return false;
+      }
+
       contents.transactions.push(withdrawal);
       await save();
+
+      return true;
     });
   }
 }

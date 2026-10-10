@@ -1,8 +1,10 @@
+import { StatusCodes } from 'http-status-codes';
 import { API_ERRORS } from '@/app/api/constants';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { SIGN_IN_PATH } from '@/lib/user/constants';
+import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 import { goTo } from '../navigate';
-import { fetchJson } from '../fetch-json';
+import { fetchJson, RequestFailedError } from '../fetch-json';
 
 jest.mock('../navigate', () => ({ goTo: jest.fn() }));
 
@@ -15,25 +17,22 @@ const mockRequest = {
 } as const;
 
 describe('fetchJson', () => {
-  const originalFetch = global.fetch;
-  let fetchMock: jest.Mock;
+  let mockFetch: jest.Mock;
 
-  afterEach(() => {
-    global.fetch = originalFetch;
-  });
+  restoreFetchAfterEach();
 
   describe('when the route answers', () => {
     beforeEach(() => {
-      fetchMock = jest
+      mockFetch = jest
         .fn()
         .mockResolvedValue({ ok: true, json: async () => mockAccount });
-      global.fetch = fetchMock as unknown as typeof fetch;
+      stubFetch(mockFetch);
     });
 
     it('calls the given url with the given method', async () => {
       await fetchJson(mockRequest);
 
-      const [url, init] = fetchMock.mock.calls[0];
+      const [url, init] = mockFetch.mock.calls[0];
       expect(url).toBe(mockRequest.url);
       expect(init.method).toBe(mockRequest.method);
     });
@@ -41,7 +40,7 @@ describe('fetchJson', () => {
     it('sends the body as json', async () => {
       await fetchJson(mockRequest);
 
-      const [, init] = fetchMock.mock.calls[0];
+      const [, init] = mockFetch.mock.calls[0];
       expect(init.headers).toEqual({ 'Content-Type': 'application/json' });
       expect(JSON.parse(init.body)).toEqual(mockRequest.body);
     });
@@ -49,7 +48,7 @@ describe('fetchJson', () => {
     it('never accepts a cached answer', async () => {
       await fetchJson(mockRequest);
 
-      const [, init] = fetchMock.mock.calls[0];
+      const [, init] = mockFetch.mock.calls[0];
       expect(init.cache).toBe('no-store');
     });
 
@@ -60,11 +59,13 @@ describe('fetchJson', () => {
 
   describe('when the route refuses', () => {
     beforeEach(() => {
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: false,
-        status: 404,
-        json: async () => ({ error: API_ERRORS.accountNotFound }),
-      }) as unknown as typeof fetch;
+      stubFetch(
+        jest.fn().mockResolvedValue({
+          ok: false,
+          status: 404,
+          json: async () => ({ error: API_ERRORS.accountNotFound }),
+        })
+      );
     });
 
     it('throws rather than returning a body that is not there', async () => {
@@ -81,11 +82,13 @@ describe('fetchJson', () => {
   describe('when the session has expired', () => {
     beforeEach(() => {
       jest.mocked(goTo).mockClear();
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: false,
-        status: 401,
-        json: async () => ({ error: API_ERRORS.notSignedIn }),
-      }) as unknown as typeof fetch;
+      stubFetch(
+        jest.fn().mockResolvedValue({
+          ok: false,
+          status: 401,
+          json: async () => ({ error: API_ERRORS.notSignedIn }),
+        })
+      );
     });
 
     it('sends the browser to the sign-in page', async () => {
@@ -97,13 +100,54 @@ describe('fetchJson', () => {
 
   describe('when the connection fails', () => {
     beforeEach(() => {
-      global.fetch = jest
-        .fn()
-        .mockRejectedValue(connectionError) as unknown as typeof fetch;
+      stubFetch(jest.fn().mockRejectedValue(connectionError));
     });
 
     it('lets the failure through untouched', async () => {
       await expect(fetchJson(mockRequest)).rejects.toBe(connectionError);
+    });
+  });
+
+  describe('when the route answers with a conflict', () => {
+    let failure: unknown;
+
+    beforeEach(async () => {
+      stubFetch(
+        jest.fn().mockResolvedValue({
+          ok: false,
+          status: StatusCodes.CONFLICT,
+          json: async () => ({ error: API_ERRORS.goalNotActive }),
+        })
+      );
+      failure = await fetchJson(mockRequest).catch((error) => error);
+    });
+
+    it('throws a RequestFailedError', () => {
+      expect(failure).toBeInstanceOf(RequestFailedError);
+    });
+
+    it('carries the response status', () => {
+      expect(failure).toHaveProperty('status', StatusCodes.CONFLICT);
+    });
+  });
+
+  describe('a DELETE without a body', () => {
+    const mockDeleteRequest = {
+      url: '/api/accounts/a1/goals/g1',
+      method: 'DELETE',
+    } as const;
+
+    beforeEach(async () => {
+      mockFetch = jest
+        .fn()
+        .mockResolvedValue({ ok: true, json: async () => mockAccount });
+      stubFetch(mockFetch);
+      await fetchJson(mockDeleteRequest);
+    });
+
+    it('sends no body', () => {
+      const [, init] = mockFetch.mock.calls[0];
+      expect(init.body).toBeUndefined();
     });
   });
 });

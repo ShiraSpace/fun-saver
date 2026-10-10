@@ -16,12 +16,9 @@ Forward-looking ideas not yet scheduled. Add items freely; promote to `docs/plan
 
 Let the user set a concrete goal on the savings wallet to make the "delayed gratification" mechanic tangible.
 
-- **Data:** extend `Wallet` (or a `savings`-only sub-shape) with:
-  - `goalAmount` — target in agorot (integer, same unit as `amount`).
-  - `goalDescription` — short free text, e.g. `"bicycle"`, `"scooter"`.
-  - `goalIcon` — emoji or icon id, using the same registry pattern as wallet `icon` / account `avatar`.
+- **Data:** a `goals` table, not fields on `Wallet` — see `docs/superpowers/specs/2026-10-03-saving-goal-design.md` § Data.
 - **UI:** present the goal on the savings wallet card and in the account dashboard — target amount, description, icon, and progress toward the goal (e.g. progress bar). Requires design pass on the wallet card and possibly the drawer.
-- **Related policy:** unlocks enforcement of the _"withdrawal only when goal reached"_ rule described in `docs/the-method.md` — currently unenforced in code. Consider whether the two should ship together or in sequence.
+- **Related policy:** the _"withdrawal only when goal reached"_ rule in `docs/the-method.md` is enforced on the server (`SavingsLockedError`) while a goal is active.
 
 ### Allow fractional amounts in the "new action" input
 
@@ -31,10 +28,6 @@ The deposit/withdrawal amount input currently accepts whole units only. Allow no
 - **UI:** the numeric input should accept a decimal separator (both `.` and `,` — locale-dependent) with up to 2 decimal places.
 - **Display:** amounts already rendered as major units should show the decimal when non-zero (e.g. `₪5.50`, but `₪5` when whole).
 - **Validation:** reject more than 2 decimal places and negative values.
-
-## Product policy — not yet enforced in code
-
-- **Withdrawal-only-at-goal on `savings`** — see `docs/the-method.md`. Blocked on the savings-goal feature above.
 
 ## Open technical questions
 

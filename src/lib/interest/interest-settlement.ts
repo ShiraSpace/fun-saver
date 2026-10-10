@@ -71,7 +71,10 @@ async function settleAccountInterest({
   account,
   asOf,
 }: SettleAccountInterestParams): Promise<SettledAccount> {
-  const accountTransactions = await store.listTransactionsByAccount(account.id);
+  const [accountTransactions, goal] = await Promise.all([
+    store.listTransactionsByAccount(account.id),
+    store.getActiveGoal(account.id),
+  ]);
   const settledWallets = account.wallets.map((wallet) =>
     settleWalletInterest(wallet, {
       accountTransactions,
@@ -99,7 +102,7 @@ async function settleAccountInterest({
   ]);
 
   return {
-    account: { ...account, wallets },
+    account: { ...account, wallets, goal },
     transactions: settledTransactions,
   };
 }

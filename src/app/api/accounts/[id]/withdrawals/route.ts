@@ -2,12 +2,13 @@ import { getStore } from '@/db';
 import { addWithdrawal } from '@/lib/transaction/transactions';
 import { shekelsToAgorot } from '@/lib/money';
 import { OverdraftError } from '@/lib/transaction/errors';
+import { SavingsLockedError } from '@/lib/goal/errors';
 import { ValidationError } from '@/lib/errors';
 import { today } from '@/lib/clock';
 import { validWithdrawal } from '@/lib/transaction/transaction-input';
 import { jsonBody } from '@/app/api/json-body';
 import { API_ERRORS } from '@/app/api/constants';
-import { accountNotFound, badRequest } from '@/app/api/responses';
+import { accountNotFound, badRequest, conflict } from '@/app/api/responses';
 import { withAccountEditor } from '../with-account-access';
 
 export const POST = withAccountEditor(async (request, id) => {
@@ -35,6 +36,10 @@ export const POST = withAccountEditor(async (request, id) => {
 
     return Response.json(transaction);
   } catch (error) {
+    if (error instanceof SavingsLockedError) {
+      return conflict(API_ERRORS.savingsLocked);
+    }
+
     if (error instanceof ValidationError || error instanceof OverdraftError) {
       return badRequest(error.message);
     }

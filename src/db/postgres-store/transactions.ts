@@ -4,7 +4,7 @@ import type { TransactionRepository } from '../data-store';
 import { transactionFromRow, type TransactionRow } from '../rows';
 import { queryRows, type QueryParam, type Sql } from './query';
 
-const TRANSACTION_COLUMNS =
+export const TRANSACTION_COLUMNS =
   'id, wallet_id, account_id, type, amount, occurred_at, created_at';
 
 interface InsertValues {
@@ -12,7 +12,7 @@ interface InsertValues {
   placeholders: string;
 }
 
-function transactionValues(transaction: Transaction): QueryParam[] {
+export function transactionValues(transaction: Transaction): QueryParam[] {
   return [
     transaction.id,
     transaction.walletId,
@@ -45,7 +45,7 @@ function insertValues(transactions: Transaction[]): InsertValues {
 export class PostgresTransactions implements TransactionRepository {
   constructor(private readonly sql: Sql) {}
 
-  insertStatement(transactions: Transaction[]): ReturnType<Sql> {
+  private insertStatement(transactions: Transaction[]): ReturnType<Sql> {
     const { values, placeholders } = insertValues(transactions);
 
     return this.sql.query(

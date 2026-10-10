@@ -772,8 +772,8 @@ It also triggers the **goal-gradient effect** — effort rises as the goal nears
 Goal-setting theory (Locke & Latham): specific, challenging, proximal goals
 outperform "do your best". For a 7-year-old that means **one** goal at a time,
 with a **photo/icon**, a **name**, and a **number** — which is exactly the
-`goalAmount` / `goalDescription` / `goalIcon` shape already specified in
-`docs/backlog.md`.
+goal's `name`, `picture` and `amount` in the `goals` table specified in
+`docs/superpowers/specs/2026-10-03-saving-goal-design.md` § Data.
 
 ### 10.3 The goal-lock is the commitment device
 

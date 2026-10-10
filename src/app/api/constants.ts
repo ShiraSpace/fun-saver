@@ -8,4 +8,8 @@ export const API_ERRORS = {
   invalidWithdrawal: 'invalid withdrawal',
   invalidThemeRequest: 'invalid theme request',
   unknownTheme: 'unknown theme',
+  invalidGoal: 'invalid goal',
+  goalAlreadyActive: 'a goal is already active',
+  goalNotActive: 'goal is not active',
+  savingsLocked: 'savings are kept until the goal is reached',
 } as const;

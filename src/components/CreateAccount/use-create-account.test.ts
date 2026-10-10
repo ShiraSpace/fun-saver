@@ -3,27 +3,24 @@ import {
   mockAccount,
   mockCreateAccountInput,
 } from '@/test-utils/mocks/account.mocks';
+import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 import { useCreateAccount } from './use-create-account';
 
 describe('useCreateAccount', () => {
-  const originalFetch = global.fetch;
-
-  afterEach(() => {
-    global.fetch = originalFetch;
-  });
+  restoreFetchAfterEach();
 
   it('posts the new account to the accounts endpoint and returns it', async () => {
-    const fetchMock = jest
+    const mockFetch = jest
       .fn()
       .mockResolvedValue({ ok: true, json: async () => mockAccount });
-    global.fetch = fetchMock as unknown as typeof fetch;
+    stubFetch(mockFetch);
 
     const { result } = renderHook(() => useCreateAccount());
     const account = await result.current.createAccount(mockCreateAccountInput);
 
     expect(account).toEqual(mockAccount);
 
-    const [url, init] = fetchMock.mock.calls[0];
+    const [url, init] = mockFetch.mock.calls[0];
     expect(url).toBe('/api/accounts');
     expect(init.method).toBe('POST');
     expect(init.cache).toBe('no-store');
@@ -31,9 +28,7 @@ describe('useCreateAccount', () => {
   });
 
   it('throws when the request fails', async () => {
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue({ ok: false }) as unknown as typeof fetch;
+    stubFetch(jest.fn().mockResolvedValue({ ok: false }));
 
     const { result } = renderHook(() => useCreateAccount());
 

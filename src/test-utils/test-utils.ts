@@ -22,22 +22,26 @@ export function withCleanEnv(keys: readonly string[]): void {
   });
 }
 
-export function withTempStoreEnv(): void {
+export interface TempStoreFile {
+  path: string;
+}
+
+export function withTempStoreEnv(): TempStoreFile {
+  const file: TempStoreFile = { path: '' };
   let directory: string;
 
   beforeEach(() => {
     directory = mkdtempSync(join(tmpdir(), 'funsaver-'));
-    mutableEnv.FUNSAVER_DATA_PATH = join(directory, 'data.json');
+    file.path = join(directory, 'data.json');
+    mutableEnv.FUNSAVER_DATA_PATH = file.path;
   });
 
   afterEach(() => {
     delete mutableEnv.FUNSAVER_DATA_PATH;
     rmSync(directory, { recursive: true, force: true });
   });
-}
 
-export interface TempStoreFile {
-  path: string;
+  return file;
 }
 
 export function withTempStoreFile(): TempStoreFile {

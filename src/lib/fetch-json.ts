@@ -4,8 +4,17 @@ import { goTo } from './navigate';
 
 interface JsonRequest {
   url: string;
-  method: 'POST' | 'PUT';
-  body: unknown;
+  method: 'POST' | 'PUT' | 'DELETE';
+  body?: unknown;
+}
+
+export class RequestFailedError extends Error {
+  constructor(
+    message: string,
+    readonly status: number
+  ) {
+    super(message);
+  }
 }
 
 export async function fetchJson<Result>({
@@ -25,7 +34,10 @@ export async function fetchJson<Result>({
   }
 
   if (!response.ok) {
-    throw new Error(`${method} ${url} failed with ${response.status}`);
+    throw new RequestFailedError(
+      `${method} ${url} failed with ${response.status}`,
+      response.status
+    );
   }
 
   return response.json();

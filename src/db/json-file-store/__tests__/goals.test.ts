@@ -66,26 +66,39 @@ describe('JsonFileStore goals', () => {
         expect(endedAgain).toBeUndefined();
       });
 
-      it('records a withdrawal that would complete a goal already cancelled, and leaves the goal cancelled', async () => {
-        const mockWithdrawal = createMockWithdrawal(createMockWallet());
-        await store.endGoal({
-          goalId: mockGoal.id,
-          accountId: mockAccount.id,
-          endedAt: mockCancelledAt,
-          ending: GOAL_ENDING.cancelled,
-        });
+      describe('a withdrawal completing a goal already cancelled', () => {
+        let wroteWithdrawal: boolean;
 
-        await store.insertWithdrawalCompletingGoal(mockWithdrawal, mockGoal.id);
-
-        const storeContents = storedContents(file.path);
-        expect(storeContents.transactions).toEqual([mockWithdrawal]);
-        expect(storeContents.goals).toEqual([
-          {
-            ...mockGoal,
+        beforeEach(async () => {
+          await store.endGoal({
+            goalId: mockGoal.id,
+            accountId: mockAccount.id,
             endedAt: mockCancelledAt,
             ending: GOAL_ENDING.cancelled,
-          },
-        ]);
+          });
+          wroteWithdrawal = await store.insertWithdrawalCompletingGoal(
+            createMockWithdrawal(createMockWallet()),
+            mockGoal.id
+          );
+        });
+
+        it('records nothing', () => {
+          expect(storedContents(file.path).transactions).toEqual([]);
+        });
+
+        it('answers that it wrote nothing', () => {
+          expect(wroteWithdrawal).toBe(false);
+        });
+
+        it('leaves the goal cancelled', () => {
+          expect(storedContents(file.path).goals).toEqual([
+            {
+              ...mockGoal,
+              endedAt: mockCancelledAt,
+              ending: GOAL_ENDING.cancelled,
+            },
+          ]);
+        });
       });
     });
   });

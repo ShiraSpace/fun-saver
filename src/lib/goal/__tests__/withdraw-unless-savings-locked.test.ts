@@ -3,10 +3,11 @@ import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { createMockWithdrawal } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallet } from '@/test-utils/mocks/wallet.mocks';
+import { GOAL_ENDING } from '../constants';
 import { SavingsLockedError } from '../errors';
-import { withdrawFromSavings } from '../savings-withdrawal';
+import { withdrawUnlessSavingsLocked } from '../withdraw-unless-savings-locked';
 
-describe('withdrawFromSavings', () => {
+describe('withdrawUnlessSavingsLocked', () => {
   const mockWithdrawal = createMockWithdrawal(createMockWallet());
   let store: InMemoryStore;
 
@@ -15,11 +16,11 @@ describe('withdrawFromSavings', () => {
   });
 
   it('records the withdrawal as before when there is no goal', async () => {
-    await withdrawFromSavings({
+    await withdrawUnlessSavingsLocked({
       store,
       withdrawal: mockWithdrawal,
       goal: undefined,
-      savingsBalance: 0,
+      walletBalance: 0,
     });
 
     expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
@@ -31,11 +32,11 @@ describe('withdrawFromSavings', () => {
     await store.insertGoal(mockGoal);
 
     await expect(
-      withdrawFromSavings({
+      withdrawUnlessSavingsLocked({
         store,
         withdrawal: mockWithdrawal,
         goal: mockGoal,
-        savingsBalance: mockGoal.amount - 1,
+        walletBalance: mockGoal.amount - 1,
       })
     ).rejects.toThrow(SavingsLockedError);
 
@@ -46,16 +47,44 @@ describe('withdrawFromSavings', () => {
   it('ends a reached goal with the withdrawal', async () => {
     await store.insertGoal(mockGoal);
 
-    await withdrawFromSavings({
+    await withdrawUnlessSavingsLocked({
       store,
       withdrawal: mockWithdrawal,
       goal: mockGoal,
-      savingsBalance: mockGoal.amount,
+      walletBalance: mockGoal.amount,
     });
 
     expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
       mockWithdrawal,
     ]);
     expect(await store.getActiveGoal(mockAccount.id)).toBeUndefined();
+  });
+
+  describe('a reached goal cancelled after it was read', () => {
+    let refusal: unknown;
+
+    beforeEach(async () => {
+      await store.insertGoal(mockGoal);
+      await store.endGoal({
+        goalId: mockGoal.id,
+        accountId: mockAccount.id,
+        endedAt: mockGoal.startedAt,
+        ending: GOAL_ENDING.cancelled,
+      });
+      refusal = await withdrawUnlessSavingsLocked({
+        store,
+        withdrawal: mockWithdrawal,
+        goal: mockGoal,
+        walletBalance: mockGoal.amount,
+      }).catch((error) => error);
+    });
+
+    it('refuses with SavingsLockedError', () => {
+      expect(refusal).toBeInstanceOf(SavingsLockedError);
+    });
+
+    it('records nothing', async () => {
+      expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([]);
+    });
   });
 });
