@@ -1,0 +1,1 @@
+export { GoalProgressBar } from './GoalProgressBar';
