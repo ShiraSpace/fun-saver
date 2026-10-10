@@ -1,6 +1,17 @@
 import { Context, JSX } from 'react';
-import { render, screen, type RenderResult } from '@testing-library/react';
-import { LoaderProvider, LinkLoaderReporter } from '../loader-context';
+import {
+  render,
+  renderHook,
+  screen,
+  type RenderResult,
+} from '@testing-library/react';
+import {
+  LoaderProvider,
+  LinkLoaderReporter,
+  useIsLoaderShown,
+  useReportLoader,
+} from '../loader-context';
+import { missingProviderMessage } from '../create-required-context';
 import {
   IS_LOADER_SHOWN_TEST_ID,
   IsLoaderShown,
@@ -70,6 +81,20 @@ describe('the loader', () => {
 
     expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
       'false'
+    );
+  });
+});
+
+describe('the loader without a LoaderProvider', () => {
+  it('refuses to guess whether it is shown', () => {
+    expect(() => renderHook(() => useIsLoaderShown())).toThrow(
+      missingProviderMessage('LoaderProvider')
+    );
+  });
+
+  it('refuses a report of pending work', () => {
+    expect(() => renderHook(() => useReportLoader(true))).toThrow(
+      missingProviderMessage('LoaderProvider')
     );
   });
 });

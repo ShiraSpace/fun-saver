@@ -6,8 +6,7 @@ import {
   IsLoaderShown,
 } from '@/test-utils/is-loader-shown';
 import { useRefreshBalances } from './use-refresh-balances';
-
-const SHOW_NEW_BALANCES_TEST_ID = 'show-new-balances';
+import { REFRESH_BALANCES_TEST_IDS } from './constants';
 
 interface NewBalancesProps {
   arriving: Promise<void> | null;
@@ -39,7 +38,7 @@ function AccountScreen({ newBalances }: AccountScreenProps): JSX.Element {
         <NewBalances arriving={arriving} />
       </Suspense>
       <button
-        data-testid={SHOW_NEW_BALANCES_TEST_ID}
+        data-testid={REFRESH_BALANCES_TEST_IDS.showNewBalances}
         onClick={refreshBalances}
       />
       <IsLoaderShown />
@@ -58,7 +57,9 @@ describe('useRefreshBalances', () => {
     mockRouter.refresh.mockReset();
     render(<AccountScreen newBalances={mockNewBalances} />);
     await act(async () =>
-      fireEvent.click(screen.getByTestId(SHOW_NEW_BALANCES_TEST_ID))
+      fireEvent.click(
+        screen.getByTestId(REFRESH_BALANCES_TEST_IDS.showNewBalances)
+      )
     );
   });
 
