@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { captureCookies } from '@/test-utils/cookies';
 import { VIEW_MODE_COOKIE } from '@/lib/cookies';
-import { VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/view-mode';
 import { useViewMode, ViewModeProvider } from './view-mode-context';
 import { VIEW_MODE_PROBE_TEST_IDS } from './constants';
 

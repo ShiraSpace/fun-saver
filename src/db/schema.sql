@@ -10,8 +10,7 @@ CREATE TABLE IF NOT EXISTS accounts (
   wallets   JSONB NOT NULL DEFAULT '[]'::jsonb
 );
 
-ALTER TABLE accounts ADD COLUMN IF NOT EXISTS view_mode TEXT NOT NULL DEFAULT 'parent'
-  CHECK (view_mode IN ('parent', 'child'));
+ALTER TABLE accounts DROP COLUMN IF EXISTS view_mode;
 
 CREATE TABLE IF NOT EXISTS transactions (
   id          TEXT PRIMARY KEY,

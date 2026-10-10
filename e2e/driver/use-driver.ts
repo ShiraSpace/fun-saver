@@ -3,7 +3,7 @@ import { dirname } from 'node:path';
 import { after, afterEach, before, beforeEach } from 'node:test';
 import type { CookieData } from 'puppeteer';
 import type { StoreContents } from '@/db/data-store';
-import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import { VIEW_MODE_COOKIE } from '@/lib/cookies';
 import {
   createMockAccountUser,

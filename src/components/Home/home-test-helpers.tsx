@@ -15,7 +15,7 @@ import {
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { AccountSummary } from '@/lib/account/types';
-import type { ViewMode } from '@/lib/account/view-mode';
+import type { ViewMode } from '@/lib/view-mode';
 import { Home } from './Home';
 
 export const accounts: AccountSummary[] = [

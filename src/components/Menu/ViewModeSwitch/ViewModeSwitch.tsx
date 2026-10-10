@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/view-mode';
 import { useViewModeSwitch } from './use-view-mode-switch';
 import { VIEW_MODE_SWITCH_COPY, VIEW_MODE_SWITCH_TEST_IDS } from './constants';
 import { Knob, Row, Track } from './ViewModeSwitch.styles';

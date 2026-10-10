@@ -1,7 +1,8 @@
 # Child mode for the whole app, on this phone
 
-> Status: PR 1 **merged** as #193 (2026-10-05); PR 2 **merged** as #195
-> (2026-10-10); PR 3 next, once PR 1 is deployed to production. Mockup:
+> Status: **done**. PR 1 **merged** as #193 (2026-10-05); PR 2 **merged** as #195
+> (2026-10-10); PR 3 **merged** as #197 (2026-10-10); PR 4 **merged** as #198
+> (2026-10-10). Mockup:
 > `mockups/global-child-mode.html`. Replaces the per-account view mode from
 > `.plans/2026-10-03-child-mode.md` and the unbuilt PRs 2–3 of
 > `.plans/2026-10-04-child-account-switcher.md` (#191 is superseded).
@@ -257,6 +258,15 @@ size, in a non-default theme too. Screenshots in the PR (`pr-screenshots`).
 
 ## PR 3 — accounts stop carrying a view mode
 
+> **Merged** as #197 (`2e017e3`). Where the build differs from the text below:
+> - The child-account mocks (`mockChildAccountSummary`,
+>   `createMockChildAccountsContext`, `mockChildAccountsContext`) went too:
+>   with no `viewMode` to set, they were copies of the parent ones.
+> - The e2e suite "an account stored in child view, on a phone in parent
+>   mode" went: there is nothing left on the account to store.
+> - `MenuContent` gained "a parent viewing an account does not see the child
+>   menu", which the deleted saved-in-child-view case had covered.
+
 Cleanup once PR 1 is deployed to production.
 
 - Delete `PUT /api/accounts/[id]/view-mode` and its tests,
@@ -273,6 +283,12 @@ Cleanup once PR 1 is deployed to production.
   meaning changed in PR 1). `childView` stays under "Not".
 
 ## PR 4 — drop the column (after PR 3 is deployed to production)
+
+> **Merged** as #198. Where the build differs from the text below:
+> - The column is already dropped on test, dev and production (2026-10-10),
+>   before the merge.
+> - The usage report (`fun-saver-usage-stats`, #169) read `view_mode`; it stops
+>   reading it here.
 
 In `schema.sql`, the `ADD COLUMN IF NOT EXISTS view_mode …` lines are
 **replaced** by `ALTER TABLE accounts DROP COLUMN IF EXISTS view_mode;` (its
