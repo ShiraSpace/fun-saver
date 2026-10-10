@@ -3,16 +3,22 @@ import type { WalletName } from '@/lib/wallet/types';
 import { WALLET_GRADIENT } from '@/theme/wallet-gradient';
 import { WALLET_TILE_STYLE } from './constants';
 
-export const Tile = styled.button<{ selected: boolean }>`
+export const Tile = styled.button<{ selected: boolean; locked: boolean }>`
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: ${WALLET_TILE_STYLE.contentGap}px;
   border-radius: ${WALLET_TILE_STYLE.radius}px;
-  border: ${WALLET_TILE_STYLE.borderWidth}px solid
-    ${({ theme, selected }): string =>
-      selected ? theme.colors.primary : 'transparent'};
+  border: ${WALLET_TILE_STYLE.borderWidth}px
+    ${({ locked }): string => (locked ? 'dashed' : 'solid')}
+    ${({ theme, selected, locked }): string =>
+      selected
+        ? locked
+          ? theme.colors.textMuted
+          : theme.colors.primary
+        : 'transparent'};
   background: ${({ theme }): string => theme.colors.softBg};
   cursor: pointer;
   font-family: inherit;
@@ -53,4 +59,20 @@ export const Amount = styled.span`
   font-size: ${({ theme }): number => theme.typography.body}px;
   font-weight: 700;
   color: ${({ theme }): string => theme.colors.textStrong};
+`;
+
+export const LockTag = styled.span`
+  position: absolute;
+  top: -8px;
+  inset-inline-end: 6px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  background: ${({ theme }): string => theme.colors.surface};
+  box-shadow: 0 1px 3px ${({ theme }): string => theme.shadows.mid};
+`;
+
+export const LockNote = styled.span`
+  font-size: 10px;
+  color: ${({ theme }): string => theme.colors.textMuted};
 `;

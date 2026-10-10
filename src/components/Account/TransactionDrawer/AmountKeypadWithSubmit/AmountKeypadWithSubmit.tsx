@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX } from 'react';
+import { JSX, ReactNode } from 'react';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { AmountKeypad } from '../AmountKeypad';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
@@ -10,20 +10,24 @@ interface AmountKeypadWithSubmitProps {
   entry: AmountEntry;
   canSubmit: boolean;
   submitLabel: string;
+  inPlaceOfKeypad?: ReactNode;
 }
 
 export function AmountKeypadWithSubmit({
   entry,
   canSubmit,
   submitLabel,
+  inPlaceOfKeypad,
 }: AmountKeypadWithSubmitProps): JSX.Element {
   return (
     <>
-      <AmountKeypad
-        onDigit={entry.onDigit}
-        onClear={entry.onClear}
-        onBackspace={entry.onBackspace}
-      />
+      {inPlaceOfKeypad ?? (
+        <AmountKeypad
+          onDigit={entry.onDigit}
+          onClear={entry.onClear}
+          onBackspace={entry.onBackspace}
+        />
+      )}
       <PrimaryButton
         type="button"
         data-testid={TRANSACTION_DRAWER_TEST_IDS.submit}

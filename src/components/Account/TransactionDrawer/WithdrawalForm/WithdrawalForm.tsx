@@ -2,7 +2,6 @@
 
 import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
-import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { REQUEST_STATE } from '@/lib/request-state';
 import { Money } from '@/components/Money';
@@ -10,7 +9,8 @@ import { WalletPicker } from '../WalletPicker';
 import { AmountKeypadWithSubmit } from '../AmountKeypadWithSubmit';
 import { useWithdrawalForm } from '../use-withdrawal-form';
 import { DrawerTitle } from '../drawer-parts';
-import { WithdrawalAlert } from './WithdrawalAlert';
+import { LockedSavings } from './LockedSavings';
+import { SelectedWalletNote } from './SelectedWalletNote';
 import { withdrawalCopy } from './withdrawal-copy';
 import { WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { AmountValue } from './WithdrawalForm.styles';
@@ -24,10 +24,9 @@ export function WithdrawalForm({
   account,
   onClose,
 }: WithdrawalFormProps): JSX.Element {
-  const wallets = account.wallets;
-  const form = useWithdrawalForm(account.id, wallets, onClose);
+  const form = useWithdrawalForm(account, onClose);
   const { title, submitLabel } = withdrawalCopy(form);
-  const hasSaveFailed = form.requestState === REQUEST_STATE.failed;
+  const lockedGoal = form.isSavingsLocked ? form.savedTowardGoal : undefined;
 
   return (
     <>
@@ -39,19 +38,22 @@ export function WithdrawalForm({
         />
       </AmountValue>
       <WalletPicker
-        wallets={wallets}
+        wallets={account.wallets}
         selectedWalletId={form.selectedWalletId}
         onSelect={form.onSelectWallet}
+        savedTowardGoal={form.savedTowardGoal}
       />
-      <WithdrawalAlert
-        isOverdraft={form.isOverdraft}
-        hasError={hasSaveFailed}
-        balanceShekels={agorotToShekels(form.selectedBalance)}
+      <SelectedWalletNote
+        {...form}
+        hasError={form.requestState === REQUEST_STATE.failed}
       />
       <AmountKeypadWithSubmit
         entry={form}
         canSubmit={form.canSubmit}
         submitLabel={submitLabel}
+        inPlaceOfKeypad={
+          lockedGoal && <LockedSavings savedTowardGoal={lockedGoal} />
+        }
       />
     </>
   );

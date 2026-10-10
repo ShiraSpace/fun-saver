@@ -4,6 +4,7 @@ import { WITHDRAWAL_FORM_COPY } from './constants';
 
 interface WithdrawalCopyInput {
   isDonation: boolean;
+  isSavingsLocked: boolean;
   requestState: RequestState;
   amountShekels: number;
 }
@@ -13,22 +14,32 @@ interface WithdrawalCopy {
   submitLabel: string;
 }
 
-export function withdrawalCopy({
+function submitLabel({
   isDonation,
+  isSavingsLocked,
   requestState,
   amountShekels,
-}: WithdrawalCopyInput): WithdrawalCopy {
+}: WithdrawalCopyInput): string {
+  if (isSavingsLocked) {
+    return WITHDRAWAL_FORM_COPY.savingsLockedSubmit;
+  }
+
+  if (requestState === REQUEST_STATE.pending) {
+    return WITHDRAWAL_FORM_COPY.submitting;
+  }
+
   const submitVerb = isDonation
     ? WITHDRAWAL_FORM_COPY.donationSubmit
     : WITHDRAWAL_FORM_COPY.submit;
 
+  return `${submitVerb} ${MONEY_COPY.currencySign}${amountShekels}`;
+}
+
+export function withdrawalCopy(input: WithdrawalCopyInput): WithdrawalCopy {
   return {
-    title: isDonation
+    title: input.isDonation
       ? WITHDRAWAL_FORM_COPY.donationTitle
       : WITHDRAWAL_FORM_COPY.title,
-    submitLabel:
-      requestState === REQUEST_STATE.pending
-        ? WITHDRAWAL_FORM_COPY.submitting
-        : `${submitVerb} ${MONEY_COPY.currencySign}${amountShekels}`,
+    submitLabel: submitLabel(input),
   };
 }
