@@ -1,8 +1,6 @@
 'use client';
 
 import {
-  createContext,
-  useContext,
   useEffect,
   useState,
   type Dispatch,
@@ -13,14 +11,13 @@ import {
 import { useLinkStatus } from 'next/link';
 import { createRequiredContext } from './create-required-context';
 
-const PendingLoadersContext = createContext<Dispatch<SetStateAction<number>>>(
-  () => {}
-);
+interface Loader {
+  isLoaderShown: boolean;
+  setPendingLoaderCount: Dispatch<SetStateAction<number>>;
+}
 
-const [IsLoaderShownProvider, useIsLoaderShown] =
-  createRequiredContext<boolean>('LoaderProvider');
-
-export { useIsLoaderShown };
+const [LoaderContextProvider, useLoader] =
+  createRequiredContext<Loader>('LoaderProvider');
 
 interface LoaderProviderProps {
   children: ReactNode;
@@ -28,18 +25,22 @@ interface LoaderProviderProps {
 
 export function LoaderProvider({ children }: LoaderProviderProps): JSX.Element {
   const [pendingLoaderCount, setPendingLoaderCount] = useState(0);
+  const loader: Loader = {
+    isLoaderShown: pendingLoaderCount > 0,
+    setPendingLoaderCount,
+  };
 
   return (
-    <PendingLoadersContext.Provider value={setPendingLoaderCount}>
-      <IsLoaderShownProvider value={pendingLoaderCount > 0}>
-        {children}
-      </IsLoaderShownProvider>
-    </PendingLoadersContext.Provider>
+    <LoaderContextProvider value={loader}>{children}</LoaderContextProvider>
   );
 }
 
+export function useIsLoaderShown(): boolean {
+  return useLoader().isLoaderShown;
+}
+
 export function useReportLoader(isPending: boolean): void {
-  const setPendingLoaderCount = useContext(PendingLoadersContext);
+  const { setPendingLoaderCount } = useLoader();
 
   useEffect((): (() => void) | undefined => {
     if (!isPending) {
