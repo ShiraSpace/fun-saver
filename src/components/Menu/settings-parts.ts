@@ -3,7 +3,7 @@ import type { Theme } from '@emotion/react';
 import { MENU_LAYOUT, MENU_ROW_STYLE } from './constants';
 
 const sectionBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.accountScopeBorder;
+  theme.colors.settingsBorder;
 
 const stripe = ({ theme }: { theme: Theme }): string => theme.colors.softBorder;
 

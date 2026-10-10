@@ -19,8 +19,8 @@ export interface ThemeColors {
   readonly softBg: string;
   readonly softBorder: string;
   readonly softText: string;
-  readonly accountScopeBg: string;
-  readonly accountScopeBorder: string;
+  readonly settingsBg: string;
+  readonly settingsBorder: string;
   readonly depositBg: string;
   readonly gainText: string;
   readonly gainSoftBg: string;
