@@ -4,6 +4,7 @@ import type { GoalPicture } from '@/lib/goal/types';
 import { createMockGoalPicture } from '@/test-utils/mocks/goal.mocks';
 import { ESCAPE_KEY, KEY_DOWN_EVENT } from '@/hooks/constants';
 import { LAYERS } from '@/theme/layers';
+import { layerOf } from '@/test-utils/layer';
 import { PICTURE_TILE_TEST_IDS } from './PictureTiles/PictureTile/constants';
 import { GoalPictureSearch } from './GoalPictureSearch';
 import { GOAL_PICTURE_SEARCH_TEST_IDS } from './constants';
@@ -33,12 +34,6 @@ async function renderLoadedSheet(picture: GoalPicture | null): Promise<void> {
   );
 }
 
-function tilePictures(): (string | null)[] {
-  return screen
-    .getAllByTestId(PICTURE_TILE_TEST_IDS.pictureTile)
-    .map((tile) => tile.textContent);
-}
-
 describe('GoalPictureSearch', () => {
   beforeEach(() => {
     mockOnChange.mockClear();
@@ -47,6 +42,12 @@ describe('GoalPictureSearch', () => {
 
   describe('opened with no picture', () => {
     const mockGoalNamePicture = '🚲';
+
+    function tilePictures(): (string | null)[] {
+      return screen
+        .getAllByTestId(PICTURE_TILE_TEST_IDS.pictureTile)
+        .map((tile) => tile.textContent);
+    }
 
     beforeEach(async () => {
       await renderLoadedSheet(null);
@@ -63,21 +64,14 @@ describe('GoalPictureSearch', () => {
     });
 
     it('dims whatever modal it opens over', () => {
-      expect(
-        Number(
-          getComputedStyle(
-            screen.getByTestId(GOAL_PICTURE_SEARCH_TEST_IDS.scrim)
-          ).zIndex
-        )
-      ).toBeGreaterThan(LAYERS.modalForeground);
+      expect(layerOf(GOAL_PICTURE_SEARCH_TEST_IDS.scrim)).toBeGreaterThan(
+        LAYERS.modalForeground
+      );
     });
 
     it('keeps the sheet above its own dimming', () => {
-      const zIndexOf = (testId: string): number =>
-        Number(getComputedStyle(screen.getByTestId(testId)).zIndex);
-
-      expect(zIndexOf(GOAL_PICTURE_SEARCH_TEST_IDS.sheet)).toBeGreaterThan(
-        zIndexOf(GOAL_PICTURE_SEARCH_TEST_IDS.scrim)
+      expect(layerOf(GOAL_PICTURE_SEARCH_TEST_IDS.sheet)).toBeGreaterThan(
+        layerOf(GOAL_PICTURE_SEARCH_TEST_IDS.scrim)
       );
     });
 

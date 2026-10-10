@@ -6,6 +6,7 @@ import { WALLET_PICKER_TEST_IDS } from './WalletPicker/constants';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockRouter } from '@mocks/next/navigation';
 import { LAYERS } from '@/theme/layers';
+import { layerOf } from '@/test-utils/layer';
 
 jest.mock('./use-add-transaction', () => ({
   useAddTransaction: (): {
@@ -35,20 +36,12 @@ describe('TransactionDrawer', () => {
   });
 
   it('dims at the modal layer', () => {
-    expect(
-      Number(
-        getComputedStyle(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.scrim))
-          .zIndex
-      )
-    ).toBe(LAYERS.modal);
+    expect(layerOf(TRANSACTION_DRAWER_TEST_IDS.scrim)).toBe(LAYERS.modal);
   });
 
   it('keeps the drawer above its own dimming', () => {
-    const zIndexOf = (testId: string): number =>
-      Number(getComputedStyle(screen.getByTestId(testId)).zIndex);
-
-    expect(zIndexOf(TRANSACTION_DRAWER_TEST_IDS.drawer)).toBeGreaterThan(
-      zIndexOf(TRANSACTION_DRAWER_TEST_IDS.scrim)
+    expect(layerOf(TRANSACTION_DRAWER_TEST_IDS.drawer)).toBeGreaterThan(
+      layerOf(TRANSACTION_DRAWER_TEST_IDS.scrim)
     );
   });
 
