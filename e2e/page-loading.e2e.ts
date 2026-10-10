@@ -102,7 +102,7 @@ describe('waiting for a page', () => {
       await menu.open();
       await menu.tapHomeTab();
       await nextPage.requested;
-      await appBrowser.waitForTestId(HEADER_TEST_IDS.progress);
+      await appBrowser.waits.testId(HEADER_TEST_IDS.progress);
       await header.tapHomeLink();
       await nextPage.settle();
     });
@@ -122,7 +122,7 @@ describe('waiting for a page', () => {
 
         await journey.leave();
         await nextPage.requested;
-        await appBrowser.waitForAnyTestId(SIGNS_OF_WAITING);
+        await appBrowser.waits.anyTestId(SIGNS_OF_WAITING);
       });
 
       it('keeps the page it is leaving on screen', async () => {

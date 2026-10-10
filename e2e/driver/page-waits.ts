@@ -1,90 +1,75 @@
 import { type Page } from 'puppeteer';
 import { findByTest } from './page-element';
 
-interface StyleWait {
-  page: Page;
-  selector: string;
-  property: string;
-  value: string;
-}
+export class PageWaits {
+  constructor(private readonly currentPage: () => Page) {}
 
-interface ElementWait {
-  page: Page;
-  testId: string;
-}
+  async testId(testId: string): Promise<void> {
+    await findByTest(this.currentPage(), testId);
+  }
 
-interface ContentWait {
-  page: Page;
-  testId: string;
-  expected: string;
-}
+  async testIdGone(testId: string): Promise<void> {
+    await this.currentPage().waitForSelector(`[data-testid="${testId}"]`, {
+      hidden: true,
+    });
+  }
 
-export async function waitForTestId({
-  page,
-  testId,
-}: ElementWait): Promise<void> {
-  await findByTest(page, testId);
-}
+  async anyTestId(testIds: readonly string[]): Promise<void> {
+    await this.currentPage().waitForSelector(
+      testIds.map((testId) => `[data-testid="${testId}"]`).join(', ')
+    );
+  }
 
-export async function waitForAnyTestId(
-  page: Page,
-  testIds: readonly string[]
-): Promise<void> {
-  await page.waitForSelector(
-    testIds.map((testId) => `[data-testid="${testId}"]`).join(', ')
-  );
-}
+  async style(
+    selector: string,
+    property: string,
+    value: string
+  ): Promise<void> {
+    await this.currentPage().waitForFunction(
+      (selector, property, expected) =>
+        getComputedStyle(
+          document.querySelector(selector) as Element
+        ).getPropertyValue(property) === expected,
+      {},
+      selector,
+      property,
+      value
+    );
+  }
 
-export async function waitForStyle({
-  page,
-  selector,
-  property,
-  value,
-}: StyleWait): Promise<void> {
-  await page.waitForFunction(
-    (selector, property, expected) =>
-      getComputedStyle(
-        document.querySelector(selector) as Element
-      ).getPropertyValue(property) === expected,
-    {},
-    selector,
-    property,
-    value
-  );
-}
+  async text(testId: string, expected: string): Promise<void> {
+    await this.currentPage().waitForFunction(
+      (testId, expected) => {
+        const element = document.querySelector(`[data-testid="${testId}"]`);
+        return (
+          element !== null && (element.textContent ?? '').includes(expected)
+        );
+      },
+      {},
+      testId,
+      expected
+    );
+  }
 
-export async function waitForText({
-  page,
-  testId,
-  expected,
-}: ContentWait): Promise<void> {
-  await page.waitForFunction(
-    (testId, expected) => {
-      const element = document.querySelector(`[data-testid="${testId}"]`);
-      return element !== null && (element.textContent ?? '').includes(expected);
-    },
-    {},
-    testId,
-    expected
-  );
-}
+  async imageSource(testId: string, expected: string): Promise<void> {
+    await this.currentPage().waitForFunction(
+      (testId, expected) => {
+        const node = document.querySelector(`[data-testid="${testId}"]`);
+        const source =
+          node?.getAttribute('src') ??
+          node?.querySelector('img')?.getAttribute('src') ??
+          '';
+        return source.includes(expected);
+      },
+      {},
+      testId,
+      expected
+    );
+  }
 
-export async function waitForImageSource({
-  page,
-  testId,
-  expected,
-}: ContentWait): Promise<void> {
-  await page.waitForFunction(
-    (testId, expected) => {
-      const node = document.querySelector(`[data-testid="${testId}"]`);
-      const source =
-        node?.getAttribute('src') ??
-        node?.querySelector('img')?.getAttribute('src') ??
-        '';
-      return source.includes(expected);
-    },
-    {},
-    testId,
-    expected
-  );
+  async navigation(): Promise<void> {
+    await this.currentPage().waitForNavigation({
+      waitUntil: 'domcontentloaded',
+    });
+  }
 }

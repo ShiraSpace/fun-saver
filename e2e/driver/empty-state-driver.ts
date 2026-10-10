@@ -35,7 +35,7 @@ export class EmptyStateDriver {
   }
 
   waitForCtaToLift(): Promise<void> {
-    return this.appBrowser.waitForStyle(
+    return this.appBrowser.waits.style(
       `[data-testid="${EMPTY_STATE_TEST_IDS.createAccount}"]`,
       'transform',
       `matrix(1, 0, 0, 1, 0, -${PRIMARY_BUTTON.hoverLift})`
@@ -43,7 +43,7 @@ export class EmptyStateDriver {
   }
 
   waitForPigToOink(): Promise<void> {
-    return this.appBrowser.waitForStyle(
+    return this.appBrowser.waits.style(
       `[data-testid="${EMPTY_STATE_TEST_IDS.pig}"]`,
       'animation-duration',
       `${EMPTY_STATE_ANIMATION.oinkMs / 1000}s`
