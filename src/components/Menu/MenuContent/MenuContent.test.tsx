@@ -77,6 +77,12 @@ describe('MenuContent', () => {
 
       expect(accountSettings.nextElementSibling).toBe(globalSettings);
     });
+
+    it('does not show the child menu', () => {
+      expect(
+        screen.queryByTestId(CHILD_MENU_CONTENT_TEST_IDS.menu)
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('in child mode with no account', () => {
