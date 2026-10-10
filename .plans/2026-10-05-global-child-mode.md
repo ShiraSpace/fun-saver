@@ -283,6 +283,10 @@ replay. Run `npm run db:migrate-test`, then `npm run db:migrate-dev`, then
 code still writes the column when it disappears. After it runs, a Vercel
 rollback to a deployment older than PR 3 can no longer create accounts.
 
+The same PR moves `src/lib/account/view-mode.ts` and its test to
+`src/lib/view-mode.ts`: since PR 3 it holds the phone's mode, which belongs to
+no account. Every import follows; nothing else changes.
+
 ## Decided (2026-10-05)
 
 - Accounts saved in child view on production open in parent mode once PR 1
