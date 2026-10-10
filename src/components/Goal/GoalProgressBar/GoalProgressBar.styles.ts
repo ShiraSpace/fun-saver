@@ -7,7 +7,8 @@ export const Track = styled.div<{ thin: boolean }>`
   background: ${({ theme }): string => theme.colors.walletTrack};
 `;
 
-export const Fill = styled.div<{ reached: boolean }>`
+export const Fill = styled.div<{ reached: boolean; fillWidth: string }>`
+  width: ${({ fillWidth }): string => fillWidth};
   height: 100%;
   border-radius: 999px;
   background: ${({ reached, theme }): string =>

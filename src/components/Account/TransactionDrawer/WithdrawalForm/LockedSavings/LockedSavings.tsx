@@ -13,15 +13,17 @@ export function LockedSavings({
   savedTowardGoal,
 }: LockedSavingsProps): JSX.Element {
   const { goal, stillToSave } = savedTowardGoal;
+  const heading = LOCKED_SAVINGS_COPY.heading(goal.name);
+  const stillToSaveText = LOCKED_SAVINGS_COPY.stillToSave(
+    agorotToShekels(stillToSave)
+  );
 
   return (
     <Panel data-testid={LOCKED_SAVINGS_TEST_IDS.panel}>
       <Picture aria-hidden="true">{goal.picture.emoji}</Picture>
-      <Heading data-testid={LOCKED_SAVINGS_TEST_IDS.heading}>
-        {LOCKED_SAVINGS_COPY.heading(goal.name)}
-      </Heading>
+      <Heading data-testid={LOCKED_SAVINGS_TEST_IDS.heading}>{heading}</Heading>
       <StillToSave data-testid={LOCKED_SAVINGS_TEST_IDS.stillToSave}>
-        {LOCKED_SAVINGS_COPY.stillToSave(agorotToShekels(stillToSave))}
+        {stillToSaveText}
       </StillToSave>
       <GoalProgressBar savedTowardGoal={savedTowardGoal} thin />
     </Panel>

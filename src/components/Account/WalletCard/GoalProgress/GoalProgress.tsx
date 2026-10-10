@@ -6,12 +6,16 @@ import { GOAL_PROGRESS_COPY, GOAL_PROGRESS_TEST_IDS } from './constants';
 import { Body, GoalHeading, GoalLine, Picture } from './GoalProgress.styles';
 
 interface GoalProgressProps {
-  savedTowardGoal: SavedTowardGoal;
+  savedTowardGoal?: SavedTowardGoal;
 }
 
 export function GoalProgress({
   savedTowardGoal,
-}: GoalProgressProps): JSX.Element {
+}: GoalProgressProps): JSX.Element | null {
+  if (!savedTowardGoal) {
+    return null;
+  }
+
   const { goal, reached } = savedTowardGoal;
   const heading = reached ? GOAL_PROGRESS_COPY.reached : goal.name;
 

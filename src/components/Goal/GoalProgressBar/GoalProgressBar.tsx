@@ -26,21 +26,23 @@ export function GoalProgressBar({
 }: GoalProgressBarProps): JSX.Element {
   const { saved, goal, reached } = savedTowardGoal;
   const fillWidth = `${savedPercent(savedTowardGoal)}%`;
+  const goalShekels = floorToShekels(goal.amount);
+  const savedShekels = floorToShekels(Math.min(saved, goal.amount));
 
   return (
     <Track
       role="progressbar"
       aria-label={GOAL_PROGRESS_BAR_COPY.label}
       aria-valuemin={0}
-      aria-valuemax={floorToShekels(goal.amount)}
-      aria-valuenow={floorToShekels(Math.min(saved, goal.amount))}
+      aria-valuemax={goalShekels}
+      aria-valuenow={savedShekels}
       data-testid={GOAL_PROGRESS_BAR_TEST_IDS.bar}
       thin={thin}
     >
       <Fill
         data-testid={GOAL_PROGRESS_BAR_TEST_IDS.fill}
         reached={reached}
-        style={{ width: fillWidth }}
+        fillWidth={fillWidth}
       />
     </Track>
   );

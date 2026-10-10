@@ -27,32 +27,27 @@ export function WalletPicker({
   onSelect,
   savedTowardGoal,
 }: WalletPickerProps): JSX.Element {
-  return (
-    <Wallets>
-      {wallets.map((wallet) => {
-        const savedTowardGoalInWallet = savedTowardGoalIn(
-          wallet,
-          savedTowardGoal
-        );
-        const tileAmount = savedTowardGoalInWallet
-          ? withoutAgorot(wallet.balance)
-          : wallet.balance;
-        const isTileLocked = savingsLocked(savedTowardGoalInWallet);
+  const tiles = wallets.map((wallet) => {
+    const savedTowardGoalInWallet = savedTowardGoalIn(wallet, savedTowardGoal);
+    const tileAmount = savedTowardGoalInWallet
+      ? withoutAgorot(wallet.balance)
+      : wallet.balance;
+    const isTileLocked = savingsLocked(savedTowardGoalInWallet);
 
-        return (
-          <WalletTile
-            key={wallet.id}
-            walletName={wallet.name}
-            icon={wallet.icon}
-            amountAgorot={tileAmount}
-            testId={WALLET_PICKER_TEST_IDS.wallet(wallet.name)}
-            amountTestId={WALLET_PICKER_TEST_IDS.balance(wallet.name)}
-            selected={wallet.id === selectedWalletId}
-            onSelect={(): void => onSelect(wallet.id)}
-            locked={isTileLocked}
-          />
-        );
-      })}
-    </Wallets>
-  );
+    return (
+      <WalletTile
+        key={wallet.id}
+        walletName={wallet.name}
+        icon={wallet.icon}
+        amountAgorot={tileAmount}
+        testId={WALLET_PICKER_TEST_IDS.wallet(wallet.name)}
+        amountTestId={WALLET_PICKER_TEST_IDS.balance(wallet.name)}
+        selected={wallet.id === selectedWalletId}
+        onSelect={(): void => onSelect(wallet.id)}
+        locked={isTileLocked}
+      />
+    );
+  });
+
+  return <Wallets>{tiles}</Wallets>;
 }

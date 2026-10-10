@@ -27,18 +27,24 @@ export function SelectedWalletNote({
   const requestFailed = form.requestState === REQUEST_STATE.failed;
 
   if (form.goalToComplete && !form.isOverdraft && !requestFailed) {
+    const completesGoalText = WITHDRAWAL_FORM_COPY.completesGoal(
+      form.goalToComplete.name
+    );
+
     return (
       <GoalCompletionNote data-testid={WITHDRAWAL_FORM_TEST_IDS.completesGoal}>
-        {WITHDRAWAL_FORM_COPY.completesGoal(form.goalToComplete.name)}
+        {completesGoalText}
       </GoalCompletionNote>
     );
   }
+
+  const balanceShekels = agorotToShekels(form.selectedBalance);
 
   return (
     <WithdrawalAlert
       isOverdraft={form.isOverdraft}
       hasError={requestFailed}
-      balanceShekels={agorotToShekels(form.selectedBalance)}
+      balanceShekels={balanceShekels}
     />
   );
 }

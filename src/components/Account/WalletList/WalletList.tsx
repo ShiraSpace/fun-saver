@@ -31,9 +31,7 @@ export function WalletList({
         savedTowardGoal={savedTowardGoalInWallet}
       >
         <SavingsInterestStats wallet={wallet} />
-        {savedTowardGoalInWallet && (
-          <GoalProgress savedTowardGoal={savedTowardGoalInWallet} />
-        )}
+        <GoalProgress savedTowardGoal={savedTowardGoalInWallet} />
       </WalletCard>
     );
   });
