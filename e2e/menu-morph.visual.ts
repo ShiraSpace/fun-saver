@@ -1,7 +1,11 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { type BoundingBox } from 'puppeteer';
-import { mockAccount } from '@/test-utils/mocks/account.mocks';
+import {
+  createMockAccount,
+  mockAccount,
+} from '@/test-utils/mocks/account.mocks';
+import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { getThemeTokens } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
 import { useDriver } from './driver/use-driver';
@@ -24,7 +28,15 @@ const OVERLAY_BACKGROUND = hexToRgb(getThemeTokens().colors.softBg);
 const TEXT_ON_OVERLAY = hexToRgb(getThemeTokens().colors.textStrong);
 
 describe('menu morph', () => {
-  const { appBrowser, menu, header } = useDriver({ accounts: [mockAccount] });
+  const mockSiblingListedAfter = createMockAccount({
+    id: 'a2',
+    name: 'תמר',
+    wallets: [],
+  });
+  const { appBrowser, menu, header } = useDriver({
+    accounts: [mockAccount, mockSiblingListedAfter],
+    goals: [mockGoal],
+  });
 
   describe('when closed', () => {
     it('shows a hamburger', async () => {
