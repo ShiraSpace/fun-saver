@@ -22,7 +22,7 @@ describe('GoalProgressBar', () => {
     });
 
     it('fills as much of the bar as is saved', () => {
-      expect(getComputedStyle(fill()).width).toBe('50%');
+      expect(fill().style.width).toBe('50%');
     });
 
     it('tells assistive technology how much is saved, in shekels', () => {
@@ -50,9 +50,7 @@ describe('GoalProgressBar', () => {
     });
 
     it('shows a sliver', () => {
-      expect(getComputedStyle(fill()).width).toBe(
-        `${HEAD_START_FILL_PERCENT}%`
-      );
+      expect(fill().style.width).toBe(`${HEAD_START_FILL_PERCENT}%`);
     });
   });
 
@@ -69,7 +67,7 @@ describe('GoalProgressBar', () => {
     });
 
     it('never fills past the whole bar', () => {
-      expect(getComputedStyle(fill()).width).toBe('100%');
+      expect(fill().style.width).toBe('100%');
     });
 
     it('never tells assistive technology more is saved than the goal', () => {
