@@ -5,7 +5,8 @@ import { TRANSACTION_TYPE_TOGGLE_TEST_IDS } from './TransactionTypeToggle/consta
 import { WALLET_PICKER_TEST_IDS } from './WalletPicker/constants';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockRouter } from '@mocks/next/navigation';
-import { getThemeTokens } from '@/theme/registry';
+import { LAYERS } from '@/theme/layers';
+import { layerOf } from '@/test-utils/layer';
 
 jest.mock('./use-add-transaction', () => ({
   useAddTransaction: (): {
@@ -34,11 +35,13 @@ describe('TransactionDrawer', () => {
     ).toBeInTheDocument();
   });
 
-  it('dims what it covers, so the sheet owns the attention', () => {
-    const scrim = screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.scrim);
+  it('dims at the modal layer', () => {
+    expect(layerOf(TRANSACTION_DRAWER_TEST_IDS.scrim)).toBe(LAYERS.modal);
+  });
 
-    expect(getComputedStyle(scrim).background).toContain(
-      getThemeTokens().tints.shade
+  it('keeps the drawer above its own dimming', () => {
+    expect(layerOf(TRANSACTION_DRAWER_TEST_IDS.drawer)).toBeGreaterThan(
+      layerOf(TRANSACTION_DRAWER_TEST_IDS.scrim)
     );
   });
 

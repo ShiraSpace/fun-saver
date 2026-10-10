@@ -1,32 +1,18 @@
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 import { LAYERS } from '@/theme/layers';
+import { BottomSheet, BottomSheetScrim } from '@/components/BottomSheet';
 import { SWIPE_TO_CLOSE, TRANSACTION_DRAWER_STYLE } from './constants';
 
-export const Scrim = styled.div`
-  position: fixed;
-  inset: 0;
-  background: ${({ theme }): string => theme.tints.shade};
+export const Scrim = styled(BottomSheetScrim)`
   z-index: ${LAYERS.modal};
 `;
 
-export const Sheet = styled.div<{ offset: number; dragging: boolean }>`
-  position: fixed;
-  inset-inline: 0;
-  bottom: 0;
+export const Sheet = styled(BottomSheet)<{ offset: number; dragging: boolean }>`
   z-index: ${LAYERS.modalForeground};
-  width: 100%;
-  max-width: ${TRANSACTION_DRAWER_STYLE.maxWidth}px;
   max-height: ${TRANSACTION_DRAWER_STYLE.maxHeight};
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
   gap: ${TRANSACTION_DRAWER_STYLE.gap}px;
   padding: ${TRANSACTION_DRAWER_STYLE.padding};
-  background: ${({ theme }): string => theme.colors.surface};
-  border-radius: ${TRANSACTION_DRAWER_STYLE.sheetRadius}px
-    ${TRANSACTION_DRAWER_STYLE.sheetRadius}px 0 0;
-  box-shadow: 0 -10px 30px ${({ theme }): string => theme.shadows.deep};
   transform: translateY(${({ offset }): number => offset}px);
   transition: ${({ dragging }): string =>
     dragging ? 'none' : `transform ${SWIPE_TO_CLOSE.snapMs}ms ease`};

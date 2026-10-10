@@ -6,7 +6,7 @@ import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { TransactionTypeToggle } from './TransactionTypeToggle';
 import { DepositForm } from './DepositForm';
 import { WithdrawalForm } from './WithdrawalForm';
-import { useCloseOnBack } from './use-close-on-back';
+import { useCloseOnBack } from '@/hooks/use-close-on-back';
 import { useSwipeToClose } from './use-swipe-to-close';
 import type { EnteredTransactionType } from './constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from './constants';
