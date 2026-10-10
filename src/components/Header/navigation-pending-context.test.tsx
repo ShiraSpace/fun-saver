@@ -3,8 +3,11 @@ import { render, screen, type RenderResult } from '@testing-library/react';
 import {
   NavigationProvider,
   PendingNavigationReporter,
-  useIsNavigating,
 } from './navigation-pending-context';
+import {
+  IS_NAVIGATING_TEST_ID,
+  IsNavigating,
+} from '@/test-utils/is-navigating';
 
 jest.mock('next/link', () => {
   const { createContext, useContext } = jest.requireActual('react');
@@ -21,14 +24,6 @@ jest.mock('next/link', () => {
 
 const LinkPending: Context<boolean> =
   jest.requireMock('next/link').MockLinkPending;
-
-const IS_NAVIGATING = 'is-navigating';
-
-function IsNavigating(): JSX.Element {
-  return (
-    <output data-testid={IS_NAVIGATING}>{String(useIsNavigating())}</output>
-  );
-}
 
 interface LinksProps {
   homeLinkPending: boolean;
@@ -60,18 +55,20 @@ describe('pending navigations', () => {
   });
 
   it('is navigating while a link is pending', () => {
-    expect(screen.getByTestId(IS_NAVIGATING)).toHaveTextContent('true');
+    expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent('true');
   });
 
   it('is still navigating when two links swap in a single update', () => {
     view.rerender(<TwoLinks homeLinkPending={true} homeTabPending={false} />);
 
-    expect(screen.getByTestId(IS_NAVIGATING)).toHaveTextContent('true');
+    expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent('true');
   });
 
   it('stops navigating once the navigation has landed', () => {
     view.rerender(<TwoLinks homeLinkPending={false} homeTabPending={false} />);
 
-    expect(screen.getByTestId(IS_NAVIGATING)).toHaveTextContent('false');
+    expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent(
+      'false'
+    );
   });
 });

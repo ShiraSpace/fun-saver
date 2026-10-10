@@ -7,13 +7,13 @@ import {
   screen,
 } from '@/test-utils/render';
 import { mockRouter } from '@mocks/next/navigation';
-import { useIsNavigating } from '@/components/Header/navigation-pending-context';
+import {
+  IS_NAVIGATING_TEST_ID,
+  IsNavigating,
+} from '@/test-utils/is-navigating';
 import { useRefreshBalances } from './use-refresh-balances';
 
-const REFRESH_BALANCES_TEST_IDS = {
-  headerLoader: 'header-loader',
-  showNewBalances: 'show-new-balances',
-} as const;
+const SHOW_NEW_BALANCES_TEST_ID = 'show-new-balances';
 
 interface NewBalancesProps {
   arriving: Promise<void> | null;
@@ -34,7 +34,6 @@ interface AccountScreenProps {
 function AccountScreen({ newBalances }: AccountScreenProps): JSX.Element {
   const [arriving, setArriving] = useState<Promise<void> | null>(null);
   const refreshBalances = useRefreshBalances();
-  const isNavigating = useIsNavigating();
 
   useEffect(() => {
     mockRouter.refresh.mockImplementation(() => setArriving(newBalances));
@@ -46,12 +45,10 @@ function AccountScreen({ newBalances }: AccountScreenProps): JSX.Element {
         <NewBalances arriving={arriving} />
       </Suspense>
       <button
-        data-testid={REFRESH_BALANCES_TEST_IDS.showNewBalances}
+        data-testid={SHOW_NEW_BALANCES_TEST_ID}
         onClick={refreshBalances}
       />
-      <output data-testid={REFRESH_BALANCES_TEST_IDS.headerLoader}>
-        {String(isNavigating)}
-      </output>
+      <IsNavigating />
     </>
   );
 }
@@ -67,14 +64,8 @@ describe('useRefreshBalances', () => {
     mockRouter.refresh.mockReset();
     render(<AccountScreen newBalances={mockNewBalances} />);
     await act(async () =>
-      fireEvent.click(
-        screen.getByTestId(REFRESH_BALANCES_TEST_IDS.showNewBalances)
-      )
+      fireEvent.click(screen.getByTestId(SHOW_NEW_BALANCES_TEST_ID))
     );
-  });
-
-  afterEach(() => {
-    mockRouter.refresh.mockReset();
   });
 
   it('asks for the new balances once', () => {
@@ -82,17 +73,15 @@ describe('useRefreshBalances', () => {
   });
 
   it('runs the header loader while the new balances load', () => {
-    expect(
-      screen.getByTestId(REFRESH_BALANCES_TEST_IDS.headerLoader)
-    ).toHaveTextContent('true');
+    expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent('true');
   });
 
   it('stops the header loader once the new balances have arrived', async () => {
     await act(async () => newBalancesArrive());
 
-    expect(
-      screen.getByTestId(REFRESH_BALANCES_TEST_IDS.headerLoader)
-    ).toHaveTextContent('false');
+    expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent(
+      'false'
+    );
   });
 });
 

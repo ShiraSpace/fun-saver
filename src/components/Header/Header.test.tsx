@@ -1,9 +1,11 @@
+import { ReactNode } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { mockAccountsContext } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { Header } from './Header';
 import { HEADER_TEST_IDS } from './constants';
+import { useReportPendingNavigation } from './navigation-pending-context';
 import { getThemeTokens } from '@/theme/registry';
 import { HEADER_TITLE_TEST_IDS } from './HeaderTitle/constants';
 import { MENU_TEST_IDS } from '../Menu/constants';
@@ -19,11 +21,27 @@ const headerAccount = { name: mockAccountName, avatarId: mockAvatarId };
 
 const mockGreeting = 'שלום';
 
-function renderHeaderWithoutAccount(): void {
-  render(<Header title={mockGreeting} />, {
-    route: HOME_ROUTE,
-    user: mockUser,
-  });
+function renderHeaderWithoutAccount(besideHeader?: ReactNode): void {
+  render(
+    <>
+      <Header title={mockGreeting} />
+      {besideHeader}
+    </>,
+    {
+      route: HOME_ROUTE,
+      user: mockUser,
+    }
+  );
+}
+
+interface PendingBesideHeaderProps {
+  isPending: boolean;
+}
+
+function PendingBesideHeader({ isPending }: PendingBesideHeaderProps): null {
+  useReportPendingNavigation(isPending);
+
+  return null;
 }
 
 function renderHeader(route: string): void {
@@ -204,6 +222,22 @@ describe('Header', () => {
     it('leaves the end of the bar bare, there being no account to picture', () => {
       expect(
         screen.queryByTestId(HEADER_TEST_IDS.avatar)
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('the loader', () => {
+    it('runs while something beside the header is pending', () => {
+      renderHeaderWithoutAccount(<PendingBesideHeader isPending={true} />);
+
+      expect(screen.getByTestId(HEADER_TEST_IDS.progress)).toBeInTheDocument();
+    });
+
+    it('stays hidden while nothing is pending', () => {
+      renderHeaderWithoutAccount(<PendingBesideHeader isPending={false} />);
+
+      expect(
+        screen.queryByTestId(HEADER_TEST_IDS.progress)
       ).not.toBeInTheDocument();
     });
   });

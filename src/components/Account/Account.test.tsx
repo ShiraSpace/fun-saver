@@ -41,7 +41,6 @@ describe('Account', () => {
   let view: RenderResult;
 
   beforeEach(() => {
-    mockRouter.refresh.mockClear();
     view = render(<Account account={mockAccount} />, {
       accounts: mockAccountsContext,
       user: mockUser,
@@ -96,6 +95,7 @@ describe('Account', () => {
 
   describe('once a deposit is saved', () => {
     beforeEach(async () => {
+      mockRouter.refresh.mockClear();
       fireEvent.click(screen.getByTestId(ACCOUNT_TEST_IDS.newTransaction));
       fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('5')));
       fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
