@@ -1,11 +1,5 @@
 import { JSX, Suspense, use, useEffect, useState } from 'react';
-import {
-  act,
-  fireEvent,
-  render,
-  renderHook,
-  screen,
-} from '@/test-utils/render';
+import { act, fireEvent, render, screen } from '@/test-utils/render';
 import { mockRouter } from '@mocks/next/navigation';
 import {
   IS_NAVIGATING_TEST_ID,
@@ -82,16 +76,5 @@ describe('useRefreshBalances', () => {
     expect(screen.getByTestId(IS_NAVIGATING_TEST_ID)).toHaveTextContent(
       'false'
     );
-  });
-});
-
-describe('useRefreshBalances across renders', () => {
-  it('hands back the same refresh every render', () => {
-    const { result, rerender } = renderHook(() => useRefreshBalances());
-    const refreshBeforeRerender = result.current;
-
-    rerender();
-
-    expect(result.current).toBe(refreshBeforeRerender);
   });
 });

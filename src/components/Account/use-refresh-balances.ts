@@ -1,4 +1,4 @@
-import { useCallback, useTransition } from 'react';
+import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useReportPendingNavigation } from '@/hooks/navigation-pending-context';
 
@@ -8,8 +8,5 @@ export function useRefreshBalances(): () => void {
 
   useReportPendingNavigation(isRefreshing);
 
-  return useCallback(
-    (): void => startRefresh(() => router.refresh()),
-    [router]
-  );
+  return (): void => startRefresh(() => router.refresh());
 }

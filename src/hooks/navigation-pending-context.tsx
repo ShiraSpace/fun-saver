@@ -11,12 +11,16 @@ import {
   type SetStateAction,
 } from 'react';
 import { useLinkStatus } from 'next/link';
+import { createRequiredContext } from './create-required-context';
 
 const PendingNavigationsContext = createContext<
   Dispatch<SetStateAction<number>>
 >(() => {});
 
-const IsNavigatingContext = createContext(false);
+const [IsNavigatingProvider, useIsNavigating] =
+  createRequiredContext<boolean>('NavigationProvider');
+
+export { useIsNavigating };
 
 interface NavigationProviderProps {
   children: ReactNode;
@@ -29,15 +33,11 @@ export function NavigationProvider({
 
   return (
     <PendingNavigationsContext.Provider value={setPendingNavigationCount}>
-      <IsNavigatingContext.Provider value={pendingNavigationCount > 0}>
+      <IsNavigatingProvider value={pendingNavigationCount > 0}>
         {children}
-      </IsNavigatingContext.Provider>
+      </IsNavigatingProvider>
     </PendingNavigationsContext.Provider>
   );
-}
-
-export function useIsNavigating(): boolean {
-  return useContext(IsNavigatingContext);
 }
 
 export function useReportPendingNavigation(isPending: boolean): void {
