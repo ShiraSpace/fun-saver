@@ -1,9 +1,6 @@
 import { render, screen, type RenderOptions } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
-import {
-  mockAccountsContext,
-  mockChildAccountsContext,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccountsContext } from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
 import { VIEW_MODE } from '@/lib/account/view-mode';
 import { MenuContent } from './MenuContent';
@@ -82,28 +79,6 @@ describe('MenuContent', () => {
     });
   });
 
-  describe('in parent mode, for an account saved in child view', () => {
-    beforeEach(() => {
-      renderMenuContent({
-        user: mockUser,
-        accounts: mockChildAccountsContext,
-        viewMode: VIEW_MODE.parent,
-      });
-    });
-
-    it('shows the parent menu', () => {
-      expect(
-        screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.picker)
-      ).toBeInTheDocument();
-    });
-
-    it('does not show the child menu', () => {
-      expect(
-        screen.queryByTestId(CHILD_MENU_CONTENT_TEST_IDS.menu)
-      ).not.toBeInTheDocument();
-    });
-  });
-
   describe('in child mode with no account', () => {
     beforeEach(() => {
       renderMenuContent({ user: mockUser, viewMode: VIEW_MODE.child });
@@ -116,7 +91,7 @@ describe('MenuContent', () => {
     });
   });
 
-  describe('in child mode, for an account saved in parent view', () => {
+  describe('in child mode, with an account', () => {
     beforeEach(() => {
       renderMenuContent({
         user: mockUser,

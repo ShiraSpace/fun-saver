@@ -147,7 +147,7 @@ describe('Home', () => {
     ).toBeInTheDocument();
   });
 
-  describe('in child mode, with accounts saved in parent view', () => {
+  describe('in child mode', () => {
     beforeEach(() => {
       renderHome({ viewMode: VIEW_MODE.child });
     });
