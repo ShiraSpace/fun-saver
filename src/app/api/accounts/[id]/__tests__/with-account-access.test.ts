@@ -6,8 +6,10 @@ import { getStore } from '@/db';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
-import { withAccountEditor } from '../with-account-access';
-import type { GoalRouteParams } from '../goals/[goalId]/goal-route-params';
+import {
+  withAccountEditor,
+  type AccountRouteParams,
+} from '../with-account-access';
 
 jest.mock('@/auth');
 
@@ -67,13 +69,17 @@ describe('withAccountEditor', () => {
   });
 
   describe('a member', () => {
+    interface NestedRouteParams extends AccountRouteParams {
+      goalId: string;
+    }
+
     const mockGoalId = 'g1';
 
     let response: Response;
 
     beforeEach(async () => {
       jest.mocked(signedInUser).mockResolvedValue(mockUser);
-      response = await withAccountEditor<GoalRouteParams>(mockRouteHandler)(
+      response = await withAccountEditor<NestedRouteParams>(mockRouteHandler)(
         new Request('http://localhost/api/accounts/a1/goals/g1', {
           method: 'DELETE',
         }),

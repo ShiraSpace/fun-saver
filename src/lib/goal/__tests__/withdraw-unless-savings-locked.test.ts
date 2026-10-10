@@ -5,9 +5,9 @@ import { createMockWithdrawal } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallet } from '@/test-utils/mocks/wallet.mocks';
 import { GOAL_ENDING } from '../constants';
 import { SavingsLockedError } from '../errors';
-import { insertWithdrawal } from '../insert-withdrawal';
+import { withdrawUnlessSavingsLocked } from '../withdraw-unless-savings-locked';
 
-describe('insertWithdrawal', () => {
+describe('withdrawUnlessSavingsLocked', () => {
   const mockWithdrawal = createMockWithdrawal(createMockWallet());
   let store: InMemoryStore;
 
@@ -16,7 +16,7 @@ describe('insertWithdrawal', () => {
   });
 
   it('records the withdrawal as before when there is no goal', async () => {
-    await insertWithdrawal({
+    await withdrawUnlessSavingsLocked({
       store,
       withdrawal: mockWithdrawal,
       goal: undefined,
@@ -32,7 +32,7 @@ describe('insertWithdrawal', () => {
     await store.insertGoal(mockGoal);
 
     await expect(
-      insertWithdrawal({
+      withdrawUnlessSavingsLocked({
         store,
         withdrawal: mockWithdrawal,
         goal: mockGoal,
@@ -47,7 +47,7 @@ describe('insertWithdrawal', () => {
   it('ends a reached goal with the withdrawal', async () => {
     await store.insertGoal(mockGoal);
 
-    await insertWithdrawal({
+    await withdrawUnlessSavingsLocked({
       store,
       withdrawal: mockWithdrawal,
       goal: mockGoal,
@@ -71,7 +71,7 @@ describe('insertWithdrawal', () => {
         endedAt: mockGoal.startedAt,
         ending: GOAL_ENDING.cancelled,
       });
-      refusal = await insertWithdrawal({
+      refusal = await withdrawUnlessSavingsLocked({
         store,
         withdrawal: mockWithdrawal,
         goal: mockGoal,

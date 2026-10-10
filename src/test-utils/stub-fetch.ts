@@ -1,6 +1,5 @@
-export function stubFetch(mockFetch: jest.Mock): jest.Mock {
+export function stubFetch(mockFetch: jest.Mock): void {
   global.fetch = mockFetch as unknown as typeof fetch;
-  return mockFetch;
 }
 
 export function restoreFetchAfterEach(): void {

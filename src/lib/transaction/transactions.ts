@@ -7,7 +7,7 @@ import { ValidationError } from '@/lib/errors';
 import type { Account } from '@/lib/account/types';
 import type { WalletName } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
-import { insertWithdrawal } from '@/lib/goal/insert-withdrawal';
+import { withdrawUnlessSavingsLocked } from '@/lib/goal/withdraw-unless-savings-locked';
 import type { Transaction } from './types';
 
 interface AddWithdrawalParams {
@@ -115,7 +115,7 @@ export async function addWithdrawal({
 
   const withdrawal = newWithdrawal({ account, walletId, amountAgorot, asOf });
 
-  await insertWithdrawal({
+  await withdrawUnlessSavingsLocked({
     store,
     withdrawal,
     goal,
