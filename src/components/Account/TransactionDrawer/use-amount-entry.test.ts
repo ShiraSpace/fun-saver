@@ -30,11 +30,12 @@ describe('useAmountEntry', () => {
       await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
     });
 
-    it('goes back to idle rather than failed', async () => {
+    it('fails, so the child is told the save did not happen', async () => {
       const { result } = submitRefusedWith(StatusCodes.CONFLICT);
 
-      await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-      expect(result.current.requestState).toBe(REQUEST_STATE.idle);
+      await waitFor(() =>
+        expect(result.current.requestState).toBe(REQUEST_STATE.failed)
+      );
     });
   });
 

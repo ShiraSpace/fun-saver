@@ -40,8 +40,6 @@ export function useAmountEntry(
     } catch (error) {
       if (isConflict(error)) {
         router.refresh();
-        setRequestState(REQUEST_STATE.idle);
-        return;
       }
 
       setRequestState(REQUEST_STATE.failed);
