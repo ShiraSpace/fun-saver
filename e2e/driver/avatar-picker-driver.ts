@@ -33,7 +33,7 @@ export class AvatarPickerDriver {
   }
 
   waitForAvatarToLift(): Promise<void> {
-    return this.appBrowser.waitForStyle(
+    return this.appBrowser.waits.style(
       OPTION_SELECTOR,
       'transform',
       `matrix(1, 0, 0, 1, 0, -${AVATAR_PICKER_STYLE.hoverLift})`

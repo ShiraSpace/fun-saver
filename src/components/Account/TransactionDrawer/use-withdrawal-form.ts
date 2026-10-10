@@ -22,7 +22,7 @@ interface GoalOnPickedWallet {
 export interface WithdrawalFormProps {
   account: AccountSummary;
   savedTowardGoal?: SavedTowardGoal;
-  onClose: () => void;
+  onSaved: () => void;
 }
 
 export interface WithdrawalFormState extends AmountEntry, GoalOnPickedWallet {
@@ -56,7 +56,7 @@ function goalOnPickedWallet(
 export function useWithdrawalForm({
   account,
   savedTowardGoal,
-  onClose,
+  onSaved,
 }: WithdrawalFormProps): WithdrawalFormState {
   const { wallets } = account;
   const { addWithdrawal } = useAddTransaction(account.id);
@@ -65,7 +65,7 @@ export function useWithdrawalForm({
   );
   const entry = useAmountEntry(
     (amountShekels) => addWithdrawal(selectedWalletId, amountShekels),
-    onClose
+    onSaved
   );
 
   const selectedWallet = wallets.find(

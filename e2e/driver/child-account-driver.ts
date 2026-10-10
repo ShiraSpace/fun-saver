@@ -9,6 +9,6 @@ export class ChildAccountDriver {
   }
 
   async waitForScreen(): Promise<void> {
-    await this.appBrowser.waitForTestId(CHILD_ACCOUNT_TEST_IDS.screen);
+    await this.appBrowser.waits.testId(CHILD_ACCOUNT_TEST_IDS.screen);
   }
 }

@@ -22,7 +22,7 @@ function isConflict(error: unknown): boolean {
 
 export function useAmountEntry(
   saveTransaction: (amountShekels: number) => Promise<void>,
-  onClose: () => void
+  onSaved: () => void
 ): AmountEntry {
   const router = useRouter();
   const [amountShekels, setAmountShekels] = useState(0);
@@ -35,8 +35,7 @@ export function useAmountEntry(
 
     try {
       await saveTransaction(amountShekels);
-      router.refresh();
-      onClose();
+      onSaved();
     } catch (error) {
       if (isConflict(error)) {
         router.refresh();

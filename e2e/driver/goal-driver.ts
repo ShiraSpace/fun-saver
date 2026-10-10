@@ -49,7 +49,7 @@ export class GoalDriver {
   }
 
   waitForLockedSavings(): Promise<void> {
-    return this.appBrowser.waitForAnyTestId([LOCKED_SAVINGS_TEST_IDS.panel]);
+    return this.appBrowser.waits.testId(LOCKED_SAVINGS_TEST_IDS.panel);
   }
 
   submitLabel(): Promise<string> {

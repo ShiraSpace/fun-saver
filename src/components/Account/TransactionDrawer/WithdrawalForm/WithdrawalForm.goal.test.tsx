@@ -33,7 +33,7 @@ describe('WithdrawalForm with a goal', () => {
         <WithdrawalForm
           account={mockAccountSavingForGoal}
           savedTowardGoal={savedTowardGoalOf(mockAccountSavingForGoal)}
-          onClose={jest.fn()}
+          onSaved={jest.fn()}
         />
       );
       type('5');
@@ -71,7 +71,7 @@ describe('WithdrawalForm with a goal', () => {
         <WithdrawalForm
           account={mockAccountSavingForGoal}
           savedTowardGoal={savedTowardGoalOf(mockAccountSavingForGoal)}
-          onClose={jest.fn()}
+          onSaved={jest.fn()}
         />
       );
       type('9', '9');
@@ -91,7 +91,7 @@ describe('WithdrawalForm with a goal', () => {
         <WithdrawalForm
           account={mockAccountWithGoalReached}
           savedTowardGoal={savedTowardGoalOf(mockAccountWithGoalReached)}
-          onClose={jest.fn()}
+          onSaved={jest.fn()}
         />
       );
       pickSavings();

@@ -25,6 +25,10 @@ export async function click(page: Page, testId: string): Promise<void> {
   await element.click();
 }
 
+export async function tapAt(page: Page, x: number, y: number): Promise<void> {
+  await page.mouse.click(x, y);
+}
+
 export async function hover(page: Page, testId: string): Promise<void> {
   const element = await findByTest(page, testId);
   await element.hover();

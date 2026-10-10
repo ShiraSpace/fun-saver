@@ -3,7 +3,7 @@ import { useViewMode } from '@/components/Home/view-mode-context';
 import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import { wait } from '@/lib/wait';
 import { motionIsReduced } from '@/theme/motion';
-import { useReportPendingNavigation } from '@/components/Header/navigation-pending-context';
+import { useReportLoader } from '@/hooks/loader-context';
 import { useMenu } from '../use-menu-state';
 import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
 import { VIEW_MODE_SWITCH_MOTION } from './constants';
@@ -32,7 +32,7 @@ export function useViewModeSwitch(): ViewModeSwitchState {
   const [chosenViewMode, setChosenViewMode] = useState<ViewMode>();
   const isSwitching = chosenViewMode !== undefined;
 
-  useReportPendingNavigation(isSwitching);
+  useReportLoader(isSwitching);
 
   const slideThenChoose = async (nextViewMode: ViewMode): Promise<void> => {
     setChosenViewMode(nextViewMode);

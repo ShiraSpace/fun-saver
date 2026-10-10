@@ -10,24 +10,24 @@ interface TransactionFormProps {
   transactionType: EnteredTransactionType;
   account: AccountSummary;
   savedTowardGoal?: SavedTowardGoal;
-  onClose: () => void;
+  onSaved: () => void;
 }
 
 export function TransactionForm({
   transactionType,
   account,
   savedTowardGoal,
-  onClose,
+  onSaved,
 }: TransactionFormProps): JSX.Element {
   if (transactionType === TRANSACTION_TYPE.deposit) {
-    return <DepositForm account={account} onClose={onClose} />;
+    return <DepositForm account={account} onSaved={onSaved} />;
   }
 
   return (
     <WithdrawalForm
       account={account}
       savedTowardGoal={savedTowardGoal}
-      onClose={onClose}
+      onSaved={onSaved}
     />
   );
 }

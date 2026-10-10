@@ -17,12 +17,14 @@ interface TransactionDrawerProps {
   account: AccountSummary;
   savedTowardGoal?: SavedTowardGoal;
   onClose: () => void;
+  onSaved: () => void;
 }
 
 export function TransactionDrawer({
   account,
   savedTowardGoal,
   onClose,
+  onSaved,
 }: TransactionDrawerProps): JSX.Element {
   const [transactionType, setTransactionType] =
     useState<EnteredTransactionType>(TRANSACTION_TYPE.deposit);
@@ -51,7 +53,7 @@ export function TransactionDrawer({
             transactionType={transactionType}
             account={account}
             savedTowardGoal={savedTowardGoal}
-            onClose={onClose}
+            onSaved={onSaved}
           />
         </Body>
       </Sheet>

@@ -27,7 +27,7 @@ export class HeaderDriver {
   }
 
   waitForTitle(title: string): Promise<void> {
-    return this.appBrowser.waitForText(HEADER_TITLE_TEST_IDS.title, title);
+    return this.appBrowser.waits.text(HEADER_TITLE_TEST_IDS.title, title);
   }
 
   titleBox(): Promise<BoundingBox> {
@@ -39,7 +39,7 @@ export class HeaderDriver {
   }
 
   waitForAvatar(avatarId: string): Promise<void> {
-    return this.appBrowser.waitForImageSource(HEADER_TEST_IDS.avatar, avatarId);
+    return this.appBrowser.waits.imageSource(HEADER_TEST_IDS.avatar, avatarId);
   }
 
   avatarBox(): Promise<BoundingBox> {
