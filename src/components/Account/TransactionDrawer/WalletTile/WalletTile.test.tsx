@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { WalletTile } from './WalletTile';
 import { agorotToShekels } from '@/lib/money';
+import { WALLET_TILE_TEST_IDS } from './constants';
 
 const VALUE_TEST_ID = 'tile-value';
 const TILE_TEST_ID = 'tile';
@@ -59,5 +60,35 @@ describe('WalletTile', () => {
     );
 
     expect(screen.getByTestId(TILE_TEST_ID)).toBeDisabled();
+  });
+
+  describe('kept for a goal', () => {
+    const mockLockNote = 'עוד ₪215 ליעד';
+
+    beforeEach(() => {
+      render(
+        <WalletTile
+          walletName="savings"
+          icon="🐷"
+          amountAgorot={8500}
+          amountTestId={VALUE_TEST_ID}
+          testId={TILE_TEST_ID}
+          onSelect={mockOnSelect}
+          lockNote={mockLockNote}
+        />
+      );
+    });
+
+    it('shows how much is left to the goal', () => {
+      expect(
+        screen.getByTestId(WALLET_TILE_TEST_IDS.lockNote)
+      ).toHaveTextContent(mockLockNote);
+    });
+
+    it('can still be picked', () => {
+      fireEvent.click(screen.getByTestId(TILE_TEST_ID));
+
+      expect(mockOnSelect).toHaveBeenCalledTimes(1);
+    });
   });
 });
