@@ -2,19 +2,15 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { REQUEST_STATE } from '@/lib/request-state';
 import { useWithdrawalForm } from './use-withdrawal-form';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
+import type * as AddTransactionMock from './__mocks__/use-add-transaction';
 
-const mockAddWithdrawal = jest.fn();
 const mockOnSaved = jest.fn();
 
-jest.mock('./use-add-transaction', () => ({
-  useAddTransaction: (): {
-    addDeposit: jest.Mock;
-    addWithdrawal: jest.Mock;
-  } => ({
-    addDeposit: jest.fn(),
-    addWithdrawal: mockAddWithdrawal,
-  }),
-}));
+jest.mock('./use-add-transaction');
+
+const { mockAddWithdrawal } = jest.requireMock<typeof AddTransactionMock>(
+  './use-add-transaction'
+);
 
 const mockAccountId = 'a1';
 const [, spending, goodDeeds] = mockWalletSummaries;

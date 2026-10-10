@@ -44,6 +44,10 @@ function withUser(element: ReactElement, user?: SignedInUser): ReactElement {
   return <SignedInUserProvider value={user}>{element}</SignedInUserProvider>;
 }
 
+interface AppProvidersProps {
+  children: ReactNode;
+}
+
 export function render(
   element: ReactElement,
   {
@@ -60,11 +64,7 @@ export function render(
 
   document.cookie = `${VIEW_MODE_COOKIE}=${viewMode}`;
 
-  const AppProviders = ({
-    children,
-  }: {
-    children: ReactNode;
-  }): ReactElement => (
+  const AppProviders = ({ children }: AppProvidersProps): ReactElement => (
     <AppThemeProvider initialThemeId={themeId}>
       <ViewModeProvider value={viewMode}>
         <NavigationProvider>

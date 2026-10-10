@@ -6,19 +6,15 @@ import { splitDeposit } from '@/lib/transaction/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
+import type * as AddTransactionMock from '../__mocks__/use-add-transaction';
 
-const mockAddDeposit = jest.fn();
 const mockOnSaved = jest.fn();
 
-jest.mock('../use-add-transaction', () => ({
-  useAddTransaction: (): {
-    addDeposit: jest.Mock;
-    addWithdrawal: jest.Mock;
-  } => ({
-    addDeposit: mockAddDeposit,
-    addWithdrawal: jest.fn(),
-  }),
-}));
+jest.mock('../use-add-transaction');
+
+const { mockAddDeposit } = jest.requireMock<typeof AddTransactionMock>(
+  '../use-add-transaction'
+);
 
 describe('DepositForm', () => {
   beforeEach(() => {

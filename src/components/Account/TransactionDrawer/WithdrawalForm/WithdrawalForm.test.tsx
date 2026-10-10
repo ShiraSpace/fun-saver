@@ -7,19 +7,15 @@ import { AMOUNT_KEYPAD_TEST_IDS } from '../AmountKeypad/constants';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { agorotToShekels } from '@/lib/money';
+import type * as AddTransactionMock from '../__mocks__/use-add-transaction';
 
-const mockAddWithdrawal = jest.fn();
 const mockOnSaved = jest.fn();
 
-jest.mock('../use-add-transaction', () => ({
-  useAddTransaction: (): {
-    addDeposit: jest.Mock;
-    addWithdrawal: jest.Mock;
-  } => ({
-    addDeposit: jest.fn(),
-    addWithdrawal: mockAddWithdrawal,
-  }),
-}));
+jest.mock('../use-add-transaction');
+
+const { mockAddWithdrawal } = jest.requireMock<typeof AddTransactionMock>(
+  '../use-add-transaction'
+);
 
 const [savings, spending, goodDeeds] = mockWalletSummaries;
 

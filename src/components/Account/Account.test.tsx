@@ -22,15 +22,7 @@ import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { AccountSummary } from '@/lib/account/types';
 import { mockRouter } from '@mocks/next/navigation';
 
-jest.mock('./TransactionDrawer/use-add-transaction', () => ({
-  useAddTransaction: (): {
-    addDeposit: jest.Mock;
-    addWithdrawal: jest.Mock;
-  } => ({
-    addDeposit: jest.fn().mockResolvedValue(undefined),
-    addWithdrawal: jest.fn(),
-  }),
-}));
+jest.mock('./TransactionDrawer/use-add-transaction');
 
 describe('Account', () => {
   const mockAccountId = 'account-1';
