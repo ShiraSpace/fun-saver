@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import {
   render as renderWithRtl,
   type RenderResult,
@@ -11,6 +11,7 @@ import {
 } from '@/components/Home/accounts-context';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { ViewModeProvider } from '@/components/Home/view-mode-context';
+import { LoaderProvider } from '@/hooks/loader-context';
 import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import { VIEW_MODE_COOKIE } from '@/lib/cookies';
 import type { SignedInUser } from '@/lib/user/types';
@@ -25,9 +26,9 @@ export interface RenderOptions {
 }
 
 function withAccounts(
-  element: ReactElement,
+  element: ReactNode,
   accounts?: AccountsContextValue
-): ReactElement {
+): ReactNode {
   if (!accounts) {
     return element;
   }
@@ -35,12 +36,16 @@ function withAccounts(
   return <AccountsProvider value={accounts}>{element}</AccountsProvider>;
 }
 
-function withUser(element: ReactElement, user?: SignedInUser): ReactElement {
+function withUser(element: ReactNode, user?: SignedInUser): ReactNode {
   if (!user) {
     return element;
   }
 
   return <SignedInUserProvider value={user}>{element}</SignedInUserProvider>;
+}
+
+interface AppProvidersProps {
+  children: ReactNode;
 }
 
 export function render(
@@ -59,13 +64,17 @@ export function render(
 
   document.cookie = `${VIEW_MODE_COOKIE}=${viewMode}`;
 
-  return renderWithRtl(
+  const AppProviders = ({ children }: AppProvidersProps): ReactElement => (
     <AppThemeProvider initialThemeId={themeId}>
       <ViewModeProvider value={viewMode}>
-        {withUser(withAccounts(element, accounts), user)}
+        <LoaderProvider>
+          {withUser(withAccounts(children, accounts), user)}
+        </LoaderProvider>
       </ViewModeProvider>
     </AppThemeProvider>
   );
+
+  return renderWithRtl(element, { wrapper: AppProviders });
 }
 
 export * from '@testing-library/react';

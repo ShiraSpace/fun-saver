@@ -19,7 +19,7 @@ interface WithdrawalFormState extends AmountEntry {
 export function useWithdrawalForm(
   accountId: string,
   wallets: WalletSummary[],
-  onClose: () => void
+  onSaved: () => void
 ): WithdrawalFormState {
   const { addWithdrawal } = useAddTransaction(accountId);
   const [selectedWalletId, setSelectedWalletId] = useState(
@@ -27,7 +27,7 @@ export function useWithdrawalForm(
   );
   const entry = useAmountEntry(
     (amountShekels) => addWithdrawal(selectedWalletId, amountShekels),
-    onClose
+    onSaved
   );
 
   const selectedWallet = wallets.find(

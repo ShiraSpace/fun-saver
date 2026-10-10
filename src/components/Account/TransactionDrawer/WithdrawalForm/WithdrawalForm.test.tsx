@@ -7,20 +7,15 @@ import { AMOUNT_KEYPAD_TEST_IDS } from '../AmountKeypad/constants';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { agorotToShekels } from '@/lib/money';
-import { mockRouter } from '@mocks/next/navigation';
+import type * as AddTransactionMock from '../__mocks__/use-add-transaction';
 
-const mockAddWithdrawal = jest.fn();
-const mockOnClose = jest.fn();
+const mockOnSaved = jest.fn();
 
-jest.mock('../use-add-transaction', () => ({
-  useAddTransaction: (): {
-    addDeposit: jest.Mock;
-    addWithdrawal: jest.Mock;
-  } => ({
-    addDeposit: jest.fn(),
-    addWithdrawal: mockAddWithdrawal,
-  }),
-}));
+jest.mock('../use-add-transaction');
+
+const { mockAddWithdrawal } = jest.requireMock<typeof AddTransactionMock>(
+  '../use-add-transaction'
+);
 
 const [savings, spending, goodDeeds] = mockWalletSummaries;
 
@@ -33,10 +28,9 @@ function type(...digits: string[]): void {
 describe('WithdrawalForm', () => {
   beforeEach(() => {
     mockAddWithdrawal.mockReset().mockResolvedValue(undefined);
-    mockRouter.refresh.mockClear();
-    mockOnClose.mockClear();
+    mockOnSaved.mockClear();
     render(
-      <WithdrawalForm account={mockAccountSummary} onClose={mockOnClose} />
+      <WithdrawalForm account={mockAccountSummary} onSaved={mockOnSaved} />
     );
   });
 
@@ -83,7 +77,7 @@ describe('WithdrawalForm', () => {
     ).toHaveTextContent(WITHDRAWAL_FORM_COPY.donationSubmit);
   });
 
-  it('withdraws from the chosen wallet, refreshes, and closes on submit', async () => {
+  it('withdraws from the chosen wallet on submit', async () => {
     fireEvent.click(
       screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(savings.name))
     );
@@ -94,11 +88,17 @@ describe('WithdrawalForm', () => {
     await waitFor(() =>
       expect(mockAddWithdrawal).toHaveBeenCalledWith(savings.id, 10)
     );
-    await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-    await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
   });
 
-  it('shows an error and stays open when the withdrawal fails', async () => {
+  it('reports the withdrawal saved', async () => {
+    type('5');
+
+    fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
+
+    await waitFor(() => expect(mockOnSaved).toHaveBeenCalled());
+  });
+
+  it('shows an error, and does not report it saved, when the withdrawal fails', async () => {
     mockAddWithdrawal.mockRejectedValueOnce(new Error('boom'));
     type('5');
 
@@ -109,6 +109,6 @@ describe('WithdrawalForm', () => {
         screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
       ).toBeInTheDocument()
     );
-    expect(mockOnClose).not.toHaveBeenCalled();
+    expect(mockOnSaved).not.toHaveBeenCalled();
   });
 });

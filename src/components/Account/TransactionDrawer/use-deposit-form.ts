@@ -14,10 +14,10 @@ interface DepositFormState extends AmountEntry {
 
 export function useDepositForm(
   accountId: string,
-  onClose: () => void
+  onSaved: () => void
 ): DepositFormState {
   const { addDeposit } = useAddTransaction(accountId);
-  const entry = useAmountEntry(addDeposit, onClose);
+  const entry = useAmountEntry(addDeposit, onSaved);
 
   const canSubmit =
     entry.amountShekels > 0 && entry.requestState !== REQUEST_STATE.pending;

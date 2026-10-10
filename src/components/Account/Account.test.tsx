@@ -1,10 +1,17 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  type RenderResult,
+} from '@/test-utils/render';
 import { Account } from './Account';
 import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { BALANCE_BREAKDOWN_TEST_IDS } from './BalanceBreakdown/constants';
 import { WALLET_LIST_TEST_IDS } from './WalletList/constants';
 import { WALLET_CARD_TEST_IDS } from './WalletCard/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from './TransactionDrawer/constants';
+import { AMOUNT_KEYPAD_TEST_IDS } from './TransactionDrawer/AmountKeypad/constants';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
 import {
   createMockAccount,
@@ -13,6 +20,9 @@ import {
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { AccountSummary } from '@/lib/account/types';
+import { mockRouter } from '@mocks/next/navigation';
+
+jest.mock('./TransactionDrawer/use-add-transaction');
 
 describe('Account', () => {
   const mockAccountId = 'account-1';
@@ -28,8 +38,10 @@ describe('Account', () => {
     wallets: mockWalletSummaries,
   };
 
+  let view: RenderResult;
+
   beforeEach(() => {
-    render(<Account account={mockAccount} />, {
+    view = render(<Account account={mockAccount} />, {
       accounts: mockAccountsContext,
       user: mockUser,
     });
@@ -79,5 +91,59 @@ describe('Account', () => {
     expect(
       screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.drawer)
     ).not.toBeInTheDocument();
+  });
+
+  describe('once a deposit is saved', () => {
+    beforeEach(async () => {
+      mockRouter.refresh.mockClear();
+      fireEvent.click(screen.getByTestId(ACCOUNT_TEST_IDS.newTransaction));
+      fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('5')));
+      fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
+      await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
+    });
+
+    it('closes the drawer', () => {
+      expect(
+        screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.drawer)
+      ).not.toBeInTheDocument();
+    });
+
+    it('loads the new balances once', () => {
+      expect(mockRouter.refresh).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('when the new balances arrive', () => {
+    let breakdownBefore: HTMLElement;
+
+    beforeEach(() => {
+      breakdownBefore = screen.getByTestId(BALANCE_BREAKDOWN_TEST_IDS.card);
+    });
+
+    it('redraws the balance breakdown for a new total', () => {
+      const mockDepositAgorot = 500;
+      const [savings, ...otherWallets] = mockWalletSummaries;
+      const mockAccountAfterDeposit: AccountSummary = {
+        ...mockAccount,
+        wallets: [
+          { ...savings, balance: savings.balance + mockDepositAgorot },
+          ...otherWallets,
+        ],
+      };
+
+      view.rerender(<Account account={mockAccountAfterDeposit} />);
+
+      expect(screen.getByTestId(BALANCE_BREAKDOWN_TEST_IDS.card)).not.toBe(
+        breakdownBefore
+      );
+    });
+
+    it('leaves the balance breakdown alone when the total is the same', () => {
+      view.rerender(<Account account={{ ...mockAccount }} />);
+
+      expect(screen.getByTestId(BALANCE_BREAKDOWN_TEST_IDS.card)).toBe(
+        breakdownBefore
+      );
+    });
   });
 });

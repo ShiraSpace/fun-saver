@@ -1,28 +1,28 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { TransactionDrawer } from './TransactionDrawer';
 import { TRANSACTION_DRAWER_TEST_IDS } from './constants';
 import { TRANSACTION_TYPE_TOGGLE_TEST_IDS } from './TransactionTypeToggle/constants';
 import { WALLET_PICKER_TEST_IDS } from './WalletPicker/constants';
+import { AMOUNT_KEYPAD_TEST_IDS } from './AmountKeypad/constants';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
-import { mockRouter } from '@mocks/next/navigation';
 import { LAYERS } from '@/theme/layers';
 import { layerOf } from '@/test-utils/layer';
 
-jest.mock('./use-add-transaction', () => ({
-  useAddTransaction: (): {
-    addDeposit: jest.Mock;
-    addWithdrawal: jest.Mock;
-  } => ({
-    addDeposit: jest.fn(),
-    addWithdrawal: jest.fn(),
-  }),
-}));
+jest.mock('./use-add-transaction');
 
 describe('TransactionDrawer', () => {
+  const mockOnClose = jest.fn();
+  const mockOnSaved = jest.fn();
+
   beforeEach(() => {
-    mockRouter.refresh.mockClear();
+    mockOnClose.mockClear();
+    mockOnSaved.mockClear();
     render(
-      <TransactionDrawer account={mockAccountSummary} onClose={jest.fn()} />
+      <TransactionDrawer
+        account={mockAccountSummary}
+        onClose={mockOnClose}
+        onSaved={mockOnSaved}
+      />
     );
   });
 
@@ -56,5 +56,21 @@ describe('TransactionDrawer', () => {
     expect(
       screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.split)
     ).not.toBeInTheDocument();
+  });
+
+  describe('once a deposit is saved', () => {
+    beforeEach(async () => {
+      fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('5')));
+      fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
+      await waitFor(() => expect(mockOnSaved).toHaveBeenCalled());
+    });
+
+    it('reports the deposit saved', () => {
+      expect(mockOnSaved).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not report the drawer dismissed', () => {
+      expect(mockOnClose).not.toHaveBeenCalled();
+    });
   });
 });

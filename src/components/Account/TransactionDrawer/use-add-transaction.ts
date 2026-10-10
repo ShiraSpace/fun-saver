@@ -1,5 +1,5 @@
 import { fetchJson } from '@/lib/fetch-json';
-interface AddTransaction {
+export interface AddTransaction {
   addDeposit: (amountShekels: number) => Promise<void>;
   addWithdrawal: (walletId: string, amountShekels: number) => Promise<void>;
 }

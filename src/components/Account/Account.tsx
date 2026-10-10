@@ -4,12 +4,14 @@ import { JSX, useState } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
 import { walletNamed } from '@/lib/wallet/wallet-named';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
+import { totalBalance } from '@/lib/wallet/balance';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { BalanceBreakdown } from './BalanceBreakdown';
 import { WalletList } from './WalletList/WalletList';
 import { TransactionDrawer } from './TransactionDrawer';
+import { useRefreshBalances } from './use-refresh-balances';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
 
 interface AccountProps {
@@ -24,12 +26,19 @@ export function Account({ account }: AccountProps): JSX.Element {
   );
   const savingsFirst = savings ? [savings, ...otherWallets] : otherWallets;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const refreshBalances = useRefreshBalances();
+  const balancesShown = `${account.id}:${totalBalance(wallets)}`;
+
+  const showNewBalances = (): void => {
+    setIsDrawerOpen(false);
+    refreshBalances();
+  };
 
   return (
     <Screen align="top">
       <Column>
         <Header title={account.name} account={account} />
-        <BalanceBreakdown key={account.id} wallets={savingsFirst} />
+        <BalanceBreakdown key={balancesShown} wallets={savingsFirst} />
         <WalletList wallets={savingsFirst} />
         <PrimaryButton
           type="button"
@@ -43,6 +52,7 @@ export function Account({ account }: AccountProps): JSX.Element {
         <TransactionDrawer
           account={account}
           onClose={() => setIsDrawerOpen(false)}
+          onSaved={showNewBalances}
         />
       )}
     </Screen>

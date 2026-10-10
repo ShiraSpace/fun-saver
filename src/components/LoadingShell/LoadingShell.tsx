@@ -3,7 +3,7 @@
 import { JSX } from 'react';
 import { Column } from '@/components/Screen';
 import { BurgerIcon } from '@/components/Menu/BurgerIcon';
-import { NavigationProgress } from '@/components/Header/NavigationProgress';
+import { LoaderBar } from '@/components/Header/LoaderBar';
 import { LOADING_SHELL_COPY, LOADING_SHELL_TEST_IDS } from './constants';
 import {
   BurgerSlot,
@@ -27,7 +27,7 @@ export function LoadingShell(): JSX.Element {
           </BurgerSlot>
           <GhostTitle />
           <GhostAvatar />
-          <NavigationProgress />
+          <LoaderBar />
         </Card>
       </Column>
     </Surface>
