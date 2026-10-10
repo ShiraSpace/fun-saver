@@ -1,7 +1,7 @@
 import { render, screen } from '@/test-utils/render';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { CHILD_ACCOUNT_TEST_IDS } from '@/components/ChildAccount/constants';
-import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import {
   mockAccountSummary,
   mockAccountsContext,

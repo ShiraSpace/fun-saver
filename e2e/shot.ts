@@ -1,7 +1,7 @@
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { StoreContents } from '@/db/data-store';
-import { VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/view-mode';
 import { AppBrowser } from './driver/app-browser';
 import { PHONE, RETINA_SCALE } from './driver/viewports';
 import {

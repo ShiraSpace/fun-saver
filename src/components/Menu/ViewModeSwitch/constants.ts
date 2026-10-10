@@ -1,4 +1,4 @@
-import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 
 export const VIEW_MODE_SWITCH_TEST_IDS = {
   switch: 'menu-view-mode-switch',

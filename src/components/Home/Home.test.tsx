@@ -19,7 +19,7 @@ import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { openMenu, renderHome } from './home-test-helpers';
 import { CHILD_ACCOUNT_TEST_IDS } from '@/components/ChildAccount/constants';
-import { VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/view-mode';
 import { CHILD_MENU_ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/ChildMenuAccountList/constants';
 
 const mockWriteCookie = jest.fn();

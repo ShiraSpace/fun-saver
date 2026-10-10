@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useViewMode } from '@/components/Home/view-mode-context';
-import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import { wait } from '@/lib/wait';
 import { motionIsReduced } from '@/theme/motion';
 import { useReportPendingNavigation } from '@/components/Header/navigation-pending-context';

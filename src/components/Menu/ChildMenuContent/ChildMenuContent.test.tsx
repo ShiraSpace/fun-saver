@@ -8,7 +8,7 @@ import {
 } from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import { VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/view-mode';
 import { APPEARANCE_SECTION_TEST_IDS } from '../AppearanceSection/constants';
 import { CHILD_MENU_ACCOUNT_LIST_TEST_IDS } from '../ChildMenuAccountList/constants';
 import { VIEW_MODE_SWITCH_TEST_IDS } from '../ViewModeSwitch/constants';

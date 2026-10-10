@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
-import { VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/view-mode';
 import { Account } from '@/components/Account';
 import { ChildAccount } from '@/components/ChildAccount';
 import { useViewMode } from '../view-mode-context';

@@ -2,7 +2,7 @@ import { render, screen, type RenderOptions } from '@/test-utils/render';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { mockAccountsContext } from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
-import { VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/view-mode';
 import { MenuContent } from './MenuContent';
 import { CHILD_MENU_CONTENT_TEST_IDS } from '../ChildMenuContent/constants';
 import { NAVIGATION_TABS_TEST_IDS } from '../NavigationTabs/constants';

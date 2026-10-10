@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@/test-utils/render';
 import { mockAccountsContext } from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
-import { VIEW_MODE, type ViewMode } from '@/lib/account/view-mode';
+import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import { readCookie, VIEW_MODE_COOKIE } from '@/lib/cookies';
 import { prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
 import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';

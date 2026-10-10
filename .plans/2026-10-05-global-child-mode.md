@@ -1,7 +1,8 @@
 # Child mode for the whole app, on this phone
 
 > Status: PR 1 **merged** as #193 (2026-10-05); PR 2 **merged** as #195
-> (2026-10-10); PR 3 next, once PR 1 is deployed to production. Mockup:
+> (2026-10-10); PR 3 **merged** as #197 (2026-10-10); PR 4 next, once PR 3 is
+> deployed to production. Mockup:
 > `mockups/global-child-mode.html`. Replaces the per-account view mode from
 > `.plans/2026-10-03-child-mode.md` and the unbuilt PRs 2–3 of
 > `.plans/2026-10-04-child-account-switcher.md` (#191 is superseded).
@@ -256,6 +257,15 @@ menu's last card is the switch. Visual: parent menu and child menu at phone
 size, in a non-default theme too. Screenshots in the PR (`pr-screenshots`).
 
 ## PR 3 — accounts stop carrying a view mode
+
+> **Merged** as #197 (`2e017e3`). Where the build differs from the text below:
+> - The child-account mocks (`mockChildAccountSummary`,
+>   `createMockChildAccountsContext`, `mockChildAccountsContext`) went too:
+>   with no `viewMode` to set, they were copies of the parent ones.
+> - The e2e suite "an account stored in child view, on a phone in parent
+>   mode" went: there is nothing left on the account to store.
+> - `MenuContent` gained "a parent viewing an account does not see the child
+>   menu", which the deleted saved-in-child-view case had covered.
 
 Cleanup once PR 1 is deployed to production.
 

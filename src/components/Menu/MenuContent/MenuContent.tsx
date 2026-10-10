@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, JSX } from 'react';
-import { VIEW_MODE } from '@/lib/account/view-mode';
+import { VIEW_MODE } from '@/lib/view-mode';
 import { useOptionalAccounts } from '@/components/Home/accounts-context';
 import { useViewMode } from '@/components/Home/view-mode-context';
 import { MenuUserSettings } from '../MenuUserSettings';

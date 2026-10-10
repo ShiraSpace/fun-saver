@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from 'react';
 import { createRequiredContext } from '@/hooks/create-required-context';
 import { readCookie, VIEW_MODE_COOKIE, writeCookie } from '@/lib/cookies';
-import { resolveViewMode, type ViewMode } from '@/lib/account/view-mode';
+import { resolveViewMode, type ViewMode } from '@/lib/view-mode';
 
 interface ViewModeValue {
   viewMode: ViewMode;

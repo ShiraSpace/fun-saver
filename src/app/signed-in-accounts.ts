@@ -6,7 +6,7 @@ import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { CURRENT_ACCOUNT_COOKIE, VIEW_MODE_COOKIE } from '@/lib/cookies';
 import { findCurrentAccount } from '@/lib/account/current-account';
 import type { Account } from '@/lib/account/types';
-import { resolveViewMode, type ViewMode } from '@/lib/account/view-mode';
+import { resolveViewMode, type ViewMode } from '@/lib/view-mode';
 import type { SignedInUser } from '@/lib/user/types';
 import { resolveThemeId, type ThemeId } from '@/theme/registry';
 
