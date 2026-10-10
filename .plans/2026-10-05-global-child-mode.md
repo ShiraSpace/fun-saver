@@ -1,8 +1,8 @@
 # Child mode for the whole app, on this phone
 
 > Status: PR 1 **merged** as #193 (2026-10-05); PR 2 **merged** as #195
-> (2026-10-10); PR 3 **merged** as #197 (2026-10-10); PR 4 next, once PR 3 is
-> deployed to production. Mockup:
+> (2026-10-10); PR 3 **merged** as #197 (2026-10-10); PR 4, the last, as #198
+> (2026-10-10): the plan is done once it merges. Mockup:
 > `mockups/global-child-mode.html`. Replaces the per-account view mode from
 > `.plans/2026-10-03-child-mode.md` and the unbuilt PRs 2–3 of
 > `.plans/2026-10-04-child-account-switcher.md` (#191 is superseded).
@@ -283,6 +283,12 @@ Cleanup once PR 1 is deployed to production.
   meaning changed in PR 1). `childView` stays under "Not".
 
 ## PR 4 — drop the column (after PR 3 is deployed to production)
+
+> #198. Where the build differs from the text below:
+> - The column is already dropped on test, dev and production (2026-10-10),
+>   before the merge.
+> - The usage report (`fun-saver-usage-stats`, #169) read `view_mode`; it stops
+>   reading it here.
 
 In `schema.sql`, the `ADD COLUMN IF NOT EXISTS view_mode …` lines are
 **replaced** by `ALTER TABLE accounts DROP COLUMN IF EXISTS view_mode;` (its

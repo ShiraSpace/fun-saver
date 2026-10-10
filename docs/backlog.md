@@ -149,15 +149,13 @@ parent remembering.
 
 ## 6. Parent/child roles
 
-Resolved for viewing by the account-saved view mode: a parent turns child
-view on for an account, with no child login and no device mode, and the child
-only looks. See `docs/superpowers/specs/2026-10-03-child-mode-design.md`.
+Resolved for viewing by child mode, one per phone: a parent turns it on for
+the whole app on this phone, kept in a cookie, with no child login, and the
+child only looks. See `.plans/2026-10-05-global-child-mode.md`.
 
 - Child view: no deposit, no settings, no rate, view only.
 - Parent view: everything.
 - Still deferred: child withdrawals and a parent PIN.
-- The view-mode switch stays locked, with the header bar running, until a
-  reload if its save succeeds but `router.refresh()` never renders.
 
 ## 6b. Live action checklist on the method page
 

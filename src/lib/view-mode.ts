@@ -7,7 +7,7 @@ export type ViewMode = (typeof VIEW_MODE)[keyof typeof VIEW_MODE];
 
 const VIEW_MODES: readonly string[] = Object.values(VIEW_MODE);
 
-export function isViewMode(value: unknown): value is ViewMode {
+function isViewMode(value: unknown): value is ViewMode {
   return typeof value === 'string' && VIEW_MODES.includes(value);
 }
 
