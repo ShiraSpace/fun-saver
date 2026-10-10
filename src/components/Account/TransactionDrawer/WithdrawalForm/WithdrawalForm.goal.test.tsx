@@ -4,6 +4,7 @@ import {
   mockAccountSavingForGoal,
   mockAccountWithGoalReached,
 } from '@/test-utils/mocks/goal.mocks';
+import { savedTowardGoalOf } from '@/lib/goal/saved-toward-goal';
 import { WithdrawalForm } from './WithdrawalForm';
 import { WITHDRAWAL_FORM_COPY, WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { LOCKED_SAVINGS_TEST_IDS } from './LockedSavings/constants';
@@ -31,6 +32,7 @@ describe('WithdrawalForm with a goal', () => {
       render(
         <WithdrawalForm
           account={mockAccountSavingForGoal}
+          savedTowardGoal={savedTowardGoalOf(mockAccountSavingForGoal)}
           onClose={jest.fn()}
         />
       );
@@ -68,6 +70,7 @@ describe('WithdrawalForm with a goal', () => {
       render(
         <WithdrawalForm
           account={mockAccountSavingForGoal}
+          savedTowardGoal={savedTowardGoalOf(mockAccountSavingForGoal)}
           onClose={jest.fn()}
         />
       );
@@ -87,6 +90,7 @@ describe('WithdrawalForm with a goal', () => {
       render(
         <WithdrawalForm
           account={mockAccountWithGoalReached}
+          savedTowardGoal={savedTowardGoalOf(mockAccountWithGoalReached)}
           onClose={jest.fn()}
         />
       );

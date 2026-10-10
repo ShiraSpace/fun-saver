@@ -3,7 +3,10 @@ import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
 import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
 import { GoalProgressBar } from './GoalProgressBar';
-import { GOAL_PROGRESS_BAR_TEST_IDS, HEAD_START_PERCENT } from './constants';
+import {
+  GOAL_PROGRESS_BAR_TEST_IDS,
+  HEAD_START_FILL_PERCENT,
+} from './constants';
 
 const fill = (): HTMLElement =>
   screen.getByTestId(GOAL_PROGRESS_BAR_TEST_IDS.fill);
@@ -19,7 +22,7 @@ describe('GoalProgressBar', () => {
     });
 
     it('fills as much of the bar as is saved', () => {
-      expect(fill().style.width).toBe('50%');
+      expect(getComputedStyle(fill()).width).toBe('50%');
     });
 
     it('tells assistive technology how much is saved, in shekels', () => {
@@ -47,7 +50,9 @@ describe('GoalProgressBar', () => {
     });
 
     it('shows a sliver', () => {
-      expect(fill().style.width).toBe(`${HEAD_START_PERCENT}%`);
+      expect(getComputedStyle(fill()).width).toBe(
+        `${HEAD_START_FILL_PERCENT}%`
+      );
     });
   });
 
@@ -64,7 +69,7 @@ describe('GoalProgressBar', () => {
     });
 
     it('never fills past the whole bar', () => {
-      expect(fill().style.width).toBe('100%');
+      expect(getComputedStyle(fill()).width).toBe('100%');
     });
 
     it('never tells assistive technology more is saved than the goal', () => {

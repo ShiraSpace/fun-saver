@@ -8,6 +8,7 @@ import {
   mockAccountWithGoalReached,
 } from '@/test-utils/mocks/goal.mocks';
 import type { AccountSummary } from '@/lib/account/types';
+import { savedTowardGoalOf } from '@/lib/goal/saved-toward-goal';
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddWithdrawal = jest.fn();
@@ -28,7 +29,13 @@ const [mockSavings, mockSpending, mockGoodDeeds] = mockWalletSummaries;
 function setup(
   account: AccountSummary = mockAccountSummary
 ): ReturnType<typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>> {
-  return renderHook(() => useWithdrawalForm(account, mockOnClose));
+  return renderHook(() =>
+    useWithdrawalForm({
+      account,
+      savedTowardGoal: savedTowardGoalOf(account),
+      onClose: mockOnClose,
+    })
+  );
 }
 
 describe('useWithdrawalForm', () => {

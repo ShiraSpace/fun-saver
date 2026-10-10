@@ -1,11 +1,11 @@
 import { fireEvent, render, screen, within } from '@/test-utils/render';
+import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
+import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
+import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
+import { agorotToShekels } from '@/lib/money';
+import { WALLET_TILE_TEST_IDS } from '../WalletTile/constants';
 import { WalletPicker } from './WalletPicker';
 import { WALLET_PICKER_TEST_IDS } from './constants';
-import { WALLET_TILE_TEST_IDS } from '../WalletTile/constants';
-import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
-import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
-import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
-import { agorotToShekels } from '@/lib/money';
 
 const mockOnSelect = jest.fn();
 const [mockSavings, mockSpending] = mockWalletSummaries;
