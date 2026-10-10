@@ -66,12 +66,8 @@ export class AppBrowser {
     await this.page.evaluate((): void => window.history.back());
   }
 
-  async resize({
-    width,
-    height,
-    deviceScaleFactor = 1,
-  }: ViewportOptions): Promise<void> {
-    await this.page.setViewport({ width, height, deviceScaleFactor });
+  async resize(viewport: ViewportOptions): Promise<void> {
+    await this.page.setViewport({ deviceScaleFactor: 1, ...viewport });
   }
 
   async screenshot(path: `${string}.png`): Promise<void> {
@@ -182,6 +178,10 @@ export class AppBrowser {
 
   click(testId: string): Promise<void> {
     return actions.click(this.page, testId);
+  }
+
+  tapAt(x: number, y: number): Promise<void> {
+    return this.page.mouse.click(x, y);
   }
 
   hover(testId: string): Promise<void> {

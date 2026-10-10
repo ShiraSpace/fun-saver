@@ -1,17 +1,23 @@
 import { StrictMode } from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { useCloseOnBack } from '../use-close-on-back';
+import { DRAWER_HISTORY_KEY } from '../constants';
 
-const flushAsync = (): Promise<void> =>
+const historySettles = (): Promise<void> =>
   act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 10));
   });
 
 describe('useCloseOnBack', () => {
+  beforeEach(async () => {
+    await historySettles();
+    window.history.replaceState(null, '');
+  });
+
   it('pushes a history entry while open', () => {
     renderHook(() => useCloseOnBack(jest.fn()));
 
-    expect(window.history.state?.funsaverDrawer).toBe(true);
+    expect(window.history.state?.[DRAWER_HISTORY_KEY]).toBe(true);
   });
 
   it('closes when the back button fires a popstate', () => {
@@ -42,17 +48,41 @@ describe('useCloseOnBack', () => {
     const mockHistoryBack = jest
       .spyOn(window.history, 'back')
       .mockImplementation(() => {
-        setTimeout(
-          () => window.dispatchEvent(new PopStateEvent('popstate')),
-          0
+        setTimeout(() =>
+          window.dispatchEvent(
+            new PopStateEvent('popstate', {
+              state: { [DRAWER_HISTORY_KEY]: true },
+            })
+          )
         );
       });
 
     renderHook(() => useCloseOnBack(mockOnClose), { wrapper: StrictMode });
-    await flushAsync();
+    await historySettles();
+    mockHistoryBack.mockRestore();
 
     expect(mockOnClose).not.toHaveBeenCalled();
+  });
 
+  it('removes its history entry when it closes without the back button', async () => {
+    const { unmount } = renderHook(() => useCloseOnBack(jest.fn()));
+
+    unmount();
+    await historySettles();
+
+    expect(window.history.state?.[DRAWER_HISTORY_KEY]).toBeUndefined();
+  });
+
+  it('leaves history alone when the back button closed it', async () => {
+    const { unmount } = renderHook(() => useCloseOnBack(jest.fn()));
+    window.history.back();
+    await historySettles();
+    const mockHistoryBack = jest.spyOn(window.history, 'back');
+
+    unmount();
+    const historyBackCalls = mockHistoryBack.mock.calls.length;
     mockHistoryBack.mockRestore();
+
+    expect(historyBackCalls).toBe(0);
   });
 });

@@ -52,8 +52,18 @@ export class AccountDriver {
     return this.appBrowser.text(INTEREST_STATS_TEST_IDS.principal);
   }
 
-  async deposit(amountShekels: number): Promise<void> {
+  async openTransactionDrawer(): Promise<void> {
     await this.appBrowser.click(ACCOUNT_TEST_IDS.newTransaction);
+    await this.appBrowser.waitForTestId(TRANSACTION_DRAWER_TEST_IDS.drawer);
+  }
+
+  async closeTransactionDrawer(): Promise<void> {
+    const scrim = await this.appBrowser.box(TRANSACTION_DRAWER_TEST_IDS.scrim);
+    await this.appBrowser.tapAt(scrim.x + scrim.width / 2, scrim.y);
+  }
+
+  async deposit(amountShekels: number): Promise<void> {
+    await this.openTransactionDrawer();
     for (const digit of String(amountShekels)) {
       await this.appBrowser.click(AMOUNT_KEYPAD_TEST_IDS.key(digit));
     }
@@ -61,7 +71,7 @@ export class AccountDriver {
   }
 
   async withdraw(walletName: WalletName, amountShekels: number): Promise<void> {
-    await this.appBrowser.click(ACCOUNT_TEST_IDS.newTransaction);
+    await this.openTransactionDrawer();
     await this.appBrowser.click(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal);
     await this.appBrowser.click(WALLET_PICKER_TEST_IDS.wallet(walletName));
 
