@@ -17,7 +17,7 @@ import { HeaderAccountAvatar } from './HeaderAccountAvatar';
 import { HEADER_TEST_IDS } from './constants';
 import { Bar } from './Header.styles';
 import { NavigationProgress } from './NavigationProgress';
-import { useIsNavigating } from './navigation-pending-context';
+import { useIsNavigating } from '@/hooks/navigation-pending-context';
 
 export interface HeaderProps {
   title: string;

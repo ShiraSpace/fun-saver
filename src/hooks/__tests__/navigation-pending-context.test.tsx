@@ -3,7 +3,7 @@ import { render, screen, type RenderResult } from '@testing-library/react';
 import {
   NavigationProvider,
   PendingNavigationReporter,
-} from './navigation-pending-context';
+} from '../navigation-pending-context';
 import {
   IS_NAVIGATING_TEST_ID,
   IsNavigating,

@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { useIsNavigating } from '@/components/Header/navigation-pending-context';
+import { useIsNavigating } from '@/hooks/navigation-pending-context';
 
 export const IS_NAVIGATING_TEST_ID = 'is-navigating';
 

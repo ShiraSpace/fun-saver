@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import { PendingNavigationReporter } from '@/components/Header/navigation-pending-context';
+import { PendingNavigationReporter } from '@/hooks/navigation-pending-context';
 import { NavigationDestination } from './constants';
 import { CurrentTab, InertTab, Tab, TabIcon } from './NavigationTabs.styles';
 

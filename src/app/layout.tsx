@@ -6,7 +6,7 @@ import {
   everyThemeAsCss,
 } from '@/theme/theme-at-first-paint';
 import { LoadingShell } from '@/components/LoadingShell';
-import { NavigationProvider } from '@/components/Header/navigation-pending-context';
+import { NavigationProvider } from '@/hooks/navigation-pending-context';
 import { EmotionStyleRegistry } from './EmotionStyleRegistry';
 
 export const metadata: Metadata = {

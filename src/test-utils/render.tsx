@@ -11,7 +11,7 @@ import {
 } from '@/components/Home/accounts-context';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { ViewModeProvider } from '@/components/Home/view-mode-context';
-import { NavigationProvider } from '@/components/Header/navigation-pending-context';
+import { NavigationProvider } from '@/hooks/navigation-pending-context';
 import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import { VIEW_MODE_COOKIE } from '@/lib/cookies';
 import type { SignedInUser } from '@/lib/user/types';
@@ -26,9 +26,9 @@ export interface RenderOptions {
 }
 
 function withAccounts(
-  element: ReactElement,
+  element: ReactNode,
   accounts?: AccountsContextValue
-): ReactElement {
+): ReactNode {
   if (!accounts) {
     return element;
   }
@@ -36,7 +36,7 @@ function withAccounts(
   return <AccountsProvider value={accounts}>{element}</AccountsProvider>;
 }
 
-function withUser(element: ReactElement, user?: SignedInUser): ReactElement {
+function withUser(element: ReactNode, user?: SignedInUser): ReactNode {
   if (!user) {
     return element;
   }
@@ -68,7 +68,7 @@ export function render(
     <AppThemeProvider initialThemeId={themeId}>
       <ViewModeProvider value={viewMode}>
         <NavigationProvider>
-          {withUser(withAccounts(<>{children}</>, accounts), user)}
+          {withUser(withAccounts(children, accounts), user)}
         </NavigationProvider>
       </ViewModeProvider>
     </AppThemeProvider>

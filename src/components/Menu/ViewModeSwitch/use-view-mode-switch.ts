@@ -3,7 +3,7 @@ import { useViewMode } from '@/components/Home/view-mode-context';
 import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import { wait } from '@/lib/wait';
 import { motionIsReduced } from '@/theme/motion';
-import { useReportPendingNavigation } from '@/components/Header/navigation-pending-context';
+import { useReportPendingNavigation } from '@/hooks/navigation-pending-context';
 import { useMenu } from '../use-menu-state';
 import { MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
 import { VIEW_MODE_SWITCH_MOTION } from './constants';
