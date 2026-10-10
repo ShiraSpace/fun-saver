@@ -24,6 +24,7 @@ export function Account({ account }: AccountProps): JSX.Element {
     (wallet) => wallet.name !== WALLET_NAMES.savings
   );
   const savingsFirst = savings ? [savings, ...otherWallets] : otherWallets;
+  const savedTowardGoal = savedTowardGoalOf(account);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
@@ -31,10 +32,7 @@ export function Account({ account }: AccountProps): JSX.Element {
       <Column>
         <Header title={account.name} account={account} />
         <BalanceBreakdown key={account.id} wallets={savingsFirst} />
-        <WalletList
-          wallets={savingsFirst}
-          savedTowardGoal={savedTowardGoalOf(account)}
-        />
+        <WalletList wallets={savingsFirst} savedTowardGoal={savedTowardGoal} />
         <PrimaryButton
           type="button"
           data-testid={ACCOUNT_TEST_IDS.newTransaction}

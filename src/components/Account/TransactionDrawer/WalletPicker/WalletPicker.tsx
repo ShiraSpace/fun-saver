@@ -37,6 +37,7 @@ export function WalletPicker({
         const tileAmount = savedTowardGoalInWallet
           ? withoutAgorot(wallet.balance)
           : wallet.balance;
+        const isTileLocked = savingsLocked(savedTowardGoalInWallet);
 
         return (
           <WalletTile
@@ -48,7 +49,7 @@ export function WalletPicker({
             amountTestId={WALLET_PICKER_TEST_IDS.balance(wallet.name)}
             selected={wallet.id === selectedWalletId}
             onSelect={(): void => onSelect(wallet.id)}
-            locked={savingsLocked(savedTowardGoalInWallet)}
+            locked={isTileLocked}
           />
         );
       })}
