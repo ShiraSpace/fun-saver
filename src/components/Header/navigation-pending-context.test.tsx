@@ -1,8 +1,9 @@
-import { Context, JSX, useState } from 'react';
+import { Context, JSX } from 'react';
 import { render, screen, type RenderResult } from '@testing-library/react';
 import {
-  PendingNavigationsProvider,
+  NavigationProvider,
   PendingNavigationReporter,
+  useIsNavigating,
 } from './navigation-pending-context';
 
 jest.mock('next/link', () => {
@@ -21,7 +22,13 @@ jest.mock('next/link', () => {
 const LinkPending: Context<boolean> =
   jest.requireMock('next/link').MockLinkPending;
 
-const PENDING_COUNT = 'pending-count';
+const IS_NAVIGATING = 'is-navigating';
+
+function IsNavigating(): JSX.Element {
+  return (
+    <output data-testid={IS_NAVIGATING}>{String(useIsNavigating())}</output>
+  );
+}
 
 interface LinksProps {
   homeLinkPending: boolean;
@@ -32,41 +39,39 @@ function TwoLinks({
   homeLinkPending,
   homeTabPending,
 }: LinksProps): JSX.Element {
-  const [pendingNavigationCount, setPendingNavigationCount] = useState(0);
-
   return (
-    <PendingNavigationsProvider value={setPendingNavigationCount}>
+    <NavigationProvider>
       <LinkPending.Provider value={homeLinkPending}>
         <PendingNavigationReporter />
       </LinkPending.Provider>
       <LinkPending.Provider value={homeTabPending}>
         <PendingNavigationReporter />
       </LinkPending.Provider>
-      <output data-testid={PENDING_COUNT}>{pendingNavigationCount}</output>
-    </PendingNavigationsProvider>
+      <IsNavigating />
+    </NavigationProvider>
   );
 }
 
-describe('counting pending navigations', () => {
+describe('pending navigations', () => {
   let view: RenderResult;
 
   beforeEach(() => {
     view = render(<TwoLinks homeLinkPending={false} homeTabPending={true} />);
   });
 
-  it('counts the link that is pending', () => {
-    expect(screen.getByTestId(PENDING_COUNT)).toHaveTextContent('1');
+  it('is navigating while a link is pending', () => {
+    expect(screen.getByTestId(IS_NAVIGATING)).toHaveTextContent('true');
   });
 
-  it('still counts one when two links swap in a single update', () => {
+  it('is still navigating when two links swap in a single update', () => {
     view.rerender(<TwoLinks homeLinkPending={true} homeTabPending={false} />);
 
-    expect(screen.getByTestId(PENDING_COUNT)).toHaveTextContent('1');
+    expect(screen.getByTestId(IS_NAVIGATING)).toHaveTextContent('true');
   });
 
-  it('counts none once the navigation has landed', () => {
+  it('stops navigating once the navigation has landed', () => {
     view.rerender(<TwoLinks homeLinkPending={false} homeTabPending={false} />);
 
-    expect(screen.getByTestId(PENDING_COUNT)).toHaveTextContent('0');
+    expect(screen.getByTestId(IS_NAVIGATING)).toHaveTextContent('false');
   });
 });

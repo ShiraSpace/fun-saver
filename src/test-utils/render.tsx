@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import {
   render as renderWithRtl,
   type RenderResult,
@@ -11,6 +11,7 @@ import {
 } from '@/components/Home/accounts-context';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { ViewModeProvider } from '@/components/Home/view-mode-context';
+import { NavigationProvider } from '@/components/Header/navigation-pending-context';
 import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import { VIEW_MODE_COOKIE } from '@/lib/cookies';
 import type { SignedInUser } from '@/lib/user/types';
@@ -59,13 +60,21 @@ export function render(
 
   document.cookie = `${VIEW_MODE_COOKIE}=${viewMode}`;
 
-  return renderWithRtl(
+  const AppProviders = ({
+    children,
+  }: {
+    children: ReactNode;
+  }): ReactElement => (
     <AppThemeProvider initialThemeId={themeId}>
       <ViewModeProvider value={viewMode}>
-        {withUser(withAccounts(element, accounts), user)}
+        <NavigationProvider>
+          {withUser(withAccounts(<>{children}</>, accounts), user)}
+        </NavigationProvider>
       </ViewModeProvider>
     </AppThemeProvider>
   );
+
+  return renderWithRtl(element, { wrapper: AppProviders });
 }
 
 export * from '@testing-library/react';

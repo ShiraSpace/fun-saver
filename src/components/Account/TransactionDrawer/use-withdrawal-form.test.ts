@@ -2,10 +2,9 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { REQUEST_STATE } from '@/lib/request-state';
 import { useWithdrawalForm } from './use-withdrawal-form';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
-import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddWithdrawal = jest.fn();
-const mockOnClose = jest.fn();
+const mockOnSaved = jest.fn();
 
 jest.mock('./use-add-transaction', () => ({
   useAddTransaction: (): {
@@ -24,15 +23,14 @@ function setup(): ReturnType<
   typeof renderHook<ReturnType<typeof useWithdrawalForm>, void>
 > {
   return renderHook(() =>
-    useWithdrawalForm(mockAccountId, mockWalletSummaries, mockOnClose)
+    useWithdrawalForm(mockAccountId, mockWalletSummaries, mockOnSaved)
   );
 }
 
 describe('useWithdrawalForm', () => {
   beforeEach(() => {
     mockAddWithdrawal.mockReset().mockResolvedValue(undefined);
-    mockRouter.refresh.mockClear();
-    mockOnClose.mockClear();
+    mockOnSaved.mockClear();
   });
 
   it('starts on the default withdrawal wallet', () => {
@@ -78,7 +76,7 @@ describe('useWithdrawalForm', () => {
     expect(result.current.isDonation).toBe(true);
   });
 
-  it('submits the withdrawal, refreshes, and closes on submit', async () => {
+  it('withdraws the typed amount from the selected wallet', async () => {
     const { result } = setup();
 
     act(() => result.current.onDigit(1));
@@ -88,11 +86,18 @@ describe('useWithdrawalForm', () => {
     await waitFor(() =>
       expect(mockAddWithdrawal).toHaveBeenCalledWith(spending.id, 10)
     );
-    await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-    await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
   });
 
-  it('shows an error and stays open when the withdrawal fails', async () => {
+  it('reports the withdrawal saved', async () => {
+    const { result } = setup();
+
+    act(() => result.current.onDigit(5));
+    act(() => result.current.onSubmit());
+
+    await waitFor(() => expect(mockOnSaved).toHaveBeenCalled());
+  });
+
+  it('fails, and does not report it saved, when the withdrawal fails', async () => {
     mockAddWithdrawal.mockRejectedValueOnce(new Error('boom'));
     const { result } = setup();
 
@@ -102,7 +107,7 @@ describe('useWithdrawalForm', () => {
     await waitFor(() =>
       expect(result.current.requestState).toBe(REQUEST_STATE.failed)
     );
-    expect(mockOnClose).not.toHaveBeenCalled();
+    expect(mockOnSaved).not.toHaveBeenCalled();
     expect(result.current.amountShekels).toBe(5);
   });
 });

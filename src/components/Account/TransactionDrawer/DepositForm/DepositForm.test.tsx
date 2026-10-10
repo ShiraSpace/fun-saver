@@ -6,10 +6,9 @@ import { splitDeposit } from '@/lib/transaction/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
-import { mockRouter } from '@mocks/next/navigation';
 
 const mockAddDeposit = jest.fn();
-const mockOnClose = jest.fn();
+const mockOnSaved = jest.fn();
 
 jest.mock('../use-add-transaction', () => ({
   useAddTransaction: (): {
@@ -24,9 +23,8 @@ jest.mock('../use-add-transaction', () => ({
 describe('DepositForm', () => {
   beforeEach(() => {
     mockAddDeposit.mockReset().mockResolvedValue(undefined);
-    mockRouter.refresh.mockClear();
-    mockOnClose.mockClear();
-    render(<DepositForm account={mockAccountSummary} onClose={mockOnClose} />);
+    mockOnSaved.mockClear();
+    render(<DepositForm account={mockAccountSummary} onSaved={mockOnSaved} />);
   });
 
   it('shows a zero amount by default', () => {
@@ -92,18 +90,24 @@ describe('DepositForm', () => {
     ).toBeEnabled();
   });
 
-  it('submits the deposit, refreshes, and closes on submit', async () => {
+  it('deposits the typed amount on submit', async () => {
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('2')));
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('0')));
 
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
 
     await waitFor(() => expect(mockAddDeposit).toHaveBeenCalledWith(20));
-    await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-    await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
   });
 
-  it('shows an error and stays open when the deposit fails', async () => {
+  it('reports the deposit saved', async () => {
+    fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('5')));
+
+    fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
+
+    await waitFor(() => expect(mockOnSaved).toHaveBeenCalled());
+  });
+
+  it('shows an error, and does not report it saved, when the deposit fails', async () => {
     mockAddDeposit.mockRejectedValueOnce(new Error('boom'));
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('2')));
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('0')));
@@ -115,8 +119,7 @@ describe('DepositForm', () => {
         screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
       ).toBeInTheDocument()
     );
-    expect(mockOnClose).not.toHaveBeenCalled();
-    expect(mockRouter.refresh).not.toHaveBeenCalled();
+    expect(mockOnSaved).not.toHaveBeenCalled();
     expect(
       screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)
     ).toHaveTextContent('20');
@@ -140,6 +143,6 @@ describe('DepositForm', () => {
     );
 
     resolveDeposit();
-    await waitFor(() => expect(mockOnClose).toHaveBeenCalled());
+    await waitFor(() => expect(mockOnSaved).toHaveBeenCalled());
   });
 });
