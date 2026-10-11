@@ -8,9 +8,13 @@ interface SavingsLockProps {
 }
 
 export function SavingsLock({ reached }: SavingsLockProps): JSX.Element {
+  const label = reached
+    ? SAVINGS_LOCK_COPY.savingsOpen
+    : GOAL_COPY.savingsLocked;
+
   return (
     <Label reached={reached} data-testid={SAVINGS_LOCK_TEST_IDS.label}>
-      {reached ? SAVINGS_LOCK_COPY.savingsOpen : GOAL_COPY.savingsLocked}
+      {label}
     </Label>
   );
 }

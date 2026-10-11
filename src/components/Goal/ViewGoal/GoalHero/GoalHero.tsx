@@ -31,6 +31,7 @@ function encouragementFor({
 
 export function GoalHero({ savedTowardGoal }: GoalHeroProps): JSX.Element {
   const { goal, saved, reached } = savedTowardGoal;
+  const encouragement = encouragementFor(savedTowardGoal);
 
   return (
     <Hero reached={reached} data-testid={GOAL_HERO_TEST_IDS.hero}>
@@ -56,7 +57,7 @@ export function GoalHero({ savedTowardGoal }: GoalHeroProps): JSX.Element {
         reached={reached}
         data-testid={GOAL_HERO_TEST_IDS.encouragement}
       >
-        {encouragementFor(savedTowardGoal)}
+        {encouragement}
       </Encouragement>
     </Hero>
   );
