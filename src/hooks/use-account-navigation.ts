@@ -24,36 +24,51 @@ export interface AccountNavigation {
   cancel: () => void;
   isCreating: boolean;
   editingAccount?: AccountSummary;
-  viewingGoal?: SavedTowardGoal;
+  goalBeingViewed?: GoalBeingViewed;
+}
+
+export interface GoalBeingViewed {
+  accountName: string;
+  savedTowardGoal: SavedTowardGoal;
 }
 
 interface GoalBeingViewedParams {
   mode: AppMode;
-  setMode: Dispatch<SetStateAction<AppMode>>;
   currentAccount?: AccountSummary;
 }
 
-function goalBeingViewed({
-  mode,
-  currentAccount,
-}: GoalBeingViewedParams): SavedTowardGoal | undefined {
-  if (mode !== APP_MODE.viewingGoal || !currentAccount) {
-    return undefined;
-  }
-
-  return savedTowardGoalOf(currentAccount);
+interface LeavingGoneGoalParams extends GoalBeingViewedParams {
+  setMode: Dispatch<SetStateAction<AppMode>>;
 }
 
-function useGoalBeingViewed(
-  params: GoalBeingViewedParams
-): SavedTowardGoal | undefined {
-  const viewingGoal = goalBeingViewed(params);
-
-  if (params.mode === APP_MODE.viewingGoal && !viewingGoal) {
-    params.setMode(APP_MODE.viewing);
+function goalBeingViewedOf({
+  mode,
+  currentAccount,
+}: GoalBeingViewedParams): GoalBeingViewed | undefined {
+  if (mode !== APP_MODE.viewingGoal || !currentAccount) {
+    return;
   }
 
-  return viewingGoal;
+  const savedTowardGoal = savedTowardGoalOf(currentAccount);
+
+  if (!savedTowardGoal) {
+    return;
+  }
+
+  return { accountName: currentAccount.name, savedTowardGoal };
+}
+
+function useGoalBeingViewed({
+  setMode,
+  ...params
+}: LeavingGoneGoalParams): GoalBeingViewed | undefined {
+  const goalBeingViewed = goalBeingViewedOf(params);
+
+  if (params.mode === APP_MODE.viewingGoal && !goalBeingViewed) {
+    setMode(APP_MODE.viewing);
+  }
+
+  return goalBeingViewed;
 }
 
 export function useAccountNavigation(
@@ -83,7 +98,7 @@ export function useAccountNavigation(
 
   const currentAccount = findCurrentAccount(accounts, currentAccountId);
   const isEditing = mode === APP_MODE.editingAccount;
-  const viewingGoal = useGoalBeingViewed({ mode, setMode, currentAccount });
+  const goalBeingViewed = useGoalBeingViewed({ mode, setMode, currentAccount });
 
   return {
     mode,
@@ -98,6 +113,6 @@ export function useAccountNavigation(
     cancel: returnToViewing,
     isCreating: mode === APP_MODE.creatingAccount,
     editingAccount: isEditing ? currentAccount : undefined,
-    viewingGoal,
+    goalBeingViewed,
   };
 }

@@ -92,7 +92,12 @@ describe('AccountManagement', () => {
 
   describe('while viewing a goal', () => {
     beforeEach(() => {
-      renderManagement({ viewingGoal: createMockSavedTowardGoal() });
+      renderManagement({
+        goalBeingViewed: {
+          accountName: mockAccountSummary.name,
+          savedTowardGoal: createMockSavedTowardGoal(),
+        },
+      });
     });
 
     it('opens the goal screen', () => {

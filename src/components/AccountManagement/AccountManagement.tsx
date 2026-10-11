@@ -40,11 +40,11 @@ export function AccountManagement({
           />
         </Overlay>
       )}
-      {navigation.viewingGoal && navigation.currentAccount && (
+      {navigation.goalBeingViewed && (
         <Overlay>
           <ViewGoal
-            accountName={navigation.currentAccount.name}
-            savedTowardGoal={navigation.viewingGoal}
+            accountName={navigation.goalBeingViewed.accountName}
+            savedTowardGoal={navigation.goalBeingViewed.savedTowardGoal}
             onClose={cancel}
           />
         </Overlay>

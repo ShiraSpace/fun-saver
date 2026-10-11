@@ -7,15 +7,17 @@ interface StillToSaveProps {
 }
 
 export function StillToSave({ stillToSave }: StillToSaveProps): JSX.Element {
+  const amount = (
+    <Money
+      amountAgorot={stillToSave}
+      testId={STILL_TO_SAVE_TEST_IDS.amount}
+      fullSizeCurrency
+    />
+  );
+
   return (
     <>
-      {STILL_TO_SAVE_COPY.before}{' '}
-      <Money
-        amountAgorot={stillToSave}
-        testId={STILL_TO_SAVE_TEST_IDS.amount}
-        fullSizeCurrency
-      />{' '}
-      {STILL_TO_SAVE_COPY.after}
+      {STILL_TO_SAVE_COPY.before} {amount} {STILL_TO_SAVE_COPY.after}
     </>
   );
 }
