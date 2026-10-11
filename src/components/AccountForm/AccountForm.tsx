@@ -44,15 +44,8 @@ export function AccountForm({
       <Form onSubmit={(event): void => void form.handleSubmit(event)}>
         <CloseButton onClose={onCancel} disabled={isSaving} />
         <ScreenTitle title={title} titleIcon={titleIcon} />
-        <NameField
-          value={form.name}
-          onChange={form.setName}
-          maxLength={MAX_ACCOUNT_NAME_LENGTH}
-        />
-        <AvatarPicker
-          selectedId={form.selectedAvatarId}
-          onSelect={form.setSelectedAvatarId}
-        />
+        <NameField value={form.name} onChange={form.setName} maxLength={MAX_ACCOUNT_NAME_LENGTH} />
+        <AvatarPicker selectedId={form.selectedAvatarId} onSelect={form.setSelectedAvatarId} />
         <SaveAccountButton
           submitLabel={submitLabel}
           canSubmit={form.canSubmit}

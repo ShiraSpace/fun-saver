@@ -1,8 +1,5 @@
 import { render, screen, within } from '@/test-utils/render';
-import {
-  mockAccountSummary,
-  mockSiblingAccountSummary,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccountSummary, mockSiblingAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
@@ -17,9 +14,7 @@ import { METHOD_COPY } from './copy';
 const SECTION_NUMBERS = Object.values(SECTION_NUMBER);
 
 function renderedSectionIds(): (string | undefined)[] {
-  return screen
-    .getAllByTestId(/^method-section-\d+$/)
-    .map((section) => section.dataset.testid);
+  return screen.getAllByTestId(/^method-section-\d+$/).map((section) => section.dataset.testid);
 }
 
 describe('the method page', () => {
@@ -34,20 +29,14 @@ describe('the method page', () => {
   });
 
   it('names itself in the header, so the parent knows what they opened', () => {
-    expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-      METHOD_COPY.title
-    );
+    expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(METHOD_COPY.title);
   });
 
   it('names the child it is showing, the avatar being the way back to them', () => {
     const homeLink = screen.getByTestId(HEADER_TEST_IDS.homeLink);
 
-    expect(homeLink).toContainElement(
-      screen.getByTestId(HEADER_TEST_IDS.avatar)
-    );
-    expect(homeLink).toHaveAccessibleName(
-      expect.stringContaining(mockAccountSummary.name)
-    );
+    expect(homeLink).toContainElement(screen.getByTestId(HEADER_TEST_IDS.avatar));
+    expect(homeLink).toHaveAccessibleName(expect.stringContaining(mockAccountSummary.name));
   });
 
   it('opens with the method itself, the one block that never collapses', () => {
@@ -61,24 +50,18 @@ describe('the method page', () => {
   });
 
   it('lists them in the order the copy numbers them', () => {
-    expect(renderedSectionIds()).toEqual(
-      SECTION_NUMBERS.map(METHOD_SECTION_TEST_IDS.section)
-    );
+    expect(renderedSectionIds()).toEqual(SECTION_NUMBERS.map(METHOD_SECTION_TEST_IDS.section));
   });
 
   it('closes with the sources, after every section whose numbers they carry', () => {
-    const sources = screen.getByTestId(
-      METHOD_SECTION_TEST_IDS.section(SOURCES_SECTION_ID)
-    );
+    const sources = screen.getByTestId(METHOD_SECTION_TEST_IDS.section(SOURCES_SECTION_ID));
 
     expect(sources.parentElement?.lastElementChild).toBe(sources);
   });
 
   it('lands a claim on the study it names, counting the list the same way the reader does', () => {
     const [cited] = METHOD_COPY.why.evidence.sources;
-    const study = METHOD_COPY.sources.list.find(
-      (source) => source.id === cited
-    );
+    const study = METHOD_COPY.sources.list.find((source) => source.id === cited);
 
     const [marker] = within(
       screen.getByTestId(METHOD_SECTION_TEST_IDS.body(SECTION_NUMBER.why))
@@ -86,8 +69,9 @@ describe('the method page', () => {
     const entries = screen.getAllByTestId(SOURCE_LIST_TEST_IDS.entry);
     const pointedAt = entries[Number(marker.textContent) - 1];
 
-    expect(
-      within(pointedAt).getByTestId(SOURCE_LIST_TEST_IDS.citation)
-    ).toHaveAttribute('href', study?.url);
+    expect(within(pointedAt).getByTestId(SOURCE_LIST_TEST_IDS.citation)).toHaveAttribute(
+      'href',
+      study?.url
+    );
   });
 });

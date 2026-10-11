@@ -24,8 +24,6 @@ describe('paragraph breaks in the method copy', () => {
   });
 
   it('breaks a body where the deck left a blank line, so an argument reads as steps', () => {
-    expect(paragraphs('אין מה ללמוד ממנו\n\nכל שקל מקבל תפקיד')).toHaveLength(
-      2
-    );
+    expect(paragraphs('אין מה ללמוד ממנו\n\nכל שקל מקבל תפקיד')).toHaveLength(2);
   });
 });

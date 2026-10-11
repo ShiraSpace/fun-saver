@@ -36,18 +36,12 @@ describe('create account', () => {
     const gaps = await createAccount.formGaps();
 
     for (const gap of gaps) {
-      assert.ok(
-        Math.abs(gap - expected) <= 1,
-        `gap ${gap} should equal ${expected}`
-      );
+      assert.ok(Math.abs(gap - expected) <= 1, `gap ${gap} should equal ${expected}`);
     }
   });
 
   it('shows the title in white at the heading size', async () => {
-    assert.equal(
-      await createAccount.titleColor(),
-      hexToRgb(getThemeTokens().colors.textOnPrimary)
-    );
+    assert.equal(await createAccount.titleColor(), hexToRgb(getThemeTokens().colors.textOnPrimary));
     assert.equal(await createAccount.titleFontSize(), `${TYPE_SCALE.title}px`);
   });
 
@@ -56,10 +50,7 @@ describe('create account', () => {
       await createAccount.nameFieldBackground(),
       hexToRgb(getThemeTokens().colors.surface)
     );
-    assert.equal(
-      await createAccount.nameLabelColor(),
-      hexToRgb(getThemeTokens().colors.textMuted)
-    );
+    assert.equal(await createAccount.nameLabelColor(), hexToRgb(getThemeTokens().colors.textMuted));
     assert.equal(
       await createAccount.nameInputColor(),
       hexToRgb(getThemeTokens().colors.textStrong)

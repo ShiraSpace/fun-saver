@@ -27,9 +27,7 @@ describe('where the chart draws a balance', () => {
     const mockBalanceBounds = { lowest: mockBalance, highest: mockBalance };
 
     it('is drawn across the middle, not along the bottom where it reads as zero', () => {
-      expect(balanceYWithin(mockBalanceBounds)(mockBalance)).toBe(
-        FLAT_BALANCE_Y
-      );
+      expect(balanceYWithin(mockBalanceBounds)(mockBalance)).toBe(FLAT_BALANCE_Y);
     });
 
     it('is labelled once, not three times', () => {
@@ -54,9 +52,7 @@ describe('where the chart draws a balance', () => {
 
 describe('the balances labelled on the side', () => {
   it('reads in half shekels when whole shekels would print two the same', () => {
-    expect(balanceTicks({ lowest: 2600, highest: 2700 })).toEqual([
-      2600, 2650, 2700,
-    ]);
+    expect(balanceTicks({ lowest: 2600, highest: 2700 })).toEqual([2600, 2650, 2700]);
   });
 
   it('marks a balance that barely moved only with amounts inside its range', () => {
@@ -68,9 +64,7 @@ describe('the balances labelled on the side', () => {
   });
 
   it('stays in whole shekels when they already read apart', () => {
-    expect(balanceTicks({ lowest: 2400, highest: 30100 })).toEqual([
-      2400, 16300, 30100,
-    ]);
+    expect(balanceTicks({ lowest: 2400, highest: 30100 })).toEqual([2400, 16300, 30100]);
   });
 });
 
@@ -86,17 +80,13 @@ describe('the balances the chart shows', () => {
   };
 
   it('reads a wallet from its own history', () => {
-    expect(
-      eachShownBalanceHistory(mockBalanceHistory, [SHOWN_BALANCE.savings])
-    ).toEqual([
+    expect(eachShownBalanceHistory(mockBalanceHistory, [SHOWN_BALANCE.savings])).toEqual([
       { shownBalance: SHOWN_BALANCE.savings, dailyBalances: [500, 600] },
     ]);
   });
 
   it('reads the total from the total balance', () => {
-    expect(
-      eachShownBalanceHistory(mockBalanceHistory, [SHOWN_BALANCE.totalBalance])
-    ).toEqual([
+    expect(eachShownBalanceHistory(mockBalanceHistory, [SHOWN_BALANCE.totalBalance])).toEqual([
       { shownBalance: SHOWN_BALANCE.totalBalance, dailyBalances: [900, 1000] },
     ]);
   });
@@ -118,9 +108,7 @@ describe('the line of a balance', () => {
   const mockBalanceY = balanceYWithin({ lowest: 0, highest: 100 });
 
   it('draws one day as a single point, with nothing to join', () => {
-    expect(
-      balanceLinePath([50], dayXWithin(1, mockFirstDayX), mockBalanceY)
-    ).not.toContain('L');
+    expect(balanceLinePath([50], dayXWithin(1, mockFirstDayX), mockBalanceY)).not.toContain('L');
   });
 });
 
@@ -136,9 +124,7 @@ describe('the fill under the total balance', () => {
     );
 
     expect(totalBalanceFill).toMatch(
-      new RegExp(
-        `L ${TODAY_X} ${LOWEST_BALANCE_Y} L ${mockFirstDayX} ${LOWEST_BALANCE_Y} Z$`
-      )
+      new RegExp(`L ${TODAY_X} ${LOWEST_BALANCE_Y} L ${mockFirstDayX} ${LOWEST_BALANCE_Y} Z$`)
     );
   });
 

@@ -3,10 +3,7 @@
  */
 import { DuplicateAccountError } from '@/lib/account/errors';
 import { THEME_ID } from '@/theme/registry';
-import {
-  createMockAccount,
-  mockAccountEdits,
-} from '@/test-utils/mocks/account.mocks';
+import { createMockAccount, mockAccountEdits } from '@/test-utils/mocks/account.mocks';
 import { withTestDatabase } from './test-database';
 
 describe('PostgresAccounts', () => {
@@ -37,24 +34,17 @@ describe('PostgresAccounts', () => {
 
     await store.insertAccount(mockAccount);
 
-    await expect(store.insertAccount(mockAccount)).rejects.toThrow(
-      DuplicateAccountError
-    );
+    await expect(store.insertAccount(mockAccount)).rejects.toThrow(DuplicateAccountError);
   });
 
   it('updates the theme and returns the updated account', async () => {
     const mockAccount = createMockAccount({ id: accountId('theme') });
     await store.insertAccount(mockAccount);
 
-    const updated = await store.setAccountTheme(
-      mockAccount.id,
-      THEME_ID.midnightBlue
-    );
+    const updated = await store.setAccountTheme(mockAccount.id, THEME_ID.midnightBlue);
 
     expect(updated?.themeId).toBe(THEME_ID.midnightBlue);
-    expect((await store.getAccount(mockAccount.id))?.themeId).toBe(
-      THEME_ID.midnightBlue
-    );
+    expect((await store.getAccount(mockAccount.id))?.themeId).toBe(THEME_ID.midnightBlue);
     expect(
       await store.setAccountTheme(accountId('missing'), THEME_ID.sunshineQuest)
     ).toBeUndefined();
@@ -65,15 +55,10 @@ describe('PostgresAccounts', () => {
       const mockAccount = createMockAccount({ id: accountId('edit-both') });
       await store.insertAccount(mockAccount);
 
-      const updated = await store.updateAccount(
-        mockAccount.id,
-        mockAccountEdits
-      );
+      const updated = await store.updateAccount(mockAccount.id, mockAccountEdits);
 
       expect(updated).toMatchObject(mockAccountEdits);
-      expect(await store.getAccount(mockAccount.id)).toMatchObject(
-        mockAccountEdits
-      );
+      expect(await store.getAccount(mockAccount.id)).toMatchObject(mockAccountEdits);
     });
 
     it('leaves the columns a partial edit does not carry alone', async () => {
@@ -96,15 +81,11 @@ describe('PostgresAccounts', () => {
       const mockAccount = createMockAccount({ id: accountId('edit-empty') });
       await store.insertAccount(mockAccount);
 
-      expect(await store.updateAccount(mockAccount.id, {})).toEqual(
-        mockAccount
-      );
+      expect(await store.updateAccount(mockAccount.id, {})).toEqual(mockAccount);
     });
 
     it('returns undefined for an unknown account', async () => {
-      expect(
-        await store.updateAccount(accountId('missing'), mockAccountEdits)
-      ).toBeUndefined();
+      expect(await store.updateAccount(accountId('missing'), mockAccountEdits)).toBeUndefined();
     });
   });
 });

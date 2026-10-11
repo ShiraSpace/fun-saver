@@ -1,13 +1,7 @@
 import { InMemoryStore } from '@/db/memory-store';
 import { settleInterest, summarizeAccounts } from '../interest-settlement';
-import {
-  createMockAccount,
-  mockSiblingAccount,
-} from '@/test-utils/mocks/account.mocks';
-import {
-  createMockWallet,
-  createMockWallets,
-} from '@/test-utils/mocks/wallet.mocks';
+import { createMockAccount, mockSiblingAccount } from '@/test-utils/mocks/account.mocks';
+import { createMockWallet, createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
@@ -38,10 +32,7 @@ describe('settleInterest', () => {
     store = new InMemoryStore();
   });
 
-  async function settleWallets(
-    unsettledAccount: Account,
-    asOf: string
-  ): Promise<WalletSummary[]> {
+  async function settleWallets(unsettledAccount: Account, asOf: string): Promise<WalletSummary[]> {
     const [settledAccount] = await settleInterest({
       store,
       accounts: [unsettledAccount],
@@ -56,10 +47,7 @@ describe('settleInterest', () => {
 
     const wallets = await settleWallets(mockAccount, '2026-01-03');
 
-    expect(wallets.map((wallet) => wallet.name)).toEqual([
-      'savings',
-      'spending',
-    ]);
+    expect(wallets.map((wallet) => wallet.name)).toEqual(['savings', 'spending']);
     expect(wallets[0].balance).toBe(8500);
     expect(wallets[0].interestEarnedToday).toBe(500);
     expect(wallets[1].balance).toBe(5000);
@@ -113,10 +101,7 @@ describe('settleInterest', () => {
     beforeEach(async () => {
       await store.insertTransactions([createMockTransaction()]);
 
-      const wallets = await settleWallets(
-        mockAccountWithUnsettledInterest,
-        '2026-01-03'
-      );
+      const wallets = await settleWallets(mockAccountWithUnsettledInterest, '2026-01-03');
 
       savingsWallet = wallets[0];
     });
@@ -134,17 +119,11 @@ describe('settleInterest', () => {
     });
 
     it('pays missed interest once, however often the page is opened', async () => {
-      const reread = await settleWallets(
-        mockAccountWithUnsettledInterest,
-        '2026-01-03'
-      );
+      const reread = await settleWallets(mockAccountWithUnsettledInterest, '2026-01-03');
 
       expect(reread[0].balance).toBe(8080);
       expect(
-        await store.listTransactionsByWallet(
-          mockAccountWithUnsettledInterest.id,
-          'w1'
-        )
+        await store.listTransactionsByWallet(mockAccountWithUnsettledInterest.id, 'w1')
       ).toHaveLength(3);
     });
   });
@@ -191,19 +170,14 @@ describe('summarizeAccounts', () => {
       asOf: '2026-01-03',
     });
 
-    expect(first.wallets.map((wallet) => wallet.name)).toEqual([
-      'savings',
-      'spending',
-    ]);
+    expect(first.wallets.map((wallet) => wallet.name)).toEqual(['savings', 'spending']);
     expect(first.wallets[0].balance).toBe(8500);
     expect(second.wallets.map((wallet) => wallet.id)).toEqual(['w9']);
     expect(second.wallets[0].balance).toBe(2500);
   });
 
   it('has nothing to derive for nobody', async () => {
-    expect(
-      await summarizeAccounts({ store, accounts: [], asOf: '2026-01-03' })
-    ).toEqual([]);
+    expect(await summarizeAccounts({ store, accounts: [], asOf: '2026-01-03' })).toEqual([]);
   });
 
   describe('an account with an active goal', () => {

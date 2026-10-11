@@ -24,8 +24,7 @@ const mockUpdateAccount = jest.fn();
 
 jest.mock('@/lib/cookies', () => ({
   ...jest.requireActual('@/lib/cookies'),
-  writeCookie: (name: string, value: string): void =>
-    mockWriteCookie(name, value),
+  writeCookie: (name: string, value: string): void => mockWriteCookie(name, value),
 }));
 
 jest.mock('../CreateAccount/use-create-account', () => ({
@@ -56,38 +55,26 @@ describe('Home — managing accounts', () => {
     });
 
     it('opens the create overlay over the still-mounted account view', () => {
-      expect(
-        screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)).toBeInTheDocument();
       expect(screen.getByTestId(HEADER_TEST_IDS.bar)).toBeInTheDocument();
     });
 
     it('closes the overlay without creating when cancelled', () => {
       cancelForm();
 
-      expect(
-        screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-      ).not.toBeInTheDocument();
-      expect(mockWriteCookie).not.toHaveBeenCalledWith(
-        CURRENT_ACCOUNT_COOKIE,
-        expect.anything()
-      );
+      expect(screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)).not.toBeInTheDocument();
+      expect(mockWriteCookie).not.toHaveBeenCalledWith(CURRENT_ACCOUNT_COOKIE, expect.anything());
     });
 
     it('selects the new account, persists it and refreshes on submit', async () => {
       submitCreateForm();
 
       await waitFor(() =>
-        expect(mockWriteCookie).toHaveBeenCalledWith(
-          CURRENT_ACCOUNT_COOKIE,
-          createdAccount.id
-        )
+        expect(mockWriteCookie).toHaveBeenCalledWith(CURRENT_ACCOUNT_COOKIE, createdAccount.id)
       );
       expect(mockRouter.refresh).toHaveBeenCalled();
       await waitFor(() =>
-        expect(
-          screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-        ).not.toBeInTheDocument()
+        expect(screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)).not.toBeInTheDocument()
       );
     });
   });
@@ -100,9 +87,7 @@ describe('Home — managing accounts', () => {
     });
 
     it('opens the edit overlay', () => {
-      expect(
-        screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)).toBeInTheDocument();
     });
 
     it('opens it on the account currently selected', () => {
@@ -110,17 +95,13 @@ describe('Home — managing accounts', () => {
     });
 
     it('leaves the create overlay closed', () => {
-      expect(
-        screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)).not.toBeInTheDocument();
     });
 
     it('closes the overlay when cancelled', () => {
       cancelForm();
 
-      expect(
-        screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)).not.toBeInTheDocument();
     });
 
     it('saves nothing when cancelled', () => {
@@ -148,9 +129,7 @@ describe('Home — managing accounts', () => {
       submitEditForm();
 
       await waitFor(() =>
-        expect(
-          screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-        ).not.toBeInTheDocument()
+        expect(screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)).not.toBeInTheDocument()
       );
     });
   });
@@ -163,9 +142,7 @@ describe('Home — managing accounts', () => {
     });
 
     it('edits the account the header is showing rather than nothing', () => {
-      expect(
-        screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)).toBeInTheDocument();
       expect(nameInput()).toHaveValue(mockAccount.name);
     });
   });

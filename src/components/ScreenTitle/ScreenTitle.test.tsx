@@ -11,15 +11,11 @@ describe('ScreenTitle', () => {
     });
 
     it('shows the title', () => {
-      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.title)).toHaveTextContent(
-        mockTitle
-      );
+      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.title)).toHaveTextContent(mockTitle);
     });
 
     it('leaves out the icon', () => {
-      expect(
-        screen.queryByTestId(SCREEN_TITLE_TEST_IDS.icon)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(SCREEN_TITLE_TEST_IDS.icon)).not.toBeInTheDocument();
     });
   });
 
@@ -31,9 +27,7 @@ describe('ScreenTitle', () => {
     });
 
     it('shows the icon', () => {
-      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.icon)).toHaveTextContent(
-        mockTitleIcon
-      );
+      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.icon)).toHaveTextContent(mockTitleIcon);
     });
   });
 });

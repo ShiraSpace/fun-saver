@@ -5,10 +5,7 @@ import type { CookieData } from 'puppeteer';
 import type { StoreContents } from '@/db/data-store';
 import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
 import { VIEW_MODE_COOKIE } from '@/lib/cookies';
-import {
-  createMockAccountUser,
-  mockOwner,
-} from '@/test-utils/mocks/account.mocks';
+import { createMockAccountUser, mockOwner } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
@@ -66,14 +63,8 @@ export function createAppDriver(appBrowser: AppBrowser): AppDriver {
     menu: new MenuDriver(appBrowser),
     header: new HeaderDriver(appBrowser),
     emptyState: new EmptyStateDriver(appBrowser),
-    createAccount: new AccountFormDriver(
-      appBrowser,
-      CREATE_ACCOUNT_TEST_IDS.container
-    ),
-    editAccount: new AccountFormDriver(
-      appBrowser,
-      EDIT_ACCOUNT_TEST_IDS.container
-    ),
+    createAccount: new AccountFormDriver(appBrowser, CREATE_ACCOUNT_TEST_IDS.container),
+    editAccount: new AccountFormDriver(appBrowser, EDIT_ACCOUNT_TEST_IDS.container),
     avatarPicker: new AvatarPickerDriver(appBrowser),
     account: new AccountDriver(appBrowser),
     childAccount: new ChildAccountDriver(appBrowser),
@@ -100,10 +91,7 @@ export async function openApp({
   await appBrowser.open({
     baseUrl: server.baseUrl,
     motion,
-    cookies: [
-      await sessionCookie(mockUser, server.authSecret),
-      viewModeCookie(viewMode),
-    ],
+    cookies: [await sessionCookie(mockUser, server.authSecret), viewModeCookie(viewMode)],
   });
 }
 

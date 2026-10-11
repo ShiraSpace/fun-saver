@@ -4,11 +4,7 @@ import { hexToRgb } from '@/test-utils/css-color';
 import { getThemeTokens } from '@/theme/registry';
 import { ContinueWithGoogle } from './ContinueWithGoogle';
 import { HOME_ROUTE } from '@/components/Home/constants';
-import {
-  GOOGLE_PROVIDER_ID,
-  SIGN_IN_COPY,
-  SIGN_IN_TEST_IDS,
-} from './constants';
+import { GOOGLE_PROVIDER_ID, SIGN_IN_COPY, SIGN_IN_TEST_IDS } from './constants';
 
 const mockedSignIn = signIn as unknown as jest.Mock<Promise<void>>;
 
@@ -27,9 +23,7 @@ describe('ContinueWithGoogle', () => {
   });
 
   it('invites the user to continue with Google', () => {
-    expect(continueWithGoogleButton()).toHaveTextContent(
-      SIGN_IN_COPY.continueWithGoogle
-    );
+    expect(continueWithGoogleButton()).toHaveTextContent(SIGN_IN_COPY.continueWithGoogle);
   });
 
   it('starts the Google sign-in and lands the user on the home page', () => {
@@ -44,9 +38,7 @@ describe('ContinueWithGoogle', () => {
     clickContinue();
 
     expect(continueWithGoogleButton()).toBeDisabled();
-    expect(continueWithGoogleButton()).toHaveTextContent(
-      SIGN_IN_COPY.signingIn
-    );
+    expect(continueWithGoogleButton()).toHaveTextContent(SIGN_IN_COPY.signingIn);
   });
 
   describe('when the sign-in never reaches Google', () => {
@@ -65,9 +57,7 @@ describe('ContinueWithGoogle', () => {
     });
 
     it('speaks it in the alert red', () => {
-      expect(getComputedStyle(error).color).toBe(
-        hexToRgb(getThemeTokens().colors.alertText)
-      );
+      expect(getComputedStyle(error).color).toBe(hexToRgb(getThemeTokens().colors.alertText));
     });
 
     it('lets the user try again', () => {

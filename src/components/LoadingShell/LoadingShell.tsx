@@ -5,13 +5,7 @@ import { Column } from '@/components/Screen';
 import { BurgerIcon } from '@/components/Menu/BurgerIcon';
 import { LoaderBar } from '@/components/Header/LoaderBar';
 import { LOADING_SHELL_COPY, LOADING_SHELL_TEST_IDS } from './constants';
-import {
-  BurgerSlot,
-  Card,
-  GhostAvatar,
-  GhostTitle,
-  Surface,
-} from './LoadingShell.styles';
+import { BurgerSlot, Card, GhostAvatar, GhostTitle, Surface } from './LoadingShell.styles';
 
 export function LoadingShell(): JSX.Element {
   return (

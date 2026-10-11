@@ -25,8 +25,7 @@ export const WalletIcon = styled.span<{ walletName: WalletName }>`
   height: ${WALLET_CARD_STYLE.iconSize}px;
   border-radius: ${WALLET_CARD_STYLE.iconRadius}px;
   font-size: ${WALLET_CARD_STYLE.iconFontSize}px;
-  background: ${({ walletName, theme }): string =>
-    theme.gradients[WALLET_GRADIENT[walletName]]};
+  background: ${({ walletName, theme }): string => theme.gradients[WALLET_GRADIENT[walletName]]};
 `;
 
 export const Name = styled.span`
@@ -49,8 +48,7 @@ export const Balance = styled.span`
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: ${WALLET_CARD_STYLE.balancePaddingY}px
-    ${WALLET_CARD_STYLE.balancePaddingX}px;
+  padding: ${WALLET_CARD_STYLE.balancePaddingY}px ${WALLET_CARD_STYLE.balancePaddingX}px;
   border-radius: 999px;
   background: ${({ theme }): string => theme.colors.depositBg};
   border: 1.5px solid ${({ theme }): string => theme.colors.softBorder};

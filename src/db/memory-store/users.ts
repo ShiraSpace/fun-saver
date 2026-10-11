@@ -1,11 +1,7 @@
 import type { AuthProvider, User } from '@/lib/user/types';
 import { DuplicateUserError } from '@/lib/user/errors';
 import type { UserRepository } from '../data-store';
-import {
-  userWithIdentity,
-  isDuplicateUser,
-  isKnownUser,
-} from '../user-identity';
+import { userWithIdentity, isDuplicateUser, isKnownUser } from '../user-identity';
 
 export class MemoryUsers implements UserRepository {
   private readonly users: User[] = [];

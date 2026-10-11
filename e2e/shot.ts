@@ -4,12 +4,7 @@ import type { StoreContents } from '@/db/data-store';
 import { VIEW_MODE } from '@/lib/view-mode';
 import { AppBrowser } from './driver/app-browser';
 import { PHONE, RETINA_SCALE } from './driver/viewports';
-import {
-  createAppDriver,
-  openApp,
-  startApp,
-  type AppDriver,
-} from './driver/use-driver';
+import { createAppDriver, openApp, startApp, type AppDriver } from './driver/use-driver';
 
 const SHOT_DIR = process.env.SHOT_DIR ?? 'e2e/shots/out';
 
@@ -35,9 +30,7 @@ export async function withShots(
       viewMode: VIEW_MODE.parent,
     });
     await appBrowser.resize({ ...PHONE, deviceScaleFactor: RETINA_SCALE });
-    await takeShots(createAppDriver(appBrowser), (name) =>
-      shoot(appBrowser, name)
-    );
+    await takeShots(createAppDriver(appBrowser), (name) => shoot(appBrowser, name));
   } finally {
     await appBrowser.closePage();
     await appBrowser.stop();

@@ -5,14 +5,7 @@ import { AVATAR_TEST_IDS } from './constants';
 describe('Avatar', () => {
   describe('in fixed size mode', () => {
     beforeEach(() => {
-      render(
-        <Avatar
-          avatarId="kid-03"
-          alt="נועה"
-          size={46}
-          testId={AVATAR_TEST_IDS.image}
-        />
-      );
+      render(<Avatar avatarId="kid-03" alt="נועה" size={46} testId={AVATAR_TEST_IDS.image} />);
     });
 
     it('renders the avatar image at the given size', () => {
@@ -28,13 +21,7 @@ describe('Avatar', () => {
   describe('in fill mode', () => {
     beforeEach(() => {
       render(
-        <Avatar
-          avatarId="kid-08"
-          alt="מתן"
-          fill
-          sizes="46px"
-          testId={AVATAR_TEST_IDS.image}
-        />
+        <Avatar avatarId="kid-08" alt="מתן" fill sizes="46px" testId={AVATAR_TEST_IDS.image} />
       );
     });
 

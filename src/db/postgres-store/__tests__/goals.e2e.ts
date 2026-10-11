@@ -28,16 +28,14 @@ describe('PostgresGoals', () => {
     await store.insertGoal(mockGoal);
 
     await expect(
-      store.insertGoal(
-        createMockGoal({ id: goalId('b'), accountId: mockAccount.id })
-      )
+      store.insertGoal(createMockGoal({ id: goalId('b'), accountId: mockAccount.id }))
     ).rejects.toThrow(GoalAlreadyActiveError);
   });
 
   it('refuses a goal of zero agorot', async () => {
-    await expect(
-      store.insertGoal({ ...mockGoal, amount: 0 })
-    ).rejects.toMatchObject({ code: CHECK_VIOLATION });
+    await expect(store.insertGoal({ ...mockGoal, amount: 0 })).rejects.toMatchObject({
+      code: CHECK_VIOLATION,
+    });
   });
 
   it('refuses an ending without the moment the goal ended', async () => {
@@ -59,9 +57,9 @@ describe('PostgresGoals', () => {
       ending: GOAL_ENDING.cancelled,
     });
 
-    expect(
-      await sql`SELECT ended_at, ending FROM goals WHERE id = ${mockGoal.id}`
-    ).toEqual([{ ended_at: mockEndedAt, ending: GOAL_ENDING.cancelled }]);
+    expect(await sql`SELECT ended_at, ending FROM goals WHERE id = ${mockGoal.id}`).toEqual([
+      { ended_at: mockEndedAt, ending: GOAL_ENDING.cancelled },
+    ]);
   });
 
   it('keeps the goal active and rejects with the database error when the withdrawal cannot be written', async () => {
@@ -90,22 +88,17 @@ describe('PostgresGoals', () => {
 
     beforeEach(async () => {
       await store.insertGoal(mockGoal);
-      wroteWithdrawal = await store.insertWithdrawalCompletingGoal(
-        mockWithdrawal,
-        mockGoal.id
-      );
+      wroteWithdrawal = await store.insertWithdrawalCompletingGoal(mockWithdrawal, mockGoal.id);
     });
 
     it('records the withdrawal', async () => {
-      expect(
-        await sql`SELECT id FROM transactions WHERE id = ${mockWithdrawal.id}`
-      ).toEqual([{ id: mockWithdrawal.id }]);
+      expect(await sql`SELECT id FROM transactions WHERE id = ${mockWithdrawal.id}`).toEqual([
+        { id: mockWithdrawal.id },
+      ]);
     });
 
     it('ends the goal as completed when the withdrawal was made', async () => {
-      expect(
-        await sql`SELECT ended_at, ending FROM goals WHERE id = ${mockGoal.id}`
-      ).toEqual([
+      expect(await sql`SELECT ended_at, ending FROM goals WHERE id = ${mockGoal.id}`).toEqual([
         { ended_at: mockWithdrawal.createdAt, ending: GOAL_ENDING.completed },
       ]);
     });
@@ -133,16 +126,11 @@ describe('PostgresGoals', () => {
         endedAt: mockCancelledAt,
         ending: GOAL_ENDING.cancelled,
       });
-      wroteWithdrawal = await store.insertWithdrawalCompletingGoal(
-        mockWithdrawal,
-        mockGoal.id
-      );
+      wroteWithdrawal = await store.insertWithdrawalCompletingGoal(mockWithdrawal, mockGoal.id);
     });
 
     it('records nothing', async () => {
-      expect(
-        await sql`SELECT id FROM transactions WHERE id = ${mockWithdrawal.id}`
-      ).toEqual([]);
+      expect(await sql`SELECT id FROM transactions WHERE id = ${mockWithdrawal.id}`).toEqual([]);
     });
 
     it('answers that it wrote nothing', () => {
@@ -150,9 +138,9 @@ describe('PostgresGoals', () => {
     });
 
     it('leaves the goal cancelled', async () => {
-      expect(
-        await sql`SELECT ended_at, ending FROM goals WHERE id = ${mockGoal.id}`
-      ).toEqual([{ ended_at: mockCancelledAt, ending: GOAL_ENDING.cancelled }]);
+      expect(await sql`SELECT ended_at, ending FROM goals WHERE id = ${mockGoal.id}`).toEqual([
+        { ended_at: mockCancelledAt, ending: GOAL_ENDING.cancelled },
+      ]);
     });
   });
 });

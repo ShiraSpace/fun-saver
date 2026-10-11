@@ -12,24 +12,19 @@ describe('PictureTile', () => {
     beforeEach(() => {
       mockOnChoosePicture.mockClear();
       render(
-        <PictureTile
-          emoji={mockEmoji}
-          isChosen={false}
-          onChoosePicture={mockOnChoosePicture}
-        />
+        <PictureTile emoji={mockEmoji} isChosen={false} onChoosePicture={mockOnChoosePicture} />
       );
     });
 
     it('shows its picture', () => {
-      expect(
-        screen.getByTestId(PICTURE_TILE_TEST_IDS.pictureTile)
-      ).toHaveTextContent(mockEmoji);
+      expect(screen.getByTestId(PICTURE_TILE_TEST_IDS.pictureTile)).toHaveTextContent(mockEmoji);
     });
 
     it('is not pressed', () => {
-      expect(
-        screen.getByTestId(PICTURE_TILE_TEST_IDS.pictureTile)
-      ).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.getByTestId(PICTURE_TILE_TEST_IDS.pictureTile)).toHaveAttribute(
+        'aria-pressed',
+        'false'
+      );
     });
 
     describe('after it is tapped', () => {
@@ -38,9 +33,7 @@ describe('PictureTile', () => {
       });
 
       it('chooses its picture', () => {
-        expect(mockOnChoosePicture).toHaveBeenCalledWith(
-          createMockGoalPicture(mockEmoji)
-        );
+        expect(mockOnChoosePicture).toHaveBeenCalledWith(createMockGoalPicture(mockEmoji));
       });
     });
   });
@@ -49,26 +42,21 @@ describe('PictureTile', () => {
     const { selectionRing } = getThemeTokens(THEME_ID.jungleQuest).colors;
 
     beforeEach(() => {
-      render(
-        <PictureTile
-          emoji={mockEmoji}
-          isChosen
-          onChoosePicture={mockOnChoosePicture}
-        />,
-        { themeId: THEME_ID.jungleQuest }
-      );
+      render(<PictureTile emoji={mockEmoji} isChosen onChoosePicture={mockOnChoosePicture} />, {
+        themeId: THEME_ID.jungleQuest,
+      });
     });
 
     it('is pressed', () => {
-      expect(
-        screen.getByTestId(PICTURE_TILE_TEST_IDS.pictureTile)
-      ).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByTestId(PICTURE_TILE_TEST_IDS.pictureTile)).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      );
     });
 
     it('rings the tile in the selection ring colour', () => {
       expect(
-        getComputedStyle(screen.getByTestId(PICTURE_TILE_TEST_IDS.pictureTile))
-          .outline
+        getComputedStyle(screen.getByTestId(PICTURE_TILE_TEST_IDS.pictureTile)).outline
       ).toContain(selectionRing);
     });
   });

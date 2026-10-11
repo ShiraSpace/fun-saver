@@ -15,15 +15,12 @@ describe('canEditAccount', () => {
   });
 
   it('lets the owner of the account edit it', async () => {
-    expect(
-      await canEditAccount({ store, userId: mockUser.id, accountId })
-    ).toBe(true);
+    expect(await canEditAccount({ store, userId: mockUser.id, accountId })).toBe(true);
   });
 
   it('refuses a viewer, who may look at the account but not edit it', async () => {
     const mockViewerReader = {
-      getAccountUser: async (): Promise<AccountUser> =>
-        createMockViewer(accountId),
+      getAccountUser: async (): Promise<AccountUser> => createMockViewer(accountId),
     };
 
     expect(
@@ -56,15 +53,12 @@ describe('isAccountUser', () => {
   });
 
   it('lets the owner of the account in', async () => {
-    expect(await isAccountUser({ store, userId: mockUser.id, accountId })).toBe(
-      true
-    );
+    expect(await isAccountUser({ store, userId: mockUser.id, accountId })).toBe(true);
   });
 
   it('lets a viewer in, who may look at the account', async () => {
     const mockViewerReader = {
-      getAccountUser: async (): Promise<AccountUser> =>
-        createMockViewer(accountId),
+      getAccountUser: async (): Promise<AccountUser> => createMockViewer(accountId),
     };
 
     expect(
@@ -77,8 +71,6 @@ describe('isAccountUser', () => {
   });
 
   it('refuses a signed-in stranger with no membership row', async () => {
-    expect(
-      await isAccountUser({ store, userId: mockCoParent.id, accountId })
-    ).toBe(false);
+    expect(await isAccountUser({ store, userId: mockCoParent.id, accountId })).toBe(false);
   });
 });

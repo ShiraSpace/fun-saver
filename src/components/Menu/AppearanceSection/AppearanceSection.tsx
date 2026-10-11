@@ -5,10 +5,7 @@ import { getThemeTokens } from '@/theme/registry';
 import { REQUEST_STATE } from '@/lib/request-state';
 import { MenuSectionTitle } from '../MenuSectionTitle';
 import { useAccountTheme } from './use-account-theme';
-import {
-  APPEARANCE_SECTION_COPY,
-  APPEARANCE_SECTION_TEST_IDS,
-} from './constants';
+import { APPEARANCE_SECTION_COPY, APPEARANCE_SECTION_TEST_IDS } from './constants';
 import { Row, Swatch, SaveError } from './AppearanceSection.styles';
 
 export function AppearanceSection(): JSX.Element {
@@ -16,21 +13,19 @@ export function AppearanceSection(): JSX.Element {
   const isSaving = requestState === REQUEST_STATE.pending;
   const hasSaveFailed = requestState === REQUEST_STATE.failed;
 
-  const themeSelectorComponents = APPEARANCE_SECTION_COPY.themes.map(
-    ({ id, label }) => (
-      <Swatch
-        key={id}
-        type="button"
-        aria-label={label}
-        title={label}
-        background={getThemeTokens(id).gradients.screen}
-        data-testid={APPEARANCE_SECTION_TEST_IDS.swatch}
-        data-selected={id === activeThemeId}
-        disabled={isSaving}
-        onClick={(): void => chooseTheme(id)}
-      />
-    )
-  );
+  const themeSelectorComponents = APPEARANCE_SECTION_COPY.themes.map(({ id, label }) => (
+    <Swatch
+      key={id}
+      type="button"
+      aria-label={label}
+      title={label}
+      background={getThemeTokens(id).gradients.screen}
+      data-testid={APPEARANCE_SECTION_TEST_IDS.swatch}
+      data-selected={id === activeThemeId}
+      disabled={isSaving}
+      onClick={(): void => chooseTheme(id)}
+    />
+  ));
 
   return (
     <section data-testid={APPEARANCE_SECTION_TEST_IDS.section}>

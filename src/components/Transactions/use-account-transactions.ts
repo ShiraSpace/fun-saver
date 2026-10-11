@@ -4,10 +4,7 @@ import {
   accountTransactions,
   type TransactionsByAccount,
 } from '@/lib/transaction/transactions-by-account';
-import {
-  balanceHistory,
-  type BalanceHistory,
-} from '@/lib/wallet/balance-history';
+import { balanceHistory, type BalanceHistory } from '@/lib/wallet/balance-history';
 
 interface AccountTransactionsInput {
   account: AccountSummary;

@@ -39,38 +39,24 @@ export async function type({ page, testId, value }: TypedInput): Promise<void> {
   await element.type(value);
 }
 
-export async function replace({
-  page,
-  testId,
-  value,
-}: TypedInput): Promise<void> {
+export async function replace({ page, testId, value }: TypedInput): Promise<void> {
   const element = await findByTest(page, testId);
   await element.click();
   await element.evaluate((node) => (node as HTMLInputElement).select());
   await element.type(value);
 }
 
-export async function clickSelector(
-  page: Page,
-  selector: string
-): Promise<void> {
+export async function clickSelector(page: Page, selector: string): Promise<void> {
   const element = await requireMatch(page, selector);
   await element.click();
 }
 
-export async function hoverSelector(
-  page: Page,
-  selector: string
-): Promise<void> {
+export async function hoverSelector(page: Page, selector: string): Promise<void> {
   const element = await requireMatch(page, selector);
   await element.hover();
 }
 
-export async function clickNth({
-  page,
-  selector,
-  index,
-}: NthMatch): Promise<void> {
+export async function clickNth({ page, selector, index }: NthMatch): Promise<void> {
   const elements = await page.$$(selector);
   const element = elements[index];
 
@@ -81,28 +67,18 @@ export async function clickNth({
   await element.click();
 }
 
-export async function visitWithoutScripts(
-  page: Page,
-  url: string
-): Promise<void> {
+export async function visitWithoutScripts(page: Page, url: string): Promise<void> {
   await page.setJavaScriptEnabled(false);
   await page.goto(url, { waitUntil: 'networkidle0' });
 }
 
-export async function setDocumentTheme(
-  page: Page,
-  themeId: string
-): Promise<void> {
+export async function setDocumentTheme(page: Page, themeId: string): Promise<void> {
   await page.evaluate((id: string): void => {
     document.documentElement.dataset.theme = id;
   }, themeId);
 }
 
-export async function storeTheme({
-  page,
-  url,
-  themeId,
-}: StoredTheme): Promise<void> {
+export async function storeTheme({ page, url, themeId }: StoredTheme): Promise<void> {
   await page.browser().setCookie({
     name: THEME_COOKIE,
     value: themeId,

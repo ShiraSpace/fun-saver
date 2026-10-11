@@ -1,12 +1,6 @@
-import {
-  mockAccountSummary,
-  mockSiblingAccountSummary,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccountSummary, mockSiblingAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
-import {
-  accountTransactions,
-  transactionsByAccount,
-} from '../transactions-by-account';
+import { accountTransactions, transactionsByAccount } from '../transactions-by-account';
 
 describe('transactions by account', () => {
   const byAccount = transactionsByAccount([

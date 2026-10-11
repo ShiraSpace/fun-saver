@@ -16,8 +16,8 @@ describe('MenuAccountSettings', () => {
   });
 
   it('heads the block with the account the settings belong to', () => {
-    expect(
-      screen.getByTestId(MENU_ACCOUNT_SETTINGS_TEST_IDS.heading)
-    ).toHaveTextContent(mockSiblingAccountSummary.name);
+    expect(screen.getByTestId(MENU_ACCOUNT_SETTINGS_TEST_IDS.heading)).toHaveTextContent(
+      mockSiblingAccountSummary.name
+    );
   });
 });

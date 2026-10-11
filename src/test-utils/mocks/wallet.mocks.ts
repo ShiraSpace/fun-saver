@@ -29,9 +29,7 @@ export function createMockWallets(): Wallet[] {
   );
 }
 
-export function createMockWalletSummary(
-  overrides: Partial<WalletSummary> = {}
-): WalletSummary {
+export function createMockWalletSummary(overrides: Partial<WalletSummary> = {}): WalletSummary {
   return {
     ...createMockWallet(),
     balance: 8500,
@@ -52,11 +50,7 @@ export function createMockSpendableWallet(
 
 const mockWalletBalances: Pick<
   WalletSummary,
-  | 'balance'
-  | 'principal'
-  | 'withdrawn'
-  | 'interestEarned'
-  | 'interestEarnedToday'
+  'balance' | 'principal' | 'withdrawn' | 'interestEarned' | 'interestEarnedToday'
 >[] = [
   {
     balance: 8500,
@@ -81,9 +75,8 @@ const mockWalletBalances: Pick<
   },
 ];
 
-export const mockWalletSummaries: WalletSummary[] = createMockWallets().map(
-  (wallet, index) =>
-    createMockWalletSummary({ ...wallet, ...mockWalletBalances[index] })
+export const mockWalletSummaries: WalletSummary[] = createMockWallets().map((wallet, index) =>
+  createMockWalletSummary({ ...wallet, ...mockWalletBalances[index] })
 );
 
 export const mockWalletShares: number[] = [53, 31, 16];

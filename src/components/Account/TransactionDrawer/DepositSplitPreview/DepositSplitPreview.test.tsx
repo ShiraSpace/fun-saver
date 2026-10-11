@@ -10,9 +10,7 @@ describe('DepositSplitPreview', () => {
     const split = splitDeposit(20 * AGOROT_PER_SHEKEL);
     render(<DepositSplitPreview split={split} />);
 
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.split)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.split)).toBeInTheDocument();
     expect(
       screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.splitAmount('savings'))
     ).toHaveTextContent(String(agorotToShekels(split.savings)));

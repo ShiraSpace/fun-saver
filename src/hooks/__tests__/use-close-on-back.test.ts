@@ -59,10 +59,7 @@ describe('useCloseOnBack', () => {
 
   it('closes when the back button lands on another drawer entry', async () => {
     const mockOnClose = jest.fn();
-    window.history.replaceState(
-      { [DRAWER_HISTORY_KEY]: 'mock-leftover-entry' },
-      ''
-    );
+    window.history.replaceState({ [DRAWER_HISTORY_KEY]: 'mock-leftover-entry' }, '');
     renderHook(() => useCloseOnBack(mockOnClose));
 
     window.history.back();

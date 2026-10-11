@@ -17,21 +17,15 @@ describe('ChildSavings', () => {
     });
 
     it('shows the savings without agorot, never rounded up', () => {
-      expect(
-        screen.getByTestId(CHILD_SAVINGS_TEST_IDS.balance)
-      ).toHaveTextContent('₪148');
+      expect(screen.getByTestId(CHILD_SAVINGS_TEST_IDS.balance)).toHaveTextContent('₪148');
     });
 
     it('shows what the child put in', () => {
-      expect(
-        screen.getByTestId(CHILD_SAVINGS_TEST_IDS.principal)
-      ).toHaveTextContent('₪142');
+      expect(screen.getByTestId(CHILD_SAVINGS_TEST_IDS.principal)).toHaveTextContent('₪142');
     });
 
     it('shows what the money earned by itself', () => {
-      expect(
-        screen.getByTestId(CHILD_SAVINGS_TEST_IDS.interestEarned)
-      ).toHaveTextContent('₪6');
+      expect(screen.getByTestId(CHILD_SAVINGS_TEST_IDS.interestEarned)).toHaveTextContent('₪6');
     });
   });
 });

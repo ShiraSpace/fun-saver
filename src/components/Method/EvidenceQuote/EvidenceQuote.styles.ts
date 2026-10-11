@@ -4,8 +4,7 @@ export const Quote = styled.blockquote`
   margin: 10px 0;
   padding: 12px 13px;
   border-radius: 12px;
-  border-inline-start: 4px solid
-    ${({ theme }): string => theme.colors.softBorder};
+  border-inline-start: 4px solid ${({ theme }): string => theme.colors.softBorder};
   background: ${({ theme }): string => theme.colors.softBg};
   color: ${({ theme }): string => theme.colors.softText};
 `;

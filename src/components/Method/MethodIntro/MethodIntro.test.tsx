@@ -27,8 +27,6 @@ describe('the opener', () => {
   });
 
   it('lets no emphasis marker reach the page, whichever string the copy marks up next', () => {
-    expect(
-      screen.getByTestId(METHOD_INTRO_TEST_IDS.intro)
-    ).not.toHaveTextContent(EMPHASIS_MARKER);
+    expect(screen.getByTestId(METHOD_INTRO_TEST_IDS.intro)).not.toHaveTextContent(EMPHASIS_MARKER);
   });
 });

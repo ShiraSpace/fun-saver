@@ -9,15 +9,10 @@ import type {
 import type { TransactionType } from './types';
 import type { WalletName } from '@/lib/wallet/types';
 
-export type TransactionListRowWithoutBalance = Omit<
-  TransactionListRow,
-  'balance'
->;
+export type TransactionListRowWithoutBalance = Omit<TransactionListRow, 'balance'>;
 export type WalletNameById = Map<string, WalletName>;
 
-export function walletNamesById(
-  wallets: TransactionListRowsInput['wallets']
-): WalletNameById {
+export function walletNamesById(wallets: TransactionListRowsInput['wallets']): WalletNameById {
   return new Map(wallets.map((wallet) => [wallet.id, wallet.name]));
 }
 
@@ -46,13 +41,8 @@ function combinedByKey(
   return [...combinedRowByKey.values()];
 }
 
-export function depositRows(
-  transactions: ListedTransaction[]
-): TransactionListRowWithoutBalance[] {
-  const walletDeposits = transactionsOfType(
-    transactions,
-    TRANSACTION_TYPE.deposit
-  );
+export function depositRows(transactions: ListedTransaction[]): TransactionListRowWithoutBalance[] {
+  const walletDeposits = transactionsOfType(transactions, TRANSACTION_TYPE.deposit);
   const walletDepositRows = walletDeposits.map((transaction) => ({
     key: `deposit:${transaction.createdAt}`,
     type: TRANSACTION_TYPE.deposit,
@@ -71,10 +61,7 @@ export function withdrawalRows(
   transactions: ListedTransaction[],
   walletNameById: WalletNameById
 ): TransactionListRowWithoutBalance[] {
-  const withdrawals = transactionsOfType(
-    transactions,
-    TRANSACTION_TYPE.withdrawal
-  );
+  const withdrawals = transactionsOfType(transactions, TRANSACTION_TYPE.withdrawal);
 
   return withdrawals.map((transaction) => ({
     key: `withdrawal:${transaction.walletId}:${transaction.createdAt}`,
@@ -104,24 +91,16 @@ export function dailyInterestRows(
   transactions: ListedTransaction[],
   walletNameById: WalletNameById
 ): TransactionListRowWithoutBalance[] {
-  const dailyInterest = transactionsOfType(
-    transactions,
-    TRANSACTION_TYPE.interest
-  );
+  const dailyInterest = transactionsOfType(transactions, TRANSACTION_TYPE.interest);
 
-  return dailyInterest.map((transaction) =>
-    dailyInterestRow(transaction, walletNameById)
-  );
+  return dailyInterest.map((transaction) => dailyInterestRow(transaction, walletNameById));
 }
 
 export function monthlyInterestRows(
   transactions: ListedTransaction[],
   walletNameById: WalletNameById
 ): TransactionListRowWithoutBalance[] {
-  const dailyInterest = transactionsOfType(
-    transactions,
-    TRANSACTION_TYPE.interest
-  );
+  const dailyInterest = transactionsOfType(transactions, TRANSACTION_TYPE.interest);
   const dailyRows = dailyInterest.map((transaction) => ({
     ...dailyInterestRow(transaction, walletNameById),
     key: `interest:${transaction.walletId}:${calendarMonth(transaction.occurredAt)}`,
@@ -130,8 +109,7 @@ export function monthlyInterestRows(
 
   return combinedByKey(dailyRows, (monthlyRow, dailyRow) => {
     const interestDaysSoFar = monthlyRow.interestDays ?? 0;
-    const lastInterestDay =
-      dailyRow.day > monthlyRow.day ? dailyRow.day : monthlyRow.day;
+    const lastInterestDay = dailyRow.day > monthlyRow.day ? dailyRow.day : monthlyRow.day;
 
     return {
       ...monthlyRow,

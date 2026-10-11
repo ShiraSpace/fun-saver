@@ -4,10 +4,7 @@ import { JSX } from 'react';
 import { useSignedInUser } from '@/components/Home/signed-in-user-context';
 import { SignedInUserPhoto } from './SignedInUserPhoto';
 import { SIGN_OUT_STATUS, useSignOut } from './use-sign-out';
-import {
-  SIGNED_IN_USER_SECTION_COPY,
-  SIGNED_IN_USER_SECTION_TEST_IDS,
-} from './constants';
+import { SIGNED_IN_USER_SECTION_COPY, SIGNED_IN_USER_SECTION_TEST_IDS } from './constants';
 import {
   Block,
   Email,
@@ -29,9 +26,7 @@ export function SignedInUserSection(): JSX.Element {
       <Strip>
         <SignedInUserPhoto image={user.image} />
         <Naming>
-          <Name data-testid={SIGNED_IN_USER_SECTION_TEST_IDS.name}>
-            {user.name}
-          </Name>
+          <Name data-testid={SIGNED_IN_USER_SECTION_TEST_IDS.name}>{user.name}</Name>
           <Email dir="ltr" data-testid={SIGNED_IN_USER_SECTION_TEST_IDS.email}>
             {user.email}
           </Email>
@@ -47,10 +42,7 @@ export function SignedInUserSection(): JSX.Element {
         </SignOut>
       </Strip>
       {hasSignOutFailed && (
-        <SignOutError
-          role="alert"
-          data-testid={SIGNED_IN_USER_SECTION_TEST_IDS.signOutError}
-        >
+        <SignOutError role="alert" data-testid={SIGNED_IN_USER_SECTION_TEST_IDS.signOutError}>
           {SIGNED_IN_USER_SECTION_COPY.signOutFailed}
         </SignOutError>
       )}

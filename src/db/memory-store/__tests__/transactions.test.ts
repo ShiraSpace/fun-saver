@@ -6,10 +6,7 @@ import {
   mockTransactions,
 } from '@/test-utils/mocks/transaction.mocks';
 import { interestSettledOn } from '@/test-utils/settled-interest';
-import {
-  mockAccount,
-  mockSiblingAccount,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockSiblingAccount } from '@/test-utils/mocks/account.mocks';
 
 const mockDeposit = createMockTransaction();
 
@@ -20,9 +17,7 @@ describe('InMemoryStore transactions', () => {
     await store.insertTransactions([mockDeposit]);
 
     expect(
-      (await store.listTransactionsByWallet('a1', 'w1')).map(
-        (transaction) => transaction.id
-      )
+      (await store.listTransactionsByWallet('a1', 'w1')).map((transaction) => transaction.id)
     ).toEqual(['t1']);
   });
 
@@ -33,9 +28,7 @@ describe('InMemoryStore transactions', () => {
       createMockTransaction({ id: 't7', accountId: mockSiblingAccount.id }),
     ]);
 
-    const listedTransactions = await store.listTransactionsByAccount(
-      mockAccount.id
-    );
+    const listedTransactions = await store.listTransactionsByAccount(mockAccount.id);
 
     expect(new Set(listedTransactions)).toEqual(new Set(mockTransactions));
   });
@@ -50,10 +43,7 @@ describe('InMemoryStore transactions', () => {
       createdAt: '2026-01-01T08:00:00.000Z',
     });
     const store = new InMemoryStore();
-    await store.insertTransactions([
-      mockEveningTransaction,
-      mockMorningTransaction,
-    ]);
+    await store.insertTransactions([mockEveningTransaction, mockMorningTransaction]);
 
     const byAccount = store.listTransactionsByAccount(mockAccount.id);
     const byWallet = store.listTransactionsByWallet(
@@ -61,14 +51,8 @@ describe('InMemoryStore transactions', () => {
       mockEveningTransaction.walletId
     );
 
-    expect(await byAccount).toEqual([
-      mockMorningTransaction,
-      mockEveningTransaction,
-    ]);
-    expect(await byWallet).toEqual([
-      mockMorningTransaction,
-      mockEveningTransaction,
-    ]);
+    expect(await byAccount).toEqual([mockMorningTransaction, mockEveningTransaction]);
+    expect(await byWallet).toEqual([mockMorningTransaction, mockEveningTransaction]);
   });
 
   describe('when a day of interest arrives a second time', () => {
@@ -81,13 +65,11 @@ describe('InMemoryStore transactions', () => {
     });
 
     it('keeps the day settled once', async () => {
-      const transactions = await store.listTransactionsByAccount(
-        mockAccount.id
-      );
+      const transactions = await store.listTransactionsByAccount(mockAccount.id);
 
-      expect(
-        interestSettledOn(transactions, mockDayOfInterest.occurredAt)
-      ).toEqual([mockDayOfInterest]);
+      expect(interestSettledOn(transactions, mockDayOfInterest.occurredAt)).toEqual([
+        mockDayOfInterest,
+      ]);
     });
   });
 });

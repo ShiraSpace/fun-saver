@@ -20,9 +20,7 @@ export class JsonTransactions implements TransactionRepository {
     return this.session.read((contents): Transaction[] =>
       inOrderOfOccurrence(
         contents.transactions.filter(
-          (transaction) =>
-            transaction.accountId === accountId &&
-            transaction.walletId === walletId
+          (transaction) => transaction.accountId === accountId && transaction.walletId === walletId
         )
       )
     );
@@ -31,9 +29,7 @@ export class JsonTransactions implements TransactionRepository {
   listByAccount(accountId: string): Promise<Transaction[]> {
     return this.session.read((contents): Transaction[] =>
       inOrderOfOccurrence(
-        contents.transactions.filter(
-          (transaction) => transaction.accountId === accountId
-        )
+        contents.transactions.filter((transaction) => transaction.accountId === accountId)
       )
     );
   }

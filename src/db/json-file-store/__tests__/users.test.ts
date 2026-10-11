@@ -10,10 +10,7 @@ describe('JsonFileStore users', () => {
     await new JsonFileStore(file.path).insertUser(mockUser);
 
     expect(
-      await new JsonFileStore(file.path).findUserByIdentity(
-        'google',
-        mockUser.providerAccountId
-      )
+      await new JsonFileStore(file.path).findUserByIdentity('google', mockUser.providerAccountId)
     ).toEqual(mockUser);
   });
 
@@ -21,9 +18,9 @@ describe('JsonFileStore users', () => {
     const store = new JsonFileStore(file.path);
     await store.insertUser(mockUser);
 
-    await expect(
-      store.insertUser(createMockUser({ id: 'u2' }))
-    ).rejects.toThrow(DuplicateUserError);
+    await expect(store.insertUser(createMockUser({ id: 'u2' }))).rejects.toThrow(
+      DuplicateUserError
+    );
   });
 
   it('rejects a second insert of the same id', async () => {

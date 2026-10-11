@@ -27,10 +27,7 @@ export interface TransactionRepository {
 }
 
 export interface UserRepository {
-  findByIdentity(
-    provider: AuthProvider,
-    providerAccountId: string
-  ): Promise<User | undefined>;
+  findByIdentity(provider: AuthProvider, providerAccountId: string): Promise<User | undefined>;
   insert(user: User): Promise<void>;
 }
 
@@ -49,42 +46,24 @@ export interface GoalRepository {
   insert(goal: Goal): Promise<void>;
   getActive(accountId: string): Promise<Goal | undefined>;
   end(endRequest: GoalEndRequest): Promise<Goal | undefined>;
-  insertWithdrawalCompleting(
-    withdrawal: Transaction,
-    goalId: string
-  ): Promise<boolean>;
+  insertWithdrawalCompleting(withdrawal: Transaction, goalId: string): Promise<boolean>;
 }
 
 export interface DataStore {
   insertAccount(account: Account): Promise<void>;
   getAccount(id: string): Promise<Account | undefined>;
   setAccountTheme(id: string, themeId: ThemeId): Promise<Account | undefined>;
-  updateAccount(
-    accountId: string,
-    edits: AccountEdits
-  ): Promise<Account | undefined>;
+  updateAccount(accountId: string, edits: AccountEdits): Promise<Account | undefined>;
   insertTransactions(transactions: Transaction[]): Promise<void>;
-  listTransactionsByWallet(
-    accountId: string,
-    walletId: string
-  ): Promise<Transaction[]>;
+  listTransactionsByWallet(accountId: string, walletId: string): Promise<Transaction[]>;
   listTransactionsByAccount(accountId: string): Promise<Transaction[]>;
-  findUserByIdentity(
-    provider: AuthProvider,
-    providerAccountId: string
-  ): Promise<User | undefined>;
+  findUserByIdentity(provider: AuthProvider, providerAccountId: string): Promise<User | undefined>;
   insertUser(user: User): Promise<void>;
-  getAccountUser(
-    accountId: string,
-    userId: string
-  ): Promise<AccountUser | undefined>;
+  getAccountUser(accountId: string, userId: string): Promise<AccountUser | undefined>;
   listAccountsForUser(userId: string): Promise<Account[]>;
   insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void>;
   insertGoal(goal: Goal): Promise<void>;
   getActiveGoal(accountId: string): Promise<Goal | undefined>;
   endGoal(endRequest: GoalEndRequest): Promise<Goal | undefined>;
-  insertWithdrawalCompletingGoal(
-    withdrawal: Transaction,
-    goalId: string
-  ): Promise<boolean>;
+  insertWithdrawalCompletingGoal(withdrawal: Transaction, goalId: string): Promise<boolean>;
 }

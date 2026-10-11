@@ -4,14 +4,11 @@ import { NAME_FIELD_STYLE } from './constants';
 
 const surface = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 
-const labelColor = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textMuted;
+const labelColor = ({ theme }: { theme: Theme }): string => theme.colors.textMuted;
 
-const faintShadow = ({ theme }: { theme: Theme }): string =>
-  theme.shadows.faint;
+const faintShadow = ({ theme }: { theme: Theme }): string => theme.shadows.faint;
 
-const valueColor = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textStrong;
+const valueColor = ({ theme }: { theme: Theme }): string => theme.colors.textStrong;
 
 export const Card = styled.label`
   display: flex;

@@ -2,15 +2,7 @@ import { JSX } from 'react';
 import type { ChecklistGroup, ChecklistItem } from '../copy';
 import { emphasize } from '../rich-text';
 import { CHECKLIST_COPY, CHECKLIST_TEST_IDS } from './constants';
-import {
-  Answer,
-  Group,
-  Item,
-  Items,
-  Label,
-  Question,
-  Checkbox,
-} from './Checklist.styles';
+import { Answer, Group, Item, Items, Label, Question, Checkbox } from './Checklist.styles';
 
 function checklistItem(item: ChecklistItem): JSX.Element {
   const doneLabel = item.done ? CHECKLIST_COPY.done : CHECKLIST_COPY.notDone;

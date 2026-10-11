@@ -1,8 +1,5 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
-import {
-  mockAccountSummary,
-  mockSiblingAccountSummary,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccountSummary, mockSiblingAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
 import { totalBalance } from '@/lib/wallet/balance';
 import { agorotToWholeShekels } from '@/lib/money';
@@ -32,9 +29,7 @@ describe('AccountList', () => {
   });
 
   it('renders a row per account', () => {
-    expect(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)).toHaveLength(
-      accounts.length
-    );
+    expect(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)).toHaveLength(accounts.length);
   });
 
   it('shows each account its own total', () => {
@@ -52,9 +47,9 @@ describe('AccountList', () => {
   });
 
   it('labels the add-account button', () => {
-    expect(
-      screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addAccount)
-    ).toHaveTextContent(ACCOUNT_LIST_COPY.addLabel);
+    expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.addAccount)).toHaveTextContent(
+      ACCOUNT_LIST_COPY.addLabel
+    );
   });
 
   it('leaves the menu when the add-account button is tapped, the form taking over', () => {

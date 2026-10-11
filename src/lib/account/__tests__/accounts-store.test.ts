@@ -3,10 +3,7 @@ import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { AccountsStore } from '../accounts-store';
 import { today } from '@/lib/clock';
 import { SAVINGS_MONTHLY_RATE } from '@/lib/interest/constants';
-import {
-  mockCreateAccountInput,
-  mockAccountEdits,
-} from '@/test-utils/mocks/account.mocks';
+import { mockCreateAccountInput, mockAccountEdits } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { Account } from '../types';
 
@@ -41,15 +38,14 @@ describe('AccountsStore', () => {
       'savings',
       'spending',
     ]);
-    expect(
-      account.wallets.find((wallet) => wallet.name === 'savings')
-    ).toMatchObject({ monthlyInterestRate: SAVINGS_MONTHLY_RATE });
+    expect(account.wallets.find((wallet) => wallet.name === 'savings')).toMatchObject({
+      monthlyInterestRate: SAVINGS_MONTHLY_RATE,
+    });
   });
 
   it('opens every wallet today', () => {
     const openedToday = account.wallets.filter(
-      (wallet) =>
-        wallet.openedAt === today() && wallet.lastInterestDate === today()
+      (wallet) => wallet.openedAt === today() && wallet.lastInterestDate === today()
     );
 
     expect(openedToday).toEqual(account.wallets);
@@ -70,18 +66,13 @@ describe('AccountsStore', () => {
 
   describe('edit account', () => {
     it('updates the name and avatar of an existing account', async () => {
-      const updated = await accountsStore.updateAccount(
-        account.id,
-        mockAccountEdits
-      );
+      const updated = await accountsStore.updateAccount(account.id, mockAccountEdits);
 
       expect(updated).toMatchObject(mockAccountEdits);
     });
 
     it('returns undefined for an unknown id', async () => {
-      expect(
-        await accountsStore.updateAccount('missing', mockAccountEdits)
-      ).toBeUndefined();
+      expect(await accountsStore.updateAccount('missing', mockAccountEdits)).toBeUndefined();
     });
   });
 });

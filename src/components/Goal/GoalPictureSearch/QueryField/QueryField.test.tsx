@@ -12,9 +12,7 @@ describe('QueryField', () => {
   });
 
   it('shows the query', () => {
-    expect(screen.getByTestId(QUERY_FIELD_TEST_IDS.input)).toHaveValue(
-      mockQuery
-    );
+    expect(screen.getByTestId(QUERY_FIELD_TEST_IDS.input)).toHaveValue(mockQuery);
   });
 
   describe('after typing', () => {

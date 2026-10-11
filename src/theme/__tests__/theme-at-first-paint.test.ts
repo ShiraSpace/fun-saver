@@ -1,9 +1,5 @@
 import { THEME_COOKIE } from '@/lib/cookies';
-import {
-  applyStoredThemeScript,
-  everyThemeAsCss,
-  themeVar,
-} from '../theme-at-first-paint';
+import { applyStoredThemeScript, everyThemeAsCss, themeVar } from '../theme-at-first-paint';
 import { DEFAULT_THEME_ID, THEMES, THEME_ID } from '../registry';
 
 const blockFor = (themeId: string): string => {
@@ -15,9 +11,7 @@ const blockFor = (themeId: string): string => {
 describe('the theme at first paint', () => {
   describe('publishing every theme as css', () => {
     it('publishes a block for every theme in the registry', () => {
-      const published = Object.keys(THEMES).filter(
-        (themeId) => blockFor(themeId) !== ''
-      );
+      const published = Object.keys(THEMES).filter((themeId) => blockFor(themeId) !== '');
 
       expect(published).toEqual(Object.keys(THEMES));
     });
@@ -39,9 +33,7 @@ describe('the theme at first paint', () => {
     });
 
     it('dresses a document that has no theme yet in the default one', () => {
-      expect(everyThemeAsCss()).toContain(
-        `:root,:root[data-theme='${DEFAULT_THEME_ID}']{`
-      );
+      expect(everyThemeAsCss()).toContain(`:root,:root[data-theme='${DEFAULT_THEME_ID}']{`);
     });
   });
 
@@ -50,9 +42,7 @@ describe('the theme at first paint', () => {
       const property = themeVar('colors', 'surface').slice('var('.length, -1);
       const surface = THEMES[THEME_ID.midnightBlue].colors.surface;
 
-      expect(blockFor(THEME_ID.midnightBlue)).toContain(
-        `${property}:${surface}`
-      );
+      expect(blockFor(THEME_ID.midnightBlue)).toContain(`${property}:${surface}`);
     });
   });
 
@@ -73,9 +63,7 @@ describe('the theme at first paint', () => {
     });
 
     it('applies the theme stored in the cookie', () => {
-      expect(applyStoredTheme(THEME_ID.midnightBlue)).toBe(
-        THEME_ID.midnightBlue
-      );
+      expect(applyStoredTheme(THEME_ID.midnightBlue)).toBe(THEME_ID.midnightBlue);
     });
 
     it('falls back to the default when nothing is stored', () => {
@@ -87,9 +75,7 @@ describe('the theme at first paint', () => {
     });
 
     it('never applies a stored value that is trying to inject markup', () => {
-      expect(applyStoredTheme('"><script>bad()</script>')).toBe(
-        DEFAULT_THEME_ID
-      );
+      expect(applyStoredTheme('"><script>bad()</script>')).toBe(DEFAULT_THEME_ID);
     });
   });
 
@@ -123,9 +109,7 @@ describe('the theme at first paint', () => {
     it('leaves no name on the page that another script might also use', () => {
       const genericNames = ['c', 't', 'themeCookie', 'themeId'];
 
-      expect(genericNames.filter((name) => Reflect.has(window, name))).toEqual(
-        []
-      );
+      expect(genericNames.filter((name) => Reflect.has(window, name))).toEqual([]);
     });
   });
 });

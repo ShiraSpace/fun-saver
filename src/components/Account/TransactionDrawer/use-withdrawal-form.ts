@@ -39,10 +39,7 @@ function goalOnPickedWallet(
   pickedWallet: WalletSummary | undefined,
   savedTowardGoal: SavedTowardGoal | undefined
 ): GoalOnPickedWallet {
-  const savedTowardGoalInWallet = savedTowardGoalIn(
-    pickedWallet,
-    savedTowardGoal
-  );
+  const savedTowardGoalInWallet = savedTowardGoalIn(pickedWallet, savedTowardGoal);
 
   if (!savedTowardGoalInWallet) {
     return {};
@@ -68,13 +65,10 @@ export function useWithdrawalForm({
     onSaved
   );
 
-  const selectedWallet = wallets.find(
-    (wallet) => wallet.id === selectedWalletId
-  );
+  const selectedWallet = wallets.find((wallet) => wallet.id === selectedWalletId);
   const goalOnWallet = goalOnPickedWallet(selectedWallet, savedTowardGoal);
   const isOverdraft =
-    !!selectedWallet &&
-    entry.amountShekels * AGOROT_PER_SHEKEL > selectedWallet.balance;
+    !!selectedWallet && entry.amountShekels * AGOROT_PER_SHEKEL > selectedWallet.balance;
 
   const canSubmit =
     entry.amountShekels > 0 &&

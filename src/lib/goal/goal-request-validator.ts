@@ -59,9 +59,7 @@ function isGoalRequest(body: unknown): body is GoalRequest {
   );
 }
 
-export function assertValidGoalRequest(
-  body: unknown
-): asserts body is GoalRequest {
+export function assertValidGoalRequest(body: unknown): asserts body is GoalRequest {
   if (!isGoalRequest(body)) {
     throw new ValidationError('invalid goal');
   }

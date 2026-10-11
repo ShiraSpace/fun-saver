@@ -2,11 +2,7 @@ import { keyframes, type SerializedStyles } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { WalletName } from '@/lib/wallet/types';
 import { EASING, entrance } from '@/theme/motion';
-import {
-  LEGEND_ANIMATION,
-  BALANCE_BREAKDOWN_STYLE,
-  WALLET_COLOR,
-} from '../constants';
+import { LEGEND_ANIMATION, BALANCE_BREAKDOWN_STYLE, WALLET_COLOR } from '../constants';
 
 const fadeUp = keyframes`
   from {
@@ -32,8 +28,7 @@ export const Row = styled.div<{ rowIndex: number }>`
     entrance({
       keyframes: fadeUp,
       durationMs: LEGEND_ANIMATION.riseMs,
-      delayMs:
-        LEGEND_ANIMATION.delayMs + rowIndex * LEGEND_ANIMATION.betweenRowsMs,
+      delayMs: LEGEND_ANIMATION.delayMs + rowIndex * LEGEND_ANIMATION.betweenRowsMs,
       easing: EASING.easeOut,
     })}
 `;
@@ -48,8 +43,7 @@ export const Dot = styled.span<{ walletName: WalletName }>`
   justify-content: center;
   font-size: ${BALANCE_BREAKDOWN_STYLE.dotFontSize}px;
   line-height: 1;
-  background: ${({ walletName, theme }): string =>
-    theme.colors[WALLET_COLOR[walletName]]};
+  background: ${({ walletName, theme }): string => theme.colors[WALLET_COLOR[walletName]]};
 `;
 
 export const Share = styled.span`

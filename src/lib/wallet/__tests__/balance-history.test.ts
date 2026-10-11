@@ -1,10 +1,7 @@
 import { balanceHistory } from '../balance-history';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { eachDayInclusive } from '@/lib/dates';
-import {
-  createMockTransaction,
-  mockOpeningDeposit,
-} from '@/test-utils/mocks/transaction.mocks';
+import { createMockTransaction, mockOpeningDeposit } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 
 describe('the balance history', () => {
@@ -34,11 +31,7 @@ describe('the balance history', () => {
       amount: 200,
       occurredAt: '2026-01-02',
     });
-    const unsortedTransactions = [
-      mockSameDayDeposit,
-      mockOpeningDeposit,
-      mockSameDayWithdrawal,
-    ];
+    const unsortedTransactions = [mockSameDayDeposit, mockOpeningDeposit, mockSameDayWithdrawal];
     const sortedTransactions = [...unsortedTransactions].sort((a, b) =>
       a.occurredAt.localeCompare(b.occurredAt)
     );
@@ -103,8 +96,7 @@ describe('the balance history', () => {
         transactions: [mockSpendingDeposit, mockSpendingWithdrawal],
         asOf: '2026-01-01',
       });
-      const spendingLeft =
-        mockSpendingDeposit.amount - mockSpendingWithdrawal.amount;
+      const spendingLeft = mockSpendingDeposit.amount - mockSpendingWithdrawal.amount;
 
       expect(accountBalanceHistory.wallets.spending).toEqual([spendingLeft]);
     });
@@ -122,9 +114,7 @@ describe('the balance history', () => {
       });
 
       it('holds only what went into that wallet', () => {
-        expect(accountBalanceHistory.wallets.savings).toEqual([
-          mockSavingsDeposit.amount,
-        ]);
+        expect(accountBalanceHistory.wallets.savings).toEqual([mockSavingsDeposit.amount]);
       });
 
       it('stays at zero for a wallet nothing went into', () => {

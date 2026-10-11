@@ -2,10 +2,7 @@
  * @jest-environment node
  */
 import { createMockAccount } from '@/test-utils/mocks/account.mocks';
-import {
-  createMockTransaction,
-  mockTransactions,
-} from '@/test-utils/mocks/transaction.mocks';
+import { createMockTransaction, mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { withTestDatabase } from './test-database';
 
 describe('PostgresTransactions', () => {
@@ -40,18 +37,13 @@ describe('PostgresTransactions', () => {
       }),
     ]);
 
-    const accountATransactions = await store.listTransactionsByWallet(
-      mockAccountA.id,
-      'savings'
-    );
-    const accountBTransactions = await store.listTransactionsByWallet(
-      mockAccountB.id,
-      'savings'
-    );
+    const accountATransactions = await store.listTransactionsByWallet(mockAccountA.id, 'savings');
+    const accountBTransactions = await store.listTransactionsByWallet(mockAccountB.id, 'savings');
 
-    expect(
-      accountATransactions.map((transaction) => transaction.id).sort()
-    ).toEqual([transactionId('a1'), transactionId('a2')]);
+    expect(accountATransactions.map((transaction) => transaction.id).sort()).toEqual([
+      transactionId('a1'),
+      transactionId('a2'),
+    ]);
     expect(accountBTransactions.map((transaction) => transaction.id)).toEqual([
       transactionId('b1'),
     ]);
@@ -71,9 +63,7 @@ describe('PostgresTransactions', () => {
       }),
     ]);
 
-    const listedTransactions = await store.listTransactionsByAccount(
-      mockAccountA.id
-    );
+    const listedTransactions = await store.listTransactionsByAccount(mockAccountA.id);
 
     expect(new Set(listedTransactions)).toEqual(new Set(accountATransactions));
   });
@@ -92,9 +82,7 @@ describe('PostgresTransactions', () => {
       }),
     ]);
 
-    const listedTransactions = await store.listTransactionsByAccount(
-      mockAccountA.id
-    );
+    const listedTransactions = await store.listTransactionsByAccount(mockAccountA.id);
 
     expect(listedTransactions.map((transaction) => transaction.id)).toEqual([
       transactionId('morning'),

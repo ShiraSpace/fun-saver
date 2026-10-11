@@ -24,17 +24,14 @@ export function savedTowardGoalIn(
   return wallet?.name === WALLET_NAMES.savings ? savedTowardGoal : undefined;
 }
 
-export function savedTowardGoalOf(
-  account: AccountSummary
-): SavedTowardGoal | undefined {
+export function savedTowardGoalOf(account: AccountSummary): SavedTowardGoal | undefined {
   const { goal } = account;
 
   if (!goal) {
     return;
   }
 
-  const savingsBalance =
-    walletNamed(account.wallets, WALLET_NAMES.savings)?.balance ?? 0;
+  const savingsBalance = walletNamed(account.wallets, WALLET_NAMES.savings)?.balance ?? 0;
   const saved = withoutAgorot(savingsBalance);
 
   return {

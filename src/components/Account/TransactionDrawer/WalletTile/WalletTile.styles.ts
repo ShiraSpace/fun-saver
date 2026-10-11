@@ -9,11 +9,7 @@ interface TileState {
   locked: boolean;
 }
 
-function tileBorderColor({
-  theme,
-  selected,
-  locked,
-}: TileState & { theme: Theme }): string {
+function tileBorderColor({ theme, selected, locked }: TileState & { theme: Theme }): string {
   if (!selected) {
     return 'transparent';
   }
@@ -57,8 +53,7 @@ export const WalletIcon = styled.span<{ walletName: WalletName }>`
   align-items: center;
   justify-content: center;
   font-size: ${WALLET_TILE_STYLE.iconFontSize}px;
-  background: ${({ theme, walletName }): string =>
-    theme.gradients[WALLET_GRADIENT[walletName]]};
+  background: ${({ theme, walletName }): string => theme.gradients[WALLET_GRADIENT[walletName]]};
 `;
 
 export const Name = styled.span`

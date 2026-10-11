@@ -3,11 +3,7 @@ import type { AccountOwner } from '@/db/data-store';
 import { DEFAULT_THEME_ID } from '@/theme/registry';
 import type { AccountsContextValue } from '@/components/Home/accounts-context';
 import { mockCoParent, mockUser } from './user.mocks';
-import {
-  createMockWallets,
-  createMockWalletSummary,
-  mockWalletSummaries,
-} from './wallet.mocks';
+import { createMockWallets, createMockWalletSummary, mockWalletSummaries } from './wallet.mocks';
 
 export function createMockAccount(overrides: Partial<Account> = {}): Account {
   return {
@@ -21,9 +17,7 @@ export function createMockAccount(overrides: Partial<Account> = {}): Account {
   };
 }
 
-export function createMockAccountUser(
-  overrides: Partial<AccountUser> = {}
-): AccountUser {
+export function createMockAccountUser(overrides: Partial<AccountUser> = {}): AccountUser {
   return {
     accountId: 'a1',
     userId: 'u1',

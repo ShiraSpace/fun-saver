@@ -3,10 +3,7 @@ import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
 import { ESCAPE_KEY } from '@/hooks/constants';
 import { ViewGoal } from './ViewGoal';
 import { VIEW_GOAL_COPY, VIEW_GOAL_TEST_IDS } from './constants';
-import {
-  SAVINGS_LOCK_COPY,
-  SAVINGS_LOCK_TEST_IDS,
-} from './SavingsLock/constants';
+import { SAVINGS_LOCK_COPY, SAVINGS_LOCK_TEST_IDS } from './SavingsLock/constants';
 import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
 import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
 
@@ -31,9 +28,7 @@ describe('ViewGoal', () => {
     });
 
     it('shows no reached heading', () => {
-      expect(
-        screen.queryByTestId(VIEW_GOAL_TEST_IDS.reachedHeading)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(VIEW_GOAL_TEST_IDS.reachedHeading)).not.toBeInTheDocument();
     });
   });
 
@@ -49,9 +44,9 @@ describe('ViewGoal', () => {
     });
 
     it('shows the reached heading', () => {
-      expect(
-        screen.getByTestId(VIEW_GOAL_TEST_IDS.reachedHeading)
-      ).toHaveTextContent(VIEW_GOAL_COPY.reachedHeading);
+      expect(screen.getByTestId(VIEW_GOAL_TEST_IDS.reachedHeading)).toHaveTextContent(
+        VIEW_GOAL_COPY.reachedHeading
+      );
     });
 
     it('says savings are open', () => {

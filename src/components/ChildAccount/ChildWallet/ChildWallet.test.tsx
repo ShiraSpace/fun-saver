@@ -17,9 +17,7 @@ describe('ChildWallet', () => {
     });
 
     it('shows ₪23, never money the child does not have', () => {
-      expect(
-        screen.getByTestId(CHILD_WALLET_TEST_IDS.balance)
-      ).toHaveTextContent('₪23');
+      expect(screen.getByTestId(CHILD_WALLET_TEST_IDS.balance)).toHaveTextContent('₪23');
     });
 
     it('tells the child this is the money to spend', () => {
@@ -31,11 +29,7 @@ describe('ChildWallet', () => {
 
   describe('a good-deeds wallet', () => {
     beforeEach(() => {
-      render(
-        <ChildWallet
-          wallet={createMockSpendableWallet(WALLET_NAMES.goodDeeds)}
-        />
-      );
+      render(<ChildWallet wallet={createMockSpendableWallet(WALLET_NAMES.goodDeeds)} />);
     });
 
     it('tells the child this is the money to give', () => {

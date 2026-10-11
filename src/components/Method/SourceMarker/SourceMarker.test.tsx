@@ -12,22 +12,15 @@ describe('the number that points a claim at its source', () => {
     });
 
     it('shows the number the parent will find beside that study in the list', () => {
-      expect(
-        screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)
-      ).toHaveTextContent('3');
+      expect(screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)).toHaveTextContent('3');
     });
 
     it('says out loud that it is a source, so a listener does not hear it as part of the sentence', () => {
-      expect(
-        screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)
-      ).toHaveAccessibleName('מקור 3');
+      expect(screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)).toHaveAccessibleName('מקור 3');
     });
 
     it('reads left to right, so a Hebrew sentence does not reverse it', () => {
-      expect(screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)).toHaveAttribute(
-        'dir',
-        'ltr'
-      );
+      expect(screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)).toHaveAttribute('dir', 'ltr');
     });
   });
 
@@ -37,9 +30,7 @@ describe('the number that points a claim at its source', () => {
     });
 
     it('gathers them into one, rather than trailing the sentence with several', () => {
-      expect(
-        screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)
-      ).toHaveTextContent('1,2');
+      expect(screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)).toHaveTextContent('1,2');
     });
   });
 
@@ -49,9 +40,7 @@ describe('the number that points a claim at its source', () => {
     });
 
     it('shows nothing, so the sentence does not end on a mark pointing nowhere', () => {
-      expect(
-        screen.queryByTestId(SOURCE_MARKER_TEST_IDS.marker)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(SOURCE_MARKER_TEST_IDS.marker)).not.toBeInTheDocument();
     });
   });
 });

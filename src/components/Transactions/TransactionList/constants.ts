@@ -3,10 +3,7 @@ import {
   INTEREST_MODE,
   TRANSACTION_TYPE,
 } from '@/lib/transaction/constants';
-import type {
-  InterestMode,
-  TransactionTypeFilter,
-} from '@/lib/transaction/transaction-rows';
+import type { InterestMode, TransactionTypeFilter } from '@/lib/transaction/transaction-rows';
 import type { Choice } from '../ChoiceChips';
 import { countInWords } from '../count-in-words';
 
@@ -21,13 +18,12 @@ export const TRANSACTION_LIST_COPY = {
   columns: { balanceChange: 'שינוי', balance: 'יתרה' },
 } as const;
 
-export const TRANSACTION_TYPE_FILTERS: readonly Choice<TransactionTypeFilter>[] =
-  [
-    { id: ALL_TRANSACTION_TYPES, label: 'הכל' },
-    { id: TRANSACTION_TYPE.deposit, label: 'הפקדות' },
-    { id: TRANSACTION_TYPE.withdrawal, label: 'משיכות' },
-    { id: TRANSACTION_TYPE.interest, label: 'ריבית' },
-  ];
+export const TRANSACTION_TYPE_FILTERS: readonly Choice<TransactionTypeFilter>[] = [
+  { id: ALL_TRANSACTION_TYPES, label: 'הכל' },
+  { id: TRANSACTION_TYPE.deposit, label: 'הפקדות' },
+  { id: TRANSACTION_TYPE.withdrawal, label: 'משיכות' },
+  { id: TRANSACTION_TYPE.interest, label: 'ריבית' },
+];
 
 export const INTEREST_MODES: readonly Choice<InterestMode>[] = [
   { id: INTEREST_MODE.monthly, label: 'חודשית' },

@@ -1,14 +1,8 @@
 'use client';
 
 import { JSX } from 'react';
-import {
-  APP_MODE,
-  useAppMode,
-} from '@/components/AccountManagement/app-mode-context';
-import {
-  ACCOUNT_LIST_COPY,
-  ACCOUNT_LIST_TEST_IDS,
-} from '../AccountList/constants';
+import { APP_MODE, useAppMode } from '@/components/AccountManagement/app-mode-context';
+import { ACCOUNT_LIST_COPY, ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { AddButton } from '../row-parts';
 import { useMenu } from '../use-menu-state';
 

@@ -25,10 +25,7 @@ export function ShownBalances({
   chartWidth,
 }: ShownBalancesProps): JSX.Element {
   const { days } = balanceHistory;
-  const shownBalanceHistories = eachShownBalanceHistory(
-    balanceHistory,
-    shownBalances
-  );
+  const shownBalanceHistories = eachShownBalanceHistory(balanceHistory, shownBalances);
   const balanceBounds = lowestAndHighestBalance(shownBalanceHistories);
   const balanceY = balanceYWithin(balanceBounds);
   const firstDayX = firstDayXOf(chartWidth);
@@ -36,20 +33,9 @@ export function ShownBalances({
 
   return (
     <g>
-      <BalanceAxis
-        balanceBounds={balanceBounds}
-        balanceY={balanceY}
-        firstDayX={firstDayX}
-      />
-      <BalanceLines
-        shownBalanceHistories={shownBalanceHistories}
-        dayX={dayX}
-        balanceY={balanceY}
-      />
-      <TodaysBalances
-        shownBalanceHistories={shownBalanceHistories}
-        balanceY={balanceY}
-      />
+      <BalanceAxis balanceBounds={balanceBounds} balanceY={balanceY} firstDayX={firstDayX} />
+      <BalanceLines shownBalanceHistories={shownBalanceHistories} dayX={dayX} balanceY={balanceY} />
+      <TodaysBalances shownBalanceHistories={shownBalanceHistories} balanceY={balanceY} />
       <DayAxis days={days} dayX={dayX} firstDayX={firstDayX} />
     </g>
   );

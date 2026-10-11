@@ -12,10 +12,7 @@ interface DayAxisProps {
 }
 
 function keptInsideChart(x: number, firstDayX: number): number {
-  return Math.min(
-    Math.max(x, TODAY_X + DAY_TICK_INSET),
-    firstDayX - DAY_TICK_INSET
-  );
+  return Math.min(Math.max(x, TODAY_X + DAY_TICK_INSET), firstDayX - DAY_TICK_INSET);
 }
 
 export function DayAxis({ days, dayX, firstDayX }: DayAxisProps): JSX.Element {

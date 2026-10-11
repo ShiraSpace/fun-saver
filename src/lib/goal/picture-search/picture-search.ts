@@ -25,19 +25,14 @@ function wordsIn(text: string): string[] {
 
 function searchTerms(text: string): string[] {
   const words = wordsIn(text);
-  return words.length > 1
-    ? [words.join(PHRASE_WORD_SEPARATOR), ...words]
-    : words;
+  return words.length > 1 ? [words.join(PHRASE_WORD_SEPARATOR), ...words] : words;
 }
 
 export function indexPictureWords(pictureWords: PictureWords): PicturesByTerm {
   const picturesByTerm: PicturesByTerm = new Map();
   for (const [picture, words] of Object.entries(pictureWords)) {
     for (const term of words.flatMap(searchTerms)) {
-      picturesByTerm.set(
-        term,
-        (picturesByTerm.get(term) ?? new Set()).add(picture)
-      );
+      picturesByTerm.set(term, (picturesByTerm.get(term) ?? new Set()).add(picture));
     }
   }
   return picturesByTerm;
@@ -46,29 +41,19 @@ export function indexPictureWords(pictureWords: PictureWords): PicturesByTerm {
 function restsWithoutPrefix(typedWord: string, prefixLength: number): string[] {
   const prefix = typedWord.slice(0, prefixLength);
   const rest = typedWord.slice(prefixLength);
-  const isPrefix = [...prefix].every((letter) =>
-    PREFIX_LETTERS.includes(letter)
-  );
+  const isPrefix = [...prefix].every((letter) => PREFIX_LETTERS.includes(letter));
   return isPrefix && rest.length >= MIN_LETTERS_AFTER_PREFIX ? [rest] : [];
 }
 
 function wordsToLookUp(typedWord: string): string[] {
-  const prefixLengths = Array.from(
-    { length: MAX_PREFIX_LETTERS },
-    (_, index) => index + 1
-  );
+  const prefixLengths = Array.from({ length: MAX_PREFIX_LETTERS }, (_, index) => index + 1);
   return [
     typedWord,
-    ...prefixLengths.flatMap((prefixLength) =>
-      restsWithoutPrefix(typedWord, prefixLength)
-    ),
+    ...prefixLengths.flatMap((prefixLength) => restsWithoutPrefix(typedWord, prefixLength)),
   ];
 }
 
-function picturesForWord(
-  typedWord: string,
-  picturesByTerm: PicturesByTerm
-): Map<string, number> {
+function picturesForWord(typedWord: string, picturesByTerm: PicturesByTerm): Map<string, number> {
   const lookups = wordsToLookUp(typedWord);
   const scoreByPicture = new Map<string, number>();
 
@@ -88,10 +73,7 @@ function rankedPictures(scoreByPicture: Map<string, number>): string[] {
     .map(([picture]) => picture);
 }
 
-export function matchingPictures(
-  query: string,
-  picturesByTerm: PicturesByTerm
-): string[] {
+export function matchingPictures(query: string, picturesByTerm: PicturesByTerm): string[] {
   const scoreByPicture = new Map<string, number>();
   for (const term of searchTerms(query)) {
     for (const [picture, score] of picturesForWord(term, picturesByTerm)) {

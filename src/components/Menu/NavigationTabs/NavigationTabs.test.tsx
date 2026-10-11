@@ -40,21 +40,20 @@ describe('NavigationTabs', () => {
     });
 
     it('offers a tab for every screen the app has', () => {
-      expect(
-        screen.getByTestId(NAVIGATION_TABS_TEST_IDS.tabBar).children
-      ).toHaveLength(NAVIGATION_DESTINATIONS.length);
+      expect(screen.getByTestId(NAVIGATION_TABS_TEST_IDS.tabBar).children).toHaveLength(
+        NAVIGATION_DESTINATIONS.length
+      );
     });
 
     it('marks the screen the reader is on', () => {
-      expect(
-        screen.getByTestId(NAVIGATION_TABS_TEST_IDS.homeTab)
-      ).toHaveAttribute('aria-current', 'page');
+      expect(screen.getByTestId(NAVIGATION_TABS_TEST_IDS.homeTab)).toHaveAttribute(
+        'aria-current',
+        'page'
+      );
     });
 
     it('offers no way to travel to the screen already on display', () => {
-      expect(
-        screen.getByTestId(NAVIGATION_TABS_TEST_IDS.homeTab)
-      ).not.toHaveAttribute('href');
+      expect(screen.getByTestId(NAVIGATION_TABS_TEST_IDS.homeTab)).not.toHaveAttribute('href');
     });
 
     it('sends the method tab to its route', () => {
@@ -71,9 +70,10 @@ describe('NavigationTabs', () => {
     });
 
     it('links the transactions tab to its screen', () => {
-      expect(
-        screen.getByTestId(NAVIGATION_TABS_TEST_IDS.transactionsTab)
-      ).toHaveAttribute('href', TRANSACTIONS_ROUTE);
+      expect(screen.getByTestId(NAVIGATION_TABS_TEST_IDS.transactionsTab)).toHaveAttribute(
+        'href',
+        TRANSACTIONS_ROUTE
+      );
     });
   });
 
@@ -83,21 +83,21 @@ describe('NavigationTabs', () => {
     });
 
     it('moves the mark to the screen the reader travelled to', () => {
-      expect(
-        screen.getByTestId(NAVIGATION_TABS_TEST_IDS.methodTab)
-      ).toHaveAttribute('aria-current', 'page');
+      expect(screen.getByTestId(NAVIGATION_TABS_TEST_IDS.methodTab)).toHaveAttribute(
+        'aria-current',
+        'page'
+      );
     });
 
     it('stops offering the method route once the reader is on it', () => {
-      expect(
-        screen.getByTestId(NAVIGATION_TABS_TEST_IDS.methodTab)
-      ).not.toHaveAttribute('href');
+      expect(screen.getByTestId(NAVIGATION_TABS_TEST_IDS.methodTab)).not.toHaveAttribute('href');
     });
 
     it('offers the way back home', () => {
-      expect(
-        screen.getByTestId(NAVIGATION_TABS_TEST_IDS.homeTab)
-      ).toHaveAttribute('href', HOME_ROUTE);
+      expect(screen.getByTestId(NAVIGATION_TABS_TEST_IDS.homeTab)).toHaveAttribute(
+        'href',
+        HOME_ROUTE
+      );
     });
   });
 
@@ -107,15 +107,11 @@ describe('NavigationTabs', () => {
     });
 
     it('cannot send them to the method, which needs an account to open', () => {
-      expect(
-        screen.getByTestId(NAVIGATION_TABS_TEST_IDS.methodTab)
-      ).toBeDisabled();
+      expect(screen.getByTestId(NAVIGATION_TABS_TEST_IDS.methodTab)).toBeDisabled();
     });
 
     it('cannot send them to the transactions, which needs an account to open', () => {
-      expect(
-        screen.getByTestId(NAVIGATION_TABS_TEST_IDS.transactionsTab)
-      ).toBeDisabled();
+      expect(screen.getByTestId(NAVIGATION_TABS_TEST_IDS.transactionsTab)).toBeDisabled();
     });
   });
 });

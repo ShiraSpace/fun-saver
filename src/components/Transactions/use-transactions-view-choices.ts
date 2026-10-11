@@ -1,13 +1,7 @@
 import { useState } from 'react';
 import { WALLET_NAME_LIST } from '@/lib/wallet/constants';
-import {
-  ALL_TRANSACTION_TYPES,
-  INTEREST_MODE,
-} from '@/lib/transaction/constants';
-import type {
-  InterestMode,
-  TransactionTypeFilter,
-} from '@/lib/transaction/transaction-rows';
+import { ALL_TRANSACTION_TYPES, INTEREST_MODE } from '@/lib/transaction/constants';
+import type { InterestMode, TransactionTypeFilter } from '@/lib/transaction/transaction-rows';
 import { DEFAULT_RANGE, type RangeId } from './BalanceOverTime/constants';
 import { SHOWN_BALANCE, type ShownBalance } from './constants';
 
@@ -15,9 +9,7 @@ export interface TransactionsViewChoices {
   range: RangeId;
   setRange: (range: RangeId) => void;
   transactionTypeFilter: TransactionTypeFilter;
-  setTransactionTypeFilter: (
-    transactionTypeFilter: TransactionTypeFilter
-  ) => void;
+  setTransactionTypeFilter: (transactionTypeFilter: TransactionTypeFilter) => void;
   interestMode: InterestMode;
   setInterestMode: (interestMode: InterestMode) => void;
   shownBalances: readonly ShownBalance[];
@@ -26,19 +18,12 @@ export interface TransactionsViewChoices {
   toggleAllWallets: () => void;
 }
 
-const SHOWN_BALANCE_ORDER: readonly ShownBalance[] =
-  Object.values(SHOWN_BALANCE);
+const SHOWN_BALANCE_ORDER: readonly ShownBalance[] = Object.values(SHOWN_BALANCE);
 
-const DEFAULT_SHOWN_BALANCES: readonly ShownBalance[] = [
-  SHOWN_BALANCE.totalBalance,
-];
+const DEFAULT_SHOWN_BALANCES: readonly ShownBalance[] = [SHOWN_BALANCE.totalBalance];
 
-function inShownBalanceOrder(
-  shownBalances: readonly ShownBalance[]
-): ShownBalance[] {
-  return SHOWN_BALANCE_ORDER.filter((shownBalance) =>
-    shownBalances.includes(shownBalance)
-  );
+function inShownBalanceOrder(shownBalances: readonly ShownBalance[]): ShownBalance[] {
+  return SHOWN_BALANCE_ORDER.filter((shownBalance) => shownBalances.includes(shownBalance));
 }
 
 function withShownBalanceToggled(
@@ -55,14 +40,10 @@ function withShownBalanceToggled(
 }
 
 function allWalletsShownIn(shownBalances: readonly ShownBalance[]): boolean {
-  return WALLET_NAME_LIST.every((walletName) =>
-    shownBalances.includes(walletName)
-  );
+  return WALLET_NAME_LIST.every((walletName) => shownBalances.includes(walletName));
 }
 
-function withAllWalletsToggled(
-  shownBalances: readonly ShownBalance[]
-): ShownBalance[] {
+function withAllWalletsToggled(shownBalances: readonly ShownBalance[]): ShownBalance[] {
   const keptTotalBalance = shownBalances.filter(
     (shownBalance) => shownBalance === SHOWN_BALANCE.totalBalance
   );
@@ -74,23 +55,18 @@ function withAllWalletsToggled(
 
 export function useTransactionsViewChoices(): TransactionsViewChoices {
   const [range, setRange] = useState<RangeId>(DEFAULT_RANGE);
-  const [shownBalances, setShownBalances] = useState<readonly ShownBalance[]>(
-    DEFAULT_SHOWN_BALANCES
-  );
+  const [shownBalances, setShownBalances] =
+    useState<readonly ShownBalance[]>(DEFAULT_SHOWN_BALANCES);
   const [transactionTypeFilter, setTransactionTypeFilter] =
     useState<TransactionTypeFilter>(ALL_TRANSACTION_TYPES);
-  const [interestMode, setInterestMode] = useState<InterestMode>(
-    INTEREST_MODE.monthly
-  );
+  const [interestMode, setInterestMode] = useState<InterestMode>(INTEREST_MODE.monthly);
 
   return {
     range,
     setRange,
     shownBalances,
     toggleShownBalance: (shownBalance): void =>
-      setShownBalances((current) =>
-        withShownBalanceToggled(current, shownBalance)
-      ),
+      setShownBalances((current) => withShownBalanceToggled(current, shownBalance)),
     allWalletsShown: allWalletsShownIn(shownBalances),
     toggleAllWallets: (): void => setShownBalances(withAllWalletsToggled),
     transactionTypeFilter,

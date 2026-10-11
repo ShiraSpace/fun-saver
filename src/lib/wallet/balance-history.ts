@@ -15,19 +15,12 @@ export interface BalanceHistory {
 
 export interface BalanceHistoryInput {
   wallets: Pick<Wallet, 'id' | 'name'>[];
-  transactions: Pick<
-    Transaction,
-    'walletId' | 'type' | 'amount' | 'occurredAt'
-  >[];
+  transactions: Pick<Transaction, 'walletId' | 'type' | 'amount' | 'occurredAt'>[];
   asOf: string;
 }
 
-function firstTransactionDay(
-  transactions: Pick<Transaction, 'occurredAt'>[]
-): string | undefined {
-  const transactionDays = transactions
-    .map((transaction) => transaction.occurredAt)
-    .sort();
+function firstTransactionDay(transactions: Pick<Transaction, 'occurredAt'>[]): string | undefined {
+  const transactionDays = transactions.map((transaction) => transaction.occurredAt).sort();
 
   return transactionDays[0];
 }
@@ -68,28 +61,18 @@ function walletTransactions(
 ): BalanceHistoryInput['transactions'] {
   const wallet = walletNamed(wallets, walletName);
 
-  return transactions.filter(
-    (transaction) => transaction.walletId === wallet?.id
-  );
+  return transactions.filter((transaction) => transaction.walletId === wallet?.id);
 }
 
-function totalBalances(
-  walletBalances: WalletBalances,
-  days: string[]
-): number[] {
+function totalBalances(walletBalances: WalletBalances, days: string[]): number[] {
   const balancesOfEachWallet = Object.values(walletBalances);
   const totalBalanceOn = (dayIndex: number): number =>
-    balancesOfEachWallet.reduce(
-      (totalBalance, balances) => totalBalance + balances[dayIndex],
-      0
-    );
+    balancesOfEachWallet.reduce((totalBalance, balances) => totalBalance + balances[dayIndex], 0);
 
   return days.map((_, dayIndex) => totalBalanceOn(dayIndex));
 }
 
-function perWallet(
-  balancesOf: (walletName: WalletName) => number[]
-): WalletBalances {
+function perWallet(balancesOf: (walletName: WalletName) => number[]): WalletBalances {
   return {
     savings: balancesOf(WALLET_NAMES.savings),
     spending: balancesOf(WALLET_NAMES.spending),
@@ -108,10 +91,7 @@ export function balanceHistory(input: BalanceHistoryInput): BalanceHistory {
   return { days, totalBalance: totalBalances(wallets, days), wallets };
 }
 
-function carriedInDayIndex(
-  balanceHistory: BalanceHistory,
-  rangeInDays: number
-): number {
+function carriedInDayIndex(balanceHistory: BalanceHistory, rangeInDays: number): number {
   const todayIndex = balanceHistory.days.length - 1;
 
   return todayIndex - rangeInDays;
@@ -121,18 +101,13 @@ export function balanceOverRange(
   balanceHistory: BalanceHistory,
   rangeInDays: number
 ): BalanceHistory {
-  const rangeStartIndex = Math.max(
-    0,
-    carriedInDayIndex(balanceHistory, rangeInDays)
-  );
+  const rangeStartIndex = Math.max(0, carriedInDayIndex(balanceHistory, rangeInDays));
   const fromRangeStart = <T>(values: T[]): T[] => values.slice(rangeStartIndex);
 
   return {
     days: fromRangeStart(balanceHistory.days),
     totalBalance: fromRangeStart(balanceHistory.totalBalance),
-    wallets: perWallet((walletName) =>
-      fromRangeStart(balanceHistory.wallets[walletName])
-    ),
+    wallets: perWallet((walletName) => fromRangeStart(balanceHistory.wallets[walletName])),
   };
 }
 
@@ -144,10 +119,7 @@ export function todaysTotalBalance(balanceHistory: BalanceHistory): number {
   return closingBalance(balanceHistory.totalBalance);
 }
 
-export function totalBalanceChange(
-  balanceHistory: BalanceHistory,
-  rangeInDays: number
-): number {
+export function totalBalanceChange(balanceHistory: BalanceHistory, rangeInDays: number): number {
   const carriedInDay = carriedInDayIndex(balanceHistory, rangeInDays);
   const accountIsYoungerThanRange = carriedInDay < 0;
   const carriedInTotalBalance = accountIsYoungerThanRange
@@ -157,13 +129,8 @@ export function totalBalanceChange(
   return todaysTotalBalance(balanceHistory) - carriedInTotalBalance;
 }
 
-export function totalBalanceByDay(
-  balanceHistory: BalanceHistory
-): Map<string, number> {
+export function totalBalanceByDay(balanceHistory: BalanceHistory): Map<string, number> {
   return new Map(
-    balanceHistory.days.map((day, dayIndex) => [
-      day,
-      balanceHistory.totalBalance[dayIndex],
-    ])
+    balanceHistory.days.map((day, dayIndex) => [day, balanceHistory.totalBalance[dayIndex]])
   );
 }

@@ -3,10 +3,7 @@ import { JsonFileStore } from '../index';
 import type { StoreContents } from '../../data-store';
 import { GOAL_ENDING } from '@/lib/goal/constants';
 import { GoalAlreadyActiveError } from '@/lib/goal/errors';
-import {
-  mockAccount,
-  mockSiblingAccount,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockSiblingAccount } from '@/test-utils/mocks/account.mocks';
 import { createMockGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { createMockWithdrawal } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallet } from '@/test-utils/mocks/wallet.mocks';
@@ -28,9 +25,9 @@ describe('JsonFileStore goals', () => {
     });
 
     it('refuses a second active goal for the same account', async () => {
-      await expect(
-        store.insertGoal(createMockGoal({ id: 'g2' }))
-      ).rejects.toThrow(GoalAlreadyActiveError);
+      await expect(store.insertGoal(createMockGoal({ id: 'g2' }))).rejects.toThrow(
+        GoalAlreadyActiveError
+      );
     });
 
     describe('ending the goal', () => {
@@ -104,11 +101,7 @@ describe('JsonFileStore goals', () => {
   });
 
   it('reads a file written before goals existed as having no goal', async () => {
-    writeFileSync(
-      file.path,
-      JSON.stringify({ accounts: [mockAccount] }),
-      'utf8'
-    );
+    writeFileSync(file.path, JSON.stringify({ accounts: [mockAccount] }), 'utf8');
 
     const store = new JsonFileStore(file.path);
 

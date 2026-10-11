@@ -3,10 +3,7 @@
 import { JSX } from 'react';
 import { nearestHalfShekel } from '@/lib/money';
 import { Money } from '@/components/Money';
-import {
-  MONEY_ROUNDING,
-  type MoneyRounding,
-} from '@/components/Money/constants';
+import { MONEY_ROUNDING, type MoneyRounding } from '@/components/Money/constants';
 import { INTEREST_STATS_COPY, INTEREST_STATS_TEST_IDS } from './constants';
 import { Amount, Cell, Label, Stats } from './InterestStats.styles';
 
@@ -26,22 +23,12 @@ interface InterestStatsProps {
   interestEarnedToday: number;
 }
 
-function Stat({
-  tone,
-  label,
-  amountAgorot,
-  testId,
-  rounding,
-}: StatProps): JSX.Element {
+function Stat({ tone, label, amountAgorot, testId, rounding }: StatProps): JSX.Element {
   return (
     <Cell tone={tone}>
       <Label tone={tone}>{label}</Label>
       <Amount>
-        <Money
-          amountAgorot={amountAgorot}
-          testId={testId}
-          rounding={rounding}
-        />
+        <Money amountAgorot={amountAgorot} testId={testId} rounding={rounding} />
       </Amount>
     </Cell>
   );

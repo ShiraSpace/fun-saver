@@ -1,8 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import {
-  mockWalletSummaries,
-  mockWalletShares,
-} from '@/test-utils/mocks/wallet.mocks';
+import { mockWalletSummaries, mockWalletShares } from '@/test-utils/mocks/wallet.mocks';
 import { getThemeTokens } from '@/theme/registry';
 import { Donut, type DonutSegment } from './Donut';
 import { BALANCE_BREAKDOWN_TEST_IDS } from '../constants';
@@ -13,9 +10,7 @@ const walletSegments = mockWalletSummaries.map((wallet, index) => ({
 }));
 
 function getArcs(): Element[] {
-  const circles = screen
-    .getByTestId(BALANCE_BREAKDOWN_TEST_IDS.donut)
-    .querySelectorAll('circle');
+  const circles = screen.getByTestId(BALANCE_BREAKDOWN_TEST_IDS.donut).querySelectorAll('circle');
 
   return Array.from(circles).slice(1);
 }
@@ -69,10 +64,7 @@ describe('Donut', () => {
   it('sizes the good-deeds arc to its smaller share', () => {
     const goodDeedsArcLength = 42.223;
 
-    expect(arcLength(goodDeedsArc)).toBeCloseTo(
-      goodDeedsArcLength,
-      DECIMAL_PLACES
-    );
+    expect(arcLength(goodDeedsArc)).toBeCloseTo(goodDeedsArcLength, DECIMAL_PLACES);
   });
 
   it('starts the savings arc at the top of the ring', () => {

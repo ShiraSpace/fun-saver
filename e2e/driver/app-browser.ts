@@ -1,9 +1,4 @@
-import puppeteer, {
-  type BoundingBox,
-  type Browser,
-  type CookieData,
-  type Page,
-} from 'puppeteer';
+import puppeteer, { type BoundingBox, type Browser, type CookieData, type Page } from 'puppeteer';
 import * as actions from './page-actions';
 import * as queries from './page-queries';
 import { PageWaits } from './page-waits';

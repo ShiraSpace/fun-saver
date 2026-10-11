@@ -11,9 +11,7 @@ interface DepositSplitPreviewProps {
   split: DepositSplit;
 }
 
-export function DepositSplitPreview({
-  split,
-}: DepositSplitPreviewProps): JSX.Element {
+export function DepositSplitPreview({ split }: DepositSplitPreviewProps): JSX.Element {
   return (
     <Wallets data-testid={TRANSACTION_DRAWER_TEST_IDS.split}>
       {DEFAULT_WALLETS.map((wallet) => (

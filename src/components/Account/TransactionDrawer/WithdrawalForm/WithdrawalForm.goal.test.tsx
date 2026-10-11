@@ -22,9 +22,7 @@ function type(...digits: string[]): void {
 }
 
 function pickSavings(): void {
-  fireEvent.click(
-    screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name))
-  );
+  fireEvent.click(screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name)));
 }
 
 describe('WithdrawalForm with a goal', () => {
@@ -42,27 +40,21 @@ describe('WithdrawalForm with a goal', () => {
     });
 
     it('shows the goal in place of the keypad', () => {
-      expect(
-        screen.getByTestId(LOCKED_SAVINGS_TEST_IDS.panel)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(LOCKED_SAVINGS_TEST_IDS.panel)).toBeInTheDocument();
     });
 
     it('hides the keypad', () => {
-      expect(
-        screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('1'))
-      ).not.toBeVisible();
+      expect(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('1'))).not.toBeVisible();
     });
 
     it('says on the submit that savings are kept', () => {
-      expect(
-        screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
-      ).toHaveTextContent(GOAL_COPY.savingsLocked);
+      expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)).toHaveTextContent(
+        GOAL_COPY.savingsLocked
+      );
     });
 
     it('keeps the submit disabled', () => {
-      expect(
-        screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
-      ).toBeDisabled();
+      expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)).toBeDisabled();
     });
   });
 
@@ -80,9 +72,7 @@ describe('WithdrawalForm with a goal', () => {
     });
 
     it('shows no overdraft alert over the lock', () => {
-      expect(
-        screen.queryByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)).not.toBeInTheDocument();
     });
   });
 
@@ -99,9 +89,7 @@ describe('WithdrawalForm with a goal', () => {
     });
 
     it('warns that withdrawing savings completes the goal', () => {
-      expect(
-        screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.completesGoal)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.completesGoal)).toBeInTheDocument();
     });
   });
 });

@@ -8,16 +8,12 @@ const NOT_STARTED = 0;
 const COMPLETE = 1;
 const NO_TIME_PASSED = 0;
 
-const useBeforePaint =
-  typeof window === 'undefined' ? useEffect : useLayoutEffect;
+const useBeforePaint = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 export function progressAt(elapsedMs: number): number {
   const countingMs = elapsedMs - TOTAL_ANIMATION.startDelayMs;
 
-  return Math.min(
-    Math.max(countingMs, NO_TIME_PASSED) / TOTAL_ANIMATION.countMs,
-    COMPLETE
-  );
+  return Math.min(Math.max(countingMs, NO_TIME_PASSED) / TOTAL_ANIMATION.countMs, COMPLETE);
 }
 
 function useAnimationProgress(): number {

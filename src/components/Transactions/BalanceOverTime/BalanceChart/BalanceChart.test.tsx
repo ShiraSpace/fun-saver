@@ -25,24 +25,20 @@ describe('the balance chart', () => {
   describe('with every line turned off', () => {
     beforeEach(() => {
       render(
-        <BalanceChart
-          balanceHistory={mockBalanceHistory}
-          shownBalances={[]}
-          range={RANGE.month}
-        />
+        <BalanceChart balanceHistory={mockBalanceHistory} shownBalances={[]} range={RANGE.month} />
       );
     });
 
     it('asks for at least one line rather than drawing an empty frame', () => {
-      expect(
-        screen.getByTestId(BALANCE_CHART_TEST_IDS.message)
-      ).toHaveTextContent(BALANCE_CHART_COPY.noBalanceShown.text);
+      expect(screen.getByTestId(BALANCE_CHART_TEST_IDS.message)).toHaveTextContent(
+        BALANCE_CHART_COPY.noBalanceShown.text
+      );
     });
 
     it('tells a screen reader that no line is chosen', () => {
-      expect(
-        screen.getByTestId(BALANCE_CHART_TEST_IDS.chart)
-      ).toHaveAccessibleName(BALANCE_CHART_COPY.noBalanceShown.label);
+      expect(screen.getByTestId(BALANCE_CHART_TEST_IDS.chart)).toHaveAccessibleName(
+        BALANCE_CHART_COPY.noBalanceShown.label
+      );
     });
   });
 
@@ -58,9 +54,9 @@ describe('the balance chart', () => {
     });
 
     it('says there is nothing yet rather than drawing an empty frame', () => {
-      expect(
-        screen.getByTestId(BALANCE_CHART_TEST_IDS.message)
-      ).toHaveTextContent(BALANCE_CHART_COPY.noTransactions.text);
+      expect(screen.getByTestId(BALANCE_CHART_TEST_IDS.message)).toHaveTextContent(
+        BALANCE_CHART_COPY.noTransactions.text
+      );
     });
   });
 
@@ -76,19 +72,15 @@ describe('the balance chart', () => {
     });
 
     it('tells a screen reader which range it is showing', () => {
-      expect(
-        screen
-          .getByTestId(BALANCE_CHART_TEST_IDS.chart)
-          .getAttribute('aria-label')
-      ).toContain(RANGE.week.label);
+      expect(screen.getByTestId(BALANCE_CHART_TEST_IDS.chart).getAttribute('aria-label')).toContain(
+        RANGE.week.label
+      );
     });
 
     it('tells a screen reader which lines it is showing', () => {
-      expect(
-        screen
-          .getByTestId(BALANCE_CHART_TEST_IDS.chart)
-          .getAttribute('aria-label')
-      ).toContain(shownBalanceLabel(SHOWN_BALANCE.savings));
+      expect(screen.getByTestId(BALANCE_CHART_TEST_IDS.chart).getAttribute('aria-label')).toContain(
+        shownBalanceLabel(SHOWN_BALANCE.savings)
+      );
     });
   });
 });

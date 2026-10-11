@@ -22,6 +22,5 @@ export const Swatch = styled.span<{ walletName: WalletName }>`
   width: 9px;
   height: 9px;
   border-radius: 3px;
-  background: ${({ walletName, theme }): string =>
-    theme.colors[WALLET_CHART_COLOR[walletName]]};
+  background: ${({ walletName, theme }): string => theme.colors[WALLET_CHART_COLOR[walletName]]};
 `;

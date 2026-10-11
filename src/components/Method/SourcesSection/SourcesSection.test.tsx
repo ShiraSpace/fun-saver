@@ -18,15 +18,13 @@ describe('the sources a parent can go and check', () => {
   });
 
   it('says how many there are before it is opened, so the parent knows what they are opening', () => {
-    expect(
-      screen.getByTestId(METHOD_SECTION_TEST_IDS.hint(SOURCES_SECTION_ID))
-    ).toHaveTextContent(String(sources.list.length));
+    expect(screen.getByTestId(METHOD_SECTION_TEST_IDS.hint(SOURCES_SECTION_ID))).toHaveTextContent(
+      String(sources.list.length)
+    );
   });
 
   it('opens on the line that introduces the studies, and then gives them', () => {
-    const body = screen.getByTestId(
-      METHOD_SECTION_TEST_IDS.body(SOURCES_SECTION_ID)
-    );
+    const body = screen.getByTestId(METHOD_SECTION_TEST_IDS.body(SOURCES_SECTION_ID));
     const shape = Array.from(body.children).map((child) => child.tagName);
 
     expect(shape).toEqual(['P', 'OL']);

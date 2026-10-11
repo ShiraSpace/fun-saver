@@ -11,11 +11,7 @@ interface EvidenceQuoteProps {
   sources?: readonly SourceId[];
 }
 
-export function EvidenceQuote({
-  body,
-  citation,
-  sources,
-}: EvidenceQuoteProps): JSX.Element {
+export function EvidenceQuote({ body, citation, sources }: EvidenceQuoteProps): JSX.Element {
   const finding = emphasize(body);
   const marker = <SourceMarker sources={sources} />;
 

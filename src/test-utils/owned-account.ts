@@ -13,15 +13,9 @@ export interface CreateOwnedAccountOptions {
 
 export async function createOwnedAccount(
   store: DataStore,
-  {
-    input = mockCreateAccountInput,
-    owner = mockUser,
-  }: CreateOwnedAccountOptions = {}
+  { input = mockCreateAccountInput, owner = mockUser }: CreateOwnedAccountOptions = {}
 ): Promise<Account> {
-  const existing = await store.findUserByIdentity(
-    owner.provider,
-    owner.providerAccountId
-  );
+  const existing = await store.findUserByIdentity(owner.provider, owner.providerAccountId);
 
   if (!existing) {
     await store.insertUser(owner);

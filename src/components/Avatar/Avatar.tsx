@@ -29,16 +29,7 @@ export function Avatar(props: AvatarProps): JSX.Element {
   const src = avatarSource(avatarId);
 
   if (props.fill) {
-    return (
-      <Circle
-        src={src}
-        alt={alt}
-        fill
-        sizes={props.sizes}
-        unoptimized
-        data-testid={testId}
-      />
-    );
+    return <Circle src={src} alt={alt} fill sizes={props.sizes} unoptimized data-testid={testId} />;
   }
 
   return (

@@ -1,10 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import {
-  indexPictureWords,
-  matchingPictures,
-} from '@/lib/goal/picture-search/picture-search';
+import { indexPictureWords, matchingPictures } from '@/lib/goal/picture-search/picture-search';
 import type { PicturesByTerm } from '@/lib/goal/picture-search/types';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 
@@ -16,8 +13,7 @@ interface MatchingPictures {
 let loadedPicturesByTerm: PicturesByTerm | undefined;
 
 async function loadPicturesByTerm(): Promise<PicturesByTerm> {
-  const { default: pictureWords } =
-    await import('@/lib/goal/picture-search/picture-words.he.json');
+  const { default: pictureWords } = await import('@/lib/goal/picture-search/picture-words.he.json');
   loadedPicturesByTerm = indexPictureWords(pictureWords);
 
   return loadedPicturesByTerm;

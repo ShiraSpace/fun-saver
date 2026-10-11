@@ -31,8 +31,8 @@ export const PrimaryButton = styled.button`
     transform: translateY(-${PRIMARY_BUTTON.hoverLift}px);
     box-shadow:
       0 ${PRIMARY_BUTTON.shadowDepth + PRIMARY_BUTTON.hoverLift}px 0 ${shadow},
-      0 ${PRIMARY_BUTTON.glowOffsetY + PRIMARY_BUTTON.hoverLift}px
-        ${PRIMARY_BUTTON.glowBlur}px ${glow};
+      0 ${PRIMARY_BUTTON.glowOffsetY + PRIMARY_BUTTON.hoverLift}px ${PRIMARY_BUTTON.glowBlur}px
+        ${glow};
   }
 
   &:active {

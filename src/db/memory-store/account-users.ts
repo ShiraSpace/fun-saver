@@ -1,15 +1,7 @@
 import type { Account, AccountUser } from '@/lib/account/types';
 import { DuplicateAccountError, UnknownOwnerError } from '@/lib/account/errors';
-import type {
-  AccountOwner,
-  AccountRepository,
-  AccountUserRepository,
-} from '../data-store';
-import {
-  accountsForUser,
-  findAccountUser,
-  ownerAccountUser,
-} from '../account-users';
+import type { AccountOwner, AccountRepository, AccountUserRepository } from '../data-store';
+import { accountsForUser, findAccountUser, ownerAccountUser } from '../account-users';
 import type { MemoryUsers } from './users';
 
 export class MemoryAccountUsers implements AccountUserRepository {
@@ -20,25 +12,15 @@ export class MemoryAccountUsers implements AccountUserRepository {
     private readonly users: MemoryUsers
   ) {}
 
-  async get(
-    accountId: string,
-    userId: string
-  ): Promise<AccountUser | undefined> {
+  async get(accountId: string, userId: string): Promise<AccountUser | undefined> {
     return findAccountUser(this.accountUsers, accountId, userId);
   }
 
   async listAccountsForUser(userId: string): Promise<Account[]> {
-    return accountsForUser(
-      this.accountUsers,
-      await this.accounts.list(),
-      userId
-    );
+    return accountsForUser(this.accountUsers, await this.accounts.list(), userId);
   }
 
-  async insertAccountWithOwner(
-    account: Account,
-    owner: AccountOwner
-  ): Promise<void> {
+  async insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void> {
     const accountExists = Boolean(await this.accounts.get(account.id));
 
     if (accountExists) {

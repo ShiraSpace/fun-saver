@@ -62,10 +62,7 @@ export class PostgresTransactions implements TransactionRepository {
     await this.insertStatement(transactions);
   }
 
-  async listByWallet(
-    accountId: string,
-    walletId: string
-  ): Promise<Transaction[]> {
+  async listByWallet(accountId: string, walletId: string): Promise<Transaction[]> {
     const rows = await queryRows<TransactionRow>(
       this.sql,
       `SELECT * FROM transactions

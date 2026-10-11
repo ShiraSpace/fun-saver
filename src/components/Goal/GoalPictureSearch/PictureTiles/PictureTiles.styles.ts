@@ -22,6 +22,5 @@ export const NoPicturesReason = styled.p<{ failedToLoad: boolean }>`
   text-align: center;
   font-size: ${bodySize}px;
   font-weight: 600;
-  color: ${(props): string =>
-    props.failedToLoad ? failedToLoadColor(props) : reasonColor(props)};
+  color: ${(props): string => (props.failedToLoad ? failedToLoadColor(props) : reasonColor(props))};
 `;

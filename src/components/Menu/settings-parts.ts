@@ -2,19 +2,15 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { MENU_LAYOUT, MENU_ROW_STYLE } from './constants';
 
-const sectionBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.settingsBorder;
+const sectionBorder = ({ theme }: { theme: Theme }): string => theme.colors.settingsBorder;
 
 const stripe = ({ theme }: { theme: Theme }): string => theme.colors.softBorder;
 
-const mutedText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textMuted;
+const mutedText = ({ theme }: { theme: Theme }): string => theme.colors.textMuted;
 
-const headingSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.body;
+const headingSize = ({ theme }: { theme: Theme }): number => theme.typography.body;
 
-const noteSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.label;
+const noteSize = ({ theme }: { theme: Theme }): number => theme.typography.label;
 
 export const SettingsBlock = styled.div`
   box-sizing: border-box;

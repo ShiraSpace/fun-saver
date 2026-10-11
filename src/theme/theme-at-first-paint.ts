@@ -13,14 +13,12 @@ const CSS_VAR_PREFIX = {
   tints: 'tint',
 } satisfies Record<TokenGroup, string>;
 
-const customProperty = (prefix: string, name: string): string =>
-  `--fs-${prefix}-${name}`;
+const customProperty = (prefix: string, name: string): string => `--fs-${prefix}-${name}`;
 
 const themeDeclarations = (theme: ThemeTokens): string =>
   TOKEN_GROUPS.flatMap((group) =>
     Object.entries(theme[group]).map(
-      ([name, value]) =>
-        `${customProperty(CSS_VAR_PREFIX[group], name)}:${value}`
+      ([name, value]) => `${customProperty(CSS_VAR_PREFIX[group], name)}:${value}`
     )
   ).join(';');
 
@@ -38,10 +36,7 @@ const themeSelector = (themeId: string): string =>
 
 export function everyThemeAsCss(): string {
   return Object.entries(THEMES)
-    .map(
-      ([themeId, theme]) =>
-        `${themeSelector(themeId)}{${themeDeclarations(theme)}}`
-    )
+    .map(([themeId, theme]) => `${themeSelector(themeId)}{${themeDeclarations(theme)}}`)
     .join('');
 }
 

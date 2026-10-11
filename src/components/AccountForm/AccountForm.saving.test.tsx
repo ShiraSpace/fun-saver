@@ -1,9 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import {
-  selectFirstAvatar,
-  submitForm,
-  fillName,
-} from '@/test-utils/account-form';
+import { selectFirstAvatar, submitForm, fillName } from '@/test-utils/account-form';
 import { AccountForm } from './AccountForm';
 import { ACCOUNT_FORM_TEST_IDS } from './constants';
 import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';

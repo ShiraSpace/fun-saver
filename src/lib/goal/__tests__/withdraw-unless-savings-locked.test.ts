@@ -23,9 +23,7 @@ describe('withdrawUnlessSavingsLocked', () => {
       walletBalance: 0,
     });
 
-    expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
-      mockWithdrawal,
-    ]);
+    expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([mockWithdrawal]);
   });
 
   it('refuses with SavingsLockedError and writes nothing while the goal is not reached', async () => {
@@ -54,9 +52,7 @@ describe('withdrawUnlessSavingsLocked', () => {
       walletBalance: mockGoal.amount,
     });
 
-    expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([
-      mockWithdrawal,
-    ]);
+    expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([mockWithdrawal]);
     expect(await store.getActiveGoal(mockAccount.id)).toBeUndefined();
   });
 

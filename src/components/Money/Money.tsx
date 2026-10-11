@@ -1,11 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import {
-  agorotToWholeShekels,
-  floorToShekels,
-  nearestHalfShekel,
-} from '@/lib/money';
+import { agorotToWholeShekels, floorToShekels, nearestHalfShekel } from '@/lib/money';
 import { MONEY_COPY, MONEY_ROUNDING, type MoneyRounding } from './constants';
 import { Amount, Currency, Shekels } from './Money.styles';
 
@@ -18,8 +14,7 @@ type RoundToShekels = (amountAgorot: number) => number;
 
 const ROUND_TO_SHEKELS: Record<MoneyRounding, RoundToShekels> = {
   nearestShekel: agorotToWholeShekels,
-  nearestHalfShekel: (amountAgorot: number): number =>
-    nearestHalfShekel(amountAgorot) ?? 0,
+  nearestHalfShekel: (amountAgorot: number): number => nearestHalfShekel(amountAgorot) ?? 0,
   floorToShekels,
 };
 
@@ -44,9 +39,7 @@ export function Money({
 
   return (
     <Amount dir="ltr" data-testid={testId}>
-      <Currency data-full-size={fullSizeCurrency}>
-        {MONEY_COPY.currencySign}
-      </Currency>
+      <Currency data-full-size={fullSizeCurrency}>{MONEY_COPY.currencySign}</Currency>
       <Shekels>{shekels}</Shekels>
     </Amount>
   );

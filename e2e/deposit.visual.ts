@@ -11,9 +11,7 @@ describe('deposit', () => {
 
   it('splits a deposit across the wallets and updates the savings principal', async () => {
     const amount = 50;
-    const expectedSavings = agorotToShekels(
-      splitDeposit(amount * AGOROT_PER_SHEKEL).savings
-    );
+    const expectedSavings = agorotToShekels(splitDeposit(amount * AGOROT_PER_SHEKEL).savings);
 
     assert.match(await account.savingsPrincipal(), /0/);
 

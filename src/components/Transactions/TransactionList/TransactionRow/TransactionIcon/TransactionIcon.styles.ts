@@ -16,8 +16,7 @@ export const DepositIcon = styled.span`
 `;
 
 export const WalletIcon = styled(DepositIcon)<{ walletName: WalletName }>`
-  background: ${({ walletName, theme }): string =>
-    theme.gradients[WALLET_GRADIENT[walletName]]};
+  background: ${({ walletName, theme }): string => theme.gradients[WALLET_GRADIENT[walletName]]};
 `;
 
 export const Badge = styled.span`

@@ -1,9 +1,6 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  mockAccount,
-  mockAccountEdits,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockAccountEdits } from '@/test-utils/mocks/account.mocks';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
 import { useDriver } from './driver/use-driver';
 import { PHONE } from './driver/viewports';

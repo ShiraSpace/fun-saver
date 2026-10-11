@@ -1,16 +1,10 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { hexToRgb } from '@/test-utils/css-color';
 import { THEME_ID, getThemeTokens } from '@/theme/registry';
-import {
-  mockAccountsContext,
-  mockAccountSummary,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccountsContext, mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { AppearanceSection } from './AppearanceSection';
-import {
-  APPEARANCE_SECTION_COPY,
-  APPEARANCE_SECTION_TEST_IDS,
-} from './constants';
+import { APPEARANCE_SECTION_COPY, APPEARANCE_SECTION_TEST_IDS } from './constants';
 import { mockRouter } from '@mocks/next/navigation';
 
 function renderSection(): void {
@@ -24,9 +18,7 @@ function swatches(): HTMLElement[] {
 describe('AppearanceSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue({ ok: true, json: async () => mockAccountSummary });
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => mockAccountSummary });
   });
 
   describe('the swatch row', () => {
@@ -120,9 +112,7 @@ describe('AppearanceSection', () => {
     });
 
     it('speaks it in the alert red', () => {
-      expect(getComputedStyle(error).color).toBe(
-        hexToRgb(getThemeTokens().colors.alertText)
-      );
+      expect(getComputedStyle(error).color).toBe(hexToRgb(getThemeTokens().colors.alertText));
     });
 
     describe('and the menu is closed and reopened', () => {
@@ -131,9 +121,7 @@ describe('AppearanceSection', () => {
       });
 
       it('no longer says it did not save', () => {
-        expect(
-          screen.queryByTestId(APPEARANCE_SECTION_TEST_IDS.saveError)
-        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId(APPEARANCE_SECTION_TEST_IDS.saveError)).not.toBeInTheDocument();
       });
     });
 

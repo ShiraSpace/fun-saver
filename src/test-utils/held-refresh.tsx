@@ -20,9 +20,7 @@ export function useHeldRefresh(heldRefresh: HeldRefresh): void {
   const [arriving, setArriving] = useState<Promise<void> | null>(null);
 
   useEffect(() => {
-    mockRouter.refresh.mockImplementation(() =>
-      setArriving(heldRefresh.newPageData)
-    );
+    mockRouter.refresh.mockImplementation(() => setArriving(heldRefresh.newPageData));
   }, [heldRefresh]);
 
   if (arriving) {

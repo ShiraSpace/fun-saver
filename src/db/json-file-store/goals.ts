@@ -2,11 +2,7 @@ import type { Goal, GoalEndRequest } from '@/lib/goal/types';
 import { GoalAlreadyActiveError } from '@/lib/goal/errors';
 import type { Transaction } from '@/lib/transaction/types';
 import type { GoalRepository } from '../data-store';
-import {
-  endActiveGoal,
-  findActiveGoal,
-  completedGoalEndRequest,
-} from '../goals';
+import { endActiveGoal, findActiveGoal, completedGoalEndRequest } from '../goals';
 import type { FileSession } from './file-session';
 
 export class JsonGoals implements GoalRepository {
@@ -30,23 +26,18 @@ export class JsonGoals implements GoalRepository {
   }
 
   end(endRequest: GoalEndRequest): Promise<Goal | undefined> {
-    return this.session.write(
-      async (contents, save): Promise<Goal | undefined> => {
-        const endedGoal = endActiveGoal(contents.goals, endRequest);
+    return this.session.write(async (contents, save): Promise<Goal | undefined> => {
+      const endedGoal = endActiveGoal(contents.goals, endRequest);
 
-        if (endedGoal) {
-          await save();
-        }
-
-        return endedGoal;
+      if (endedGoal) {
+        await save();
       }
-    );
+
+      return endedGoal;
+    });
   }
 
-  insertWithdrawalCompleting(
-    withdrawal: Transaction,
-    goalId: string
-  ): Promise<boolean> {
+  insertWithdrawalCompleting(withdrawal: Transaction, goalId: string): Promise<boolean> {
     return this.session.write(async (contents, save): Promise<boolean> => {
       const completedGoal = endActiveGoal(
         contents.goals,

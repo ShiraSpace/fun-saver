@@ -25,9 +25,7 @@ function editedColumns(edits: AccountEdits): EditedColumns {
   }
 
   return {
-    assignments: columns
-      .map((column, index) => `${column} = $${index + 1}`)
-      .join(', '),
+    assignments: columns.map((column, index) => `${column} = $${index + 1}`).join(', '),
     values,
   };
 }
@@ -70,10 +68,10 @@ export class PostgresAccounts implements AccountRepository {
   }
 
   async setTheme(id: string, themeId: ThemeId): Promise<Account | undefined> {
-    const rows = await this.query(
-      'UPDATE accounts SET theme_id = $1 WHERE id = $2 RETURNING *',
-      [themeId, id]
-    );
+    const rows = await this.query('UPDATE accounts SET theme_id = $1 WHERE id = $2 RETURNING *', [
+      themeId,
+      id,
+    ]);
 
     return rows[0] ? accountFromRow(rows[0]) : undefined;
   }

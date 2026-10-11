@@ -42,9 +42,7 @@ describe('getStore', () => {
       await getStore().insertAccount(mockAccount);
 
       expect(existsSync(storePath)).toBe(true);
-      expect((await getStore().getAccount(mockAccount.id))?.id).toBe(
-        mockAccount.id
-      );
+      expect((await getStore().getAccount(mockAccount.id))?.id).toBe(mockAccount.id);
     });
 
     it('memoizes one store per path', () => {

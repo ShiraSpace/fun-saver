@@ -62,8 +62,7 @@ export const Encouragement = styled.div<{ reached: boolean }>`
   padding: 9px;
   border-radius: 14px;
   border: 1.5px solid
-    ${({ reached, theme }): string =>
-      reached ? theme.colors.gainText : theme.colors.softBorder};
+    ${({ reached, theme }): string => (reached ? theme.colors.gainText : theme.colors.softBorder)};
   background: ${({ reached, theme }): string =>
     reached ? theme.colors.gainSoftBg : theme.colors.softBg};
   color: ${({ reached, theme }): string =>

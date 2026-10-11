@@ -13,11 +13,7 @@ interface EditAccountProps {
   onCancel: () => void;
 }
 
-export function EditAccount({
-  account,
-  onUpdated,
-  onCancel,
-}: EditAccountProps): JSX.Element {
+export function EditAccount({ account, onUpdated, onCancel }: EditAccountProps): JSX.Element {
   const { updateAccount } = useUpdateAccount();
 
   const handleSubmit = async (values: AccountFormValues): Promise<void> => {

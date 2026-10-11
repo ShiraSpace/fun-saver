@@ -1,20 +1,12 @@
 'use client';
 
 import { JSX, useRef } from 'react';
-import {
-  balanceOverRange,
-  type BalanceHistory,
-} from '@/lib/wallet/balance-history';
+import { balanceOverRange, type BalanceHistory } from '@/lib/wallet/balance-history';
 import type { ShownBalance } from '../../constants';
 import type { TimeRange } from '../constants';
 import { ChartMessage } from './ChartMessage';
 import { ShownBalances } from './ShownBalances';
-import {
-  BALANCE_CHART_COPY,
-  BALANCE_CHART_TEST_IDS,
-  chartLabel,
-  viewBoxOf,
-} from './constants';
+import { BALANCE_CHART_COPY, BALANCE_CHART_TEST_IDS, chartLabel, viewBoxOf } from './constants';
 import { useChartWidth } from './use-chart-width';
 import { Chart } from './BalanceChart.styles';
 
@@ -37,9 +29,7 @@ function emptyChartMessage(
     return BALANCE_CHART_COPY.noTransactions;
   }
 
-  return shownBalances.length === 0
-    ? BALANCE_CHART_COPY.noBalanceShown
-    : undefined;
+  return shownBalances.length === 0 ? BALANCE_CHART_COPY.noBalanceShown : undefined;
 }
 
 export function BalanceChart({
@@ -52,8 +42,7 @@ export function BalanceChart({
 
   const viewBox = viewBoxOf(chartWidth);
   const emptyMessage = emptyChartMessage(balanceHistory, shownBalances);
-  const chartName =
-    emptyMessage?.label ?? chartLabel(range.label, shownBalances);
+  const chartName = emptyMessage?.label ?? chartLabel(range.label, shownBalances);
   const balanceHistoryInRange = balanceOverRange(balanceHistory, range.days);
   const drawing = emptyMessage ? (
     <ChartMessage text={emptyMessage.text} chartWidth={chartWidth} />

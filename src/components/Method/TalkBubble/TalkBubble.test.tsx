@@ -27,9 +27,7 @@ describe('a talk bubble', () => {
     });
 
     it('runs the label through the same emphasis as everything else on the page', () => {
-      expect(screen.getByTestId(TALK_BUBBLE_TEST_IDS.label)).toHaveTextContent(
-        '🗣️ מה אומרים לילד'
-      );
+      expect(screen.getByTestId(TALK_BUBBLE_TEST_IDS.label)).toHaveTextContent('🗣️ מה אומרים לילד');
     });
   });
 
@@ -46,9 +44,7 @@ describe('a talk bubble', () => {
       const label = screen.getByTestId(TALK_BUBBLE_TEST_IDS.label);
 
       expect(getComputedStyle(label).color).toBe(hexToRgb(jungle.primaryText));
-      expect(getComputedStyle(label.parentElement!).borderColor).toBe(
-        hexToRgb(jungle.primary)
-      );
+      expect(getComputedStyle(label.parentElement!).borderColor).toBe(hexToRgb(jungle.primary));
     });
   });
 
@@ -58,9 +54,7 @@ describe('a talk bubble', () => {
     });
 
     it('opens on the words themselves, for a section whose title already said them', () => {
-      expect(
-        screen.queryByTestId(TALK_BUBBLE_TEST_IDS.label)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(TALK_BUBBLE_TEST_IDS.label)).not.toBeInTheDocument();
     });
   });
 });

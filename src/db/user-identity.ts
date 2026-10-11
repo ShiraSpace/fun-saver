@@ -6,8 +6,7 @@ export function userWithIdentity(
   providerAccountId: string
 ): User | undefined {
   return users.find(
-    (user) =>
-      user.provider === provider && user.providerAccountId === providerAccountId
+    (user) => user.provider === provider && user.providerAccountId === providerAccountId
   );
 }
 

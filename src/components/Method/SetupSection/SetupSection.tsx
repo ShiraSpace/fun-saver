@@ -15,11 +15,7 @@ const ALLOWANCE_BLOCKS: readonly MethodBlock[] = [
   setup.split,
 ];
 
-const RULE_BLOCKS: readonly MethodBlock[] = [
-  setup.chores,
-  setup.choresEvidence,
-  setup.rescue,
-];
+const RULE_BLOCKS: readonly MethodBlock[] = [setup.chores, setup.choresEvidence, setup.rescue];
 
 export function SetupSection(): JSX.Element {
   return (

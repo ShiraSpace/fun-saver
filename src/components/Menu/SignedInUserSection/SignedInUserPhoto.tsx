@@ -13,9 +13,7 @@ interface SignedInUserPhotoProps {
   image?: string;
 }
 
-export function SignedInUserPhoto({
-  image,
-}: SignedInUserPhotoProps): JSX.Element {
+export function SignedInUserPhoto({ image }: SignedInUserPhotoProps): JSX.Element {
   const [hasPhotoFailed, setHasPhotoFailed] = useState(false);
 
   useOnMenuClose((): void => setHasPhotoFailed(false));

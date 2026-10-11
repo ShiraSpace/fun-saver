@@ -17,8 +17,7 @@ function isNextPageRequest(request: HTTPRequest): boolean {
   return isPageData && !isPrefetch;
 }
 
-const pause = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+const pause = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function holdNextPage(page: Page): Promise<HeldPage> {
   const heldRequests: HTTPRequest[] = [];

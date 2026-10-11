@@ -34,15 +34,11 @@ describe('JsonFileStore account users', () => {
   });
 
   it('reads the row joining the account and the user', async () => {
-    expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(
-      mockAccountUser
-    );
+    expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(mockAccountUser);
   });
 
   it('returns undefined for a user who is not on the account', async () => {
-    expect(
-      await store.getAccountUser(mockAccount.id, mockOtherUserId)
-    ).toBeUndefined();
+    expect(await store.getAccountUser(mockAccount.id, mockOtherUserId)).toBeUndefined();
   });
 
   it('lists only the accounts the user belongs to', async () => {

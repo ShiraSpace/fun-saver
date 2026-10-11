@@ -1,10 +1,7 @@
 import React, { JSX, Suspense } from 'react';
 import type { Metadata } from 'next';
 import './globals.css';
-import {
-  applyStoredThemeScript,
-  everyThemeAsCss,
-} from '@/theme/theme-at-first-paint';
+import { applyStoredThemeScript, everyThemeAsCss } from '@/theme/theme-at-first-paint';
 import { LoadingShell } from '@/components/LoadingShell';
 import { LoaderProvider } from '@/hooks/loader-context';
 import { EmotionStyleRegistry } from './EmotionStyleRegistry';

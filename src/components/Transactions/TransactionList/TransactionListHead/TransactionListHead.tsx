@@ -9,13 +9,7 @@ import {
   TRANSACTION_LIST_TYPE_GROUP_NAME,
   TRANSACTION_TYPE_FILTERS,
 } from '../constants';
-import {
-  Count,
-  Head,
-  SubTitle,
-  Title,
-  TitleRow,
-} from './TransactionListHead.styles';
+import { Count, Head, SubTitle, Title, TitleRow } from './TransactionListHead.styles';
 
 interface TransactionListHeadProps {
   rowCount: number;
@@ -44,10 +38,7 @@ export function TransactionListHead({
         onSelect={viewChoices.setTransactionTypeFilter}
         testId={TRANSACTION_LIST_TEST_IDS.filters}
       />
-      <SubTitle
-        aria-hidden
-        data-testid={TRANSACTION_LIST_TEST_IDS.interestTitle}
-      >
+      <SubTitle aria-hidden data-testid={TRANSACTION_LIST_TEST_IDS.interestTitle}>
         {TRANSACTION_LIST_COPY.interestTitle}
       </SubTitle>
       <ChoiceChips

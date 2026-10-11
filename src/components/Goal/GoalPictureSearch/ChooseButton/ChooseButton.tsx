@@ -10,11 +10,7 @@ interface ChooseButtonProps {
 
 export function ChooseButton({ onChoose }: ChooseButtonProps): JSX.Element {
   return (
-    <PrimaryButton
-      type="button"
-      data-testid={CHOOSE_BUTTON_TEST_IDS.button}
-      onClick={onChoose}
-    >
+    <PrimaryButton type="button" data-testid={CHOOSE_BUTTON_TEST_IDS.button} onClick={onChoose}>
       {CHOOSE_BUTTON_COPY.choose}
     </PrimaryButton>
   );

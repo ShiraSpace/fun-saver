@@ -22,10 +22,7 @@ describe('MenuToggle', () => {
     });
 
     it('keeps the hamburger icon closed', () => {
-      expect(screen.getByTestId(MENU_TEST_IDS.menuIcon)).toHaveAttribute(
-        'data-open',
-        'false'
-      );
+      expect(screen.getByTestId(MENU_TEST_IDS.menuIcon)).toHaveAttribute('data-open', 'false');
     });
 
     it('asks for the menu when clicked', () => {
@@ -41,17 +38,11 @@ describe('MenuToggle', () => {
     });
 
     it('marks the button as expanded', () => {
-      expect(screen.getByTestId(MENU_TEST_IDS.menuButton)).toHaveAttribute(
-        'aria-expanded',
-        'true'
-      );
+      expect(screen.getByTestId(MENU_TEST_IDS.menuButton)).toHaveAttribute('aria-expanded', 'true');
     });
 
     it('marks the icon open to drive the morph animation', () => {
-      expect(screen.getByTestId(MENU_TEST_IDS.menuIcon)).toHaveAttribute(
-        'data-open',
-        'true'
-      );
+      expect(screen.getByTestId(MENU_TEST_IDS.menuIcon)).toHaveAttribute('data-open', 'true');
     });
 
     it('sits the icon inside the menu button', () => {

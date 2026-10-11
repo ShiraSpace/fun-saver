@@ -44,9 +44,7 @@ describe('provisionUser', () => {
     const user = await provisionUser(store, identity);
 
     expect(user).toMatchObject({ provider: 'google', ...identity });
-    expect(
-      await store.findUserByIdentity('google', identity.providerAccountId)
-    ).toEqual(user);
+    expect(await store.findUserByIdentity('google', identity.providerAccountId)).toEqual(user);
   });
 
   it('reuses the existing user when the same google sub signs in again', async () => {

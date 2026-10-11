@@ -6,11 +6,7 @@ import { Header } from '@/components/Header';
 import { PIG_EMOJI } from '@/components/Pig/constants';
 import { Column, Screen } from '@/components/Screen';
 import { useOinkThenRun } from './use-oink-then-run';
-import {
-  EMPTY_STATE_COPY,
-  EMPTY_STATE_LAYOUT,
-  EMPTY_STATE_TEST_IDS,
-} from './constants';
+import { EMPTY_STATE_COPY, EMPTY_STATE_LAYOUT, EMPTY_STATE_TEST_IDS } from './constants';
 import { Centre, Pig } from './EmptyState.styles';
 
 interface EmptyStateProps {
@@ -18,8 +14,7 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ onCreate }: EmptyStateProps): JSX.Element {
-  const { isOinking, onCreateAccountClick, onPigDoneOinking } =
-    useOinkThenRun(onCreate);
+  const { isOinking, onCreateAccountClick, onPigDoneOinking } = useOinkThenRun(onCreate);
 
   return (
     <Screen align="top" data-testid={EMPTY_STATE_TEST_IDS.container}>

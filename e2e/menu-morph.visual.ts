@@ -101,8 +101,7 @@ describe('menu morph', () => {
           x: centreX(accountSettings),
           y: justInsideTop(accountSettings),
         };
-        const listTakesTheTap =
-          await menu.accountListReceivesTapAt(whereTheyOverlap);
+        const listTakesTheTap = await menu.accountListReceivesTapAt(whereTheyOverlap);
 
         assert.ok(
           listTakesTheTap,

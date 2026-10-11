@@ -4,19 +4,15 @@ import { MENU_ROW_STYLE } from './constants';
 
 const surface = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 
-const strongText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textStrong;
+const strongText = ({ theme }: { theme: Theme }): string => theme.colors.textStrong;
 
-const mutedText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textMuted;
+const mutedText = ({ theme }: { theme: Theme }): string => theme.colors.textMuted;
 
 const divider = ({ theme }: { theme: Theme }): string => theme.colors.divider;
 
-const settingsBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.settingsBorder;
+const settingsBorder = ({ theme }: { theme: Theme }): string => theme.colors.settingsBorder;
 
-const selectedFill = ({ theme }: { theme: Theme }): string =>
-  theme.colors.settingsBg;
+const selectedFill = ({ theme }: { theme: Theme }): string => theme.colors.settingsBg;
 
 const rowSize = ({ theme }: { theme: Theme }): number => theme.typography.body;
 

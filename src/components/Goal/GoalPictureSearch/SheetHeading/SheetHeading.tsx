@@ -9,10 +9,7 @@ interface SheetHeadingProps {
   onClose: () => void;
 }
 
-export function SheetHeading({
-  titleId,
-  onClose,
-}: SheetHeadingProps): JSX.Element {
+export function SheetHeading({ titleId, onClose }: SheetHeadingProps): JSX.Element {
   return (
     <TitleRow>
       <SheetTitle id={titleId} data-testid={SHEET_HEADING_TEST_IDS.title}>

@@ -7,10 +7,7 @@ export const TEST_AUTH_SECRET = 'fun-saver-e2e-auth-secret';
 export const SESSION_COOKIE_NAME = 'authjs.session-token';
 export const APP_COOKIE_DOMAIN = 'localhost';
 
-export async function sessionCookie(
-  user: User,
-  secret: string
-): Promise<CookieData> {
+export async function sessionCookie(user: User, secret: string): Promise<CookieData> {
   const value = await encode({
     token: {
       sub: user.id,

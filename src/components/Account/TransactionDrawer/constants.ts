@@ -1,10 +1,7 @@
 import type { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { TransactionType } from '@/lib/transaction/types';
 
-export type EnteredTransactionType = Exclude<
-  TransactionType,
-  typeof TRANSACTION_TYPE.interest
->;
+export type EnteredTransactionType = Exclude<TransactionType, typeof TRANSACTION_TYPE.interest>;
 
 export const TRANSACTION_DRAWER_TEST_IDS = {
   drawer: 'transaction-drawer',
@@ -12,8 +9,7 @@ export const TRANSACTION_DRAWER_TEST_IDS = {
   scrim: 'transaction-drawer-scrim',
   amount: 'transaction-drawer-amount',
   split: 'transaction-drawer-split',
-  splitAmount: (walletName: string): string =>
-    `transaction-drawer-split-${walletName}`,
+  splitAmount: (walletName: string): string => `transaction-drawer-split-${walletName}`,
   submit: 'transaction-drawer-confirm',
   error: 'transaction-drawer-error',
 } as const;

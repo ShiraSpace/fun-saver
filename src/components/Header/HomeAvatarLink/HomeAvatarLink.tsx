@@ -2,11 +2,7 @@
 
 import { JSX } from 'react';
 import { HOME_ROUTE } from '../../Home/constants';
-import {
-  HEADER_AVATAR_PROPS,
-  HEADER_COPY,
-  HEADER_TEST_IDS,
-} from '../constants';
+import { HEADER_AVATAR_PROPS, HEADER_COPY, HEADER_TEST_IDS } from '../constants';
 import { HeaderAvatar } from '../header-parts';
 import { LinkLoaderReporter } from '@/hooks/loader-context';
 import { HouseBadge, Ring } from './HomeAvatarLink.styles';

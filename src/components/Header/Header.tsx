@@ -3,13 +3,7 @@
 import { JSX } from 'react';
 import { usePathname } from 'next/navigation';
 import type { Account } from '@/lib/account/types';
-import {
-  MenuHeaderBackdrop,
-  MenuOverlay,
-  MenuProvider,
-  MenuToggle,
-  useMenuState,
-} from '../Menu';
+import { MenuHeaderBackdrop, MenuOverlay, MenuProvider, MenuToggle, useMenuState } from '../Menu';
 import { MENU_HEADER_BACKDROP_TEST_IDS } from '../Menu/MenuHeaderBackdrop/constants';
 import { HOME_ROUTE } from '../Home/constants';
 import { HeaderTitle } from './HeaderTitle';
@@ -39,11 +33,7 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
         <MenuToggle isOpen={menu.isOpen} onToggle={menu.toggle} />
         <HeaderTitle text={title} />
         {account && (
-          <HeaderAccountAvatar
-            account={account}
-            isHome={isHome}
-            isHidden={menu.isOpen}
-          />
+          <HeaderAccountAvatar account={account} isHome={isHome} isHidden={menu.isOpen} />
         )}
         {isLoaderShown && <LoaderBar data-testid={HEADER_TEST_IDS.progress} />}
       </Bar>

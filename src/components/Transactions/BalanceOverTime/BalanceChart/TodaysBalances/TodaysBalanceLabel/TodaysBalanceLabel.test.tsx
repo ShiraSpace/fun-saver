@@ -14,43 +14,30 @@ describe('today’s balance at the end of a line', () => {
   beforeEach(() => {
     render(
       <svg>
-        <TodaysBalanceLabel
-          shownBalance="spending"
-          todaysBalance={mockTodaysBalance}
-          y={40}
-        />
+        <TodaysBalanceLabel shownBalance="spending" todaysBalance={mockTodaysBalance} y={40} />
       </svg>,
       { themeId: THEME_ID.jungleQuest }
     );
   });
 
   it('names the wallet', () => {
-    expect(
-      screen.getByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)
-    ).toHaveTextContent(shownBalanceLabel(SHOWN_BALANCE.spending));
+    expect(screen.getByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)).toHaveTextContent(
+      shownBalanceLabel(SHOWN_BALANCE.spending)
+    );
   });
 
   it('shows today’s balance in whole shekels', () => {
-    expect(
-      screen.getByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)
-    ).toHaveTextContent(
-      new RegExp(
-        `${MONEY_COPY.currencySign}${agorotToWholeShekels(mockTodaysBalance)}$`
-      )
+    expect(screen.getByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)).toHaveTextContent(
+      new RegExp(`${MONEY_COPY.currencySign}${agorotToWholeShekels(mockTodaysBalance)}$`)
     );
   });
 
   it('carries the line’s colour in its swatch, so the text keeps a readable colour', () => {
     expect(
-      screen
-        .getByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)
-        .querySelector('rect')
+      screen.getByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label).querySelector('rect')
     ).toHaveAttribute(
       'fill',
-      shownBalanceColor(
-        getThemeTokens(THEME_ID.jungleQuest).colors,
-        SHOWN_BALANCE.spending
-      )
+      shownBalanceColor(getThemeTokens(THEME_ID.jungleQuest).colors, SHOWN_BALANCE.spending)
     );
   });
 });

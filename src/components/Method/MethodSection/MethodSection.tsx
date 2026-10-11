@@ -1,19 +1,7 @@
 import { JSX, ReactNode } from 'react';
 import { emphasize } from '../rich-text';
-import {
-  METHOD_SECTION_COPY,
-  METHOD_SECTION_TEST_IDS,
-  type MethodSectionId,
-} from './constants';
-import {
-  Body,
-  Chevron,
-  Hint,
-  Numeral,
-  Section,
-  Summary,
-  Title,
-} from './MethodSection.styles';
+import { METHOD_SECTION_COPY, METHOD_SECTION_TEST_IDS, type MethodSectionId } from './constants';
+import { Body, Chevron, Hint, Numeral, Section, Summary, Title } from './MethodSection.styles';
 
 interface MethodSectionProps {
   id: MethodSectionId;
@@ -22,20 +10,13 @@ interface MethodSectionProps {
   children: ReactNode;
 }
 
-export function MethodSection({
-  id,
-  title,
-  hint,
-  children,
-}: MethodSectionProps): JSX.Element {
+export function MethodSection({ id, title, hint, children }: MethodSectionProps): JSX.Element {
   const heading = emphasize(title);
   const numeral = typeof id === 'number' && (
     <Numeral data-testid={METHOD_SECTION_TEST_IDS.numeral(id)}>{id}</Numeral>
   );
   const hintChip = hint && (
-    <Hint data-testid={METHOD_SECTION_TEST_IDS.hint(id)}>
-      {emphasize(hint)}
-    </Hint>
+    <Hint data-testid={METHOD_SECTION_TEST_IDS.hint(id)}>{emphasize(hint)}</Hint>
   );
 
   return (
@@ -44,10 +25,7 @@ export function MethodSection({
         {numeral}
         <Title>{heading}</Title>
         {hintChip}
-        <Chevron
-          aria-hidden="true"
-          data-testid={METHOD_SECTION_TEST_IDS.chevron(id)}
-        >
+        <Chevron aria-hidden="true" data-testid={METHOD_SECTION_TEST_IDS.chevron(id)}>
           {METHOD_SECTION_COPY.chevron}
         </Chevron>
       </Summary>

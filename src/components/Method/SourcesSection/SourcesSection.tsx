@@ -13,11 +13,7 @@ const SOURCE_COUNT = String(sources.list.length);
 
 export function SourcesSection(): JSX.Element {
   return (
-    <MethodSection
-      id={SOURCES_SECTION_ID}
-      title={sources.title}
-      hint={SOURCE_COUNT}
-    >
+    <MethodSection id={SOURCES_SECTION_ID} title={sources.title} hint={SOURCE_COUNT}>
       <MethodBlocks blocks={INTRO_BLOCKS} />
       <SourceList sources={sources.list} />
     </MethodSection>

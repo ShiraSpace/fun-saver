@@ -4,20 +4,13 @@ import type { ThemeColors } from '@/theme/theme-tokens';
 import { SHOWN_BALANCE, type ShownBalance } from '../../constants';
 import { WALLET_CHART_COLOR } from '../constants';
 
-export function shownBalanceColor(
-  colors: ThemeColors,
-  shownBalance: ShownBalance
-): string {
+export function shownBalanceColor(colors: ThemeColors, shownBalance: ShownBalance): string {
   return shownBalance === SHOWN_BALANCE.totalBalance
     ? colors.textStrong
     : colors[WALLET_CHART_COLOR[shownBalance]];
 }
 
-export function readableOverLines({
-  theme,
-}: {
-  theme: Theme;
-}): SerializedStyles {
+export function readableOverLines({ theme }: { theme: Theme }): SerializedStyles {
   return css`
     paint-order: stroke;
     stroke: ${theme.colors.surface};

@@ -12,9 +12,7 @@ const mockOnSaved = jest.fn();
 
 jest.mock('../use-add-transaction');
 
-const { mockAddDeposit } = jest.requireMock<typeof AddTransactionMock>(
-  '../use-add-transaction'
-);
+const { mockAddDeposit } = jest.requireMock<typeof AddTransactionMock>('../use-add-transaction');
 
 describe('DepositForm', () => {
   beforeEach(() => {
@@ -24,27 +22,21 @@ describe('DepositForm', () => {
   });
 
   it('shows a zero amount by default', () => {
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)
-    ).toHaveTextContent('0');
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)).toHaveTextContent('0');
   });
 
   it('builds the amount as digits are tapped', () => {
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('2')));
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('0')));
 
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)
-    ).toHaveTextContent('20');
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)).toHaveTextContent('20');
   });
 
   it('clears the amount back to zero', () => {
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('5')));
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.clear));
 
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)
-    ).toHaveTextContent('0');
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)).toHaveTextContent('0');
   });
 
   it('removes the last digit on backspace', () => {
@@ -52,9 +44,7 @@ describe('DepositForm', () => {
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('2')));
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.backspace));
 
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)
-    ).toHaveTextContent('1');
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)).toHaveTextContent('1');
   });
 
   it('shows the live split for the typed amount', () => {
@@ -75,15 +65,11 @@ describe('DepositForm', () => {
   });
 
   it('disables submit until an amount is entered', () => {
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
-    ).toBeDisabled();
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)).toBeDisabled();
 
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('5')));
 
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
-    ).toBeEnabled();
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)).toBeEnabled();
   });
 
   it('deposits the typed amount on submit', async () => {
@@ -111,14 +97,10 @@ describe('DepositForm', () => {
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
 
     await waitFor(() =>
-      expect(
-        screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
-      ).toBeInTheDocument()
+      expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)).toBeInTheDocument()
     );
     expect(mockOnSaved).not.toHaveBeenCalled();
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)
-    ).toHaveTextContent('20');
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)).toHaveTextContent('20');
   });
 
   it('disables submit while the deposit is in flight', async () => {
@@ -133,9 +115,7 @@ describe('DepositForm', () => {
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
 
     await waitFor(() =>
-      expect(
-        screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
-      ).toBeDisabled()
+      expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)).toBeDisabled()
     );
 
     resolveDeposit();

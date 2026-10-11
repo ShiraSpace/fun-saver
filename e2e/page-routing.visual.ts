@@ -41,10 +41,7 @@ describe('page routing', () => {
       await menu.openMethodPage();
       await menu.open();
 
-      assert.equal(
-        await menu.methodTabBackground(),
-        hexToRgb(getThemeTokens().colors.textStrong)
-      );
+      assert.equal(await menu.methodTabBackground(), hexToRgb(getThemeTokens().colors.textStrong));
     });
   });
 

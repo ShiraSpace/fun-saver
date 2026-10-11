@@ -1,9 +1,6 @@
 import styled from '@emotion/styled';
 import Link from 'next/link';
-import {
-  MENU_OVERLAY_LAYOUT,
-  MENU_OVERLAY_STYLE,
-} from '../MenuOverlay/constants';
+import { MENU_OVERLAY_LAYOUT, MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
 import { childMenuRow } from '../row-parts';
 import { ChildMenuCard } from '../child-menu-parts';
 
@@ -11,8 +8,7 @@ export const Layout = styled.div`
   display: flex;
   flex-direction: column;
   min-height: calc(
-    100dvh - ${MENU_OVERLAY_LAYOUT.top}px -
-      ${MENU_OVERLAY_LAYOUT.contentPaddingTop}px -
+    100dvh - ${MENU_OVERLAY_LAYOUT.top}px - ${MENU_OVERLAY_LAYOUT.contentPaddingTop}px -
       ${MENU_OVERLAY_STYLE.paddingBottom}px
   );
 `;

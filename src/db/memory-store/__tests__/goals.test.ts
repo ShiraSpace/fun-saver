@@ -1,10 +1,7 @@
 import { InMemoryStore } from '../index';
 import { GOAL_ENDING } from '@/lib/goal/constants';
 import { GoalAlreadyActiveError } from '@/lib/goal/errors';
-import {
-  mockAccount,
-  mockSiblingAccount,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockSiblingAccount } from '@/test-utils/mocks/account.mocks';
 import { createMockGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { createMockWithdrawal } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallet } from '@/test-utils/mocks/wallet.mocks';
@@ -18,9 +15,9 @@ describe('InMemoryStore goals', () => {
   });
 
   it('refuses a second active goal for the same account', async () => {
-    await expect(
-      store.insertGoal(createMockGoal({ id: 'g2' }))
-    ).rejects.toThrow(GoalAlreadyActiveError);
+    await expect(store.insertGoal(createMockGoal({ id: 'g2' }))).rejects.toThrow(
+      GoalAlreadyActiveError
+    );
   });
 
   describe('ending the goal', () => {
@@ -73,9 +70,7 @@ describe('InMemoryStore goals', () => {
       });
 
       it('records nothing', async () => {
-        expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual(
-          []
-        );
+        expect(await store.listTransactionsByAccount(mockAccount.id)).toEqual([]);
       });
 
       it('answers that it wrote nothing', () => {

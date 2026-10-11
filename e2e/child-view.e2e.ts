@@ -1,10 +1,7 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { VIEW_MODE } from '@/lib/view-mode';
-import {
-  createMockAccount,
-  mockAccount,
-} from '@/test-utils/mocks/account.mocks';
+import { createMockAccount, mockAccount } from '@/test-utils/mocks/account.mocks';
 import { useDriver } from './driver/use-driver';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
@@ -32,10 +29,7 @@ describe('a parent turns child mode on', () => {
 });
 
 describe('the child goes back to the parent screen', () => {
-  const { menu, account } = useDriver(
-    { accounts: [mockAccount] },
-    { viewMode: VIEW_MODE.child }
-  );
+  const { menu, account } = useDriver({ accounts: [mockAccount] }, { viewMode: VIEW_MODE.child });
 
   beforeEach(async () => {
     await menu.open();
@@ -74,10 +68,7 @@ describe('a child switches to a sibling', () => {
   });
 
   it('offers every sibling', async () => {
-    assert.deepEqual(await menu.childMenuAccountNames(), [
-      mockSibling.name,
-      mockOtherSibling.name,
-    ]);
+    assert.deepEqual(await menu.childMenuAccountNames(), [mockSibling.name, mockOtherSibling.name]);
   });
 
   describe('the child taps a sibling', () => {

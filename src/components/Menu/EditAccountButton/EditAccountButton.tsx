@@ -1,8 +1,5 @@
 import { JSX } from 'react';
-import {
-  EDIT_ACCOUNT_BUTTON_COPY,
-  EDIT_ACCOUNT_BUTTON_TEST_IDS,
-} from './constants';
+import { EDIT_ACCOUNT_BUTTON_COPY, EDIT_ACCOUNT_BUTTON_TEST_IDS } from './constants';
 import { EditButton, EditLabel } from './EditAccountButton.styles';
 
 interface EditAccountButtonProps {

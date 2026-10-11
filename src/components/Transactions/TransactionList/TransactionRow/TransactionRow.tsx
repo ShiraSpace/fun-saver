@@ -28,9 +28,7 @@ function transactionRowDays({ interestDays, day }: TransactionListRow): string {
     : TRANSACTION_ROW_COPY.interestDays(interestDays);
 }
 
-export function TransactionRow({
-  transactionListRow,
-}: TransactionRowProps): JSX.Element {
+export function TransactionRow({ transactionListRow }: TransactionRowProps): JSX.Element {
   const { type, balanceChange, balance } = transactionListRow;
   const { label } = transactionRowCopy(transactionListRow);
   const days = transactionRowDays(transactionListRow);
@@ -55,10 +53,7 @@ export function TransactionRow({
         </ChangeAmount>
         <BalanceColumn>
           <ColumnName>{TRANSACTION_LIST_COPY.columns.balance}</ColumnName>
-          <Money
-            amountAgorot={balance}
-            testId={TRANSACTION_ROW_TEST_IDS.balance}
-          />
+          <Money amountAgorot={balance} testId={TRANSACTION_ROW_TEST_IDS.balance} />
         </BalanceColumn>
       </Amounts>
     </Row>

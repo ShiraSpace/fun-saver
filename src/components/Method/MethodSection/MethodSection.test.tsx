@@ -18,15 +18,15 @@ describe('a method section', () => {
     });
 
     it('starts closed, so six sections read as a list rather than a wall', () => {
-      expect(
-        screen.getByTestId(METHOD_SECTION_TEST_IDS.section(mockNumber))
-      ).not.toHaveAttribute('open');
+      expect(screen.getByTestId(METHOD_SECTION_TEST_IDS.section(mockNumber))).not.toHaveAttribute(
+        'open'
+      );
     });
 
     it('shows what the section has to say once the parent opens it', () => {
-      expect(
-        screen.getByTestId(METHOD_SECTION_TEST_IDS.body(mockNumber))
-      ).toHaveTextContent(mockBody);
+      expect(screen.getByTestId(METHOD_SECTION_TEST_IDS.body(mockNumber))).toHaveTextContent(
+        mockBody
+      );
     });
 
     it('says nothing extra on the row when there is nothing extra to say', () => {
@@ -48,9 +48,9 @@ describe('a method section', () => {
     });
 
     it('puts it on the row itself, the only thing a shut section can tell the parent', () => {
-      expect(
-        screen.getByTestId(METHOD_SECTION_TEST_IDS.hint(mockNumber))
-      ).toHaveTextContent(mockHint);
+      expect(screen.getByTestId(METHOD_SECTION_TEST_IDS.hint(mockNumber))).toHaveTextContent(
+        mockHint
+      );
     });
   });
 
@@ -65,9 +65,7 @@ describe('a method section', () => {
 
     it('shows no number, so the six steps a parent has to follow stay six', () => {
       expect(
-        screen.queryByTestId(
-          METHOD_SECTION_TEST_IDS.numeral(SOURCES_SECTION_ID)
-        )
+        screen.queryByTestId(METHOD_SECTION_TEST_IDS.numeral(SOURCES_SECTION_ID))
       ).not.toBeInTheDocument();
     });
 

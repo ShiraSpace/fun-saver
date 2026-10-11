@@ -31,10 +31,7 @@ describe('addWithdrawal from savings with a goal', () => {
     });
   });
 
-  function withdrawFrom(
-    walletId: string,
-    amountAgorot: number
-  ): Promise<unknown> {
+  function withdrawFrom(walletId: string, amountAgorot: number): Promise<unknown> {
     return addWithdrawal({
       store,
       account,
@@ -52,12 +49,8 @@ describe('addWithdrawal from savings with a goal', () => {
     let refusal: unknown;
 
     beforeEach(async () => {
-      await store.insertGoal(
-        createMockGoal({ accountId: account.id, amount: mockSavingsBalance })
-      );
-      refusal = await withdrawFrom(savingsId, mockSavingsBalance + 1).catch(
-        (error) => error
-      );
+      await store.insertGoal(createMockGoal({ accountId: account.id, amount: mockSavingsBalance }));
+      refusal = await withdrawFrom(savingsId, mockSavingsBalance + 1).catch((error) => error);
     });
 
     it('refuses with OverdraftError', () => {
@@ -82,9 +75,7 @@ describe('addWithdrawal from savings with a goal', () => {
             amount: mockSavingsBalance + 1,
           })
         );
-        refusal = await withdrawFrom(savingsId, mockWithdrawalAgorot).catch(
-          (error) => error
-        );
+        refusal = await withdrawFrom(savingsId, mockWithdrawalAgorot).catch((error) => error);
       });
 
       it('refuses with SavingsLockedError', () => {
@@ -126,9 +117,7 @@ describe('addWithdrawal from savings with a goal', () => {
       });
 
       it('records the withdrawal', async () => {
-        expect(await walletBalance(spendingId)).toBe(
-          mockSpendingBalance - mockWithdrawalAgorot
-        );
+        expect(await walletBalance(spendingId)).toBe(mockSpendingBalance - mockWithdrawalAgorot);
       });
 
       it('keeps the goal active', async () => {

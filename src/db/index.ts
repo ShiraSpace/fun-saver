@@ -10,8 +10,7 @@ interface CachedStore {
   store: DataStore;
 }
 
-type StoreBackend =
-  { kind: 'json'; path: string } | { kind: 'postgres'; url: string };
+type StoreBackend = { kind: 'json'; path: string } | { kind: 'postgres'; url: string };
 
 let cached: CachedStore | null = null;
 

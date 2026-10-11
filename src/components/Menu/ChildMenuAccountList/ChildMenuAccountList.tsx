@@ -4,10 +4,7 @@ import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
 import { MenuSectionTitle } from '../MenuSectionTitle';
 import { ChildMenuCard } from '../child-menu-parts';
-import {
-  CHILD_MENU_ACCOUNT_LIST_COPY,
-  CHILD_MENU_ACCOUNT_LIST_TEST_IDS,
-} from './constants';
+import { CHILD_MENU_ACCOUNT_LIST_COPY, CHILD_MENU_ACCOUNT_LIST_TEST_IDS } from './constants';
 import { ChildMenuAccountRow } from './ChildMenuAccountRow';
 import { List, TitleIcon } from './ChildMenuAccountList.styles';
 

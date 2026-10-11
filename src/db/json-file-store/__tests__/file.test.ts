@@ -38,11 +38,7 @@ describe('JsonFileStore file handling', () => {
     let store: JsonFileStore;
 
     beforeEach(() => {
-      writeFileSync(
-        file.path,
-        JSON.stringify({ accounts: [mockAccount] }),
-        'utf8'
-      );
+      writeFileSync(file.path, JSON.stringify({ accounts: [mockAccount] }), 'utf8');
       store = new JsonFileStore(file.path);
     });
 
@@ -55,9 +51,7 @@ describe('JsonFileStore file handling', () => {
     });
 
     it('defaults the missing users', async () => {
-      expect(
-        await store.findUserByIdentity('google', 'any-sub')
-      ).toBeUndefined();
+      expect(await store.findUserByIdentity('google', 'any-sub')).toBeUndefined();
     });
 
     it('defaults the missing account users', async () => {

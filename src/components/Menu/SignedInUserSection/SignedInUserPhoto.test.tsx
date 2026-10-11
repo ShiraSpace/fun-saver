@@ -1,16 +1,11 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
-import {
-  closeAndReopenMenu,
-  renderInOpenMenu,
-  WithMenu,
-} from '@/test-utils/menu';
+import { closeAndReopenMenu, renderInOpenMenu, WithMenu } from '@/test-utils/menu';
 import { SignedInUserPhoto } from './SignedInUserPhoto';
 import { SIGNED_IN_USER_SECTION_TEST_IDS } from './constants';
 
 const mockGooglePhoto = 'https://lh3.googleusercontent.com/a/photo';
 
-const photo = (): HTMLElement | null =>
-  screen.queryByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.photo);
+const photo = (): HTMLElement | null => screen.queryByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.photo);
 
 const mark = (): HTMLElement | null =>
   screen.queryByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.photoPlaceholder);

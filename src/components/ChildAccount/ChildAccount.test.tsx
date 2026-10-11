@@ -1,8 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import {
-  mockAccountSummary,
-  mockAccountsContext,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccountSummary, mockAccountsContext } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { ChildAccount } from './ChildAccount';
 import { CHILD_ACCOUNT_TEST_IDS } from './constants';
@@ -22,8 +19,7 @@ describe('ChildAccount', () => {
     const [firstWallet] = screen.getAllByTestId(CHILD_WALLET_TEST_IDS.card);
 
     expect(
-      savings.compareDocumentPosition(firstWallet) &
-        Node.DOCUMENT_POSITION_FOLLOWING
+      savings.compareDocumentPosition(firstWallet) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
   });
 
@@ -32,16 +28,12 @@ describe('ChildAccount', () => {
   });
 
   it('shows the child screen', () => {
-    expect(
-      screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.screen)).toBeInTheDocument();
   });
 
   it('offers the child nothing to do but look', () => {
     expect(
-      screen
-        .getByTestId(CHILD_ACCOUNT_TEST_IDS.wallets)
-        .querySelectorAll('button, a')
+      screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.wallets).querySelectorAll('button, a')
     ).toHaveLength(0);
   });
 });

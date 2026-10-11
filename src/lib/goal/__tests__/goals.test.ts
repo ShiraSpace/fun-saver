@@ -1,9 +1,6 @@
 import { InMemoryStore } from '@/db/memory-store';
 import { ValidationError } from '@/lib/errors';
-import {
-  mockAccount,
-  mockSiblingAccount,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockSiblingAccount } from '@/test-utils/mocks/account.mocks';
 import { createMockGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { GOAL_ENDING } from '../constants';
 import { GoalAlreadyActiveError, GoalNotActiveError } from '../errors';
@@ -41,9 +38,7 @@ describe('setGoal', () => {
       body: { ...mockGoalBody, name: `  ${mockGoal.name}  ` },
     });
 
-    expect((await store.getActiveGoal(mockAccount.id))?.name).toBe(
-      mockGoal.name
-    );
+    expect((await store.getActiveGoal(mockAccount.id))?.name).toBe(mockGoal.name);
   });
 
   it('refuses an invalid body with ValidationError and stores nothing', async () => {
@@ -60,9 +55,9 @@ describe('setGoal', () => {
   it('refuses a second goal while the first is still active', async () => {
     await setGoal({ store, accountId: mockAccount.id, body: mockGoalBody });
 
-    await expect(
-      setGoal({ store, accountId: mockAccount.id, body: mockGoalBody })
-    ).rejects.toThrow(GoalAlreadyActiveError);
+    await expect(setGoal({ store, accountId: mockAccount.id, body: mockGoalBody })).rejects.toThrow(
+      GoalAlreadyActiveError
+    );
   });
 });
 
@@ -111,8 +106,6 @@ describe('cancelGoal', () => {
         goalId: mockSiblingGoal.id,
       })
     ).rejects.toThrow(GoalNotActiveError);
-    expect(await store.getActiveGoal(mockSiblingAccount.id)).toEqual(
-      mockSiblingGoal
-    );
+    expect(await store.getActiveGoal(mockSiblingAccount.id)).toEqual(mockSiblingGoal);
   });
 });

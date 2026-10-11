@@ -9,10 +9,7 @@ interface AllWalletsChipProps {
   onToggle: () => void;
 }
 
-export function AllWalletsChip({
-  allWalletsShown,
-  onToggle,
-}: AllWalletsChipProps): JSX.Element {
+export function AllWalletsChip({ allWalletsShown, onToggle }: AllWalletsChipProps): JSX.Element {
   return (
     <Chip
       type="button"

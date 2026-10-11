@@ -9,17 +9,10 @@ interface AmountEditKeysProps {
   onBackspace: () => void;
 }
 
-export function AmountEditKeys({
-  onClear,
-  onBackspace,
-}: AmountEditKeysProps): JSX.Element {
+export function AmountEditKeys({ onClear, onBackspace }: AmountEditKeysProps): JSX.Element {
   return (
     <Keys>
-      <AmountEditKey
-        type="button"
-        data-testid={AMOUNT_KEYPAD_TEST_IDS.clear}
-        onClick={onClear}
-      >
+      <AmountEditKey type="button" data-testid={AMOUNT_KEYPAD_TEST_IDS.clear} onClick={onClear}>
         <AmountEditIcon>{AMOUNT_KEYPAD_COPY.clearIcon}</AmountEditIcon>
         {AMOUNT_KEYPAD_COPY.clear}
       </AmountEditKey>

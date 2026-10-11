@@ -3,9 +3,7 @@ import type { Transaction } from '@/lib/transaction/types';
 import type { Wallet } from '@/lib/wallet/types';
 import { createMockWallets } from './wallet.mocks';
 
-export function createMockTransaction(
-  overrides: Partial<Transaction> = {}
-): Transaction {
+export function createMockTransaction(overrides: Partial<Transaction> = {}): Transaction {
   return {
     id: 't1',
     walletId: 'w1',
@@ -24,27 +22,23 @@ export const mockOpeningDeposit: Transaction = createMockTransaction({
   occurredAt: '2026-01-01',
 });
 
-export const mockWalletDeposits: Transaction[] = createMockWallets().map(
-  (wallet, index) =>
-    createMockTransaction({
-      id: `deposit-${wallet.name}`,
-      walletId: wallet.id,
-      amount: 100 * (index + 1),
-      createdAt: mockOpeningDeposit.createdAt,
-    })
+export const mockWalletDeposits: Transaction[] = createMockWallets().map((wallet, index) =>
+  createMockTransaction({
+    id: `deposit-${wallet.name}`,
+    walletId: wallet.id,
+    amount: 100 * (index + 1),
+    createdAt: mockOpeningDeposit.createdAt,
+  })
 );
 
-export const mockMonthOfInterest: Transaction[] = [
-  '2026-01-02',
-  '2026-01-03',
-  '2026-01-04',
-].map((occurredAt) =>
-  createMockTransaction({
-    id: occurredAt,
-    type: TRANSACTION_TYPE.interest,
-    amount: 9,
-    occurredAt,
-  })
+export const mockMonthOfInterest: Transaction[] = ['2026-01-02', '2026-01-03', '2026-01-04'].map(
+  (occurredAt) =>
+    createMockTransaction({
+      id: occurredAt,
+      type: TRANSACTION_TYPE.interest,
+      amount: 9,
+      occurredAt,
+    })
 );
 
 export const mockMonthOfInterestLastDay: string =

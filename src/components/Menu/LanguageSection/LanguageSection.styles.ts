@@ -3,23 +3,17 @@ import type { Theme } from '@emotion/react';
 import { LANGUAGE_SECTION_STYLE } from './constants';
 import { MENU_ROW_STYLE } from '../constants';
 
-const selectedFill = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textStrong;
+const selectedFill = ({ theme }: { theme: Theme }): string => theme.colors.textStrong;
 
-const selectedText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.surface;
+const selectedText = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 
-const mutedText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textMuted;
+const mutedText = ({ theme }: { theme: Theme }): string => theme.colors.textMuted;
 
-const optionSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.label;
+const optionSize = ({ theme }: { theme: Theme }): number => theme.typography.label;
 
-const segmentFill = ({ theme }: { theme: Theme }): string =>
-  theme.colors.surface;
+const segmentFill = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 
-const segmentBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.divider;
+const segmentBorder = ({ theme }: { theme: Theme }): string => theme.colors.divider;
 
 export const Segment = styled.div`
   display: flex;
@@ -31,8 +25,7 @@ export const Segment = styled.div`
 `;
 
 export const Option = styled.span`
-  padding: ${LANGUAGE_SECTION_STYLE.paddingY}px
-    ${LANGUAGE_SECTION_STYLE.paddingX}px;
+  padding: ${LANGUAGE_SECTION_STYLE.paddingY}px ${LANGUAGE_SECTION_STYLE.paddingX}px;
   font-size: ${optionSize}px;
   font-weight: 600;
   color: ${mutedText};

@@ -3,10 +3,7 @@
 import { JSX } from 'react';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { DrawerError } from '../../drawer-parts';
-import {
-  TRANSACTION_DRAWER_COPY,
-  TRANSACTION_DRAWER_TEST_IDS,
-} from '../../constants';
+import { TRANSACTION_DRAWER_COPY, TRANSACTION_DRAWER_TEST_IDS } from '../../constants';
 import { WITHDRAWAL_FORM_COPY, WITHDRAWAL_FORM_TEST_IDS } from '../constants';
 import { Overdraft } from './WithdrawalAlert.styles';
 

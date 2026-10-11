@@ -12,9 +12,7 @@ interface GoogleSignIn {
 }
 
 export function useGoogleSignIn(): GoogleSignIn {
-  const [requestState, setRequestState] = useState<RequestState>(
-    REQUEST_STATE.idle
-  );
+  const [requestState, setRequestState] = useState<RequestState>(REQUEST_STATE.idle);
 
   const continueWithGoogle = async (): Promise<void> => {
     setRequestState(REQUEST_STATE.pending);

@@ -29,13 +29,9 @@ export function useAccountForm({
 }: AccountFormOptions): AccountFormState {
   const [name, setName] = useState(initialName);
   const [selectedAvatarId, setSelectedAvatarId] = useState(initialAvatarId);
-  const [requestState, setRequestState] = useState<RequestState>(
-    REQUEST_STATE.idle
-  );
+  const [requestState, setRequestState] = useState<RequestState>(REQUEST_STATE.idle);
 
-  const handleSubmit = async (
-    event: FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     if (selectedAvatarId === null) {
       return;
@@ -51,9 +47,7 @@ export function useAccountForm({
   };
 
   const canSubmit =
-    name.trim() !== '' &&
-    selectedAvatarId !== null &&
-    requestState !== REQUEST_STATE.pending;
+    name.trim() !== '' && selectedAvatarId !== null && requestState !== REQUEST_STATE.pending;
 
   return {
     name,

@@ -43,8 +43,6 @@ describe('the studies on a theme whose link colour cannot carry text', () => {
       .getAllByTestId(SOURCE_LIST_TEST_IDS.citation)
       .map((citation) => getComputedStyle(citation).color);
 
-    expect(citationColours).toEqual(
-      sources.list.map(() => hexToRgb(jungle.primaryText))
-    );
+    expect(citationColours).toEqual(sources.list.map(() => hexToRgb(jungle.primaryText)));
   });
 });

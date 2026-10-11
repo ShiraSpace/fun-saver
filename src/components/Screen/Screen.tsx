@@ -10,8 +10,7 @@ export const Screen = styled.div<{ align?: 'center' | 'top' }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: ${({ align }): string =>
-    align === 'top' ? 'flex-start' : 'center'};
+  justify-content: ${({ align }): string => (align === 'top' ? 'flex-start' : 'center')};
   gap: ${SCREEN_LAYOUT.gap}px;
   min-height: 100vh;
   text-align: center;

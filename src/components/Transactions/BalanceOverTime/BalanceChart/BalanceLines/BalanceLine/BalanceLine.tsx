@@ -48,11 +48,6 @@ export function BalanceLine({
   const isTotalBalance = shownBalance === SHOWN_BALANCE.totalBalance;
 
   return (
-    <Line
-      d={linePath}
-      stroke={color}
-      data-total-balance={isTotalBalance}
-      data-testid={testId}
-    />
+    <Line d={linePath} stroke={color} data-total-balance={isTotalBalance} data-testid={testId} />
   );
 }

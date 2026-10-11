@@ -2,8 +2,7 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { APPEARANCE_SECTION_STYLE } from './constants';
 
-const selectedRing = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textStrong;
+const selectedRing = ({ theme }: { theme: Theme }): string => theme.colors.textStrong;
 
 export const Row = styled.div`
   display: flex;

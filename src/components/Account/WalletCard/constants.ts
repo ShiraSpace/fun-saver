@@ -12,9 +12,7 @@ export const WALLET_CARD_TEST_IDS = {
 
 export const WALLET_CARD_COPY = {
   name: WALLET_LABEL,
-  savingsSummary: (
-    wallet: Pick<WalletSummary, 'monthlyInterestRate' | 'openedAt'>
-  ): string =>
+  savingsSummary: (wallet: Pick<WalletSummary, 'monthlyInterestRate' | 'openedAt'>): string =>
     `צובר ${Math.round(wallet.monthlyInterestRate * PERCENT_TOTAL)}% בחודש · פעיל מאז ${dayMonth(wallet.openedAt)}`,
   spendingSummary: (wallet: Pick<WalletSummary, 'withdrawn'>): string =>
     `כבר ביזבזת ₪${agorotToWholeShekels(wallet.withdrawn)}`,

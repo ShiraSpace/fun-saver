@@ -17,11 +17,7 @@ interface ViewGoalProps {
   onClose: () => void;
 }
 
-export function ViewGoal({
-  accountName,
-  savedTowardGoal,
-  onClose,
-}: ViewGoalProps): JSX.Element {
+export function ViewGoal({ accountName, savedTowardGoal, onClose }: ViewGoalProps): JSX.Element {
   const modalRef = useModal(onClose);
   const { reached } = savedTowardGoal;
   const title = VIEW_GOAL_COPY.title(accountName);
@@ -47,11 +43,7 @@ export function ViewGoal({
         {reachedHeading}
         <GoalHero savedTowardGoal={savedTowardGoal} />
         <SavingsLock reached={reached} />
-        <PrimaryButton
-          type="button"
-          data-testid={VIEW_GOAL_TEST_IDS.back}
-          onClick={onClose}
-        >
+        <PrimaryButton type="button" data-testid={VIEW_GOAL_TEST_IDS.back} onClick={onClose}>
           {VIEW_GOAL_COPY.back}
         </PrimaryButton>
       </Page>
