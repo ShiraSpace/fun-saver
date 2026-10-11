@@ -1,7 +1,7 @@
 import { Fragment, JSX } from 'react';
 import { PIGGY_BANK_COLORS } from '@/theme/piggy-bank-colors';
 import { PIGGY_BANK_SHAPE } from '../constants';
-import { paintOf, type PiggyBankPaintIds } from '../piggy-bank-paint-ids';
+import type { PiggyBankPaintIds } from '../piggy-bank-paint-ids';
 import { PIGGY_BANK_FACE_TEST_IDS } from './constants';
 
 interface PiggyBankFaceProps {
@@ -28,11 +28,7 @@ export function PiggyBankFace({ paintIds }: PiggyBankFaceProps): JSX.Element {
     <g>
       {eyeShapes}
       {cheekShapes}
-      <ellipse
-        {...snout}
-        fill={paintOf(paintIds.snout)}
-        data-testid={PIGGY_BANK_FACE_TEST_IDS.snout}
-      />
+      <ellipse {...snout} fill={paintIds.snout.url} data-testid={PIGGY_BANK_FACE_TEST_IDS.snout} />
       {nostrilShapes}
       <rect {...slot} fill={PIGGY_BANK_COLORS.slot} />
       <rect {...slotShine} fill={PIGGY_BANK_COLORS.shine} />

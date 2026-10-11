@@ -5,7 +5,7 @@ import { PIGGY_BANK_COLORS } from '@/theme/piggy-bank-colors';
 import { CoinPile } from './CoinPile';
 import { PiggyBankFace } from './PiggyBankFace';
 import { PiggyBankPaints } from './PiggyBankPaints';
-import { paintOf, piggyBankPaintIds } from './piggy-bank-paint-ids';
+import { piggyBankPaintIds } from './piggy-bank-paint-ids';
 import { BELLY, PIGGY_BANK_SHAPE, PIGGY_BANK_TEST_IDS, PIGGY_BANK_VIEW_BOX } from './constants';
 import { PiggyBankDrawing } from './PiggyBank.styles';
 
@@ -28,21 +28,21 @@ export function PiggyBank({ piggyBankFill }: PiggyBankProps): JSX.Element {
       data-testid={PIGGY_BANK_TEST_IDS.art}
     >
       <PiggyBankPaints paintIds={paintIds} />
-      <ellipse {...shadow} fill={PIGGY_BANK_COLORS.shadow} filter={paintOf(paintIds.shadowBlur)} />
+      <ellipse {...shadow} fill={PIGGY_BANK_COLORS.shadow} filter={paintIds.shadowBlur.url} />
       {feetShapes}
-      <ellipse {...body} fill={paintOf(paintIds.body)} />
-      <ellipse {...bodyShine} fill={PIGGY_BANK_COLORS.shine} filter={paintOf(paintIds.shineBlur)} />
+      <ellipse {...body} fill={paintIds.body.url} />
+      <ellipse {...bodyShine} fill={PIGGY_BANK_COLORS.shine} filter={paintIds.shineBlur.url} />
       <g transform={earsLift}>
-        <g id={paintIds.leftEar}>
-          <path d={ear} fill={paintOf(paintIds.ear)} />
+        <g id={paintIds.leftEar.id}>
+          <path d={ear} fill={paintIds.ear.url} />
           <path {...earShine} stroke={PIGGY_BANK_COLORS.earShine} />
         </g>
-        <use href={`#${paintIds.leftEar}`} transform={earMirror} />
+        <use href={paintIds.leftEar.href} transform={earMirror} />
       </g>
       <ellipse {...bellyRim} fill={PIGGY_BANK_COLORS.bellyRim} />
       <ellipse {...BELLY} fill={PIGGY_BANK_COLORS.belly} />
       <CoinPile piggyBankFill={piggyBankFill} paintIds={paintIds} />
-      <ellipse {...BELLY} fill={paintOf(paintIds.glass)} />
+      <ellipse {...BELLY} fill={paintIds.glass.url} />
       <path {...glassStreak} stroke={PIGGY_BANK_COLORS.shine} />
       <PiggyBankFace paintIds={paintIds} />
     </PiggyBankDrawing>

@@ -17,6 +17,6 @@ describe('PiggyBankPaints', () => {
     const { coinFace, body, ear, snout, glass, belly, shadowBlur, shineBlur } = mockPaintIds;
     const paints = [coinFace, body, ear, snout, glass, belly, shadowBlur, shineBlur];
 
-    expect(paints.filter((paintId) => !document.getElementById(paintId))).toEqual([]);
+    expect(paints.filter((paint) => !document.getElementById(paint.id))).toEqual([]);
   });
 });

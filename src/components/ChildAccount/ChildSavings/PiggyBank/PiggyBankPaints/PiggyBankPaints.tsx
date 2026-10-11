@@ -28,28 +28,28 @@ export function PiggyBankPaints({ paintIds }: PiggyBankPaintsProps): JSX.Element
 
   return (
     <defs>
-      <radialGradient id={paintIds.coinFace} {...coinFace}>
+      <radialGradient id={paintIds.coinFace.id} {...coinFace}>
         {coinFaceStops}
       </radialGradient>
-      <radialGradient id={paintIds.body} {...body}>
+      <radialGradient id={paintIds.body.id} {...body}>
         {bodyStops}
       </radialGradient>
-      <linearGradient id={paintIds.ear} {...vertical}>
+      <linearGradient id={paintIds.ear.id} {...vertical}>
         {earStops}
       </linearGradient>
-      <radialGradient id={paintIds.snout} {...snout}>
+      <radialGradient id={paintIds.snout.id} {...snout}>
         {snoutStops}
       </radialGradient>
-      <linearGradient id={paintIds.glass} {...vertical}>
+      <linearGradient id={paintIds.glass.id} {...vertical}>
         {glassStops}
       </linearGradient>
-      <clipPath id={paintIds.belly}>
+      <clipPath id={paintIds.belly.id}>
         <ellipse {...BELLY} />
       </clipPath>
-      <filter id={paintIds.shadowBlur}>
+      <filter id={paintIds.shadowBlur.id}>
         <feGaussianBlur stdDeviation={PIGGY_BANK_BLUR.shadow} />
       </filter>
-      <filter id={paintIds.shineBlur}>
+      <filter id={paintIds.shineBlur.id}>
         <feGaussianBlur stdDeviation={PIGGY_BANK_BLUR.shine} />
       </filter>
     </defs>

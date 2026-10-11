@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { paintOf, piggyBankPaintIds } from '../piggy-bank-paint-ids';
+import { piggyBankPaintIds } from '../piggy-bank-paint-ids';
 import { PiggyBankFace } from './PiggyBankFace';
 import { PIGGY_BANK_FACE_TEST_IDS } from './constants';
 
@@ -17,7 +17,7 @@ describe('PiggyBankFace', () => {
   it('paints the snout with its own paint', () => {
     expect(screen.getByTestId(PIGGY_BANK_FACE_TEST_IDS.snout)).toHaveAttribute(
       'fill',
-      paintOf(mockPaintIds.snout)
+      mockPaintIds.snout.url
     );
   });
 });

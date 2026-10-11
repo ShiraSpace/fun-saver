@@ -74,6 +74,10 @@ function coinPileSpots(): PileSpot[] {
 
 export const COIN_PILE_SPOTS = coinPileSpots();
 
+export function coinTransformOf(spot: PileSpot): string {
+  return `translate(${spot.x} ${spot.y}) rotate(${spot.tilt})`;
+}
+
 export function coinsInPile(fill: number): PileSpot[] {
   return COIN_PILE_SPOTS.slice(0, Math.round(COIN_PILE_SPOTS.length * fill));
 }
