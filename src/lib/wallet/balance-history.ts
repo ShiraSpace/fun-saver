@@ -3,7 +3,7 @@ import { balanceChange } from './balance';
 import type { Transaction } from '@/lib/transaction/types';
 import { WALLET_NAMES } from './constants';
 import type { Wallet, WalletName } from './types';
-import { walletNamed } from './wallet-named';
+import { walletNamed } from './wallet';
 
 export type WalletBalances = Record<WalletName, number[]>;
 

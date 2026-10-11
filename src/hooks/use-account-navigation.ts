@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import type { Account, AccountSummary } from '@/lib/account/types';
 import {
   APP_MODE,
@@ -13,6 +12,7 @@ import {
 } from '@/lib/goal/saved-toward-goal';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/AppThemeProvider';
+import { useRefreshWithLoader } from './loader-context';
 
 export interface AccountNavigation {
   mode: AppMode;
@@ -75,7 +75,7 @@ export function useAccountNavigation(
   accounts: AccountSummary[],
   initialAccountId: string
 ): AccountNavigation {
-  const router = useRouter();
+  const refreshWithLoader = useRefreshWithLoader();
   const setThemeId = useSetThemeId();
 
   const [mode, setMode] = useState<AppMode>(APP_MODE.viewing);
@@ -93,7 +93,7 @@ export function useAccountNavigation(
 
   const finishEditing = (): void => {
     returnToViewing();
-    router.refresh();
+    refreshWithLoader();
   };
 
   const currentAccount = findCurrentAccount(accounts, currentAccountId);

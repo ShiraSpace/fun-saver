@@ -1,6 +1,6 @@
 import type { Account } from '@/lib/account/types';
 import type { WalletName } from '@/lib/wallet/types';
-import { walletNamed } from '@/lib/wallet/wallet-named';
+import { walletNamed } from '@/lib/wallet/wallet';
 
 export function walletIdNamed(account: Account, name: WalletName): string {
   const wallet = walletNamed(account.wallets, name);

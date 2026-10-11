@@ -3,7 +3,7 @@ import { inOrderOfOccurrence } from '@/db/transaction-order';
 import type { Account, AccountSummary } from '@/lib/account/types';
 import type { Wallet, WalletName, WalletSummary } from '@/lib/wallet/types';
 import type { Transaction } from '@/lib/transaction/types';
-import { summarizeWallet } from '@/lib/wallet/summarize-wallet';
+import { summarizeWallet } from '@/lib/wallet/wallet';
 import { addDailyInterest } from './add-daily-interest';
 
 const WALLET_ORDER: Record<WalletName, number> = {
