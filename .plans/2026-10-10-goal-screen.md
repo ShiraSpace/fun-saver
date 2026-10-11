@@ -1,6 +1,6 @@
 # Saving goal PR 3b — The goal screen
 
-**Status:** proposed, revised after a six-round review (2026-10-11), awaiting approval.
+**Status:** built. Steps 1 and 2 merged (#203, #206); Steps 3 and 4 in review (#208).
 **Branch:** `feat/goal-screen` off `e8e506f` (#199).
 **Parent plans:** `.plans/2026-10-10-show-goal.md` ("PR 3b — porting from
 `feat/show-goal`"), `.plans/2026-10-03-saving-goal.md`.
