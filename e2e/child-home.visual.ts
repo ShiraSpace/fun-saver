@@ -1,13 +1,15 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { VIEW_MODE } from '@/lib/view-mode';
+import { shekelsToAgorot } from '@/lib/money';
+import { PIGGY_BANK_FULL_AT } from '@/lib/wallet/constants';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
 import { COIN_PILE_SPOTS } from '@/components/ChildAccount/ChildSavings/PiggyBank/coin-pile';
 import { useDriver } from './driver/use-driver';
 
-const savedShekels = 85;
+const mockSavings = shekelsToAgorot(85);
 const childMode = { viewMode: VIEW_MODE.child };
 
 describe('the child home, ₪85 saved with no goal', () => {
@@ -25,7 +27,9 @@ describe('the child home, ₪85 saved with no goal', () => {
   });
 
   it('fills the pile toward ₪300', async () => {
-    const pileTowardThreeHundred = Math.round((COIN_PILE_SPOTS.length * savedShekels) / 300);
+    const pileTowardThreeHundred = Math.round(
+      (COIN_PILE_SPOTS.length * mockSavings) / PIGGY_BANK_FULL_AT
+    );
 
     assert.equal(await childAccount.coinsInPile(), pileTowardThreeHundred);
   });
@@ -36,7 +40,7 @@ describe('the child home, ₪85 saved toward a ₪170 goal', () => {
     {
       accounts: [mockAccount],
       transactions: mockTransactions,
-      goals: [createMockGoal({ amount: 17000 })],
+      goals: [createMockGoal({ amount: mockSavings * 2 })],
     },
     childMode
   );
@@ -55,7 +59,7 @@ describe('the child home with the goal reached', () => {
     {
       accounts: [mockAccount],
       transactions: mockTransactions,
-      goals: [createMockGoal({ amount: 5000 })],
+      goals: [createMockGoal({ amount: mockSavings })],
     },
     childMode
   );
