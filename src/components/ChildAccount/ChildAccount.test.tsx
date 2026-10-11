@@ -1,6 +1,11 @@
+import type { AccountSummary } from '@/lib/account/types';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
+import { shekelsToAgorot } from '@/lib/money';
 import { render, screen } from '@/test-utils/render';
 import { mockAccountSummary, mockAccountsContext } from '@/test-utils/mocks/account.mocks';
+import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
+import { COINS_IN_HALF_A_PILE, coinsDrawnInPile } from '@/test-utils/coin-pile';
 import { ChildAccount } from './ChildAccount';
 import { CHILD_ACCOUNT_TEST_IDS } from './constants';
 import { CHILD_SAVINGS_TEST_IDS } from './ChildSavings/constants';
@@ -35,5 +40,28 @@ describe('ChildAccount', () => {
     expect(
       screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.wallets).querySelectorAll('button, a')
     ).toHaveLength(0);
+  });
+});
+
+describe('ChildAccount saving ₪5 toward a ₪10 goal', () => {
+  beforeEach(() => {
+    const mockAccountSavingFiveOfTen: AccountSummary = {
+      ...mockAccountSummary,
+      wallets: mockAccountSummary.wallets.map((wallet) =>
+        wallet.name === WALLET_NAMES.savings
+          ? { ...wallet, balance: shekelsToAgorot(5), interestEarned: 0 }
+          : wallet
+      ),
+      goal: createMockGoal({ amount: shekelsToAgorot(10) }),
+    };
+
+    render(<ChildAccount account={mockAccountSavingFiveOfTen} />, {
+      accounts: mockAccountsContext,
+      user: mockUser,
+    });
+  });
+
+  it('hands the savings card the goal, so the piggy bank is half full', () => {
+    expect(coinsDrawnInPile()).toBe(COINS_IN_HALF_A_PILE);
   });
 });

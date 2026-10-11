@@ -1,0 +1,1 @@
+export { PiggyBankFace } from './PiggyBankFace';

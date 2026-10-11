@@ -1,7 +1,10 @@
 import { SAVINGS_MONTHLY_RATE } from '@/lib/interest/constants';
+import { shekelsToAgorot } from '@/lib/money';
 import type { WalletConfig, WalletName } from './types';
 
 export const PERCENT_TOTAL = 100;
+
+export const PIGGY_BANK_FULL_AT = shekelsToAgorot(300);
 
 export const WALLET_NAMES = {
   savings: 'savings',
