@@ -12,7 +12,7 @@ import { useDriver } from './driver/use-driver';
 import { SMALL_PHONE } from './driver/viewports';
 
 describe('a goal not yet reached', () => {
-  const { goal, menu, appBrowser } = useDriver({
+  const { goal, account, menu, appBrowser } = useDriver({
     accounts: [mockAccount],
     transactions: mockTransactions,
     goals: [mockGoal],
@@ -26,13 +26,6 @@ describe('a goal not yet reached', () => {
     assert.equal(await goal.savingsLockExists(), true);
   });
 
-  it('opens the goal screen from the savings card', async () => {
-    await goal.tapGoalLine();
-    await goal.waitForGoalScreen();
-
-    assert.equal(await goal.goalScreenExists(), true);
-  });
-
   it('opens the goal screen from the menu', async () => {
     await menu.open();
     await goal.tapMenuGoal();
@@ -41,14 +34,22 @@ describe('a goal not yet reached', () => {
     assert.equal(await goal.goalScreenExists(), true);
   });
 
-  it('returns home when ✕ closes the goal screen', async () => {
-    await goal.tapGoalLine();
-    await goal.waitForGoalScreen();
+  describe('once the goal line is tapped', () => {
+    beforeEach(async () => {
+      await goal.tapGoalLine();
+      await goal.waitForGoalScreen();
+    });
 
-    await goal.tapCloseGoalScreen();
-    await goal.waitForGoalScreenGone();
+    it('opens the goal screen', async () => {
+      assert.equal(await goal.goalScreenExists(), true);
+    });
 
-    assert.equal(appBrowser.currentPath(), HOME_ROUTE);
+    it('returns home when ✕ closes the goal screen', async () => {
+      await goal.tapCloseGoalScreen();
+      await goal.waitForGoalScreenGone();
+
+      assert.equal(appBrowser.currentPath(), HOME_ROUTE);
+    });
   });
 
   describe('in the withdrawal drawer', () => {
@@ -57,12 +58,12 @@ describe('a goal not yet reached', () => {
     });
 
     it('keeps its height when savings is picked', async () => {
-      const before = await goal.drawerHeight();
+      const heightBeforeLocking = await account.drawerHeight();
 
       await goal.pickWallet(WALLET_NAMES.savings);
       await goal.waitForLockedSavings();
 
-      assert.equal(await goal.drawerHeight(), before);
+      assert.equal(await account.drawerHeight(), heightBeforeLocking);
     });
 
     it('locks savings', async () => {
@@ -108,7 +109,7 @@ describe('a goal reached with the longest name a goal can have, on a small phone
   const mockLongestGoalName = Array.from({ length: 6 }, () => 'שששש')
     .join(' ')
     .padEnd(MAX_GOAL_NAME_LENGTH, 'ש');
-  const { goal, appBrowser } = useDriver({
+  const { goal, account, appBrowser } = useDriver({
     accounts: [mockAccount],
     transactions: mockTransactions,
     goals: [createMockGoal({ amount: 5000, name: mockLongestGoalName })],
@@ -121,23 +122,23 @@ describe('a goal reached with the longest name a goal can have, on a small phone
     });
 
     it('keeps its height when savings is picked', async () => {
-      const before = await goal.drawerHeight();
+      const heightWithoutNote = await account.drawerHeight();
 
       await goal.pickWallet(WALLET_NAMES.savings);
       await goal.waitForCompletesGoalNote();
 
-      assert.equal(await goal.drawerHeight(), before);
+      assert.equal(await account.drawerHeight(), heightWithoutNote);
     });
 
     it('keeps its height when the amount runs past savings', async () => {
       await goal.pickWallet(WALLET_NAMES.savings);
       await goal.waitForCompletesGoalNote();
-      const before = await goal.drawerHeight();
+      const heightWithNote = await account.drawerHeight();
 
-      await goal.typeAmount('00');
+      await account.typeAmount('00');
       await goal.waitForOverdraft();
 
-      assert.equal(await goal.drawerHeight(), before);
+      assert.equal(await account.drawerHeight(), heightWithNote);
     });
 
     it('shows the whole submit', async () => {

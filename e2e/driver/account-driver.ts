@@ -60,11 +60,19 @@ export class AccountDriver {
     await this.appBrowser.tapAt(scrim.x + scrim.width / 2, scrim.y);
   }
 
-  async deposit(amountShekels: number): Promise<void> {
-    await this.openTransactionDrawer();
-    for (const digit of String(amountShekels)) {
+  async typeAmount(digits: number | string): Promise<void> {
+    for (const digit of String(digits)) {
       await this.appBrowser.click(AMOUNT_KEYPAD_TEST_IDS.key(digit));
     }
+  }
+
+  async drawerHeight(): Promise<number> {
+    return (await this.appBrowser.box(TRANSACTION_DRAWER_TEST_IDS.drawer)).height;
+  }
+
+  async deposit(amountShekels: number): Promise<void> {
+    await this.openTransactionDrawer();
+    await this.typeAmount(amountShekels);
     await this.appBrowser.click(TRANSACTION_DRAWER_TEST_IDS.submit);
   }
 
@@ -77,10 +85,7 @@ export class AccountDriver {
     await this.openTransactionDrawer();
     await this.switchToWithdrawal();
     await this.appBrowser.click(WALLET_PICKER_TEST_IDS.wallet(walletName));
-
-    for (const digit of String(amountShekels)) {
-      await this.appBrowser.click(AMOUNT_KEYPAD_TEST_IDS.key(digit));
-    }
+    await this.typeAmount(amountShekels);
 
     await this.appBrowser.click(TRANSACTION_DRAWER_TEST_IDS.submit);
   }

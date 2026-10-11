@@ -6,7 +6,7 @@ import { useDriver } from './driver/use-driver';
 import { PHONE } from './driver/viewports';
 
 describe('the transaction drawer', () => {
-  const { account, goal, appBrowser } = useDriver({
+  const { account, appBrowser } = useDriver({
     accounts: [mockAccount],
     transactions: mockTransactions,
   });
@@ -14,10 +14,10 @@ describe('the transaction drawer', () => {
   it('is as tall for a withdrawal as for a deposit', async () => {
     await appBrowser.resize(PHONE);
     await account.openTransactionDrawer();
-    const depositHeight = await goal.drawerHeight();
+    const depositHeight = await account.drawerHeight();
 
     await account.switchToWithdrawal();
 
-    assert.equal(await goal.drawerHeight(), depositHeight);
+    assert.equal(await account.drawerHeight(), depositHeight);
   });
 });

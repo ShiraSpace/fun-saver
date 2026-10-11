@@ -10,7 +10,10 @@ import { METHOD_COPY } from '@/components/Method/copy';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { useDriver } from './driver/use-driver';
-import { cameHomeFromTheMethodPage } from './driver/came-home-from-the-method-page';
+import {
+  cameHomeFromTheMethodPage,
+  openedTheMethodPage,
+} from './driver/came-home-from-the-method-page';
 
 describe('a goal set on another phone while the drawer is open', () => {
   const { goal, anotherPhone } = useDriver({
@@ -63,8 +66,7 @@ describe('a parent opens the goal from the menu on the Method page, then taps âœ
   });
 
   beforeEach(async () => {
-    await driver.menu.open();
-    await driver.menu.openMethodPage();
+    await openedTheMethodPage(driver);
     await driver.menu.open();
     await driver.goal.tapMenuGoal();
     await driver.goal.waitForGoalScreen();
