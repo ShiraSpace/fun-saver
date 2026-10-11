@@ -4,7 +4,7 @@ import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { createMockGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
-import { WITHDRAWAL_FORM_COPY } from '@/components/Account/TransactionDrawer/WithdrawalForm/constants';
+import { GOAL_COPY } from '@/components/Goal/constants';
 import { useDriver } from './driver/use-driver';
 
 describe('a goal not yet reached', () => {
@@ -44,10 +44,7 @@ describe('a goal not yet reached', () => {
       await goal.pickWallet(WALLET_NAMES.savings);
       await goal.waitForLockedSavings();
 
-      assert.equal(
-        await goal.submitLabel(),
-        WITHDRAWAL_FORM_COPY.savingsLockedSubmit
-      );
+      assert.equal(await goal.submitLabel(), GOAL_COPY.savingsLocked);
     });
   });
 });

@@ -1,6 +1,7 @@
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { MONEY_COPY } from '@/components/Money/constants';
+import { GOAL_COPY } from '@/components/Goal/constants';
 import { WITHDRAWAL_FORM_COPY } from './constants';
 
 interface WithdrawalCopyInput {
@@ -22,7 +23,7 @@ function submitLabel({
   amountShekels,
 }: WithdrawalCopyInput): string {
   if (savingsLockedFor) {
-    return WITHDRAWAL_FORM_COPY.savingsLockedSubmit;
+    return GOAL_COPY.savingsLocked;
   }
 
   if (requestState === REQUEST_STATE.pending) {

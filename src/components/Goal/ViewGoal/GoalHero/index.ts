@@ -1,0 +1,1 @@
+export { GoalHero } from './GoalHero';
