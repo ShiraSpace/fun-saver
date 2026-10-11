@@ -46,17 +46,21 @@ describe('GoalHero', () => {
     });
   });
 
-  it('says it can be bought once reached', () => {
-    render(
-      <GoalHero
-        savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
-      />
-    );
+  describe('once the goal is reached', () => {
+    beforeEach(() => {
+      render(
+        <GoalHero
+          savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
+        />
+      );
+    });
 
-    expect(
-      screen.getByTestId(GOAL_HERO_TEST_IDS.encouragement)
-    ).toHaveTextContent(
-      GOAL_HERO_COPY.canBuy(mockGoal.name, mockGoal.picture.emoji)
-    );
+    it('says it can be bought', () => {
+      expect(
+        screen.getByTestId(GOAL_HERO_TEST_IDS.encouragement)
+      ).toHaveTextContent(
+        GOAL_HERO_COPY.canBuy(mockGoal.name, mockGoal.picture.emoji)
+      );
+    });
   });
 });
