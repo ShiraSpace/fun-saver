@@ -23,6 +23,8 @@ export function GoalProgress({
 }: GoalProgressProps): JSX.Element {
   const { goal, reached } = savedTowardGoal;
   const heading = reached ? GOAL_PROGRESS_COPY.reached : goal.name;
+  const pictureGlows = glowWhenReached && reached;
+  const barIsThin = size === GOAL_PROGRESS_SIZE.small;
 
   return (
     <Progress>
@@ -30,7 +32,7 @@ export function GoalProgress({
         aria-hidden="true"
         data-testid={GOAL_PROGRESS_TEST_IDS.picture}
         progressSize={size}
-        glowing={glowWhenReached && reached}
+        glowing={pictureGlows}
       >
         {goal.picture.emoji}
       </Picture>
@@ -39,10 +41,7 @@ export function GoalProgress({
           <span data-testid={GOAL_PROGRESS_TEST_IDS.heading}>{heading}</span>
           <SavedOutOfGoal savedTowardGoal={savedTowardGoal} />
         </GoalHeading>
-        <GoalProgressBar
-          savedTowardGoal={savedTowardGoal}
-          thin={size === GOAL_PROGRESS_SIZE.small}
-        />
+        <GoalProgressBar savedTowardGoal={savedTowardGoal} thin={barIsThin} />
       </Body>
     </Progress>
   );

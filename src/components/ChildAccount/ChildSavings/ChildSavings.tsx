@@ -20,6 +20,15 @@ interface ChildSavingsProps {
 export function ChildSavings({ savings, savedTowardGoal }: ChildSavingsProps): JSX.Element {
   const { balance, principal, interestEarned } = savingsWithoutAgorot(savings);
   const piggyBankFill = piggyBankFillOf({ savingsBalance: balance, savedTowardGoal });
+  const goalProgress = savedTowardGoal && (
+    <GoalSpace>
+      <GoalProgress
+        savedTowardGoal={savedTowardGoal}
+        size={GOAL_PROGRESS_SIZE.large}
+        glowWhenReached
+      />
+    </GoalSpace>
+  );
 
   return (
     <Card aria-label={CHILD_SAVINGS_COPY.title} data-testid={CHILD_SAVINGS_TEST_IDS.card}>
@@ -29,15 +38,7 @@ export function ChildSavings({ savings, savedTowardGoal }: ChildSavingsProps): J
       <Total>
         <Money amountAgorot={balance} testId={CHILD_SAVINGS_TEST_IDS.balance} />
       </Total>
-      {savedTowardGoal && (
-        <GoalSpace>
-          <GoalProgress
-            savedTowardGoal={savedTowardGoal}
-            size={GOAL_PROGRESS_SIZE.large}
-            glowWhenReached
-          />
-        </GoalSpace>
-      )}
+      {goalProgress}
       <PrincipalAndInterest principal={principal} interestEarned={interestEarned} />
     </Card>
   );
