@@ -1,7 +1,7 @@
 import type { AccountSummary } from '@/lib/account/types';
 import type { WalletSummary } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
-import { walletNamed } from '@/lib/wallet/wallet-named';
+import { walletNamed } from '@/lib/wallet/wallet';
 import { withoutAgorot } from '@/lib/money';
 import { goalReached } from './goal-reached';
 import type { Goal } from './types';

@@ -2,7 +2,7 @@
 
 import { JSX, useState } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
-import { savingsFirst } from '@/lib/wallet/savings-first';
+import { savingsFirst } from '@/lib/wallet/wallet';
 import { savedTowardGoalOf } from '@/lib/goal/saved-toward-goal';
 import { totalBalance } from '@/lib/wallet/balance';
 import { Column, Screen } from '@/components/Screen';
