@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { StatusCodes } from 'http-status-codes';
 import { RequestFailedError } from '@/lib/fetch-json';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
-import { useRunWithLoader } from '@/hooks/loader-context';
+import { useRefreshWithLoader } from '@/hooks/loader-context';
 import { pushDigit, popDigit } from './amount-keypad';
 
 export interface AmountEntry {
@@ -25,8 +24,7 @@ export function useAmountEntry(
   saveTransaction: (amountShekels: number) => Promise<void>,
   onSaved: () => void
 ): AmountEntry {
-  const router = useRouter();
-  const runWithLoader = useRunWithLoader();
+  const refreshWithLoader = useRefreshWithLoader();
   const [amountShekels, setAmountShekels] = useState(0);
   const [requestState, setRequestState] = useState<RequestState>(
     REQUEST_STATE.idle
@@ -40,7 +38,7 @@ export function useAmountEntry(
       onSaved();
     } catch (error) {
       if (isConflict(error)) {
-        runWithLoader(() => router.refresh());
+        refreshWithLoader();
       }
 
       setRequestState(REQUEST_STATE.failed);

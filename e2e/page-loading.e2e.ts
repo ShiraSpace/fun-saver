@@ -157,9 +157,11 @@ describe('waiting for a page', () => {
       )
     );
     let newBalances: HeldPage;
+    let principalBeforeDeposit: string;
 
     beforeEach(async () => {
       await appBrowser.visit(HOME_ROUTE);
+      principalBeforeDeposit = await account.savingsPrincipal();
       newBalances = await appBrowser.holdNextPage();
 
       await account.deposit(mockDepositShekels);
@@ -168,7 +170,7 @@ describe('waiting for a page', () => {
     });
 
     it('keeps the old balances on screen while the new ones load', async () => {
-      assert.notEqual(await account.savingsPrincipal(), principalAfterDeposit);
+      assert.equal(await account.savingsPrincipal(), principalBeforeDeposit);
     });
 
     it('shows the line on the header while the new balances load', async () => {

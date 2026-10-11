@@ -12,22 +12,19 @@ import {
   LoaderProvider,
   useIsLoaderShown,
   useReportLoader,
-  useRunWithLoader,
+  useRefreshWithLoader,
 } from '../loader-context';
 import { missingProviderMessage } from '../create-required-context';
+import { LEAVE_SCREEN_TEST_ID, START_WORK_TEST_ID } from './constants';
 import {
   IS_LOADER_SHOWN_TEST_ID,
   IsLoaderShown,
 } from '@/test-utils/is-loader-shown';
-import { useRouter } from 'next/navigation';
 import {
   holdRefresh,
   NewPageData,
   type HeldRefresh,
 } from '@/test-utils/held-refresh';
-
-const START_WORK_TEST_ID = 'start-work';
-const LEAVE_SCREEN_TEST_ID = 'leave-screen';
 
 interface PendingWorkProps {
   isPending: boolean;
@@ -58,14 +55,10 @@ function TwoPiecesOfWork({
 }
 
 function WorkStarter(): JSX.Element {
-  const router = useRouter();
-  const runWithLoader = useRunWithLoader();
+  const refreshWithLoader = useRefreshWithLoader();
 
   return (
-    <button
-      data-testid={START_WORK_TEST_ID}
-      onClick={() => runWithLoader(() => router.refresh())}
-    />
+    <button data-testid={START_WORK_TEST_ID} onClick={refreshWithLoader} />
   );
 }
 

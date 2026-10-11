@@ -11,6 +11,7 @@ import {
   type TransitionStartFunction,
 } from 'react';
 import { useLinkStatus } from 'next/link';
+import { useRouter } from 'next/navigation';
 import { createRequiredContext } from './create-required-context';
 
 interface Loader {
@@ -44,8 +45,11 @@ export function useIsLoaderShown(): boolean {
   return useLoader().isLoaderShown;
 }
 
-export function useRunWithLoader(): TransitionStartFunction {
-  return useLoader().runWithLoader;
+export function useRefreshWithLoader(): () => void {
+  const router = useRouter();
+  const { runWithLoader } = useLoader();
+
+  return (): void => runWithLoader(() => router.refresh());
 }
 
 export function useReportLoader(isPending: boolean): void {

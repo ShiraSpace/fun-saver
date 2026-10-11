@@ -42,10 +42,6 @@ function submitRefusedWith(
 }
 
 describe('useAmountEntry', () => {
-  beforeEach(() => {
-    mockRouter.refresh.mockClear();
-  });
-
   describe('when the server refuses with a conflict', () => {
     it('refreshes the page', async () => {
       submitRefusedWith(StatusCodes.CONFLICT);
