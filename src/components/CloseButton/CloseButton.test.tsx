@@ -30,8 +30,10 @@ describe('CloseButton', () => {
   });
 
   describe('while disabled', () => {
+    const mockOnClose = jest.fn();
+
     beforeEach(() => {
-      render(<CloseButton onClose={jest.fn()} disabled />);
+      render(<CloseButton onClose={mockOnClose} disabled />);
     });
 
     it('cannot be tapped', () => {
