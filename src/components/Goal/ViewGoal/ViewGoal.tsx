@@ -24,6 +24,11 @@ export function ViewGoal({
   const modalRef = useModal(onClose);
   const { reached } = savedTowardGoal;
   const title = VIEW_GOAL_COPY.title(accountName);
+  const reachedHeading = reached && (
+    <ReachedHeading data-testid={VIEW_GOAL_TEST_IDS.reachedHeading}>
+      {VIEW_GOAL_COPY.reachedHeading}
+    </ReachedHeading>
+  );
 
   return (
     <Dialog
@@ -38,11 +43,7 @@ export function ViewGoal({
       <Page>
         <CancelButton onCancel={onClose} disabled={false} />
         <FormTitle title={title} titleIcon={VIEW_GOAL_COPY.titleIcon} />
-        {reached && (
-          <ReachedHeading data-testid={VIEW_GOAL_TEST_IDS.reachedHeading}>
-            {VIEW_GOAL_COPY.reachedHeading}
-          </ReachedHeading>
-        )}
+        {reachedHeading}
         <GoalHero savedTowardGoal={savedTowardGoal} />
         <SavingsLock reached={reached} />
         <PrimaryButton

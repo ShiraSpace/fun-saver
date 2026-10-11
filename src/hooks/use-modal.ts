@@ -1,8 +1,8 @@
 'use client';
 
 import { RefObject, useEffect, useRef } from 'react';
-import { useCloseOnBack } from './use-close-on-back';
-import { useEscapeKey } from './use-escape-key';
+import { useCloseOnBack } from '@/hooks/use-close-on-back';
+import { useEscapeKey } from '@/hooks/use-escape-key';
 
 export function useModal(
   onClose: () => void
