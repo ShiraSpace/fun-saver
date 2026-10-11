@@ -54,3 +54,5 @@ next-env.d.ts
 
 # PR screenshot scripts and their output
 /e2e/shots
+
+/promo-video
