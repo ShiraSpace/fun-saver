@@ -59,16 +59,16 @@ export interface SavingsWithoutAgorot {
 export function savingsWithoutAgorot(
   savings: Pick<WalletSummary, 'balance' | 'interestEarned'>
 ): SavingsWithoutAgorot {
-  const balance = withoutAgorot(savings.balance);
-  const interestEarned = Math.min(
+  const balanceWithoutAgorot = withoutAgorot(savings.balance);
+  const interestEarnedWithoutAgorot = Math.min(
     withoutAgorot(savings.interestEarned),
-    balance
+    balanceWithoutAgorot
   );
 
   return {
-    balance,
-    principal: balance - interestEarned,
-    interestEarned,
+    balance: balanceWithoutAgorot,
+    principal: balanceWithoutAgorot - interestEarnedWithoutAgorot,
+    interestEarned: interestEarnedWithoutAgorot,
   };
 }
 
