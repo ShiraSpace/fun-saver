@@ -47,9 +47,7 @@ describe('PUT /api/accounts/[id]/theme', () => {
 
     expect(response.status).toBe(200);
     expect((await response.json()).themeId).toBe(THEME_ID.midnightBlue);
-    expect((await getStore().getAccount(accountId))?.themeId).toBe(
-      THEME_ID.midnightBlue
-    );
+    expect((await getStore().getAccount(accountId))?.themeId).toBe(THEME_ID.midnightBlue);
   });
 
   it('rejects an unknown theme with 400', async () => {
@@ -57,9 +55,7 @@ describe('PUT /api/accounts/[id]/theme', () => {
 
     expect(response.status).toBe(400);
     expect((await response.json()).error).toBe(API_ERRORS.unknownTheme);
-    expect((await getStore().getAccount(accountId))?.themeId).not.toBe(
-      'not-a-theme'
-    );
+    expect((await getStore().getAccount(accountId))?.themeId).not.toBe('not-a-theme');
   });
 
   it('refuses an unknown account with 403 rather than admitting it is gone', async () => {
@@ -74,9 +70,7 @@ describe('PUT /api/accounts/[id]/theme', () => {
     const response = await putTheme(THEME_ID.midnightBlue, accountId);
 
     expect(response.status).toBe(403);
-    expect((await getStore().getAccount(accountId))?.themeId).not.toBe(
-      THEME_ID.midnightBlue
-    );
+    expect((await getStore().getAccount(accountId))?.themeId).not.toBe(THEME_ID.midnightBlue);
   });
 
   it.each([

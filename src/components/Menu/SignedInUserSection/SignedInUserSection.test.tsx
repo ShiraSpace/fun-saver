@@ -5,16 +5,11 @@ import { closeAndReopenMenu, renderInOpenMenu } from '@/test-utils/menu';
 import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { goTo } from '@/lib/navigate';
 import { SignedInUserSection } from './SignedInUserSection';
-import {
-  SIGNED_IN_USER_SECTION_COPY,
-  SIGNED_IN_USER_SECTION_TEST_IDS,
-} from './constants';
+import { SIGNED_IN_USER_SECTION_COPY, SIGNED_IN_USER_SECTION_TEST_IDS } from './constants';
 
 jest.mock('@/lib/navigate', () => ({ goTo: jest.fn() }));
 
-const mockedSignOut = signOut as unknown as jest.Mock<
-  Promise<{ url: string } | undefined>
->;
+const mockedSignOut = signOut as unknown as jest.Mock<Promise<{ url: string } | undefined>>;
 
 const signOutButton = (): HTMLElement =>
   screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.signOut);
@@ -31,15 +26,15 @@ describe('SignedInUserSection', () => {
 
   describe('before anything is tapped', () => {
     it('names the signed-in user', () => {
-      expect(
-        screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.name)
-      ).toHaveTextContent(mockUser.name);
+      expect(screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.name)).toHaveTextContent(
+        mockUser.name
+      );
     });
 
     it('shows the address that says which account is signed in', () => {
-      expect(
-        screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.email)
-      ).toHaveTextContent(mockUser.email);
+      expect(screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.email)).toHaveTextContent(
+        mockUser.email
+      );
     });
 
     it('offers a way out, and says nothing about failing', () => {
@@ -98,9 +93,7 @@ describe('SignedInUserSection', () => {
     });
 
     it('says the sign-out did not happen', () => {
-      expect(signOutError()).toHaveTextContent(
-        SIGNED_IN_USER_SECTION_COPY.signOutFailed
-      );
+      expect(signOutError()).toHaveTextContent(SIGNED_IN_USER_SECTION_COPY.signOutFailed);
     });
   });
 
@@ -117,9 +110,7 @@ describe('SignedInUserSection', () => {
     });
 
     it('says so, so the session is not believed to be over', () => {
-      expect(signOutError()).toHaveTextContent(
-        SIGNED_IN_USER_SECTION_COPY.signOutFailed
-      );
+      expect(signOutError()).toHaveTextContent(SIGNED_IN_USER_SECTION_COPY.signOutFailed);
     });
 
     describe('and the menu is closed and reopened', () => {
@@ -155,9 +146,7 @@ describe('SignedInUserSection', () => {
     });
 
     it('says so', () => {
-      expect(signOutError()).toHaveTextContent(
-        SIGNED_IN_USER_SECTION_COPY.signOutFailed
-      );
+      expect(signOutError()).toHaveTextContent(SIGNED_IN_USER_SECTION_COPY.signOutFailed);
     });
 
     it('comes back so it can be tried again', () => {

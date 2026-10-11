@@ -22,9 +22,7 @@ describe('useSignedInUser', () => {
   });
 
   it('refuses to guess when no provider is above it', () => {
-    expect(() => render(<SignedInName />)).toThrow(
-      missingProviderMessage('SignedInUserProvider')
-    );
+    expect(() => render(<SignedInName />)).toThrow(missingProviderMessage('SignedInUserProvider'));
   });
 });
 
@@ -45,8 +43,6 @@ describe('remembering the theme for the next cold load', () => {
   it('stores nothing on a screen with no signed-in user', () => {
     render(<span />, { themeId: THEME_ID.midnightBlue });
 
-    expect(written).not.toContainEqual(
-      expect.stringContaining(`${THEME_COOKIE}=`)
-    );
+    expect(written).not.toContainEqual(expect.stringContaining(`${THEME_COOKIE}=`));
   });
 });

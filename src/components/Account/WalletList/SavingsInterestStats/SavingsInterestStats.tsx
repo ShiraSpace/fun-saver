@@ -7,9 +7,7 @@ interface SavingsInterestStatsProps {
   wallet: WalletSummary;
 }
 
-export function SavingsInterestStats({
-  wallet,
-}: SavingsInterestStatsProps): JSX.Element | null {
+export function SavingsInterestStats({ wallet }: SavingsInterestStatsProps): JSX.Element | null {
   if (wallet.name !== WALLET_NAMES.savings) {
     return null;
   }

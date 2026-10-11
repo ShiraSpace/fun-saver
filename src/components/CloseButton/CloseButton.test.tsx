@@ -9,9 +9,7 @@ describe('CloseButton', () => {
     });
 
     it('draws nothing', () => {
-      expect(
-        screen.queryByTestId(CLOSE_BUTTON_TEST_IDS.button)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(CLOSE_BUTTON_TEST_IDS.button)).not.toBeInTheDocument();
     });
   });
 

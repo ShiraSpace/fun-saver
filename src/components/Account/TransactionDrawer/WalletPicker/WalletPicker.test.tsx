@@ -10,10 +10,7 @@ import { WALLET_PICKER_TEST_IDS } from './constants';
 const mockOnSelect = jest.fn();
 const [mockSavings, mockSpending] = mockWalletSummaries;
 
-function renderPicker(
-  selectedWalletId: string,
-  savedTowardGoal?: SavedTowardGoal
-): void {
+function renderPicker(selectedWalletId: string, savedTowardGoal?: SavedTowardGoal): void {
   render(
     <WalletPicker
       wallets={mockWalletSummaries}
@@ -35,28 +32,28 @@ describe('WalletPicker', () => {
     expect(screen.getAllByTestId(/^wallet-picker-(?!balance)/)).toHaveLength(
       mockWalletSummaries.length
     );
-    expect(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.balance(mockSavings.name))
-    ).toHaveTextContent(String(agorotToShekels(mockSavings.balance)));
+    expect(screen.getByTestId(WALLET_PICKER_TEST_IDS.balance(mockSavings.name))).toHaveTextContent(
+      String(agorotToShekels(mockSavings.balance))
+    );
   });
 
   it('marks the selected wallet as pressed', () => {
     renderPicker(mockSpending.id);
 
-    expect(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSpending.name))
-    ).toHaveAttribute('aria-pressed', 'true');
-    expect(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name))
-    ).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSpending.name))).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name))).toHaveAttribute(
+      'aria-pressed',
+      'false'
+    );
   });
 
   it('reports the tapped wallet id through onSelect', () => {
     renderPicker(mockSavings.id);
 
-    fireEvent.click(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSpending.name))
-    );
+    fireEvent.click(screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSpending.name)));
 
     expect(mockOnSelect).toHaveBeenCalledWith(mockSpending.id);
   });
@@ -68,9 +65,9 @@ describe('WalletPicker', () => {
 
     it('locks savings', () => {
       expect(
-        within(
-          screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name))
-        ).getByTestId(WALLET_TILE_TEST_IDS.lock)
+        within(screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name))).getByTestId(
+          WALLET_TILE_TEST_IDS.lock
+        )
       ).toBeInTheDocument();
     });
 
@@ -82,9 +79,7 @@ describe('WalletPicker', () => {
   it('locks nothing once the goal is reached', () => {
     renderPicker(mockSpending.id, createMockSavedTowardGoal({ reached: true }));
 
-    expect(
-      screen.queryByTestId(WALLET_TILE_TEST_IDS.lock)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId(WALLET_TILE_TEST_IDS.lock)).not.toBeInTheDocument();
   });
 
   it('floors savings to whole shekels while a goal is active, as the goal line does', () => {
@@ -97,8 +92,8 @@ describe('WalletPicker', () => {
       />
     );
 
-    expect(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.balance(mockSavings.name))
-    ).toHaveTextContent('₪84');
+    expect(screen.getByTestId(WALLET_PICKER_TEST_IDS.balance(mockSavings.name))).toHaveTextContent(
+      '₪84'
+    );
   });
 });

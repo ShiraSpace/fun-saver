@@ -3,20 +3,13 @@ import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { GoalProgressBar } from '@/components/Goal/GoalProgressBar';
 import { StillToSave } from '@/components/Goal/StillToSave';
 import { LOCKED_SAVINGS_COPY, LOCKED_SAVINGS_TEST_IDS } from './constants';
-import {
-  Heading,
-  Panel,
-  Picture,
-  StillToSaveLine,
-} from './LockedSavings.styles';
+import { Heading, Panel, Picture, StillToSaveLine } from './LockedSavings.styles';
 
 interface LockedSavingsProps {
   savedTowardGoal: SavedTowardGoal;
 }
 
-export function LockedSavings({
-  savedTowardGoal,
-}: LockedSavingsProps): JSX.Element {
+export function LockedSavings({ savedTowardGoal }: LockedSavingsProps): JSX.Element {
   const { goal, stillToSave } = savedTowardGoal;
   const heading = LOCKED_SAVINGS_COPY.heading(goal.name);
 

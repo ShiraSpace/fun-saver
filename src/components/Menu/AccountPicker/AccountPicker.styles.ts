@@ -5,14 +5,11 @@ import { MENU_ROW_STYLE } from '../constants';
 
 const surface = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 
-const strongText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textStrong;
+const strongText = ({ theme }: { theme: Theme }): string => theme.colors.textStrong;
 
-const mutedText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textMuted;
+const mutedText = ({ theme }: { theme: Theme }): string => theme.colors.textMuted;
 
-const triggerBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.settingsBorder;
+const triggerBorder = ({ theme }: { theme: Theme }): string => theme.colors.settingsBorder;
 
 const nameSize = ({ theme }: { theme: Theme }): number => theme.typography.body;
 

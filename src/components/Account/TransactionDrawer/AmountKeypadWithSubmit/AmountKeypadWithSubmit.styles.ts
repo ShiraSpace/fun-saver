@@ -11,8 +11,7 @@ export const Keypad = styled.div<{ covered: boolean }>`
 
 export const InPlaceOfKeypad = styled.div`
   position: absolute;
-  inset: ${AMOUNT_KEYPAD_STYLE.topGap}px 0
-    ${AMOUNT_KEYPAD_STYLE.gridMarginBottom}px;
+  inset: ${AMOUNT_KEYPAD_STYLE.topGap}px 0 ${AMOUNT_KEYPAD_STYLE.gridMarginBottom}px;
   display: flex;
   flex-direction: column;
 `;

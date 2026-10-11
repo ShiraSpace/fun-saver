@@ -1,10 +1,7 @@
 import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { type BoundingBox } from 'puppeteer';
-import {
-  createMockAccount,
-  mockAccount,
-} from '@/test-utils/mocks/account.mocks';
+import { createMockAccount, mockAccount } from '@/test-utils/mocks/account.mocks';
 import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { getThemeTokens } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
@@ -113,8 +110,7 @@ describe('menu morph', () => {
           x: centreX(accountSettings),
           y: justInsideTop(accountSettings),
         };
-        const listTakesTheTap =
-          await menu.accountListReceivesTapAt(whereTheyOverlap);
+        const listTakesTheTap = await menu.accountListReceivesTapAt(whereTheyOverlap);
 
         assert.ok(
           listTakesTheTap,

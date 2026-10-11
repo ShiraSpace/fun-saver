@@ -15,13 +15,7 @@ function blockContent(block: MethodBlock): JSX.Element {
   }
 
   if (block.kind === 'quote') {
-    return (
-      <EvidenceQuote
-        body={block.body}
-        citation={block.citation}
-        sources={block.sources}
-      />
-    );
+    return <EvidenceQuote body={block.body} citation={block.citation} sources={block.sources} />;
   }
 
   if (block.kind === 'talk') {

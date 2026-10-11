@@ -17,11 +17,7 @@ export function PromiseSection(): JSX.Element {
   ));
 
   return (
-    <MethodSection
-      id={SECTION_NUMBER.promise}
-      title={promise.title}
-      hint={promise.hint}
-    >
+    <MethodSection id={SECTION_NUMBER.promise} title={promise.title} hint={promise.hint}>
       <MethodBlocks blocks={PROMISE_BLOCKS} />
       <Rules>{rules}</Rules>
       <Checklist {...promise.checklist} />

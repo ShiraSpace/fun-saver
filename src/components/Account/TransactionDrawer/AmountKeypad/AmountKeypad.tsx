@@ -11,11 +11,7 @@ interface AmountKeypadProps {
   onBackspace: () => void;
 }
 
-export function AmountKeypad({
-  onDigit,
-  onClear,
-  onBackspace,
-}: AmountKeypadProps): JSX.Element {
+export function AmountKeypad({ onDigit, onClear, onBackspace }: AmountKeypadProps): JSX.Element {
   const digitKeys = DIGIT_KEYS_WITHOUT_ZERO.map((digit: string) => (
     <Key
       key={digit}

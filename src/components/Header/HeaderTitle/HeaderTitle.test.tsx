@@ -6,8 +6,6 @@ describe('HeaderTitle', () => {
   it('renders the given text', () => {
     render(<HeaderTitle text="שלום" />);
 
-    expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-      'שלום'
-    );
+    expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent('שלום');
   });
 });

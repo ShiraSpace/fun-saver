@@ -34,8 +34,7 @@ export const BALANCE_OVER_TIME_COPY = {
   rangeLegend: 'טווח זמן',
 } as const;
 
-export type WalletChartColor =
-  'chartSavings' | 'chartSpending' | 'chartGoodDeeds';
+export type WalletChartColor = 'chartSavings' | 'chartSpending' | 'chartGoodDeeds';
 
 export const WALLET_CHART_COLOR: Record<WalletName, WalletChartColor> = {
   savings: 'chartSavings',

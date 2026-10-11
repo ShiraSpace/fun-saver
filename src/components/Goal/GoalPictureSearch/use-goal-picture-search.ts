@@ -29,9 +29,7 @@ export function useGoalPictureSearch({
   onChange,
 }: GoalPictureSearchOptions): GoalPictureSearchState {
   const [query, setQuery] = useState(goalName);
-  const [chosenPicture, setChosenPicture] = useState<GoalPicture>(
-    picture ?? DEFAULT_GOAL_PICTURE
-  );
+  const [chosenPicture, setChosenPicture] = useState<GoalPicture>(picture ?? DEFAULT_GOAL_PICTURE);
   const searchedQuery = useDeferredValue(query);
   const { foundEmoji, requestState } = useMatchingPictures(searchedQuery);
 

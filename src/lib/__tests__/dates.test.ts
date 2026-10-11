@@ -29,9 +29,7 @@ describe('eachDayInclusive', () => {
   });
 
   it('returns the single day when start equals end', () => {
-    expect(eachDayInclusive('2026-01-05', '2026-01-05')).toEqual([
-      '2026-01-05',
-    ]);
+    expect(eachDayInclusive('2026-01-05', '2026-01-05')).toEqual(['2026-01-05']);
   });
 
   it('returns nothing when start is after end', () => {

@@ -12,15 +12,12 @@ function sourceNumber(id: SourceId): number {
 }
 
 function spokenLabel(numbers: readonly number[]): string {
-  const noun =
-    numbers.length > 1 ? SOURCE_MARKER_COPY.several : SOURCE_MARKER_COPY.one;
+  const noun = numbers.length > 1 ? SOURCE_MARKER_COPY.several : SOURCE_MARKER_COPY.one;
 
   return `${noun} ${numbers.join(SOURCE_MARKER_COPY.labelSeparator)}`;
 }
 
-export function SourceMarker({
-  sources,
-}: SourceMarkerProps): JSX.Element | null {
+export function SourceMarker({ sources }: SourceMarkerProps): JSX.Element | null {
   if (!sources?.length) {
     return null;
   }
@@ -31,12 +28,7 @@ export function SourceMarker({
   const written = numbers.join(SOURCE_MARKER_COPY.separator);
 
   return (
-    <Marker
-      dir="ltr"
-      role="img"
-      aria-label={label}
-      data-testid={SOURCE_MARKER_TEST_IDS.marker}
-    >
+    <Marker dir="ltr" role="img" aria-label={label} data-testid={SOURCE_MARKER_TEST_IDS.marker}>
       {written}
     </Marker>
   );

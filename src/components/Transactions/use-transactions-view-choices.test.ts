@@ -17,9 +17,7 @@ function shownBalancesAfter(
 
 describe('the balances the chart shows', () => {
   it('shows the total and no wallet at first', () => {
-    expect(shownBalancesAfter(() => undefined)).toEqual([
-      SHOWN_BALANCE.totalBalance,
-    ]);
+    expect(shownBalancesAfter(() => undefined)).toEqual([SHOWN_BALANCE.totalBalance]);
   });
 
   it('turns one wallet on without touching the others', () => {
@@ -27,10 +25,7 @@ describe('the balances the chart shows', () => {
       act(() => viewChoices().toggleShownBalance(SHOWN_BALANCE.savings));
     });
 
-    expect(shownBalances).toEqual([
-      SHOWN_BALANCE.totalBalance,
-      SHOWN_BALANCE.savings,
-    ]);
+    expect(shownBalances).toEqual([SHOWN_BALANCE.totalBalance, SHOWN_BALANCE.savings]);
   });
 
   it('keeps the lines in one order, whatever order they were turned on in', () => {

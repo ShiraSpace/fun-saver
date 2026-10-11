@@ -7,10 +7,7 @@ interface CloseButtonProps {
   disabled?: boolean;
 }
 
-export function CloseButton({
-  onClose,
-  disabled = false,
-}: CloseButtonProps): JSX.Element | null {
+export function CloseButton({ onClose, disabled = false }: CloseButtonProps): JSX.Element | null {
   if (!onClose) {
     return null;
   }

@@ -7,10 +7,7 @@ import type { FileSession } from './file-session';
 export class JsonUsers implements UserRepository {
   constructor(private readonly session: FileSession) {}
 
-  findByIdentity(
-    provider: AuthProvider,
-    providerAccountId: string
-  ): Promise<User | undefined> {
+  findByIdentity(provider: AuthProvider, providerAccountId: string): Promise<User | undefined> {
     return this.session.read((contents): User | undefined =>
       userWithIdentity(contents.users, provider, providerAccountId)
     );

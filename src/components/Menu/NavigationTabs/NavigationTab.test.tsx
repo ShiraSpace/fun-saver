@@ -22,9 +22,7 @@ describe('NavigationTab', () => {
     });
 
     it('dims the icon, so the tab reads as one that cannot be taken', () => {
-      const icon = screen.getByTestId(
-        NAVIGATION_TABS_TEST_IDS.transactionsTab
-      ).firstElementChild;
+      const icon = screen.getByTestId(NAVIGATION_TABS_TEST_IDS.transactionsTab).firstElementChild;
 
       expect(icon).toHaveStyle('opacity: 0.45');
     });

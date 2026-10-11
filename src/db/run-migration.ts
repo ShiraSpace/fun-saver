@@ -1,10 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import {
-  requireEnvironmentUrl,
-  chosenEnvironment,
-} from './migration-environment';
+import { requireEnvironmentUrl, chosenEnvironment } from './migration-environment';
 
 async function main(): Promise<void> {
   const environment = chosenEnvironment();

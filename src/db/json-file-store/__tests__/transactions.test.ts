@@ -6,10 +6,7 @@ import {
   mockTransactions,
 } from '@/test-utils/mocks/transaction.mocks';
 import { interestSettledOn } from '@/test-utils/settled-interest';
-import {
-  mockAccount,
-  mockSiblingAccount,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockSiblingAccount } from '@/test-utils/mocks/account.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
 const mockDeposit = createMockTransaction();
@@ -24,9 +21,7 @@ describe('JsonFileStore transactions', () => {
 
     const reopened = new JsonFileStore(file.path);
     expect(
-      (await reopened.listTransactionsByWallet('a1', 'w1')).map(
-        (transaction) => transaction.id
-      )
+      (await reopened.listTransactionsByWallet('a1', 'w1')).map((transaction) => transaction.id)
     ).toEqual(['t1']);
   });
 
@@ -39,9 +34,7 @@ describe('JsonFileStore transactions', () => {
     ]);
 
     const reopened = new JsonFileStore(file.path);
-    const listedTransactions = await reopened.listTransactionsByAccount(
-      mockAccount.id
-    );
+    const listedTransactions = await reopened.listTransactionsByAccount(mockAccount.id);
 
     expect(new Set(listedTransactions)).toEqual(new Set(mockTransactions));
   });
@@ -57,10 +50,7 @@ describe('JsonFileStore transactions', () => {
     });
     const store = new JsonFileStore(file.path);
     await store.insertAccount(mockAccount);
-    await store.insertTransactions([
-      mockEveningTransaction,
-      mockMorningTransaction,
-    ]);
+    await store.insertTransactions([mockEveningTransaction, mockMorningTransaction]);
 
     const reopened = new JsonFileStore(file.path);
     const byAccount = reopened.listTransactionsByAccount(mockAccount.id);
@@ -69,14 +59,8 @@ describe('JsonFileStore transactions', () => {
       mockEveningTransaction.walletId
     );
 
-    expect(await byAccount).toEqual([
-      mockMorningTransaction,
-      mockEveningTransaction,
-    ]);
-    expect(await byWallet).toEqual([
-      mockMorningTransaction,
-      mockEveningTransaction,
-    ]);
+    expect(await byAccount).toEqual([mockMorningTransaction, mockEveningTransaction]);
+    expect(await byWallet).toEqual([mockMorningTransaction, mockEveningTransaction]);
   });
 
   describe('when a day of interest arrives a second time', () => {
@@ -89,13 +73,11 @@ describe('JsonFileStore transactions', () => {
 
     it('keeps the day settled once, after a restart too', async () => {
       const reopened = new JsonFileStore(file.path);
-      const transactions = await reopened.listTransactionsByAccount(
-        mockAccount.id
-      );
+      const transactions = await reopened.listTransactionsByAccount(mockAccount.id);
 
-      expect(
-        interestSettledOn(transactions, mockDayOfInterest.occurredAt)
-      ).toEqual([mockDayOfInterest]);
+      expect(interestSettledOn(transactions, mockDayOfInterest.occurredAt)).toEqual([
+        mockDayOfInterest,
+      ]);
     });
   });
 });

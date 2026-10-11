@@ -1,8 +1,5 @@
 import { PRIMARY_BUTTON } from '@/components/PrimaryButton/constants';
-import {
-  EMPTY_STATE_ANIMATION,
-  EMPTY_STATE_TEST_IDS,
-} from '@/components/EmptyState/constants';
+import { EMPTY_STATE_ANIMATION, EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { AppBrowser } from './app-browser';
 
 export class EmptyStateDriver {
@@ -13,17 +10,11 @@ export class EmptyStateDriver {
   }
 
   ctaBackground(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      EMPTY_STATE_TEST_IDS.createAccount,
-      'background-image'
-    );
+    return this.appBrowser.computedStyle(EMPTY_STATE_TEST_IDS.createAccount, 'background-image');
   }
 
   background(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      EMPTY_STATE_TEST_IDS.container,
-      'background-image'
-    );
+    return this.appBrowser.computedStyle(EMPTY_STATE_TEST_IDS.container, 'background-image');
   }
 
   tapCreateAccount(): Promise<void> {

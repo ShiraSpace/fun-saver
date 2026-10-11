@@ -10,15 +10,11 @@ describe('the section on why the money is split', () => {
   });
 
   it('carries the partitioning study, the strongest fact the page has', () => {
-    expect(
-      screen.getByTestId(EVIDENCE_QUOTE_TEST_IDS.quote)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(EVIDENCE_QUOTE_TEST_IDS.quote)).toBeInTheDocument();
   });
 
   it('takes the muted caveat from the copy rather than restating it here', () => {
-    const section = screen.getByTestId(
-      METHOD_SECTION_TEST_IDS.section(SECTION_NUMBER.why)
-    );
+    const section = screen.getByTestId(METHOD_SECTION_TEST_IDS.section(SECTION_NUMBER.why));
 
     expect(section.querySelectorAll('[data-muted="true"]')).toHaveLength(1);
   });

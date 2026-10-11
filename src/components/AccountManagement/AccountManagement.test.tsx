@@ -47,12 +47,8 @@ describe('AccountManagement', () => {
     });
 
     it('keeps both forms out of the way', () => {
-      expect(
-        screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(CREATE_ACCOUNT_TEST_IDS.container)).not.toBeInTheDocument();
+      expect(screen.queryByTestId(EDIT_ACCOUNT_TEST_IDS.container)).not.toBeInTheDocument();
     });
   });
 
@@ -62,9 +58,7 @@ describe('AccountManagement', () => {
     });
 
     it('opens the create form', () => {
-      expect(
-        screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)).toBeInTheDocument();
     });
 
     it('leaves the screen behind it mounted', () => {
@@ -78,15 +72,11 @@ describe('AccountManagement', () => {
     });
 
     it('opens the edit form', () => {
-      expect(
-        screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)).toBeInTheDocument();
     });
 
     it('fills it with the account being edited', () => {
-      expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(
-        mockAccountSummary.name
-      );
+      expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(mockAccountSummary.name);
     });
   });
 
@@ -101,9 +91,7 @@ describe('AccountManagement', () => {
     });
 
     it('opens the goal screen', () => {
-      expect(
-        screen.getByTestId(VIEW_GOAL_TEST_IDS.container)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(VIEW_GOAL_TEST_IDS.container)).toBeInTheDocument();
     });
   });
 });

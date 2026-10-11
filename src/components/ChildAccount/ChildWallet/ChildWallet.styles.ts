@@ -21,8 +21,7 @@ export const Icon = styled.span<{ walletName: WalletName }>`
   height: 58px;
   border-radius: 18px;
   font-size: ${({ theme }): number => theme.typography.amount}px;
-  background: ${({ walletName, theme }): string =>
-    theme.gradients[WALLET_GRADIENT[walletName]]};
+  background: ${({ walletName, theme }): string => theme.gradients[WALLET_GRADIENT[walletName]]};
 `;
 
 export const Name = styled.span`

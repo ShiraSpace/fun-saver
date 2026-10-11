@@ -6,9 +6,7 @@ function requiredDatabaseUrl(): string {
   const url = process.env.TEST_DATABASE_URL;
 
   if (!url) {
-    throw new Error(
-      'TEST_DATABASE_URL is required — npm run test:db reads it from .env.local'
-    );
+    throw new Error('TEST_DATABASE_URL is required — npm run test:db reads it from .env.local');
   }
 
   return url;

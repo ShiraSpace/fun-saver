@@ -21,9 +21,7 @@ describe('WalletCard', () => {
     });
 
     it('shows the wallet icon', () => {
-      expect(screen.getByTestId(WALLET_CARD_TEST_IDS.card)).toHaveTextContent(
-        '🛍️'
-      );
+      expect(screen.getByTestId(WALLET_CARD_TEST_IDS.card)).toHaveTextContent('🛍️');
     });
 
     it('shows the localized wallet name', () => {
@@ -33,25 +31,17 @@ describe('WalletCard', () => {
     });
 
     it('shows the balance', () => {
-      expect(
-        screen.getByTestId(WALLET_CARD_TEST_IDS.balance)
-      ).toHaveTextContent('₪50');
+      expect(screen.getByTestId(WALLET_CARD_TEST_IDS.balance)).toHaveTextContent('₪50');
     });
   });
 
   describe('a wallet nothing has been withdrawn from', () => {
     beforeEach(() => {
-      render(
-        <WalletCard
-          wallet={createMockWalletSummary({ name: 'spending', withdrawn: 0 })}
-        />
-      );
+      render(<WalletCard wallet={createMockWalletSummary({ name: 'spending', withdrawn: 0 })} />);
     });
 
     it('stays silent', () => {
-      expect(
-        screen.queryByTestId(WALLET_CARD_TEST_IDS.summary)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(WALLET_CARD_TEST_IDS.summary)).not.toBeInTheDocument();
     });
   });
 
@@ -68,9 +58,7 @@ describe('WalletCard', () => {
     });
 
     it('shows what has already been spent', () => {
-      expect(
-        screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
-      ).toHaveTextContent('כבר ביזבזת ₪45');
+      expect(screen.getByTestId(WALLET_CARD_TEST_IDS.summary)).toHaveTextContent('כבר ביזבזת ₪45');
     });
   });
 
@@ -87,9 +75,9 @@ describe('WalletCard', () => {
     });
 
     it('shows what has already been given', () => {
-      expect(
-        screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
-      ).toHaveTextContent('תרמת ₪18 עד היום');
+      expect(screen.getByTestId(WALLET_CARD_TEST_IDS.summary)).toHaveTextContent(
+        'תרמת ₪18 עד היום'
+      );
     });
   });
 
@@ -99,9 +87,9 @@ describe('WalletCard', () => {
     });
 
     it('shows the savings rate and opening date as a sub-line', () => {
-      expect(
-        screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
-      ).toHaveTextContent(mockSavingsSubLine);
+      expect(screen.getByTestId(WALLET_CARD_TEST_IDS.summary)).toHaveTextContent(
+        mockSavingsSubLine
+      );
     });
   });
 
@@ -118,9 +106,9 @@ describe('WalletCard', () => {
     });
 
     it('keeps its own sub-line rather than the spent one', () => {
-      expect(
-        screen.getByTestId(WALLET_CARD_TEST_IDS.summary)
-      ).toHaveTextContent(mockSavingsSubLine);
+      expect(screen.getByTestId(WALLET_CARD_TEST_IDS.summary)).toHaveTextContent(
+        mockSavingsSubLine
+      );
     });
   });
 
@@ -153,9 +141,7 @@ describe('WalletCard', () => {
     });
 
     it('floors the balance, as the goal line does', () => {
-      expect(
-        screen.getByTestId(WALLET_CARD_TEST_IDS.balance)
-      ).toHaveTextContent('₪299');
+      expect(screen.getByTestId(WALLET_CARD_TEST_IDS.balance)).toHaveTextContent('₪299');
     });
   });
 
@@ -167,8 +153,6 @@ describe('WalletCard', () => {
       />
     );
 
-    expect(
-      screen.queryByTestId(WALLET_CARD_TEST_IDS.lock)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId(WALLET_CARD_TEST_IDS.lock)).not.toBeInTheDocument();
   });
 });

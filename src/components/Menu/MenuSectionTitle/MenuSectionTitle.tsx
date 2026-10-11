@@ -7,8 +7,6 @@ export interface MenuSectionTitleProps {
   children: ReactNode;
 }
 
-export function MenuSectionTitle({
-  children,
-}: MenuSectionTitleProps): JSX.Element {
+export function MenuSectionTitle({ children }: MenuSectionTitleProps): JSX.Element {
   return <Label>{children}</Label>;
 }

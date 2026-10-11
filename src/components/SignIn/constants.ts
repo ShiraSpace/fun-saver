@@ -16,8 +16,7 @@ export const SIGN_IN_COPY = {
   continueWithGoogle: 'המשך עם Google',
   signingIn: 'רגע, מתחברים…',
   signInFailed: 'ההתחברות נכשלה. בדקו את החיבור לאינטרנט ונסו שוב.',
-  fineprint:
-    'בכניסה ראשונה ניצור לכם חשבון משתמש אוטומטית. אנחנו שומרים רק שם ואימייל.',
+  fineprint: 'בכניסה ראשונה ניצור לכם חשבון משתמש אוטומטית. אנחנו שומרים רק שם ואימייל.',
 } as const;
 
 export const SIGN_IN_LAYOUT = {

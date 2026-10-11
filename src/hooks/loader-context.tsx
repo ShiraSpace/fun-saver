@@ -20,8 +20,7 @@ interface Loader {
   runWithLoader: TransitionStartFunction;
 }
 
-const [LoaderContextProvider, useLoader] =
-  createRequiredContext<Loader>('LoaderProvider');
+const [LoaderContextProvider, useLoader] = createRequiredContext<Loader>('LoaderProvider');
 
 interface LoaderProviderProps {
   children: ReactNode;
@@ -36,9 +35,7 @@ export function LoaderProvider({ children }: LoaderProviderProps): JSX.Element {
     runWithLoader,
   };
 
-  return (
-    <LoaderContextProvider value={loader}>{children}</LoaderContextProvider>
-  );
+  return <LoaderContextProvider value={loader}>{children}</LoaderContextProvider>;
 }
 
 export function useIsLoaderShown(): boolean {

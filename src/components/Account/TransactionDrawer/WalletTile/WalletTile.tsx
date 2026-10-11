@@ -6,14 +6,7 @@ import { Money } from '@/components/Money';
 import { WALLET_CARD_COPY } from '../../WalletCard/constants';
 import { GOAL_COPY } from '@/components/Goal/constants';
 import { WALLET_TILE_TEST_IDS } from './constants';
-import {
-  Tile,
-  Head,
-  WalletIcon,
-  Name,
-  Amount,
-  LockTag,
-} from './WalletTile.styles';
+import { Tile, Head, WalletIcon, Name, Amount, LockTag } from './WalletTile.styles';
 
 interface WalletTileProps {
   walletName: WalletName;

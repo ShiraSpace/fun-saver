@@ -17,25 +17,19 @@ export function useSwipeToClose(onClose: () => void): SwipeToClose {
   const [offset, setOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
-  const onPointerDown = useCallback(
-    (event: ReactPointerEvent<HTMLElement>): void => {
-      event.currentTarget.setPointerCapture?.(event.pointerId);
-      startYRef.current = event.clientY;
-      setIsDragging(true);
-    },
-    []
-  );
+  const onPointerDown = useCallback((event: ReactPointerEvent<HTMLElement>): void => {
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    startYRef.current = event.clientY;
+    setIsDragging(true);
+  }, []);
 
-  const onPointerMove = useCallback(
-    (event: ReactPointerEvent<HTMLElement>): void => {
-      if (startYRef.current === null) {
-        return;
-      }
+  const onPointerMove = useCallback((event: ReactPointerEvent<HTMLElement>): void => {
+    if (startYRef.current === null) {
+      return;
+    }
 
-      setOffset(Math.max(0, event.clientY - startYRef.current));
-    },
-    []
-  );
+    setOffset(Math.max(0, event.clientY - startYRef.current));
+  }, []);
 
   const onPointerUp = useCallback(
     (event: ReactPointerEvent<HTMLElement>): void => {

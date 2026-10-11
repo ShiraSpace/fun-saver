@@ -18,10 +18,7 @@ export function validDeposit(body: unknown): number | undefined {
 export function validWithdrawal(body: unknown): WithdrawalInput | undefined {
   const requested = asObject(body);
 
-  if (
-    typeof requested?.walletId !== 'string' ||
-    typeof requested.amount !== 'number'
-  ) {
+  if (typeof requested?.walletId !== 'string' || typeof requested.amount !== 'number') {
     return;
   }
 

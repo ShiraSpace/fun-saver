@@ -18,12 +18,7 @@ interface Entrance {
   easing: string;
 }
 
-export function entrance({
-  keyframes,
-  durationMs,
-  delayMs,
-  easing,
-}: Entrance): SerializedStyles {
+export function entrance({ keyframes, durationMs, delayMs, easing }: Entrance): SerializedStyles {
   return css`
     animation-name: ${keyframes};
     animation-duration: ${durationMs}ms;

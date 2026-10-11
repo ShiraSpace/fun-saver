@@ -9,9 +9,7 @@ interface MenuUserSettingsProps {
   children: ReactNode;
 }
 
-export function MenuUserSettings({
-  children,
-}: MenuUserSettingsProps): JSX.Element {
+export function MenuUserSettings({ children }: MenuUserSettingsProps): JSX.Element {
   return (
     <UserSettingsBlock data-testid={MENU_USER_SETTINGS_TEST_IDS.block}>
       <SignedInUserSection />

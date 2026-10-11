@@ -41,9 +41,7 @@ describe('interest primitives', () => {
 
   it('interestForDay rounds the daily interest to the nearest agora', () => {
     const actualInterest = interestForDay(mockDepositAgorot, mockMonthlyRate);
-    const expectedInterest = Math.round(
-      mockDepositAgorot * (mockMonthlyRate / DAYS_PER_MONTH)
-    );
+    const expectedInterest = Math.round(mockDepositAgorot * (mockMonthlyRate / DAYS_PER_MONTH));
 
     expect(actualInterest).toBe(expectedInterest);
   });
@@ -62,9 +60,7 @@ describe('interest primitives', () => {
 });
 
 describe('addDailyInterest', () => {
-  const savingsWallet = (
-    lastInterestDate: string
-  ): ReturnType<typeof createMockWallet> =>
+  const savingsWallet = (lastInterestDate: string): ReturnType<typeof createMockWallet> =>
     createMockWallet({
       monthlyInterestRate: mockMonthlyRate,
       lastInterestDate,
@@ -83,21 +79,14 @@ describe('addDailyInterest', () => {
     });
 
     it('credits one interest transaction per day after the settled day', () => {
-      const interestDays = actualTransactions.map(
-        (transaction) => transaction.occurredAt
-      );
+      const interestDays = actualTransactions.map((transaction) => transaction.occurredAt);
 
       expect(interestDays).toEqual(['2026-01-02', '2026-01-03']);
     });
 
     it('compounds each day on the previous closing balance', () => {
-      const interestAmounts = actualTransactions.map(
-        (transaction) => transaction.amount
-      );
-      const firstDayInterest = interestForDay(
-        mockDepositAgorot,
-        mockMonthlyRate
-      );
+      const interestAmounts = actualTransactions.map((transaction) => transaction.amount);
+      const firstDayInterest = interestForDay(mockDepositAgorot, mockMonthlyRate);
       const secondDayInterest = interestForDay(
         mockDepositAgorot + firstDayInterest,
         mockMonthlyRate
@@ -154,9 +143,7 @@ describe('addDailyInterest', () => {
       accountId: mockAccountId,
     });
 
-    const interestDays = actualTransactions.map(
-      (transaction) => transaction.occurredAt
-    );
+    const interestDays = actualTransactions.map((transaction) => transaction.occurredAt);
     const [firstInterest] = actualTransactions;
     const firstDayInterest = interestForDay(mockDepositAgorot, mockMonthlyRate);
 
@@ -177,10 +164,7 @@ describe('addDailyInterest', () => {
 
     const [firstInterest, secondInterest] = actualTransactions;
     const firstDayInterest = interestForDay(mockDepositAgorot, mockMonthlyRate);
-    const secondDayInterest = interestForDay(
-      mockDepositAgorot + firstDayInterest,
-      mockMonthlyRate
-    );
+    const secondDayInterest = interestForDay(mockDepositAgorot + firstDayInterest, mockMonthlyRate);
 
     expect(firstInterest.amount).toBe(firstDayInterest);
     expect(secondInterest.amount).toBe(secondDayInterest);
@@ -208,9 +192,7 @@ describe('addDailyInterest', () => {
       accountId: mockAccountId,
     });
 
-    const interestAmounts = actualTransactions.map(
-      (transaction) => transaction.amount
-    );
+    const interestAmounts = actualTransactions.map((transaction) => transaction.amount);
     const firstDayInterest = interestForDay(mockDepositAgorot, mockMonthlyRate);
 
     expect(interestAmounts).toEqual([firstDayInterest]);

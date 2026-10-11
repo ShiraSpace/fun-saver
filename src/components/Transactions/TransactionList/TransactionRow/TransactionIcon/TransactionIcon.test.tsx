@@ -1,8 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import {
-  createMockWithdrawal,
-  mockWalletDeposits,
-} from '@/test-utils/mocks/transaction.mocks';
+import { createMockWithdrawal, mockWalletDeposits } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 import { transactionListRowsFor } from '@/test-utils/transaction-rows';
 import { INTEREST_MODE } from '@/lib/transaction/constants';
@@ -34,9 +31,7 @@ describe('a transaction icon', () => {
     });
 
     it('carries no badge, since a deposit has no one wallet', () => {
-      expect(
-        screen.queryByTestId(TRANSACTION_ICON_TEST_IDS.badge)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(TRANSACTION_ICON_TEST_IDS.badge)).not.toBeInTheDocument();
     });
   });
 
@@ -57,9 +52,7 @@ describe('a transaction icon', () => {
     });
 
     it('badges it with what the money was for', () => {
-      expect(
-        screen.getByTestId(TRANSACTION_ICON_TEST_IDS.badge)
-      ).toHaveTextContent(
+      expect(screen.getByTestId(TRANSACTION_ICON_TEST_IDS.badge)).toHaveTextContent(
         TRANSACTION_ROW_COPY.withdrawal[mockSpendingWallet.name].badge
       );
     });

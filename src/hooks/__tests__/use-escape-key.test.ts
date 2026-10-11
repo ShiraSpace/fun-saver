@@ -13,9 +13,7 @@ describe('useEscapeKey', () => {
     let unmount: () => void;
 
     beforeEach(() => {
-      ({ unmount } = renderHook(() =>
-        useEscapeKey({ isListening: true, onEscape: mockOnEscape })
-      ));
+      ({ unmount } = renderHook(() => useEscapeKey({ isListening: true, onEscape: mockOnEscape })));
     });
 
     describe('when Escape is pressed', () => {
@@ -76,9 +74,7 @@ describe('useEscapeKey', () => {
 
   describe('while not listening', () => {
     beforeEach(() => {
-      renderHook(() =>
-        useEscapeKey({ isListening: false, onEscape: mockOnEscape })
-      );
+      renderHook(() => useEscapeKey({ isListening: false, onEscape: mockOnEscape }));
       fireEvent.keyDown(document.body, { key: ESCAPE_KEY });
     });
 

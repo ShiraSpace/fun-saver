@@ -12,8 +12,7 @@ export const SIGN_OUT_STATUS = {
   failed: 'failed',
 } as const;
 
-export type SignOutStatus =
-  (typeof SIGN_OUT_STATUS)[keyof typeof SIGN_OUT_STATUS];
+export type SignOutStatus = (typeof SIGN_OUT_STATUS)[keyof typeof SIGN_OUT_STATUS];
 
 interface UserSignOut {
   signOutStatus: SignOutStatus;
@@ -29,9 +28,7 @@ function landsOnSignIn(url: string | undefined): boolean {
 }
 
 export function useSignOut(): UserSignOut {
-  const [signOutStatus, setSignOutStatus] = useState<SignOutStatus>(
-    SIGN_OUT_STATUS.idle
-  );
+  const [signOutStatus, setSignOutStatus] = useState<SignOutStatus>(SIGN_OUT_STATUS.idle);
 
   useOnMenuClose((): void =>
     setSignOutStatus((current) =>

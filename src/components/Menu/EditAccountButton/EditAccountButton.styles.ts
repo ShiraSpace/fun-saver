@@ -2,14 +2,11 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { EDIT_ACCOUNT_BUTTON_STYLE } from './constants';
 
-const mutedText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textMuted;
+const mutedText = ({ theme }: { theme: Theme }): string => theme.colors.textMuted;
 
-const underlineColor = ({ theme }: { theme: Theme }): string =>
-  theme.colors.settingsBorder;
+const underlineColor = ({ theme }: { theme: Theme }): string => theme.colors.settingsBorder;
 
-const labelSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.label;
+const labelSize = ({ theme }: { theme: Theme }): number => theme.typography.label;
 
 export const EditButton = styled.button`
   display: flex;
@@ -19,8 +16,7 @@ export const EditButton = styled.button`
   width: 100%;
   box-sizing: border-box;
   margin-top: ${EDIT_ACCOUNT_BUTTON_STYLE.marginTop}px;
-  padding: ${EDIT_ACCOUNT_BUTTON_STYLE.paddingY}px
-    ${EDIT_ACCOUNT_BUTTON_STYLE.paddingX}px;
+  padding: ${EDIT_ACCOUNT_BUTTON_STYLE.paddingY}px ${EDIT_ACCOUNT_BUTTON_STYLE.paddingX}px;
   border: none;
   background: transparent;
   color: ${mutedText};

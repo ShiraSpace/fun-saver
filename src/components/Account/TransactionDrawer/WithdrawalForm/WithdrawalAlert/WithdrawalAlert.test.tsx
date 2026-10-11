@@ -11,35 +11,23 @@ function renderMessage(
   props: Partial<ComponentProps<typeof WithdrawalAlert>> = {},
   themeId?: ThemeId
 ): void {
-  render(
-    <WithdrawalAlert
-      isOverdraft={false}
-      hasError={false}
-      balanceShekels={40}
-      {...props}
-    />,
-    { themeId }
-  );
+  render(<WithdrawalAlert isOverdraft={false} hasError={false} balanceShekels={40} {...props} />, {
+    themeId,
+  });
 }
 
 describe('WithdrawalAlert', () => {
   it('shows the overdraft hint with the wallet balance', () => {
     renderMessage({ isOverdraft: true });
 
-    expect(
-      screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)
-    ).toHaveTextContent('40');
-    expect(
-      screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
-    ).not.toBeInTheDocument();
+    expect(screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)).toHaveTextContent('40');
+    expect(screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.error)).not.toBeInTheDocument();
   });
 
   it('shows the server error when there is no overdraft', () => {
     renderMessage({ hasError: true });
 
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)).toBeInTheDocument();
   });
 
   describe('on the theme where the old error pink fell furthest short', () => {
@@ -63,11 +51,7 @@ describe('WithdrawalAlert', () => {
   it('renders nothing when calm', () => {
     renderMessage();
 
-    expect(
-      screen.queryByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)).not.toBeInTheDocument();
+    expect(screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.error)).not.toBeInTheDocument();
   });
 });

@@ -18,8 +18,7 @@ class BrowserResizeObserver {
     }
 
     isMeasuring = true;
-    resizeChartTo = (width): void =>
-      this.onResize([{ contentRect: { width } }]);
+    resizeChartTo = (width): void => this.onResize([{ contentRect: { width } }]);
   }
 
   disconnect(): void {
@@ -34,9 +33,7 @@ function withBrowserMeasuring(): void {
   });
 }
 
-function renderOnChart(
-  chart: SVGSVGElement | null
-): RenderHookResult<number, unknown> {
+function renderOnChart(chart: SVGSVGElement | null): RenderHookResult<number, unknown> {
   return renderHook(() => useChartWidth({ current: chart }));
 }
 

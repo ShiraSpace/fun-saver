@@ -16,8 +16,7 @@ export const BALANCE_BREAKDOWN_COPY = {
   share: (percent: number): string => `${percent}%`,
 } as const;
 
-export type WalletColor =
-  'walletSavings' | 'walletSpending' | 'walletGoodDeeds';
+export type WalletColor = 'walletSavings' | 'walletSpending' | 'walletGoodDeeds';
 
 export const WALLET_COLOR: Record<WalletName, WalletColor> = {
   savings: 'walletSavings',

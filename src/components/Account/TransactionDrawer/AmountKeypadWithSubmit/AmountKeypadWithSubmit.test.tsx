@@ -15,8 +15,7 @@ const mockEntry: AmountEntry = {
   onSubmit: jest.fn(),
 };
 
-const keypadKey = (): HTMLElement =>
-  screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('1'));
+const keypadKey = (): HTMLElement => screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('1'));
 
 describe('AmountKeypadWithSubmit', () => {
   describe('with nothing in place of the keypad', () => {

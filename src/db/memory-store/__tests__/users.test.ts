@@ -11,21 +11,17 @@ describe('InMemoryStore users', () => {
   });
 
   it('finds an inserted user by its provider identity', async () => {
-    expect(
-      await store.findUserByIdentity('google', mockUser.providerAccountId)
-    ).toEqual(mockUser);
+    expect(await store.findUserByIdentity('google', mockUser.providerAccountId)).toEqual(mockUser);
   });
 
   it('returns undefined for an unknown provider account id', async () => {
-    expect(
-      await store.findUserByIdentity('google', 'unknown-sub')
-    ).toBeUndefined();
+    expect(await store.findUserByIdentity('google', 'unknown-sub')).toBeUndefined();
   });
 
   it('rejects a second insert of the same provider identity', async () => {
-    await expect(
-      store.insertUser(createMockUser({ id: 'u2' }))
-    ).rejects.toThrow(DuplicateUserError);
+    await expect(store.insertUser(createMockUser({ id: 'u2' }))).rejects.toThrow(
+      DuplicateUserError
+    );
   });
 
   it('rejects a second insert of the same id', async () => {

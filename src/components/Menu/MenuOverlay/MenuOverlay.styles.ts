@@ -5,8 +5,7 @@ import { MENU_OVERLAY_LAYOUT, MENU_OVERLAY_STYLE } from './constants';
 
 const sheet = ({ theme }: { theme: Theme }): string => theme.colors.softBg;
 
-const onSheet = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textStrong;
+const onSheet = ({ theme }: { theme: Theme }): string => theme.colors.textStrong;
 
 export const Panel = styled.div`
   position: fixed;
@@ -25,8 +24,7 @@ export const Panel = styled.div`
   pointer-events: none;
   transition:
     opacity ${MENU_OVERLAY_STYLE.transitionMs}ms ease,
-    transform ${MENU_OVERLAY_STYLE.transitionMs}ms
-      cubic-bezier(0.6, 0.2, 0.25, 1);
+    transform ${MENU_OVERLAY_STYLE.transitionMs}ms cubic-bezier(0.6, 0.2, 0.25, 1);
 
   &[data-open='true'] {
     opacity: 1;
@@ -39,6 +37,5 @@ export const Content = styled.div`
   box-sizing: border-box;
   max-width: ${SCREEN_LAYOUT.maxWidth}px;
   margin-inline: auto;
-  padding: ${MENU_OVERLAY_LAYOUT.contentPaddingTop}px
-    ${SCREEN_LAYOUT.paddingX}px 0;
+  padding: ${MENU_OVERLAY_LAYOUT.contentPaddingTop}px ${SCREEN_LAYOUT.paddingX}px 0;
 `;

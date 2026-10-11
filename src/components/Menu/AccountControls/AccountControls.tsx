@@ -2,10 +2,7 @@
 
 import { Fragment, JSX } from 'react';
 import { useAccounts } from '@/components/Home/accounts-context';
-import {
-  APP_MODE,
-  useAppMode,
-} from '@/components/AccountManagement/app-mode-context';
+import { APP_MODE, useAppMode } from '@/components/AccountManagement/app-mode-context';
 import { AccountPicker } from '../AccountPicker';
 import { EditAccountButton } from '../EditAccountButton';
 import { MenuGoal } from '../MenuGoal';
@@ -25,16 +22,9 @@ export function AccountControls(): JSX.Element {
 
   return (
     <Fragment>
-      <AccountPicker
-        accounts={accounts}
-        currentAccount={currentAccount}
-        onSelect={openAccount}
-      />
+      <AccountPicker accounts={accounts} currentAccount={currentAccount} onSelect={openAccount} />
       <MenuGoal />
-      <EditAccountButton
-        accountName={currentAccount.name}
-        onEditAccount={startEditingAccount}
-      />
+      <EditAccountButton accountName={currentAccount.name} onEditAccount={startEditingAccount} />
     </Fragment>
   );
 }

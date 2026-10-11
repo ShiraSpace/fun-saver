@@ -4,19 +4,15 @@ import type { Theme } from '@emotion/react';
 import { MENU_ROW_STYLE } from '../constants';
 import { SIGNED_IN_USER_SECTION_PHOTO_SIZE } from './constants';
 
-const mutedText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textMuted;
+const mutedText = ({ theme }: { theme: Theme }): string => theme.colors.textMuted;
 
-const strongText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textStrong;
+const strongText = ({ theme }: { theme: Theme }): string => theme.colors.textStrong;
 
-const settingsBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.settingsBorder;
+const settingsBorder = ({ theme }: { theme: Theme }): string => theme.colors.settingsBorder;
 
 const softFill = ({ theme }: { theme: Theme }): string => theme.colors.softBg;
 
-const softEdge = ({ theme }: { theme: Theme }): string =>
-  theme.colors.softBorder;
+const softEdge = ({ theme }: { theme: Theme }): string => theme.colors.softBorder;
 
 const surface = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 

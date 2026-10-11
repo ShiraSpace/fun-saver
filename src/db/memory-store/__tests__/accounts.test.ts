@@ -26,18 +26,18 @@ describe('InMemoryStore accounts', () => {
   it('rejects a second insert of the same account', async () => {
     await store.insertAccount(mockAccount);
 
-    await expect(store.insertAccount(mockAccount)).rejects.toThrow(
-      DuplicateAccountError
-    );
+    await expect(store.insertAccount(mockAccount)).rejects.toThrow(DuplicateAccountError);
   });
 
   it('returns each account with its own embedded wallets', async () => {
     await store.insertAccount(mockAccount);
     await store.insertAccount(mockSiblingAccount);
 
-    expect(
-      (await store.getAccount('a1'))?.wallets.map((wallet) => wallet.id)
-    ).toEqual(['w1', 'w2', 'w3']);
+    expect((await store.getAccount('a1'))?.wallets.map((wallet) => wallet.id)).toEqual([
+      'w1',
+      'w2',
+      'w3',
+    ]);
     expect((await store.getAccount('a2'))?.wallets).toEqual([]);
     expect(await store.getAccount('missing')).toBeUndefined();
   });
@@ -74,9 +74,7 @@ describe('InMemoryStore accounts', () => {
     });
 
     it('returns undefined for an unknown id', async () => {
-      expect(
-        await store.updateAccount('missing', mockAccountEdits)
-      ).toBeUndefined();
+      expect(await store.updateAccount('missing', mockAccountEdits)).toBeUndefined();
     });
   });
 });

@@ -15,18 +15,14 @@ describe('SignIn', () => {
   });
 
   it('shows the pig', () => {
-    expect(screen.getByTestId(SIGN_IN_TEST_IDS.pig)).toHaveTextContent(
-      PIG_EMOJI
-    );
+    expect(screen.getByTestId(SIGN_IN_TEST_IDS.pig)).toHaveTextContent(PIG_EMOJI);
   });
 
   it('explains what signing in gets you', () => {
     expect(screen.getByTestId(SIGN_IN_TEST_IDS.cardTitle)).toHaveTextContent(
       SIGN_IN_COPY.cardTitle
     );
-    expect(screen.getByTestId(SIGN_IN_TEST_IDS.cardBody)).toHaveTextContent(
-      SIGN_IN_COPY.cardBody
-    );
+    expect(screen.getByTestId(SIGN_IN_TEST_IDS.cardBody)).toHaveTextContent(SIGN_IN_COPY.cardBody);
   });
 
   it('promises what we store before the user signs in', () => {
@@ -36,17 +32,13 @@ describe('SignIn', () => {
   });
 
   it('puts the Google button in the card', () => {
-    expect(
-      screen.getByTestId(SIGN_IN_TEST_IDS.continueWithGoogle)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(SIGN_IN_TEST_IDS.continueWithGoogle)).toBeInTheDocument();
   });
 
   it('paints the fineprint in the on-primary white', () => {
     const fineprint = screen.getByTestId(SIGN_IN_TEST_IDS.fineprint);
 
-    expect(getComputedStyle(fineprint).color).toBe(
-      hexToRgb(getThemeTokens().colors.textOnPrimary)
-    );
+    expect(getComputedStyle(fineprint).color).toBe(hexToRgb(getThemeTokens().colors.textOnPrimary));
   });
 
   it('leaves the fineprint unfaded, the way the wallet label was', () => {

@@ -45,9 +45,7 @@ describe('the transaction list', () => {
   }
 
   function choose(groupTestId: string, choiceId: string): void {
-    fireEvent.click(
-      screen.getByTestId(CHOICE_CHIPS_TEST_IDS.option(groupTestId, choiceId))
-    );
+    fireEvent.click(screen.getByTestId(CHOICE_CHIPS_TEST_IDS.option(groupTestId, choiceId)));
   }
 
   describe('a deposit that lands in three wallets', () => {
@@ -92,25 +90,15 @@ describe('the transaction list', () => {
 
   describe('a busy day, shown only as its withdrawals', () => {
     beforeEach(() => {
-      render(
-        <TransactionListOnScreen
-          transactions={mockBusyDayTransactions}
-          asOf={mockBusyDay}
-        />
-      );
+      render(<TransactionListOnScreen transactions={mockBusyDayTransactions} asOf={mockBusyDay} />);
       choose(TRANSACTION_LIST_TEST_IDS.filters, TRANSACTION_TYPE.withdrawal);
     });
 
     it('counts only the rows it shows, over the whole history', () => {
       const mockBusyDayWithdrawalCount = 1;
-      const historyDays = balanceHistoryFor(
-        mockBusyDayTransactions,
-        mockBusyDay
-      ).days.length;
+      const historyDays = balanceHistoryFor(mockBusyDayTransactions, mockBusyDay).days.length;
 
-      expect(
-        screen.getByTestId(TRANSACTION_LIST_TEST_IDS.count)
-      ).toHaveTextContent(
+      expect(screen.getByTestId(TRANSACTION_LIST_TEST_IDS.count)).toHaveTextContent(
         TRANSACTION_LIST_COPY.count(mockBusyDayWithdrawalCount, historyDays)
       );
     });
@@ -128,32 +116,25 @@ describe('the transaction list', () => {
     });
 
     it('says nothing matches, instead of showing a blank card', () => {
-      expect(
-        screen.getByTestId(TRANSACTION_LIST_TEST_IDS.emptyFilter)
-      ).toHaveTextContent(TRANSACTION_LIST_COPY.emptyFilter);
+      expect(screen.getByTestId(TRANSACTION_LIST_TEST_IDS.emptyFilter)).toHaveTextContent(
+        TRANSACTION_LIST_COPY.emptyFilter
+      );
     });
   });
 
   describe('a child with no transactions yet', () => {
     beforeEach(() => {
-      render(
-        <TransactionListOnScreen
-          transactions={[]}
-          asOf={mockOpeningDeposit.occurredAt}
-        />
-      );
+      render(<TransactionListOnScreen transactions={[]} asOf={mockOpeningDeposit.occurredAt} />);
     });
 
     it('says what the list will hold once there is some', () => {
-      expect(
-        screen.getByTestId(TRANSACTION_LIST_TEST_IDS.noTransactions)
-      ).toHaveTextContent(TRANSACTION_LIST_COPY.noTransactions);
+      expect(screen.getByTestId(TRANSACTION_LIST_TEST_IDS.noTransactions)).toHaveTextContent(
+        TRANSACTION_LIST_COPY.noTransactions
+      );
     });
 
     it('does not offer to create an account, since this one exists', () => {
-      expect(
-        screen.queryByTestId(EMPTY_STATE_TEST_IDS.container)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(EMPTY_STATE_TEST_IDS.container)).not.toBeInTheDocument();
     });
   });
 });

@@ -35,17 +35,9 @@ export function AccountPicker({
 
   return (
     <Picker ref={pickerRef} data-testid={ACCOUNT_PICKER_TEST_IDS.picker}>
-      <CurrentAccountButton
-        account={currentAccount}
-        isOpen={isOpen}
-        onToggle={setIsOpen}
-      />
+      <CurrentAccountButton account={currentAccount} isOpen={isOpen} onToggle={setIsOpen} />
       {isOpen && (
-        <AccountList
-          accounts={accounts}
-          currentAccountId={currentAccount.id}
-          onSelect={onSelect}
-        />
+        <AccountList accounts={accounts} currentAccountId={currentAccount.id} onSelect={onSelect} />
       )}
     </Picker>
   );

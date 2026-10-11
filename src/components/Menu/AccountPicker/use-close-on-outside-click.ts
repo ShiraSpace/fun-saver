@@ -9,11 +9,7 @@ interface OutsideClickOptions {
   onClose: () => void;
 }
 
-export function useCloseOnOutsideClick({
-  ref,
-  isOpen,
-  onClose,
-}: OutsideClickOptions): void {
+export function useCloseOnOutsideClick({ ref, isOpen, onClose }: OutsideClickOptions): void {
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -29,7 +25,6 @@ export function useCloseOnOutsideClick({
 
     document.addEventListener(OUTSIDE_CLICK_EVENT, onOutsideClick);
 
-    return (): void =>
-      document.removeEventListener(OUTSIDE_CLICK_EVENT, onOutsideClick);
+    return (): void => document.removeEventListener(OUTSIDE_CLICK_EVENT, onOutsideClick);
   }, [ref, isOpen, onClose]);
 }

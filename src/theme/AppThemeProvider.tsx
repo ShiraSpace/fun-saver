@@ -12,17 +12,13 @@ interface AppThemeProviderProps {
   children: ReactNode;
 }
 
-const [ThemeIdProvider, useThemeId] =
-  createRequiredContext<ThemeId>(PROVIDER_NAME);
+const [ThemeIdProvider, useThemeId] = createRequiredContext<ThemeId>(PROVIDER_NAME);
 const [SetThemeIdProvider, useSetThemeId] =
   createRequiredContext<(id: ThemeId) => void>(PROVIDER_NAME);
 
 export { useSetThemeId, useThemeId };
 
-export function AppThemeProvider({
-  initialThemeId,
-  children,
-}: AppThemeProviderProps): JSX.Element {
+export function AppThemeProvider({ initialThemeId, children }: AppThemeProviderProps): JSX.Element {
   const [themeId, setThemeId] = useState<ThemeId>(initialThemeId);
 
   const theme = useMemo(() => getThemeTokens(themeId), [themeId]);

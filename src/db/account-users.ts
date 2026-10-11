@@ -7,15 +7,11 @@ export function findAccountUser(
   userId: string
 ): AccountUser | undefined {
   return accountUsers.find(
-    (accountUser) =>
-      accountUser.accountId === accountId && accountUser.userId === userId
+    (accountUser) => accountUser.accountId === accountId && accountUser.userId === userId
   );
 }
 
-export function ownerAccountUser(
-  accountId: string,
-  owner: AccountOwner
-): AccountUser {
+export function ownerAccountUser(accountId: string, owner: AccountOwner): AccountUser {
   return {
     accountId,
     userId: owner.userId,
@@ -26,8 +22,7 @@ export function ownerAccountUser(
 
 export function sortedByName(accounts: Account[]): Account[] {
   return [...accounts].sort(
-    (left, right) =>
-      left.name.localeCompare(right.name) || left.id.localeCompare(right.id)
+    (left, right) => left.name.localeCompare(right.name) || left.id.localeCompare(right.id)
   );
 }
 

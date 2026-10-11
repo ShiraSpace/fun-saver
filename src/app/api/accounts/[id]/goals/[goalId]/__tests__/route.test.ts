@@ -78,11 +78,7 @@ describe('DELETE /api/accounts/[id]/goals/[goalId]', () => {
     let response: Response;
 
     beforeEach(async () => {
-      await addAccountViewerToStoreFile(
-        storeFile.path,
-        accountId,
-        mockCoParent
-      );
+      await addAccountViewerToStoreFile(storeFile.path, accountId, mockCoParent);
       jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
       response = await cancelGoal();
     });

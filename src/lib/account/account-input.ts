@@ -16,9 +16,7 @@ function isValidName({ name }: Record<string, unknown>): boolean {
 }
 
 function isValidAvatar({ avatarId }: Record<string, unknown>): boolean {
-  return (
-    avatarId === undefined || AVATARS.some((avatar) => avatar.id === avatarId)
-  );
+  return avatarId === undefined || AVATARS.some((avatar) => avatar.id === avatarId);
 }
 
 function collectEdits(body: Record<string, unknown>): AccountEdits {

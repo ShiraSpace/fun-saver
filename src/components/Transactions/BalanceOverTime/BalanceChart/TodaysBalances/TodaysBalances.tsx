@@ -29,14 +29,9 @@ export function TodaysBalances({
     };
   });
 
-  const labels = todaysBalancesSpacedApart(todaysBalances).map(
-    (placedTodaysBalance) => (
-      <TodaysBalanceLabel
-        key={placedTodaysBalance.shownBalance}
-        {...placedTodaysBalance}
-      />
-    )
-  );
+  const labels = todaysBalancesSpacedApart(todaysBalances).map((placedTodaysBalance) => (
+    <TodaysBalanceLabel key={placedTodaysBalance.shownBalance} {...placedTodaysBalance} />
+  ));
 
   return <g>{labels}</g>;
 }

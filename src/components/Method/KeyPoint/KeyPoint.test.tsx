@@ -12,9 +12,7 @@ describe('a key point', () => {
     });
 
     it('carries the note, so the reason sits with the key point that earns it', () => {
-      expect(screen.getByTestId(KEY_POINT_TEST_IDS.note)).toHaveTextContent(
-        mockNote
-      );
+      expect(screen.getByTestId(KEY_POINT_TEST_IDS.note)).toHaveTextContent(mockNote);
     });
   });
 
@@ -24,9 +22,7 @@ describe('a key point', () => {
     });
 
     it('leaves the note out rather than opening an empty line under the body', () => {
-      expect(
-        screen.queryByTestId(KEY_POINT_TEST_IDS.note)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(KEY_POINT_TEST_IDS.note)).not.toBeInTheDocument();
     });
   });
 

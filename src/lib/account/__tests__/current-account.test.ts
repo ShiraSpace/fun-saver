@@ -6,15 +6,11 @@ const mockAccounts = [mockFirstAccount, mockSecondAccount];
 
 describe('findCurrentAccount', () => {
   it('finds the account the id names', () => {
-    expect(findCurrentAccount(mockAccounts, mockSecondAccount.id)).toBe(
-      mockSecondAccount
-    );
+    expect(findCurrentAccount(mockAccounts, mockSecondAccount.id)).toBe(mockSecondAccount);
   });
 
   it('falls back to the first account when the id names none of them', () => {
-    expect(findCurrentAccount(mockAccounts, 'unknown-account-id')).toBe(
-      mockFirstAccount
-    );
+    expect(findCurrentAccount(mockAccounts, 'unknown-account-id')).toBe(mockFirstAccount);
   });
 
   it('has nothing to fall back to when there are no accounts', () => {

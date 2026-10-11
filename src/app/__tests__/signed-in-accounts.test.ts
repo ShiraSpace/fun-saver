@@ -57,10 +57,7 @@ describe('signedInAccounts', () => {
 
   it('sends a visitor with no session to the sign-in page', async () => {
     jest.mocked(signedInUser).mockResolvedValue(undefined);
-    const mockListAccountsForUser = jest.spyOn(
-      getStore(),
-      'listAccountsForUser'
-    );
+    const mockListAccountsForUser = jest.spyOn(getStore(), 'listAccountsForUser');
 
     await expect(signedInAccounts()).rejects.toThrow();
 

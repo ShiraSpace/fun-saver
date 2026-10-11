@@ -13,9 +13,7 @@ describe('AvatarPicker', () => {
   });
 
   it('renders an option for every avatar', () => {
-    expect(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)).toHaveLength(
-      AVATARS.length
-    );
+    expect(screen.getAllByTestId(AVATAR_PICKER_TEST_IDS.option)).toHaveLength(AVATARS.length);
   });
 
   describe.each([THEME_ID.jungleQuest, THEME_ID.midnightBlue] as const)(
@@ -24,10 +22,7 @@ describe('AvatarPicker', () => {
       const { selectionRing } = getThemeTokens(themeId).colors;
 
       beforeEach(() => {
-        render(
-          <AvatarPicker selectedId={AVATARS[0].id} onSelect={mockOnSelect} />,
-          { themeId }
-        );
+        render(<AvatarPicker selectedId={AVATARS[0].id} onSelect={mockOnSelect} />, { themeId });
       });
 
       it('rings the selected avatar in a colour neither layer hides', () => {
@@ -36,9 +31,7 @@ describe('AvatarPicker', () => {
           .filter((option) => option.dataset.selected === 'true');
 
         expect(selected).toHaveLength(1);
-        expect(getComputedStyle(selected[0]).boxShadow).toContain(
-          selectionRing
-        );
+        expect(getComputedStyle(selected[0]).boxShadow).toContain(selectionRing);
       });
     }
   );

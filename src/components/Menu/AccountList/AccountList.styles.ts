@@ -5,16 +5,13 @@ import { MENU_ROW_STYLE } from '../constants';
 
 const surface = ({ theme }: { theme: Theme }): string => theme.colors.surface;
 
-const mutedText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textMuted;
+const mutedText = ({ theme }: { theme: Theme }): string => theme.colors.textMuted;
 
-const settingsBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.settingsBorder;
+const settingsBorder = ({ theme }: { theme: Theme }): string => theme.colors.settingsBorder;
 
 const deepShadow = ({ theme }: { theme: Theme }): string => theme.shadows.deep;
 
-const totalSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.label;
+const totalSize = ({ theme }: { theme: Theme }): number => theme.typography.label;
 
 export const List = styled.div`
   position: absolute;

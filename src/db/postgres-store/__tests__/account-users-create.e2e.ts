@@ -4,10 +4,7 @@
 import type { Account } from '@/lib/account/types';
 import type { User } from '@/lib/user/types';
 import { DuplicateAccountError, UnknownOwnerError } from '@/lib/account/errors';
-import {
-  createMockAccount,
-  mockAccountUser,
-} from '@/test-utils/mocks/account.mocks';
+import { createMockAccount, mockAccountUser } from '@/test-utils/mocks/account.mocks';
 import { createMockUser } from '@/test-utils/mocks/user.mocks';
 import { withTestDatabase } from './test-database';
 
@@ -34,20 +31,16 @@ describe('PostgresAccountUsers creating an account with an owner', () => {
   });
 
   it('writes an owner row for the account', async () => {
-    expect(await store.getAccountUser(mockNewAccount.id, mockOwner.id)).toEqual(
-      {
-        accountId: mockNewAccount.id,
-        userId: mockOwner.id,
-        role: 'owner',
-        addedAt: mockAccountUser.addedAt,
-      }
-    );
+    expect(await store.getAccountUser(mockNewAccount.id, mockOwner.id)).toEqual({
+      accountId: mockNewAccount.id,
+      userId: mockOwner.id,
+      role: 'owner',
+      addedAt: mockAccountUser.addedAt,
+    });
   });
 
   it('lists the account for its owner', async () => {
-    expect(await store.listAccountsForUser(mockOwner.id)).toEqual([
-      mockNewAccount,
-    ]);
+    expect(await store.listAccountsForUser(mockOwner.id)).toEqual([mockNewAccount]);
   });
 
   it('rejects a second account with the same id', async () => {

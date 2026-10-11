@@ -82,24 +82,17 @@ async function settleAccountInterest({
       asOf,
     })
   );
-  const settledInterest = settledWallets.flatMap(
-    (settledWallet) => settledWallet.settledInterest
-  );
+  const settledInterest = settledWallets.flatMap((settledWallet) => settledWallet.settledInterest);
 
   if (settledInterest.length > 0) {
     await store.insertTransactions(settledInterest);
   }
 
-  const unorderedWallets = settledWallets.map(
-    (settledWallet) => settledWallet.wallet
-  );
+  const unorderedWallets = settledWallets.map((settledWallet) => settledWallet.wallet);
   const wallets = unorderedWallets.sort(
     (left, right) => WALLET_ORDER[left.name] - WALLET_ORDER[right.name]
   );
-  const settledTransactions = inOrderOfOccurrence([
-    ...accountTransactions,
-    ...settledInterest,
-  ]);
+  const settledTransactions = inOrderOfOccurrence([...accountTransactions, ...settledInterest]);
 
   return {
     account: { ...account, wallets, goal },
@@ -112,14 +105,10 @@ export function settleInterest({
   accounts,
   asOf,
 }: SettleInterestParams): Promise<SettledAccount[]> {
-  return Promise.all(
-    accounts.map((account) => settleAccountInterest({ store, account, asOf }))
-  );
+  return Promise.all(accounts.map((account) => settleAccountInterest({ store, account, asOf })));
 }
 
-export async function summarizeAccounts(
-  query: SettleInterestParams
-): Promise<AccountSummary[]> {
+export async function summarizeAccounts(query: SettleInterestParams): Promise<AccountSummary[]> {
   const settledAccounts = await settleInterest(query);
 
   return settledAccounts.map((settledAccount) => settledAccount.account);

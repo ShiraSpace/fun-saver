@@ -16,19 +16,12 @@ interface SignedInUserProviderProps {
   children: ReactNode;
 }
 
-export function SignedInUserProvider({
-  value,
-  children,
-}: SignedInUserProviderProps): JSX.Element {
+export function SignedInUserProvider({ value, children }: SignedInUserProviderProps): JSX.Element {
   const themeId = useThemeId();
 
   useEffect((): void => {
     writeCookie(THEME_COOKIE, themeId);
   }, [themeId]);
 
-  return (
-    <SignedInUserContextProvider value={value}>
-      {children}
-    </SignedInUserContextProvider>
-  );
+  return <SignedInUserContextProvider value={value}>{children}</SignedInUserContextProvider>;
 }

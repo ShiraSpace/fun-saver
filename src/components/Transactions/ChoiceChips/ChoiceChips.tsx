@@ -1,11 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import {
-  CHOICE_CHIPS_TEST_IDS,
-  CHOICE_CHIPS_VARIANT,
-  type ChoiceChipsVariant,
-} from './constants';
+import { CHOICE_CHIPS_TEST_IDS, CHOICE_CHIPS_VARIANT, type ChoiceChipsVariant } from './constants';
 import { Chip, Group, GroupName, Radio } from './ChoiceChips.styles';
 
 export interface Choice<Id extends string> {

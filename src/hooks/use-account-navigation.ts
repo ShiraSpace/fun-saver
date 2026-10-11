@@ -1,15 +1,9 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import type { Account, AccountSummary } from '@/lib/account/types';
-import {
-  APP_MODE,
-  AppMode,
-} from '@/components/AccountManagement/app-mode-context';
+import { APP_MODE, AppMode } from '@/components/AccountManagement/app-mode-context';
 import { CURRENT_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
 import { findCurrentAccount } from '@/lib/account/current-account';
-import {
-  savedTowardGoalOf,
-  type SavedTowardGoal,
-} from '@/lib/goal/saved-toward-goal';
+import { savedTowardGoalOf, type SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/AppThemeProvider';
 import { useRefreshWithLoader } from './loader-context';

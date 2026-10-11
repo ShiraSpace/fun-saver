@@ -14,10 +14,7 @@ import { TransactionMonth } from './TransactionMonth';
 import { TRANSACTION_LIST_COPY, TRANSACTION_LIST_TEST_IDS } from './constants';
 import { Card, EmptyMessage } from './TransactionList.styles';
 
-interface TransactionListProps extends Omit<
-  TransactionListRowsInput,
-  'interestMode'
-> {
+interface TransactionListProps extends Omit<TransactionListRowsInput, 'interestMode'> {
   asOf: string;
   viewChoices: TransactionsViewChoices;
 }
@@ -50,11 +47,7 @@ function TransactionListMonths({
   }
 
   const months = sections.map((monthSection) => (
-    <TransactionMonth
-      key={monthSection.month}
-      monthSection={monthSection}
-      asOf={asOf}
-    />
+    <TransactionMonth key={monthSection.month} monthSection={monthSection} asOf={asOf} />
   ));
 
   return <>{months}</>;
@@ -78,10 +71,7 @@ export function TransactionList({
       }),
     [transactions, wallets, balanceHistory, interestMode]
   );
-  const shownRows = filterByTransactionType(
-    rows,
-    viewChoices.transactionTypeFilter
-  );
+  const shownRows = filterByTransactionType(rows, viewChoices.transactionTypeFilter);
   const hasTransactions = transactions.length > 0;
   const sections = monthSections(shownRows);
 
@@ -92,11 +82,7 @@ export function TransactionList({
         dayCount={balanceHistory.days.length}
         viewChoices={viewChoices}
       />
-      <TransactionListMonths
-        hasTransactions={hasTransactions}
-        sections={sections}
-        asOf={asOf}
-      />
+      <TransactionListMonths hasTransactions={hasTransactions} sections={sections} asOf={asOf} />
     </Card>
   );
 }

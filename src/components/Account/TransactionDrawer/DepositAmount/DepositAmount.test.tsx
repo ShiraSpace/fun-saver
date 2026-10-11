@@ -6,8 +6,6 @@ describe('DepositAmount', () => {
   it('shows the whole-shekel amount', () => {
     render(<DepositAmount amountShekels={50} />);
 
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)
-    ).toHaveTextContent('50');
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.amount)).toHaveTextContent('50');
   });
 });

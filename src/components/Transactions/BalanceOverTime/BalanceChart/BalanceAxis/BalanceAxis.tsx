@@ -1,11 +1,7 @@
 import { JSX } from 'react';
 import { agorotToShekels } from '@/lib/money';
 import { MONEY_COPY } from '@/components/Money/constants';
-import {
-  balanceTicks,
-  type BalanceBounds,
-  type BalanceY,
-} from '../chart-geometry';
+import { balanceTicks, type BalanceBounds, type BalanceY } from '../chart-geometry';
 import { AxisText } from '../chart-parts';
 import { ANCHOR_RIGHTWARD, TODAY_X } from '../constants';
 import { BALANCE_AXIS_TEST_IDS, TICK_OFFSET } from './constants';
@@ -17,11 +13,7 @@ interface BalanceAxisProps {
   firstDayX: number;
 }
 
-export function BalanceAxis({
-  balanceBounds,
-  balanceY,
-  firstDayX,
-}: BalanceAxisProps): JSX.Element {
+export function BalanceAxis({ balanceBounds, balanceY, firstDayX }: BalanceAxisProps): JSX.Element {
   const tickX = firstDayX + TICK_OFFSET.x;
   const ticks = balanceTicks(balanceBounds).map((balance) => {
     const y = balanceY(balance);

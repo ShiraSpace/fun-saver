@@ -19,8 +19,7 @@ function whyNoPictures({
   foundEmoji,
   requestState,
   query,
-}: Pick<PictureTilesProps, 'foundEmoji' | 'requestState' | 'query'>):
-  string | null {
+}: Pick<PictureTilesProps, 'foundEmoji' | 'requestState' | 'query'>): string | null {
   if (requestState === REQUEST_STATE.pending) {
     return PICTURE_TILES_COPY.loading;
   }
@@ -68,8 +67,6 @@ export function PictureTiles({
   ));
 
   return (
-    <FoundPictures data-testid={PICTURE_TILES_TEST_IDS.foundPictures}>
-      {pictureTiles}
-    </FoundPictures>
+    <FoundPictures data-testid={PICTURE_TILES_TEST_IDS.foundPictures}>{pictureTiles}</FoundPictures>
   );
 }

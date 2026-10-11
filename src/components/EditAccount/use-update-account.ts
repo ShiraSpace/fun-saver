@@ -10,10 +10,7 @@ interface AccountUpdater {
 }
 
 export function useUpdateAccount(): AccountUpdater {
-  const updateAccount = (
-    accountId: string,
-    edits: AccountEdits
-  ): Promise<Account> =>
+  const updateAccount = (accountId: string, edits: AccountEdits): Promise<Account> =>
     fetchJson<Account>({
       url: accountEndpoint(accountId),
       method: 'PUT',

@@ -10,10 +10,7 @@ import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { useDriver, type AppDriver } from './driver/use-driver';
 
-async function cameHomeFromTheMethodPage({
-  menu,
-  account,
-}: AppDriver): Promise<void> {
+async function cameHomeFromTheMethodPage({ menu, account }: AppDriver): Promise<void> {
   await menu.open();
   await menu.openMethodPage();
   await menu.open();
@@ -46,9 +43,7 @@ describe('a parent reloads with the drawer open, opens it again, then presses ba
     await driver.account.waitForOverview();
     await driver.account.openTransactionDrawer();
     await driver.appBrowser.back();
-    await driver.appBrowser.waits.testIdGone(
-      TRANSACTION_DRAWER_TEST_IDS.drawer
-    );
+    await driver.appBrowser.waits.testIdGone(TRANSACTION_DRAWER_TEST_IDS.drawer);
   });
 
   it('stays on the home page', () => {
@@ -64,11 +59,7 @@ describe('a parent saves a deposit, then presses back', () => {
     const mockDepositShekels = 50;
     await driver.account.deposit(mockDepositShekels);
     await driver.account.waitForSavingsPrincipal(
-      String(
-        agorotToShekels(
-          splitDeposit(mockDepositShekels * AGOROT_PER_SHEKEL).savings
-        )
-      )
+      String(agorotToShekels(splitDeposit(mockDepositShekels * AGOROT_PER_SHEKEL).savings))
     );
     await driver.appBrowser.back();
     await driver.header.waitForTitle(METHOD_COPY.title);

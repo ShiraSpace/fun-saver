@@ -1,8 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import {
-  mockAccount,
-  mockCreateAccountInput,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockCreateAccountInput } from '@/test-utils/mocks/account.mocks';
 import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 import { useCreateAccount } from './use-create-account';
 
@@ -10,9 +7,7 @@ describe('useCreateAccount', () => {
   restoreFetchAfterEach();
 
   it('posts the new account to the accounts endpoint and returns it', async () => {
-    const mockFetch = jest
-      .fn()
-      .mockResolvedValue({ ok: true, json: async () => mockAccount });
+    const mockFetch = jest.fn().mockResolvedValue({ ok: true, json: async () => mockAccount });
     stubFetch(mockFetch);
 
     const { result } = renderHook(() => useCreateAccount());
@@ -32,8 +27,6 @@ describe('useCreateAccount', () => {
 
     const { result } = renderHook(() => useCreateAccount());
 
-    await expect(
-      result.current.createAccount(mockCreateAccountInput)
-    ).rejects.toThrow();
+    await expect(result.current.createAccount(mockCreateAccountInput)).rejects.toThrow();
   });
 });

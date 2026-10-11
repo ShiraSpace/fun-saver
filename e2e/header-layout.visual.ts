@@ -4,10 +4,7 @@ import { type BoundingBox } from 'puppeteer';
 import { TYPE_SCALE } from '@/theme/typography';
 import { HEADER_LAYOUT, HEADER_TEST_IDS } from '@/components/Header/constants';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
-import {
-  createMockAccount,
-  mockAccount,
-} from '@/test-utils/mocks/account.mocks';
+import { createMockAccount, mockAccount } from '@/test-utils/mocks/account.mocks';
 import { useDriver } from './driver/use-driver';
 
 const EDGE_TOLERANCE = 24;
@@ -36,8 +33,7 @@ describe('header', () => {
 
       it('places the menu at the start edge (right in RTL)', () => {
         assert.ok(
-          Math.abs(bar.x + bar.width - (menuButton.x + menuButton.width)) <=
-            EDGE_TOLERANCE
+          Math.abs(bar.x + bar.width - (menuButton.x + menuButton.width)) <= EDGE_TOLERANCE
         );
       });
 
@@ -46,9 +42,7 @@ describe('header', () => {
       });
 
       it('anchors the account name to the start, beside the menu', () => {
-        assert.ok(
-          Math.abs(title.x + title.width - menuButton.x) <= EDGE_TOLERANCE
-        );
+        assert.ok(Math.abs(title.x + title.width - menuButton.x) <= EDGE_TOLERANCE);
       });
 
       it('places the avatar after the name', () => {

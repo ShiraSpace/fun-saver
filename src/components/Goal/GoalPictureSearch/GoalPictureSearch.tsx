@@ -30,10 +30,7 @@ export function GoalPictureSearch({
 
   return (
     <>
-      <Scrim
-        data-testid={GOAL_PICTURE_SEARCH_TEST_IDS.scrim}
-        onClick={onClose}
-      />
+      <Scrim data-testid={GOAL_PICTURE_SEARCH_TEST_IDS.scrim} onClick={onClose} />
       <Sheet
         ref={sheetRef}
         tabIndex={-1}

@@ -17,9 +17,7 @@ export interface GoogleProfile {
   name?: string | null;
 }
 
-export function googleIdentity(
-  profile?: GoogleProfile
-): GoogleIdentity | undefined {
+export function googleIdentity(profile?: GoogleProfile): GoogleIdentity | undefined {
   const { sub, email, name } = profile ?? {};
 
   if (!sub || !email) {
@@ -29,14 +27,8 @@ export function googleIdentity(
   return { providerAccountId: sub, email, name: displayName(name, email) };
 }
 
-export async function provisionUser(
-  store: DataStore,
-  identity: GoogleIdentity
-): Promise<User> {
-  const existing = await findUserByGoogleIdentity(
-    store,
-    identity.providerAccountId
-  );
+export async function provisionUser(store: DataStore, identity: GoogleIdentity): Promise<User> {
+  const existing = await findUserByGoogleIdentity(store, identity.providerAccountId);
 
   if (existing) {
     return existing;
@@ -45,10 +37,7 @@ export async function provisionUser(
   return insertGoogleUser(store, identity);
 }
 
-async function insertGoogleUser(
-  store: DataStore,
-  identity: GoogleIdentity
-): Promise<User> {
+async function insertGoogleUser(store: DataStore, identity: GoogleIdentity): Promise<User> {
   const user = newGoogleUser(identity);
 
   try {
@@ -69,10 +58,7 @@ async function userCreatedConcurrently(
     throw error;
   }
 
-  const concurrentUser = await findUserByGoogleIdentity(
-    store,
-    identity.providerAccountId
-  );
+  const concurrentUser = await findUserByGoogleIdentity(store, identity.providerAccountId);
 
   if (!concurrentUser) {
     throw error;
@@ -88,10 +74,7 @@ function findUserByGoogleIdentity(
   return store.findUserByIdentity(GOOGLE_PROVIDER, providerAccountId);
 }
 
-export function displayName(
-  name: string | null | undefined,
-  email: string
-): string {
+export function displayName(name: string | null | undefined, email: string): string {
   return name || emailLocalPart(email);
 }
 

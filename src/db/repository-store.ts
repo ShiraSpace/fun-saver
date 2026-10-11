@@ -34,10 +34,7 @@ export class RepositoryStore implements DataStore {
     return this.accounts.setTheme(id, themeId);
   }
 
-  updateAccount(
-    accountId: string,
-    edits: AccountEdits
-  ): Promise<Account | undefined> {
+  updateAccount(accountId: string, edits: AccountEdits): Promise<Account | undefined> {
     return this.accounts.update(accountId, edits);
   }
 
@@ -45,10 +42,7 @@ export class RepositoryStore implements DataStore {
     return this.transactions.insert(transactions);
   }
 
-  listTransactionsByWallet(
-    accountId: string,
-    walletId: string
-  ): Promise<Transaction[]> {
+  listTransactionsByWallet(accountId: string, walletId: string): Promise<Transaction[]> {
     return this.transactions.listByWallet(accountId, walletId);
   }
 
@@ -56,10 +50,7 @@ export class RepositoryStore implements DataStore {
     return this.transactions.listByAccount(accountId);
   }
 
-  findUserByIdentity(
-    provider: AuthProvider,
-    providerAccountId: string
-  ): Promise<User | undefined> {
+  findUserByIdentity(provider: AuthProvider, providerAccountId: string): Promise<User | undefined> {
     return this.users.findByIdentity(provider, providerAccountId);
   }
 
@@ -67,10 +58,7 @@ export class RepositoryStore implements DataStore {
     return this.users.insert(user);
   }
 
-  getAccountUser(
-    accountId: string,
-    userId: string
-  ): Promise<AccountUser | undefined> {
+  getAccountUser(accountId: string, userId: string): Promise<AccountUser | undefined> {
     return this.accountUsers.get(accountId, userId);
   }
 
@@ -94,10 +82,7 @@ export class RepositoryStore implements DataStore {
     return this.goals.end(endRequest);
   }
 
-  insertWithdrawalCompletingGoal(
-    withdrawal: Transaction,
-    goalId: string
-  ): Promise<boolean> {
+  insertWithdrawalCompletingGoal(withdrawal: Transaction, goalId: string): Promise<boolean> {
     return this.goals.insertWithdrawalCompleting(withdrawal, goalId);
   }
 }

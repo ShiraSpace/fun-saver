@@ -2,10 +2,7 @@ import { writeFileSync } from 'node:fs';
 import unicodeHebrewWords from 'cldr-annotations-full/annotations/he/annotations.json';
 import unicodeHebrewCombinedWords from 'cldr-annotations-derived-full/annotationsDerived/he/annotations.json';
 import unicodeEmoji from 'unicode-emoji-json/data-by-emoji.json';
-import {
-  MAX_PICTURE_WORDS_BYTES,
-  PICTURE_WORDS_PATH,
-} from '@/lib/goal/picture-search/constants';
+import { MAX_PICTURE_WORDS_BYTES, PICTURE_WORDS_PATH } from '@/lib/goal/picture-search/constants';
 import {
   invalidGoalPictures,
   searchablePictureWords,
@@ -25,9 +22,7 @@ function savePictureWords(pictureWords: PictureWords): void {
   const bytes = Buffer.byteLength(savedText);
 
   if (bytes > MAX_PICTURE_WORDS_BYTES) {
-    throw new Error(
-      `${PICTURE_WORDS_PATH} is ${bytes} bytes, over ${MAX_PICTURE_WORDS_BYTES}`
-    );
+    throw new Error(`${PICTURE_WORDS_PATH} is ${bytes} bytes, over ${MAX_PICTURE_WORDS_BYTES}`);
   }
 
   writeFileSync(PICTURE_WORDS_PATH, savedText);

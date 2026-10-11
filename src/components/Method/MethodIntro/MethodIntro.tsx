@@ -22,12 +22,10 @@ export function MethodIntro(): JSX.Element {
   const title = emphasize(purpose.title);
   const lead = emphasize(purpose.body.body);
   const alongTheWay = emphasize(purpose.alongTheWay);
-  const outcomes = Object.entries(purpose.outcomes).map(
-    ([walletName, outcome]) => <KeyPoint key={walletName} {...outcome} />
-  );
-  const briefLine = emphasize(
-    `${brief.eyebrow}${METHOD_INTRO_COPY.briefSeparator}${brief.body}`
-  );
+  const outcomes = Object.entries(purpose.outcomes).map(([walletName, outcome]) => (
+    <KeyPoint key={walletName} {...outcome} />
+  ));
+  const briefLine = emphasize(`${brief.eyebrow}${METHOD_INTRO_COPY.briefSeparator}${brief.body}`);
   const briefNote = emphasize(brief.note);
 
   return (

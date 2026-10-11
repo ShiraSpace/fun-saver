@@ -15,21 +15,17 @@ describe('EmptyState', () => {
   });
 
   it('renders the empty-state screen', () => {
-    expect(
-      screen.getByTestId(EMPTY_STATE_TEST_IDS.container)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(EMPTY_STATE_TEST_IDS.container)).toBeInTheDocument();
   });
 
   it('shows the pig', () => {
-    expect(screen.getByTestId(EMPTY_STATE_TEST_IDS.pig)).toHaveTextContent(
-      PIG_EMOJI
-    );
+    expect(screen.getByTestId(EMPTY_STATE_TEST_IDS.pig)).toHaveTextContent(PIG_EMOJI);
   });
 
   it('shows a create-account button labelled צור חשבון', () => {
-    expect(
-      screen.getByTestId(EMPTY_STATE_TEST_IDS.createAccount)
-    ).toHaveTextContent(EMPTY_STATE_COPY.createAccount);
+    expect(screen.getByTestId(EMPTY_STATE_TEST_IDS.createAccount)).toHaveTextContent(
+      EMPTY_STATE_COPY.createAccount
+    );
   });
 
   it('carries the header, so the burger sits where it does on every screen', () => {
@@ -37,14 +33,10 @@ describe('EmptyState', () => {
   });
 
   it('greets the parent where an account screen would name the account', () => {
-    expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-      mockGreeting
-    );
+    expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(mockGreeting);
   });
 
   it('offers the way out of the app that a stranger used to be denied', () => {
-    expect(
-      screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.signOut)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.signOut)).toBeInTheDocument();
   });
 });

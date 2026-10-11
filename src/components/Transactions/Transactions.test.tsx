@@ -1,14 +1,8 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
-import {
-  mockAccountSummary,
-  mockSiblingAccountSummary,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccountSummary, mockSiblingAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
-import {
-  balanceHistory,
-  todaysTotalBalance,
-} from '@/lib/wallet/balance-history';
+import { balanceHistory, todaysTotalBalance } from '@/lib/wallet/balance-history';
 import { agorotToWholeShekels } from '@/lib/money';
 import { HEADER_TITLE_TEST_IDS } from '@/components/Header/HeaderTitle/constants';
 import { MENU_TEST_IDS } from '@/components/Menu/constants';
@@ -49,10 +43,7 @@ function rangeOption(rangeId: string): HTMLElement {
 
 function transactionTypeOption(transactionTypeFilter: string): HTMLElement {
   return screen.getByTestId(
-    CHOICE_CHIPS_TEST_IDS.option(
-      TRANSACTION_LIST_TEST_IDS.filters,
-      transactionTypeFilter
-    )
+    CHOICE_CHIPS_TEST_IDS.option(TRANSACTION_LIST_TEST_IDS.filters, transactionTypeFilter)
   );
 }
 
@@ -99,15 +90,13 @@ describe('the transactions screen', () => {
         })
       );
 
-      expect(
-        screen.getByTestId(TOTAL_BALANCE_TEST_IDS.totalBalance)
-      ).toHaveTextContent(String(agorotToWholeShekels(todaysTotal)));
+      expect(screen.getByTestId(TOTAL_BALANCE_TEST_IDS.totalBalance)).toHaveTextContent(
+        String(agorotToWholeShekels(todaysTotal))
+      );
     });
 
     it('still lists the deposit from before the week', () => {
-      expect(screen.getAllByTestId(TRANSACTION_ROW_TEST_IDS.row)).toHaveLength(
-        mockDeposits.length
-      );
+      expect(screen.getAllByTestId(TRANSACTION_ROW_TEST_IDS.row)).toHaveLength(mockDeposits.length);
     });
 
     describe('and then switches to another child', () => {
@@ -123,16 +112,14 @@ describe('the transactions screen', () => {
 
   describe('when the parent turns savings on and switches to a child with no transactions', () => {
     beforeEach(() => {
-      fireEvent.click(
-        screen.getByTestId(BALANCE_CHIPS_TEST_IDS.chip(SHOWN_BALANCE.savings))
-      );
+      fireEvent.click(screen.getByTestId(BALANCE_CHIPS_TEST_IDS.chip(SHOWN_BALANCE.savings)));
       switchToAnotherChild();
     });
 
     it('says there is nothing to show yet', () => {
-      expect(
-        screen.getByTestId(BALANCE_CHART_TEST_IDS.message)
-      ).toHaveTextContent(BALANCE_CHART_COPY.noTransactions.text);
+      expect(screen.getByTestId(BALANCE_CHART_TEST_IDS.message)).toHaveTextContent(
+        BALANCE_CHART_COPY.noTransactions.text
+      );
     });
 
     it('keeps the lines the parent chose', () => {
@@ -153,15 +140,11 @@ describe('the transactions screen', () => {
       });
 
       it('keeps withdrawals picked', () => {
-        expect(
-          transactionTypeOption(TRANSACTION_TYPE.withdrawal)
-        ).toBeChecked();
+        expect(transactionTypeOption(TRANSACTION_TYPE.withdrawal)).toBeChecked();
       });
 
       it('says the child has no transactions, not that the filter found none', () => {
-        expect(
-          screen.getByTestId(TRANSACTION_LIST_TEST_IDS.noTransactions)
-        ).toBeInTheDocument();
+        expect(screen.getByTestId(TRANSACTION_LIST_TEST_IDS.noTransactions)).toBeInTheDocument();
       });
     });
   });

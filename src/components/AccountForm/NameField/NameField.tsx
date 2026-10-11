@@ -10,19 +10,12 @@ export interface NameFieldProps {
   maxLength: number;
 }
 
-export function NameField({
-  value,
-  onChange,
-  maxLength,
-}: NameFieldProps): JSX.Element {
-  const handleChange = (event: ChangeEvent<HTMLInputElement>): void =>
-    onChange(event.target.value);
+export function NameField({ value, onChange, maxLength }: NameFieldProps): JSX.Element {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => onChange(event.target.value);
 
   return (
     <Card data-testid={NAME_FIELD_TEST_IDS.field}>
-      <span data-testid={NAME_FIELD_TEST_IDS.label}>
-        {NAME_FIELD_COPY.label}
-      </span>
+      <span data-testid={NAME_FIELD_TEST_IDS.label}>{NAME_FIELD_COPY.label}</span>
       <Input
         data-testid={NAME_FIELD_TEST_IDS.input}
         value={value}

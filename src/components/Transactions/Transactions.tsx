@@ -46,10 +46,7 @@ export function Transactions({
         <Screen align="top">
           <Column>
             <Header title={TRANSACTIONS_COPY.title} account={currentAccount} />
-            <BalanceOverTime
-              balanceHistory={balanceHistory}
-              viewChoices={viewChoices}
-            />
+            <BalanceOverTime balanceHistory={balanceHistory} viewChoices={viewChoices} />
             <TransactionList
               transactions={transactions}
               wallets={currentAccount.wallets}

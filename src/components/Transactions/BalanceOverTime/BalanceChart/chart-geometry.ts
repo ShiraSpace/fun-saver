@@ -32,10 +32,7 @@ export type BalanceY = (balance: number) => number;
 
 export type DayX = (dayIndex: number) => number;
 
-function dailyBalancesOf(
-  balanceHistory: BalanceHistory,
-  shownBalance: ShownBalance
-): number[] {
+function dailyBalancesOf(balanceHistory: BalanceHistory, shownBalance: ShownBalance): number[] {
   return shownBalance === SHOWN_BALANCE.totalBalance
     ? balanceHistory.totalBalance
     : balanceHistory.wallets[shownBalance];
@@ -81,15 +78,10 @@ export function balanceYWithin({ lowest, highest }: BalanceBounds): BalanceY {
     return (): number => FLAT_BALANCE_Y;
   }
 
-  return (balance): number =>
-    LOWEST_BALANCE_Y - ((balance - lowest) / balanceSpan) * plotHeight;
+  return (balance): number => LOWEST_BALANCE_Y - ((balance - lowest) / balanceSpan) * plotHeight;
 }
 
-export function balanceLinePath(
-  dailyBalances: number[],
-  dayX: DayX,
-  balanceY: BalanceY
-): string {
+export function balanceLinePath(dailyBalances: number[], dayX: DayX, balanceY: BalanceY): string {
   return dailyBalances
     .map((balance, dayIndex) => {
       const command = dayIndex === 0 ? 'M' : 'L';
@@ -125,10 +117,7 @@ function roundedTo(roundingAgorot: number, balance: number): number {
   return Math.round(balance / roundingAgorot) * roundingAgorot;
 }
 
-function ticksRoundedTo(
-  roundingAgorot: number,
-  { lowest, highest }: BalanceBounds
-): number[] {
+function ticksRoundedTo(roundingAgorot: number, { lowest, highest }: BalanceBounds): number[] {
   const lowestTick = Math.ceil(lowest / roundingAgorot) * roundingAgorot;
   const highestTick = Math.floor(highest / roundingAgorot) * roundingAgorot;
 
@@ -139,8 +128,7 @@ function ticksRoundedTo(
   const tickBalances = Array.from({ length: BALANCE_TICK_COUNT }, (_, step) =>
     roundedTo(
       roundingAgorot,
-      lowestTick +
-        ((highestTick - lowestTick) * step) / (BALANCE_TICK_COUNT - 1)
+      lowestTick + ((highestTick - lowestTick) * step) / (BALANCE_TICK_COUNT - 1)
     )
   );
 
@@ -155,18 +143,14 @@ export function balanceTicks(balanceBounds: BalanceBounds): number[] {
   const wholeShekelTicks = ticksRoundedTo(AGOROT_PER_SHEKEL, balanceBounds);
   const halfShekelTicks = ticksRoundedTo(HALF_SHEKEL_AGOROT, balanceBounds);
 
-  return halfShekelTicks.length > wholeShekelTicks.length
-    ? halfShekelTicks
-    : wholeShekelTicks;
+  return halfShekelTicks.length > wholeShekelTicks.length ? halfShekelTicks : wholeShekelTicks;
 }
 
 function keptAboveBottom(labels: PlacedTodaysBalance[]): PlacedTodaysBalance[] {
   const lowestLabelY = Math.max(...labels.map((label) => label.y));
   const overflow = lowestLabelY - LOWEST_BALANCE_Y;
 
-  return overflow > 0
-    ? labels.map((label) => ({ ...label, y: label.y - overflow }))
-    : labels;
+  return overflow > 0 ? labels.map((label) => ({ ...label, y: label.y - overflow })) : labels;
 }
 
 export function todaysBalancesSpacedApart(

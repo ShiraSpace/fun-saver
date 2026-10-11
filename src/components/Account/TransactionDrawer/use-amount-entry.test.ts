@@ -1,19 +1,10 @@
-import {
-  act,
-  renderHook,
-  waitFor,
-  type RenderHookResult,
-} from '@/test-utils/render';
+import { act, renderHook, waitFor, type RenderHookResult } from '@/test-utils/render';
 import { StatusCodes } from 'http-status-codes';
 import { RequestFailedError } from '@/lib/fetch-json';
 import { REQUEST_STATE } from '@/lib/request-state';
 import { mockRouter } from '@mocks/next/navigation';
 import { useIsLoaderShown } from '@/hooks/loader-context';
-import {
-  holdRefresh,
-  useHeldRefresh,
-  type HeldRefresh,
-} from '@/test-utils/held-refresh';
+import { holdRefresh, useHeldRefresh, type HeldRefresh } from '@/test-utils/held-refresh';
 import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 
 interface AmountEntryWithLoader extends AmountEntry {
@@ -52,9 +43,7 @@ describe('useAmountEntry', () => {
     it('fails, so the child is told the save did not happen', async () => {
       const { result } = submitRefusedWith(StatusCodes.CONFLICT);
 
-      await waitFor(() =>
-        expect(result.current.requestState).toBe(REQUEST_STATE.failed)
-      );
+      await waitFor(() => expect(result.current.requestState).toBe(REQUEST_STATE.failed));
     });
 
     describe('while the new page data is on its way', () => {
@@ -68,17 +57,13 @@ describe('useAmountEntry', () => {
       });
 
       it('shows the loader', async () => {
-        await waitFor(() =>
-          expect(hook.result.current.isLoaderShown).toBe(true)
-        );
+        await waitFor(() => expect(hook.result.current.isLoaderShown).toBe(true));
       });
 
       it('hides the loader once the new page data has arrived', async () => {
         await mockHeldRefresh.release();
 
-        await waitFor(() =>
-          expect(hook.result.current.isLoaderShown).toBe(false)
-        );
+        await waitFor(() => expect(hook.result.current.isLoaderShown).toBe(false));
       });
     });
   });
@@ -87,17 +72,13 @@ describe('useAmountEntry', () => {
     it('fails', async () => {
       const { result } = submitRefusedWith(StatusCodes.BAD_REQUEST);
 
-      await waitFor(() =>
-        expect(result.current.requestState).toBe(REQUEST_STATE.failed)
-      );
+      await waitFor(() => expect(result.current.requestState).toBe(REQUEST_STATE.failed));
     });
 
     it('refreshes nothing', async () => {
       const { result } = submitRefusedWith(StatusCodes.BAD_REQUEST);
 
-      await waitFor(() =>
-        expect(result.current.requestState).toBe(REQUEST_STATE.failed)
-      );
+      await waitFor(() => expect(result.current.requestState).toBe(REQUEST_STATE.failed));
       expect(mockRouter.refresh).not.toHaveBeenCalled();
     });
   });

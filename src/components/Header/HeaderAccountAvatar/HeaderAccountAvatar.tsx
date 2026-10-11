@@ -30,10 +30,6 @@ export function HeaderAccountAvatar({
   }
 
   return (
-    <HomeAvatarLink
-      avatarId={account.avatarId}
-      accountName={account.name}
-      isHidden={isHidden}
-    />
+    <HomeAvatarLink avatarId={account.avatarId} accountName={account.name} isHidden={isHidden} />
   );
 }

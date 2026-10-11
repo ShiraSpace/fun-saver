@@ -1,8 +1,5 @@
 import { render, screen, waitFor } from '@/test-utils/render';
-import {
-  ACCOUNT_FORM_COPY,
-  ACCOUNT_FORM_TEST_IDS,
-} from '@/components/AccountForm/constants';
+import { ACCOUNT_FORM_COPY, ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
 import {
   cancelForm,
   selectedAvatars,
@@ -11,10 +8,7 @@ import {
   submitForm,
   fillName,
 } from '@/test-utils/account-form';
-import {
-  mockAccount,
-  mockAccountEdits,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockAccountEdits } from '@/test-utils/mocks/account.mocks';
 import { EditAccount } from './EditAccount';
 import { EDIT_ACCOUNT_COPY, EDIT_ACCOUNT_TEST_IDS } from './constants';
 import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
@@ -34,19 +28,11 @@ describe('EditAccount', () => {
     mockUpdateAccount.mockReset().mockResolvedValue(mockAccount);
     mockOnUpdated.mockClear();
     mockOnCancel.mockClear();
-    render(
-      <EditAccount
-        account={mockAccount}
-        onUpdated={mockOnUpdated}
-        onCancel={mockOnCancel}
-      />
-    );
+    render(<EditAccount account={mockAccount} onUpdated={mockOnUpdated} onCancel={mockOnCancel} />);
   });
 
   it('opens on the edit-account screen', () => {
-    expect(
-      screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(EDIT_ACCOUNT_TEST_IDS.container)).toBeInTheDocument();
   });
 
   it('titles the form for editing rather than creating', () => {
@@ -69,9 +55,7 @@ describe('EditAccount', () => {
     const selected = selectedAvatars();
 
     expect(selected).toHaveLength(1);
-    expect(
-      selected[0].querySelector(`img[alt="${mockAccount.avatarId}"]`)
-    ).toBeInTheDocument();
+    expect(selected[0].querySelector(`img[alt="${mockAccount.avatarId}"]`)).toBeInTheDocument();
   });
 
   it('saves the edited values against the account id', () => {
@@ -105,9 +89,9 @@ describe('EditAccount', () => {
 
     submitForm();
 
-    expect(
-      await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
-    ).toHaveTextContent(ACCOUNT_FORM_COPY.saveError);
+    expect(await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)).toHaveTextContent(
+      ACCOUNT_FORM_COPY.saveError
+    );
   });
 
   it('does not tell the caller when the save fails', async () => {

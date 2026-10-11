@@ -53,14 +53,14 @@ function withAccountAccess<Params extends AccountRouteParams>(
   };
 }
 
-export function withAccountEditor<
-  Params extends AccountRouteParams = AccountRouteParams,
->(handle: AccountHandler<Params>): RouteHandler<Params> {
+export function withAccountEditor<Params extends AccountRouteParams = AccountRouteParams>(
+  handle: AccountHandler<Params>
+): RouteHandler<Params> {
   return withAccountAccess(canEditAccount, handle);
 }
 
-export function withAccountUser<
-  Params extends AccountRouteParams = AccountRouteParams,
->(handle: AccountHandler<Params>): RouteHandler<Params> {
+export function withAccountUser<Params extends AccountRouteParams = AccountRouteParams>(
+  handle: AccountHandler<Params>
+): RouteHandler<Params> {
   return withAccountAccess(isAccountUser, handle);
 }

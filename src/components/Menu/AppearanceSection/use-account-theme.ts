@@ -22,14 +22,10 @@ export function useAccountTheme(): AccountTheme {
   const applyTheme = useSetThemeId();
   const { currentAccount } = useAccounts();
   const router = useRouter();
-  const [requestState, setRequestState] = useState<RequestState>(
-    REQUEST_STATE.idle
-  );
+  const [requestState, setRequestState] = useState<RequestState>(REQUEST_STATE.idle);
 
   useOnMenuClose((): void =>
-    setRequestState((current) =>
-      current === REQUEST_STATE.failed ? REQUEST_STATE.idle : current
-    )
+    setRequestState((current) => (current === REQUEST_STATE.failed ? REQUEST_STATE.idle : current))
   );
 
   const chooseTheme = (themeId: ThemeId): void => {

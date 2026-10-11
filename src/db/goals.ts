@@ -2,13 +2,8 @@ import { GOAL_ENDING } from '@/lib/goal/constants';
 import type { Goal, GoalEndRequest } from '@/lib/goal/types';
 import type { Transaction } from '@/lib/transaction/types';
 
-export function findActiveGoal(
-  goals: Goal[],
-  accountId: string
-): Goal | undefined {
-  return goals.find(
-    (goal) => goal.accountId === accountId && goal.endedAt === undefined
-  );
+export function findActiveGoal(goals: Goal[], accountId: string): Goal | undefined {
+  return goals.find((goal) => goal.accountId === accountId && goal.endedAt === undefined);
 }
 
 export function endActiveGoal(
@@ -27,10 +22,7 @@ export function endActiveGoal(
   return endedGoal;
 }
 
-export function completedGoalEndRequest(
-  withdrawal: Transaction,
-  goalId: string
-): GoalEndRequest {
+export function completedGoalEndRequest(withdrawal: Transaction, goalId: string): GoalEndRequest {
   return {
     goalId,
     accountId: withdrawal.accountId,

@@ -25,9 +25,7 @@ function ChildModeChooser(): JSX.Element {
 function ViewModeReader(): JSX.Element {
   const { viewMode } = useViewMode();
 
-  return (
-    <span data-testid={VIEW_MODE_PROBE_TEST_IDS.otherReader}>{viewMode}</span>
-  );
+  return <span data-testid={VIEW_MODE_PROBE_TEST_IDS.otherReader}>{viewMode}</span>;
 }
 
 function pageRenderedInParentMode(): JSX.Element {
@@ -55,9 +53,9 @@ describe('useViewMode', () => {
     it('shows the mode in the cookie once the page is running', () => {
       render(pageRenderedInParentMode());
 
-      expect(
-        screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.viewMode)
-      ).toHaveTextContent(VIEW_MODE.child);
+      expect(screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.viewMode)).toHaveTextContent(
+        VIEW_MODE.child
+      );
     });
   });
 
@@ -71,9 +69,9 @@ describe('useViewMode', () => {
 
     fireEvent.click(screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.chooseChild));
 
-    expect(
-      screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.otherReader)
-    ).toHaveTextContent(VIEW_MODE.child);
+    expect(screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.otherReader)).toHaveTextContent(
+      VIEW_MODE.child
+    );
   });
 
   describe('on a page rendered in parent mode', () => {
@@ -98,9 +96,9 @@ describe('useViewMode', () => {
         eventTarget.dispatchEvent(new Event(eventName));
       });
 
-      expect(
-        screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.viewMode)
-      ).toHaveTextContent(VIEW_MODE.child);
+      expect(screen.getByTestId(VIEW_MODE_PROBE_TEST_IDS.viewMode)).toHaveTextContent(
+        VIEW_MODE.child
+      );
     });
   });
 });

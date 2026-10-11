@@ -39,11 +39,7 @@ export function GoalProgressBar({
       data-testid={GOAL_PROGRESS_BAR_TEST_IDS.bar}
       thin={thin}
     >
-      <Fill
-        data-testid={GOAL_PROGRESS_BAR_TEST_IDS.fill}
-        reached={reached}
-        style={fillStyle}
-      />
+      <Fill data-testid={GOAL_PROGRESS_BAR_TEST_IDS.fill} reached={reached} style={fillStyle} />
     </Track>
   );
 }

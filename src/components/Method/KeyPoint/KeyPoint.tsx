@@ -6,9 +6,7 @@ import { Icon, Note, Point, Text } from './KeyPoint.styles';
 
 export function KeyPoint({ icon, body, note }: KeyPointCopy): JSX.Element {
   const emphasizedBody = emphasize(body);
-  const noteLine = note && (
-    <Note data-testid={KEY_POINT_TEST_IDS.note}>{emphasize(note)}</Note>
-  );
+  const noteLine = note && <Note data-testid={KEY_POINT_TEST_IDS.note}>{emphasize(note)}</Note>;
 
   return (
     <Point data-testid={KEY_POINT_TEST_IDS.point}>

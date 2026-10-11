@@ -51,13 +51,7 @@ describe('a balance change', () => {
     const mockDayOfInterest = 9;
 
     it('shows agorot when asked, so a day of interest never reads +₪0', () => {
-      render(
-        <BalanceChange
-          balanceChange={mockDayOfInterest}
-          withAgorot
-          testId={mockTestId}
-        />
-      );
+      render(<BalanceChange balanceChange={mockDayOfInterest} withAgorot testId={mockTestId} />);
 
       expect(screen.getByTestId(mockTestId)).toHaveTextContent(
         `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${shekelsText(mockDayOfInterest, true)}`
@@ -65,13 +59,7 @@ describe('a balance change', () => {
     });
 
     it('signs a small fall, rather than reading it as a rise', () => {
-      render(
-        <BalanceChange
-          balanceChange={-mockDayOfInterest}
-          withAgorot
-          testId={mockTestId}
-        />
-      );
+      render(<BalanceChange balanceChange={-mockDayOfInterest} withAgorot testId={mockTestId} />);
 
       expect(screen.getByTestId(mockTestId)).toHaveTextContent(
         `${BALANCE_CHANGE_COPY.fell}${MONEY_COPY.currencySign}${shekelsText(mockDayOfInterest, true)}`

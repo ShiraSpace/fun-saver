@@ -46,9 +46,7 @@ describe('the matcher', () => {
   });
 });
 
-async function proxyAnswerFor(
-  user: Partial<Session['user']> | undefined
-): Promise<ProxyAnswer> {
+async function proxyAnswerFor(user: Partial<Session['user']> | undefined): Promise<ProxyAnswer> {
   const auth = user ? { user, expires: mockSessionExpiry } : null;
   const request = Object.assign(new NextRequest(APP_ORIGIN), { auth });
 
@@ -64,9 +62,7 @@ describe('proxy', () => {
     });
 
     it('is sent to the sign-in page', () => {
-      expect(response?.headers.get('location')).toBe(
-        `${APP_ORIGIN}${SIGN_IN_PATH}`
-      );
+      expect(response?.headers.get('location')).toBe(`${APP_ORIGIN}${SIGN_IN_PATH}`);
     });
   });
 
@@ -94,9 +90,7 @@ describe('proxy', () => {
     });
 
     it('is sent to the sign-in page', () => {
-      expect(response?.headers.get('location')).toBe(
-        `${APP_ORIGIN}${SIGN_IN_PATH}`
-      );
+      expect(response?.headers.get('location')).toBe(`${APP_ORIGIN}${SIGN_IN_PATH}`);
     });
   });
 });

@@ -27,8 +27,7 @@ const PRODUCTION_ENVIRONMENT: EnvironmentConfig = {
 
 export function chosenEnvironment(): MigrationEnvironment {
   const source =
-    FLAGGED_ENVIRONMENTS.find(({ flag }) => process.argv.includes(flag)) ??
-    PRODUCTION_ENVIRONMENT;
+    FLAGGED_ENVIRONMENTS.find(({ flag }) => process.argv.includes(flag)) ?? PRODUCTION_ENVIRONMENT;
 
   return {
     name: source.name,
@@ -37,9 +36,7 @@ export function chosenEnvironment(): MigrationEnvironment {
   };
 }
 
-export function requireEnvironmentUrl(
-  environment: MigrationEnvironment
-): string {
+export function requireEnvironmentUrl(environment: MigrationEnvironment): string {
   if (!environment.url) {
     throw new Error(`${environment.envVar} is not set`);
   }

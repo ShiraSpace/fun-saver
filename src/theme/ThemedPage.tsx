@@ -7,10 +7,7 @@ interface ThemedPageProps {
   children: ReactNode;
 }
 
-export function ThemedPage({
-  themeId,
-  children,
-}: ThemedPageProps): JSX.Element {
+export function ThemedPage({ themeId, children }: ThemedPageProps): JSX.Element {
   return (
     <main>
       <AppThemeProvider initialThemeId={themeId}>{children}</AppThemeProvider>

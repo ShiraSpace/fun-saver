@@ -13,10 +13,7 @@ interface AccountManagementProps {
   children: ReactNode;
 }
 
-export function AccountManagement({
-  navigation,
-  children,
-}: AccountManagementProps): JSX.Element {
+export function AccountManagement({ navigation, children }: AccountManagementProps): JSX.Element {
   const { mode, setMode, cancel } = navigation;
 
   return (
@@ -24,10 +21,7 @@ export function AccountManagement({
       {children}
       {navigation.isCreating && (
         <Overlay>
-          <CreateAccount
-            onCreated={navigation.showNewAccount}
-            onCancel={cancel}
-          />
+          <CreateAccount onCreated={navigation.showNewAccount} onCancel={cancel} />
         </Overlay>
       )}
       {navigation.editingAccount && (

@@ -17,8 +17,7 @@ function settledThrough(wallet: Wallet, transactions: Transaction[]): string {
   return transactions
     .filter((transaction) => transaction.type === TRANSACTION_TYPE.interest)
     .reduce(
-      (latest, transaction) =>
-        transaction.occurredAt > latest ? transaction.occurredAt : latest,
+      (latest, transaction) => (transaction.occurredAt > latest ? transaction.occurredAt : latest),
       wallet.lastInterestDate
     );
 }
@@ -29,25 +28,16 @@ function openingBalance(transactions: Transaction[], firstDay: string): number {
     .reduce((balance, transaction) => balance + balanceChange(transaction), 0);
 }
 
-function principalChangeByDay(
-  transactions: Transaction[],
-  firstDay: string
-): Map<string, number> {
+function principalChangeByDay(transactions: Transaction[], firstDay: string): Map<string, number> {
   const changeByDay = new Map<string, number>();
 
   for (const transaction of transactions) {
-    if (
-      transaction.type === TRANSACTION_TYPE.interest ||
-      transaction.occurredAt < firstDay
-    ) {
+    if (transaction.type === TRANSACTION_TYPE.interest || transaction.occurredAt < firstDay) {
       continue;
     }
 
     const changeSoFar = changeByDay.get(transaction.occurredAt) ?? 0;
-    changeByDay.set(
-      transaction.occurredAt,
-      changeSoFar + balanceChange(transaction)
-    );
+    changeByDay.set(transaction.occurredAt, changeSoFar + balanceChange(transaction));
   }
 
   return changeByDay;

@@ -1,15 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
-import {
-  mockAccount,
-  mockCreateAccountInput,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockCreateAccountInput } from '@/test-utils/mocks/account.mocks';
 import { CreateAccount } from './CreateAccount';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
-import {
-  ACCOUNT_FORM_COPY,
-  ACCOUNT_FORM_TEST_IDS,
-} from '@/components/AccountForm/constants';
+import { ACCOUNT_FORM_COPY, ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
 import { CREATE_ACCOUNT_COPY } from './constants';
 import { mockRouter } from '@mocks/next/navigation';
 import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
@@ -59,15 +53,13 @@ describe('CreateAccount', () => {
     });
 
     it('renders the avatar picker', () => {
-      expect(
-        screen.getByTestId(AVATAR_PICKER_TEST_IDS.container)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(AVATAR_PICKER_TEST_IDS.container)).toBeInTheDocument();
     });
 
     it('shows the submit button', () => {
-      expect(
-        screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit)
-      ).toHaveTextContent(CREATE_ACCOUNT_COPY.submit);
+      expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit)).toHaveTextContent(
+        CREATE_ACCOUNT_COPY.submit
+      );
     });
 
     it('disables submit until a name and an avatar are chosen', () => {
@@ -88,9 +80,9 @@ describe('CreateAccount', () => {
 
       fillAndSubmit(mockCreateAccountInput.name);
 
-      expect(
-        await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
-      ).toHaveTextContent(ACCOUNT_FORM_COPY.saveError);
+      expect(await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)).toHaveTextContent(
+        ACCOUNT_FORM_COPY.saveError
+      );
       expect(mockRouter.push).not.toHaveBeenCalled();
     });
 
@@ -109,9 +101,7 @@ describe('CreateAccount', () => {
     beforeEach(() => {
       mockOnCreated.mockClear();
       mockOnCancel.mockClear();
-      render(
-        <CreateAccount onCreated={mockOnCreated} onCancel={mockOnCancel} />
-      );
+      render(<CreateAccount onCreated={mockOnCreated} onCancel={mockOnCancel} />);
     });
 
     it('calls onCancel when the cancel button is tapped', () => {
@@ -123,9 +113,7 @@ describe('CreateAccount', () => {
     it('calls onCreated with the new account instead of navigating', async () => {
       fillAndSubmit(mockCreateAccountInput.name);
 
-      await waitFor(() =>
-        expect(mockOnCreated).toHaveBeenCalledWith(mockAccount)
-      );
+      await waitFor(() => expect(mockOnCreated).toHaveBeenCalledWith(mockAccount));
       expect(mockRouter.push).not.toHaveBeenCalled();
     });
   });

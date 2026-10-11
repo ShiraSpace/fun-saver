@@ -4,8 +4,7 @@ import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { useDriver } from './driver/use-driver';
 
 describe('create account', () => {
-  const { emptyState, createAccount, avatarPicker, header, account } =
-    useDriver();
+  const { emptyState, createAccount, avatarPicker, header, account } = useDriver();
 
   it('opens the account form from the empty state', async () => {
     await emptyState.tapCreateAccount();
@@ -28,11 +27,7 @@ describe('create account', () => {
     const balances = await account.walletBalances();
     assert.equal(balances.length, 3);
     for (const balance of balances) {
-      assert.match(
-        balance,
-        /(^|\D)0(\D|$)/,
-        `wallet balance reads 0: "${balance}"`
-      );
+      assert.match(balance, /(^|\D)0(\D|$)/, `wallet balance reads 0: "${balance}"`);
     }
   });
 });

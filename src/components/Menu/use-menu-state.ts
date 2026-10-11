@@ -9,8 +9,7 @@ export interface MenuState {
   closeMenu: () => void;
 }
 
-export const [MenuProvider, useMenu] =
-  createRequiredContext<MenuState>('MenuProvider');
+export const [MenuProvider, useMenu] = createRequiredContext<MenuState>('MenuProvider');
 
 export function useMenuState(): MenuState {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,10 +22,7 @@ export function useMenuState(): MenuState {
     setIsOpen(false);
   }, []);
 
-  return useMemo(
-    () => ({ isOpen, toggle, closeMenu }),
-    [isOpen, toggle, closeMenu]
-  );
+  return useMemo(() => ({ isOpen, toggle, closeMenu }), [isOpen, toggle, closeMenu]);
 }
 
 export function useOnMenuClose(onMenuClose: () => void): void {

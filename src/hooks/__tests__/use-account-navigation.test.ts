@@ -1,23 +1,11 @@
-import {
-  act,
-  renderHook,
-  waitFor,
-  type RenderHookResult,
-} from '@/test-utils/render';
+import { act, renderHook, waitFor, type RenderHookResult } from '@/test-utils/render';
 import type { AccountSummary } from '@/lib/account/types';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockAccountSavingForGoal } from '@/test-utils/mocks/goal.mocks';
 import { APP_MODE } from '@/components/AccountManagement/app-mode-context';
-import {
-  holdRefresh,
-  useHeldRefresh,
-  type HeldRefresh,
-} from '@/test-utils/held-refresh';
+import { holdRefresh, useHeldRefresh, type HeldRefresh } from '@/test-utils/held-refresh';
 import { useIsLoaderShown } from '../loader-context';
-import {
-  useAccountNavigation,
-  type AccountNavigation,
-} from '../use-account-navigation';
+import { useAccountNavigation, type AccountNavigation } from '../use-account-navigation';
 
 interface AccountNavigationWithLoader extends AccountNavigation {
   isLoaderShown: boolean;
@@ -54,9 +42,7 @@ describe('useAccountNavigation', () => {
     it('hides the loader once the new page data has arrived', async () => {
       await mockHeldRefresh.release();
 
-      await waitFor(() =>
-        expect(hook.result.current.isLoaderShown).toBe(false)
-      );
+      await waitFor(() => expect(hook.result.current.isLoaderShown).toBe(false));
     });
   });
 
@@ -66,16 +52,12 @@ describe('useAccountNavigation', () => {
 
     beforeEach(() => {
       mockAccounts = [mockAccountSavingForGoal];
-      hook = renderHook(() =>
-        useAccountNavigation(mockAccounts, mockAccountSavingForGoal.id)
-      );
+      hook = renderHook(() => useAccountNavigation(mockAccounts, mockAccountSavingForGoal.id));
       act(() => hook.result.current.setMode(APP_MODE.viewingGoal));
     });
 
     it('names the account', () => {
-      expect(hook.result.current.goalBeingViewed?.accountName).toBe(
-        mockAccountSavingForGoal.name
-      );
+      expect(hook.result.current.goalBeingViewed?.accountName).toBe(mockAccountSavingForGoal.name);
     });
 
     it("carries what is saved toward the account's goal", () => {

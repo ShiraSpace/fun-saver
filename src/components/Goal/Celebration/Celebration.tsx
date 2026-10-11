@@ -1,11 +1,7 @@
 'use client';
 
 import { JSX } from 'react';
-import {
-  CELEBRATION_COLORS,
-  CELEBRATION_PIECES,
-  CELEBRATION_TEST_IDS,
-} from './constants';
+import { CELEBRATION_COLORS, CELEBRATION_PIECES, CELEBRATION_TEST_IDS } from './constants';
 import { CelebrationLayer, Piece } from './Celebration.styles';
 
 export function Celebration(): JSX.Element {
@@ -23,10 +19,7 @@ export function Celebration(): JSX.Element {
   });
 
   return (
-    <CelebrationLayer
-      aria-hidden
-      data-testid={CELEBRATION_TEST_IDS.celebration}
-    >
+    <CelebrationLayer aria-hidden data-testid={CELEBRATION_TEST_IDS.celebration}>
       {pieces}
     </CelebrationLayer>
   );

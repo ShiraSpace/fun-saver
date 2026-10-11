@@ -32,10 +32,7 @@ describe('POST /api/accounts/[id]/deposits', () => {
     return POST(request, { params: Promise.resolve({ id }) });
   }
 
-  function postRawBody(
-    id: string,
-    body: string | undefined
-  ): Promise<Response> {
+  function postRawBody(id: string, body: string | undefined): Promise<Response> {
     const request = new Request('http://localhost/api/accounts/x/deposits', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -47,9 +44,7 @@ describe('POST /api/accounts/[id]/deposits', () => {
 
   async function savingsTransactions(id: string): Promise<Transaction[]> {
     const account = await getStore().getAccount(id);
-    const savings = account!.wallets.find(
-      (wallet) => wallet.name === 'savings'
-    )!;
+    const savings = account!.wallets.find((wallet) => wallet.name === 'savings')!;
 
     return getStore().listTransactionsByWallet(id, savings.id);
   }

@@ -38,22 +38,17 @@ describe('the lines of the shown balances', () => {
     });
 
     it('fills the area under the total', () => {
-      expect(
-        screen.getByTestId(BALANCE_LINES_TEST_IDS.totalBalanceFill)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(BALANCE_LINES_TEST_IDS.totalBalanceFill)).toBeInTheDocument();
     });
 
     it('draws the total on top of the wallets', () => {
-      const savingsLine = screen.getByTestId(
-        BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.savings)
-      );
+      const savingsLine = screen.getByTestId(BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.savings));
       const totalBalanceLine = screen.getByTestId(
         BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.totalBalance)
       );
 
       expect(
-        savingsLine.compareDocumentPosition(totalBalanceLine) &
-          Node.DOCUMENT_POSITION_FOLLOWING
+        savingsLine.compareDocumentPosition(totalBalanceLine) & Node.DOCUMENT_POSITION_FOLLOWING
       ).toBeTruthy();
     });
   });
@@ -64,23 +59,17 @@ describe('the lines of the shown balances', () => {
     });
 
     it('fills nothing, since the fill belongs to the total', () => {
-      expect(
-        screen.queryByTestId(BALANCE_LINES_TEST_IDS.totalBalanceFill)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(BALANCE_LINES_TEST_IDS.totalBalanceFill)).not.toBeInTheDocument();
     });
   });
 
   describe('with the total of a one-day account', () => {
     beforeEach(() => {
-      renderInSvg([
-        { shownBalance: SHOWN_BALANCE.totalBalance, dailyBalances: [1000] },
-      ]);
+      renderInSvg([{ shownBalance: SHOWN_BALANCE.totalBalance, dailyBalances: [1000] }]);
     });
 
     it('fills nothing under a single dot', () => {
-      expect(
-        screen.queryByTestId(BALANCE_LINES_TEST_IDS.totalBalanceFill)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(BALANCE_LINES_TEST_IDS.totalBalanceFill)).not.toBeInTheDocument();
     });
   });
 });

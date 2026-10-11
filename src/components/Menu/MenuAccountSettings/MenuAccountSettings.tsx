@@ -3,11 +3,7 @@
 import { JSX, ReactNode } from 'react';
 import { Avatar } from '@/components/Avatar/Avatar';
 import { useAccounts } from '@/components/Home/accounts-context';
-import {
-  SettingsSection,
-  SettingsHeading,
-  SettingsNote,
-} from '../settings-parts';
+import { SettingsSection, SettingsHeading, SettingsNote } from '../settings-parts';
 import {
   MENU_ACCOUNT_SETTINGS_COPY,
   MENU_ACCOUNT_SETTINGS_STYLE,
@@ -18,9 +14,7 @@ interface MenuAccountSettingsProps {
   children: ReactNode;
 }
 
-export function MenuAccountSettings({
-  children,
-}: MenuAccountSettingsProps): JSX.Element {
+export function MenuAccountSettings({ children }: MenuAccountSettingsProps): JSX.Element {
   const { currentAccount } = useAccounts();
 
   return (

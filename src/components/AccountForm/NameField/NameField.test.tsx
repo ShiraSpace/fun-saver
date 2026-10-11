@@ -7,13 +7,7 @@ const mockName = 'נועה';
 const mockOnChange = jest.fn();
 
 function renderField(value = ''): void {
-  render(
-    <NameField
-      value={value}
-      onChange={mockOnChange}
-      maxLength={MAX_ACCOUNT_NAME_LENGTH}
-    />
-  );
+  render(<NameField value={value} onChange={mockOnChange} maxLength={MAX_ACCOUNT_NAME_LENGTH} />);
 }
 
 describe('NameField', () => {
@@ -54,9 +48,7 @@ describe('NameField', () => {
     });
 
     it('shows the provided value', () => {
-      expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(
-        mockName
-      );
+      expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(mockName);
     });
   });
 });

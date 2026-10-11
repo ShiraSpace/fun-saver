@@ -12,9 +12,7 @@ export interface DayTick {
 }
 
 function dayTickCount(daysBack: number): number {
-  return (
-    DAY_TICK_COUNT_BY_DAYS.find(({ upTo }) => daysBack <= upTo)?.count ?? 0
-  );
+  return DAY_TICK_COUNT_BY_DAYS.find(({ upTo }) => daysBack <= upTo)?.count ?? 0;
 }
 
 function dayLabel(day: string, daysBack: number): string {
@@ -44,9 +42,6 @@ export function dayTicks(days: string[]): DayTick[] {
 
   return distinctDayIndices.map((dayIndex) => ({
     dayIndex,
-    label:
-      dayIndex === daysBack
-        ? BALANCE_CHART_COPY.today
-        : dayLabel(days[dayIndex], daysBack),
+    label: dayIndex === daysBack ? BALANCE_CHART_COPY.today : dayLabel(days[dayIndex], daysBack),
   }));
 }

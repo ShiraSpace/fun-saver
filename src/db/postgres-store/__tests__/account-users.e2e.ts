@@ -50,9 +50,7 @@ describe('PostgresAccountUsers', () => {
   });
 
   it('reads the row joining the account and the user', async () => {
-    expect(
-      await store.getAccountUser(mockFirstAccount.id, mockOwner.id)
-    ).toEqual({
+    expect(await store.getAccountUser(mockFirstAccount.id, mockOwner.id)).toEqual({
       accountId: mockFirstAccount.id,
       userId: mockOwner.id,
       role: 'owner',
@@ -61,24 +59,20 @@ describe('PostgresAccountUsers', () => {
   });
 
   it('returns undefined for a user who is not on the account', async () => {
-    expect(
-      await store.getAccountUser(mockFirstAccount.id, mockStranger.id)
-    ).toBeUndefined();
+    expect(await store.getAccountUser(mockFirstAccount.id, mockStranger.id)).toBeUndefined();
   });
 
   it('lists only the accounts the user belongs to', async () => {
-    expect(
-      (await store.listAccountsForUser(mockOwner.id)).map(
-        (account) => account.id
-      )
-    ).toEqual([mockFirstAccount.id, mockLaterAccount.id]);
+    expect((await store.listAccountsForUser(mockOwner.id)).map((account) => account.id)).toEqual([
+      mockFirstAccount.id,
+      mockLaterAccount.id,
+    ]);
   });
 
   it('orders the accounts by name regardless of letter case', async () => {
-    expect(
-      (await store.listAccountsForUser(mockOwner.id)).map(
-        (account) => account.name
-      )
-    ).toEqual([mockFirstAccount.name, mockLaterAccount.name]);
+    expect((await store.listAccountsForUser(mockOwner.id)).map((account) => account.name)).toEqual([
+      mockFirstAccount.name,
+      mockLaterAccount.name,
+    ]);
   });
 });

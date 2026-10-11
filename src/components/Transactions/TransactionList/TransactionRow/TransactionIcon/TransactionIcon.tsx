@@ -10,9 +10,7 @@ interface TransactionIconProps {
   transactionListRow: TransactionListRow;
 }
 
-export function TransactionIcon({
-  transactionListRow,
-}: TransactionIconProps): JSX.Element {
+export function TransactionIcon({ transactionListRow }: TransactionIconProps): JSX.Element {
   const { walletName } = transactionListRow;
 
   if (!walletName) {
@@ -26,11 +24,7 @@ export function TransactionIcon({
   const { badge } = transactionRowCopy(transactionListRow);
 
   return (
-    <WalletIcon
-      aria-hidden
-      walletName={walletName}
-      data-testid={TRANSACTION_ICON_TEST_IDS.icon}
-    >
+    <WalletIcon aria-hidden walletName={walletName} data-testid={TRANSACTION_ICON_TEST_IDS.icon}>
       {WALLET_ICON[walletName]}
       <Badge data-testid={TRANSACTION_ICON_TEST_IDS.badge}>{badge}</Badge>
     </WalletIcon>

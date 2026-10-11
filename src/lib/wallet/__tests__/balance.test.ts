@@ -12,11 +12,7 @@ import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { Transaction } from '@/lib/transaction/types';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 
-const transaction = (
-  type: Transaction['type'],
-  amount: number,
-  occurredAt: string
-): Transaction =>
+const transaction = (type: Transaction['type'], amount: number, occurredAt: string): Transaction =>
   createMockTransaction({
     id: `${type}-${occurredAt}-${amount}`,
     type,
@@ -33,12 +29,8 @@ describe('wallet totals', () => {
   ];
 
   it('counts a withdrawal against the balance and everything else for it', () => {
-    expect(
-      balanceChange(transaction(TRANSACTION_TYPE.withdrawal, 200, '2026-01-01'))
-    ).toBe(-200);
-    expect(
-      balanceChange(transaction(TRANSACTION_TYPE.interest, 5, '2026-01-01'))
-    ).toBe(5);
+    expect(balanceChange(transaction(TRANSACTION_TYPE.withdrawal, 200, '2026-01-01'))).toBe(-200);
+    expect(balanceChange(transaction(TRANSACTION_TYPE.interest, 5, '2026-01-01'))).toBe(5);
   });
 
   it('balance = deposited - withdrawn + interest earned', () => {
@@ -63,9 +55,7 @@ describe('wallet totals', () => {
   });
 
   it('totalBalance = sum of every wallet balance', () => {
-    expect(
-      totalBalance([{ balance: 8500 }, { balance: 5000 }, { balance: 2500 }])
-    ).toBe(16000);
+    expect(totalBalance([{ balance: 8500 }, { balance: 5000 }, { balance: 2500 }])).toBe(16000);
   });
 
   it('totalBalance of no wallets is zero', () => {

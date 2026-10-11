@@ -40,11 +40,7 @@ export function NavigationTab({
   }
 
   return (
-    <Tab
-      data-testid={destination.testId}
-      href={destination.href}
-      onClick={onNavigate}
-    >
+    <Tab data-testid={destination.testId} href={destination.href} onClick={onNavigate}>
       {tabContent}
       <LinkLoaderReporter />
     </Tab>

@@ -2,8 +2,7 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { ACCOUNT_FORM_LAYOUT } from './constants';
 
-const alertText = ({ theme }: { theme: Theme }): string =>
-  theme.colors.alertText;
+const alertText = ({ theme }: { theme: Theme }): string => theme.colors.alertText;
 
 export const Form = styled.form`
   display: flex;

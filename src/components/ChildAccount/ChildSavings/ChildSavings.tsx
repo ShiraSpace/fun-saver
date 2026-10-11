@@ -5,16 +5,7 @@ import type { WalletSummary } from '@/lib/wallet/types';
 import { savingsWithoutAgorot } from '@/lib/wallet/wallet';
 import { Money } from '@/components/Money';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
-import {
-  Card,
-  Earned,
-  Icon,
-  Split,
-  Tile,
-  TileAmount,
-  Title,
-  Total,
-} from './ChildSavings.styles';
+import { Card, Earned, Icon, Split, Tile, TileAmount, Title, Total } from './ChildSavings.styles';
 
 interface ChildSavingsProps {
   savings: WalletSummary;

@@ -9,10 +9,7 @@ describe('BurgerIcon', () => {
     });
 
     it('marks the icon closed', () => {
-      expect(screen.getByTestId(BURGER_ICON_TEST_IDS.icon)).toHaveAttribute(
-        'data-open',
-        'false'
-      );
+      expect(screen.getByTestId(BURGER_ICON_TEST_IDS.icon)).toHaveAttribute('data-open', 'false');
     });
   });
 
@@ -22,10 +19,7 @@ describe('BurgerIcon', () => {
     });
 
     it('marks the icon open to drive the cross morph', () => {
-      expect(screen.getByTestId(BURGER_ICON_TEST_IDS.icon)).toHaveAttribute(
-        'data-open',
-        'true'
-      );
+      expect(screen.getByTestId(BURGER_ICON_TEST_IDS.icon)).toHaveAttribute('data-open', 'true');
     });
   });
 });

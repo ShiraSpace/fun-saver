@@ -19,6 +19,5 @@ export function prefersReducedMotion(): void {
 }
 
 export function prefersMotion(): void {
-  window.matchMedia = (query: string): MediaQueryList =>
-    mediaQueryStub(query, false);
+  window.matchMedia = (query: string): MediaQueryList => mediaQueryStub(query, false);
 }

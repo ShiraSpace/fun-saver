@@ -22,12 +22,7 @@ const INSERT_WITHDRAWAL_IF_GOAL_ENDS = `
   RETURNING id
 `;
 
-function endValues({
-  goalId,
-  accountId,
-  endedAt,
-  ending,
-}: GoalEndRequest): QueryParam[] {
+function endValues({ goalId, accountId, endedAt, ending }: GoalEndRequest): QueryParam[] {
   return [goalId, accountId, endedAt, ending];
 }
 
@@ -63,27 +58,16 @@ export class PostgresGoals implements GoalRepository {
   }
 
   async end(endRequest: GoalEndRequest): Promise<Goal | undefined> {
-    const rows = await queryRows<GoalRow>(
-      this.sql,
-      END_ACTIVE_GOAL,
-      endValues(endRequest)
-    );
+    const rows = await queryRows<GoalRow>(this.sql, END_ACTIVE_GOAL, endValues(endRequest));
 
     return rows[0] ? goalFromRow(rows[0]) : undefined;
   }
 
-  async insertWithdrawalCompleting(
-    withdrawal: Transaction,
-    goalId: string
-  ): Promise<boolean> {
-    const insertedRows = await queryRows<{ id: string }>(
-      this.sql,
-      INSERT_WITHDRAWAL_IF_GOAL_ENDS,
-      [
-        ...endValues(completedGoalEndRequest(withdrawal, goalId)),
-        ...transactionValues(withdrawal),
-      ]
-    );
+  async insertWithdrawalCompleting(withdrawal: Transaction, goalId: string): Promise<boolean> {
+    const insertedRows = await queryRows<{ id: string }>(this.sql, INSERT_WITHDRAWAL_IF_GOAL_ENDS, [
+      ...endValues(completedGoalEndRequest(withdrawal, goalId)),
+      ...transactionValues(withdrawal),
+    ]);
 
     return insertedRows.length > 0;
   }

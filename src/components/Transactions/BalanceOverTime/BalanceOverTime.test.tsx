@@ -1,15 +1,9 @@
 import { render, screen } from '@/test-utils/render';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
-import {
-  balanceHistory,
-  totalBalanceChange,
-} from '@/lib/wallet/balance-history';
+import { balanceHistory, totalBalanceChange } from '@/lib/wallet/balance-history';
 import { balanceChangeInShekels } from '@/lib/money';
-import {
-  ALL_TRANSACTION_TYPES,
-  INTEREST_MODE,
-} from '@/lib/transaction/constants';
+import { ALL_TRANSACTION_TYPES, INTEREST_MODE } from '@/lib/transaction/constants';
 import { SHOWN_BALANCE } from '../constants';
 import { TOTAL_BALANCE_TEST_IDS } from './TotalBalance/constants';
 import { RANGE, type RangeId } from './constants';
@@ -46,9 +40,7 @@ function renderBalanceOverTime(rangeId: RangeId): void {
 
 function balanceChangeOver(rangeId: RangeId): string {
   return String(
-    balanceChangeInShekels(
-      totalBalanceChange(mockBalanceHistory, RANGE[rangeId].days)
-    )
+    balanceChangeInShekels(totalBalanceChange(mockBalanceHistory, RANGE[rangeId].days))
   );
 }
 
@@ -59,15 +51,15 @@ describe('the balance over time', () => {
     });
 
     it('shows how much the total balance moved that week', () => {
-      expect(
-        screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange)
-      ).toHaveTextContent(balanceChangeOver('week'));
+      expect(screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange)).toHaveTextContent(
+        balanceChangeOver('week')
+      );
     });
 
     it('names the week as the range it measured', () => {
-      expect(
-        screen.getByTestId(TOTAL_BALANCE_TEST_IDS.changeOverRange)
-      ).toHaveTextContent(RANGE.week.changeLabel);
+      expect(screen.getByTestId(TOTAL_BALANCE_TEST_IDS.changeOverRange)).toHaveTextContent(
+        RANGE.week.changeLabel
+      );
     });
   });
 
@@ -77,9 +69,9 @@ describe('the balance over time', () => {
     });
 
     it('shows how much the total balance moved since the first transaction', () => {
-      expect(
-        screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange)
-      ).toHaveTextContent(balanceChangeOver('all'));
+      expect(screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange)).toHaveTextContent(
+        balanceChangeOver('all')
+      );
     });
   });
 });

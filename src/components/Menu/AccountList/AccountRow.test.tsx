@@ -8,13 +8,7 @@ import { ACCOUNT_LIST_TEST_IDS } from './constants';
 const mockOnSelect = jest.fn();
 
 function renderRow(isCurrent: boolean): void {
-  render(
-    <AccountRow
-      account={mockAccountSummary}
-      isCurrent={isCurrent}
-      onSelect={mockOnSelect}
-    />
-  );
+  render(<AccountRow account={mockAccountSummary} isCurrent={isCurrent} onSelect={mockOnSelect} />);
 }
 
 describe('AccountRow', () => {
@@ -59,10 +53,7 @@ describe('AccountRow', () => {
     });
 
     it('marks itself current', () => {
-      expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.row)).toHaveAttribute(
-        'aria-current',
-        'true'
-      );
+      expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.row)).toHaveAttribute('aria-current', 'true');
     });
   });
 });

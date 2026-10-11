@@ -9,17 +9,11 @@ import { GoalCompletionNote } from './SelectedWalletNote.styles';
 interface SelectedWalletNoteProps {
   form: Pick<
     WithdrawalFormState,
-    | 'savingsLockedFor'
-    | 'goalToComplete'
-    | 'isOverdraft'
-    | 'requestState'
-    | 'selectedBalance'
+    'savingsLockedFor' | 'goalToComplete' | 'isOverdraft' | 'requestState' | 'selectedBalance'
   >;
 }
 
-export function SelectedWalletNote({
-  form,
-}: SelectedWalletNoteProps): JSX.Element | null {
+export function SelectedWalletNote({ form }: SelectedWalletNoteProps): JSX.Element | null {
   if (form.savingsLockedFor) {
     return null;
   }
@@ -27,9 +21,7 @@ export function SelectedWalletNote({
   const requestFailed = form.requestState === REQUEST_STATE.failed;
 
   if (form.goalToComplete && !form.isOverdraft && !requestFailed) {
-    const completesGoalText = WITHDRAWAL_FORM_COPY.completesGoal(
-      form.goalToComplete.name
-    );
+    const completesGoalText = WITHDRAWAL_FORM_COPY.completesGoal(form.goalToComplete.name);
 
     return (
       <GoalCompletionNote data-testid={WITHDRAWAL_FORM_TEST_IDS.completesGoal}>

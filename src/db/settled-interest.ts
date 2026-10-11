@@ -6,11 +6,7 @@ function interestDay(transaction: Transaction): string | undefined {
     return;
   }
 
-  return JSON.stringify([
-    transaction.accountId,
-    transaction.walletId,
-    transaction.occurredAt,
-  ]);
+  return JSON.stringify([transaction.accountId, transaction.walletId, transaction.occurredAt]);
 }
 
 export function withoutInterestAlreadySettled(

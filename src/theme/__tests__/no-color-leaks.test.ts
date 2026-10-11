@@ -19,8 +19,7 @@ const componentFiles = (match: RegExp): string[] =>
     (file) => match.test(file) && !TEST_FILE.test(file)
   );
 
-const reads = (file: string): string =>
-  readFileSync(join(componentsDir, file), 'utf8');
+const reads = (file: string): string => readFileSync(join(componentsDir, file), 'utf8');
 
 const holdsColour = (file: string): boolean => COLOUR_LITERAL.test(reads(file));
 

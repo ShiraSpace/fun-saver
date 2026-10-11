@@ -20,28 +20,19 @@ export function BalanceLines({
   dayX,
   balanceY,
 }: BalanceLinesProps): JSX.Element {
-  const totalBalanceFill = totalBalanceFillPath(
-    shownBalanceHistories,
-    dayX,
-    balanceY
-  );
+  const totalBalanceFill = totalBalanceFillPath(shownBalanceHistories, dayX, balanceY);
   const totalBalanceFillUnderLines = totalBalanceFill ? (
-    <TotalBalanceFill
-      d={totalBalanceFill}
-      data-testid={BALANCE_LINES_TEST_IDS.totalBalanceFill}
-    />
+    <TotalBalanceFill d={totalBalanceFill} data-testid={BALANCE_LINES_TEST_IDS.totalBalanceFill} />
   ) : null;
   const totalBalanceLast = [...shownBalanceHistories].reverse();
-  const linesWithTotalBalanceOnTop = totalBalanceLast.map(
-    (shownBalanceHistory) => (
-      <BalanceLine
-        key={shownBalanceHistory.shownBalance}
-        shownBalanceHistory={shownBalanceHistory}
-        dayX={dayX}
-        balanceY={balanceY}
-      />
-    )
-  );
+  const linesWithTotalBalanceOnTop = totalBalanceLast.map((shownBalanceHistory) => (
+    <BalanceLine
+      key={shownBalanceHistory.shownBalance}
+      shownBalanceHistory={shownBalanceHistory}
+      dayX={dayX}
+      balanceY={balanceY}
+    />
+  ));
 
   return (
     <g>

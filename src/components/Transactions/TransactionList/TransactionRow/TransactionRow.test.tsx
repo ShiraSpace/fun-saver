@@ -1,8 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import {
-  createMockWithdrawal,
-  mockMonthOfInterest,
-} from '@/test-utils/mocks/transaction.mocks';
+import { createMockWithdrawal, mockMonthOfInterest } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 import { transactionListRowsFor } from '@/test-utils/transaction-rows';
 import { dayMonth } from '@/lib/dates';
@@ -37,9 +34,7 @@ describe('a transaction row', () => {
     });
 
     it('shows its change in agorot, so it never reads ₪0', () => {
-      expect(
-        screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balanceChange)
-      ).toHaveTextContent(
+      expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balanceChange)).toHaveTextContent(
         `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${shekelsText(mockInterestRow.balanceChange, true)}`
       );
     });
@@ -90,9 +85,7 @@ describe('a transaction row', () => {
       );
       render(<TransactionRow transactionListRow={mockWithdrawalRow} />);
 
-      expect(row()).toHaveTextContent(
-        TRANSACTION_ROW_COPY.withdrawal[wallet.name].label
-      );
+      expect(row()).toHaveTextContent(TRANSACTION_ROW_COPY.withdrawal[wallet.name].label);
     }
   );
 });

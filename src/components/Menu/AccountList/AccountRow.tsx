@@ -15,11 +15,7 @@ interface AccountRowProps {
   onSelect: (id: string) => void;
 }
 
-export function AccountRow({
-  account,
-  isCurrent,
-  onSelect,
-}: AccountRowProps): JSX.Element {
+export function AccountRow({ account, isCurrent, onSelect }: AccountRowProps): JSX.Element {
   const totalBalanceAgorot = totalBalance(account.wallets);
 
   const handleSelect = (): void => onSelect(account.id);
@@ -31,11 +27,7 @@ export function AccountRow({
       aria-current={isCurrent}
       onClick={handleSelect}
     >
-      <Avatar
-        avatarId={account.avatarId}
-        alt={account.name}
-        size={ACCOUNT_LIST_STYLE.avatarSize}
-      />
+      <Avatar avatarId={account.avatarId} alt={account.name} size={ACCOUNT_LIST_STYLE.avatarSize} />
       <Name>{account.name}</Name>
       <Total>
         <Money

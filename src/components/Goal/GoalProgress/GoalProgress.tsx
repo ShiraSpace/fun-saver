@@ -9,9 +9,7 @@ interface GoalProgressProps {
   savedTowardGoal: SavedTowardGoal;
 }
 
-export function GoalProgress({
-  savedTowardGoal,
-}: GoalProgressProps): JSX.Element {
+export function GoalProgress({ savedTowardGoal }: GoalProgressProps): JSX.Element {
   const { goal, reached } = savedTowardGoal;
   const heading = reached ? GOAL_PROGRESS_COPY.reached : goal.name;
 

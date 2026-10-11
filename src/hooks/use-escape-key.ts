@@ -39,7 +39,6 @@ export function useEscapeKey({
 
     document.addEventListener(KEY_DOWN_EVENT, onKeyDown, takesPrecedence);
 
-    return (): void =>
-      document.removeEventListener(KEY_DOWN_EVENT, onKeyDown, takesPrecedence);
+    return (): void => document.removeEventListener(KEY_DOWN_EVENT, onKeyDown, takesPrecedence);
   }, [isListening, takesPrecedence]);
 }

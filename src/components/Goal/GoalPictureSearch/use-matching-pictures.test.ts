@@ -1,15 +1,8 @@
-import {
-  renderHook,
-  waitFor,
-  type RenderHookResult,
-} from '@testing-library/react';
+import { renderHook, waitFor, type RenderHookResult } from '@testing-library/react';
 import { REQUEST_STATE } from '@/lib/request-state';
 import { useMatchingPictures } from './use-matching-pictures';
 
-type MatchingPicturesHook = RenderHookResult<
-  ReturnType<typeof useMatchingPictures>,
-  unknown
->;
+type MatchingPicturesHook = RenderHookResult<ReturnType<typeof useMatchingPictures>, unknown>;
 
 describe('useMatchingPictures', () => {
   const mockQueryWithPrefix = 'האופניים';
@@ -23,9 +16,7 @@ describe('useMatchingPictures', () => {
     const mockQueryEmoji = '🚲';
 
     beforeEach(async () => {
-      await waitFor(() =>
-        expect(hook.result.current.requestState).not.toBe(REQUEST_STATE.pending)
-      );
+      await waitFor(() => expect(hook.result.current.requestState).not.toBe(REQUEST_STATE.pending));
     });
 
     it('is no longer waiting', () => {
@@ -41,15 +32,11 @@ describe('useMatchingPictures', () => {
 
       beforeEach(() => {
         hook.unmount();
-        reopenedHook = renderHook(() =>
-          useMatchingPictures(mockQueryWithPrefix)
-        );
+        reopenedHook = renderHook(() => useMatchingPictures(mockQueryWithPrefix));
       });
 
       it('starts with the pictures already found', () => {
-        expect(reopenedHook.result.current.foundEmoji).toContain(
-          mockQueryEmoji
-        );
+        expect(reopenedHook.result.current.foundEmoji).toContain(mockQueryEmoji);
       });
     });
   });

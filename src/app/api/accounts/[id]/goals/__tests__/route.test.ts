@@ -55,9 +55,7 @@ describe('POST /api/accounts/[id]/goals', () => {
     });
 
     it('answers with the goal as stored', async () => {
-      expect(await response.json()).toEqual(
-        await getStore().getActiveGoal(accountId)
-      );
+      expect(await response.json()).toEqual(await getStore().getActiveGoal(accountId));
     });
   });
 
@@ -110,11 +108,7 @@ describe('POST /api/accounts/[id]/goals', () => {
     let response: Response;
 
     beforeEach(async () => {
-      await addAccountViewerToStoreFile(
-        storeFile.path,
-        accountId,
-        mockCoParent
-      );
+      await addAccountViewerToStoreFile(storeFile.path, accountId, mockCoParent);
       jest.mocked(signedInUser).mockResolvedValue(mockCoParent);
       response = await postGoal(mockGoalRequest);
     });

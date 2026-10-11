@@ -31,12 +31,9 @@ describe('picture search', () => {
       expect(matchingPictures('כלבים', mockPicturesByTerm)).toEqual([]);
     });
 
-    it.each(['', '   '])(
-      'finds nothing for the empty or blank search %j',
-      (typed) => {
-        expect(matchingPictures(typed, mockPicturesByTerm)).toEqual([]);
-      }
-    );
+    it.each(['', '   '])('finds nothing for the empty or blank search %j', (typed) => {
+      expect(matchingPictures(typed, mockPicturesByTerm)).toEqual([]);
+    });
   });
 
   it('ranks the picture whose annotation is the whole typed phrase above one holding its words apart', () => {
@@ -45,10 +42,7 @@ describe('picture search', () => {
       '🎂': ['יום הולדת'],
     });
 
-    expect(matchingPictures('יום הולדת', mockPicturesByPhrase)).toEqual([
-      '🎂',
-      '🗓️',
-    ]);
+    expect(matchingPictures('יום הולדת', mockPicturesByPhrase)).toEqual(['🎂', '🗓️']);
   });
 
   it('ranks pictures by how many typed words they match', () => {
@@ -57,10 +51,7 @@ describe('picture search', () => {
       '🦮': ['כלב', 'נחייה'],
     });
 
-    expect(matchingPictures('כלב נחייה', mockPicturesByWordCount)).toEqual([
-      '🦮',
-      '🐕',
-    ]);
+    expect(matchingPictures('כלב נחייה', mockPicturesByWordCount)).toEqual(['🦮', '🐕']);
   });
 
   it('keeps the word-list order for pictures that match equally', () => {
@@ -69,10 +60,7 @@ describe('picture search', () => {
       '🐶': ['כלב'],
     });
 
-    expect(matchingPictures('כלב', mockPicturesByEqualMatch)).toEqual([
-      '🦴',
-      '🐶',
-    ]);
+    expect(matchingPictures('כלב', mockPicturesByEqualMatch)).toEqual(['🦴', '🐶']);
   });
 
   describe('ignoring niqqud', () => {
@@ -85,22 +73,17 @@ describe('picture search', () => {
       ['on the annotation', 'בלון', '🎈'],
       ['on the typed word', 'כֶּלֶב', '🐶'],
     ])('ignores niqqud %s', (_, typed, picture) => {
-      expect(matchingPictures(typed, mockPicturesByVowelledWord)).toEqual([
-        picture,
-      ]);
+      expect(matchingPictures(typed, mockPicturesByVowelledWord)).toEqual([picture]);
     });
   });
 
-  it.each(["ג'ויסטיק", 'ג’ויסטיק'])(
-    'finds a geresh word typed as %s',
-    (typed) => {
-      const mockPicturesByGereshWord = indexPictureWords({
-        '🕹️': ['ג׳ויסטיק'],
-      });
+  it.each(["ג'ויסטיק", 'ג’ויסטיק'])('finds a geresh word typed as %s', (typed) => {
+    const mockPicturesByGereshWord = indexPictureWords({
+      '🕹️': ['ג׳ויסטיק'],
+    });
 
-      expect(matchingPictures(typed, mockPicturesByGereshWord)).toEqual(['🕹️']);
-    }
-  );
+    expect(matchingPictures(typed, mockPicturesByGereshWord)).toEqual(['🕹️']);
+  });
 
   it.each(['מד"א', 'מד”א'])('finds an acronym typed as %s', (typed) => {
     const mockPicturesByAcronym = indexPictureWords({ '🚑': ['מד״א'] });
@@ -125,9 +108,7 @@ describe('picture search', () => {
   });
 
   it('drops a word that is only punctuation from the index', () => {
-    expect(indexPictureWords({ '❗': ['קריאה !'] })).toEqual(
-      new Map([['קריאה', new Set(['❗'])]])
-    );
+    expect(indexPictureWords({ '❗': ['קריאה !'] })).toEqual(new Map([['קריאה', new Set(['❗'])]]));
   });
 
   it('indexes nothing for an annotation that is only punctuation', () => {
@@ -167,11 +148,7 @@ describe('picture search', () => {
       '🌊': ['ים'],
     });
 
-    expect(matchingPictures('ים כחול', mockPicturesBySeaAndBlue)).toEqual([
-      '🌊',
-      '💙',
-      '⌛',
-    ]);
+    expect(matchingPictures('ים כחול', mockPicturesBySeaAndBlue)).toEqual(['🌊', '💙', '⌛']);
   });
 
   it('finds the picture for the bare word after the one holding the word with a prefix letter', () => {
@@ -180,10 +157,7 @@ describe('picture search', () => {
       '🚳': ['אין כניסה לאופניים'],
     });
 
-    expect(matchingPictures('ולאופניים', mockPicturesByPrefixedWord)).toEqual([
-      '🚳',
-      '🚲',
-    ]);
+    expect(matchingPictures('ולאופניים', mockPicturesByPrefixedWord)).toEqual(['🚳', '🚲']);
   });
 
   it('indexes every word of an annotation and the whole annotation', () => {

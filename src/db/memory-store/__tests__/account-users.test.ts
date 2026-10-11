@@ -24,9 +24,7 @@ describe('InMemoryStore account users', () => {
   });
 
   it('writes an owner row for the account', async () => {
-    expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(
-      mockAccountUser
-    );
+    expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(mockAccountUser);
   });
 
   it('lists the account for its owner', async () => {
@@ -38,9 +36,9 @@ describe('InMemoryStore account users', () => {
   });
 
   it('rejects a second account with the same id', async () => {
-    await expect(
-      store.insertAccountWithOwner(mockAccount, mockOwner)
-    ).rejects.toThrow(DuplicateAccountError);
+    await expect(store.insertAccountWithOwner(mockAccount, mockOwner)).rejects.toThrow(
+      DuplicateAccountError
+    );
   });
 
   it('rejects an owner that has no user row', async () => {
@@ -50,9 +48,9 @@ describe('InMemoryStore account users', () => {
   });
 
   it('reports the duplicate account when the owner is also unknown', async () => {
-    await expect(
-      store.insertAccountWithOwner(mockAccount, mockStrangerOwner)
-    ).rejects.toThrow(DuplicateAccountError);
+    await expect(store.insertAccountWithOwner(mockAccount, mockStrangerOwner)).rejects.toThrow(
+      DuplicateAccountError
+    );
   });
 
   it('keeps accounts owned by different users apart', async () => {

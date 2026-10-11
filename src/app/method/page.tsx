@@ -14,8 +14,7 @@ import { signedInAccounts } from '../signed-in-accounts';
 export const dynamic = 'force-dynamic';
 
 export default async function MethodPage(): Promise<JSX.Element> {
-  const { user, accounts, currentAccountId, themeId, viewMode } =
-    await signedInAccounts();
+  const { user, accounts, currentAccountId, themeId, viewMode } = await signedInAccounts();
   const accountSummaries = await summarizeAccounts({
     store: getStore(),
     accounts,

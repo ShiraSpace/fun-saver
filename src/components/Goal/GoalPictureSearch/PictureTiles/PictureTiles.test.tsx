@@ -38,9 +38,7 @@ describe('PictureTiles', () => {
         .getAllByTestId(PICTURE_TILE_TEST_IDS.pictureTile)
         .filter((tile) => tile.getAttribute('aria-pressed') === 'true');
 
-      expect(pressed.map((tile) => tile.textContent)).toEqual([
-        mockChosenPicture.emoji,
-      ]);
+      expect(pressed.map((tile) => tile.textContent)).toEqual([mockChosenPicture.emoji]);
     });
 
     describe('after tapping a tile that is not chosen', () => {
@@ -51,9 +49,7 @@ describe('PictureTiles', () => {
       });
 
       it('chooses that tile’s picture', () => {
-        expect(mockOnChoosePicture).toHaveBeenCalledWith(
-          createMockGoalPicture(mockTappedEmoji)
-        );
+        expect(mockOnChoosePicture).toHaveBeenCalledWith(createMockGoalPicture(mockTappedEmoji));
       });
     });
   });
@@ -79,9 +75,9 @@ describe('PictureTiles', () => {
       });
 
       it('says the pictures are being looked for', () => {
-        expect(
-          screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)
-        ).toHaveTextContent(PICTURE_TILES_COPY.loading);
+        expect(screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)).toHaveTextContent(
+          PICTURE_TILES_COPY.loading
+        );
       });
     });
 
@@ -91,9 +87,9 @@ describe('PictureTiles', () => {
       });
 
       it('says the pictures did not load', () => {
-        expect(
-          screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)
-        ).toHaveTextContent(PICTURE_TILES_COPY.failedToLoad);
+        expect(screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)).toHaveTextContent(
+          PICTURE_TILES_COPY.failedToLoad
+        );
       });
     });
 
@@ -105,9 +101,9 @@ describe('PictureTiles', () => {
       });
 
       it('hints at typing what to search for', () => {
-        expect(
-          screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)
-        ).toHaveTextContent(PICTURE_TILES_COPY.nothingTyped);
+        expect(screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)).toHaveTextContent(
+          PICTURE_TILES_COPY.nothingTyped
+        );
       });
     });
 
@@ -119,9 +115,9 @@ describe('PictureTiles', () => {
       });
 
       it('names the typed words in the no-match line', () => {
-        expect(
-          screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)
-        ).toHaveTextContent(PICTURE_TILES_COPY.noMatch(mockUnmatchedQuery));
+        expect(screen.getByTestId(PICTURE_TILES_TEST_IDS.noPicturesReason)).toHaveTextContent(
+          PICTURE_TILES_COPY.noMatch(mockUnmatchedQuery)
+        );
       });
     });
   });

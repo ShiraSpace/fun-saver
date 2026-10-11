@@ -20,10 +20,7 @@ export function signedInUserId(page: Page): Promise<string> {
   });
 }
 
-export async function canTakeFocus(
-  page: Page,
-  testId: string
-): Promise<boolean> {
+export async function canTakeFocus(page: Page, testId: string): Promise<boolean> {
   const element = await findByTest(page, testId);
 
   return element.evaluate((node) => {
@@ -53,11 +50,7 @@ export async function text(page: Page, testId: string): Promise<string> {
 export async function texts(page: Page, testId: string): Promise<string[]> {
   const elements = await queryAllByTest(page, testId);
 
-  return Promise.all(
-    elements.map((element) =>
-      element.evaluate((node) => node.textContent ?? '')
-    )
-  );
+  return Promise.all(elements.map((element) => element.evaluate((node) => node.textContent ?? '')));
 }
 
 export async function value(page: Page, testId: string): Promise<string> {
@@ -69,10 +62,7 @@ export async function imageSource(page: Page, testId: string): Promise<string> {
   const element = await findByTest(page, testId);
 
   return element.evaluate(
-    (node) =>
-      node.getAttribute('src') ??
-      node.querySelector('img')?.getAttribute('src') ??
-      ''
+    (node) => node.getAttribute('src') ?? node.querySelector('img')?.getAttribute('src') ?? ''
   );
 }
 
@@ -88,9 +78,7 @@ export async function box(page: Page, testId: string): Promise<BoundingBox> {
 }
 
 export function hasVerticalScroll(page: Page): Promise<boolean> {
-  return page.evaluate(
-    () => document.scrollingElement!.scrollHeight > window.innerHeight
-  );
+  return page.evaluate(() => document.scrollingElement!.scrollHeight > window.innerHeight);
 }
 
 interface StyleQuery {
@@ -105,11 +93,7 @@ interface TestIdStyleQuery {
   property: string;
 }
 
-export function styleOf({
-  page,
-  selector,
-  property,
-}: StyleQuery): Promise<string> {
+export function styleOf({ page, selector, property }: StyleQuery): Promise<string> {
   return page.$eval(
     selector,
     (element, property) => getComputedStyle(element).getPropertyValue(property),
@@ -117,11 +101,7 @@ export function styleOf({
   );
 }
 
-export function computedStyle({
-  page,
-  testId,
-  property,
-}: TestIdStyleQuery): Promise<string> {
+export function computedStyle({ page, testId, property }: TestIdStyleQuery): Promise<string> {
   return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
 }
 
@@ -132,12 +112,7 @@ export interface TapQuery {
   y: number;
 }
 
-export function receivesTapAt({
-  page,
-  testId,
-  x,
-  y,
-}: TapQuery): Promise<boolean> {
+export function receivesTapAt({ page, testId, x, y }: TapQuery): Promise<boolean> {
   return page.evaluate(
     (tap) => {
       const tapped = document.elementFromPoint(tap.x, tap.y);
@@ -149,11 +124,7 @@ export function receivesTapAt({
   );
 }
 
-export async function styleValues(
-  page: Page,
-  testId: string,
-  property: string
-): Promise<string[]> {
+export async function styleValues(page: Page, testId: string, property: string): Promise<string[]> {
   const elements = await queryAllByTest(page, testId);
 
   return Promise.all(
@@ -167,10 +138,7 @@ export async function styleValues(
 }
 
 export function servedHtml(page: Page, path: string): Promise<string> {
-  return page.evaluate(
-    async (url: string): Promise<string> => (await fetch(url)).text(),
-    path
-  );
+  return page.evaluate(async (url: string): Promise<string> => (await fetch(url)).text(), path);
 }
 
 export interface RawResponse {
@@ -178,10 +146,7 @@ export interface RawResponse {
   redirectPath: string | null;
 }
 
-export async function rawResponse(
-  url: string,
-  cookie: string
-): Promise<RawResponse> {
+export async function rawResponse(url: string, cookie: string): Promise<RawResponse> {
   const response = await fetch(url, {
     redirect: 'manual',
     headers: { cookie },

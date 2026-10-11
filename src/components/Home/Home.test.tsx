@@ -8,10 +8,7 @@ import { MENU_OVERLAY_TEST_IDS } from '@/components/Menu/MenuOverlay/constants';
 import { ACCOUNT_LIST_TEST_IDS } from '@/components/Menu/AccountList/constants';
 import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
-import {
-  mockAccount,
-  mockSiblingAccount,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockSiblingAccount } from '@/test-utils/mocks/account.mocks';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { AccountSummary } from '@/lib/account/types';
@@ -26,8 +23,7 @@ const mockWriteCookie = jest.fn();
 
 jest.mock('@/lib/cookies', () => ({
   ...jest.requireActual('@/lib/cookies'),
-  writeCookie: (name: string, value: string): void =>
-    mockWriteCookie(name, value),
+  writeCookie: (name: string, value: string): void => mockWriteCookie(name, value),
 }));
 
 describe('Home', () => {
@@ -47,9 +43,7 @@ describe('Home', () => {
     it('renders the empty state when there are no accounts', () => {
       renderHome({ accounts: [], initialAccountId: '' });
 
-      expect(
-        screen.getByTestId(EMPTY_STATE_TEST_IDS.container)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(EMPTY_STATE_TEST_IDS.container)).toBeInTheDocument();
     });
   });
 
@@ -63,9 +57,7 @@ describe('Home', () => {
     });
 
     it('opens on the account it is showing rather than the whole list', () => {
-      expect(
-        screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)).not.toBeInTheDocument();
     });
   });
 
@@ -82,10 +74,7 @@ describe('Home', () => {
       expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
         mockSiblingAccount.name
       );
-      expect(mockWriteCookie).toHaveBeenCalledWith(
-        CURRENT_ACCOUNT_COOKIE,
-        mockSiblingAccount.id
-      );
+      expect(mockWriteCookie).toHaveBeenCalledWith(CURRENT_ACCOUNT_COOKIE, mockSiblingAccount.id);
       expect(screen.getByTestId(MENU_OVERLAY_TEST_IDS.overlay)).toHaveAttribute(
         'data-open',
         'false'
@@ -124,15 +113,11 @@ describe('Home', () => {
       openMenu();
       openAccountPicker();
 
-      expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(
-        THEME_ID.sunshineQuest
-      );
+      expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(THEME_ID.sunshineQuest);
 
       fireEvent.click(screen.getAllByTestId(ACCOUNT_LIST_TEST_IDS.row)[1]);
 
-      expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(
-        THEME_ID.midnightBlue
-      );
+      expect(screen.getByTestId(ACTIVE_THEME_TEST_ID)).toHaveTextContent(THEME_ID.midnightBlue);
     });
   });
 
@@ -142,9 +127,7 @@ describe('Home', () => {
     fireEvent.click(screen.getByTestId(EMPTY_STATE_TEST_IDS.createAccount));
     fireEvent.animationEnd(screen.getByTestId(EMPTY_STATE_TEST_IDS.pig));
 
-    expect(
-      screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(CREATE_ACCOUNT_TEST_IDS.container)).toBeInTheDocument();
   });
 
   describe('in child mode', () => {
@@ -153,29 +136,23 @@ describe('Home', () => {
     });
 
     it('opens on the child screen', () => {
-      expect(
-        screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.screen)).toBeInTheDocument();
     });
 
     describe('the child switches to a sibling', () => {
       beforeEach(() => {
         openMenu();
-        fireEvent.click(
-          screen.getByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)
-        );
+        fireEvent.click(screen.getByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row));
       });
 
       it("shows the sibling's account", () => {
-        expect(
-          screen.getByTestId(HEADER_TITLE_TEST_IDS.title)
-        ).toHaveTextContent(mockSiblingAccount.name);
+        expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
+          mockSiblingAccount.name
+        );
       });
 
       it('stays on the child screen', () => {
-        expect(
-          screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.screen)
-        ).toBeInTheDocument();
+        expect(screen.getByTestId(CHILD_ACCOUNT_TEST_IDS.screen)).toBeInTheDocument();
       });
     });
   });

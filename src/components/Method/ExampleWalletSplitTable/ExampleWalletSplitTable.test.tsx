@@ -12,14 +12,14 @@ describe('the worked example of a week of allowance', () => {
   });
 
   it('accounts for every wallet the page splits the money into, leaving no share unexplained', () => {
-    expect(
-      screen.getAllByTestId(EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS.row)
-    ).toHaveLength(METHOD_COPY.wallets.walletNames.length);
+    expect(screen.getAllByTestId(EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS.row)).toHaveLength(
+      METHOD_COPY.wallets.walletNames.length
+    );
   });
 
   it('states the weekly sum and the age it assumes, so ₪15 is not read as a recommendation', () => {
-    expect(
-      screen.getByTestId(EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.caption)
-    ).toHaveTextContent(example.title);
+    expect(screen.getByTestId(EXAMPLE_WALLET_SPLIT_TABLE_TEST_IDS.caption)).toHaveTextContent(
+      example.title
+    );
   });
 });
