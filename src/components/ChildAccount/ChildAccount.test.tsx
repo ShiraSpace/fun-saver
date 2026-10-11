@@ -1,5 +1,6 @@
 import type { AccountSummary } from '@/lib/account/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
+import { shekelsToAgorot } from '@/lib/money';
 import { render, screen } from '@/test-utils/render';
 import { mockAccountSummary, mockAccountsContext } from '@/test-utils/mocks/account.mocks';
 import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
@@ -48,10 +49,10 @@ describe('ChildAccount saving ₪5 toward a ₪10 goal', () => {
       ...mockAccountSummary,
       wallets: mockAccountSummary.wallets.map((wallet) =>
         wallet.name === WALLET_NAMES.savings
-          ? { ...wallet, balance: 500, interestEarned: 0 }
+          ? { ...wallet, balance: shekelsToAgorot(5), interestEarned: 0 }
           : wallet
       ),
-      goal: createMockGoal({ amount: 1000 }),
+      goal: createMockGoal({ amount: shekelsToAgorot(10) }),
     };
 
     render(<ChildAccount account={mockAccountSavingFiveOfTen} />, {

@@ -9,7 +9,7 @@ function paintIdsIn(drawing: HTMLElement): string[] {
 describe('PiggyBank', () => {
   describe('one piggy bank', () => {
     beforeEach(() => {
-      render(<PiggyBank fill={0.5} />);
+      render(<PiggyBank piggyBankFill={0.5} />);
     });
 
     it('hides the drawing from screen readers', () => {
@@ -21,8 +21,8 @@ describe('PiggyBank', () => {
     beforeEach(() => {
       render(
         <>
-          <PiggyBank fill={0.5} />
-          <PiggyBank fill={0.5} />
+          <PiggyBank piggyBankFill={0.5} />
+          <PiggyBank piggyBankFill={0.5} />
         </>
       );
     });

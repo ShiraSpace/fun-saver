@@ -6,10 +6,10 @@ import { COIN_PILE_TEST_IDS } from './constants';
 
 const mockPaintIds = piggyBankPaintIds('mock-piggy-bank');
 
-function renderPile(fill: number): HTMLElement {
+function renderPile(piggyBankFill: number): HTMLElement {
   const { container } = render(
     <svg>
-      <CoinPile fill={fill} paintIds={mockPaintIds} />
+      <CoinPile piggyBankFill={piggyBankFill} paintIds={mockPaintIds} />
     </svg>
   );
 
