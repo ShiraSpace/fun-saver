@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Split = styled.div`
+export const Breakdown = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
@@ -9,7 +9,7 @@ export const Split = styled.div`
   border-top: 1.5px dashed ${({ theme }): string => theme.colors.divider};
 `;
 
-export const Tile = styled.div`
+export const Principal = styled.div`
   display: grid;
   gap: 2px;
   padding: 8px 0;
@@ -20,12 +20,12 @@ export const Tile = styled.div`
   background: ${({ theme }): string => theme.colors.softBg};
 `;
 
-export const Earned = styled(Tile)`
+export const InterestEarned = styled(Principal)`
   color: ${({ theme }): string => theme.colors.gainText};
   background: ${({ theme }): string => theme.colors.gainSoftBg};
 `;
 
-export const TileAmount = styled.span`
+export const Amount = styled.span`
   justify-self: center;
   font-size: ${({ theme }): number => theme.typography.title}px;
   color: inherit;
