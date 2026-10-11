@@ -7,14 +7,16 @@ import { WITHDRAWAL_FORM_COPY, WITHDRAWAL_FORM_TEST_IDS } from '../constants';
 import { NoteLine } from '../../drawer-parts';
 import { GoalCompletionNote } from './SelectedWalletNote.styles';
 
+type SelectedWalletForm = Pick<
+  WithdrawalFormState,
+  'savingsLockedFor' | 'goalToComplete' | 'isOverdraft' | 'requestState' | 'selectedBalance'
+>;
+
 interface SelectedWalletNoteProps {
-  form: Pick<
-    WithdrawalFormState,
-    'savingsLockedFor' | 'goalToComplete' | 'isOverdraft' | 'requestState' | 'selectedBalance'
-  >;
+  form: SelectedWalletForm;
 }
 
-function noteFor(form: SelectedWalletNoteProps['form']): JSX.Element | null {
+function noteFor(form: SelectedWalletForm): JSX.Element | null {
   if (form.savingsLockedFor) {
     return null;
   }

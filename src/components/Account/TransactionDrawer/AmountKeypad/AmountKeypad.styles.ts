@@ -17,10 +17,6 @@ export const Key = styled.button`
   font-size: ${({ theme }): number => theme.typography.title}px;
   font-weight: 600;
   padding: ${AMOUNT_KEYPAD_STYLE.keyPaddingY}px 0;
-
-  @media ${AMOUNT_KEYPAD_STYLE.shortScreen} {
-    padding: ${AMOUNT_KEYPAD_STYLE.shortScreenKeyPaddingY}px 0;
-  }
   cursor: pointer;
   box-shadow: 0 3px 0 ${({ theme }): string => theme.shadows.faint};
   transition:
@@ -30,6 +26,10 @@ export const Key = styled.button`
   &:active {
     transform: translateY(${AMOUNT_KEYPAD_STYLE.pressDrop}px);
     box-shadow: none;
+  }
+
+  @media ${AMOUNT_KEYPAD_STYLE.shortScreen} {
+    padding: ${AMOUNT_KEYPAD_STYLE.shortScreenKeyPaddingY}px 0;
   }
 `;
 

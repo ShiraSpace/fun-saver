@@ -24,7 +24,6 @@ export const TRANSACTION_DRAWER_COPY = {
 export const TRANSACTION_DRAWER_STYLE = {
   maxHeight: 'calc(100svh - 48px)',
   gap: 8,
-  messageExtraTop: 6,
   padding: '8px 16px 0px',
   handlePaddingBottom: 14,
   bodyPaddingBottom: 24,
