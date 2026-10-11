@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { JSX, useState } from 'react';
 import {
   act,
   fireEvent,
@@ -27,6 +27,7 @@ import {
 } from '@/test-utils/held-refresh';
 
 const START_WORK_TEST_ID = 'start-work';
+const LEAVE_SCREEN_TEST_ID = 'leave-screen';
 
 interface PendingWorkProps {
   isPending: boolean;
@@ -70,14 +71,19 @@ function WorkStarter(): JSX.Element {
 
 interface PageProps {
   heldRefresh: HeldRefresh;
-  isWorkStarterShown: boolean;
 }
 
-function Page({ heldRefresh, isWorkStarterShown }: PageProps): JSX.Element {
+function Page({ heldRefresh }: PageProps): JSX.Element {
+  const [isWorkStarterShown, setIsWorkStarterShown] = useState(true);
+
   return (
     <LoaderProvider>
       <NewPageData heldRefresh={heldRefresh} />
       {isWorkStarterShown && <WorkStarter />}
+      <button
+        data-testid={LEAVE_SCREEN_TEST_ID}
+        onClick={() => setIsWorkStarterShown(false)}
+      />
       <IsLoaderShown />
     </LoaderProvider>
   );
@@ -131,14 +137,11 @@ describe('the loader', () => {
 });
 
 describe('a refresh run with the loader', () => {
-  let view: RenderResult;
   let mockHeldRefresh: HeldRefresh;
 
   beforeEach(async () => {
     mockHeldRefresh = holdRefresh();
-    view = render(
-      <Page heldRefresh={mockHeldRefresh} isWorkStarterShown={true} />
-    );
+    render(<Page heldRefresh={mockHeldRefresh} />);
     await act(async () =>
       fireEvent.click(screen.getByTestId(START_WORK_TEST_ID))
     );
@@ -161,9 +164,7 @@ describe('a refresh run with the loader', () => {
   });
 
   it('keeps the loader shown after the screen that started the work has gone', () => {
-    view.rerender(
-      <Page heldRefresh={mockHeldRefresh} isWorkStarterShown={false} />
-    );
+    fireEvent.click(screen.getByTestId(LEAVE_SCREEN_TEST_ID));
 
     expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
       'true'
