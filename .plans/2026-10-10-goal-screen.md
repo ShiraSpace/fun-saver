@@ -5,6 +5,9 @@
 **Parent plans:** `.plans/2026-10-10-show-goal.md` ("PR 3b — porting from
 `feat/show-goal`"), `.plans/2026-10-03-saving-goal.md`.
 **Mockup frames:** 2, 2b (without confetti), 3a.
+**Ships as three PRs:** Step 1, the goal screen (#203, merged); Step 2, the ways
+in (`feat/goal-ways-in`); Steps 3 and 4, the drawer's kept note line with the
+browser checks, glossary and plan updates (a new branch off `main`).
 
 ## Ported from `origin/feat/show-goal`, and what stays behind
 
