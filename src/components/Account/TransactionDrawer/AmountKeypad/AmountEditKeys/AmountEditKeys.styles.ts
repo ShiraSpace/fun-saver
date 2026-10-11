@@ -18,6 +18,10 @@ export const AmountEditKey = styled.button`
   font-size: ${({ theme }): number => theme.typography.heading}px;
   font-weight: 600;
   padding: ${AMOUNT_KEYPAD_STYLE.editPaddingY}px 0;
+
+  @media ${AMOUNT_KEYPAD_STYLE.shortScreen} {
+    padding: ${AMOUNT_KEYPAD_STYLE.shortScreenKeyPaddingY}px 0;
+  }
   cursor: pointer;
   display: inline-flex;
   align-items: center;

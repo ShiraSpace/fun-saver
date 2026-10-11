@@ -22,7 +22,7 @@ export const TRANSACTION_DRAWER_COPY = {
 } as const;
 
 export const TRANSACTION_DRAWER_STYLE = {
-  maxHeight: '80svh',
+  maxHeight: 'calc(100svh - 48px)',
   gap: 8,
   messageExtraTop: 6,
   padding: '8px 16px 0px',

@@ -4,6 +4,7 @@ import { REQUEST_STATE } from '@/lib/request-state';
 import type { WithdrawalFormState } from '../../use-withdrawal-form';
 import { WithdrawalAlert } from '../WithdrawalAlert';
 import { WITHDRAWAL_FORM_COPY, WITHDRAWAL_FORM_TEST_IDS } from '../constants';
+import { NoteLine } from '../../drawer-parts';
 import { GoalCompletionNote } from './SelectedWalletNote.styles';
 
 interface SelectedWalletNoteProps {
@@ -13,7 +14,7 @@ interface SelectedWalletNoteProps {
   >;
 }
 
-export function SelectedWalletNote({ form }: SelectedWalletNoteProps): JSX.Element | null {
+function noteFor(form: SelectedWalletNoteProps['form']): JSX.Element | null {
   if (form.savingsLockedFor) {
     return null;
   }
@@ -39,4 +40,10 @@ export function SelectedWalletNote({ form }: SelectedWalletNoteProps): JSX.Eleme
       balanceShekels={balanceShekels}
     />
   );
+}
+
+export function SelectedWalletNote({ form }: SelectedWalletNoteProps): JSX.Element {
+  const note = noteFor(form);
+
+  return <NoteLine>{note}</NoteLine>;
 }
