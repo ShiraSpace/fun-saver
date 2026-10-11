@@ -13,9 +13,9 @@ this plan among them, carry over.
 ## Why
 
 After a save, the app refreshes the page's data from the server. Only deposits and
-withdrawals show the header loader while that happens. Saving a theme, finishing an
-account edit and a withdrawal turned down with a conflict all refresh silently. Every
-refresh should show the loader, and every one should do it the same way.
+withdrawals show the header loader while that happens. Finishing an account edit and a
+withdrawal turned down with a conflict refresh silently. Those refreshes should show the
+loader, and every one should do it the same way.
 
 ## The primitive
 
@@ -41,8 +41,7 @@ export function useRunWithLoader(): TransitionStartFunction {
 
 The transition lives in the provider, not in each caller. If it lived in the caller, the
 loader would stop when that caller unmounts, even though the refresh is still on its way.
-That happens when the drawer closes during a conflict refresh, or when the parent menu
-turns into the child menu partway through a theme refresh. The provider sits in
+That happens when the drawer closes during a conflict refresh. The provider sits in
 `app/layout.tsx` and never unmounts, so the loader stops only when the work is done.
 
 Overlapping refreshes share the one flag safely. In React 19.2 each `startTransition`
@@ -76,7 +75,7 @@ way, so #200 has proved it.
 |---|---|---|
 | Deposit and withdrawal (`Account.tsx`) | its own `useRefreshBalances` hook | `runWithLoader(() => router.refresh())`. `use-refresh-balances.ts`, its test and `REFRESH_BALANCES_TEST_IDS` are deleted |
 | A withdrawal turned down with a conflict (`use-amount-entry.ts`, new in #199) | `router.refresh()`, no loader | `runWithLoader(() => router.refresh())` |
-| Theme save (`use-account-theme.ts`) | `router.refresh()`, no loader | `runWithLoader(() => router.refresh())` once the save succeeds |
+| Theme save (`use-account-theme.ts`) | `router.refresh()`, no loader | unchanged: the theme is already applied on screen and the refresh lands too fast for the bar to be seen |
 | Finishing an account edit or creating an account (`use-account-navigation.ts`, used by Home, Method and Transactions) | `router.refresh()`, no loader | `returnToViewing(); runWithLoader(() => router.refresh())` |
 | Child/parent switch (`use-view-mode-switch.ts`) | `useReportLoader(isSwitching)` | unchanged, see below |
 | Link navigation (`LinkLoaderReporter`) | `useReportLoader(useLinkStatus().pending)` | unchanged |
@@ -105,8 +104,6 @@ holds.
 - **The view mode returns to viewing right away.** In `finishEditing`, `returnToViewing()`
   stays outside the transition. Inside it, React would hold the mode change back until the
   refresh landed, and the edit form would stay on screen.
-- **The theme save's loader is visible with the menu open.** The header bar sits at
-  `LAYERS.overlayForeground` (60), above the menu overlay (50).
 
 ## Glossary
 
@@ -136,7 +133,7 @@ restore, `cmp`), per AGENTS.md.
 a refresh by making the mocked `router.refresh` set state that suspends on a promise. Four
 files need that, so it moves to `src/test-utils/` as one helper, named after the e2e
 `holdNextPage` / `release`: a component that goes in the tree and arms the mock, and a
-`release()` that lets the refresh land. Account, conflict, theme and `finishEditing` all use
+`release()` that lets the refresh land. Account, conflict and `finishEditing` all use
 it.
 
 - **`useRunWithLoader`, in `src/hooks/__tests__/loader-context.test.tsx`.** The tests are
@@ -151,8 +148,6 @@ it.
 - **Conflict refresh, in `use-amount-entry.test.ts`** (where the 409 path is tested today),
   through the new `renderHook`, reading `useAmountEntry` and `useIsLoaderShown` together. A
   409 shows the loader until the refresh lands. Any other failure never starts it.
-- **Theme save, in `AppearanceSection.test.tsx`:** the loader shows until the refresh
-  lands. A failed save never starts it.
 - **`finishEditing`, in a new `src/hooks/__tests__/use-account-navigation.test.tsx`:** the
   loader shows until the refresh lands. The mode is already back to viewing while it shows.
   Break: move `returnToViewing()` inside the transition.
@@ -170,7 +165,7 @@ it.
 ## Screenshots
 
 The loader appears in places it did not before, so the PR gets screenshots through the
-`pr-screenshots` skill: theme save, finishing an edit, and the conflict refresh. Each is
+`pr-screenshots` skill: finishing an edit and the conflict refresh. Each is
 shot with the refresh held by `holdNextPage`, because a local refresh lands before a
 screenshot can catch the bar.
 

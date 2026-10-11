@@ -5,7 +5,6 @@ import { useSetThemeId, useThemeId } from '@/theme/AppThemeProvider';
 import type { ThemeId } from '@/theme/registry';
 import { fetchJson } from '@/lib/fetch-json';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
-import { useRunWithLoader } from '@/hooks/loader-context';
 import { useOnMenuClose } from '../use-menu-state';
 
 interface AccountTheme {
@@ -23,7 +22,6 @@ export function useAccountTheme(): AccountTheme {
   const applyTheme = useSetThemeId();
   const { currentAccount } = useAccounts();
   const router = useRouter();
-  const runWithLoader = useRunWithLoader();
   const [requestState, setRequestState] = useState<RequestState>(
     REQUEST_STATE.idle
   );
@@ -51,7 +49,7 @@ export function useAccountTheme(): AccountTheme {
         });
 
         setRequestState(REQUEST_STATE.idle);
-        runWithLoader(() => router.refresh());
+        router.refresh();
       } catch {
         applyTheme(themeBeforeChange);
         setRequestState(REQUEST_STATE.failed);

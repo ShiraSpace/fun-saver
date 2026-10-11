@@ -12,25 +12,9 @@ import {
   APPEARANCE_SECTION_TEST_IDS,
 } from './constants';
 import { mockRouter } from '@mocks/next/navigation';
-import {
-  IS_LOADER_SHOWN_TEST_ID,
-  IsLoaderShown,
-} from '@/test-utils/is-loader-shown';
-import {
-  holdRefresh,
-  NewPageData,
-  type HeldRefresh,
-} from '@/test-utils/held-refresh';
 
-function renderSection(heldRefresh?: HeldRefresh): void {
-  renderInOpenMenu(
-    <>
-      <AppearanceSection />
-      <IsLoaderShown />
-      {heldRefresh && <NewPageData heldRefresh={heldRefresh} />}
-    </>,
-    { accounts: mockAccountsContext }
-  );
+function renderSection(): void {
+  renderInOpenMenu(<AppearanceSection />, { accounts: mockAccountsContext });
 }
 
 function swatches(): HTMLElement[] {
@@ -82,11 +66,9 @@ describe('AppearanceSection', () => {
 
   describe('when a swatch is chosen', () => {
     const chosenTheme = APPEARANCE_SECTION_COPY.themes[1];
-    let mockHeldRefresh: HeldRefresh;
 
     beforeEach(async () => {
-      mockHeldRefresh = holdRefresh();
-      renderSection(mockHeldRefresh);
+      renderSection();
       fireEvent.click(swatches()[1]);
 
       await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
@@ -114,25 +96,6 @@ describe('AppearanceSection', () => {
       await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
 
       swatches().forEach((swatch) => expect(swatch).toBeEnabled());
-    });
-
-    it('shows the loader while the saved theme is refreshed', async () => {
-      await waitFor(() =>
-        expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
-          'true'
-        )
-      );
-    });
-
-    it('hides the loader once the saved theme has been refreshed', async () => {
-      await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
-      await mockHeldRefresh.release();
-
-      await waitFor(() =>
-        expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
-          'false'
-        )
-      );
     });
   });
 
