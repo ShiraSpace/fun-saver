@@ -1,3 +1,5 @@
+import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
+import { PIGGY_BANK_FULL_AT } from '@/lib/wallet/constants';
 import { BELLY, COIN_PILE_LAYOUT, COIN_RADIUS, COIN_SQUASH, PIGGY_BANK_FILL } from './constants';
 
 export interface PileSpot {
@@ -8,11 +10,13 @@ export interface PileSpot {
 
 export interface PiggyBankFillParams {
   savingsBalance: number;
-  fullAt: number;
+  savedTowardGoal?: SavedTowardGoal;
 }
 
-export function piggyBankFill({ savingsBalance, fullAt }: PiggyBankFillParams): number {
-  if (fullAt <= 0) {
+export function piggyBankFillOf({ savingsBalance, savedTowardGoal }: PiggyBankFillParams): number {
+  const fullAt = savedTowardGoal?.goal.amount ?? PIGGY_BANK_FULL_AT;
+
+  if (savedTowardGoal?.reached || fullAt <= 0) {
     return PIGGY_BANK_FILL.full;
   }
 

@@ -18,7 +18,7 @@ export class ChildAccountDriver {
     return this.appBrowser.exists(PIGGY_BANK_TEST_IDS.art);
   }
 
-  coinsInPile(): Promise<number> {
+  coinsDrawnInPile(): Promise<number> {
     return this.appBrowser.count(COIN_PILE_TEST_IDS.coin);
   }
 }

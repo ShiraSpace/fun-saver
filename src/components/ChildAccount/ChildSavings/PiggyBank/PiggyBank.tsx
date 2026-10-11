@@ -10,10 +10,10 @@ import { BELLY, PIGGY_BANK_SHAPE, PIGGY_BANK_TEST_IDS, PIGGY_BANK_VIEW_BOX } fro
 import { PiggyBankDrawing } from './PiggyBank.styles';
 
 interface PiggyBankProps {
-  fill: number;
+  piggyBankFill: number;
 }
 
-export function PiggyBank({ fill }: PiggyBankProps): JSX.Element {
+export function PiggyBank({ piggyBankFill }: PiggyBankProps): JSX.Element {
   const paintIds = piggyBankPaintIds(useId());
   const { shadow, feet, body, bodyShine, earsLift, ear, earShine, earMirror } = PIGGY_BANK_SHAPE;
   const { bellyRim, glassStreak } = PIGGY_BANK_SHAPE;
@@ -41,7 +41,7 @@ export function PiggyBank({ fill }: PiggyBankProps): JSX.Element {
       </g>
       <ellipse {...bellyRim} fill={PIGGY_BANK_COLORS.bellyRim} />
       <ellipse {...BELLY} fill={PIGGY_BANK_COLORS.belly} />
-      <CoinPile fill={fill} paintIds={paintIds} />
+      <CoinPile piggyBankFill={piggyBankFill} paintIds={paintIds} />
       <ellipse {...BELLY} fill={paintOf(paintIds.glass)} />
       <path {...glassStreak} stroke={PIGGY_BANK_COLORS.shine} />
       <PiggyBankFace paintIds={paintIds} />

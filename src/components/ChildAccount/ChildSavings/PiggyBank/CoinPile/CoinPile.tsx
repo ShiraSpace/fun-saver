@@ -5,12 +5,12 @@ import { paintOf, type PiggyBankPaintIds } from '../piggy-bank-paint-ids';
 import { COIN_PILE_TEST_IDS, PILE_COIN_SHAPE } from './constants';
 
 interface CoinPileProps {
-  fill: number;
+  piggyBankFill: number;
   paintIds: PiggyBankPaintIds;
 }
 
-export function CoinPile({ fill, paintIds }: CoinPileProps): JSX.Element {
-  const coins = coinsInPile(fill).map((spot) => (
+export function CoinPile({ piggyBankFill, paintIds }: CoinPileProps): JSX.Element {
+  const coins = coinsInPile(piggyBankFill).map((spot) => (
     <g
       key={`${spot.x}:${spot.y}`}
       data-testid={COIN_PILE_TEST_IDS.coin}

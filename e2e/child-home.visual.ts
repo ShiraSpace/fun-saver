@@ -31,7 +31,7 @@ describe('the child home, ₪85 saved with no goal', () => {
       (COIN_PILE_SPOTS.length * mockSavings) / PIGGY_BANK_FULL_AT
     );
 
-    assert.equal(await childAccount.coinsInPile(), pileTowardThreeHundred);
+    assert.equal(await childAccount.coinsDrawnInPile(), pileTowardThreeHundred);
   });
 });
 
@@ -50,7 +50,7 @@ describe('the child home, ₪85 saved toward a ₪170 goal', () => {
   });
 
   it('fills half the pile', async () => {
-    assert.equal(await childAccount.coinsInPile(), Math.round(COIN_PILE_SPOTS.length / 2));
+    assert.equal(await childAccount.coinsDrawnInPile(), Math.round(COIN_PILE_SPOTS.length / 2));
   });
 });
 
@@ -69,6 +69,6 @@ describe('the child home with the goal reached', () => {
   });
 
   it('fills the whole pile', async () => {
-    assert.equal(await childAccount.coinsInPile(), COIN_PILE_SPOTS.length);
+    assert.equal(await childAccount.coinsDrawnInPile(), COIN_PILE_SPOTS.length);
   });
 });
