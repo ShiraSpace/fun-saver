@@ -1,6 +1,6 @@
 import { PIGGY_BANK_FULL_AT } from '@/lib/wallet/constants';
 import { createMockGoal, createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
-import { coinTransformOf, piggyBankFillOf } from './coin-pile';
+import { COIN_PILE_SPOTS, coinTransformOf, piggyBankFillOf } from './coin-pile';
 
 describe('piggyBankFillOf', () => {
   describe('with no goal', () => {
@@ -64,5 +64,16 @@ describe('coinTransformOf', () => {
     const mockSpot = { x: 1, y: 2, tilt: 3 };
 
     expect(coinTransformOf(mockSpot)).toBe('translate(1 2) rotate(3)');
+  });
+});
+
+describe('COIN_PILE_SPOTS', () => {
+  it('sits every spot on whole hundredths, so the server and the browser draw the same pile', () => {
+    const hundredths = 100;
+    const spotValues = COIN_PILE_SPOTS.flatMap((spot) => [spot.x, spot.y, spot.tilt]);
+
+    expect(
+      spotValues.filter((value) => Math.round(value * hundredths) / hundredths !== value)
+    ).toEqual([]);
   });
 });
