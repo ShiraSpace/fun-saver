@@ -6,7 +6,7 @@ import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
 import { WALLET_CARD_TEST_IDS } from '../WalletCard/constants';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
-import { GOAL_PROGRESS_TEST_IDS } from '../WalletCard/GoalProgress/constants';
+import { GOAL_LINE_TEST_IDS } from '../WalletCard/GoalLine/constants';
 
 describe('WalletList', () => {
   describe('without a goal', () => {
@@ -35,7 +35,7 @@ describe('WalletList', () => {
 
     it('shows no goal line', () => {
       expect(
-        screen.queryByTestId(GOAL_PROGRESS_TEST_IDS.line)
+        screen.queryByTestId(GOAL_LINE_TEST_IDS.line)
       ).not.toBeInTheDocument();
     });
   });
@@ -54,14 +54,12 @@ describe('WalletList', () => {
       const [savingsCard] = screen.getAllByTestId(WALLET_CARD_TEST_IDS.card);
 
       expect(
-        within(savingsCard).getByTestId(GOAL_PROGRESS_TEST_IDS.line)
+        within(savingsCard).getByTestId(GOAL_LINE_TEST_IDS.line)
       ).toBeInTheDocument();
     });
 
     it('puts the goal line on no other card', () => {
-      expect(screen.getAllByTestId(GOAL_PROGRESS_TEST_IDS.line)).toHaveLength(
-        1
-      );
+      expect(screen.getAllByTestId(GOAL_LINE_TEST_IDS.line)).toHaveLength(1);
     });
 
     it('locks the savings card', () => {

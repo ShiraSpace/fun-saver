@@ -7,7 +7,7 @@ import {
   type SavedTowardGoal,
 } from '@/lib/goal/saved-toward-goal';
 import { WalletCard } from '../WalletCard/WalletCard';
-import { GoalProgress } from '../WalletCard/GoalProgress';
+import { GoalLine } from '../WalletCard/GoalLine';
 import { SavingsInterestStats } from './SavingsInterestStats';
 import { WALLET_LIST_COPY, WALLET_LIST_TEST_IDS } from './constants';
 import { List, Label } from './WalletList.styles';
@@ -31,7 +31,7 @@ export function WalletList({
         savedTowardGoal={savedTowardGoalInWallet}
       >
         <SavingsInterestStats wallet={wallet} />
-        <GoalProgress savedTowardGoal={savedTowardGoalInWallet} />
+        <GoalLine savedTowardGoal={savedTowardGoalInWallet} />
       </WalletCard>
     );
   });

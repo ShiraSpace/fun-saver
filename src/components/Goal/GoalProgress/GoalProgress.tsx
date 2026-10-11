@@ -1,26 +1,22 @@
 import { JSX } from 'react';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
-import { GoalProgressBar } from '@/components/Goal/GoalProgressBar';
-import { SavedOutOfGoal } from '@/components/Goal/SavedOutOfGoal';
+import { GoalProgressBar } from '../GoalProgressBar';
+import { SavedOutOfGoal } from '../SavedOutOfGoal';
 import { GOAL_PROGRESS_COPY, GOAL_PROGRESS_TEST_IDS } from './constants';
-import { Body, GoalHeading, GoalLine, Picture } from './GoalProgress.styles';
+import { Body, GoalHeading, Picture, Progress } from './GoalProgress.styles';
 
 interface GoalProgressProps {
-  savedTowardGoal?: SavedTowardGoal;
+  savedTowardGoal: SavedTowardGoal;
 }
 
 export function GoalProgress({
   savedTowardGoal,
-}: GoalProgressProps): JSX.Element | null {
-  if (!savedTowardGoal) {
-    return null;
-  }
-
+}: GoalProgressProps): JSX.Element {
   const { goal, reached } = savedTowardGoal;
   const heading = reached ? GOAL_PROGRESS_COPY.reached : goal.name;
 
   return (
-    <GoalLine data-testid={GOAL_PROGRESS_TEST_IDS.line}>
+    <Progress>
       <Picture aria-hidden="true">{goal.picture.emoji}</Picture>
       <Body>
         <GoalHeading reached={reached}>
@@ -29,6 +25,6 @@ export function GoalProgress({
         </GoalHeading>
         <GoalProgressBar savedTowardGoal={savedTowardGoal} thin />
       </Body>
-    </GoalLine>
+    </Progress>
   );
 }

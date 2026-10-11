@@ -1,7 +1,7 @@
 import type { WalletName } from '@/lib/wallet/types';
 import { ACCOUNT_TEST_IDS } from '@/components/Account/constants';
 import { WALLET_CARD_TEST_IDS } from '@/components/Account/WalletCard/constants';
-import { GOAL_PROGRESS_TEST_IDS } from '@/components/Account/WalletCard/GoalProgress/constants';
+import { GOAL_LINE_TEST_IDS } from '@/components/Account/WalletCard/GoalLine/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '@/components/Account/TransactionDrawer/constants';
 import { TRANSACTION_TYPE_TOGGLE_TEST_IDS } from '@/components/Account/TransactionDrawer/TransactionTypeToggle/constants';
 import { WALLET_PICKER_TEST_IDS } from '@/components/Account/TransactionDrawer/WalletPicker/constants';
@@ -15,7 +15,7 @@ export class GoalDriver {
   constructor(private readonly appBrowser: AppBrowser) {}
 
   goalLine(): Promise<string> {
-    return this.appBrowser.text(GOAL_PROGRESS_TEST_IDS.line);
+    return this.appBrowser.text(GOAL_LINE_TEST_IDS.line);
   }
 
   savingsLockExists(): Promise<boolean> {

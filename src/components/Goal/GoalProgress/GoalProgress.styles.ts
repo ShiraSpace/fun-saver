@@ -1,14 +1,10 @@
 import styled from '@emotion/styled';
 
-export const GoalLine = styled.div`
+export const Progress = styled.span`
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  box-sizing: border-box;
-  margin-top: 10px;
-  padding: 10px 0 4px;
-  border-top: 1.5px dashed ${({ theme }): string => theme.colors.divider};
 `;
 
 export const Picture = styled.span`

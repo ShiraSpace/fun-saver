@@ -1,0 +1,1 @@
+export { MenuGoal } from './MenuGoal';
