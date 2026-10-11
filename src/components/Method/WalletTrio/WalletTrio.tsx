@@ -12,11 +12,7 @@ interface WalletTrioProps {
 
 export function WalletTrio({ walletNames }: WalletTrioProps): JSX.Element {
   const trioWallets = walletNames.map((walletName) => (
-    <TrioWallet
-      key={walletName}
-      walletName={walletName}
-      data-testid={WALLET_TRIO_TEST_IDS.wallet}
-    >
+    <TrioWallet key={walletName} walletName={walletName} data-testid={WALLET_TRIO_TEST_IDS.wallet}>
       <Icon aria-hidden="true">{WALLET_ICON[walletName]}</Icon>
       <Name>{WALLET_LABEL[walletName]}</Name>
       <Share data-testid={WALLET_TRIO_TEST_IDS.share}>

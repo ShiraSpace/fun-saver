@@ -38,16 +38,12 @@ describe('the shown balances', () => {
 
     it('leaves out the total, which was not chosen', () => {
       expect(
-        screen.queryByTestId(
-          BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.totalBalance)
-        )
+        screen.queryByTestId(BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.totalBalance))
       ).not.toBeInTheDocument();
     });
 
     it('labels today’s balance of the savings line alone', () => {
-      expect(
-        screen.getAllByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)
-      ).toHaveLength(1);
+      expect(screen.getAllByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)).toHaveLength(1);
     });
   });
 });

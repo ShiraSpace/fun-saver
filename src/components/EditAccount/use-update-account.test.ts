@@ -1,9 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import type { Account } from '@/lib/account/types';
-import {
-  mockAccount,
-  mockAccountEdits,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockAccountEdits } from '@/test-utils/mocks/account.mocks';
 import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 import { useUpdateAccount } from './use-update-account';
 
@@ -14,9 +11,7 @@ describe('useUpdateAccount', () => {
 
   describe('when the request succeeds', () => {
     beforeEach(() => {
-      mockFetch = jest
-        .fn()
-        .mockResolvedValue({ ok: true, json: async () => mockAccount });
+      mockFetch = jest.fn().mockResolvedValue({ ok: true, json: async () => mockAccount });
       stubFetch(mockFetch);
     });
 
@@ -51,8 +46,6 @@ describe('useUpdateAccount', () => {
 
     const { result } = renderHook(() => useUpdateAccount());
 
-    await expect(
-      result.current.updateAccount(mockAccount.id, mockAccountEdits)
-    ).rejects.toThrow();
+    await expect(result.current.updateAccount(mockAccount.id, mockAccountEdits)).rejects.toThrow();
   });
 });

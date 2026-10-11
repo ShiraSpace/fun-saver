@@ -10,8 +10,7 @@ interface QueryFieldProps {
 }
 
 export function QueryField({ query, onChange }: QueryFieldProps): JSX.Element {
-  const editQuery = (event: ChangeEvent<HTMLInputElement>): void =>
-    onChange(event.target.value);
+  const editQuery = (event: ChangeEvent<HTMLInputElement>): void => onChange(event.target.value);
 
   return (
     <SearchBox

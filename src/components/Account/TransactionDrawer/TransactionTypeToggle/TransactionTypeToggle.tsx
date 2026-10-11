@@ -3,10 +3,7 @@
 import { JSX } from 'react';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { EnteredTransactionType } from '../constants';
-import {
-  TRANSACTION_TYPE_TOGGLE_COPY,
-  TRANSACTION_TYPE_TOGGLE_TEST_IDS,
-} from './constants';
+import { TRANSACTION_TYPE_TOGGLE_COPY, TRANSACTION_TYPE_TOGGLE_TEST_IDS } from './constants';
 import { Track, Pill, Arrow } from './TransactionTypeToggle.styles';
 
 interface TransactionTypeToggleProps {

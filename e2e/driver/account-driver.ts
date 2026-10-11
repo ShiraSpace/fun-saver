@@ -34,10 +34,7 @@ export class AccountDriver {
   }
 
   walletShareAnimations(): Promise<string[]> {
-    return this.appBrowser.styleValues(
-      BALANCE_BREAKDOWN_TEST_IDS.arc,
-      'animation-name'
-    );
+    return this.appBrowser.styleValues(BALANCE_BREAKDOWN_TEST_IDS.arc, 'animation-name');
   }
 
   walletSummaries(): Promise<string[]> {

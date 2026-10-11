@@ -1,9 +1,4 @@
-import {
-  DEFAULT_THEME_ID,
-  THEMES,
-  getThemeTokens,
-  resolveThemeId,
-} from '../registry';
+import { DEFAULT_THEME_ID, THEMES, getThemeTokens, resolveThemeId } from '../registry';
 import { SHADOW_SCALE } from '../shadows';
 import { TINT_SCALE } from '../tints';
 import type { ThemeTokens } from '../theme-tokens';
@@ -46,11 +41,7 @@ describe('theme registry', () => {
       ] as const) {
         expect(colors[key]).toMatch(/^#|rgb/);
       }
-      for (const key of [
-        'walletSavings',
-        'walletSpending',
-        'walletGoodDeeds',
-      ] as const) {
+      for (const key of ['walletSavings', 'walletSpending', 'walletGoodDeeds'] as const) {
         expect(gradients[key]).toContain('linear-gradient');
       }
     });
@@ -80,10 +71,7 @@ describe('theme registry', () => {
     });
 
     it('pins the muted and gain values it reads', () => {
-      const readableOnTints = themes.map(({ colors }) => [
-        colors.textMuted,
-        colors.gainText,
-      ]);
+      const readableOnTints = themes.map(({ colors }) => [colors.textMuted, colors.gainText]);
 
       expect(readableOnTints).toEqual([
         ['#675A80', '#276E2C'],
@@ -100,21 +88,9 @@ describe('theme registry', () => {
       ]);
 
       expect(buttonTokens).toEqual([
-        [
-          'linear-gradient(#8A3AAE, #6B2C8E)',
-          '#4A1A6E',
-          'rgba(107, 44, 142, 0.45)',
-        ],
-        [
-          'linear-gradient(#1B7A6B, #12564B)',
-          '#0B3A33',
-          'rgba(27, 122, 107, 0.45)',
-        ],
-        [
-          'linear-gradient(#1D4ED8, #1E3A8A)',
-          '#152A63',
-          'rgba(29, 78, 216, 0.40)',
-        ],
+        ['linear-gradient(#8A3AAE, #6B2C8E)', '#4A1A6E', 'rgba(107, 44, 142, 0.45)'],
+        ['linear-gradient(#1B7A6B, #12564B)', '#0B3A33', 'rgba(27, 122, 107, 0.45)'],
+        ['linear-gradient(#1D4ED8, #1E3A8A)', '#152A63', 'rgba(29, 78, 216, 0.40)'],
       ]);
     });
 

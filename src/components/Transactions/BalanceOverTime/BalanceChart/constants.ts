@@ -50,10 +50,7 @@ export function viewBoxOf(chartWidth: number): string {
   return `0 0 ${chartWidth} ${CHART_HEIGHT}`;
 }
 
-export function chartLabel(
-  rangeLabel: string,
-  shownBalances: readonly ShownBalance[]
-): string {
+export function chartLabel(rangeLabel: string, shownBalances: readonly ShownBalance[]): string {
   const shownBalanceLabels = shownBalances.map(shownBalanceLabel).join(', ');
 
   return `${BALANCE_CHART_COPY.balanceOverTime} · ${rangeLabel} · ${shownBalanceLabels}`;

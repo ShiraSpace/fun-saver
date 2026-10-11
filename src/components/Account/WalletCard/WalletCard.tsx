@@ -3,33 +3,19 @@
 import { JSX, ReactNode } from 'react';
 import type { SpendableWalletName, WalletSummary } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
-import {
-  savingsLocked,
-  type SavedTowardGoal,
-} from '@/lib/goal/saved-toward-goal';
+import { savingsLocked, type SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { Money } from '@/components/Money';
 import { MONEY_ROUNDING } from '@/components/Money/constants';
 import { GOAL_COPY } from '@/components/Goal/constants';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
-import {
-  Card,
-  Head,
-  WalletIcon,
-  Name,
-  Balance,
-  Summary,
-  Lock,
-} from './WalletCard.styles';
+import { Card, Head, WalletIcon, Name, Balance, Summary, Lock } from './WalletCard.styles';
 
 type CardWallet = Pick<
   WalletSummary,
   'name' | 'icon' | 'balance' | 'monthlyInterestRate' | 'openedAt' | 'withdrawn'
 >;
 
-const WITHDRAWALS_SUMMARY: Record<
-  SpendableWalletName,
-  (wallet: CardWallet) => string
-> = {
+const WITHDRAWALS_SUMMARY: Record<SpendableWalletName, (wallet: CardWallet) => string> = {
   spending: WALLET_CARD_COPY.spendingSummary,
   goodDeeds: WALLET_CARD_COPY.goodDeedsSummary,
 };
@@ -52,11 +38,7 @@ function walletSummaryText(wallet: CardWallet): string | undefined {
   return WITHDRAWALS_SUMMARY[wallet.name](wallet);
 }
 
-export function WalletCard({
-  wallet,
-  savedTowardGoal,
-  children,
-}: WalletCardProps): JSX.Element {
+export function WalletCard({ wallet, savedTowardGoal, children }: WalletCardProps): JSX.Element {
   const summaryText = walletSummaryText(wallet);
   const isSavingsLocked = savingsLocked(savedTowardGoal);
   const balanceRounding = savedTowardGoal
@@ -70,9 +52,7 @@ export function WalletCard({
         <Name>
           {WALLET_CARD_COPY.name[wallet.name]}
           {summaryText && (
-            <Summary data-testid={WALLET_CARD_TEST_IDS.summary}>
-              {summaryText}
-            </Summary>
+            <Summary data-testid={WALLET_CARD_TEST_IDS.summary}>{summaryText}</Summary>
           )}
         </Name>
         <Balance>

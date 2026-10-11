@@ -1,11 +1,7 @@
 import { JsonFileStore } from '../index';
 import { UnknownOwnerError } from '@/lib/account/errors';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
-import {
-  mockAccount,
-  mockAccountUser,
-  mockOwner,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockAccountUser, mockOwner } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { withTempStoreFile } from '@/test-utils/test-utils';
 
@@ -44,9 +40,7 @@ describe('FileSession write queue', () => {
     ]);
 
     expect(await store.getAccount(mockAccount.id)).toEqual(mockAccount);
-    expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(
-      mockAccountUser
-    );
+    expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(mockAccountUser);
   });
 
   it('writes the owner when its user is queued first', async () => {
@@ -55,9 +49,7 @@ describe('FileSession write queue', () => {
       store.insertAccountWithOwner(mockAccount, mockOwner),
     ]);
 
-    expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(
-      mockAccountUser
-    );
+    expect(await store.getAccountUser(mockAccount.id, mockUser.id)).toEqual(mockAccountUser);
   });
 
   it('rejects the account when its user is queued second', async () => {

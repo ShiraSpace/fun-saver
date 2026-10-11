@@ -2,10 +2,7 @@
 
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
-import {
-  MENU_OVERLAY_LAYOUT,
-  MENU_OVERLAY_STYLE,
-} from '../MenuOverlay/constants';
+import { MENU_OVERLAY_LAYOUT, MENU_OVERLAY_STYLE } from '../MenuOverlay/constants';
 
 const backdrop = ({ theme }: { theme: Theme }): string => theme.colors.softBg;
 

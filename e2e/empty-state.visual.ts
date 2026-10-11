@@ -7,9 +7,7 @@ import { useDriver } from './driver/use-driver';
 describe('empty state', () => {
   const { emptyState, appBrowser } = useDriver();
   const expectedGradient = gradientToRgb(getThemeTokens().gradients.screen);
-  const expectedCtaGradient = gradientToRgb(
-    getThemeTokens().gradients.primaryButton
-  );
+  const expectedCtaGradient = gradientToRgb(getThemeTokens().gradients.primaryButton);
 
   describe('the screen', () => {
     it('fits within the viewport', async () => {

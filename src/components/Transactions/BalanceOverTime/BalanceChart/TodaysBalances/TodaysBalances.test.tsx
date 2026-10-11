@@ -23,8 +23,6 @@ describe('today’s balances at the end of the lines', () => {
   });
 
   it('labels every line shown', () => {
-    expect(
-      screen.getAllByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)
-    ).toHaveLength(2);
+    expect(screen.getAllByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)).toHaveLength(2);
   });
 });

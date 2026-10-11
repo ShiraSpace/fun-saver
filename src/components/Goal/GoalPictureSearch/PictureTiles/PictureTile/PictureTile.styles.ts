@@ -3,8 +3,7 @@ import type { Themed } from '@/theme/themed';
 
 const pictureTileFill = ({ theme }: Themed): string => theme.colors.softBg;
 const chosenRing = ({ theme }: Themed): string => theme.colors.selectionRing;
-const chosenTickColor = ({ theme }: Themed): string =>
-  theme.colors.textOnPrimary;
+const chosenTickColor = ({ theme }: Themed): string => theme.colors.textOnPrimary;
 const labelSize = ({ theme }: Themed): number => theme.typography.label;
 
 export const PictureTileButton = styled.button`

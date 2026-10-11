@@ -2,8 +2,7 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { MENU_ICON, MENU_TOGGLE } from '../constants';
 
-const openColor = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textStrong;
+const openColor = ({ theme }: { theme: Theme }): string => theme.colors.textStrong;
 
 export const ToggleButton = styled.button`
   position: relative;

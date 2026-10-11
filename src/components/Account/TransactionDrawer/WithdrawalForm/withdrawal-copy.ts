@@ -30,18 +30,14 @@ function submitLabel({
     return WITHDRAWAL_FORM_COPY.submitting;
   }
 
-  const submitVerb = isDonation
-    ? WITHDRAWAL_FORM_COPY.donationSubmit
-    : WITHDRAWAL_FORM_COPY.submit;
+  const submitVerb = isDonation ? WITHDRAWAL_FORM_COPY.donationSubmit : WITHDRAWAL_FORM_COPY.submit;
 
   return `${submitVerb} ${MONEY_COPY.currencySign}${amountShekels}`;
 }
 
 export function withdrawalCopy(input: WithdrawalCopyInput): WithdrawalCopy {
   return {
-    title: input.isDonation
-      ? WITHDRAWAL_FORM_COPY.donationTitle
-      : WITHDRAWAL_FORM_COPY.title,
+    title: input.isDonation ? WITHDRAWAL_FORM_COPY.donationTitle : WITHDRAWAL_FORM_COPY.title,
     submitLabel: submitLabel(input),
   };
 }

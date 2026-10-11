@@ -25,13 +25,8 @@ describe('PostgresTransactions storing each day of interest once', () => {
   describe('a day of interest', () => {
     const mockDay = mockDayOfInterest.occurredAt;
 
-    async function interestSettledForAccount(
-      settledAccountId: string
-    ): Promise<Transaction[]> {
-      return interestSettledOn(
-        await store.listTransactionsByAccount(settledAccountId),
-        mockDay
-      );
+    async function interestSettledForAccount(settledAccountId: string): Promise<Transaction[]> {
+      return interestSettledOn(await store.listTransactionsByAccount(settledAccountId), mockDay);
     }
 
     describe('when it arrives a second time', () => {
@@ -53,9 +48,7 @@ describe('PostgresTransactions storing each day of interest once', () => {
       });
 
       it('keeps the day settled once', async () => {
-        const settledInterest = await interestSettledForAccount(
-          mockAccountA.id
-        );
+        const settledInterest = await interestSettledForAccount(mockAccountA.id);
 
         expect(settledInterest.map((transaction) => transaction.id)).toEqual([
           transactionId('interest'),
@@ -80,9 +73,7 @@ describe('PostgresTransactions storing each day of interest once', () => {
       });
 
       it('settles the day for the second child too', async () => {
-        const settledInterest = await interestSettledForAccount(
-          mockAccountB.id
-        );
+        const settledInterest = await interestSettledForAccount(mockAccountB.id);
 
         expect(settledInterest.map((transaction) => transaction.id)).toEqual([
           transactionId('interest-b'),
@@ -110,9 +101,7 @@ describe('PostgresTransactions storing each day of interest once', () => {
       });
 
       it('keeps the deposit', async () => {
-        const transactions = await store.listTransactionsByAccount(
-          mockAccountA.id
-        );
+        const transactions = await store.listTransactionsByAccount(mockAccountA.id);
 
         expect(transactions.map((transaction) => transaction.id)).toContain(
           transactionId('same-day-deposit')
@@ -146,16 +135,13 @@ describe('PostgresTransactions storing each day of interest once', () => {
             accountId: mockAccountA.id,
           }),
         ]);
-        const listTransactionsByAccount =
-          store.listTransactionsByAccount.bind(store);
+        const listTransactionsByAccount = store.listTransactionsByAccount.bind(store);
         const waitForEveryRead = afterEveryPageLoadHasRead();
-        jest
-          .spyOn(store, 'listTransactionsByAccount')
-          .mockImplementation(async (id) => {
-            const transactions = await listTransactionsByAccount(id);
-            await waitForEveryRead();
-            return transactions;
-          });
+        jest.spyOn(store, 'listTransactionsByAccount').mockImplementation(async (id) => {
+          const transactions = await listTransactionsByAccount(id);
+          await waitForEveryRead();
+          return transactions;
+        });
         const pageLoads = Array.from({ length: pageLoadCount }, () =>
           settleInterest({ store, accounts: [mockAccountA], asOf: mockDay })
         );
@@ -167,9 +153,7 @@ describe('PostgresTransactions storing each day of interest once', () => {
       });
 
       it('is settled once', async () => {
-        const settledInterest = await interestSettledForAccount(
-          mockAccountA.id
-        );
+        const settledInterest = await interestSettledForAccount(mockAccountA.id);
 
         expect(settledInterest).toHaveLength(1);
       });

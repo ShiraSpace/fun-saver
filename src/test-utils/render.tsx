@@ -7,10 +7,7 @@ import {
 } from '@testing-library/react';
 import { AppThemeProvider } from '@/theme/AppThemeProvider';
 import { DEFAULT_THEME_ID, type ThemeId } from '@/theme/registry';
-import {
-  AccountsProvider,
-  type AccountsContextValue,
-} from '@/components/Home/accounts-context';
+import { AccountsProvider, type AccountsContextValue } from '@/components/Home/accounts-context';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { ViewModeProvider } from '@/components/Home/view-mode-context';
 import { LoaderProvider } from '@/hooks/loader-context';
@@ -27,10 +24,7 @@ export interface RenderOptions {
   viewMode?: ViewMode;
 }
 
-function withAccounts(
-  element: ReactNode,
-  accounts?: AccountsContextValue
-): ReactNode {
+function withAccounts(element: ReactNode, accounts?: AccountsContextValue): ReactNode {
   if (!accounts) {
     return element;
   }
@@ -67,19 +61,14 @@ function appProviders({
     return (
       <AppThemeProvider initialThemeId={themeId}>
         <ViewModeProvider value={viewMode}>
-          <LoaderProvider>
-            {withUser(withAccounts(children, accounts), user)}
-          </LoaderProvider>
+          <LoaderProvider>{withUser(withAccounts(children, accounts), user)}</LoaderProvider>
         </ViewModeProvider>
       </AppThemeProvider>
     );
   };
 }
 
-export function render(
-  element: ReactElement,
-  options: RenderOptions = {}
-): RenderResult {
+export function render(element: ReactElement, options: RenderOptions = {}): RenderResult {
   return renderWithRtl(element, { wrapper: appProviders(options) });
 }
 

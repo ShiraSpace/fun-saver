@@ -6,19 +6,14 @@ import { getStore } from '@/db';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
-import {
-  withAccountEditor,
-  type AccountRouteParams,
-} from '../with-account-access';
+import { withAccountEditor, type AccountRouteParams } from '../with-account-access';
 
 jest.mock('@/auth');
 
 describe('withAccountEditor', () => {
   withTempStoreEnv();
 
-  const mockRouteHandler = jest.fn(async (): Promise<Response> =>
-    Response.json({ edited: true })
-  );
+  const mockRouteHandler = jest.fn(async (): Promise<Response> => Response.json({ edited: true }));
 
   let accountId: string;
 
@@ -100,11 +95,10 @@ describe('withAccountEditor', () => {
     });
 
     it('passes every route param to the handler', () => {
-      expect(mockRouteHandler).toHaveBeenCalledWith(
-        expect.any(Request),
-        expect.any(String),
-        { id: accountId, goalId: mockGoalId }
-      );
+      expect(mockRouteHandler).toHaveBeenCalledWith(expect.any(Request), expect.any(String), {
+        id: accountId,
+        goalId: mockGoalId,
+      });
     });
   });
 });

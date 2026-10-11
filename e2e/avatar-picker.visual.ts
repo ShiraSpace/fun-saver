@@ -15,10 +15,7 @@ describe('avatar picker', () => {
   });
 
   it('lays the avatars out in a four-column grid', async () => {
-    assert.equal(
-      await avatarPicker.columnCount(),
-      AVATAR_PICKER_LAYOUT.columns
-    );
+    assert.equal(await avatarPicker.columnCount(), AVATAR_PICKER_LAYOUT.columns);
   });
 
   it('paints each option as a circle in its avatar colour', async () => {
@@ -33,24 +30,16 @@ describe('avatar picker', () => {
   });
 
   it('caps the picker width so the avatars stay small', async () => {
-    assert.equal(
-      await avatarPicker.pickerWidth(),
-      AVATAR_PICKER_LAYOUT.maxWidth
-    );
+    assert.equal(await avatarPicker.pickerWidth(), AVATAR_PICKER_LAYOUT.maxWidth);
   });
 
   it('rings the selected option in a colour the gradient does not hide', async () => {
     await avatarPicker.selectFirst();
     const option = await avatarPicker.selectedAvatar();
 
-    assert.equal(
-      option.borderColor,
-      hexToRgb(getThemeTokens().colors.textOnPrimary)
-    );
+    assert.equal(option.borderColor, hexToRgb(getThemeTokens().colors.textOnPrimary));
     assert.ok(
-      option.boxShadow.includes(
-        hexToRgb(getThemeTokens().colors.selectionRing)
-      ),
+      option.boxShadow.includes(hexToRgb(getThemeTokens().colors.selectionRing)),
       `expected ring colour ${hexToRgb(getThemeTokens().colors.selectionRing)} in "${option.boxShadow}"`
     );
   });

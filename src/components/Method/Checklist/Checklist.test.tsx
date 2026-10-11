@@ -11,17 +11,13 @@ describe('the checklist of what the parent has to do', () => {
   });
 
   it('puts every decision the method asks for in front of the parent, so none is quietly skipped', () => {
-    expect(screen.getAllByTestId(CHECKLIST_TEST_IDS.item)).toHaveLength(
-      decide.items.length
-    );
+    expect(screen.getAllByTestId(CHECKLIST_TEST_IDS.item)).toHaveLength(decide.items.length);
   });
 
   it('says which decisions are already settled, rather than leaving that to the ticks alone', () => {
     const settled = decide.items.filter((item) => item.done);
 
-    expect(screen.getAllByLabelText(CHECKLIST_COPY.done)).toHaveLength(
-      settled.length
-    );
+    expect(screen.getAllByLabelText(CHECKLIST_COPY.done)).toHaveLength(settled.length);
   });
 
   it('says which are still open, so the parent can see what is left of them', () => {

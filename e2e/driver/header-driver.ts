@@ -47,17 +47,11 @@ export class HeaderDriver {
   }
 
   titleFontSize(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      HEADER_TITLE_TEST_IDS.title,
-      'font-size'
-    );
+    return this.appBrowser.computedStyle(HEADER_TITLE_TEST_IDS.title, 'font-size');
   }
 
   background(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      HEADER_TEST_IDS.bar,
-      'background-color'
-    );
+    return this.appBrowser.computedStyle(HEADER_TEST_IDS.bar, 'background-color');
   }
 
   shadow(): Promise<string> {

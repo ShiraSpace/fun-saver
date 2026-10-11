@@ -10,8 +10,7 @@ interface ViewModeValue {
   chooseViewMode: (viewMode: ViewMode) => void;
 }
 
-const [ViewModeProvider, useViewModeOnServer] =
-  createRequiredContext<ViewMode>('ViewModeProvider');
+const [ViewModeProvider, useViewModeOnServer] = createRequiredContext<ViewMode>('ViewModeProvider');
 
 export { ViewModeProvider };
 

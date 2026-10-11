@@ -19,12 +19,9 @@ interface NavigationTabsProps {
 const asReachable = (
   destination: NavigationDestination,
   hasAccount: boolean
-): NavigationDestination =>
-  hasAccount ? destination : { ...destination, href: undefined };
+): NavigationDestination => (hasAccount ? destination : { ...destination, href: undefined });
 
-export function NavigationTabs({
-  onNavigate,
-}: NavigationTabsProps): JSX.Element {
+export function NavigationTabs({ onNavigate }: NavigationTabsProps): JSX.Element {
   const currentPath = usePathname();
   const hasAccount = Boolean(useOptionalAccounts());
 

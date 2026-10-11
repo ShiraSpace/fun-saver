@@ -27,9 +27,7 @@ describe('the balances along the side of the chart', () => {
     );
 
     expect(
-      screen
-        .getAllByTestId(BALANCE_AXIS_TEST_IDS.tick)
-        .map((tick) => tick.textContent)
+      screen.getAllByTestId(BALANCE_AXIS_TEST_IDS.tick).map((tick) => tick.textContent)
     ).toEqual(tickTexts);
   });
 });

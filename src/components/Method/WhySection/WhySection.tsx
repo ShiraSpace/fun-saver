@@ -6,12 +6,7 @@ import { METHOD_COPY, type MethodBlock } from '../copy';
 
 const { why } = METHOD_COPY;
 
-const WHY_BLOCKS: readonly MethodBlock[] = [
-  why.body,
-  why.evidence,
-  why.noTransfers,
-  why.honest,
-];
+const WHY_BLOCKS: readonly MethodBlock[] = [why.body, why.evidence, why.noTransfers, why.honest];
 
 export function WhySection(): JSX.Element {
   return (

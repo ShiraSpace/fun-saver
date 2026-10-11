@@ -27,10 +27,7 @@ export function TotalBalance({
     <Head>
       <TotalBalanceLabel>{TOTAL_BALANCE_COPY.label}</TotalBalanceLabel>
       <TotalBalanceAmount>
-        <Money
-          amountAgorot={totalBalance}
-          testId={TOTAL_BALANCE_TEST_IDS.totalBalance}
-        />
+        <Money amountAgorot={totalBalance} testId={TOTAL_BALANCE_TEST_IDS.totalBalance} />
       </TotalBalanceAmount>
       <ChangeOverRange
         data-balance-fell={balanceFell}

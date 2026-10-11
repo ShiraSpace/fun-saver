@@ -17,11 +17,7 @@ export class RequestFailedError extends Error {
   }
 }
 
-export async function fetchJson<Result>({
-  url,
-  method,
-  body,
-}: JsonRequest): Promise<Result> {
+export async function fetchJson<Result>({ url, method, body }: JsonRequest): Promise<Result> {
   const response = await fetch(url, {
     method,
     cache: 'no-store',

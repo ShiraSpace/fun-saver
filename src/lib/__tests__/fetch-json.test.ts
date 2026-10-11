@@ -23,9 +23,7 @@ describe('fetchJson', () => {
 
   describe('when the route answers', () => {
     beforeEach(() => {
-      mockFetch = jest
-        .fn()
-        .mockResolvedValue({ ok: true, json: async () => mockAccount });
+      mockFetch = jest.fn().mockResolvedValue({ ok: true, json: async () => mockAccount });
       stubFetch(mockFetch);
     });
 
@@ -138,9 +136,7 @@ describe('fetchJson', () => {
     } as const;
 
     beforeEach(async () => {
-      mockFetch = jest
-        .fn()
-        .mockResolvedValue({ ok: true, json: async () => mockAccount });
+      mockFetch = jest.fn().mockResolvedValue({ ok: true, json: async () => mockAccount });
       stubFetch(mockFetch);
       await fetchJson(mockDeleteRequest);
     });

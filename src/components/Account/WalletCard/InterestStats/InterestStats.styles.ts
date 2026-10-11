@@ -16,8 +16,7 @@ export const Cell = styled.div<{ tone: StatTone }>`
   flex-direction: column;
   align-items: center;
   gap: ${INTEREST_STATS_STYLE.cellGap}px;
-  padding: ${INTEREST_STATS_STYLE.cellPaddingY}px
-    ${INTEREST_STATS_STYLE.cellPaddingX}px;
+  padding: ${INTEREST_STATS_STYLE.cellPaddingY}px ${INTEREST_STATS_STYLE.cellPaddingX}px;
   border-radius: ${INTEREST_STATS_STYLE.cellRadius}px;
   background: ${({ tone, theme }): string =>
     tone === 'interest' ? theme.colors.gainSoftBg : theme.colors.depositBg};

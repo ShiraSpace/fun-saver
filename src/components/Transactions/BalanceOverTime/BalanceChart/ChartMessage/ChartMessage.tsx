@@ -7,10 +7,7 @@ interface ChartMessageProps {
   chartWidth: number;
 }
 
-export function ChartMessage({
-  text,
-  chartWidth,
-}: ChartMessageProps): JSX.Element {
+export function ChartMessage({ text, chartWidth }: ChartMessageProps): JSX.Element {
   const centreX = chartWidth / 2;
 
   return (

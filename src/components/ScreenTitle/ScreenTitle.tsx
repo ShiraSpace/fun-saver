@@ -7,10 +7,7 @@ interface ScreenTitleProps {
   titleIcon?: ReactNode;
 }
 
-export function ScreenTitle({
-  title,
-  titleIcon,
-}: ScreenTitleProps): JSX.Element {
+export function ScreenTitle({ title, titleIcon }: ScreenTitleProps): JSX.Element {
   const icon = titleIcon ? (
     <TitleIcon aria-hidden="true" data-testid={SCREEN_TITLE_TEST_IDS.icon}>
       {titleIcon}

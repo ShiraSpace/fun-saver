@@ -9,10 +9,7 @@ interface BadgeStyle {
 
 const badgeSize = ({ size }: BadgeStyle): number => size;
 
-const badgeBackground = ({
-  theme,
-  background,
-}: BadgeStyle & { theme: Theme }): string =>
+const badgeBackground = ({ theme, background }: BadgeStyle & { theme: Theme }): string =>
   background ?? theme.gradients.avatarBadge;
 
 export const Badge = styled.span<BadgeStyle>`

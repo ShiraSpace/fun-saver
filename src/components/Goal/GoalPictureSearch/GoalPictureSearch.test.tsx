@@ -11,10 +11,7 @@ import { GOAL_PICTURE_SEARCH_TEST_IDS } from './constants';
 import { CHOOSE_BUTTON_TEST_IDS } from './ChooseButton/constants';
 import { PICTURE_TILES_COPY } from './PictureTiles/constants';
 import { QUERY_FIELD_TEST_IDS } from './QueryField/constants';
-import {
-  SHEET_HEADING_COPY,
-  SHEET_HEADING_TEST_IDS,
-} from './SheetHeading/constants';
+import { SHEET_HEADING_COPY, SHEET_HEADING_TEST_IDS } from './SheetHeading/constants';
 
 const mockGoalName = 'אופניים';
 const mockOnChange = jest.fn();
@@ -29,9 +26,7 @@ async function renderLoadedSheet(picture: GoalPicture | null): Promise<void> {
       onClose={mockOnClose}
     />
   );
-  await waitFor(() =>
-    expect(screen.queryByText(PICTURE_TILES_COPY.loading)).toBeNull()
-  );
+  await waitFor(() => expect(screen.queryByText(PICTURE_TILES_COPY.loading)).toBeNull());
 }
 
 describe('GoalPictureSearch', () => {
@@ -58,15 +53,11 @@ describe('GoalPictureSearch', () => {
     });
 
     it('takes the focus into the sheet', () => {
-      expect(document.activeElement).toBe(
-        screen.getByTestId(GOAL_PICTURE_SEARCH_TEST_IDS.sheet)
-      );
+      expect(document.activeElement).toBe(screen.getByTestId(GOAL_PICTURE_SEARCH_TEST_IDS.sheet));
     });
 
     it('dims whatever modal it opens over', () => {
-      expect(layerOf(GOAL_PICTURE_SEARCH_TEST_IDS.scrim)).toBeGreaterThan(
-        LAYERS.modalForeground
-      );
+      expect(layerOf(GOAL_PICTURE_SEARCH_TEST_IDS.scrim)).toBeGreaterThan(LAYERS.modalForeground);
     });
 
     it('keeps the sheet above its own dimming', () => {
@@ -86,9 +77,7 @@ describe('GoalPictureSearch', () => {
     });
 
     it('is named by its title', () => {
-      expect(
-        screen.getByRole('dialog', { name: SHEET_HEADING_COPY.title })
-      ).toBeInTheDocument();
+      expect(screen.getByRole('dialog', { name: SHEET_HEADING_COPY.title })).toBeInTheDocument();
     });
 
     describe('after typing another word', () => {
@@ -196,10 +185,7 @@ describe('GoalPictureSearch', () => {
     });
 
     it('shows that picture as chosen', () => {
-      expect(screen.getByText(mockPicture.emoji)).toHaveAttribute(
-        'aria-pressed',
-        'true'
-      );
+      expect(screen.getByText(mockPicture.emoji)).toHaveAttribute('aria-pressed', 'true');
     });
   });
 

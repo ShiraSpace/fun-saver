@@ -8,17 +8,13 @@ function daysEndingToday(dayCount: number): string[] {
 
 describe('the dates along the bottom of the chart', () => {
   it('names each date once on an account younger than the range', () => {
-    const dayIndices = dayTicks(daysEndingToday(3)).map(
-      ({ dayIndex }) => dayIndex
-    );
+    const dayIndices = dayTicks(daysEndingToday(3)).map(({ dayIndex }) => dayIndex);
 
     expect(dayIndices).toEqual([0, 1, 2]);
   });
 
   it('ends on today', () => {
-    expect(dayTicks(daysEndingToday(31)).at(-1)?.label).toBe(
-      BALANCE_CHART_COPY.today
-    );
+    expect(dayTicks(daysEndingToday(31)).at(-1)?.label).toBe(BALANCE_CHART_COPY.today);
   });
 
   it('labels an account one day old as today', () => {

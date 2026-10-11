@@ -1,9 +1,6 @@
 import styled from '@emotion/styled';
 import { SCREEN_LAYOUT } from '@/components/Screen/constants';
-import {
-  HEADER_AVATAR_PROPS,
-  HEADER_LAYOUT,
-} from '@/components/Header/constants';
+import { HEADER_AVATAR_PROPS, HEADER_LAYOUT } from '@/components/Header/constants';
 import { MENU_ICON } from '@/components/Menu/constants';
 import { themeVar } from '@/theme/theme-at-first-paint';
 

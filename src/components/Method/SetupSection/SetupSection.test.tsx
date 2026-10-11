@@ -14,9 +14,7 @@ const mockLandmarks = [
 ];
 
 function inReadingOrder(): (string | null)[] {
-  const section = screen.getByTestId(
-    METHOD_SECTION_TEST_IDS.section(SECTION_NUMBER.setup)
-  );
+  const section = screen.getByTestId(METHOD_SECTION_TEST_IDS.section(SECTION_NUMBER.setup));
   const selector = mockLandmarks.map((id) => `[data-testid="${id}"]`).join(',');
 
   return Array.from(section.querySelectorAll(selector)).map((landmark) =>

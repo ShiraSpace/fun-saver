@@ -14,17 +14,10 @@ describe('WalletTile', () => {
 
   it('renders its balance in shekels', () => {
     render(
-      <WalletTile
-        walletName="savings"
-        icon="🐷"
-        amountAgorot={8500}
-        amountTestId={VALUE_TEST_ID}
-      />
+      <WalletTile walletName="savings" icon="🐷" amountAgorot={8500} amountTestId={VALUE_TEST_ID} />
     );
 
-    expect(screen.getByTestId(VALUE_TEST_ID)).toHaveTextContent(
-      String(agorotToShekels(8500))
-    );
+    expect(screen.getByTestId(VALUE_TEST_ID)).toHaveTextContent(String(agorotToShekels(8500)));
   });
 
   it('is selectable and reports presses when given onSelect', () => {
@@ -64,17 +57,10 @@ describe('WalletTile', () => {
 
   it('shows no lock when not kept for a goal', () => {
     render(
-      <WalletTile
-        walletName="savings"
-        icon="🐷"
-        amountAgorot={8500}
-        amountTestId={VALUE_TEST_ID}
-      />
+      <WalletTile walletName="savings" icon="🐷" amountAgorot={8500} amountTestId={VALUE_TEST_ID} />
     );
 
-    expect(
-      screen.queryByTestId(WALLET_TILE_TEST_IDS.lock)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId(WALLET_TILE_TEST_IDS.lock)).not.toBeInTheDocument();
   });
 
   describe('kept for a goal', () => {
@@ -97,9 +83,7 @@ describe('WalletTile', () => {
     });
 
     it('is greyed out', () => {
-      expect(getComputedStyle(screen.getByTestId(TILE_TEST_ID)).filter).toBe(
-        'grayscale(1)'
-      );
+      expect(getComputedStyle(screen.getByTestId(TILE_TEST_ID)).filter).toBe('grayscale(1)');
     });
 
     it('can still be picked', () => {

@@ -10,9 +10,7 @@ interface DepositAmountProps {
   amountShekels: number;
 }
 
-export function DepositAmount({
-  amountShekels,
-}: DepositAmountProps): JSX.Element {
+export function DepositAmount({ amountShekels }: DepositAmountProps): JSX.Element {
   return (
     <Block>
       <Value>

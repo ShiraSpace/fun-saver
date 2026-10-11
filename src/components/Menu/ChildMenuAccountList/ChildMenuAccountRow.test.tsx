@@ -9,17 +9,14 @@ describe('ChildMenuAccountRow', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     render(
-      <ChildMenuAccountRow
-        siblingAccount={mockSiblingAccountSummary}
-        onSelect={mockOnSelect}
-      />
+      <ChildMenuAccountRow siblingAccount={mockSiblingAccountSummary} onSelect={mockOnSelect} />
     );
   });
 
   it("shows the sibling account's name", () => {
-    expect(
-      screen.getByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)
-    ).toHaveTextContent(mockSiblingAccountSummary.name);
+    expect(screen.getByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)).toHaveTextContent(
+      mockSiblingAccountSummary.name
+    );
   });
 
   it('reports its sibling account when tapped', () => {
@@ -29,8 +26,8 @@ describe('ChildMenuAccountRow', () => {
   });
 
   it("is named by the child's name alone", () => {
-    expect(
-      screen.getByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)
-    ).toHaveAccessibleName(mockSiblingAccountSummary.name);
+    expect(screen.getByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)).toHaveAccessibleName(
+      mockSiblingAccountSummary.name
+    );
   });
 });

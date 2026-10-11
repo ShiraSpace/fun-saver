@@ -9,8 +9,7 @@ import {
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 
-const policyOf = (cookie: string): string =>
-  cookie.split('; ').slice(1).join('; ');
+const policyOf = (cookie: string): string => cookie.split('; ').slice(1).join('; ');
 
 describe('writeCookie', () => {
   const written = captureCookies();

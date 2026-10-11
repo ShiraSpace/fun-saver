@@ -4,10 +4,7 @@ export interface AddTransaction {
   addWithdrawal: (walletId: string, amountShekels: number) => Promise<void>;
 }
 
-function accountTransactionUrl(
-  accountId: string,
-  transactionPath: string
-): string {
+function accountTransactionUrl(accountId: string, transactionPath: string): string {
   return `/api/accounts/${accountId}/${transactionPath}`;
 }
 

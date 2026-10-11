@@ -13,10 +13,7 @@ interface CreateAccountProps {
   onCancel?: () => void;
 }
 
-export function CreateAccount({
-  onCreated,
-  onCancel,
-}: CreateAccountProps): JSX.Element {
+export function CreateAccount({ onCreated, onCancel }: CreateAccountProps): JSX.Element {
   const router = useRouter();
   const { createAccount } = useCreateAccount();
 

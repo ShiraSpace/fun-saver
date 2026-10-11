@@ -23,16 +23,15 @@ describe('the head of the transaction list', () => {
   });
 
   it('counts the rows and the days it covers', () => {
-    expect(
-      screen.getByTestId(TRANSACTION_LIST_TEST_IDS.count)
-    ).toHaveTextContent(
+    expect(screen.getByTestId(TRANSACTION_LIST_TEST_IDS.count)).toHaveTextContent(
       TRANSACTION_LIST_COPY.count(mockRowCount, mockDayCount)
     );
   });
 
   it('names the interest choice once for a screen reader, not twice', () => {
-    expect(
-      screen.getByTestId(TRANSACTION_LIST_TEST_IDS.interestTitle)
-    ).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByTestId(TRANSACTION_LIST_TEST_IDS.interestTitle)).toHaveAttribute(
+      'aria-hidden',
+      'true'
+    );
   });
 });

@@ -1,11 +1,7 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { EASING, entrance } from '@/theme/motion';
-import {
-  DONUT_STYLE,
-  BALANCE_BREAKDOWN_STYLE,
-  TOTAL_ANIMATION,
-} from './constants';
+import { DONUT_STYLE, BALANCE_BREAKDOWN_STYLE, TOTAL_ANIMATION } from './constants';
 
 const fadeIn = keyframes`
   from {
@@ -14,9 +10,7 @@ const fadeIn = keyframes`
 `;
 
 const HOLE_DIAMETER =
-  (DONUT_STYLE.radius - DONUT_STYLE.strokeWidth / 2) *
-  2 *
-  (DONUT_STYLE.size / DONUT_STYLE.viewBox);
+  (DONUT_STYLE.radius - DONUT_STYLE.strokeWidth / 2) * 2 * (DONUT_STYLE.size / DONUT_STYLE.viewBox);
 
 export const Card = styled.div`
   background: ${({ theme }): string => theme.colors.surface};

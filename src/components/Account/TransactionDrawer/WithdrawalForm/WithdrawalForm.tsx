@@ -5,10 +5,7 @@ import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { Money } from '@/components/Money';
 import { WalletPicker } from '../WalletPicker';
 import { AmountKeypadWithSubmit } from '../AmountKeypadWithSubmit';
-import {
-  useWithdrawalForm,
-  type WithdrawalFormProps,
-} from '../use-withdrawal-form';
+import { useWithdrawalForm, type WithdrawalFormProps } from '../use-withdrawal-form';
 import { DrawerTitle } from '../drawer-parts';
 import { LockedSavings } from './LockedSavings';
 import { SelectedWalletNote } from './SelectedWalletNote';

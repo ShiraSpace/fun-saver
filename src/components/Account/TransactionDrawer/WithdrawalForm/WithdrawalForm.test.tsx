@@ -13,9 +13,7 @@ const mockOnSaved = jest.fn();
 
 jest.mock('../use-add-transaction');
 
-const { mockAddWithdrawal } = jest.requireMock<typeof AddTransactionMock>(
-  '../use-add-transaction'
-);
+const { mockAddWithdrawal } = jest.requireMock<typeof AddTransactionMock>('../use-add-transaction');
 
 const [mockSavings, mockSpending, mockGoodDeeds] = mockWalletSummaries;
 
@@ -29,65 +27,53 @@ describe('WithdrawalForm', () => {
   beforeEach(() => {
     mockAddWithdrawal.mockReset().mockResolvedValue(undefined);
     mockOnSaved.mockClear();
-    render(
-      <WithdrawalForm account={mockAccountSummary} onSaved={mockOnSaved} />
-    );
+    render(<WithdrawalForm account={mockAccountSummary} onSaved={mockOnSaved} />);
   });
 
   it('renders a wallet picker with the spending wallet selected by default', () => {
-    expect(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSpending.name))
-    ).toHaveAttribute('aria-pressed', 'true');
-    expect(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name))
-    ).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSpending.name))).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name))).toHaveAttribute(
+      'aria-pressed',
+      'false'
+    );
   });
 
   it('disables submit until a valid amount is entered', () => {
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
-    ).toBeDisabled();
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)).toBeDisabled();
 
     type('5', '0');
 
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
-    ).toBeEnabled();
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)).toBeEnabled();
   });
 
   it('blocks an overdraft with a hint and a disabled submit', () => {
     type('9', '9');
 
-    expect(
-      screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)
-    ).toHaveTextContent(String(agorotToShekels(mockSpending.balance)));
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
-    ).toBeDisabled();
+    expect(screen.getByTestId(WITHDRAWAL_FORM_TEST_IDS.overdraft)).toHaveTextContent(
+      String(agorotToShekels(mockSpending.balance))
+    );
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)).toBeDisabled();
   });
 
   it('reframes a good-deeds withdrawal as a donation', () => {
-    fireEvent.click(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockGoodDeeds.name))
-    );
+    fireEvent.click(screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockGoodDeeds.name)));
     type('5');
 
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
-    ).toHaveTextContent(WITHDRAWAL_FORM_COPY.donationSubmit);
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)).toHaveTextContent(
+      WITHDRAWAL_FORM_COPY.donationSubmit
+    );
   });
 
   it('withdraws from the chosen wallet on submit', async () => {
-    fireEvent.click(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name))
-    );
+    fireEvent.click(screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet(mockSavings.name)));
     type('1', '0');
 
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
 
-    await waitFor(() =>
-      expect(mockAddWithdrawal).toHaveBeenCalledWith(mockSavings.id, 10)
-    );
+    await waitFor(() => expect(mockAddWithdrawal).toHaveBeenCalledWith(mockSavings.id, 10));
   });
 
   it('reports the withdrawal saved', async () => {
@@ -105,9 +91,7 @@ describe('WithdrawalForm', () => {
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
 
     await waitFor(() =>
-      expect(
-        screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)
-      ).toBeInTheDocument()
+      expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.error)).toBeInTheDocument()
     );
     expect(mockOnSaved).not.toHaveBeenCalled();
   });

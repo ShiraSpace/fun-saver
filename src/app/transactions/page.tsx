@@ -15,8 +15,7 @@ import { signedInAccounts } from '../signed-in-accounts';
 export const dynamic = 'force-dynamic';
 
 export default async function TransactionsPage(): Promise<JSX.Element> {
-  const { user, accounts, currentAccountId, themeId, viewMode } =
-    await signedInAccounts();
+  const { user, accounts, currentAccountId, themeId, viewMode } = await signedInAccounts();
   const asOf = today();
 
   const settledAccounts = await settleInterest({
@@ -25,9 +24,7 @@ export default async function TransactionsPage(): Promise<JSX.Element> {
     asOf,
   });
 
-  const accountSummaries = settledAccounts.map(
-    (settledAccount) => settledAccount.account
-  );
+  const accountSummaries = settledAccounts.map((settledAccount) => settledAccount.account);
   const initialAccount = findCurrentAccount(accountSummaries, currentAccountId);
   const settledTransactionsByAccount = transactionsByAccount(settledAccounts);
 

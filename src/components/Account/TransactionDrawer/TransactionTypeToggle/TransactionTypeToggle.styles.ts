@@ -17,8 +17,7 @@ export const Pill = styled.button<{ active: boolean }>`
   font-weight: 700;
   padding: 7px 0;
   border-radius: 999px;
-  background: ${({ theme, active }): string =>
-    active ? theme.colors.surface : 'transparent'};
+  background: ${({ theme, active }): string => (active ? theme.colors.surface : 'transparent')};
   color: ${({ theme, active }): string =>
     active ? theme.colors.textStrong : theme.colors.textMuted};
 `;

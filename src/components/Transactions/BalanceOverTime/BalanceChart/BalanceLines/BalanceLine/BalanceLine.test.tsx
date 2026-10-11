@@ -17,10 +17,7 @@ function renderInSvg(dailyBalances: number[]): void {
           shownBalance: SHOWN_BALANCE.spending,
           dailyBalances,
         }}
-        dayX={dayXWithin(
-          dailyBalances.length,
-          firstDayXOf(UNMEASURED_CHART_WIDTH)
-        )}
+        dayX={dayXWithin(dailyBalances.length, firstDayXOf(UNMEASURED_CHART_WIDTH))}
         balanceY={mockBalanceY}
       />
     </svg>,
@@ -39,10 +36,7 @@ describe('the line of one balance', () => {
         screen.getByTestId(BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.spending))
       ).toHaveAttribute(
         'stroke',
-        shownBalanceColor(
-          getThemeTokens(THEME_ID.jungleQuest).colors,
-          SHOWN_BALANCE.spending
-        )
+        shownBalanceColor(getThemeTokens(THEME_ID.jungleQuest).colors, SHOWN_BALANCE.spending)
       );
     });
   });
@@ -53,10 +47,9 @@ describe('the line of one balance', () => {
     });
 
     it('is drawn as a dot, since one day has no line to join', () => {
-      expect(
-        screen.getByTestId(BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.spending))
-          .tagName
-      ).toBe('circle');
+      expect(screen.getByTestId(BALANCE_LINE_TEST_IDS.line(SHOWN_BALANCE.spending)).tagName).toBe(
+        'circle'
+      );
     });
   });
 });

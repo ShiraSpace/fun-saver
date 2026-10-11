@@ -23,9 +23,7 @@ describe('Celebration', () => {
   it('drops every piece the mockup drops', () => {
     const mockupPieceCount = 60;
 
-    expect(screen.getAllByTestId(CELEBRATION_TEST_IDS.piece)).toHaveLength(
-      mockupPieceCount
-    );
+    expect(screen.getAllByTestId(CELEBRATION_TEST_IDS.piece)).toHaveLength(mockupPieceCount);
   });
 
   it('fades the whole celebration out once the pieces have fallen', () => {
@@ -47,9 +45,7 @@ describe('Celebration', () => {
     let secondPiece: HTMLElement;
 
     beforeEach(() => {
-      [firstPiece, secondPiece] = screen.getAllByTestId(
-        CELEBRATION_TEST_IDS.piece
-      );
+      [firstPiece, secondPiece] = screen.getAllByTestId(CELEBRATION_TEST_IDS.piece);
     });
 
     it('falls for its own time', () => {

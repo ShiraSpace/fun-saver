@@ -73,15 +73,11 @@ describe('what a section says, written out from the copy', () => {
     });
 
     it('sets a study apart from the prose, so neither is mistaken for the other', () => {
-      expect(
-        screen.getByTestId(EVIDENCE_QUOTE_TEST_IDS.quote)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(EVIDENCE_QUOTE_TEST_IDS.quote)).toBeInTheDocument();
     });
 
     it('sets what to say to the child apart from a study, so the two never blur while scanning', () => {
-      expect(
-        screen.getByTestId(TALK_BUBBLE_TEST_IDS.bubble)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(TALK_BUBBLE_TEST_IDS.bubble)).toBeInTheDocument();
     });
   });
 
@@ -98,9 +94,7 @@ describe('what a section says, written out from the copy', () => {
     });
 
     it('gives the claim one number, however many paragraphs it runs to', () => {
-      expect(screen.getAllByTestId(SOURCE_MARKER_TEST_IDS.marker)).toHaveLength(
-        1
-      );
+      expect(screen.getAllByTestId(SOURCE_MARKER_TEST_IDS.marker)).toHaveLength(1);
     });
 
     it('puts it at the end of the claim, where a citation belongs, and not mid-thought', () => {

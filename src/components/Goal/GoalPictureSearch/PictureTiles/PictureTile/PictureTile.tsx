@@ -12,13 +12,8 @@ interface PictureTileProps {
   onChoosePicture: (picture: GoalPicture) => void;
 }
 
-export function PictureTile({
-  emoji,
-  isChosen,
-  onChoosePicture,
-}: PictureTileProps): JSX.Element {
-  const choosePicture = (): void =>
-    onChoosePicture({ kind: GOAL_PICTURE_KIND.emoji, emoji });
+export function PictureTile({ emoji, isChosen, onChoosePicture }: PictureTileProps): JSX.Element {
+  const choosePicture = (): void => onChoosePicture({ kind: GOAL_PICTURE_KIND.emoji, emoji });
 
   return (
     <PictureTileButton

@@ -1,11 +1,7 @@
 import type { Account, AccountUser } from '@/lib/account/types';
 import { DuplicateAccountError, UnknownOwnerError } from '@/lib/account/errors';
 import type { AccountOwner, AccountUserRepository } from '../data-store';
-import {
-  accountsForUser,
-  findAccountUser,
-  ownerAccountUser,
-} from '../account-users';
+import { accountsForUser, findAccountUser, ownerAccountUser } from '../account-users';
 import { isKnownUser } from '../user-identity';
 import { findAccount } from './accounts';
 import type { FileSession } from './file-session';

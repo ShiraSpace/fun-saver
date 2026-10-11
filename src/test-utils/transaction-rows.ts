@@ -11,10 +11,7 @@ import {
 import type { Transaction, TransactionType } from '@/lib/transaction/types';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 
-export function balanceHistoryFor(
-  transactions: Transaction[],
-  asOf: string
-): BalanceHistory {
+export function balanceHistoryFor(transactions: Transaction[], asOf: string): BalanceHistory {
   return balanceHistory({ wallets: createMockWallets(), transactions, asOf });
 }
 

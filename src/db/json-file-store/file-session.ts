@@ -25,16 +25,11 @@ export class FileSession {
   constructor(private readonly filePath: string) {}
 
   read<T>(operation: (contents: StoreContents) => T): Promise<T> {
-    return this.enqueue(async (): Promise<T> =>
-      operation(await this.readFromDisk())
-    );
+    return this.enqueue(async (): Promise<T> => operation(await this.readFromDisk()));
   }
 
   write<T>(
-    operation: (
-      contents: StoreContents,
-      save: () => Promise<void>
-    ) => Promise<T>
+    operation: (contents: StoreContents, save: () => Promise<void>) => Promise<T>
   ): Promise<T> {
     return this.enqueue(async (): Promise<T> => {
       const contents = await this.readFromDisk();

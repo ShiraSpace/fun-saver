@@ -9,9 +9,7 @@ interface GoalProgressProps {
   savedTowardGoal?: SavedTowardGoal;
 }
 
-export function GoalProgress({
-  savedTowardGoal,
-}: GoalProgressProps): JSX.Element | null {
+export function GoalProgress({ savedTowardGoal }: GoalProgressProps): JSX.Element | null {
   if (!savedTowardGoal) {
     return null;
   }

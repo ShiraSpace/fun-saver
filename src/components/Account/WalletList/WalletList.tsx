@@ -2,10 +2,7 @@
 
 import { JSX } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
-import {
-  savedTowardGoalIn,
-  type SavedTowardGoal,
-} from '@/lib/goal/saved-toward-goal';
+import { savedTowardGoalIn, type SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { WalletCard } from '../WalletCard/WalletCard';
 import { GoalProgress } from '../WalletCard/GoalProgress';
 import { SavingsInterestStats } from './SavingsInterestStats';
@@ -17,19 +14,12 @@ interface WalletListProps {
   savedTowardGoal?: SavedTowardGoal;
 }
 
-export function WalletList({
-  wallets,
-  savedTowardGoal,
-}: WalletListProps): JSX.Element {
+export function WalletList({ wallets, savedTowardGoal }: WalletListProps): JSX.Element {
   const cards = wallets.map((wallet) => {
     const savedTowardGoalInWallet = savedTowardGoalIn(wallet, savedTowardGoal);
 
     return (
-      <WalletCard
-        key={wallet.id}
-        wallet={wallet}
-        savedTowardGoal={savedTowardGoalInWallet}
-      >
+      <WalletCard key={wallet.id} wallet={wallet} savedTowardGoal={savedTowardGoalInWallet}>
         <SavingsInterestStats wallet={wallet} />
         <GoalProgress savedTowardGoal={savedTowardGoalInWallet} />
       </WalletCard>
@@ -38,9 +28,7 @@ export function WalletList({
 
   return (
     <List>
-      <Label data-testid={WALLET_LIST_TEST_IDS.label}>
-        {WALLET_LIST_COPY.label}
-      </Label>
+      <Label data-testid={WALLET_LIST_TEST_IDS.label}>{WALLET_LIST_COPY.label}</Label>
       {cards}
     </List>
   );

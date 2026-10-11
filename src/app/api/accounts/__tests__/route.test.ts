@@ -63,10 +63,7 @@ describe('POST /api/accounts', () => {
       { name: 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH + 1), avatarId: 'kid-01' },
     ],
     ['an unknown avatar', { name: 'נועה', avatarId: 'not-an-avatar' }],
-    [
-      'a field that is not an account field',
-      { ...mockCreateAccountInput, isActive: false },
-    ],
+    ['a field that is not an account field', { ...mockCreateAccountInput, isActive: false }],
     ['an array body', []],
     ['a non-object body', 'נועה'],
   ])('rejects %s with 400 and stores nothing', async (_label, body) => {

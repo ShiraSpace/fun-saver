@@ -15,9 +15,7 @@ export interface AmountEntry {
 }
 
 function isConflict(error: unknown): boolean {
-  return (
-    error instanceof RequestFailedError && error.status === StatusCodes.CONFLICT
-  );
+  return error instanceof RequestFailedError && error.status === StatusCodes.CONFLICT;
 }
 
 export function useAmountEntry(
@@ -26,9 +24,7 @@ export function useAmountEntry(
 ): AmountEntry {
   const refreshWithLoader = useRefreshWithLoader();
   const [amountShekels, setAmountShekels] = useState(0);
-  const [requestState, setRequestState] = useState<RequestState>(
-    REQUEST_STATE.idle
-  );
+  const [requestState, setRequestState] = useState<RequestState>(REQUEST_STATE.idle);
 
   const submit = async (): Promise<void> => {
     setRequestState(REQUEST_STATE.pending);
@@ -48,8 +44,7 @@ export function useAmountEntry(
   return {
     amountShekels,
     requestState,
-    onDigit: (digit) =>
-      setAmountShekels((current) => pushDigit(current, digit)),
+    onDigit: (digit) => setAmountShekels((current) => pushDigit(current, digit)),
     onClear: () => setAmountShekels(0),
     onBackspace: () => setAmountShekels((current) => popDigit(current)),
     onSubmit: () => void submit(),

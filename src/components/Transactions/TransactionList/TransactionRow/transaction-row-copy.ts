@@ -7,10 +7,7 @@ interface TransactionRowCopy {
   badge?: string;
 }
 
-export function transactionRowCopy({
-  type,
-  walletName,
-}: TransactionListRow): TransactionRowCopy {
+export function transactionRowCopy({ type, walletName }: TransactionListRow): TransactionRowCopy {
   if (type === TRANSACTION_TYPE.interest) {
     return TRANSACTION_ROW_COPY.interest;
   }

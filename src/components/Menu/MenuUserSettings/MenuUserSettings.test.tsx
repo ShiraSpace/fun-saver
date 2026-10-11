@@ -24,9 +24,7 @@ describe('MenuUserSettings', () => {
   });
 
   it('names the signed-in parent, who belongs to no one account', () => {
-    expect(block).toContainElement(
-      screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.section)
-    );
+    expect(block).toContainElement(screen.getByTestId(SIGNED_IN_USER_SECTION_TEST_IDS.section));
   });
 
   it('holds whatever the menu puts under them', () => {

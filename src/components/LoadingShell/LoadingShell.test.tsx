@@ -8,8 +8,8 @@ describe('LoadingShell', () => {
   });
 
   it('renders with no theme provider above it, where the root layout puts it', () => {
-    expect(
-      screen.getByTestId(LOADING_SHELL_TEST_IDS.shell)
-    ).toHaveAccessibleName(LOADING_SHELL_COPY.label);
+    expect(screen.getByTestId(LOADING_SHELL_TEST_IDS.shell)).toHaveAccessibleName(
+      LOADING_SHELL_COPY.label
+    );
   });
 });

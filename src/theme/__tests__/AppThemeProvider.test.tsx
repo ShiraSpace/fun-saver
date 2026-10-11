@@ -17,9 +17,7 @@ describe('AppThemeProvider', () => {
         <CurrentThemeId />
       </AppThemeProvider>
     );
-    expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(
-      THEME_ID.jungleQuest
-    );
+    expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(THEME_ID.jungleQuest);
   });
 
   it('updates the active theme id on set', () => {
@@ -30,9 +28,7 @@ describe('AppThemeProvider', () => {
       </AppThemeProvider>
     );
     fireEvent.click(screen.getByRole('button', { name: 'switch' }));
-    expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(
-      THEME_ID.midnightBlue
-    );
+    expect(screen.getByTestId(THEME_ID_TESTID)).toHaveTextContent(THEME_ID.midnightBlue);
   });
 
   describe('naming the theme on the document, for screens with no provider', () => {
@@ -53,23 +49,19 @@ describe('AppThemeProvider', () => {
     it('renames it when the theme changes', () => {
       fireEvent.click(screen.getByRole('button', { name: 'switch' }));
 
-      expect(document.documentElement.dataset.theme).toBe(
-        THEME_ID.midnightBlue
-      );
+      expect(document.documentElement.dataset.theme).toBe(THEME_ID.midnightBlue);
     });
   });
 
   describe('with no AppThemeProvider above', () => {
     it('refuses to name a theme', () => {
-      expect(() => render(<CurrentThemeId />)).toThrow(
-        missingProviderMessage('AppThemeProvider')
-      );
+      expect(() => render(<CurrentThemeId />)).toThrow(missingProviderMessage('AppThemeProvider'));
     });
 
     it('refuses to switch the theme', () => {
-      expect(() =>
-        render(<ThemeSwitcher themeId={THEME_ID.midnightBlue} />)
-      ).toThrow(missingProviderMessage('AppThemeProvider'));
+      expect(() => render(<ThemeSwitcher themeId={THEME_ID.midnightBlue} />)).toThrow(
+        missingProviderMessage('AppThemeProvider')
+      );
     });
   });
 });

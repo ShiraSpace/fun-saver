@@ -1,13 +1,8 @@
-import {
-  invalidGoalPictures,
-  searchablePictureWords,
-} from '../searchable-picture-words';
+import { invalidGoalPictures, searchablePictureWords } from '../searchable-picture-words';
 
 describe('invalid goal pictures', () => {
   it('lists the pictures a goal request refuses and only those', () => {
-    expect(
-      invalidGoalPictures({ '❤️': ['לב'], '❤': ['לב'], '🚲': ['אופניים'] })
-    ).toEqual(['❤']);
+    expect(invalidGoalPictures({ '❤️': ['לב'], '❤': ['לב'], '🚲': ['אופניים'] })).toEqual(['❤']);
   });
 });
 
@@ -99,8 +94,9 @@ describe('searchable picture words', () => {
       '🐶': { default: ['כלב'] },
     };
 
-    expect(
-      Object.keys(searchablePictureWords(mockUnicodeEmoji, mockUnicodeWords))
-    ).toEqual(['🚲', '🐶']);
+    expect(Object.keys(searchablePictureWords(mockUnicodeEmoji, mockUnicodeWords))).toEqual([
+      '🚲',
+      '🐶',
+    ]);
   });
 });

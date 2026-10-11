@@ -76,9 +76,7 @@ export function calendarYear(iso: string): string {
 export function monthLabel(month: string, asOf: string): string {
   const firstDay = utcDate(`${month}-01`);
   const monthFormat =
-    calendarYear(asOf) === calendarYear(month)
-      ? HEBREW_MONTH
-      : HEBREW_MONTH_AND_YEAR;
+    calendarYear(asOf) === calendarYear(month) ? HEBREW_MONTH : HEBREW_MONTH_AND_YEAR;
 
   return monthFormat.format(firstDay);
 }

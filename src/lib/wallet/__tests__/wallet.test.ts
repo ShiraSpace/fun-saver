@@ -41,9 +41,7 @@ describe('savingsFirst', () => {
     });
 
     it('keeps the other wallets in their order', () => {
-      const otherWallets = savingsFirst(mockWallets).filter(
-        (wallet) => wallet !== mockSavings
-      );
+      const otherWallets = savingsFirst(mockWallets).filter((wallet) => wallet !== mockSavings);
 
       expect(otherWallets).toEqual([mockSpending, mockGoodDeeds]);
     });
@@ -51,10 +49,7 @@ describe('savingsFirst', () => {
 
   describe('wallets without savings', () => {
     it('keeps them in their order', () => {
-      expect(savingsFirst([mockGoodDeeds, mockSpending])).toEqual([
-        mockGoodDeeds,
-        mockSpending,
-      ]);
+      expect(savingsFirst([mockGoodDeeds, mockSpending])).toEqual([mockGoodDeeds, mockSpending]);
     });
   });
 });
@@ -67,27 +62,21 @@ describe('the default withdrawal wallet', () => {
   });
 
   it('is the spending wallet whatever order the wallets come in', () => {
-    expect(
-      defaultWithdrawalWallet([mockGoodDeeds, mockSavings, mockSpending])
-    ).toBe(mockSpending);
+    expect(defaultWithdrawalWallet([mockGoodDeeds, mockSavings, mockSpending])).toBe(mockSpending);
   });
 
   describe('when spending is empty', () => {
     const mockEmptySpending = { ...mockSpending, balance: 0 };
 
     it('falls back to the good-deeds wallet', () => {
-      expect(
-        defaultWithdrawalWallet([mockSavings, mockEmptySpending, mockGoodDeeds])
-      ).toBe(mockGoodDeeds);
+      expect(defaultWithdrawalWallet([mockSavings, mockEmptySpending, mockGoodDeeds])).toBe(
+        mockGoodDeeds
+      );
     });
 
     it('is never the savings wallet, even when only savings has money', () => {
       expect(
-        defaultWithdrawalWallet([
-          mockSavings,
-          mockEmptySpending,
-          { ...mockGoodDeeds, balance: 0 },
-        ])
+        defaultWithdrawalWallet([mockSavings, mockEmptySpending, { ...mockGoodDeeds, balance: 0 }])
       ).toBe(mockEmptySpending);
     });
   });
@@ -108,9 +97,7 @@ describe('savingsWithoutAgorot', () => {
 
   describe('savings of ₪148.50, ₪6.90 of it interest', () => {
     it('shows what the child put in as the rest, so the two add up to the balance', () => {
-      expect(
-        savingsWithoutAgorot({ balance: 14850, interestEarned: 690 }).principal
-      ).toBe(14200);
+      expect(savingsWithoutAgorot({ balance: 14850, interestEarned: 690 }).principal).toBe(14200);
     });
   });
 
@@ -128,10 +115,7 @@ describe('savingsWithoutAgorot', () => {
 
   describe('savings that have not earned interest yet', () => {
     it('shows nothing earned', () => {
-      expect(
-        savingsWithoutAgorot({ balance: 1200, interestEarned: 0 })
-          .interestEarned
-      ).toBe(0);
+      expect(savingsWithoutAgorot({ balance: 1200, interestEarned: 0 }).interestEarned).toBe(0);
     });
   });
 });

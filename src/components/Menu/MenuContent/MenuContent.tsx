@@ -25,11 +25,7 @@ export function MenuContent(): JSX.Element {
     return <ChildMenuContent />;
   }
 
-  const accountControls = hasAccount ? (
-    <AccountControls />
-  ) : (
-    <AddAccountButton />
-  );
+  const accountControls = hasAccount ? <AccountControls /> : <AddAccountButton />;
 
   const accountAndGlobalSettings = hasAccount && (
     <Fragment>

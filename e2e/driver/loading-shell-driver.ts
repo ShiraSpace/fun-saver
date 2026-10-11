@@ -25,16 +25,10 @@ export class LoadingShellDriver {
   }
 
   cardBackground(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      LOADING_SHELL_TEST_IDS.card,
-      'background-color'
-    );
+    return this.appBrowser.computedStyle(LOADING_SHELL_TEST_IDS.card, 'background-color');
   }
 
-  async positionsOnFirstLoad(
-    path: string,
-    pageTestId: string
-  ): Promise<MarkupPositions> {
+  async positionsOnFirstLoad(path: string, pageTestId: string): Promise<MarkupPositions> {
     const html = await this.appBrowser.servedHtml(path);
 
     return {

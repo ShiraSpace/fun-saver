@@ -61,15 +61,11 @@ describe('Header', () => {
     it('takes its ledge colour from the theme, never a colour of its own', () => {
       const bar = screen.getByTestId(HEADER_TEST_IDS.bar);
 
-      expect(getComputedStyle(bar).boxShadow).toBe(
-        `0 4px 0 ${getThemeTokens().shadows.faint}`
-      );
+      expect(getComputedStyle(bar).boxShadow).toBe(`0 4px 0 ${getThemeTokens().shadows.faint}`);
     });
 
     it('shows the account name', () => {
-      expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-        mockAccountName
-      );
+      expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(mockAccountName);
     });
 
     it('contains the menu button', () => {
@@ -78,16 +74,11 @@ describe('Header', () => {
 
     it('shows the account avatar', () => {
       const avatar = screen.getByTestId(HEADER_TEST_IDS.avatar);
-      expect(avatar).toHaveAttribute(
-        'src',
-        expect.stringContaining(mockAvatarId)
-      );
+      expect(avatar).toHaveAttribute('src', expect.stringContaining(mockAvatarId));
     });
 
     it('offers no way home, this being home', () => {
-      expect(
-        screen.queryByTestId(HEADER_TEST_IDS.homeLink)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(HEADER_TEST_IDS.homeLink)).not.toBeInTheDocument();
     });
 
     describe('the menu', () => {
@@ -126,9 +117,7 @@ describe('Header', () => {
       });
 
       it('keeps the account name rather than swapping in a menu title', () => {
-        expect(
-          screen.getByTestId(HEADER_TITLE_TEST_IDS.title)
-        ).toHaveTextContent(mockAccountName);
+        expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(mockAccountName);
       });
 
       it('takes the avatar away, the picker below already showing it', () => {
@@ -138,17 +127,19 @@ describe('Header', () => {
 
     describe('the backdrop behind the bar', () => {
       it('leaves the screen gradient alone while the menu is shut', () => {
-        expect(
-          screen.getByTestId(MENU_HEADER_BACKDROP_TEST_IDS.backdrop)
-        ).toHaveAttribute('data-open', 'false');
+        expect(screen.getByTestId(MENU_HEADER_BACKDROP_TEST_IDS.backdrop)).toHaveAttribute(
+          'data-open',
+          'false'
+        );
       });
 
       it('covers the gradient once the menu is open', () => {
         fireEvent.click(screen.getByTestId(MENU_TEST_IDS.menuButton));
 
-        expect(
-          screen.getByTestId(MENU_HEADER_BACKDROP_TEST_IDS.backdrop)
-        ).toHaveAttribute('data-open', 'true');
+        expect(screen.getByTestId(MENU_HEADER_BACKDROP_TEST_IDS.backdrop)).toHaveAttribute(
+          'data-open',
+          'true'
+        );
       });
 
       it('sits outside the bar, which would otherwise paint over it', () => {
@@ -171,9 +162,7 @@ describe('Header', () => {
       });
 
       it('shows the account it is on rather than the whole list', () => {
-        expect(
-          screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)
-        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId(ACCOUNT_LIST_TEST_IDS.list)).not.toBeInTheDocument();
       });
     });
   });
@@ -184,10 +173,7 @@ describe('Header', () => {
     });
 
     it('offers a way home', () => {
-      expect(screen.getByTestId(HEADER_TEST_IDS.homeLink)).toHaveAttribute(
-        'href',
-        HOME_ROUTE
-      );
+      expect(screen.getByTestId(HEADER_TEST_IDS.homeLink)).toHaveAttribute('href', HOME_ROUTE);
     });
 
     it('keeps the avatar, which is itself the way home', () => {
@@ -214,15 +200,11 @@ describe('Header', () => {
     });
 
     it('greets the parent where an account screen names the account', () => {
-      expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(
-        mockGreeting
-      );
+      expect(screen.getByTestId(HEADER_TITLE_TEST_IDS.title)).toHaveTextContent(mockGreeting);
     });
 
     it('leaves the end of the bar bare, there being no account to picture', () => {
-      expect(
-        screen.queryByTestId(HEADER_TEST_IDS.avatar)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(HEADER_TEST_IDS.avatar)).not.toBeInTheDocument();
     });
   });
 
@@ -236,9 +218,7 @@ describe('Header', () => {
     it('stays hidden while nothing is pending', () => {
       renderHeaderWithoutAccount(<PendingBesideHeader isPending={false} />);
 
-      expect(
-        screen.queryByTestId(HEADER_TEST_IDS.progress)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(HEADER_TEST_IDS.progress)).not.toBeInTheDocument();
     });
   });
 });

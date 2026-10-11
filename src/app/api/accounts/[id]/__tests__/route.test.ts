@@ -3,10 +3,7 @@
  */
 import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
-import {
-  mockAccountEdits,
-  mockCreateAccountInput,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccountEdits, mockCreateAccountInput } from '@/test-utils/mocks/account.mocks';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
 import { THEME_ID } from '@/theme/registry';
@@ -48,9 +45,7 @@ describe('PUT /api/accounts/[id]', () => {
 
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject(mockAccountEdits);
-    expect(await getStore().getAccount(accountId)).toMatchObject(
-      mockAccountEdits
-    );
+    expect(await getStore().getAccount(accountId)).toMatchObject(mockAccountEdits);
   });
 
   it('updates the name alone without touching the avatar', async () => {
@@ -84,22 +79,14 @@ describe('PUT /api/accounts/[id]', () => {
     ['an unknown avatar', { avatarId: 'not-an-avatar' }],
     ['a non-string name', { name: 7 }],
     ['a non-object body', 'רוני'],
-    [
-      'a name past the length cap',
-      { name: 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH + 1) },
-    ],
-    [
-      'a field that is not editable',
-      { name: 'רוני', themeId: THEME_ID.midnightBlue },
-    ],
+    ['a name past the length cap', { name: 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH + 1) }],
+    ['a field that is not editable', { name: 'רוני', themeId: THEME_ID.midnightBlue }],
     ['only fields that are not editable', { themeId: THEME_ID.midnightBlue }],
   ])('rejects %s with 400', async (_label, body) => {
     const response = await putAccount(accountId, body);
 
     expect(response.status).toBe(400);
-    expect(await getStore().getAccount(accountId)).toMatchObject(
-      mockCreateAccountInput
-    );
+    expect(await getStore().getAccount(accountId)).toMatchObject(mockCreateAccountInput);
   });
 
   it.each([
@@ -109,9 +96,7 @@ describe('PUT /api/accounts/[id]', () => {
     const response = await putRawBody(accountId, body);
 
     expect(response.status).toBe(400);
-    expect(await getStore().getAccount(accountId)).toMatchObject(
-      mockCreateAccountInput
-    );
+    expect(await getStore().getAccount(accountId)).toMatchObject(mockCreateAccountInput);
   });
 
   it('accepts a name exactly at the length cap', async () => {
@@ -137,8 +122,6 @@ describe('PUT /api/accounts/[id]', () => {
     const response = await putAccount(accountId, mockAccountEdits);
 
     expect(response.status).toBe(403);
-    expect(await getStore().getAccount(accountId)).toMatchObject(
-      mockCreateAccountInput
-    );
+    expect(await getStore().getAccount(accountId)).toMatchObject(mockCreateAccountInput);
   });
 });

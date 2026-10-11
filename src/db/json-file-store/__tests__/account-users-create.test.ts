@@ -22,9 +22,9 @@ describe('JsonFileStore creating an account with an owner', () => {
   });
 
   it('rejects a second account with the same id', async () => {
-    await expect(
-      store.insertAccountWithOwner(mockAccount, mockOwner)
-    ).rejects.toThrow(DuplicateAccountError);
+    await expect(store.insertAccountWithOwner(mockAccount, mockOwner)).rejects.toThrow(
+      DuplicateAccountError
+    );
   });
 
   it('rejects an owner that has no user row', async () => {
@@ -34,29 +34,24 @@ describe('JsonFileStore creating an account with an owner', () => {
   });
 
   it('reports the duplicate account when the owner is also unknown', async () => {
-    await expect(
-      store.insertAccountWithOwner(mockAccount, mockStrangerOwner)
-    ).rejects.toThrow(DuplicateAccountError);
+    await expect(store.insertAccountWithOwner(mockAccount, mockStrangerOwner)).rejects.toThrow(
+      DuplicateAccountError
+    );
   });
 
   it('persists the account across instances', async () => {
-    expect(
-      await new JsonFileStore(file.path).getAccount(mockAccount.id)
-    ).toEqual(mockAccount);
+    expect(await new JsonFileStore(file.path).getAccount(mockAccount.id)).toEqual(mockAccount);
   });
 
   it('persists the owner row across instances', async () => {
-    expect(
-      await new JsonFileStore(file.path).getAccountUser(
-        mockAccount.id,
-        mockUser.id
-      )
-    ).toEqual(mockAccountUser);
+    expect(await new JsonFileStore(file.path).getAccountUser(mockAccount.id, mockUser.id)).toEqual(
+      mockAccountUser
+    );
   });
 
   it('lists the account for its owner across instances', async () => {
-    expect(
-      await new JsonFileStore(file.path).listAccountsForUser(mockUser.id)
-    ).toEqual([mockAccount]);
+    expect(await new JsonFileStore(file.path).listAccountsForUser(mockUser.id)).toEqual([
+      mockAccount,
+    ]);
   });
 });

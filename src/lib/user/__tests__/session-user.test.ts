@@ -15,15 +15,11 @@ describe('sessionUser', () => {
   });
 
   it('reads nobody from a session that names no id', () => {
-    expect(
-      sessionUser(sessionFor({ email: mockUser.email, name: mockUser.name }))
-    ).toBeUndefined();
+    expect(sessionUser(sessionFor({ email: mockUser.email, name: mockUser.name }))).toBeUndefined();
   });
 
   it('reads nobody from a session that names no email', () => {
-    expect(
-      sessionUser(sessionFor({ id: mockUser.id, name: mockUser.name }))
-    ).toBeUndefined();
+    expect(sessionUser(sessionFor({ id: mockUser.id, name: mockUser.name }))).toBeUndefined();
   });
 
   it('reads the user a full session names, photo included', () => {

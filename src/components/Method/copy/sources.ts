@@ -21,8 +21,7 @@ export const SOURCES_COPY = {
     {
       id: 'adultReliability',
       claim: 'ההמתנה תלויה באמינות המבוגר',
-      citation:
-        'Kidd, Palmeri & Aslin, Rational Snacking, Cognition 126(1), 2013',
+      citation: 'Kidd, Palmeri & Aslin, Rational Snacking, Cognition 126(1), 2013',
       url: 'https://www.strategian.com/fulltext/Kidd2013.pdf',
     },
     {
@@ -46,8 +45,7 @@ export const SOURCES_COPY = {
     {
       id: 'finePrice',
       claim: 'קנס על איחור הגדיל איחורים — עשרה גנים בחיפה',
-      citation:
-        'Gneezy & Rustichini, A Fine is a Price, Journal of Legal Studies 29(1), 2000',
+      citation: 'Gneezy & Rustichini, A Fine is a Price, Journal of Legal Studies 29(1), 2000',
       url: 'https://rady.ucsd.edu/_files/faculty-research/uri-gneezy/fine.pdf',
     },
     {
@@ -65,8 +63,7 @@ export const SOURCES_COPY = {
     {
       id: 'cardSpending',
       claim: 'תשלום בכרטיס מגדיל נכונות לשלם',
-      citation:
-        'Prelec & Simester, Always Leave Home Without It, Marketing Letters 12(1), 2001',
+      citation: 'Prelec & Simester, Always Leave Home Without It, Marketing Letters 12(1), 2001',
       url: 'https://link.springer.com/article/10.1023/A:1008196717017',
     },
     {

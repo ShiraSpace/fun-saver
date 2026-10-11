@@ -15,9 +15,7 @@ describe('the three wallets drawn side by side', () => {
   });
 
   it('draws each wallet, because the point of the page is that there are three', () => {
-    expect(screen.getAllByTestId(WALLET_TRIO_TEST_IDS.wallet)).toHaveLength(
-      walletNames.length
-    );
+    expect(screen.getAllByTestId(WALLET_TRIO_TEST_IDS.wallet)).toHaveLength(walletNames.length);
   });
 
   it('writes on the wallets in the colour measured against them, not the page text colour', () => {

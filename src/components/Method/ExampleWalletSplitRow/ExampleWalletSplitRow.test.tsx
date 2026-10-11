@@ -5,9 +5,7 @@ import { EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS } from './constants';
 
 function filledColumns(): HTMLTableCellElement[] {
   return Array.from(
-    screen
-      .getByTestId(EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS.row)
-      .querySelectorAll('td')
+    screen.getByTestId(EXAMPLE_WALLET_SPLIT_ROW_TEST_IDS.row).querySelectorAll('td')
   );
 }
 

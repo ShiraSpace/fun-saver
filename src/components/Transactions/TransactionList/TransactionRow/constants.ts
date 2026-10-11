@@ -8,8 +8,7 @@ export const TRANSACTION_ROW_COPY = {
     savings: { badge: '🏦', label: 'משיכה' },
   },
   interest: { badge: '✨', label: 'ריבית' },
-  interestDays: (days: number): string =>
-    countInWords(days, 'יום אחד', (count) => `${count} ימים`),
+  interestDays: (days: number): string => countInWords(days, 'יום אחד', (count) => `${count} ימים`),
 } as const;
 
 export const TRANSACTION_ROW_TEST_IDS = {

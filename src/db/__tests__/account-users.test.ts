@@ -56,10 +56,7 @@ describe('accountsForUser', () => {
 
     expect(
       accountsForUser(
-        [
-          ownedByParent(mockCapitalisedChild),
-          ownedByParent(mockLowercaseChild),
-        ],
+        [ownedByParent(mockCapitalisedChild), ownedByParent(mockLowercaseChild)],
         [mockCapitalisedChild, mockLowercaseChild],
         mockParentId
       ).map((account) => account.name)
@@ -78,10 +75,7 @@ describe('accountsForUser', () => {
 
     expect(
       accountsForUser(
-        [
-          ownedByParent(mockLaterCreatedSibling),
-          ownedByParent(mockEarlierCreatedSibling),
-        ],
+        [ownedByParent(mockLaterCreatedSibling), ownedByParent(mockEarlierCreatedSibling)],
         [mockLaterCreatedSibling, mockEarlierCreatedSibling],
         mockParentId
       ).map((account) => account.id)
@@ -90,43 +84,27 @@ describe('accountsForUser', () => {
 
   it('returns nothing for a parent who belongs to no account', () => {
     expect(
-      accountsForUser(
-        [mockParentOwnsOwnChild],
-        mockEveryChildAccount,
-        mockUnrelatedParentId
-      )
+      accountsForUser([mockParentOwnsOwnChild], mockEveryChildAccount, mockUnrelatedParentId)
     ).toEqual([]);
   });
 });
 
 describe('findAccountUser', () => {
   it('finds the row joining the child account to its parent', () => {
-    expect(
-      findAccountUser(
-        [mockParentOwnsOwnChild],
-        mockOwnChildAccount.id,
-        mockParentId
-      )
-    ).toEqual(mockParentOwnsOwnChild);
+    expect(findAccountUser([mockParentOwnsOwnChild], mockOwnChildAccount.id, mockParentId)).toEqual(
+      mockParentOwnsOwnChild
+    );
   });
 
   it('returns undefined for a parent who is not on the account', () => {
     expect(
-      findAccountUser(
-        [mockParentOwnsOwnChild],
-        mockOwnChildAccount.id,
-        mockUnrelatedParentId
-      )
+      findAccountUser([mockParentOwnsOwnChild], mockOwnChildAccount.id, mockUnrelatedParentId)
     ).toBeUndefined();
   });
 
   it('returns undefined for a parent on a child account that is not theirs', () => {
     expect(
-      findAccountUser(
-        [mockParentOwnsOwnChild],
-        mockUnrelatedChildAccount.id,
-        mockParentId
-      )
+      findAccountUser([mockParentOwnsOwnChild], mockUnrelatedChildAccount.id, mockParentId)
     ).toBeUndefined();
   });
 });

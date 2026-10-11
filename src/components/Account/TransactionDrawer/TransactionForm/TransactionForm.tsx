@@ -23,11 +23,5 @@ export function TransactionForm({
     return <DepositForm account={account} onSaved={onSaved} />;
   }
 
-  return (
-    <WithdrawalForm
-      account={account}
-      savedTowardGoal={savedTowardGoal}
-      onSaved={onSaved}
-    />
-  );
+  return <WithdrawalForm account={account} savedTowardGoal={savedTowardGoal} onSaved={onSaved} />;
 }

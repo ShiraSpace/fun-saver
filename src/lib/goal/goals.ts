@@ -18,11 +18,7 @@ interface CancelGoalParams {
   goalId: string;
 }
 
-export async function setGoal({
-  store,
-  accountId,
-  body,
-}: SetGoalParams): Promise<Goal> {
+export async function setGoal({ store, accountId, body }: SetGoalParams): Promise<Goal> {
   assertValidGoalRequest(body);
 
   const goal: Goal = {
@@ -39,11 +35,7 @@ export async function setGoal({
   return goal;
 }
 
-export async function cancelGoal({
-  store,
-  accountId,
-  goalId,
-}: CancelGoalParams): Promise<Goal> {
+export async function cancelGoal({ store, accountId, goalId }: CancelGoalParams): Promise<Goal> {
   const cancelledGoal = await store.endGoal({
     goalId,
     accountId,

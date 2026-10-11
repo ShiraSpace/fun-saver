@@ -16,14 +16,12 @@ describe('BottomSheet', () => {
   });
 
   it('dims what it covers', () => {
-    expect(
-      getComputedStyle(screen.getByTestId(mockScrimTestId)).background
-    ).toContain(getThemeTokens().tints.shade);
+    expect(getComputedStyle(screen.getByTestId(mockScrimTestId)).background).toContain(
+      getThemeTokens().tints.shade
+    );
   });
 
   it('rests on the bottom edge of the screen', () => {
-    expect(getComputedStyle(screen.getByTestId(mockSheetTestId)).bottom).toBe(
-      '0px'
-    );
+    expect(getComputedStyle(screen.getByTestId(mockSheetTestId)).bottom).toBe('0px');
   });
 });

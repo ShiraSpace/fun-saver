@@ -3,10 +3,7 @@ import { AccountControls } from './AccountControls';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 import { EDIT_ACCOUNT_BUTTON_TEST_IDS } from '../EditAccountButton/constants';
 import { openAccountPicker } from '@/test-utils/account-picker';
-import {
-  mockAccountsContext,
-  mockAccountSummary,
-} from '@/test-utils/mocks/account.mocks';
+import { mockAccountsContext, mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { WithMenu } from '@/test-utils/menu';
 
 const mockCloseMenu = jest.fn();
@@ -27,9 +24,9 @@ describe('AccountControls', () => {
   });
 
   it('names the account in view on the edit button', () => {
-    expect(
-      screen.getByTestId(EDIT_ACCOUNT_BUTTON_TEST_IDS.button)
-    ).toHaveTextContent(mockAccountSummary.name);
+    expect(screen.getByTestId(EDIT_ACCOUNT_BUTTON_TEST_IDS.button)).toHaveTextContent(
+      mockAccountSummary.name
+    );
   });
 
   describe('with the account list open', () => {

@@ -9,11 +9,7 @@ const mockOnToggle = jest.fn();
 
 function renderTrigger(isOpen: boolean): void {
   render(
-    <CurrentAccountButton
-      account={mockAccountSummary}
-      isOpen={isOpen}
-      onToggle={mockOnToggle}
-    />
+    <CurrentAccountButton account={mockAccountSummary} isOpen={isOpen} onToggle={mockOnToggle} />
   );
 }
 
@@ -28,23 +24,22 @@ describe('CurrentAccountButton', () => {
     });
 
     it('shows what the account holds in total', () => {
-      expect(
-        screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.currentTotalBalance)
-      ).toHaveTextContent(
+      expect(screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.currentTotalBalance)).toHaveTextContent(
         String(agorotToWholeShekels(totalBalance(mockAccountSummary.wallets)))
       );
     });
 
     it('points its caret at the list it would open', () => {
-      expect(
-        screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.caret)
-      ).toHaveTextContent(ACCOUNT_PICKER_COPY.closedCaret);
+      expect(screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.caret)).toHaveTextContent(
+        ACCOUNT_PICKER_COPY.closedCaret
+      );
     });
 
     it('reports itself collapsed', () => {
-      expect(
-        screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)
-      ).toHaveAttribute('aria-expanded', 'false');
+      expect(screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)).toHaveAttribute(
+        'aria-expanded',
+        'false'
+      );
     });
 
     it('asks to toggle the list when tapped', () => {
@@ -60,15 +55,16 @@ describe('CurrentAccountButton', () => {
     });
 
     it('turns its caret back on the list', () => {
-      expect(
-        screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.caret)
-      ).toHaveTextContent(ACCOUNT_PICKER_COPY.openCaret);
+      expect(screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.caret)).toHaveTextContent(
+        ACCOUNT_PICKER_COPY.openCaret
+      );
     });
 
     it('reports itself expanded', () => {
-      expect(
-        screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)
-      ).toHaveAttribute('aria-expanded', 'true');
+      expect(screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.trigger)).toHaveAttribute(
+        'aria-expanded',
+        'true'
+      );
     });
   });
 });

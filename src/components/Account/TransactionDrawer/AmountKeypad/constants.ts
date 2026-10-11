@@ -1,19 +1,6 @@
-const AMOUNT_KEYPAD_KEYS = [
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '0',
-] as const;
+const AMOUNT_KEYPAD_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'] as const;
 
-export const DIGIT_KEYS_WITHOUT_ZERO: string[] = AMOUNT_KEYPAD_KEYS.filter(
-  (key) => key !== '0'
-);
+export const DIGIT_KEYS_WITHOUT_ZERO: string[] = AMOUNT_KEYPAD_KEYS.filter((key) => key !== '0');
 
 export const AMOUNT_KEYPAD_TEST_IDS = {
   key: (value: string): string => `amount-pad-key-${value}`,

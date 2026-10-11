@@ -8,8 +8,7 @@ export const MONEY_ROUNDING = {
   floorToShekels: 'floorToShekels',
 } as const;
 
-export type MoneyRounding =
-  (typeof MONEY_ROUNDING)[keyof typeof MONEY_ROUNDING];
+export type MoneyRounding = (typeof MONEY_ROUNDING)[keyof typeof MONEY_ROUNDING];
 
 export const MONEY_STYLE = {
   currencyScale: 0.4,

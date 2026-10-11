@@ -8,9 +8,7 @@ const noop = (): void => {};
 describe('AmountKeypad', () => {
   beforeEach(() => {
     mockOnDigit.mockClear();
-    render(
-      <AmountKeypad onDigit={mockOnDigit} onClear={noop} onBackspace={noop} />
-    );
+    render(<AmountKeypad onDigit={mockOnDigit} onClear={noop} onBackspace={noop} />);
   });
 
   it('reports a tapped digit as a number', () => {
@@ -27,9 +25,7 @@ describe('AmountKeypad', () => {
 
   it('offers all ten digit keys', () => {
     for (let digit = 0; digit <= 9; digit++) {
-      expect(
-        screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key(String(digit)))
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key(String(digit)))).toBeInTheDocument();
     }
   });
 });

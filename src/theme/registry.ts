@@ -19,9 +19,7 @@ export type ThemeId = keyof typeof THEMES;
 
 export const DEFAULT_THEME_ID: ThemeId = THEME_ID.sunshineQuest;
 
-export function getThemeTokens(
-  themeId: string = DEFAULT_THEME_ID
-): ThemeTokens {
+export function getThemeTokens(themeId: string = DEFAULT_THEME_ID): ThemeTokens {
   const tokens = (THEMES as Record<string, ThemeTokens>)[themeId];
 
   if (!tokens) {

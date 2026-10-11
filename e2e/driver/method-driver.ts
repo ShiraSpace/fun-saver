@@ -25,17 +25,11 @@ export class MethodDriver {
   }
 
   chevronRotation(id: MethodSectionId): Promise<string> {
-    return this.appBrowser.computedStyle(
-      METHOD_SECTION_TEST_IDS.chevron(id),
-      'transform'
-    );
+    return this.appBrowser.computedStyle(METHOD_SECTION_TEST_IDS.chevron(id), 'transform');
   }
 
   sourceNumbering(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      SOURCE_LIST_TEST_IDS.list,
-      'list-style-type'
-    );
+    return this.appBrowser.computedStyle(SOURCE_LIST_TEST_IDS.list, 'list-style-type');
   }
 
   markerNumbers(): Promise<string[]> {

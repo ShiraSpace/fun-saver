@@ -26,28 +26,23 @@ export function TransactionDrawer({
   onClose,
   onSaved,
 }: TransactionDrawerProps): JSX.Element {
-  const [transactionType, setTransactionType] =
-    useState<EnteredTransactionType>(TRANSACTION_TYPE.deposit);
+  const [transactionType, setTransactionType] = useState<EnteredTransactionType>(
+    TRANSACTION_TYPE.deposit
+  );
   const swipe = useSwipeToClose(onClose);
 
   useCloseOnBack(onClose);
 
   return (
     <>
-      <Scrim
-        data-testid={TRANSACTION_DRAWER_TEST_IDS.scrim}
-        onClick={onClose}
-      />
+      <Scrim data-testid={TRANSACTION_DRAWER_TEST_IDS.scrim} onClick={onClose} />
       <Sheet
         data-testid={TRANSACTION_DRAWER_TEST_IDS.drawer}
         offset={swipe.offset}
         dragging={swipe.isDragging}
       >
         <DrawerHandle swipe={swipe} />
-        <TransactionTypeToggle
-          transactionType={transactionType}
-          onChange={setTransactionType}
-        />
+        <TransactionTypeToggle transactionType={transactionType} onChange={setTransactionType} />
         <Body key={transactionType}>
           <TransactionForm
             transactionType={transactionType}

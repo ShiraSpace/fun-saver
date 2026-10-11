@@ -1,9 +1,4 @@
-import {
-  css,
-  keyframes,
-  type SerializedStyles,
-  type Theme,
-} from '@emotion/react';
+import { css, keyframes, type SerializedStyles, type Theme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { LAYERS } from '@/theme/layers';
 import { REDUCED_MOTION } from '@/theme/motion';
@@ -48,11 +43,7 @@ interface ThemedPieceLook extends PieceLook {
   theme: Theme;
 }
 
-function pieceLook({
-  piece,
-  colorName,
-  theme,
-}: ThemedPieceLook): SerializedStyles {
+function pieceLook({ piece, colorName, theme }: ThemedPieceLook): SerializedStyles {
   const [rightPercent, widthPx, heightPx, fallMs, delayMs, swayPx] = piece;
 
   return css`

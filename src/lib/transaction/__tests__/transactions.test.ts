@@ -35,30 +35,22 @@ describe('addDeposit', () => {
       asOf: mockToday,
     });
     const amountFor = (name: WalletName): number =>
-      transactions.find(
-        (transaction) => transaction.walletId === walletId(name)
-      )!.amount;
+      transactions.find((transaction) => transaction.walletId === walletId(name))!.amount;
     const expected = splitDeposit(2000);
 
     expect(transactions).toHaveLength(3);
     expect(amountFor('savings')).toBe(expected.savings);
     expect(amountFor('spending')).toBe(expected.spending);
     expect(amountFor('goodDeeds')).toBe(expected.goodDeeds);
-    expect(
-      transactions.every(
-        (transaction) => transaction.type === TRANSACTION_TYPE.deposit
-      )
-    ).toBe(true);
-    expect(
-      transactions.every((transaction) => transaction.occurredAt === mockToday)
-    ).toBe(true);
+    expect(transactions.every((transaction) => transaction.type === TRANSACTION_TYPE.deposit)).toBe(
+      true
+    );
+    expect(transactions.every((transaction) => transaction.occurredAt === mockToday)).toBe(true);
   });
 
   it('persists the deposit transactions to the store', async () => {
     const { store, account } = await storeWithOwnedAccount();
-    const savings = account.wallets.find(
-      (wallet) => wallet.name === 'savings'
-    )!;
+    const savings = account.wallets.find((wallet) => wallet.name === 'savings')!;
 
     await addDeposit({ store, account, amountAgorot: 2000, asOf: mockToday });
     const saved = await store.listTransactionsByWallet(account.id, savings.id);

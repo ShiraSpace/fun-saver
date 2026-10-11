@@ -44,21 +44,22 @@ describe('ViewModeSwitch', () => {
     });
 
     it(`shows the ${viewMode} face on the knob`, () => {
-      expect(
-        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).toHaveTextContent(VIEW_MODE_SWITCH_COPY.knobFace[viewMode]);
+      expect(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)).toHaveTextContent(
+        VIEW_MODE_SWITCH_COPY.knobFace[viewMode]
+      );
     });
 
     it('is named by its label alone, without the face', () => {
-      expect(
-        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).toHaveAccessibleName(VIEW_MODE_SWITCH_COPY.label);
+      expect(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)).toHaveAccessibleName(
+        VIEW_MODE_SWITCH_COPY.label
+      );
     });
 
     it(`has aria-checked ${isOn}`, () => {
-      expect(
-        screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-      ).toHaveAttribute('aria-checked', isOn);
+      expect(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)).toHaveAttribute(
+        'aria-checked',
+        isOn
+      );
     });
   });
 
@@ -106,15 +107,14 @@ describe('ViewModeSwitch', () => {
       });
 
       it('slides on the moment it is tapped', () => {
-        expect(
-          screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-        ).toHaveAttribute('aria-checked', 'true');
+        expect(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)).toHaveAttribute(
+          'aria-checked',
+          'true'
+        );
       });
 
       it('cannot be tapped again while it slides', () => {
-        expect(
-          screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-        ).toBeDisabled();
+        expect(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)).toBeDisabled();
       });
 
       describe('once the knob has slid', () => {
@@ -162,9 +162,7 @@ describe('ViewModeSwitch', () => {
       });
 
       it(`can be tapped again once ${switchTo} mode is on`, () => {
-        expect(
-          screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
-        ).toBeEnabled();
+        expect(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)).toBeEnabled();
       });
     });
   });

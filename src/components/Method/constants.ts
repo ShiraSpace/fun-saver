@@ -2,8 +2,7 @@ import { PERCENT_TOTAL } from '@/lib/wallet/constants';
 
 export const METHOD_ROUTE = '/method';
 
-export const percentLabel = (portion: number): string =>
-  `${Math.round(portion * PERCENT_TOTAL)}%`;
+export const percentLabel = (portion: number): string => `${Math.round(portion * PERCENT_TOTAL)}%`;
 
 export const SECTION_NUMBER = {
   why: 1,

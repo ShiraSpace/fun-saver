@@ -1,8 +1,4 @@
-import {
-  renderHook,
-  waitFor,
-  type RenderHookResult,
-} from '@testing-library/react';
+import { renderHook, waitFor, type RenderHookResult } from '@testing-library/react';
 import { REQUEST_STATE } from '@/lib/request-state';
 import { useMatchingPictures } from './use-matching-pictures';
 
@@ -16,9 +12,7 @@ describe('useMatchingPictures when the word list cannot load', () => {
 
   beforeEach(async () => {
     hook = renderHook(() => useMatchingPictures(mockQuery));
-    await waitFor(() =>
-      expect(hook.result.current.requestState).not.toBe(REQUEST_STATE.pending)
-    );
+    await waitFor(() => expect(hook.result.current.requestState).not.toBe(REQUEST_STATE.pending));
   });
 
   it('reports the load as failed', () => {

@@ -11,8 +11,7 @@ import { signedInAccounts } from './signed-in-accounts';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage(): Promise<JSX.Element> {
-  const { user, accounts, currentAccountId, themeId, viewMode } =
-    await signedInAccounts();
+  const { user, accounts, currentAccountId, themeId, viewMode } = await signedInAccounts();
   const accountSummaries = await summarizeAccounts({
     store: getStore(),
     accounts,
@@ -23,10 +22,7 @@ export default async function HomePage(): Promise<JSX.Element> {
     <ThemedPage themeId={themeId}>
       <SignedInUserProvider value={user}>
         <ViewModeProvider value={viewMode}>
-          <Home
-            accounts={accountSummaries}
-            initialAccountId={currentAccountId}
-          />
+          <Home accounts={accountSummaries} initialAccountId={currentAccountId} />
         </ViewModeProvider>
       </SignedInUserProvider>
     </ThemedPage>

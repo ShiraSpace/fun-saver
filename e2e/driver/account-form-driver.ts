@@ -42,17 +42,11 @@ export class AccountFormDriver {
   }
 
   background(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      this.containerTestId,
-      'background-image'
-    );
+    return this.appBrowser.computedStyle(this.containerTestId, 'background-image');
   }
 
   contentAlignment(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      this.containerTestId,
-      'justify-content'
-    );
+    return this.appBrowser.computedStyle(this.containerTestId, 'justify-content');
   }
 
   async formGaps(): Promise<number[]> {
@@ -86,17 +80,11 @@ export class AccountFormDriver {
   }
 
   titleFontSize(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      SCREEN_TITLE_TEST_IDS.title,
-      'font-size'
-    );
+    return this.appBrowser.computedStyle(SCREEN_TITLE_TEST_IDS.title, 'font-size');
   }
 
   nameFieldBackground(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      NAME_FIELD_TEST_IDS.field,
-      'background-color'
-    );
+    return this.appBrowser.computedStyle(NAME_FIELD_TEST_IDS.field, 'background-color');
   }
 
   nameLabelColor(): Promise<string> {

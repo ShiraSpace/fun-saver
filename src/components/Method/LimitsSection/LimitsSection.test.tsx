@@ -12,12 +12,8 @@ describe('the section on what the method does not do', () => {
   });
 
   it('states every limit the copy carries, so none of them is quietly dropped', () => {
-    const written = Object.values(limits).filter(
-      (value) => typeof value === 'object'
-    );
-    const body = screen.getByTestId(
-      METHOD_SECTION_TEST_IDS.body(SECTION_NUMBER.limits)
-    );
+    const written = Object.values(limits).filter((value) => typeof value === 'object');
+    const body = screen.getByTestId(METHOD_SECTION_TEST_IDS.body(SECTION_NUMBER.limits));
 
     expect(body.querySelectorAll(':scope > p')).toHaveLength(written.length);
   });

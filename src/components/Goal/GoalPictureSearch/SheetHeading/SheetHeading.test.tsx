@@ -12,10 +12,7 @@ describe('SheetHeading', () => {
   });
 
   it('gives the title the id the sheet is labelled by', () => {
-    expect(screen.getByTestId(SHEET_HEADING_TEST_IDS.title)).toHaveAttribute(
-      'id',
-      mockTitleId
-    );
+    expect(screen.getByTestId(SHEET_HEADING_TEST_IDS.title)).toHaveAttribute('id', mockTitleId);
   });
 
   describe('after tapping ✕', () => {

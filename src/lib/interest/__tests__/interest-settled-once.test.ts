@@ -25,9 +25,7 @@ describe('a day of interest', () => {
     });
 
     it('is settled once', async () => {
-      const transactions = await store.listTransactionsByAccount(
-        mockAccount.id
-      );
+      const transactions = await store.listTransactionsByAccount(mockAccount.id);
 
       expect(interestSettledOn(transactions, mockDay)).toHaveLength(1);
     });
@@ -35,9 +33,7 @@ describe('a day of interest', () => {
 
   describe('when a page load works from transactions read before the day was settled', () => {
     beforeEach(async () => {
-      const transactionsBeforeSettling = await store.listTransactionsByAccount(
-        mockAccount.id
-      );
+      const transactionsBeforeSettling = await store.listTransactionsByAccount(mockAccount.id);
       await settleDay();
       jest
         .spyOn(store, 'listTransactionsByAccount')
@@ -50,9 +46,7 @@ describe('a day of interest', () => {
     });
 
     it('is not settled again', async () => {
-      const transactions = await store.listTransactionsByAccount(
-        mockAccount.id
-      );
+      const transactions = await store.listTransactionsByAccount(mockAccount.id);
 
       expect(interestSettledOn(transactions, mockDay)).toHaveLength(1);
     });

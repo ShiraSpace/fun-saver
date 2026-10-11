@@ -2,8 +2,7 @@ import styled from '@emotion/styled';
 import { keyframes, type Theme } from '@emotion/react';
 import { HEADER_LAYOUT } from '../constants';
 
-const titleSize = ({ theme }: { theme: Theme }): number =>
-  theme.typography.title;
+const titleSize = ({ theme }: { theme: Theme }): number => theme.typography.title;
 
 const fadeIn = keyframes`
   from {

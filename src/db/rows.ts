@@ -1,8 +1,4 @@
-import type {
-  Account,
-  AccountUser,
-  AccountUserRole,
-} from '@/lib/account/types';
+import type { Account, AccountUser, AccountUserRole } from '@/lib/account/types';
 import type { AuthProvider, User } from '@/lib/user/types';
 import type { Wallet } from '@/lib/wallet/types';
 import type { Transaction } from '@/lib/transaction/types';

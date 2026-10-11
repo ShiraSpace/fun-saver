@@ -9,20 +9,12 @@ describe('ChildMenuAccountList', () => {
     id: 'a3',
     name: 'יואב',
   };
-  const mockSiblingAccounts = [
-    mockSiblingAccountSummary,
-    mockYoungerSiblingAccount,
-  ];
+  const mockSiblingAccounts = [mockSiblingAccountSummary, mockYoungerSiblingAccount];
   const mockOnSelect = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    render(
-      <ChildMenuAccountList
-        siblingAccounts={mockSiblingAccounts}
-        onSelect={mockOnSelect}
-      />
-    );
+    render(<ChildMenuAccountList siblingAccounts={mockSiblingAccounts} onSelect={mockOnSelect} />);
   });
 
   it('shows each sibling account it is given, in order', () => {
@@ -30,15 +22,11 @@ describe('ChildMenuAccountList', () => {
       .getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)
       .map((name) => name.textContent);
 
-    expect(names).toEqual(
-      mockSiblingAccounts.map((siblingAccount) => siblingAccount.name)
-    );
+    expect(names).toEqual(mockSiblingAccounts.map((siblingAccount) => siblingAccount.name));
   });
 
   it('selects the sibling account whose row is tapped', () => {
-    fireEvent.click(
-      screen.getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)[1]
-    );
+    fireEvent.click(screen.getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)[1]);
 
     expect(mockOnSelect).toHaveBeenCalledWith(mockYoungerSiblingAccount.id);
   });

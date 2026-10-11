@@ -20,10 +20,7 @@ import type { HeldPage } from './driver/hold-next-page';
 import { SESSION_COOKIE_NAME } from './driver/auth-session';
 import { useDriver } from './driver/use-driver';
 
-const SIGNS_OF_WAITING = [
-  HEADER_TEST_IDS.progress,
-  LOADING_SHELL_TEST_IDS.shell,
-] as const;
+const SIGNS_OF_WAITING = [HEADER_TEST_IDS.progress, LOADING_SHELL_TEST_IDS.shell] as const;
 
 describe('waiting for a page', () => {
   const { appBrowser, menu, header, loadingShell, account } = useDriver({
@@ -38,10 +35,7 @@ describe('waiting for a page', () => {
       );
 
       assert.ok(positions.shell >= 0, 'the first load carries no shell');
-      assert.ok(
-        positions.page > positions.shell,
-        'the page markup arrives before the shell'
-      );
+      assert.ok(positions.page > positions.shell, 'the page markup arrives before the shell');
     });
 
     it('turns a bad session away with a redirect, before any shell is sent', async () => {
@@ -152,9 +146,7 @@ describe('waiting for a page', () => {
   describe('saving a deposit', () => {
     const mockDepositShekels = 50;
     const principalAfterDeposit = String(
-      agorotToShekels(
-        splitDeposit(mockDepositShekels * AGOROT_PER_SHEKEL).savings
-      )
+      agorotToShekels(splitDeposit(mockDepositShekels * AGOROT_PER_SHEKEL).savings)
     );
     let newBalances: HeldPage;
     let principalBeforeDeposit: string;

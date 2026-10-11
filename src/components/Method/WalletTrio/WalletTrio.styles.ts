@@ -13,8 +13,7 @@ export const TrioWallet = styled.div<{ walletName: WalletName }>`
   padding: 11px 9px;
   border-radius: 14px;
   text-align: center;
-  background: ${({ walletName, theme }): string =>
-    theme.gradients[WALLET_GRADIENT[walletName]]};
+  background: ${({ walletName, theme }): string => theme.gradients[WALLET_GRADIENT[walletName]]};
   color: ${({ theme }): string => theme.colors.textOnWallet};
 `;
 

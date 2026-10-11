@@ -93,20 +93,14 @@ export class MenuDriver {
 
   async openMethodPage(): Promise<string> {
     await this.appBrowser.click(NAVIGATION_TABS_TEST_IDS.methodTab);
-    await this.appBrowser.waits.text(
-      HEADER_TITLE_TEST_IDS.title,
-      METHOD_COPY.title
-    );
+    await this.appBrowser.waits.text(HEADER_TITLE_TEST_IDS.title, METHOD_COPY.title);
 
     return this.appBrowser.currentPath();
   }
 
   async openTransactionsPage(): Promise<string> {
     await this.appBrowser.click(NAVIGATION_TABS_TEST_IDS.transactionsTab);
-    await this.appBrowser.waits.text(
-      HEADER_TITLE_TEST_IDS.title,
-      TRANSACTIONS_COPY.title
-    );
+    await this.appBrowser.waits.text(HEADER_TITLE_TEST_IDS.title, TRANSACTIONS_COPY.title);
 
     return this.appBrowser.currentPath();
   }
@@ -150,10 +144,7 @@ export class MenuDriver {
   }
 
   viewModeSwitchTrackBackground(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      VIEW_MODE_SWITCH_TEST_IDS.track,
-      'background-color'
-    );
+    return this.appBrowser.computedStyle(VIEW_MODE_SWITCH_TEST_IDS.track, 'background-color');
   }
 
   appearanceSectionBox(): Promise<BoundingBox> {
@@ -172,10 +163,7 @@ export class MenuDriver {
   }
 
   methodTabBackground(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      NAVIGATION_TABS_TEST_IDS.methodTab,
-      'background-color'
-    );
+    return this.appBrowser.computedStyle(NAVIGATION_TABS_TEST_IDS.methodTab, 'background-color');
   }
 
   transactionsTabBackground(): Promise<string> {
@@ -202,9 +190,6 @@ export class MenuDriver {
   }
 
   overlayBackground(): Promise<string> {
-    return this.appBrowser.computedStyle(
-      MENU_OVERLAY_TEST_IDS.overlay,
-      'background-color'
-    );
+    return this.appBrowser.computedStyle(MENU_OVERLAY_TEST_IDS.overlay, 'background-color');
   }
 }

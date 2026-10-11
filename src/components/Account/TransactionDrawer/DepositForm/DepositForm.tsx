@@ -9,20 +9,14 @@ import { DepositSplitPreview } from '../DepositSplitPreview';
 import { AmountKeypadWithSubmit } from '../AmountKeypadWithSubmit';
 import { useDepositForm } from '../use-deposit-form';
 import { DrawerError, DrawerTitle } from '../drawer-parts';
-import {
-  TRANSACTION_DRAWER_COPY,
-  TRANSACTION_DRAWER_TEST_IDS,
-} from '../constants';
+import { TRANSACTION_DRAWER_COPY, TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 
 interface DepositFormProps {
   account: AccountSummary;
   onSaved: () => void;
 }
 
-export function DepositForm({
-  account,
-  onSaved,
-}: DepositFormProps): JSX.Element {
+export function DepositForm({ account, onSaved }: DepositFormProps): JSX.Element {
   const form = useDepositForm(account.id, onSaved);
   const isSaving = form.requestState === REQUEST_STATE.pending;
   const hasSaveFailed = form.requestState === REQUEST_STATE.failed;
@@ -40,11 +34,7 @@ export function DepositForm({
           {TRANSACTION_DRAWER_COPY.error}
         </DrawerError>
       )}
-      <AmountKeypadWithSubmit
-        entry={form}
-        canSubmit={form.canSubmit}
-        submitLabel={submitLabel}
-      />
+      <AmountKeypadWithSubmit entry={form} canSubmit={form.canSubmit} submitLabel={submitLabel} />
     </>
   );
 }

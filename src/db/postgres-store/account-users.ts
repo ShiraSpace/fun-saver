@@ -1,12 +1,7 @@
 import type { Account, AccountUser } from '@/lib/account/types';
 import type { AccountOwner, AccountUserRepository } from '../data-store';
 import { sortedByName, ownerAccountUser } from '../account-users';
-import {
-  accountFromRow,
-  accountUserFromRow,
-  type AccountRow,
-  type AccountUserRow,
-} from '../rows';
+import { accountFromRow, accountUserFromRow, type AccountRow, type AccountUserRow } from '../rows';
 import { PostgresAccounts } from './accounts';
 import { accountWriteError } from './errors';
 import { queryRows, type Sql } from './query';
@@ -18,10 +13,7 @@ export class PostgresAccountUsers implements AccountUserRepository {
     this.accounts = new PostgresAccounts(sql);
   }
 
-  async get(
-    accountId: string,
-    userId: string
-  ): Promise<AccountUser | undefined> {
+  async get(accountId: string, userId: string): Promise<AccountUser | undefined> {
     const rows = await queryRows<AccountUserRow>(
       this.sql,
       'SELECT * FROM account_users WHERE account_id = $1 AND user_id = $2',
@@ -43,10 +35,7 @@ export class PostgresAccountUsers implements AccountUserRepository {
     return sortedByName(rows.map(accountFromRow));
   }
 
-  async insertAccountWithOwner(
-    account: Account,
-    owner: AccountOwner
-  ): Promise<void> {
+  async insertAccountWithOwner(account: Account, owner: AccountOwner): Promise<void> {
     const accountUser = ownerAccountUser(account.id, owner);
 
     try {

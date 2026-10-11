@@ -15,22 +15,16 @@ describe('an evidence quote', () => {
 
     it('lifts the finding out of the sentence, because the number is the point', () => {
       expect(
-        screen
-          .getByTestId(EVIDENCE_QUOTE_TEST_IDS.quote)
-          .querySelector('strong')
+        screen.getByTestId(EVIDENCE_QUOTE_TEST_IDS.quote).querySelector('strong')
       ).toHaveTextContent('חסכו 72% יותר');
     });
 
     it('runs the citation left to right, so a Latin reference keeps its punctuation in an RTL card', () => {
-      expect(
-        screen.getByTestId(EVIDENCE_QUOTE_TEST_IDS.citation)
-      ).toHaveAttribute('dir', 'ltr');
+      expect(screen.getByTestId(EVIDENCE_QUOTE_TEST_IDS.citation)).toHaveAttribute('dir', 'ltr');
     });
 
     it('shows no number, because there is nothing for it to point at', () => {
-      expect(
-        screen.queryByTestId(SOURCE_MARKER_TEST_IDS.marker)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(SOURCE_MARKER_TEST_IDS.marker)).not.toBeInTheDocument();
     });
   });
 
@@ -46,13 +40,9 @@ describe('an evidence quote', () => {
     });
 
     it('puts the number on the finding, where the claim is, not on the reference beneath it', () => {
-      const finding = screen
-        .getByTestId(EVIDENCE_QUOTE_TEST_IDS.quote)
-        .querySelector('p');
+      const finding = screen.getByTestId(EVIDENCE_QUOTE_TEST_IDS.quote).querySelector('p');
 
-      expect(finding).toContainElement(
-        screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker)
-      );
+      expect(finding).toContainElement(screen.getByTestId(SOURCE_MARKER_TEST_IDS.marker));
     });
   });
 });

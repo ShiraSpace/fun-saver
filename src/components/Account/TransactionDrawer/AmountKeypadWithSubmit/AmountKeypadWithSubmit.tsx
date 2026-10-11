@@ -6,11 +6,7 @@ import { AmountKeypad } from '../AmountKeypad';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import type { AmountEntry } from '../use-amount-entry';
 import { AMOUNT_KEYPAD_WITH_SUBMIT_TEST_IDS } from './constants';
-import {
-  Keypad,
-  KeypadSpace,
-  InPlaceOfKeypad,
-} from './AmountKeypadWithSubmit.styles';
+import { Keypad, KeypadSpace, InPlaceOfKeypad } from './AmountKeypadWithSubmit.styles';
 
 interface AmountKeypadWithSubmitProps {
   entry: AmountEntry;
@@ -38,9 +34,7 @@ export function AmountKeypadWithSubmit({
           />
         </Keypad>
         {isKeypadCovered && (
-          <InPlaceOfKeypad
-            data-testid={AMOUNT_KEYPAD_WITH_SUBMIT_TEST_IDS.inPlaceOfKeypad}
-          >
+          <InPlaceOfKeypad data-testid={AMOUNT_KEYPAD_WITH_SUBMIT_TEST_IDS.inPlaceOfKeypad}>
             {inPlaceOfKeypad}
           </InPlaceOfKeypad>
         )}

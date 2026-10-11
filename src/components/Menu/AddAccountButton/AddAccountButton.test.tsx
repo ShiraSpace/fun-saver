@@ -1,9 +1,6 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { WithMenu } from '@/test-utils/menu';
-import {
-  APP_MODE,
-  AppModeProvider,
-} from '@/components/AccountManagement/app-mode-context';
+import { APP_MODE, AppModeProvider } from '@/components/AccountManagement/app-mode-context';
 import { AddAccountButton } from './AddAccountButton';
 import { ACCOUNT_LIST_TEST_IDS } from '../AccountList/constants';
 

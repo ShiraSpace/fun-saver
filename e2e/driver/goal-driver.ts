@@ -36,8 +36,7 @@ export class GoalDriver {
   }
 
   async drawerHeight(): Promise<number> {
-    return (await this.appBrowser.box(TRANSACTION_DRAWER_TEST_IDS.drawer))
-      .height;
+    return (await this.appBrowser.box(TRANSACTION_DRAWER_TEST_IDS.drawer)).height;
   }
 
   submit(): Promise<void> {

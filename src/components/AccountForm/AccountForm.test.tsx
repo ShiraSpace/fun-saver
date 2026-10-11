@@ -57,25 +57,19 @@ describe('AccountForm', () => {
     });
 
     it('shows the title and icon it was given', () => {
-      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.title)).toHaveTextContent(
-        mockForm.title
-      );
-      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.icon)).toHaveTextContent(
-        mockForm.titleIcon
-      );
+      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.title)).toHaveTextContent(mockForm.title);
+      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.icon)).toHaveTextContent(mockForm.titleIcon);
     });
 
     it('renders the name field and the avatar picker', () => {
       expect(screen.getByTestId(NAME_FIELD_TEST_IDS.field)).toBeInTheDocument();
-      expect(
-        screen.getByTestId(AVATAR_PICKER_TEST_IDS.container)
-      ).toBeInTheDocument();
+      expect(screen.getByTestId(AVATAR_PICKER_TEST_IDS.container)).toBeInTheDocument();
     });
 
     it('shows the submit label it was given', () => {
-      expect(
-        screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit)
-      ).toHaveTextContent(mockForm.submitLabel);
+      expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.submit)).toHaveTextContent(
+        mockForm.submitLabel
+      );
     });
 
     it('disables submit until a name and an avatar are chosen', () => {
@@ -99,9 +93,7 @@ describe('AccountForm', () => {
     it('ignores a submit that beats the avatar choice', () => {
       fillName(mockForm.name);
       fireEvent.submit(
-        screen
-          .getByTestId(mockForm.testId)
-          .querySelector('form') as HTMLFormElement
+        screen.getByTestId(mockForm.testId).querySelector('form') as HTMLFormElement
       );
 
       expect(mockOnSubmit).not.toHaveBeenCalled();
@@ -130,9 +122,7 @@ describe('AccountForm', () => {
     });
 
     it('shows nothing about saving until a save fails', () => {
-      expect(
-        screen.queryByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId(ACCOUNT_FORM_TEST_IDS.saveError)).not.toBeInTheDocument();
     });
 
     it('tells the user when the save fails', async () => {
@@ -146,9 +136,7 @@ describe('AccountForm', () => {
 
       const error = await failASave();
 
-      expect(getComputedStyle(error).color).toBe(
-        hexToRgb(getThemeTokens().colors.alertText)
-      );
+      expect(getComputedStyle(error).color).toBe(hexToRgb(getThemeTokens().colors.alertText));
     });
 
     it('clears a previous failure when the next save succeeds', async () => {
@@ -159,9 +147,7 @@ describe('AccountForm', () => {
       submitForm();
 
       await waitFor(() =>
-        expect(
-          screen.queryByTestId(ACCOUNT_FORM_TEST_IDS.saveError)
-        ).not.toBeInTheDocument()
+        expect(screen.queryByTestId(ACCOUNT_FORM_TEST_IDS.saveError)).not.toBeInTheDocument()
       );
     });
 
@@ -197,9 +183,7 @@ describe('AccountForm', () => {
       const selected = selectedAvatars();
 
       expect(selected).toHaveLength(1);
-      expect(
-        selected[0].querySelector(`img[alt="${mockForm.avatarId}"]`)
-      ).toBeInTheDocument();
+      expect(selected[0].querySelector(`img[alt="${mockForm.avatarId}"]`)).toBeInTheDocument();
     });
 
     it('submits the initial values untouched', () => {

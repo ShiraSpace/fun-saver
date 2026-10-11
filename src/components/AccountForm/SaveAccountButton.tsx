@@ -22,11 +22,7 @@ export function SaveAccountButton({
 
   return (
     <>
-      <PrimaryButton
-        type="submit"
-        disabled={!canSubmit}
-        data-testid={ACCOUNT_FORM_TEST_IDS.submit}
-      >
+      <PrimaryButton type="submit" disabled={!canSubmit} data-testid={ACCOUNT_FORM_TEST_IDS.submit}>
         {submitLabel}
       </PrimaryButton>
       {saveError}

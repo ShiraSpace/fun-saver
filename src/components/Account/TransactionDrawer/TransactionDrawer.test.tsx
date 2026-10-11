@@ -18,21 +18,16 @@ describe('TransactionDrawer', () => {
     mockOnClose.mockClear();
     mockOnSaved.mockClear();
     render(
-      <TransactionDrawer
-        account={mockAccountSummary}
-        onClose={mockOnClose}
-        onSaved={mockOnSaved}
-      />
+      <TransactionDrawer account={mockAccountSummary} onClose={mockOnClose} onSaved={mockOnSaved} />
     );
   });
 
   it('opens on a deposit with the split visible', () => {
-    expect(
-      screen.getByTestId(TRANSACTION_TYPE_TOGGLE_TEST_IDS.deposit)
-    ).toHaveAttribute('aria-pressed', 'true');
-    expect(
-      screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.split)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(TRANSACTION_TYPE_TOGGLE_TEST_IDS.deposit)).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.split)).toBeInTheDocument();
   });
 
   it('dims at the modal layer', () => {
@@ -46,16 +41,10 @@ describe('TransactionDrawer', () => {
   });
 
   it('switches to the wallet picker when a withdrawal is chosen', () => {
-    fireEvent.click(
-      screen.getByTestId(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal)
-    );
+    fireEvent.click(screen.getByTestId(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal));
 
-    expect(
-      screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet('savings'))
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.split)
-    ).not.toBeInTheDocument();
+    expect(screen.getByTestId(WALLET_PICKER_TEST_IDS.wallet('savings'))).toBeInTheDocument();
+    expect(screen.queryByTestId(TRANSACTION_DRAWER_TEST_IDS.split)).not.toBeInTheDocument();
   });
 
   describe('once a deposit is saved', () => {

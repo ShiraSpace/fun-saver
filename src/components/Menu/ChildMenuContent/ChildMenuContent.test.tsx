@@ -33,27 +33,26 @@ describe('ChildMenuContent', () => {
   });
 
   it('greets the child by name', () => {
-    expect(
-      screen.getByTestId(CHILD_MENU_CONTENT_TEST_IDS.menu)
-    ).toHaveTextContent(mockAccountSummary.name);
+    expect(screen.getByTestId(CHILD_MENU_CONTENT_TEST_IDS.menu)).toHaveTextContent(
+      mockAccountSummary.name
+    );
   });
 
   it('takes the child home', () => {
-    expect(
-      screen.getByTestId(CHILD_MENU_CONTENT_TEST_IDS.home)
-    ).toHaveAttribute('href', HOME_ROUTE);
+    expect(screen.getByTestId(CHILD_MENU_CONTENT_TEST_IDS.home)).toHaveAttribute(
+      'href',
+      HOME_ROUTE
+    );
   });
 
   it('lets the child pick colours', () => {
-    expect(
-      screen.getByTestId(APPEARANCE_SECTION_TEST_IDS.section)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(APPEARANCE_SECTION_TEST_IDS.section)).toBeInTheDocument();
   });
 
   it('ends with the parent/child switch, for the parent to take back', () => {
-    expect(
-      screen.getByTestId(CHILD_MENU_CONTENT_TEST_IDS.menu).lastElementChild
-    ).toContainElement(screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch));
+    expect(screen.getByTestId(CHILD_MENU_CONTENT_TEST_IDS.menu).lastElementChild).toContainElement(
+      screen.getByTestId(VIEW_MODE_SWITCH_TEST_IDS.switch)
+    );
   });
 
   describe('the child goes home', () => {
@@ -86,11 +85,7 @@ describe('ChildMenuContent with siblings', () => {
         user: mockUser,
         viewMode: VIEW_MODE.child,
         accounts: createMockAccountsContext({
-          accounts: [
-            mockAccountSummary,
-            mockSiblingAccountSummary,
-            mockOtherSibling,
-          ],
+          accounts: [mockAccountSummary, mockSiblingAccountSummary, mockOtherSibling],
           switchAccount: mockSwitchAccount,
         }),
       }
@@ -102,23 +97,16 @@ describe('ChildMenuContent with siblings', () => {
       .getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.name)
       .map((name) => name.textContent);
 
-    expect(names).toEqual([
-      mockSiblingAccountSummary.name,
-      mockOtherSibling.name,
-    ]);
+    expect(names).toEqual([mockSiblingAccountSummary.name, mockOtherSibling.name]);
   });
 
   describe('the child taps a sibling', () => {
     beforeEach(() => {
-      fireEvent.click(
-        screen.getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)[0]
-      );
+      fireEvent.click(screen.getAllByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.row)[0]);
     });
 
     it("switches to the sibling's account", () => {
-      expect(mockSwitchAccount).toHaveBeenCalledWith(
-        mockSiblingAccountSummary.id
-      );
+      expect(mockSwitchAccount).toHaveBeenCalledWith(mockSiblingAccountSummary.id);
     });
 
     it('closes the menu', () => {
@@ -142,8 +130,6 @@ describe('ChildMenuContent for an only child', () => {
   });
 
   it('shows no switch card', () => {
-    expect(
-      screen.queryByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.list)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId(CHILD_MENU_ACCOUNT_LIST_TEST_IDS.list)).not.toBeInTheDocument();
   });
 });

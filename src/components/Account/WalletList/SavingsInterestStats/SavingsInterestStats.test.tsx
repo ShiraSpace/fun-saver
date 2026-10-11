@@ -7,32 +7,18 @@ describe('SavingsInterestStats', () => {
   it('shows the interest stats for the savings wallet', () => {
     render(<SavingsInterestStats wallet={createMockWalletSummary()} />);
 
-    expect(
-      screen.getByTestId(INTEREST_STATS_TEST_IDS.stats)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(INTEREST_STATS_TEST_IDS.stats)).toBeInTheDocument();
   });
 
   it('shows nothing for the spending wallet', () => {
-    render(
-      <SavingsInterestStats
-        wallet={createMockWalletSummary({ name: 'spending' })}
-      />
-    );
+    render(<SavingsInterestStats wallet={createMockWalletSummary({ name: 'spending' })} />);
 
-    expect(
-      screen.queryByTestId(INTEREST_STATS_TEST_IDS.stats)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId(INTEREST_STATS_TEST_IDS.stats)).not.toBeInTheDocument();
   });
 
   it('shows nothing for the good-deeds wallet', () => {
-    render(
-      <SavingsInterestStats
-        wallet={createMockWalletSummary({ name: 'goodDeeds' })}
-      />
-    );
+    render(<SavingsInterestStats wallet={createMockWalletSummary({ name: 'goodDeeds' })} />);
 
-    expect(
-      screen.queryByTestId(INTEREST_STATS_TEST_IDS.stats)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId(INTEREST_STATS_TEST_IDS.stats)).not.toBeInTheDocument();
   });
 });

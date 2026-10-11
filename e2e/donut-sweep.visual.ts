@@ -16,9 +16,7 @@ describe('donut sweep', () => {
 
   it('draws every arc of the ring', async () => {
     const animations = await account.walletShareAnimations();
-    const actualAnimationsLength = animations.filter(
-      (animation) => animation !== STILL
-    ).length;
+    const actualAnimationsLength = animations.filter((animation) => animation !== STILL).length;
 
     assert.equal(actualAnimationsLength, ARCS_PER_RING);
   });
@@ -29,9 +27,7 @@ describe('donut sweep under reduced motion', () => {
 
   it('leaves every arc of the ring still', async () => {
     const animations = await account.walletShareAnimations();
-    const actualNonAnimatedArcs = animations.filter(
-      (animation) => animation === STILL
-    ).length;
+    const actualNonAnimatedArcs = animations.filter((animation) => animation === STILL).length;
 
     assert.equal(actualNonAnimatedArcs, ARCS_PER_RING);
   });

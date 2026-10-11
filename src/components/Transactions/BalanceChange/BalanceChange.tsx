@@ -19,8 +19,7 @@ export function BalanceChange({
   const shekels = withAgorot
     ? agorotToShekels(balanceChange)
     : balanceChangeInShekels(balanceChange);
-  const sign =
-    shekels < 0 ? BALANCE_CHANGE_COPY.fell : BALANCE_CHANGE_COPY.rose;
+  const sign = shekels < 0 ? BALANCE_CHANGE_COPY.fell : BALANCE_CHANGE_COPY.rose;
   const shekelsMoved = withAgorot
     ? shekelsText(Math.abs(balanceChange), withAgorot)
     : Math.abs(shekels);

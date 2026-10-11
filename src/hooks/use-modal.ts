@@ -4,9 +4,7 @@ import { RefObject, useEffect, useRef } from 'react';
 import { useCloseOnBack } from '@/hooks/use-close-on-back';
 import { useEscapeKey } from '@/hooks/use-escape-key';
 
-export function useModal(
-  onClose: () => void
-): RefObject<HTMLDivElement | null> {
+export function useModal(onClose: () => void): RefObject<HTMLDivElement | null> {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEscapeKey({ isListening: true, onEscape: onClose, takesPrecedence: true });

@@ -7,6 +7,5 @@ export const LOCKED_SAVINGS_TEST_IDS = {
 } as const;
 
 export const LOCKED_SAVINGS_COPY = {
-  heading: (goalName: string): string =>
-    `${GOAL_COPY.lock} החיסכון שמור ליעד „${goalName}”`,
+  heading: (goalName: string): string => `${GOAL_COPY.lock} החיסכון שמור ליעד „${goalName}”`,
 } as const;

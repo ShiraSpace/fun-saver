@@ -9,9 +9,7 @@ describe('AmountEditKeys', () => {
   beforeEach(() => {
     mockOnClear.mockClear();
     mockOnBackspace.mockClear();
-    render(
-      <AmountEditKeys onClear={mockOnClear} onBackspace={mockOnBackspace} />
-    );
+    render(<AmountEditKeys onClear={mockOnClear} onBackspace={mockOnBackspace} />);
   });
 
   it('clears when the clear key is tapped', () => {
@@ -30,8 +28,8 @@ describe('AmountEditKeys', () => {
     expect(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.clear)).toHaveTextContent(
       AMOUNT_KEYPAD_COPY.clear
     );
-    expect(
-      screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.backspace)
-    ).toHaveTextContent(AMOUNT_KEYPAD_COPY.backspace);
+    expect(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.backspace)).toHaveTextContent(
+      AMOUNT_KEYPAD_COPY.backspace
+    );
   });
 });

@@ -20,16 +20,11 @@ export class PageWaits {
     );
   }
 
-  async style(
-    selector: string,
-    property: string,
-    value: string
-  ): Promise<void> {
+  async style(selector: string, property: string, value: string): Promise<void> {
     await this.currentPage().waitForFunction(
       (selector, property, expected) =>
-        getComputedStyle(
-          document.querySelector(selector) as Element
-        ).getPropertyValue(property) === expected,
+        getComputedStyle(document.querySelector(selector) as Element).getPropertyValue(property) ===
+        expected,
       {},
       selector,
       property,
@@ -41,9 +36,7 @@ export class PageWaits {
     await this.currentPage().waitForFunction(
       (testId, expected) => {
         const element = document.querySelector(`[data-testid="${testId}"]`);
-        return (
-          element !== null && (element.textContent ?? '').includes(expected)
-        );
+        return element !== null && (element.textContent ?? '').includes(expected);
       },
       {},
       testId,
@@ -56,9 +49,7 @@ export class PageWaits {
       (testId, expected) => {
         const node = document.querySelector(`[data-testid="${testId}"]`);
         const source =
-          node?.getAttribute('src') ??
-          node?.querySelector('img')?.getAttribute('src') ??
-          '';
+          node?.getAttribute('src') ?? node?.querySelector('img')?.getAttribute('src') ?? '';
         return source.includes(expected);
       },
       {},

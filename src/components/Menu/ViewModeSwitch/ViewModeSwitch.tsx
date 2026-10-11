@@ -21,10 +21,7 @@ export function ViewModeSwitch(): JSX.Element {
       onClick={switchViewMode}
     >
       {VIEW_MODE_SWITCH_COPY.label}
-      <Track
-        data-on={isChildMode}
-        data-testid={VIEW_MODE_SWITCH_TEST_IDS.track}
-      >
+      <Track data-on={isChildMode} data-testid={VIEW_MODE_SWITCH_TEST_IDS.track}>
         <Knob aria-hidden>{knobFace}</Knob>
       </Track>
     </Row>

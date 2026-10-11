@@ -13,10 +13,7 @@ interface WithToggleableMenuProps {
   children: ReactNode;
 }
 
-export function WithMenu({
-  children,
-  closeMenu = (): void => {},
-}: WithMenuProps): JSX.Element {
+export function WithMenu({ children, closeMenu = (): void => {} }: WithMenuProps): JSX.Element {
   return (
     <MenuProvider value={{ isOpen: true, toggle: (): void => {}, closeMenu }}>
       {children}
@@ -24,9 +21,7 @@ export function WithMenu({
   );
 }
 
-export function WithToggleableMenu({
-  children,
-}: WithToggleableMenuProps): JSX.Element {
+export function WithToggleableMenu({ children }: WithToggleableMenuProps): JSX.Element {
   const menu = useMenuState();
 
   return (

@@ -40,11 +40,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
     jest.mocked(signedInUser).mockResolvedValue(mockUser);
   });
 
-  function postWithdraw(
-    walletId: string,
-    amount: number,
-    id: string
-  ): Promise<Response> {
+  function postWithdraw(walletId: string, amount: number, id: string): Promise<Response> {
     const request = new Request('http://localhost/api/accounts/x/withdrawals', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -54,10 +50,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
     return POST(request, { params: Promise.resolve({ id }) });
   }
 
-  function postRawBody(
-    id: string,
-    body: string | undefined
-  ): Promise<Response> {
+  function postRawBody(id: string, body: string | undefined): Promise<Response> {
     const request = new Request('http://localhost/api/accounts/x/withdrawals', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -68,34 +61,22 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
   }
 
   async function savingsBalance(): Promise<number> {
-    return balance(
-      await getStore().listTransactionsByWallet(account.id, savingsId)
-    );
+    return balance(await getStore().listTransactionsByWallet(account.id, savingsId));
   }
 
   it('withdraws from the chosen wallet and persists it', async () => {
     const before = await savingsBalance();
 
-    const response = await postWithdraw(
-      savingsId,
-      mockWithdrawalShekels,
-      account.id
-    );
+    const response = await postWithdraw(savingsId, mockWithdrawalShekels, account.id);
 
     expect(response.status).toBe(200);
-    expect(await savingsBalance()).toBe(
-      before - shekelsToAgorot(mockWithdrawalShekels)
-    );
+    expect(await savingsBalance()).toBe(before - shekelsToAgorot(mockWithdrawalShekels));
   });
 
   it('rejects an overdraft with 400', async () => {
     const mockOverdraftShekels = 9999;
 
-    const response = await postWithdraw(
-      savingsId,
-      mockOverdraftShekels,
-      account.id
-    );
+    const response = await postWithdraw(savingsId, mockOverdraftShekels, account.id);
 
     expect(response.status).toBe(400);
     expect((await response.json()).error).toBeTruthy();
@@ -112,11 +93,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
   it('refuses an unknown account with 403 rather than admitting it is gone', async () => {
     const mockUnknownAccountId = 'does-not-exist';
 
-    const response = await postWithdraw(
-      savingsId,
-      mockWithdrawalShekels,
-      mockUnknownAccountId
-    );
+    const response = await postWithdraw(savingsId, mockWithdrawalShekels, mockUnknownAccountId);
 
     expect(response.status).toBe(403);
   });
@@ -126,11 +103,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
 
     const before = await savingsBalance();
 
-    const response = await postWithdraw(
-      savingsId,
-      mockWithdrawalShekels,
-      account.id
-    );
+    const response = await postWithdraw(savingsId, mockWithdrawalShekels, account.id);
 
     expect(response.status).toBe(403);
     expect(await savingsBalance()).toBe(before);
@@ -158,11 +131,7 @@ describe('POST /api/accounts/[id]/withdrawals', () => {
           amount: (await savingsBalance()) + 1,
         })
       );
-      response = await postWithdraw(
-        savingsId,
-        mockWithdrawalShekels,
-        account.id
-      );
+      response = await postWithdraw(savingsId, mockWithdrawalShekels, account.id);
     });
 
     it('answers 409', () => {

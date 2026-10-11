@@ -18,9 +18,7 @@ interface SsrStyleCache {
   flushPendingStyleNames: () => string[];
 }
 
-export function EmotionStyleRegistry({
-  children,
-}: EmotionStyleRegistryProps): JSX.Element {
+export function EmotionStyleRegistry({ children }: EmotionStyleRegistryProps): JSX.Element {
   const [{ cache, flushPendingStyleNames }] = useState(createEmotionCache);
 
   useServerInsertedHTML(() => {

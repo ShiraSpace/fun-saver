@@ -41,10 +41,7 @@ export class AccountsStore {
     return account;
   }
 
-  async updateAccount(
-    id: string,
-    edits: AccountEdits
-  ): Promise<Account | undefined> {
+  async updateAccount(id: string, edits: AccountEdits): Promise<Account | undefined> {
     return this.store.updateAccount(id, edits);
   }
 

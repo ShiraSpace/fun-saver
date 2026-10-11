@@ -17,15 +17,9 @@ interface OptionProps {
   onSelect: (avatarId: string) => void;
 }
 
-function AvatarOption({
-  avatar,
-  isSelected,
-  onSelect,
-}: OptionProps): JSX.Element {
+function AvatarOption({ avatar, isSelected, onSelect }: OptionProps): JSX.Element {
   const select = (): void => onSelect(avatar.id);
-  const imagesSizes = Math.ceil(
-    AVATAR_PICKER_LAYOUT.maxWidth / AVATAR_PICKER_LAYOUT.columns
-  );
+  const imagesSizes = Math.ceil(AVATAR_PICKER_LAYOUT.maxWidth / AVATAR_PICKER_LAYOUT.columns);
   return (
     <OptionButton
       type="button"
@@ -34,20 +28,12 @@ function AvatarOption({
       background={avatar.background}
       onClick={select}
     >
-      <Avatar
-        avatarId={avatar.id}
-        alt={avatar.id}
-        fill
-        sizes={`${imagesSizes}px`}
-      />
+      <Avatar avatarId={avatar.id} alt={avatar.id} fill sizes={`${imagesSizes}px`} />
     </OptionButton>
   );
 }
 
-export function AvatarPicker({
-  selectedId,
-  onSelect,
-}: AvatarPickerProps): JSX.Element {
+export function AvatarPicker({ selectedId, onSelect }: AvatarPickerProps): JSX.Element {
   const avatars = AVATARS.map((avatar) => (
     <AvatarOption
       key={avatar.id}

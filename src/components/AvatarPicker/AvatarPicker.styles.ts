@@ -16,14 +16,11 @@ export const Grid = styled.div`
 
 const optionFill = ({ background }: OptionButtonProps): string => background;
 
-const ringColor = ({ theme }: { theme: Theme }): string =>
-  theme.colors.selectionRing;
+const ringColor = ({ theme }: { theme: Theme }): string => theme.colors.selectionRing;
 
-const selectedBorder = ({ theme }: { theme: Theme }): string =>
-  theme.colors.textOnPrimary;
+const selectedBorder = ({ theme }: { theme: Theme }): string => theme.colors.textOnPrimary;
 
-const baseShadow = ({ theme }: { theme: Theme }): string =>
-  `0 3px 0 ${theme.shadows.soft}`;
+const baseShadow = ({ theme }: { theme: Theme }): string => `0 3px 0 ${theme.shadows.soft}`;
 
 export const OptionButton = styled.button<OptionButtonProps>`
   position: relative;

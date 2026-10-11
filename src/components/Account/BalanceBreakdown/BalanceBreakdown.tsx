@@ -29,24 +29,17 @@ function totalBalanceFontSize(totalBalanceAgorot: number): number {
   }
 
   return Math.floor(
-    (BALANCE_BREAKDOWN_STYLE.totalAmountSize *
-      BALANCE_BREAKDOWN_STYLE.totalMaxDigits) /
-      digits
+    (BALANCE_BREAKDOWN_STYLE.totalAmountSize * BALANCE_BREAKDOWN_STYLE.totalMaxDigits) / digits
   );
 }
 
-type BalanceBreakdownWallet = Pick<
-  WalletSummary,
-  'id' | 'name' | 'icon' | 'balance'
->;
+type BalanceBreakdownWallet = Pick<WalletSummary, 'id' | 'name' | 'icon' | 'balance'>;
 
 interface BalanceBreakdownProps {
   wallets: BalanceBreakdownWallet[];
 }
 
-export function BalanceBreakdown({
-  wallets,
-}: BalanceBreakdownProps): JSX.Element {
+export function BalanceBreakdown({ wallets }: BalanceBreakdownProps): JSX.Element {
   const shares = walletShares(wallets.map((wallet) => wallet.balance));
   const walletsWithShare = wallets.map((wallet, index) => ({
     ...wallet,
@@ -60,16 +53,9 @@ export function BalanceBreakdown({
       <Ring>
         <Donut segments={walletsWithShare} />
         <TotalBalance>
-          <TotalBalanceLabel>
-            {BALANCE_BREAKDOWN_COPY.totalLabel}
-          </TotalBalanceLabel>
-          <TotalBalanceAmount
-            fontSize={totalBalanceFontSize(totalBalanceAgorot)}
-          >
-            <Money
-              amountAgorot={countingTotalBalance}
-              testId={BALANCE_BREAKDOWN_TEST_IDS.total}
-            />
+          <TotalBalanceLabel>{BALANCE_BREAKDOWN_COPY.totalLabel}</TotalBalanceLabel>
+          <TotalBalanceAmount fontSize={totalBalanceFontSize(totalBalanceAgorot)}>
+            <Money amountAgorot={countingTotalBalance} testId={BALANCE_BREAKDOWN_TEST_IDS.total} />
           </TotalBalanceAmount>
         </TotalBalance>
       </Ring>

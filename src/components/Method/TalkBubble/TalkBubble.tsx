@@ -14,11 +14,7 @@ export function TalkBubble({ label, lines }: TalkBubbleProps): JSX.Element {
     <Label data-testid={TALK_BUBBLE_TEST_IDS.label}>{emphasize(label)}</Label>
   );
   const spoken = lines.map((line, index) => (
-    <Line
-      key={index}
-      data-tone={line.tone}
-      data-testid={TALK_BUBBLE_TEST_IDS.line}
-    >
+    <Line key={index} data-tone={line.tone} data-testid={TALK_BUBBLE_TEST_IDS.line}>
       {emphasize(line.text)}
     </Line>
   ));
