@@ -8,15 +8,8 @@ import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { splitDeposit } from '@/lib/transaction/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import { useDriver, type AppDriver } from './driver/use-driver';
-
-async function cameHomeFromTheMethodPage({ menu, account }: AppDriver): Promise<void> {
-  await menu.open();
-  await menu.openMethodPage();
-  await menu.open();
-  await menu.tapHomeTab();
-  await account.waitForOverview();
-}
+import { useDriver } from './driver/use-driver';
+import { cameHomeFromTheMethodPage } from './driver/came-home-from-the-method-page';
 
 describe('a parent closes the transaction drawer, then presses back', () => {
   const driver = useDriver({ accounts: [mockAccount] });

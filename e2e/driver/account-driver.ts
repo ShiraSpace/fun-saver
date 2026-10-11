@@ -1,4 +1,5 @@
 import type { WalletName } from '@/lib/wallet/types';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { BALANCE_BREAKDOWN_TEST_IDS } from '@/components/Account/BalanceBreakdown/constants';
 import { INTEREST_STATS_TEST_IDS } from '@/components/Account/WalletCard/InterestStats/constants';
 import { WALLET_LIST_TEST_IDS } from '@/components/Account/WalletList/constants';
@@ -67,9 +68,14 @@ export class AccountDriver {
     await this.appBrowser.click(TRANSACTION_DRAWER_TEST_IDS.submit);
   }
 
+  async switchToWithdrawal(): Promise<void> {
+    await this.appBrowser.click(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal);
+    await this.appBrowser.waits.testId(WALLET_PICKER_TEST_IDS.wallet(WALLET_NAMES.savings));
+  }
+
   async withdraw(walletName: WalletName, amountShekels: number): Promise<void> {
     await this.openTransactionDrawer();
-    await this.appBrowser.click(TRANSACTION_TYPE_TOGGLE_TEST_IDS.withdrawal);
+    await this.switchToWithdrawal();
     await this.appBrowser.click(WALLET_PICKER_TEST_IDS.wallet(walletName));
 
     for (const digit of String(amountShekels)) {
