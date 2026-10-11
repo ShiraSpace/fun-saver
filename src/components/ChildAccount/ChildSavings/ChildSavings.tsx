@@ -5,10 +5,12 @@ import type { WalletSummary } from '@/lib/wallet/types';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { savingsWithoutAgorot } from '@/lib/wallet/wallet';
 import { Money } from '@/components/Money';
+import { GoalProgress } from '@/components/Goal/GoalProgress';
+import { GOAL_PROGRESS_SIZE } from '@/components/Goal/GoalProgress/constants';
 import { PiggyBank, piggyBankFillOf } from './PiggyBank';
 import { PrincipalAndInterest } from './PrincipalAndInterest';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
-import { Card, PiggyBankSpace, Total } from './ChildSavings.styles';
+import { Card, GoalSpace, PiggyBankSpace, Total } from './ChildSavings.styles';
 
 interface ChildSavingsProps {
   savings: WalletSummary;
@@ -27,6 +29,15 @@ export function ChildSavings({ savings, savedTowardGoal }: ChildSavingsProps): J
       <Total>
         <Money amountAgorot={balance} testId={CHILD_SAVINGS_TEST_IDS.balance} />
       </Total>
+      {savedTowardGoal && (
+        <GoalSpace>
+          <GoalProgress
+            savedTowardGoal={savedTowardGoal}
+            size={GOAL_PROGRESS_SIZE.large}
+            glowWhenReached
+          />
+        </GoalSpace>
+      )}
       <PrincipalAndInterest principal={principal} interestEarned={interestEarned} />
     </Card>
   );
