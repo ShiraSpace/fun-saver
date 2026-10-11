@@ -2,6 +2,11 @@ export const PIGGY_BANK_TEST_IDS = {
   art: 'piggy-bank',
 } as const;
 
+export const PIGGY_BANK_FILL = {
+  empty: 0,
+  full: 1,
+} as const;
+
 export const PIGGY_BANK_VIEW_BOX = '0 0 300 250';
 
 export const BELLY = { cx: 150, cy: 180, rx: 58, ry: 38 } as const;
@@ -18,6 +23,7 @@ export const PIGGY_BANK_SHAPE = {
   ear: 'M74 60 C86 40 116 40 126 58 C116 66 104 82 94 98 C86 108 72 104 70 90 C68 78 68 68 74 60 Z',
   earShine: {
     d: 'M80 64 C90 52 108 50 116 58',
+    fill: 'none',
     strokeWidth: 4,
     strokeLinecap: 'round',
     opacity: 0.8,
@@ -26,6 +32,7 @@ export const PIGGY_BANK_SHAPE = {
   bellyRim: { cx: 150, cy: 180, rx: 66, ry: 46 },
   glassStreak: {
     d: 'M104 168 Q116 150 140 146',
+    fill: 'none',
     strokeWidth: 5,
     strokeLinecap: 'round',
     opacity: 0.9,
@@ -80,4 +87,7 @@ export const COIN_PILE_LAYOUT = {
   jitterTilt: 16,
   jitterSeed: { multiplier: 9301, offset: 49297, spread: 233280 },
   jitterChannel: { y: 99, tilt: 7 },
+  jitterCentre: 0.5,
+  rowsPerPattern: 2,
+  oddRow: 1,
 } as const;

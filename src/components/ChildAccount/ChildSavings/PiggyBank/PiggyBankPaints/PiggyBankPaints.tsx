@@ -4,7 +4,7 @@ import { BELLY, PIGGY_BANK_BLUR, PIGGY_BANK_GRADIENT_SHAPE } from '../constants'
 import type { PiggyBankPaintIds } from '../piggy-bank-paint-ids';
 
 interface PiggyBankPaintsProps {
-  ids: PiggyBankPaintIds;
+  paintIds: PiggyBankPaintIds;
 }
 
 function stopsOf(stops: readonly GradientStop[]): JSX.Element[] {
@@ -18,33 +18,38 @@ function stopsOf(stops: readonly GradientStop[]): JSX.Element[] {
   ));
 }
 
-export function PiggyBankPaints({ ids }: PiggyBankPaintsProps): JSX.Element {
+export function PiggyBankPaints({ paintIds }: PiggyBankPaintsProps): JSX.Element {
   const { coinFace, body, snout, vertical } = PIGGY_BANK_GRADIENT_SHAPE;
+  const coinFaceStops = stopsOf(PIGGY_BANK_GRADIENT_STOPS.coinFace);
+  const bodyStops = stopsOf(PIGGY_BANK_GRADIENT_STOPS.body);
+  const earStops = stopsOf(PIGGY_BANK_GRADIENT_STOPS.ear);
+  const snoutStops = stopsOf(PIGGY_BANK_GRADIENT_STOPS.snout);
+  const glassStops = stopsOf(PIGGY_BANK_GRADIENT_STOPS.glass);
 
   return (
     <defs>
-      <radialGradient id={ids.coinFace} {...coinFace}>
-        {stopsOf(PIGGY_BANK_GRADIENT_STOPS.coinFace)}
+      <radialGradient id={paintIds.coinFace} {...coinFace}>
+        {coinFaceStops}
       </radialGradient>
-      <radialGradient id={ids.body} {...body}>
-        {stopsOf(PIGGY_BANK_GRADIENT_STOPS.body)}
+      <radialGradient id={paintIds.body} {...body}>
+        {bodyStops}
       </radialGradient>
-      <linearGradient id={ids.ear} {...vertical}>
-        {stopsOf(PIGGY_BANK_GRADIENT_STOPS.ear)}
+      <linearGradient id={paintIds.ear} {...vertical}>
+        {earStops}
       </linearGradient>
-      <radialGradient id={ids.snout} {...snout}>
-        {stopsOf(PIGGY_BANK_GRADIENT_STOPS.snout)}
+      <radialGradient id={paintIds.snout} {...snout}>
+        {snoutStops}
       </radialGradient>
-      <linearGradient id={ids.glass} {...vertical}>
-        {stopsOf(PIGGY_BANK_GRADIENT_STOPS.glass)}
+      <linearGradient id={paintIds.glass} {...vertical}>
+        {glassStops}
       </linearGradient>
-      <clipPath id={ids.belly}>
+      <clipPath id={paintIds.belly}>
         <ellipse {...BELLY} />
       </clipPath>
-      <filter id={ids.shadowBlur}>
+      <filter id={paintIds.shadowBlur}>
         <feGaussianBlur stdDeviation={PIGGY_BANK_BLUR.shadow} />
       </filter>
-      <filter id={ids.shineBlur}>
+      <filter id={paintIds.shineBlur}>
         <feGaussianBlur stdDeviation={PIGGY_BANK_BLUR.shine} />
       </filter>
     </defs>

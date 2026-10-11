@@ -1,4 +1,4 @@
-import { BELLY, COIN_PILE_LAYOUT, COIN_RADIUS, COIN_SQUASH } from './constants';
+import { BELLY, COIN_PILE_LAYOUT, COIN_RADIUS, COIN_SQUASH, PIGGY_BANK_FILL } from './constants';
 
 export interface PileSpot {
   x: number;
@@ -11,24 +11,20 @@ export interface PiggyBankFillParams {
   fullAt: number;
 }
 
-const EMPTY = 0;
-const FULL = 1;
-const JITTER_CENTRE = 0.5;
-const ODD_ROW = 1;
-
 export function piggyBankFill({ savingsBalance, fullAt }: PiggyBankFillParams): number {
   if (fullAt <= 0) {
-    return FULL;
+    return PIGGY_BANK_FILL.full;
   }
 
-  return Math.min(Math.max(savingsBalance / fullAt, EMPTY), FULL);
+  return Math.min(Math.max(savingsBalance / fullAt, PIGGY_BANK_FILL.empty), PIGGY_BANK_FILL.full);
 }
 
 function steadyJitter(seed: number): number {
-  const { multiplier, offset, spread } = COIN_PILE_LAYOUT.jitterSeed;
+  const { jitterSeed, jitterCentre } = COIN_PILE_LAYOUT;
+  const { multiplier, offset, spread } = jitterSeed;
   const wave = Math.sin(seed * multiplier + offset) * spread;
 
-  return wave - Math.floor(wave) - JITTER_CENTRE;
+  return wave - Math.floor(wave) - jitterCentre;
 }
 
 function rowHeights(): number[] {
@@ -45,10 +41,11 @@ function rowHeights(): number[] {
 }
 
 function rowOffsets(height: number, row: number): number[] {
-  const { coinStep, wallGap } = COIN_PILE_LAYOUT;
+  const { coinStep, wallGap, rowsPerPattern, oddRow } = COIN_PILE_LAYOUT;
   const fromCentre = (height - BELLY.cy) / BELLY.ry;
   const halfWidth = BELLY.rx * Math.sqrt(Math.max(1 - fromCentre * fromCentre, 0)) - wallGap;
-  const firstOffset = -halfWidth + (row % 2 === ODD_ROW ? coinStep / 2 : 0);
+  const staggered = row % rowsPerPattern === oddRow;
+  const firstOffset = -halfWidth + (staggered ? coinStep / rowsPerPattern : 0);
   const offsets: number[] = [];
 
   for (let offset = firstOffset; offset <= halfWidth; offset += coinStep) {
