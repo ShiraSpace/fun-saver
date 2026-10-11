@@ -18,9 +18,7 @@ describe('PrincipalAndInterest', () => {
   });
 
   it('marks what the money earned by itself as a gain', () => {
-    const interestEarned = screen.getByTestId(PRINCIPAL_AND_INTEREST_TEST_IDS.interestEarned);
-
-    expect(interestEarned.parentElement).toHaveTextContent(
+    expect(screen.getByTestId(PRINCIPAL_AND_INTEREST_TEST_IDS.gain)).toHaveTextContent(
       `${PRINCIPAL_AND_INTEREST_COPY.earnedSign}₪6`
     );
   });

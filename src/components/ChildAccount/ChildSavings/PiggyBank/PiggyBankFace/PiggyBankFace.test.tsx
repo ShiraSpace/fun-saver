@@ -1,6 +1,7 @@
-import { render } from '@/test-utils/render';
+import { render, screen } from '@/test-utils/render';
 import { paintOf, piggyBankPaintIds } from '../piggy-bank-paint-ids';
 import { PiggyBankFace } from './PiggyBankFace';
+import { PIGGY_BANK_FACE_TEST_IDS } from './constants';
 
 const mockPaintIds = piggyBankPaintIds('mock-piggy-bank');
 
@@ -14,8 +15,9 @@ describe('PiggyBankFace', () => {
   });
 
   it('paints the snout with its own paint', () => {
-    const snoutPaint = paintOf(mockPaintIds.snout);
-
-    expect(document.querySelectorAll(`[fill="${snoutPaint}"]`)).toHaveLength(1);
+    expect(screen.getByTestId(PIGGY_BANK_FACE_TEST_IDS.snout)).toHaveAttribute(
+      'fill',
+      paintOf(mockPaintIds.snout)
+    );
   });
 });

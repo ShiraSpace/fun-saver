@@ -26,7 +26,7 @@ export function PrincipalAndInterest({
       </Principal>
       <InterestEarned>
         {PRINCIPAL_AND_INTEREST_COPY.interestEarned}
-        <Amount dir="ltr">
+        <Amount dir="ltr" data-testid={PRINCIPAL_AND_INTEREST_TEST_IDS.gain}>
           {PRINCIPAL_AND_INTEREST_COPY.earnedSign}
           <Money
             amountAgorot={interestEarned}

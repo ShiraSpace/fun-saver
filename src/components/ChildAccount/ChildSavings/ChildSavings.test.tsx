@@ -1,10 +1,13 @@
 import { render, screen } from '@/test-utils/render';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
 import { createMockGoal, createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
+import {
+  COINS_IN_A_FULL_PILE,
+  COINS_IN_HALF_A_PILE,
+  coinsDrawnInPile,
+} from '@/test-utils/coin-pile';
 import { ChildSavings } from './ChildSavings';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
-import { COIN_PILE_SPOTS } from './PiggyBank/coin-pile';
-import { COIN_PILE_TEST_IDS } from './PiggyBank/CoinPile/constants';
 import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
 
 describe('ChildSavings', () => {
@@ -24,13 +27,13 @@ describe('ChildSavings', () => {
       expect(screen.getByTestId(CHILD_SAVINGS_TEST_IDS.balance)).toHaveTextContent('₪148');
     });
 
-    it('shows what the child put in', () => {
+    it('shows what the child put in: the savings less the interest', () => {
       expect(screen.getByTestId(PRINCIPAL_AND_INTEREST_TEST_IDS.principal)).toHaveTextContent(
         '₪142'
       );
     });
 
-    it('shows what the money earned by itself', () => {
+    it('shows what the money earned by itself, in whole shekels', () => {
       expect(screen.getByTestId(PRINCIPAL_AND_INTEREST_TEST_IDS.interestEarned)).toHaveTextContent(
         '₪6'
       );
@@ -43,9 +46,7 @@ describe('ChildSavings', () => {
     });
 
     it('fills the piggy bank halfway to ₪300', () => {
-      const halfThePile = Math.round(COIN_PILE_SPOTS.length / 2);
-
-      expect(screen.queryAllByTestId(COIN_PILE_TEST_IDS.coin)).toHaveLength(halfThePile);
+      expect(coinsDrawnInPile()).toBe(COINS_IN_HALF_A_PILE);
     });
 
     it('is named «החיסכון שלך» for screen readers', () => {
@@ -70,9 +71,7 @@ describe('ChildSavings', () => {
     });
 
     it('fills the piggy bank halfway to the goal', () => {
-      const halfThePile = Math.round(COIN_PILE_SPOTS.length / 2);
-
-      expect(screen.queryAllByTestId(COIN_PILE_TEST_IDS.coin)).toHaveLength(halfThePile);
+      expect(coinsDrawnInPile()).toBe(COINS_IN_HALF_A_PILE);
     });
   });
 
@@ -92,7 +91,7 @@ describe('ChildSavings', () => {
     });
 
     it('draws the piggy bank full', () => {
-      expect(screen.queryAllByTestId(COIN_PILE_TEST_IDS.coin)).toHaveLength(COIN_PILE_SPOTS.length);
+      expect(coinsDrawnInPile()).toBe(COINS_IN_A_FULL_PILE);
     });
   });
 });
