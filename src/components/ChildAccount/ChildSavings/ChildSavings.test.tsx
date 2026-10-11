@@ -2,6 +2,7 @@ import { render, screen } from '@/test-utils/render';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
 import { ChildSavings } from './ChildSavings';
 import { CHILD_SAVINGS_TEST_IDS } from './constants';
+import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
 
 describe('ChildSavings', () => {
   describe('savings of ₪148.90, ₪6.40 of it interest', () => {
@@ -21,11 +22,15 @@ describe('ChildSavings', () => {
     });
 
     it('shows what the child put in', () => {
-      expect(screen.getByTestId(CHILD_SAVINGS_TEST_IDS.principal)).toHaveTextContent('₪142');
+      expect(screen.getByTestId(PRINCIPAL_AND_INTEREST_TEST_IDS.principal)).toHaveTextContent(
+        '₪142'
+      );
     });
 
     it('shows what the money earned by itself', () => {
-      expect(screen.getByTestId(CHILD_SAVINGS_TEST_IDS.interestEarned)).toHaveTextContent('₪6');
+      expect(screen.getByTestId(PRINCIPAL_AND_INTEREST_TEST_IDS.interestEarned)).toHaveTextContent(
+        '₪6'
+      );
     });
   });
 });

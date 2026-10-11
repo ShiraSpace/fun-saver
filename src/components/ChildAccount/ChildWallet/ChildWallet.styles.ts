@@ -6,8 +6,8 @@ export const Card = styled.section`
   display: flex;
   align-items: center;
   gap: 14px;
-  min-height: 92px;
-  padding: 14px 16px;
+  min-height: 72px;
+  padding: 10px 16px;
   background: ${({ theme }): string => theme.colors.surface};
   border-radius: 22px;
   box-shadow: 0 5px 0 ${({ theme }): string => theme.shadows.faint};
@@ -17,8 +17,8 @@ export const Icon = styled.span<{ walletName: WalletName }>`
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  width: 58px;
-  height: 58px;
+  width: 48px;
+  height: 48px;
   border-radius: 18px;
   font-size: ${({ theme }): number => theme.typography.amount}px;
   background: ${({ walletName, theme }): string => theme.gradients[WALLET_GRADIENT[walletName]]};

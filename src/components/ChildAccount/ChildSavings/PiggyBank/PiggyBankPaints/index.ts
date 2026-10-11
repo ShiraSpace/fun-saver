@@ -1,0 +1,1 @@
+export { PiggyBankPaints } from './PiggyBankPaints';
