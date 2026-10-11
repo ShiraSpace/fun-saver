@@ -4,7 +4,8 @@ import { JSX } from 'react';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { useModal } from '@/hooks/use-modal';
 import { PrimaryButton } from '@/components/PrimaryButton';
-import { CancelButton, FormTitle } from '@/components/AccountForm';
+import { CloseButton } from '@/components/CloseButton';
+import { ScreenTitle } from '@/components/ScreenTitle';
 import { GoalHero } from './GoalHero';
 import { SavingsLock } from './SavingsLock';
 import { VIEW_GOAL_COPY, VIEW_GOAL_TEST_IDS } from './constants';
@@ -41,8 +42,8 @@ export function ViewGoal({
       data-testid={VIEW_GOAL_TEST_IDS.container}
     >
       <Page>
-        <CancelButton onCancel={onClose} disabled={false} />
-        <FormTitle title={title} titleIcon={VIEW_GOAL_COPY.titleIcon} />
+        <CloseButton onClose={onClose} />
+        <ScreenTitle title={title} titleIcon={VIEW_GOAL_COPY.titleIcon} />
         {reachedHeading}
         <GoalHero savedTowardGoal={savedTowardGoal} />
         <SavingsLock reached={reached} />

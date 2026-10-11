@@ -17,6 +17,7 @@ import {
 } from '@/test-utils/mocks/account.mocks';
 import { EditAccount } from './EditAccount';
 import { EDIT_ACCOUNT_COPY, EDIT_ACCOUNT_TEST_IDS } from './constants';
+import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
 
 const mockUpdateAccount = jest.fn();
 const mockOnUpdated = jest.fn();
@@ -49,7 +50,7 @@ describe('EditAccount', () => {
   });
 
   it('titles the form for editing rather than creating', () => {
-    expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.title)).toHaveTextContent(
+    expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.title)).toHaveTextContent(
       EDIT_ACCOUNT_COPY.title
     );
   });

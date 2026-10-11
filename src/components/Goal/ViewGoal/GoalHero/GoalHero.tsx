@@ -1,8 +1,8 @@
-import { JSX } from 'react';
-import { agorotToShekels } from '@/lib/money';
+import { JSX, ReactNode } from 'react';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { Money } from '@/components/Money';
 import { GoalProgressBar } from '../../GoalProgressBar';
+import { StillToSave } from '../../StillToSave';
 import { GOAL_HERO_COPY, GOAL_HERO_TEST_IDS } from './constants';
 import {
   Amount,
@@ -23,10 +23,12 @@ function encouragementFor({
   goal,
   stillToSave,
   reached,
-}: SavedTowardGoal): string {
-  return reached
-    ? GOAL_HERO_COPY.canBuy(goal.name, goal.picture.emoji)
-    : GOAL_HERO_COPY.stillToSave(agorotToShekels(stillToSave));
+}: SavedTowardGoal): ReactNode {
+  return reached ? (
+    GOAL_HERO_COPY.canBuy(goal.name, goal.picture.emoji)
+  ) : (
+    <StillToSave stillToSave={stillToSave} />
+  );
 }
 
 export function GoalHero({ savedTowardGoal }: GoalHeroProps): JSX.Element {

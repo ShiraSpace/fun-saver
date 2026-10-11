@@ -7,6 +7,10 @@ import {
 } from '@/components/AccountManagement/app-mode-context';
 import { CURRENT_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
 import { findCurrentAccount } from '@/lib/account/current-account';
+import {
+  savedTowardGoalOf,
+  type SavedTowardGoal,
+} from '@/lib/goal/saved-toward-goal';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/AppThemeProvider';
 
@@ -20,6 +24,36 @@ export interface AccountNavigation {
   cancel: () => void;
   isCreating: boolean;
   editingAccount?: AccountSummary;
+  viewingGoal?: SavedTowardGoal;
+}
+
+interface GoalBeingViewedParams {
+  mode: AppMode;
+  setMode: Dispatch<SetStateAction<AppMode>>;
+  currentAccount?: AccountSummary;
+}
+
+function goalBeingViewed({
+  mode,
+  currentAccount,
+}: GoalBeingViewedParams): SavedTowardGoal | undefined {
+  if (mode !== APP_MODE.viewingGoal || !currentAccount) {
+    return undefined;
+  }
+
+  return savedTowardGoalOf(currentAccount);
+}
+
+function useGoalBeingViewed(
+  params: GoalBeingViewedParams
+): SavedTowardGoal | undefined {
+  const viewingGoal = goalBeingViewed(params);
+
+  if (params.mode === APP_MODE.viewingGoal && !viewingGoal) {
+    params.setMode(APP_MODE.viewing);
+  }
+
+  return viewingGoal;
 }
 
 export function useAccountNavigation(
@@ -49,6 +83,7 @@ export function useAccountNavigation(
 
   const currentAccount = findCurrentAccount(accounts, currentAccountId);
   const isEditing = mode === APP_MODE.editingAccount;
+  const viewingGoal = useGoalBeingViewed({ mode, setMode, currentAccount });
 
   return {
     mode,
@@ -63,5 +98,6 @@ export function useAccountNavigation(
     cancel: returnToViewing,
     isCreating: mode === APP_MODE.creatingAccount,
     editingAccount: isEditing ? currentAccount : undefined,
+    viewingGoal,
   };
 }

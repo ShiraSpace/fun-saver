@@ -1,1 +1,0 @@
-export { GoalOverlays } from './GoalOverlays';

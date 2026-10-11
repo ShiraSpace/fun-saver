@@ -2,6 +2,8 @@ import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constant
 import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { AppBrowser } from './app-browser';
+import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
+import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
 
 export class AccountFormDriver {
   constructor(
@@ -36,7 +38,7 @@ export class AccountFormDriver {
   }
 
   cancel(): Promise<void> {
-    return this.appBrowser.click(ACCOUNT_FORM_TEST_IDS.cancel);
+    return this.appBrowser.click(CLOSE_BUTTON_TEST_IDS.button);
   }
 
   background(): Promise<string> {
@@ -55,7 +57,7 @@ export class AccountFormDriver {
 
   async formGaps(): Promise<number[]> {
     const [title, field, picker, submit] = await Promise.all([
-      this.appBrowser.box(ACCOUNT_FORM_TEST_IDS.title),
+      this.appBrowser.box(SCREEN_TITLE_TEST_IDS.title),
       this.appBrowser.box(NAME_FIELD_TEST_IDS.field),
       this.appBrowser.box(AVATAR_PICKER_TEST_IDS.container),
       this.appBrowser.box(ACCOUNT_FORM_TEST_IDS.submit),
@@ -70,7 +72,7 @@ export class AccountFormDriver {
 
   async titleSpacing(): Promise<{ fromTop: number; toNameField: number }> {
     const [title, field] = await Promise.all([
-      this.appBrowser.box(ACCOUNT_FORM_TEST_IDS.title),
+      this.appBrowser.box(SCREEN_TITLE_TEST_IDS.title),
       this.appBrowser.box(NAME_FIELD_TEST_IDS.field),
     ]);
     return {
@@ -80,12 +82,12 @@ export class AccountFormDriver {
   }
 
   titleColor(): Promise<string> {
-    return this.appBrowser.computedStyle(ACCOUNT_FORM_TEST_IDS.title, 'color');
+    return this.appBrowser.computedStyle(SCREEN_TITLE_TEST_IDS.title, 'color');
   }
 
   titleFontSize(): Promise<string> {
     return this.appBrowser.computedStyle(
-      ACCOUNT_FORM_TEST_IDS.title,
+      SCREEN_TITLE_TEST_IDS.title,
       'font-size'
     );
   }

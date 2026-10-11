@@ -3,13 +3,16 @@ import {
   createMockSavedTowardGoal,
   mockGoal,
 } from '@/test-utils/mocks/goal.mocks';
+import { moneyAsShown, stillToSaveAsShown } from '@/test-utils/money';
 import { GoalHero } from './GoalHero';
 import { GOAL_HERO_COPY, GOAL_HERO_TEST_IDS } from './constants';
 
 describe('GoalHero', () => {
   describe('while saving toward the goal', () => {
+    const mockSavedTowardGoal = createMockSavedTowardGoal();
+
     beforeEach(() => {
-      render(<GoalHero savedTowardGoal={createMockSavedTowardGoal()} />);
+      render(<GoalHero savedTowardGoal={mockSavedTowardGoal} />);
     });
 
     it("shows the goal's picture", () => {
@@ -26,20 +29,20 @@ describe('GoalHero', () => {
 
     it('shows how much is saved', () => {
       expect(screen.getByTestId(GOAL_HERO_TEST_IDS.saved)).toHaveTextContent(
-        '₪85'
+        moneyAsShown(mockSavedTowardGoal.saved)
       );
     });
 
     it("shows the goal's amount", () => {
       expect(screen.getByTestId(GOAL_HERO_TEST_IDS.amount)).toHaveTextContent(
-        '₪300'
+        moneyAsShown(mockGoal.amount)
       );
     });
 
     it('says how much is still to save', () => {
       expect(
         screen.getByTestId(GOAL_HERO_TEST_IDS.encouragement)
-      ).toHaveTextContent('עוד ₪215');
+      ).toHaveTextContent(stillToSaveAsShown(mockSavedTowardGoal.stillToSave));
     });
   });
 

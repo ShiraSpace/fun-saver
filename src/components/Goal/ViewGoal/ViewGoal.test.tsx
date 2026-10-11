@@ -1,13 +1,14 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
 import { ESCAPE_KEY } from '@/hooks/constants';
-import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
 import { ViewGoal } from './ViewGoal';
 import { VIEW_GOAL_COPY, VIEW_GOAL_TEST_IDS } from './constants';
 import {
   SAVINGS_LOCK_COPY,
   SAVINGS_LOCK_TEST_IDS,
 } from './SavingsLock/constants';
+import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
+import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
 
 const mockAccountName = 'נועה';
 
@@ -24,7 +25,7 @@ describe('ViewGoal', () => {
     });
 
     it('names whose goal it is', () => {
-      expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.title)).toHaveTextContent(
+      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.title)).toHaveTextContent(
         VIEW_GOAL_COPY.title(mockAccountName)
       );
     });
@@ -75,7 +76,7 @@ describe('ViewGoal', () => {
     });
 
     it('closes on ✕', () => {
-      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+      fireEvent.click(screen.getByTestId(CLOSE_BUTTON_TEST_IDS.button));
 
       expect(mockOnClose).toHaveBeenCalledTimes(1);
     });

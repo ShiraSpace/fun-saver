@@ -3,6 +3,8 @@ import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import type { AccountNavigation } from '@/hooks/use-account-navigation';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
 import { EDIT_ACCOUNT_TEST_IDS } from '@/components/EditAccount/constants';
+import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
+import { VIEW_GOAL_TEST_IDS } from '@/components/Goal/ViewGoal/constants';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
 import { DEFAULT_THEME_ID, type ThemeId } from '@/theme/registry';
 import { AccountManagement } from './AccountManagement';
@@ -85,6 +87,18 @@ describe('AccountManagement', () => {
       expect(screen.getByTestId(NAME_FIELD_TEST_IDS.input)).toHaveValue(
         mockAccountSummary.name
       );
+    });
+  });
+
+  describe('while viewing a goal', () => {
+    beforeEach(() => {
+      renderManagement({ viewingGoal: createMockSavedTowardGoal() });
+    });
+
+    it('opens the goal screen', () => {
+      expect(
+        screen.getByTestId(VIEW_GOAL_TEST_IDS.container)
+      ).toBeInTheDocument();
     });
   });
 });
