@@ -20,6 +20,8 @@ export const AMOUNT_KEYPAD_STYLE = {
   radius: 13,
   keyPaddingY: 6,
   editPaddingY: 6,
+  shortScreenKeyPaddingY: 2,
+  shortScreen: '(max-height: 720px)',
   gridMarginBottom: 10,
   topGap: 10,
   pressDrop: 3,

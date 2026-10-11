@@ -27,6 +27,10 @@ export const Key = styled.button`
     transform: translateY(${AMOUNT_KEYPAD_STYLE.pressDrop}px);
     box-shadow: none;
   }
+
+  @media ${AMOUNT_KEYPAD_STYLE.shortScreen} {
+    padding: ${AMOUNT_KEYPAD_STYLE.shortScreenKeyPaddingY}px 0;
+  }
 `;
 
 export const ZeroKey = styled(Key)`

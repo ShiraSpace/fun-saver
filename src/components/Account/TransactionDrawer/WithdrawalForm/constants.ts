@@ -11,5 +11,5 @@ export const WITHDRAWAL_FORM_COPY = {
   donationSubmit: 'תרומה של',
   submitting: 'מושכים…',
   overdraftPrefix: 'אין מספיק בקופה — יש רק',
-  completesGoal: (goalName: string): string => `🎉 משיכה מהחיסכון תסיים את היעד „${goalName}”`,
+  completesGoal: (goalName: string): string => `🎉 תסיים את „${goalName}”`,
 } as const;

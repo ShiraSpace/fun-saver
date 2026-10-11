@@ -502,7 +502,7 @@ rest in `src/components/Goal/<Name>/`.
   its own component, which keeps `WithdrawalForm` under 40 lines.
   `use-withdrawal-form` treats a locked savings wallet like an overdraft:
   `canSubmit` is false. Reached: savings looks like any wallet, and a green
-  line reads `🎉 משיכה מהחיסכון תסיים את היעד „…”` (5c).
+  line reads `🎉 תסיים את „…”` (5c), kept short so a long goal name fits one line.
 - **`useAmountEntry`.** The drawer never shows a server message (they are
   English, and `fetchJson` never reads the error body). On a `409` it calls
   `router.refresh()` and returns `requestState` to `idle` instead of `failed`:

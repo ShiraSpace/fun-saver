@@ -58,6 +58,8 @@ export interface TestDriver extends AppDriver {
 }
 
 export function createAppDriver(appBrowser: AppBrowser): AppDriver {
+  const account = new AccountDriver(appBrowser);
+
   return {
     appBrowser,
     menu: new MenuDriver(appBrowser),
@@ -66,11 +68,11 @@ export function createAppDriver(appBrowser: AppBrowser): AppDriver {
     createAccount: new AccountFormDriver(appBrowser, CREATE_ACCOUNT_TEST_IDS.container),
     editAccount: new AccountFormDriver(appBrowser, EDIT_ACCOUNT_TEST_IDS.container),
     avatarPicker: new AvatarPickerDriver(appBrowser),
-    account: new AccountDriver(appBrowser),
+    account,
     childAccount: new ChildAccountDriver(appBrowser),
     method: new MethodDriver(appBrowser),
     loadingShell: new LoadingShellDriver(appBrowser),
-    goal: new GoalDriver(appBrowser),
+    goal: new GoalDriver(appBrowser, account),
   };
 }
 
