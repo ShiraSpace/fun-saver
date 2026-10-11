@@ -13,6 +13,9 @@ import { METHOD_SECTION_TEST_IDS } from '@/components/Method/MethodSection/const
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { hexToRgb } from '@/test-utils/css-color';
 import { THEMES, THEME_ID } from '@/theme/registry';
+import { splitDeposit } from '@/lib/transaction/transactions';
+import { agorotToShekels } from '@/lib/money';
+import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import type { HeldPage } from './driver/hold-next-page';
 import { SESSION_COOKIE_NAME } from './driver/auth-session';
 import { useDriver } from './driver/use-driver';
@@ -23,7 +26,7 @@ const SIGNS_OF_WAITING = [
 ] as const;
 
 describe('waiting for a page', () => {
-  const { appBrowser, menu, header, loadingShell } = useDriver({
+  const { appBrowser, menu, header, loadingShell, account } = useDriver({
     accounts: [mockAccount],
   });
 
@@ -145,4 +148,38 @@ describe('waiting for a page', () => {
       });
     });
   }
+
+  describe('saving a deposit', () => {
+    const mockDepositShekels = 50;
+    const principalAfterDeposit = String(
+      agorotToShekels(
+        splitDeposit(mockDepositShekels * AGOROT_PER_SHEKEL).savings
+      )
+    );
+    let newBalances: HeldPage;
+
+    beforeEach(async () => {
+      await appBrowser.visit(HOME_ROUTE);
+      newBalances = await appBrowser.holdNextPage();
+
+      await account.deposit(mockDepositShekels);
+      await newBalances.requested;
+      await appBrowser.waits.testId(HEADER_TEST_IDS.progress);
+    });
+
+    it('keeps the old balances on screen while the new ones load', async () => {
+      assert.notEqual(await account.savingsPrincipal(), principalAfterDeposit);
+    });
+
+    it('shows the line on the header while the new balances load', async () => {
+      assert.equal(await header.hasProgressLine(), true);
+    });
+
+    it('takes the line away once the new balances land', async () => {
+      newBalances.release();
+      await account.waitForSavingsPrincipal(principalAfterDeposit);
+
+      assert.equal(await header.hasProgressLine(), false);
+    });
+  });
 });

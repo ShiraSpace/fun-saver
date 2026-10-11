@@ -1,20 +1,32 @@
 import { JSX } from 'react';
 import {
+  act,
+  fireEvent,
   render,
   renderHook,
   screen,
+  waitFor,
   type RenderResult,
 } from '@testing-library/react';
 import {
   LoaderProvider,
   useIsLoaderShown,
   useReportLoader,
+  useRunWithLoader,
 } from '../loader-context';
 import { missingProviderMessage } from '../create-required-context';
 import {
   IS_LOADER_SHOWN_TEST_ID,
   IsLoaderShown,
 } from '@/test-utils/is-loader-shown';
+import { useRouter } from 'next/navigation';
+import {
+  holdRefresh,
+  NewPageData,
+  type HeldRefresh,
+} from '@/test-utils/held-refresh';
+
+const START_WORK_TEST_ID = 'start-work';
 
 interface PendingWorkProps {
   isPending: boolean;
@@ -39,6 +51,33 @@ function TwoPiecesOfWork({
     <LoaderProvider>
       <PendingWork isPending={firstPending} />
       <PendingWork isPending={secondPending} />
+      <IsLoaderShown />
+    </LoaderProvider>
+  );
+}
+
+function WorkStarter(): JSX.Element {
+  const router = useRouter();
+  const runWithLoader = useRunWithLoader();
+
+  return (
+    <button
+      data-testid={START_WORK_TEST_ID}
+      onClick={() => runWithLoader(() => router.refresh())}
+    />
+  );
+}
+
+interface PageProps {
+  heldRefresh: HeldRefresh;
+  isWorkStarterShown: boolean;
+}
+
+function Page({ heldRefresh, isWorkStarterShown }: PageProps): JSX.Element {
+  return (
+    <LoaderProvider>
+      <NewPageData heldRefresh={heldRefresh} />
+      {isWorkStarterShown && <WorkStarter />}
       <IsLoaderShown />
     </LoaderProvider>
   );
@@ -87,6 +126,47 @@ describe('the loader', () => {
 
     expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
       'false'
+    );
+  });
+});
+
+describe('a refresh run with the loader', () => {
+  let view: RenderResult;
+  let mockHeldRefresh: HeldRefresh;
+
+  beforeEach(async () => {
+    mockHeldRefresh = holdRefresh();
+    view = render(
+      <Page heldRefresh={mockHeldRefresh} isWorkStarterShown={true} />
+    );
+    await act(async () =>
+      fireEvent.click(screen.getByTestId(START_WORK_TEST_ID))
+    );
+  });
+
+  it('shows the loader while the new page data is on its way', () => {
+    expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
+      'true'
+    );
+  });
+
+  it('hides the loader once the new page data has arrived', async () => {
+    await mockHeldRefresh.release();
+
+    await waitFor(() =>
+      expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
+        'false'
+      )
+    );
+  });
+
+  it('keeps the loader shown after the screen that started the work has gone', () => {
+    view.rerender(
+      <Page heldRefresh={mockHeldRefresh} isWorkStarterShown={false} />
+    );
+
+    expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent(
+      'true'
     );
   });
 });
