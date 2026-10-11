@@ -90,4 +90,5 @@ export const COIN_PILE_LAYOUT = {
   jitterCentre: 0.5,
   rowsPerPattern: 2,
   oddRow: 1,
+  spotPrecision: 100,
 } as const;

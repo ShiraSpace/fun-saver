@@ -31,6 +31,12 @@ function steadyJitter(seed: number): number {
   return wave - Math.floor(wave) - jitterCentre;
 }
 
+function sameOnServerAndBrowser(value: number): number {
+  const { spotPrecision } = COIN_PILE_LAYOUT;
+
+  return Math.round(value * spotPrecision) / spotPrecision;
+}
+
 function rowHeights(): number[] {
   const halfCoin = COIN_RADIUS * COIN_SQUASH;
   const floor = BELLY.cy + BELLY.ry - halfCoin - COIN_PILE_LAYOUT.floorGap;
@@ -66,9 +72,9 @@ function coinPileSpots(): PileSpot[] {
   );
 
   return places.map((place, index) => ({
-    x: place.x + steadyJitter(index) * jitterX,
-    y: place.y + steadyJitter(index + jitterChannel.y) * jitterY,
-    tilt: steadyJitter(index + jitterChannel.tilt) * jitterTilt,
+    x: sameOnServerAndBrowser(place.x + steadyJitter(index) * jitterX),
+    y: sameOnServerAndBrowser(place.y + steadyJitter(index + jitterChannel.y) * jitterY),
+    tilt: sameOnServerAndBrowser(steadyJitter(index + jitterChannel.tilt) * jitterTilt),
   }));
 }
 
