@@ -1,5 +1,4 @@
 export const GOAL_PROGRESS_TEST_IDS = {
-  line: 'goal-progress',
   heading: 'goal-progress-heading',
 } as const;
 
