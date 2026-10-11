@@ -1,17 +1,40 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import {
+  act,
+  renderHook,
+  waitFor,
+  type RenderHookResult,
+} from '@/test-utils/render';
 import { StatusCodes } from 'http-status-codes';
 import { RequestFailedError } from '@/lib/fetch-json';
 import { REQUEST_STATE } from '@/lib/request-state';
 import { mockRouter } from '@mocks/next/navigation';
-import { useAmountEntry } from './use-amount-entry';
+import { useIsLoaderShown } from '@/hooks/loader-context';
+import {
+  holdRefresh,
+  useHeldRefresh,
+  type HeldRefresh,
+} from '@/test-utils/held-refresh';
+import { useAmountEntry, type AmountEntry } from './use-amount-entry';
+
+interface AmountEntryWithLoader extends AmountEntry {
+  isLoaderShown: boolean;
+}
 
 function submitRefusedWith(
-  status: number
-): ReturnType<typeof renderHook<ReturnType<typeof useAmountEntry>, void>> {
+  status: number,
+  heldRefresh: HeldRefresh = holdRefresh()
+): RenderHookResult<AmountEntryWithLoader, void> {
   const mockSaveTransaction = jest
     .fn()
     .mockRejectedValue(new RequestFailedError('refused', status));
-  const hook = renderHook(() => useAmountEntry(mockSaveTransaction, jest.fn()));
+  const hook = renderHook(() => {
+    useHeldRefresh(heldRefresh);
+
+    return {
+      ...useAmountEntry(mockSaveTransaction, jest.fn()),
+      isLoaderShown: useIsLoaderShown(),
+    };
+  });
 
   act(() => hook.result.current.onSubmit());
 
@@ -19,10 +42,6 @@ function submitRefusedWith(
 }
 
 describe('useAmountEntry', () => {
-  beforeEach(() => {
-    mockRouter.refresh.mockClear();
-  });
-
   describe('when the server refuses with a conflict', () => {
     it('refreshes the page', async () => {
       submitRefusedWith(StatusCodes.CONFLICT);
@@ -36,6 +55,31 @@ describe('useAmountEntry', () => {
       await waitFor(() =>
         expect(result.current.requestState).toBe(REQUEST_STATE.failed)
       );
+    });
+
+    describe('while the new page data is on its way', () => {
+      let mockHeldRefresh: HeldRefresh;
+      let hook: RenderHookResult<AmountEntryWithLoader, void>;
+
+      beforeEach(async () => {
+        mockHeldRefresh = holdRefresh();
+        hook = submitRefusedWith(StatusCodes.CONFLICT, mockHeldRefresh);
+        await waitFor(() => expect(mockRouter.refresh).toHaveBeenCalled());
+      });
+
+      it('shows the loader', async () => {
+        await waitFor(() =>
+          expect(hook.result.current.isLoaderShown).toBe(true)
+        );
+      });
+
+      it('hides the loader once the new page data has arrived', async () => {
+        await mockHeldRefresh.release();
+
+        await waitFor(() =>
+          expect(hook.result.current.isLoaderShown).toBe(false)
+        );
+      });
     });
   });
 

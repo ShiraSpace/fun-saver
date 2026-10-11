@@ -3,7 +3,7 @@ import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import type { AccountSummary } from '@/lib/account/types';
 import type { WalletSummary } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
-import { defaultWithdrawalWallet } from '@/lib/wallet/default-withdrawal-wallet';
+import { defaultWithdrawalWallet } from '@/lib/wallet/wallet';
 import type { Goal } from '@/lib/goal/types';
 import {
   savedTowardGoalIn,

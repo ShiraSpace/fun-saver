@@ -13,8 +13,8 @@ export function setMockPathname(pathname: string): void {
 
 export function resetNavigationMock(): void {
   currentPathname = HOME_ROUTE;
-  mockRouter.push.mockClear();
-  mockRouter.refresh.mockClear();
+  mockRouter.push.mockReset();
+  mockRouter.refresh.mockReset();
 }
 
 export function useRouter(): typeof mockRouter {

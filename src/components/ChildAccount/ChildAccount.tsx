@@ -2,7 +2,7 @@
 
 import { JSX } from 'react';
 import type { AccountSummary } from '@/lib/account/types';
-import { walletNamed } from '@/lib/wallet/wallet-named';
+import { walletNamed } from '@/lib/wallet/wallet';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
