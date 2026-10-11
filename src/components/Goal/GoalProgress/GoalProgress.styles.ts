@@ -2,27 +2,27 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import { GOAL_PROGRESS_SIZE, type GoalProgressSize } from './constants';
 
-interface PictureStyle {
+interface PictureProps {
   progressSize: GoalProgressSize;
   glowing: boolean;
-  theme: Theme;
 }
 
-interface GoalHeadingStyle {
+interface GoalHeadingProps {
   progressSize: GoalProgressSize;
   reached: boolean;
-  theme: Theme;
 }
+
+type Themed<Props> = Props & { theme: Theme };
 
 const PICTURE_SIZE: Record<GoalProgressSize, { side: number; emoji: number; corner: number }> = {
   small: { side: 34, emoji: 20, corner: 10 },
   large: { side: 44, emoji: 26, corner: 14 },
 };
 
-const pictureGlow = ({ glowing, theme }: PictureStyle): string =>
+const pictureGlow = ({ glowing, theme }: Themed<PictureProps>): string =>
   glowing ? `0 0 0 4px ${theme.colors.gainSoftBg}, 0 0 18px 4px ${theme.colors.gainText}` : 'none';
 
-const headingSize = ({ progressSize, theme }: GoalHeadingStyle): number =>
+const headingSize = ({ progressSize, theme }: Themed<GoalHeadingProps>): number =>
   progressSize === GOAL_PROGRESS_SIZE.large ? theme.typography.body : theme.typography.label + 1;
 
 export const Progress = styled.span`
@@ -32,7 +32,7 @@ export const Progress = styled.span`
   width: 100%;
 `;
 
-export const Picture = styled.span<{ progressSize: GoalProgressSize; glowing: boolean }>`
+export const Picture = styled.span<PictureProps>`
   flex-shrink: 0;
   display: grid;
   place-items: center;
@@ -51,7 +51,7 @@ export const Body = styled.span`
   gap: 5px;
 `;
 
-export const GoalHeading = styled.span<{ reached: boolean; progressSize: GoalProgressSize }>`
+export const GoalHeading = styled.span<GoalHeadingProps>`
   display: flex;
   justify-content: space-between;
   font-size: ${headingSize}px;

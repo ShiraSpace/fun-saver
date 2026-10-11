@@ -28,6 +28,7 @@ describe('GoalProgress', () => {
 
   it('says the goal is reached once it is', () => {
     render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal({ reached: true })} />);
+
     expect(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.heading)).toHaveTextContent(
       GOAL_PROGRESS_COPY.reached
     );
