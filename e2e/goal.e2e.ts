@@ -5,7 +5,7 @@ import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { agorotToShekels } from '@/lib/money';
-import { WITHDRAWAL_FORM_COPY } from '@/components/Account/TransactionDrawer/WithdrawalForm/constants';
+import { GOAL_COPY } from '@/components/Goal/constants';
 import { useDriver } from './driver/use-driver';
 
 describe('a goal set on another phone while the drawer is open', () => {
@@ -27,9 +27,6 @@ describe('a goal set on another phone while the drawer is open', () => {
   });
 
   it('refreshes the drawer into the kept savings', async () => {
-    assert.equal(
-      await goal.submitLabel(),
-      WITHDRAWAL_FORM_COPY.savingsLockedSubmit
-    );
+    assert.equal(await goal.submitLabel(), GOAL_COPY.savingsLocked);
   });
 });

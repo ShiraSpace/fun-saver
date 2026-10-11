@@ -15,8 +15,8 @@ task-by-task plan in its own session before any code.
 | 1 | `goals` table, `GoalRepository` in all three stores, `src/lib/goal` rules | Merged #174 (`6db66d7`) |
 | 4a | Picture search: generated Hebrew emoji list and `matchingPictures` (no UI) | Merged #181 (`3bc65f3`) |
 | 2 | API and the server lock | Merged #190 (`83defbc`) |
-| 3a | The goal on home and in the drawer | In review on `feat/goal-on-home` (plan: `.plans/2026-10-10-show-goal.md`) |
-| 3b | The goal screen and the menu row | Built on `feat/show-goal`, stacked on 3a |
+| 3a | The goal on home and in the drawer | Merged #199 (`e8e506f`) (plan: `.plans/2026-10-10-show-goal.md`) |
+| 3b | The goal screen and the menu row | **Next**, on `feat/goal-screen` (worktree `fun-saver-goal-screen`, off `e8e506f`). A first build with pre-review names sits on `feat/show-goal`: port from it, do not merge it |
 | 4b | Setting and cancelling | `GoalPictureSearch` sheet merged #189 (`838e64b`), shown nowhere yet; `SetGoal`, `CancelGoal`, the menu entry not started |
 | 5 | Celebration | The confetti component merged #188 (`ac93d2b`), shown nowhere yet; mounting it, the travelling border, the wobble and the bar shine not started |
 | later | The goal in child mode | Separate feature, after this one |
@@ -60,6 +60,15 @@ task-by-task plan in its own session before any code.
   (`src/components/BottomSheet/`), `useEscapeKey` and `useCloseOnBack` in
   `src/hooks/`, and `LAYERS.modalOverModal` / `modalOverModalForeground` for a
   sheet opened over another.
+- PR 3a (#199), in `src/lib/goal/saved-toward-goal.ts`: `savedTowardGoalOf(account)`
+  → `SavedTowardGoal` (`goal`, `saved` floored to whole shekels, `stillToSave`,
+  `reached`); `savedTowardGoalIn(wallet, savedTowardGoal)` (only for savings);
+  `savingsLocked(savedTowardGoal)`. Components: `GoalProgressBar`,
+  `SavedOutOfGoal` («₪85 / ₪300»), the savings card's `GoalProgress` line (not
+  tappable yet) and 🔒 (`GOAL_COPY.lock` in `src/components/Goal/constants.ts`),
+  the drawer's locked tile, `LockedSavings` laid over the hidden keypad,
+  `SelectedWalletNote`, and the `409` refresh in `useAmountEntry`. e2e:
+  `GoalDriver` on `AppDriver`, `AnotherPhoneDriver` (sets a goal through the API).
 - Fixtures: `createMockGoal`, `mockGoal`, `createMockGoalPicture` in
   `src/test-utils/mocks/goal.mocks.ts`; `goalId(suffix)` in `test-database.ts`;
   `addAccountViewerToStoreFile` in `src/test-utils/account-viewer.ts`.

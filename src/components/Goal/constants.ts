@@ -1,3 +1,6 @@
+const lock = '🔒';
+
 export const GOAL_COPY = {
-  lock: '🔒',
+  lock,
+  savingsLocked: `${lock} שומרים עד היעד`,
 } as const;

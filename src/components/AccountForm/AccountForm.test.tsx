@@ -13,6 +13,8 @@ import { AVATARS } from '@/lib/account/avatars';
 import { AccountForm } from './AccountForm';
 import { NAME_FIELD_TEST_IDS } from './NameField/constants';
 import { ACCOUNT_FORM_COPY, ACCOUNT_FORM_TEST_IDS } from './constants';
+import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
+import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
 
 const mockForm = {
   testId: 'account-form-under-test',
@@ -55,12 +57,12 @@ describe('AccountForm', () => {
     });
 
     it('shows the title and icon it was given', () => {
-      expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.title)).toHaveTextContent(
+      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.title)).toHaveTextContent(
         mockForm.title
       );
-      expect(
-        screen.getByTestId(ACCOUNT_FORM_TEST_IDS.titleIcon)
-      ).toHaveTextContent(mockForm.titleIcon);
+      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.icon)).toHaveTextContent(
+        mockForm.titleIcon
+      );
     });
 
     it('renders the name field and the avatar picker', () => {
@@ -164,7 +166,7 @@ describe('AccountForm', () => {
     });
 
     it('calls onCancel when the cancel button is tapped', () => {
-      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+      fireEvent.click(screen.getByTestId(CLOSE_BUTTON_TEST_IDS.button));
 
       expect(mockOnCancel).toHaveBeenCalledTimes(1);
       expect(mockOnSubmit).not.toHaveBeenCalled();
@@ -207,34 +209,6 @@ describe('AccountForm', () => {
         name: mockForm.name,
         avatarId: mockForm.avatarId,
       });
-    });
-
-    it('renders no cancel button without onCancel', () => {
-      expect(
-        screen.queryByTestId(ACCOUNT_FORM_TEST_IDS.cancel)
-      ).not.toBeInTheDocument();
-    });
-  });
-
-  describe('without a title icon', () => {
-    beforeEach(() => {
-      render(
-        <AccountForm
-          data-testid={mockForm.testId}
-          title={mockForm.title}
-          submitLabel={mockForm.submitLabel}
-          onSubmit={mockOnSubmit}
-        />
-      );
-    });
-
-    it('renders the title with no icon slot at all', () => {
-      expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.title)).toHaveTextContent(
-        mockForm.title
-      );
-      expect(
-        screen.queryByTestId(ACCOUNT_FORM_TEST_IDS.titleIcon)
-      ).not.toBeInTheDocument();
     });
   });
 });

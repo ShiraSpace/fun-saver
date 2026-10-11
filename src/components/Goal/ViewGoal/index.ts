@@ -1,0 +1,1 @@
+export { ViewGoal } from './ViewGoal';

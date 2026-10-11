@@ -4,7 +4,9 @@ import {
   waitFor,
   type RenderHookResult,
 } from '@/test-utils/render';
+import type { AccountSummary } from '@/lib/account/types';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
+import { mockAccountSavingForGoal } from '@/test-utils/mocks/goal.mocks';
 import { APP_MODE } from '@/components/AccountManagement/app-mode-context';
 import {
   holdRefresh,
@@ -55,6 +57,42 @@ describe('useAccountNavigation', () => {
       await waitFor(() =>
         expect(hook.result.current.isLoaderShown).toBe(false)
       );
+    });
+  });
+
+  describe('while viewing the goal of an account saving for it', () => {
+    let mockAccounts: AccountSummary[];
+    let hook: RenderHookResult<AccountNavigation, void>;
+
+    beforeEach(() => {
+      mockAccounts = [mockAccountSavingForGoal];
+      hook = renderHook(() =>
+        useAccountNavigation(mockAccounts, mockAccountSavingForGoal.id)
+      );
+      act(() => hook.result.current.setMode(APP_MODE.viewingGoal));
+    });
+
+    it('names the account', () => {
+      expect(hook.result.current.goalBeingViewed?.accountName).toBe(
+        mockAccountSavingForGoal.name
+      );
+    });
+
+    it("carries what is saved toward the account's goal", () => {
+      expect(hook.result.current.goalBeingViewed?.savedTowardGoal.goal).toEqual(
+        mockAccountSavingForGoal.goal
+      );
+    });
+
+    describe('when a refresh brings the account back without a goal', () => {
+      beforeEach(() => {
+        mockAccounts = [mockAccountSummary];
+        hook.rerender();
+      });
+
+      it('returns to viewing', () => {
+        expect(hook.result.current.mode).toBe(APP_MODE.viewing);
+      });
     });
   });
 });

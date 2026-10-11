@@ -2,6 +2,7 @@ import { fireEvent, screen } from '@/test-utils/render';
 import { ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
+import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
 
 export function fillName(name: string): void {
   fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
@@ -40,5 +41,5 @@ export function submitForm(): void {
 }
 
 export function cancelForm(): void {
-  fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+  fireEvent.click(screen.getByTestId(CLOSE_BUTTON_TEST_IDS.button));
 }

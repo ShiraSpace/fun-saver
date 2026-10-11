@@ -5,9 +5,9 @@ import { REQUEST_STATE } from '@/lib/request-state';
 import { Screen } from '@/components/Screen';
 import { AvatarPicker } from '@/components/AvatarPicker';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
+import { CloseButton } from '@/components/CloseButton';
+import { ScreenTitle } from '@/components/ScreenTitle';
 import { NameField } from './NameField';
-import { CancelButton } from './CancelButton';
-import { FormTitle } from './FormTitle';
 import { SaveAccountButton } from './SaveAccountButton';
 import { Form } from './AccountForm.styles';
 import { useAccountForm, type AccountFormValues } from './use-account-form';
@@ -42,8 +42,8 @@ export function AccountForm({
   return (
     <Screen align="top" data-testid={testId}>
       <Form onSubmit={(event): void => void form.handleSubmit(event)}>
-        <CancelButton onCancel={onCancel} disabled={isSaving} />
-        <FormTitle title={title} titleIcon={titleIcon} />
+        <CloseButton onClose={onCancel} disabled={isSaving} />
+        <ScreenTitle title={title} titleIcon={titleIcon} />
         <NameField
           value={form.name}
           onChange={form.setName}

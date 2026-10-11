@@ -3,16 +3,15 @@ import {
   createMockSavedTowardGoal,
   mockGoal,
 } from '@/test-utils/mocks/goal.mocks';
+import { stillToSaveAsShown } from '@/test-utils/money';
 import { LockedSavings } from './LockedSavings';
 import { LOCKED_SAVINGS_COPY, LOCKED_SAVINGS_TEST_IDS } from './constants';
 
 describe('LockedSavings', () => {
+  const mockSavedTowardGoal = createMockSavedTowardGoal();
+
   beforeEach(() => {
-    render(
-      <LockedSavings
-        savedTowardGoal={createMockSavedTowardGoal({ stillToSave: 21500 })}
-      />
-    );
+    render(<LockedSavings savedTowardGoal={mockSavedTowardGoal} />);
   });
 
   it('says savings are kept for the goal, by name', () => {
@@ -24,7 +23,7 @@ describe('LockedSavings', () => {
   it('says how much is still to save', () => {
     expect(
       screen.getByTestId(LOCKED_SAVINGS_TEST_IDS.stillToSave)
-    ).toHaveTextContent(LOCKED_SAVINGS_COPY.stillToSave(215));
+    ).toHaveTextContent(stillToSaveAsShown(mockSavedTowardGoal.stillToSave));
   });
 
   it('shows the progress toward the goal', () => {

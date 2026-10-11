@@ -52,6 +52,28 @@ describe('useEscapeKey', () => {
     });
   });
 
+  describe('after onEscape changes', () => {
+    const mockNewOnEscape = jest.fn();
+
+    beforeEach(() => {
+      mockNewOnEscape.mockClear();
+      const { rerender } = renderHook(
+        ({ onEscape }) => useEscapeKey({ isListening: true, onEscape }),
+        { initialProps: { onEscape: mockOnEscape } }
+      );
+      rerender({ onEscape: mockNewOnEscape });
+      fireEvent.keyDown(document.body, { key: ESCAPE_KEY });
+    });
+
+    it('calls the new onEscape', () => {
+      expect(mockNewOnEscape).toHaveBeenCalledTimes(1);
+    });
+
+    it('no longer calls the old one', () => {
+      expect(mockOnEscape).not.toHaveBeenCalled();
+    });
+  });
+
   describe('while not listening', () => {
     beforeEach(() => {
       renderHook(() =>
