@@ -1,6 +1,6 @@
 import { PIGGY_BANK_FULL_AT } from '@/lib/wallet/constants';
 import { createMockGoal, createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
-import { piggyBankFillOf } from './coin-pile';
+import { coinTransformOf, piggyBankFillOf } from './coin-pile';
 
 describe('piggyBankFillOf', () => {
   describe('with no goal', () => {
@@ -56,5 +56,13 @@ describe('piggyBankFillOf', () => {
     const mockSavedTowardGoal = createMockSavedTowardGoal({ goal: createMockGoal({ amount: 0 }) });
 
     expect(piggyBankFillOf({ savingsBalance: 0, savedTowardGoal: mockSavedTowardGoal })).toBe(full);
+  });
+});
+
+describe('coinTransformOf', () => {
+  it('moves the coin to its spot, then tilts it', () => {
+    const mockSpot = { x: 1, y: 2, tilt: 3 };
+
+    expect(coinTransformOf(mockSpot)).toBe('translate(1 2) rotate(3)');
   });
 });
