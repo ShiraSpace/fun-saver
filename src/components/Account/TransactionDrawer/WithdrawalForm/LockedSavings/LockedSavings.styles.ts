@@ -30,7 +30,7 @@ export const Heading = styled.b`
   color: ${({ theme }): string => theme.colors.textStrong};
 `;
 
-export const StillToSave = styled.span`
+export const StillToSaveLine = styled.span`
   margin-bottom: 4px;
   font-size: ${({ theme }): number => theme.typography.label + 1}px;
   color: ${({ theme }): string => theme.colors.softText};

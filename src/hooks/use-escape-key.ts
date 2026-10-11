@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { ESCAPE_KEY, KEY_DOWN_EVENT } from './constants';
 
 interface EscapeKeyOptions {
@@ -14,6 +14,12 @@ export function useEscapeKey({
   onEscape,
   takesPrecedence = false,
 }: EscapeKeyOptions): void {
+  const onEscapeRef = useRef(onEscape);
+
+  useEffect(() => {
+    onEscapeRef.current = onEscape;
+  });
+
   useEffect(() => {
     if (!isListening) {
       return;
@@ -28,12 +34,12 @@ export function useEscapeKey({
         event.stopPropagation();
       }
 
-      onEscape();
+      onEscapeRef.current();
     };
 
     document.addEventListener(KEY_DOWN_EVENT, onKeyDown, takesPrecedence);
 
     return (): void =>
       document.removeEventListener(KEY_DOWN_EVENT, onKeyDown, takesPrecedence);
-  }, [isListening, onEscape, takesPrecedence]);
+  }, [isListening, takesPrecedence]);
 }

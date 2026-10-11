@@ -5,8 +5,9 @@ import {
   mockAccountWithGoalReached,
 } from '@/test-utils/mocks/goal.mocks';
 import { savedTowardGoalOf } from '@/lib/goal/saved-toward-goal';
+import { GOAL_COPY } from '@/components/Goal/constants';
 import { WithdrawalForm } from './WithdrawalForm';
-import { WITHDRAWAL_FORM_COPY, WITHDRAWAL_FORM_TEST_IDS } from './constants';
+import { WITHDRAWAL_FORM_TEST_IDS } from './constants';
 import { LOCKED_SAVINGS_TEST_IDS } from './LockedSavings/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from '../constants';
 import { WALLET_PICKER_TEST_IDS } from '../WalletPicker/constants';
@@ -55,7 +56,7 @@ describe('WithdrawalForm with a goal', () => {
     it('says on the submit that savings are kept', () => {
       expect(
         screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit)
-      ).toHaveTextContent(WITHDRAWAL_FORM_COPY.savingsLockedSubmit);
+      ).toHaveTextContent(GOAL_COPY.savingsLocked);
     });
 
     it('keeps the submit disabled', () => {

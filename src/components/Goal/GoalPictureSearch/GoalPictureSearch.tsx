@@ -2,12 +2,12 @@
 
 import { JSX, useId } from 'react';
 import type { GoalPicture } from '@/lib/goal/types';
+import { useModal } from '@/hooks/use-modal';
 import { ChooseButton } from './ChooseButton';
 import { PictureTiles } from './PictureTiles';
 import { QueryField } from './QueryField';
 import { SheetHeading } from './SheetHeading';
 import { useGoalPictureSearch } from './use-goal-picture-search';
-import { useModalSheet } from './use-modal-sheet';
 import { GOAL_PICTURE_SEARCH_TEST_IDS } from './constants';
 import { Scrim, Sheet } from './GoalPictureSearch.styles';
 
@@ -26,7 +26,7 @@ export function GoalPictureSearch({
 }: GoalPictureSearchProps): JSX.Element {
   const titleId = useId();
   const search = useGoalPictureSearch({ goalName, picture, onChange });
-  const sheetRef = useModalSheet(onClose);
+  const sheetRef = useModal(onClose);
 
   return (
     <>

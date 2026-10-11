@@ -12,6 +12,8 @@ import {
 } from '@/components/AccountForm/constants';
 import { CREATE_ACCOUNT_COPY } from './constants';
 import { mockRouter } from '@mocks/next/navigation';
+import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
+import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
 
 const mockCreateAccount = jest.fn();
 
@@ -41,15 +43,15 @@ describe('CreateAccount', () => {
     });
 
     it('shows the create-account title', () => {
-      expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.title)).toHaveTextContent(
+      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.title)).toHaveTextContent(
         CREATE_ACCOUNT_COPY.title
       );
     });
 
     it('shows the create icon beside the title', () => {
-      expect(
-        screen.getByTestId(ACCOUNT_FORM_TEST_IDS.titleIcon)
-      ).toHaveTextContent(CREATE_ACCOUNT_COPY.titleIcon);
+      expect(screen.getByTestId(SCREEN_TITLE_TEST_IDS.icon)).toHaveTextContent(
+        CREATE_ACCOUNT_COPY.titleIcon
+      );
     });
 
     it('renders the name field', () => {
@@ -113,7 +115,7 @@ describe('CreateAccount', () => {
     });
 
     it('calls onCancel when the cancel button is tapped', () => {
-      fireEvent.click(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel));
+      fireEvent.click(screen.getByTestId(CLOSE_BUTTON_TEST_IDS.button));
 
       expect(mockOnCancel).toHaveBeenCalledTimes(1);
     });

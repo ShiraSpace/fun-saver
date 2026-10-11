@@ -6,6 +6,10 @@ import {
 } from '@/components/AccountManagement/app-mode-context';
 import { CURRENT_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
 import { findCurrentAccount } from '@/lib/account/current-account';
+import {
+  savedTowardGoalOf,
+  type SavedTowardGoal,
+} from '@/lib/goal/saved-toward-goal';
 import { resolveThemeId } from '@/theme/registry';
 import { useSetThemeId } from '@/theme/AppThemeProvider';
 import { useRefreshWithLoader } from './loader-context';
@@ -20,6 +24,51 @@ export interface AccountNavigation {
   cancel: () => void;
   isCreating: boolean;
   editingAccount?: AccountSummary;
+  goalBeingViewed?: GoalBeingViewed;
+}
+
+export interface GoalBeingViewed {
+  accountName: string;
+  savedTowardGoal: SavedTowardGoal;
+}
+
+interface GoalBeingViewedParams {
+  mode: AppMode;
+  currentAccount?: AccountSummary;
+}
+
+interface LeavingGoneGoalParams extends GoalBeingViewedParams {
+  setMode: Dispatch<SetStateAction<AppMode>>;
+}
+
+function goalBeingViewedOf({
+  mode,
+  currentAccount,
+}: GoalBeingViewedParams): GoalBeingViewed | undefined {
+  if (mode !== APP_MODE.viewingGoal || !currentAccount) {
+    return;
+  }
+
+  const savedTowardGoal = savedTowardGoalOf(currentAccount);
+
+  if (!savedTowardGoal) {
+    return;
+  }
+
+  return { accountName: currentAccount.name, savedTowardGoal };
+}
+
+function useGoalBeingViewed({
+  setMode,
+  ...params
+}: LeavingGoneGoalParams): GoalBeingViewed | undefined {
+  const goalBeingViewed = goalBeingViewedOf(params);
+
+  if (params.mode === APP_MODE.viewingGoal && !goalBeingViewed) {
+    setMode(APP_MODE.viewing);
+  }
+
+  return goalBeingViewed;
 }
 
 export function useAccountNavigation(
@@ -49,6 +98,7 @@ export function useAccountNavigation(
 
   const currentAccount = findCurrentAccount(accounts, currentAccountId);
   const isEditing = mode === APP_MODE.editingAccount;
+  const goalBeingViewed = useGoalBeingViewed({ mode, setMode, currentAccount });
 
   return {
     mode,
@@ -63,5 +113,6 @@ export function useAccountNavigation(
     cancel: returnToViewing,
     isCreating: mode === APP_MODE.creatingAccount,
     editingAccount: isEditing ? currentAccount : undefined,
+    goalBeingViewed,
   };
 }

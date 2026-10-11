@@ -6,6 +6,7 @@ import {
 } from '@/test-utils/account-form';
 import { AccountForm } from './AccountForm';
 import { ACCOUNT_FORM_TEST_IDS } from './constants';
+import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
 
 const mockOnSubmit = jest.fn();
 const mockOnCancel = jest.fn();
@@ -30,7 +31,7 @@ describe('AccountForm saving', () => {
     mockOnSubmit.mockReturnValueOnce(new Promise(() => {}));
     submitForm();
 
-    expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel)).toBeDisabled();
+    expect(screen.getByTestId(CLOSE_BUTTON_TEST_IDS.button)).toBeDisabled();
   });
 
   it('unlocks cancel once the save fails', async () => {
@@ -38,6 +39,6 @@ describe('AccountForm saving', () => {
     submitForm();
     await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError);
 
-    expect(screen.getByTestId(ACCOUNT_FORM_TEST_IDS.cancel)).toBeEnabled();
+    expect(screen.getByTestId(CLOSE_BUTTON_TEST_IDS.button)).toBeEnabled();
   });
 });
