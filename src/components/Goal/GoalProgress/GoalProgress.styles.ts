@@ -83,3 +83,8 @@ export const GoalHeading = styled.span<GoalHeadingProps>`
   color: ${({ reached, theme }): string =>
     reached ? theme.colors.gainText : theme.colors.textStrong};
 `;
+
+export const GoalName = styled.span`
+  min-width: 0;
+  overflow-wrap: anywhere;
+`;

@@ -8,7 +8,7 @@ import {
   GOAL_PROGRESS_TEST_IDS,
   type GoalProgressSize,
 } from './constants';
-import { barIsThin, Body, GoalHeading, Picture, Progress } from './GoalProgress.styles';
+import { barIsThin, Body, GoalHeading, GoalName, Picture, Progress } from './GoalProgress.styles';
 
 interface GoalProgressProps {
   savedTowardGoal: SavedTowardGoal;
@@ -37,7 +37,7 @@ export function GoalProgress({
       </Picture>
       <Body>
         <GoalHeading reached={reached} progressSize={size}>
-          <span data-testid={GOAL_PROGRESS_TEST_IDS.heading}>{heading}</span>
+          <GoalName data-testid={GOAL_PROGRESS_TEST_IDS.heading}>{heading}</GoalName>
           <SavedOutOfGoal savedTowardGoal={savedTowardGoal} />
         </GoalHeading>
         <GoalProgressBar savedTowardGoal={savedTowardGoal} thin={barIsThin(size)} />
