@@ -2,6 +2,7 @@ import { CHILD_ACCOUNT_TEST_IDS } from '@/components/ChildAccount/constants';
 import { PIGGY_BANK_TEST_IDS } from '@/components/ChildAccount/ChildSavings/PiggyBank/constants';
 import { COIN_PILE_TEST_IDS } from '@/components/ChildAccount/ChildSavings/PiggyBank/CoinPile/constants';
 import { AppBrowser } from './app-browser';
+import { bottomOf } from './box-geometry';
 
 export class ChildAccountDriver {
   constructor(private readonly appBrowser: AppBrowser) {}
@@ -20,5 +21,9 @@ export class ChildAccountDriver {
 
   coinsDrawnInPile(): Promise<number> {
     return this.appBrowser.count(COIN_PILE_TEST_IDS.coin);
+  }
+
+  async walletsBottom(): Promise<number> {
+    return bottomOf(await this.appBrowser.box(CHILD_ACCOUNT_TEST_IDS.wallets));
   }
 }

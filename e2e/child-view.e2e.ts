@@ -2,7 +2,10 @@ import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { VIEW_MODE } from '@/lib/view-mode';
 import { createMockAccount, mockAccount } from '@/test-utils/mocks/account.mocks';
+import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
+import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
 import { useDriver } from './driver/use-driver';
+import { PHONE_IN_SAFARI } from './driver/viewports';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
 
@@ -126,5 +129,26 @@ describe('a parent turns child mode on away from home, then presses back', () =>
 
   it('comes home to the child screen', async () => {
     assert.equal(await childAccount.screenExists(), true);
+  });
+});
+
+describe('a child with a goal, on an iPhone in Safari', () => {
+  const { childAccount, appBrowser } = useDriver(
+    { accounts: [mockAccount], transactions: mockTransactions, goals: [createMockGoal()] },
+    { viewMode: VIEW_MODE.child }
+  );
+
+  beforeEach(async () => {
+    await appBrowser.resize(PHONE_IN_SAFARI);
+    await childAccount.waitForScreen();
+  });
+
+  it('sees every wallet without scrolling', async () => {
+    const walletsBottom = await childAccount.walletsBottom();
+
+    assert.ok(
+      walletsBottom <= PHONE_IN_SAFARI.height,
+      `the wallets end at ${walletsBottom}px, below the ${PHONE_IN_SAFARI.height}px screen`
+    );
   });
 });

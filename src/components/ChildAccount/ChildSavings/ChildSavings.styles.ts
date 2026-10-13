@@ -19,3 +19,8 @@ export const Total = styled.div`
   font-weight: 800;
   color: ${({ theme }): string => theme.colors.textStrong};
 `;
+
+export const GoalSpace = styled.div`
+  margin: 8px 2px 0;
+  text-align: start;
+`;
