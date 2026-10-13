@@ -1,6 +1,11 @@
 export const CURRENT_ACCOUNT_COOKIE = 'selectedAccountId';
 export const THEME_COOKIE = 'themeId';
 export const VIEW_MODE_COOKIE = 'viewMode';
+export const COLLECTED_INTEREST_COOKIE_PREFIX = 'collectedInterest-';
+
+export function collectedInterestCookie(accountId: string): string {
+  return `${COLLECTED_INTEREST_COOKIE_PREFIX}${accountId}`;
+}
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 

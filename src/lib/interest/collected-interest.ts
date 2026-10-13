@@ -5,6 +5,8 @@ import { MAX_INTEREST_COINS } from './constants';
 
 type Savings = Pick<WalletSummary, 'balance' | 'interestEarned'>;
 
+export type CollectedInterestCookies = Record<string, string | undefined>;
+
 export interface StoredCollectedInterestParams {
   storedCollectedInterest: string | undefined;
   savings: Savings;
