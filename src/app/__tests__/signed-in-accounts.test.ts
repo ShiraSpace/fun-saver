@@ -10,7 +10,7 @@ import type { Account } from '@/lib/account/types';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { createOwnedAccount } from '@/test-utils/owned-account';
 import { withTempStoreEnv } from '@/test-utils/test-utils';
-import { CURRENT_ACCOUNT_COOKIE, VIEW_MODE_COOKIE } from '@/lib/cookies';
+import { collectedInterestCookie, CURRENT_ACCOUNT_COOKIE, VIEW_MODE_COOKIE } from '@/lib/cookies';
 import { VIEW_MODE } from '@/lib/view-mode';
 import { signedInAccounts } from '../signed-in-accounts';
 
@@ -106,5 +106,19 @@ describe('signedInAccounts', () => {
     mockCookies[VIEW_MODE_COOKIE] = { value: 'grandparent' };
 
     expect((await signedInAccounts()).viewMode).toBe(VIEW_MODE.parent);
+  });
+
+  it('reads the collected interest of each account from its own cookie', async () => {
+    mockCookies[collectedInterestCookie(owned[1].id)] = { value: '300' };
+
+    expect((await signedInAccounts()).collectedInterest[owned[1].id]).toBe('300');
+  });
+
+  it('reads the collected interest of no account but the user’s', async () => {
+    mockCookies[collectedInterestCookie('not-an-account')] = { value: '300' };
+
+    expect(Object.keys((await signedInAccounts()).collectedInterest)).toEqual(
+      owned.map((account) => account.id)
+    );
   });
 });
