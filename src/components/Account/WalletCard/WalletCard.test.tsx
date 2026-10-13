@@ -155,4 +155,14 @@ describe('WalletCard', () => {
 
     expect(screen.queryByTestId(WALLET_CARD_TEST_IDS.lock)).not.toBeInTheDocument();
   });
+
+  describe('a wallet with agorot and no goal', () => {
+    beforeEach(() => {
+      render(<WalletCard wallet={createMockWalletSummary({ name: 'spending', balance: 4650 })} />);
+    });
+
+    it('floors the balance', () => {
+      expect(screen.getByTestId(WALLET_CARD_TEST_IDS.balance)).toHaveTextContent('₪46');
+    });
+  });
 });
