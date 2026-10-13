@@ -3,6 +3,7 @@ import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import {
   createMockWallet,
   createMockWallets,
+  createMockWalletSummary,
   mockWalletSummaries,
 } from '@/test-utils/mocks/wallet.mocks';
 import type { WalletSummary } from '../types';
@@ -12,6 +13,7 @@ import {
   savingsWithoutAgorot,
   summarizeWallet,
   walletNamed,
+  walletsWithoutAgorot,
 } from '../wallet';
 
 describe('walletNamed', () => {
@@ -116,6 +118,28 @@ describe('savingsWithoutAgorot', () => {
   describe('savings that have not earned interest yet', () => {
     it('shows nothing earned', () => {
       expect(savingsWithoutAgorot({ balance: 1200, interestEarned: 0 }).interestEarned).toBe(0);
+    });
+  });
+});
+
+describe('walletsWithoutAgorot', () => {
+  describe('savings of ₪46.69 beside spending of ₪50', () => {
+    const mockWallets = [
+      createMockWalletSummary({ name: 'savings', balance: 4669 }),
+      createMockWalletSummary({ name: 'spending', balance: 5000 }),
+    ];
+
+    it('shows each balance without its agorot', () => {
+      expect(walletsWithoutAgorot(mockWallets).map((wallet) => wallet.balance)).toEqual([
+        4600, 5000,
+      ]);
+    });
+
+    it('keeps the rest of each wallet', () => {
+      expect(walletsWithoutAgorot(mockWallets).map((wallet) => wallet.name)).toEqual([
+        'savings',
+        'spending',
+      ]);
     });
   });
 });
