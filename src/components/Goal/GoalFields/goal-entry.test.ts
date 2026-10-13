@@ -1,7 +1,6 @@
 import { MAX_GOAL_SHEKELS } from '@/lib/goal/constants';
+import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { goalEntryErrors, hasGoalEntryErrors, NO_GOAL_ENTRY_ERRORS } from './goal-entry';
-
-const mockGoalName = 'אופניים';
 
 describe('goalEntryErrors', () => {
   it('finds the name missing when it is only spaces', () => {
@@ -9,17 +8,20 @@ describe('goalEntryErrors', () => {
   });
 
   it('finds the amount missing at zero', () => {
-    expect(goalEntryErrors({ goalName: mockGoalName, amountShekels: 0 }).amountMissing).toBe(true);
+    expect(goalEntryErrors({ goalName: mockGoal.name, amountShekels: 0 }).amountMissing).toBe(true);
   });
 
   it('finds the amount too high above the most a goal can be', () => {
-    const errors = goalEntryErrors({ goalName: mockGoalName, amountShekels: MAX_GOAL_SHEKELS + 1 });
+    const errors = goalEntryErrors({
+      goalName: mockGoal.name,
+      amountShekels: MAX_GOAL_SHEKELS + 1,
+    });
 
     expect(errors.amountTooHigh).toBe(true);
   });
 
   it('accepts the most a goal can be', () => {
-    const errors = goalEntryErrors({ goalName: mockGoalName, amountShekels: MAX_GOAL_SHEKELS });
+    const errors = goalEntryErrors({ goalName: mockGoal.name, amountShekels: MAX_GOAL_SHEKELS });
 
     expect(errors.amountTooHigh).toBe(false);
   });

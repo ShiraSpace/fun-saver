@@ -14,12 +14,11 @@ export function SaveGoalButton({ submitLabel, requestState }: SaveGoalButtonProp
   const savingBar = isRequestPending && (
     <SavingBar data-testid={SAVE_GOAL_BUTTON_TEST_IDS.loader} />
   );
-  const saveError =
-    requestState === REQUEST_STATE.failed ? (
-      <SaveError data-testid={SAVE_GOAL_BUTTON_TEST_IDS.saveError}>
-        {SAVE_GOAL_BUTTON_COPY.saveError}
-      </SaveError>
-    ) : null;
+  const saveError = requestState === REQUEST_STATE.failed && (
+    <SaveError data-testid={SAVE_GOAL_BUTTON_TEST_IDS.saveError}>
+      {SAVE_GOAL_BUTTON_COPY.saveError}
+    </SaveError>
+  );
 
   return (
     <>

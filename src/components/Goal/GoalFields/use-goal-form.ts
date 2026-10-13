@@ -15,7 +15,7 @@ export interface GoalFormOptions {
   onRequestStateChange: (requestState: RequestState) => void;
 }
 
-interface GoalFormState {
+export interface GoalFormState {
   goalName: string;
   setGoalName: (goalName: string) => void;
   amountShekels: number;
@@ -24,7 +24,7 @@ interface GoalFormState {
   setPicture: (picture: GoalPicture) => void;
   requestState: RequestState;
   errors: GoalEntryErrors;
-  handleSubmit: (submitEvent: FormEvent<HTMLFormElement>) => void;
+  handleSubmit: (submitEvent: Pick<FormEvent, 'preventDefault'>) => void;
 }
 
 interface GoalRequestState {
@@ -65,7 +65,7 @@ export function useGoalForm(options: GoalFormOptions): GoalFormState {
   const { requestState, sendGoal } = useGoalRequest(options);
   const errors = goalEntryErrors({ goalName, amountShekels });
 
-  const handleSubmit = (submitEvent: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = (submitEvent: Pick<FormEvent, 'preventDefault'>): void => {
     submitEvent.preventDefault();
     setShowsErrors(true);
 

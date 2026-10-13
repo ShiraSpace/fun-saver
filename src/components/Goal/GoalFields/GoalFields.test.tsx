@@ -9,6 +9,7 @@ import { GOAL_NAME_FIELD_TEST_IDS } from './GoalNameField/constants';
 import { GOAL_AMOUNT_FIELD_TEST_IDS } from './GoalAmountField/constants';
 import { GOAL_PICTURE_FIELD_TEST_IDS } from './GoalPictureField/constants';
 import { SAVE_GOAL_BUTTON_TEST_IDS } from './SaveGoalButton/constants';
+import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 
 async function openLoadedPictureSearch(): Promise<void> {
   fireEvent.click(screen.getByTestId(GOAL_PICTURE_FIELD_TEST_IDS.preview));
@@ -16,17 +17,19 @@ async function openLoadedPictureSearch(): Promise<void> {
 }
 
 describe('GoalFields', () => {
+  const mockSubmitLabel = '✓ קובעים יעד';
+
   beforeEach(() => {
     render(
       <GoalFields
         savingsBalance={0}
-        submitLabel="✓ קובעים יעד"
+        submitLabel={mockSubmitLabel}
         onSubmit={jest.fn()}
         onRequestStateChange={jest.fn()}
       />
     );
     fireEvent.change(screen.getByTestId(GOAL_NAME_FIELD_TEST_IDS.input), {
-      target: { value: 'אופניים' },
+      target: { value: mockGoal.name },
     });
   });
 

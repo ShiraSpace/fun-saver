@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
+import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { GoalField } from './GoalField';
 
 const mockInputTestId = 'goal-field-under-test';
@@ -24,9 +25,9 @@ describe('GoalField', () => {
     const mockOnChange = jest.fn();
     renderGoalField(undefined, mockOnChange);
 
-    fireEvent.change(screen.getByTestId(mockInputTestId), { target: { value: 'אופניים' } });
+    fireEvent.change(screen.getByTestId(mockInputTestId), { target: { value: mockGoal.name } });
 
-    expect(mockOnChange).toHaveBeenCalledWith('אופניים');
+    expect(mockOnChange).toHaveBeenCalledWith(mockGoal.name);
   });
 
   it('shows no message while the field is fine', () => {

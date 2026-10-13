@@ -1,12 +1,13 @@
 import { render, screen } from '@/test-utils/render';
+import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { GoalNameField } from './GoalNameField';
 import { GOAL_NAME_FIELD_COPY, GOAL_NAME_FIELD_TEST_IDS } from './constants';
 
 describe('GoalNameField', () => {
   it('shows the goal name', () => {
-    render(<GoalNameField goalName="אופניים" missing={false} onChange={jest.fn()} />);
+    render(<GoalNameField goalName={mockGoal.name} missing={false} onChange={jest.fn()} />);
 
-    expect(screen.getByTestId(GOAL_NAME_FIELD_TEST_IDS.input)).toHaveValue('אופניים');
+    expect(screen.getByTestId(GOAL_NAME_FIELD_TEST_IDS.input)).toHaveValue(mockGoal.name);
   });
 
   it('asks for the name when it is missing', () => {

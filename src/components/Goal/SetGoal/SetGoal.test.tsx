@@ -15,9 +15,6 @@ import {
 import { SetGoal } from './SetGoal';
 import { SET_GOAL_TEST_IDS } from './constants';
 
-const mockOnClose = jest.fn();
-const mockOnFinished = jest.fn();
-
 function fillGoal(amountShekels: string): void {
   fireEvent.change(screen.getByTestId(GOAL_NAME_FIELD_TEST_IDS.input), {
     target: { value: mockGoal.name },
@@ -32,6 +29,9 @@ function saveGoal(): void {
 }
 
 describe('SetGoal', () => {
+  const mockOnClose = jest.fn();
+  const mockOnFinished = jest.fn();
+
   restoreFetchAfterEach();
 
   beforeEach(() => {

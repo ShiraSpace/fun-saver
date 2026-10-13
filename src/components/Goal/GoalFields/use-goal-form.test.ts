@@ -1,17 +1,16 @@
-import { FormEvent } from 'react';
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, type RenderHookResult } from '@testing-library/react';
 import { DEFAULT_GOAL_PICTURE } from '@/lib/goal/constants';
 import { REQUEST_STATE } from '@/lib/request-state';
-import { createMockGoalPicture } from '@/test-utils/mocks/goal.mocks';
-import { useGoalForm } from './use-goal-form';
+import { createMockGoalPicture, mockGoal } from '@/test-utils/mocks/goal.mocks';
+import { useGoalForm, type GoalFormState } from './use-goal-form';
 
-const mockSubmitEvent = { preventDefault: (): void => {} } as FormEvent<HTMLFormElement>;
+const mockSubmitEvent = { preventDefault: (): void => {} };
 
 describe('useGoalForm', () => {
   const mockOnSubmit = jest.fn();
   const mockOnRequestStateChange = jest.fn();
 
-  function renderGoalForm(): ReturnType<typeof renderHook<ReturnType<typeof useGoalForm>, void>> {
+  function renderGoalForm(): RenderHookResult<GoalFormState, void> {
     return renderHook(() =>
       useGoalForm({ onSubmit: mockOnSubmit, onRequestStateChange: mockOnRequestStateChange })
     );
@@ -53,13 +52,12 @@ describe('useGoalForm', () => {
   });
 
   describe('filled in', () => {
-    const mockGoalName = 'אופניים';
     const mockAmountShekels = 300;
 
     function renderFilledGoalForm(): ReturnType<typeof renderGoalForm> {
       const rendered = renderGoalForm();
       act(() => {
-        rendered.result.current.setGoalName(`  ${mockGoalName} `);
+        rendered.result.current.setGoalName(`  ${mockGoal.name} `);
         rendered.result.current.setAmount(String(mockAmountShekels));
       });
 
@@ -72,7 +70,7 @@ describe('useGoalForm', () => {
       act(() => result.current.handleSubmit(mockSubmitEvent));
 
       expect(mockOnSubmit).toHaveBeenCalledWith(
-        expect.objectContaining({ name: mockGoalName, amount: mockAmountShekels })
+        expect.objectContaining({ name: mockGoal.name, amount: mockAmountShekels })
       );
     });
 
