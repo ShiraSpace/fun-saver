@@ -1,6 +1,10 @@
 import { fireEvent, render, screen, within } from '@/test-utils/render';
 import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
-import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
+import {
+  createMockSpendableWallet,
+  createMockWalletSummary,
+} from '@/test-utils/mocks/wallet.mocks';
+import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { APP_MODE, AppModeProvider } from '@/components/AccountManagement/app-mode-context';
 import { GOAL_PROGRESS_TEST_IDS } from '@/components/Goal/GoalProgress/constants';
 import { GoalLine } from './GoalLine';
@@ -78,6 +82,16 @@ describe('GoalLine', () => {
       fireEvent.click(screen.getByTestId(GOAL_LINE_TEST_IDS.line));
 
       expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.viewingGoal);
+    });
+  });
+
+  describe('on a wallet other than savings', () => {
+    beforeEach(() => {
+      render(<GoalLine wallet={createMockSpendableWallet(WALLET_NAMES.spending)} />);
+    });
+
+    it('offers no goal', () => {
+      expect(screen.queryByTestId(GOAL_LINE_TEST_IDS.setGoal)).not.toBeInTheDocument();
     });
   });
 });
