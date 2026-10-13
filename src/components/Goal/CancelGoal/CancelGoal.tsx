@@ -3,11 +3,10 @@
 import { JSX, useId } from 'react';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { REQUEST_STATE } from '@/lib/request-state';
-import { useModal } from '@/hooks/use-modal';
 import { GoalBeingCancelled } from './GoalBeingCancelled';
 import { HoldToCancel } from './HoldToCancel';
 import { useCancelGoal } from './use-cancel-goal';
-import { useFocusKeptInside } from './use-focus-kept-inside';
+import { useCancelGoalDialog } from './use-cancel-goal-dialog';
 import { CANCEL_GOAL_COPY, CANCEL_GOAL_TEST_IDS } from './constants';
 import { Card, KeepButton, Scrim } from './CancelGoal.styles';
 
@@ -20,22 +19,23 @@ export interface CancelGoalProps {
 export function CancelGoal(props: CancelGoalProps): JSX.Element {
   const titleId = useId();
   const descriptionId = useId();
-  const { requestState, cancelGoal, keep } = useCancelGoal(props);
-  const isPending = requestState === REQUEST_STATE.pending;
-  const modalRef = useModal(keep);
-  const { firstRef, lastRef, onKeyDown } = useFocusKeptInside(requestState);
+  const { requestState, cancelGoal, keepGoal } = useCancelGoal(props);
+  const { dialogRef, keepGoalRef, holdToCancelRef, keepFocusInside } = useCancelGoalDialog({
+    requestState,
+    onKeepGoal: keepGoal,
+  });
 
   return (
     <>
-      <Scrim data-testid={CANCEL_GOAL_TEST_IDS.scrim} onClick={keep} />
+      <Scrim data-testid={CANCEL_GOAL_TEST_IDS.scrim} onClick={keepGoal} />
       <Card
-        ref={modalRef}
+        ref={dialogRef}
         role="alertdialog"
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         tabIndex={-1}
-        onKeyDown={onKeyDown}
+        onKeyDown={keepFocusInside}
         data-testid={CANCEL_GOAL_TEST_IDS.container}
       >
         <GoalBeingCancelled
@@ -44,15 +44,15 @@ export function CancelGoal(props: CancelGoalProps): JSX.Element {
           descriptionId={descriptionId}
         />
         <KeepButton
-          ref={firstRef}
+          ref={keepGoalRef}
           type="button"
-          disabled={isPending}
-          onClick={keep}
-          data-testid={CANCEL_GOAL_TEST_IDS.keep}
+          disabled={requestState === REQUEST_STATE.pending}
+          onClick={keepGoal}
+          data-testid={CANCEL_GOAL_TEST_IDS.keepGoal}
         >
-          {CANCEL_GOAL_COPY.keep}
+          {CANCEL_GOAL_COPY.keepGoal}
         </KeepButton>
-        <HoldToCancel ref={lastRef} requestState={requestState} onHeld={cancelGoal} />
+        <HoldToCancel ref={holdToCancelRef} requestState={requestState} onHeld={cancelGoal} />
       </Card>
     </>
   );

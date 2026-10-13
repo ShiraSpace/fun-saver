@@ -2,7 +2,7 @@
 
 import { JSX, MouseEvent, Ref } from 'react';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
-import { usePressAndHold } from './use-press-and-hold';
+import { useHoldToCancel } from './use-hold-to-cancel';
 import { HOLD_TO_CANCEL, HOLD_TO_CANCEL_COPY, HOLD_TO_CANCEL_TEST_IDS } from './constants';
 import { CancelError, Fill, Hint, HoldButton, Label } from './HoldToCancel.styles';
 
@@ -17,10 +17,10 @@ function withoutLongPressMenu(mouseEvent: MouseEvent<HTMLButtonElement>): void {
 }
 
 export function HoldToCancel({ ref, requestState, onHeld }: HoldToCancelProps): JSX.Element {
-  const isPending = requestState === REQUEST_STATE.pending;
-  const { isHolding, handlers } = usePressAndHold({
+  const isCancelling = requestState === REQUEST_STATE.pending;
+  const { isHolding, handlers } = useHoldToCancel({
     holdMs: HOLD_TO_CANCEL.holdMs,
-    isDisabled: isPending,
+    isCancelling,
     onHeld,
   });
 
@@ -29,7 +29,7 @@ export function HoldToCancel({ ref, requestState, onHeld }: HoldToCancelProps): 
       <HoldButton
         ref={ref}
         type="button"
-        disabled={isPending}
+        disabled={isCancelling}
         aria-label={HOLD_TO_CANCEL_COPY.ariaLabel}
         onContextMenu={withoutLongPressMenu}
         data-testid={HOLD_TO_CANCEL_TEST_IDS.button}
@@ -37,7 +37,7 @@ export function HoldToCancel({ ref, requestState, onHeld }: HoldToCancelProps): 
       >
         <Fill
           aria-hidden="true"
-          data-filling={isHolding || isPending}
+          data-filling={isHolding || isCancelling}
           data-testid={HOLD_TO_CANCEL_TEST_IDS.fill}
         />
         <Label>{HOLD_TO_CANCEL_COPY.label}</Label>

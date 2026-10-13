@@ -1,8 +1,8 @@
 import { act, renderHook, type RenderHookResult } from '@testing-library/react';
 import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
-import { usePressAndHold } from './use-press-and-hold';
+import { useHoldToCancel } from './use-hold-to-cancel';
 
-type PressAndHoldHook = RenderHookResult<ReturnType<typeof usePressAndHold>, unknown>;
+type HoldToCancelHook = RenderHookResult<ReturnType<typeof useHoldToCancel>, unknown>;
 
 const mockHoldMs = 2000;
 
@@ -26,13 +26,13 @@ function advanceTime(milliseconds: number): void {
   });
 }
 
-function renderPressAndHold(onHeld: () => void, isDisabled = false): PressAndHoldHook {
-  return renderHook(() => usePressAndHold({ holdMs: mockHoldMs, isDisabled, onHeld }));
+function renderHoldToCancel(onHeld: () => void, isCancelling = false): HoldToCancelHook {
+  return renderHook(() => useHoldToCancel({ holdMs: mockHoldMs, isCancelling, onHeld }));
 }
 
-describe('usePressAndHold', () => {
+describe('useHoldToCancel', () => {
   const mockOnHeld = jest.fn();
-  let hook: PressAndHoldHook;
+  let hook: HoldToCancelHook;
 
   const pressPointer = (button?: number): void =>
     act(() => hook.result.current.handlers.onPointerDown(createMockPointerDown(button)));
@@ -43,7 +43,7 @@ describe('usePressAndHold', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     mockOnHeld.mockClear();
-    hook = renderPressAndHold(mockOnHeld);
+    hook = renderHoldToCancel(mockOnHeld);
   });
 
   afterEach(() => {
@@ -223,9 +223,9 @@ describe('usePressAndHold', () => {
     });
   });
 
-  describe('a hold while disabled', () => {
+  describe('a hold while the goal is being cancelled', () => {
     beforeEach(() => {
-      hook = renderPressAndHold(mockOnHeld, true);
+      hook = renderHoldToCancel(mockOnHeld, true);
       pressPointer();
       advanceTime(mockHoldMs);
     });

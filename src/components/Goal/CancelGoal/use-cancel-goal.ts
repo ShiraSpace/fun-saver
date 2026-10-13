@@ -10,7 +10,7 @@ import type { CancelGoalProps } from './CancelGoal';
 interface CancelGoalRequest {
   requestState: RequestState;
   cancelGoal: () => void;
-  keep: () => void;
+  keepGoal: () => void;
 }
 
 function goalUrl({ accountId, id }: Goal): string {
@@ -24,9 +24,9 @@ export function useCancelGoal({
 }: CancelGoalProps): CancelGoalRequest {
   const [requestState, setRequestState] = useState<RequestState>(REQUEST_STATE.idle);
 
-  const isPending = requestState === REQUEST_STATE.pending;
+  const isCancelling = requestState === REQUEST_STATE.pending;
 
-  useReportLoader(isPending);
+  useReportLoader(isCancelling);
 
   const cancelGoal = async (): Promise<void> => {
     setRequestState(REQUEST_STATE.pending);
@@ -44,11 +44,11 @@ export function useCancelGoal({
     }
   };
 
-  const keep = (): void => {
-    if (!isPending) {
+  const keepGoal = (): void => {
+    if (!isCancelling) {
       onKeep();
     }
   };
 
-  return { requestState, cancelGoal: (): void => void cancelGoal(), keep };
+  return { requestState, cancelGoal: (): void => void cancelGoal(), keepGoal };
 }

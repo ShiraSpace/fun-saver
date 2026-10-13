@@ -4,13 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { HOLD_KEYS, PRIMARY_POINTER_BUTTON } from './constants';
 
-interface PressAndHoldOptions {
+interface HoldToCancelOptions {
   holdMs: number;
-  isDisabled: boolean;
+  isCancelling: boolean;
   onHeld: () => void;
 }
 
-export interface PressAndHoldHandlers {
+export interface HoldHandlers {
   onPointerDown: (pointerEvent: ReactPointerEvent<HTMLElement>) => void;
   onPointerUp: () => void;
   onPointerCancel: () => void;
@@ -20,12 +20,12 @@ export interface PressAndHoldHandlers {
   onBlur: () => void;
 }
 
-interface PressAndHold {
+interface HoldToCancelState {
   isHolding: boolean;
-  handlers: PressAndHoldHandlers;
+  handlers: HoldHandlers;
 }
 
-interface HoldTimer {
+interface Hold {
   isHolding: boolean;
   startHolding: () => void;
   letGo: () => void;
@@ -39,7 +39,7 @@ function isFirstPressOfHoldKey(keyboardEvent: ReactKeyboardEvent<HTMLElement>): 
   return isHoldKey(keyboardEvent) && !keyboardEvent.repeat;
 }
 
-function useHoldTimer({ holdMs, isDisabled, onHeld }: PressAndHoldOptions): HoldTimer {
+function useHold({ holdMs, isCancelling, onHeld }: HoldToCancelOptions): Hold {
   const [isHolding, setIsHolding] = useState(false);
   const holdTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const onHeldRef = useRef(onHeld);
@@ -56,7 +56,7 @@ function useHoldTimer({ holdMs, isDisabled, onHeld }: PressAndHoldOptions): Hold
   };
 
   const startHolding = (): void => {
-    if (isDisabled) {
+    if (isCancelling) {
       return;
     }
 
@@ -71,8 +71,8 @@ function useHoldTimer({ holdMs, isDisabled, onHeld }: PressAndHoldOptions): Hold
   return { isHolding, startHolding, letGo };
 }
 
-export function usePressAndHold(options: PressAndHoldOptions): PressAndHold {
-  const { isHolding, startHolding, letGo } = useHoldTimer(options);
+export function useHoldToCancel(options: HoldToCancelOptions): HoldToCancelState {
+  const { isHolding, startHolding, letGo } = useHold(options);
 
   return {
     isHolding,
