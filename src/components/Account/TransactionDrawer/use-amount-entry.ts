@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { StatusCodes } from 'http-status-codes';
-import { RequestFailedError } from '@/lib/fetch-json';
+import { isConflict } from '@/lib/fetch-json';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { useRefreshWithLoader } from '@/hooks/loader-context';
 import { pushDigit, popDigit } from './amount-keypad';
@@ -12,10 +11,6 @@ export interface AmountEntry {
   onClear: () => void;
   onBackspace: () => void;
   onSubmit: () => void;
-}
-
-function isConflict(error: unknown): boolean {
-  return error instanceof RequestFailedError && error.status === StatusCodes.CONFLICT;
 }
 
 export function useAmountEntry(
