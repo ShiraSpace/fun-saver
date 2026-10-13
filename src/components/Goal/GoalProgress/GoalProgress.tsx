@@ -8,7 +8,7 @@ import {
   GOAL_PROGRESS_TEST_IDS,
   type GoalProgressSize,
 } from './constants';
-import { Body, GoalHeading, Picture, Progress } from './GoalProgress.styles';
+import { barIsThin, Body, GoalHeading, Picture, Progress } from './GoalProgress.styles';
 
 interface GoalProgressProps {
   savedTowardGoal: SavedTowardGoal;
@@ -24,7 +24,6 @@ export function GoalProgress({
   const { goal, reached } = savedTowardGoal;
   const heading = reached ? GOAL_PROGRESS_COPY.reached : goal.name;
   const pictureGlows = glowWhenReached && reached;
-  const barIsThin = size === GOAL_PROGRESS_SIZE.small;
 
   return (
     <Progress>
@@ -41,7 +40,7 @@ export function GoalProgress({
           <span data-testid={GOAL_PROGRESS_TEST_IDS.heading}>{heading}</span>
           <SavedOutOfGoal savedTowardGoal={savedTowardGoal} />
         </GoalHeading>
-        <GoalProgressBar savedTowardGoal={savedTowardGoal} thin={barIsThin} />
+        <GoalProgressBar savedTowardGoal={savedTowardGoal} thin={barIsThin(size)} />
       </Body>
     </Progress>
   );
