@@ -50,12 +50,12 @@ export function savingsAtCollectedInterest<CollectedSavings extends Savings>({
   savings,
   collectedInterest,
 }: CollectedInterestParams<CollectedSavings>): CollectedSavings {
-  const uncollected = Math.max(savings.interestEarned - collectedInterest, 0);
+  const uncollectedInterest = Math.max(savings.interestEarned - collectedInterest, 0);
 
   return {
     ...savings,
-    balance: Math.max(savings.balance - uncollected, 0),
-    interestEarned: savings.interestEarned - uncollected,
+    balance: Math.max(savings.balance - uncollectedInterest, 0),
+    interestEarned: savings.interestEarned - uncollectedInterest,
   };
 }
 
