@@ -20,7 +20,7 @@ function createMockKeyEvent(key = ' ', repeat = false): ReactKeyboardEvent<HTMLE
   return { key, repeat } as ReactKeyboardEvent<HTMLElement>;
 }
 
-function waitFor(milliseconds: number): void {
+function advanceTime(milliseconds: number): void {
   act(() => {
     jest.advanceTimersByTime(milliseconds);
   });
@@ -53,7 +53,7 @@ describe('usePressAndHold', () => {
   describe('a pointer held for 2 seconds', () => {
     beforeEach(() => {
       pressPointer();
-      waitFor(mockHoldMs);
+      advanceTime(mockHoldMs);
     });
 
     it('calls onHeld', () => {
@@ -78,9 +78,9 @@ describe('usePressAndHold', () => {
   describe('a pointer let go before 2 seconds', () => {
     beforeEach(() => {
       pressPointer();
-      waitFor(mockHoldMs - 1);
+      advanceTime(mockHoldMs - 1);
       act(() => hook.result.current.handlers.onPointerUp());
-      waitFor(mockHoldMs);
+      advanceTime(mockHoldMs);
     });
 
     it('does not call onHeld', () => {
@@ -91,9 +91,9 @@ describe('usePressAndHold', () => {
   describe('a hold interrupted before 2 seconds', () => {
     const holdThenInterrupt = (interrupt: () => void): void => {
       pressPointer();
-      waitFor(mockHoldMs - 1);
+      advanceTime(mockHoldMs - 1);
       act(interrupt);
-      waitFor(mockHoldMs);
+      advanceTime(mockHoldMs);
     };
 
     describe('by pointercancel', () => {
@@ -146,7 +146,7 @@ describe('usePressAndHold', () => {
 
     beforeEach(() => {
       pressPointer(mockSecondaryButton);
-      waitFor(mockHoldMs);
+      advanceTime(mockHoldMs);
     });
 
     it('does not call onHeld', () => {
@@ -159,9 +159,9 @@ describe('usePressAndHold', () => {
 
     beforeEach(() => {
       pressKey();
-      waitFor(mockRepeatAfterMs);
+      advanceTime(mockRepeatAfterMs);
       pressKey(' ', true);
-      waitFor(mockHoldMs - mockRepeatAfterMs);
+      advanceTime(mockHoldMs - mockRepeatAfterMs);
     });
 
     it('calls onHeld 2 seconds after the first press', () => {
@@ -172,7 +172,7 @@ describe('usePressAndHold', () => {
   describe('Enter held for 2 seconds', () => {
     beforeEach(() => {
       pressKey('Enter');
-      waitFor(mockHoldMs);
+      advanceTime(mockHoldMs);
     });
 
     it('calls onHeld', () => {
@@ -183,7 +183,7 @@ describe('usePressAndHold', () => {
   describe('another key held for 2 seconds', () => {
     beforeEach(() => {
       pressKey('a');
-      waitFor(mockHoldMs);
+      advanceTime(mockHoldMs);
     });
 
     it('does not call onHeld', () => {
@@ -197,13 +197,13 @@ describe('usePressAndHold', () => {
 
     beforeEach(() => {
       pressKey();
-      waitFor(mockHoldMs - 1);
+      advanceTime(mockHoldMs - 1);
     });
 
     describe('let go of before 2 seconds', () => {
       beforeEach(() => {
         letGoOfKey(' ');
-        waitFor(mockHoldMs);
+        advanceTime(mockHoldMs);
       });
 
       it('does not call onHeld', () => {
@@ -214,7 +214,7 @@ describe('usePressAndHold', () => {
     describe('while another key is let go', () => {
       beforeEach(() => {
         letGoOfKey('Shift');
-        waitFor(1);
+        advanceTime(1);
       });
 
       it('carries on and calls onHeld', () => {
@@ -227,7 +227,7 @@ describe('usePressAndHold', () => {
     beforeEach(() => {
       hook = renderPressAndHold(mockOnHeld, true);
       pressPointer();
-      waitFor(mockHoldMs);
+      advanceTime(mockHoldMs);
     });
 
     it('does not call onHeld', () => {
@@ -239,7 +239,7 @@ describe('usePressAndHold', () => {
     beforeEach(() => {
       pressPointer();
       hook.unmount();
-      waitFor(mockHoldMs);
+      advanceTime(mockHoldMs);
     });
 
     it('does not call onHeld', () => {
