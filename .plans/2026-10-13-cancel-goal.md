@@ -64,7 +64,7 @@ timers):
 | --- | --- |
 | holding for 2 seconds calls `onHeld` | the timer never starts |
 | letting go before 2 seconds does not | `pointerup` doesn't clear the timer |
-| a repeated `keydown` does not restart the hold | drop the `event.repeat` check |
+| a repeated `keydown` does not restart the hold | drop the held-key guard in `pressKey` |
 
 Rest, each with its own break: `pointercancel`, `pointerleave`, `keyup` and
 `blur` each reset; another key's `keyup` keeps the hold; a key other than

@@ -12,7 +12,7 @@ interface HoldToCancelOptions {
 export interface HoldPointerEvent {
   button: number;
   pointerId: number;
-  currentTarget: { releasePointerCapture?: (pointerId: number) => void };
+  currentTarget: { releasePointerCapture: (pointerId: number) => void };
 }
 
 export interface HoldKeyEvent {
@@ -78,7 +78,7 @@ function useHold({ holdMs, isCancelling, onHeld }: HoldToCancelOptions): Hold {
   };
 
   const pressKey = (key: string): void => {
-    if (isCancelling || heldKeyRef.current !== null) {
+    if (heldKeyRef.current !== null) {
       return;
     }
 
@@ -106,7 +106,7 @@ export function useHoldToCancel(options: HoldToCancelOptions): HoldToCancelState
           return;
         }
 
-        pointerEvent.currentTarget.releasePointerCapture?.(pointerEvent.pointerId);
+        pointerEvent.currentTarget.releasePointerCapture(pointerEvent.pointerId);
         startHolding();
       },
       onPointerUp: letGo,

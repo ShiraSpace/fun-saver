@@ -1,10 +1,9 @@
 'use client';
 
-import { RefObject, useEffect, useRef } from 'react';
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent, type RefObject } from 'react';
 import { useModal } from '@/hooks/use-modal';
-import type { GoalCancellation } from './use-cancel-goal';
 import { TAB_KEY } from '@/hooks/constants';
+import type { GoalCancellation } from './use-cancel-goal';
 
 type CancelGoalDialogOptions = Pick<GoalCancellation, 'isCancelling' | 'keepGoal'>;
 
