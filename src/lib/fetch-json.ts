@@ -17,6 +17,10 @@ export class RequestFailedError extends Error {
   }
 }
 
+export function isConflict(error: unknown): boolean {
+  return error instanceof RequestFailedError && error.status === StatusCodes.CONFLICT;
+}
+
 export async function fetchJson<Result>({ url, method, body }: JsonRequest): Promise<Result> {
   const response = await fetch(url, {
     method,

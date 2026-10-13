@@ -14,3 +14,8 @@ export const Line = styled.button`
   text-align: start;
   cursor: pointer;
 `;
+
+export const SetGoalPrompt = styled.span`
+  font-size: ${({ theme }): number => theme.typography.body}px;
+  font-weight: 700;
+`;

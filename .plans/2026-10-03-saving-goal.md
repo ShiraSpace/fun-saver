@@ -17,7 +17,7 @@ task-by-task plan in its own session before any code.
 | 2 | API and the server lock | Merged #190 (`83defbc`) |
 | 3a | The goal on home and in the drawer | Merged #199 (`e8e506f`) (plan: `.plans/2026-10-10-show-goal.md`) |
 | 3b | The goal screen and the menu row | Three PRs: the goal screen merged #203, the ways in merged #206, the drawer's kept note line in review #208 (plan: `.plans/2026-10-10-goal-screen.md`) |
-| 4b | Setting and cancelling | `GoalPictureSearch` sheet merged #189 (`838e64b`), shown nowhere yet; `SetGoal`, `CancelGoal`, the menu entry not started |
+| 4b | Setting and cancelling | `GoalPictureSearch` sheet merged #189 (`838e64b`), shown nowhere yet; `SetGoal` and its ways in (card line, menu row) taken over by onboarding PR 1 (`feat/onboarding-set-goal`, plan `.plans/2026-10-11-onboarding.md`); `CancelGoal` and «ביטול היעד» not started |
 | 5 | Celebration | The confetti component merged #188 (`ac93d2b`), shown nowhere yet; mounting it, the travelling border, the wobble and the bar shine not started |
 | later | The goal in child mode | Separate feature, after this one |
 
@@ -112,11 +112,13 @@ e2e driver. Things found since the spec was written:
   (measured in PR 3: with one account and a goal the list stops 21.5 px above
   it). Re-run that suite; add a third account if it falls short.
 - PR 4b: a goal overlay's finish handler (after `SetGoal` or «ביטול היעד»)
-  returns `viewingGoal` to `viewing`, the way `finishEditing` does.
+  returns `viewingGoal` to `viewing`, the way `finishEditing` does. Done for
+  `SetGoal`: `GoalScreens` finishes with `finishEditing` itself.
 - PR 4b: `GoalPictureSearch` closes on Back through `useCloseOnBack`. If
   `SetGoal` uses it too, both listen for the same `popstate`, so one Back press
   closes the picture sheet and `SetGoal` together. Only the topmost open sheet
-  should close.
+  should close. Done in onboarding PR 1: each history entry names its modal,
+  and Back and Escape reach only the top one.
 
 ## Working rules learned on this feature
 
