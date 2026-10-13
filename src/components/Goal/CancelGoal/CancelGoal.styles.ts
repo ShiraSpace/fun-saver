@@ -4,12 +4,6 @@ import type { Themed } from '@/theme/themed';
 
 const surface = ({ theme }: Themed): string => theme.colors.surface;
 
-export const Scrim = styled.div`
-  position: fixed;
-  inset: 0;
-  background: ${({ theme }): string => theme.tints.shade};
-`;
-
 export const Card = styled.div`
   position: fixed;
   top: 50%;

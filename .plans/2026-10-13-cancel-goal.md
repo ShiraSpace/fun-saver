@@ -41,19 +41,21 @@ Each step: production code → "commit" → first three tests (watched failing)
 Production: `src/components/Goal/CancelGoal/HoldToCancel/use-hold-to-cancel.ts`
 (co-located; its only user is `HoldToCancel`). `useHoldToCancel({ holdMs, isCancelling, onHeld })`
 → `{ isHolding, handlers }`.
-- Starts on `pointerdown` (primary button only), or on the first Space/Enter
-  `keydown`, ignoring `event.repeat`.
+- Starts on `pointerdown` (primary button only), or on a Space/Enter
+  `keydown`. It remembers the key that started the hold: only that key's
+  `keyup` lets go, and neither the other hold key nor a held key's repeats
+  start it over.
 - On `pointerdown` it calls `releasePointerCapture(event.pointerId)`: touch
   pointers are captured implicitly, and a captured pointer never fires
   `pointerleave`, so sliding a finger off would not reset the hold.
-- Stops and resets on `pointerup`, `pointercancel`, `pointerleave`, a
-  Space/Enter `keyup` (another key's `keyup` keeps the hold) and `blur`. `isCancelling` refuses a new hold (browsers may still send
+- Stops and resets on `pointerup`, `pointercancel`, `pointerleave`, the held
+  key's `keyup` and `blur`. `isCancelling` refuses a new hold (browsers may still send
   pointer events to a disabled button).
 - Calls `onHeld` once after `holdMs` unbroken, and `isHolding` returns to
-  false; `HoldToCancel` keeps the fill full while the request is pending. The
-  timer is cleared on unmount.
-- `holdMs` is `HOLD_TO_CANCEL.holdMs` (2000) in `HoldToCancel/constants.ts`,
-  the same constant the fill's CSS duration reads.
+  false. The timer is cleared on unmount.
+- `holdMs` is `HOLD_TO_CANCEL.holdMs` (2000) in `HoldToCancel/constants.ts`.
+  The fill's CSS duration and the seconds in the copy («להחזיק 2 שניות») are
+  worked out from it.
 
 First three tests (`use-hold-to-cancel.test.ts`, beside the hook, fake
 timers):
@@ -84,11 +86,14 @@ Props: `{ savedTowardGoal, onKeep, onFinished }`.
 - `HoldToCancel/`: the red pill with no `onClick`, `touch-action: none`, no
   selection or long-press menu, an `aria-label` saying to hold 2 seconds,
   «להחזיק 2 שניות» under it, and the error line after a failed cancel. Its
-  fill grows from the reading start while held and stays full while
-  cancelling, and is not switched off under reduced motion (it is progress).
+  fill grows from the reading start while held (`transform-origin: left`,
+  which the RTL style plugin turns into `right`), is not switched off under
+  reduced motion (it is progress), and gives way to a solid red button while
+  cancelling.
 - `use-cancel-goal.ts`: `DELETE /api/accounts/[accountId]/goals/[goalId]`
   through `fetchJson`; success or `isConflict` → `onFinished`; any other
-  failure (`403` for a viewer included) → `failed`. While cancelling it shows
+  failure (`403` for a viewer included) → `failed`. It alone reads the
+  request state and hands `isCancelling` and `cancelFailed` to the rest. While cancelling it shows
   the header loader, and keeping the goal does nothing, so Escape and Back
   cannot close a dialog whose cancel is in flight.
 - `use-cancel-goal-dialog.ts`: `useModal` (Escape and Back keep the goal);
@@ -100,7 +105,9 @@ Props: `{ savedTowardGoal, onKeep, onFinished }`.
 Tests: `CancelGoal.test.tsx` (opening, keeping, a quick tap, Tab),
 `CancelGoal.cancelling.test.tsx` (by id, success, `409`, a failure answered
 after the pending state renders, while cancelling), `GoalBeingCancelled.test.tsx`,
-`HoldToCancel.test.tsx`; shared setup in `src/test-utils/cancel-goal.tsx`,
+`HoldToCancel.test.tsx`, `use-hold-to-cancel.test.ts` (pointer) and
+`use-hold-to-cancel.keys.test.ts` (keyboard); shared setup in
+`src/test-utils/cancel-goal.tsx` and `src/test-utils/hold-to-cancel.ts`,
 including the `PointerEvent` stand-in jsdom lacks. Every test watched failing
 against its own break.
 

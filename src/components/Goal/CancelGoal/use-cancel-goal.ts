@@ -7,8 +7,9 @@ import type { Goal } from '@/lib/goal/types';
 import { useReportLoader } from '@/hooks/loader-context';
 import type { CancelGoalProps } from './CancelGoal';
 
-interface CancelGoalRequest {
-  requestState: RequestState;
+export interface CancelGoalRequest {
+  isCancelling: boolean;
+  cancelFailed: boolean;
   cancelGoal: () => void;
   keepGoal: () => void;
 }
@@ -50,5 +51,10 @@ export function useCancelGoal({
     }
   };
 
-  return { requestState, cancelGoal: (): void => void cancelGoal(), keepGoal };
+  return {
+    isCancelling,
+    cancelFailed: requestState === REQUEST_STATE.failed,
+    cancelGoal: (): void => void cancelGoal(),
+    keepGoal,
+  };
 }
