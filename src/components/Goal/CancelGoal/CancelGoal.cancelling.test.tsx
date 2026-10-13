@@ -111,6 +111,16 @@ describe('CancelGoal, cancelling', () => {
       expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent('true');
     });
 
+    describe('and the dimmed page is tapped', () => {
+      beforeEach(() => {
+        fireEvent.click(screen.getByTestId(CANCEL_GOAL_TEST_IDS.scrim));
+      });
+
+      it('does not close', () => {
+        expect(mockOnKeep).not.toHaveBeenCalled();
+      });
+    });
+
     describe('and Escape is pressed', () => {
       beforeEach(() => {
         fireEvent.keyDown(document, { key: ESCAPE_KEY });

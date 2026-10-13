@@ -3,7 +3,7 @@ import {
   advanceTime,
   fakeTimersEachTest,
   mockHoldMs,
-  renderHoldToCancel,
+  renderUseHoldToCancel,
   type HoldToCancelHook,
 } from '@/test-utils/hold-to-cancel';
 import type { HoldKeyEvent } from './use-hold-to-cancel';
@@ -23,7 +23,7 @@ describe('useHoldToCancel, by keyboard', () => {
 
   beforeEach(() => {
     mockOnHeld.mockClear();
-    hook = renderHoldToCancel(mockOnHeld);
+    hook = renderUseHoldToCancel(mockOnHeld);
   });
 
   describe('a key held long enough to repeat', () => {

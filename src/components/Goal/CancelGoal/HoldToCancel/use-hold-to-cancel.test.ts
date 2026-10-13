@@ -3,7 +3,7 @@ import {
   advanceTime,
   fakeTimersEachTest,
   mockHoldMs,
-  renderHoldToCancel,
+  renderUseHoldToCancel,
   type HoldToCancelHook,
 } from '@/test-utils/hold-to-cancel';
 import type { HoldPointerEvent } from './use-hold-to-cancel';
@@ -30,7 +30,7 @@ describe('useHoldToCancel', () => {
 
   beforeEach(() => {
     mockOnHeld.mockClear();
-    hook = renderHoldToCancel(mockOnHeld);
+    hook = renderUseHoldToCancel(mockOnHeld);
   });
 
   describe('a pointer held for 2 seconds', () => {
@@ -139,7 +139,7 @@ describe('useHoldToCancel', () => {
 
   describe('a hold while the goal is being cancelled', () => {
     beforeEach(() => {
-      hook = renderHoldToCancel(mockOnHeld, true);
+      hook = renderUseHoldToCancel(mockOnHeld, true);
       pressPointer();
       advanceTime(mockHoldMs);
     });

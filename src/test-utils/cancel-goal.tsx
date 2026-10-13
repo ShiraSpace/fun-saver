@@ -17,15 +17,26 @@ function setWindowPointerEvent(pointerEvent: unknown): void {
   });
 }
 
+function setReleasePointerCapture(releasePointerCapture: unknown): void {
+  Object.defineProperty(Element.prototype, 'releasePointerCapture', {
+    value: releasePointerCapture,
+    configurable: true,
+    writable: true,
+  });
+}
+
 export function stubPointerEventEachTest(): void {
   const originalPointerEvent = window.PointerEvent;
+  const originalReleasePointerCapture = Element.prototype.releasePointerCapture;
 
   beforeEach(() => {
     setWindowPointerEvent(MouseEvent);
+    setReleasePointerCapture(jest.fn());
   });
 
   afterEach(() => {
     setWindowPointerEvent(originalPointerEvent);
+    setReleasePointerCapture(originalReleasePointerCapture);
   });
 }
 

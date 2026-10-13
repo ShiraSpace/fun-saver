@@ -21,6 +21,6 @@ export function advanceTime(milliseconds: number): void {
   });
 }
 
-export function renderHoldToCancel(onHeld: () => void, isCancelling = false): HoldToCancelHook {
+export function renderUseHoldToCancel(onHeld: () => void, isCancelling = false): HoldToCancelHook {
   return renderHook(() => useHoldToCancel({ holdMs: mockHoldMs, isCancelling, onHeld }));
 }
