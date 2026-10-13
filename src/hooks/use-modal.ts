@@ -6,15 +6,9 @@ import { useEscapeKey } from '@/hooks/use-escape-key';
 
 export function useModal(onClose: () => void): RefObject<HTMLDivElement | null> {
   const modalRef = useRef<HTMLDivElement>(null);
-  const isOnTop = useCloseOnBack(onClose);
 
-  const closeIfOnTop = (): void => {
-    if (isOnTop()) {
-      onClose();
-    }
-  };
-
-  useEscapeKey({ isListening: true, onEscape: closeIfOnTop, takesPrecedence: true });
+  useEscapeKey({ isListening: true, onEscape: onClose, takesPrecedence: true });
+  useCloseOnBack(onClose);
 
   useEffect(() => {
     const focusedBeforeOpening = document.activeElement;

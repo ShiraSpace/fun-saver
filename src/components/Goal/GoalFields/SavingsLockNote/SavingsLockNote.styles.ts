@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
+import type { Themed } from '@/theme/themed';
 
-interface NoteProps {
+interface NoteProps extends Themed {
   reached: boolean;
-  theme: Theme;
 }
 
 const background = ({ reached, theme }: NoteProps): string =>

@@ -1,4 +1,8 @@
-import { MAX_GOAL_SHEKELS } from '@/lib/goal/constants';
+import {
+  isGoalAmountMissing,
+  isGoalAmountTooHigh,
+  isValidGoalName,
+} from '@/lib/goal/goal-request-validator';
 
 interface GoalEntry {
   goalName: string;
@@ -19,9 +23,9 @@ export const NO_GOAL_ENTRY_ERRORS: GoalEntryErrors = {
 
 export function goalEntryErrors({ goalName, amountShekels }: GoalEntry): GoalEntryErrors {
   return {
-    nameMissing: goalName.trim() === '',
-    amountMissing: amountShekels < 1,
-    amountTooHigh: amountShekels > MAX_GOAL_SHEKELS,
+    nameMissing: !isValidGoalName(goalName),
+    amountMissing: isGoalAmountMissing(amountShekels),
+    amountTooHigh: isGoalAmountTooHigh(amountShekels),
   };
 }
 

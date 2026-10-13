@@ -9,5 +9,3 @@ export const SET_GOAL_COPY = {
   submit: '✓ קובעים יעד',
   cancel: 'ביטול',
 } as const;
-
-export const goalsEndpoint = (accountId: string): string => `/api/accounts/${accountId}/goals`;

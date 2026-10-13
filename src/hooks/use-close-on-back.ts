@@ -5,16 +5,14 @@ let pendingBack: ReturnType<typeof setTimeout> | undefined;
 
 let modalsOpened = 0;
 
-const openModalIds: string[] = [];
-
 function nextModalId(): string {
   modalsOpened += 1;
 
   return `${Date.now()}-${modalsOpened}`;
 }
 
-function isTopModal(modalId: string | undefined): boolean {
-  return modalId !== undefined && openModalIds.at(-1) === modalId;
+function historyEntry(modalId: string): Record<string, string> {
+  return { [DRAWER_HISTORY_KEY]: modalId };
 }
 
 function ownsCurrentEntry(modalId: string): boolean {
@@ -22,7 +20,7 @@ function ownsCurrentEntry(modalId: string): boolean {
 }
 
 function takeHistoryEntry(modalId: string): void {
-  const entry = { [DRAWER_HISTORY_KEY]: modalId };
+  const entry = historyEntry(modalId);
 
   if (pendingBack === undefined) {
     window.history.pushState(entry, '');
@@ -45,9 +43,8 @@ function releaseHistoryEntry(modalId: string): void {
   });
 }
 
-export function useCloseOnBack(onClose: () => void): () => boolean {
+export function useCloseOnBack(onClose: () => void): void {
   const onCloseRef = useRef(onClose);
-  const modalIdRef = useRef<string>(undefined);
 
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -55,16 +52,14 @@ export function useCloseOnBack(onClose: () => void): () => boolean {
 
   useEffect(() => {
     const modalId = nextModalId();
-    modalIdRef.current = modalId;
     takeHistoryEntry(modalId);
-    openModalIds.push(modalId);
 
     const handlePopState = (): void => {
       if (ownsCurrentEntry(modalId)) {
         return;
       }
 
-      window.history.pushState({ [DRAWER_HISTORY_KEY]: modalId }, '');
+      window.history.pushState(historyEntry(modalId), '');
       onCloseRef.current();
     };
 
@@ -72,10 +67,7 @@ export function useCloseOnBack(onClose: () => void): () => boolean {
 
     return (): void => {
       window.removeEventListener('popstate', handlePopState);
-      openModalIds.splice(openModalIds.indexOf(modalId), 1);
       releaseHistoryEntry(modalId);
     };
   }, []);
-
-  return (): boolean => isTopModal(modalIdRef.current);
 }

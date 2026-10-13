@@ -4,7 +4,6 @@ import { JSX } from 'react';
 import type { AccountNavigation } from '@/hooks/use-account-navigation';
 import { ViewGoal } from '@/components/Goal/ViewGoal';
 import { SetGoal } from '@/components/Goal/SetGoal';
-import { APP_MODE } from '../app-mode-context';
 import { Overlay } from '../overlay-parts';
 
 interface GoalScreensProps {
@@ -12,8 +11,7 @@ interface GoalScreensProps {
 }
 
 export function GoalScreens({ navigation }: GoalScreensProps): JSX.Element {
-  const { mode, currentAccount, goalBeingViewed, cancel, finishEditing } = navigation;
-  const accountSettingGoal = mode === APP_MODE.settingGoal ? currentAccount : undefined;
+  const { accountSettingGoal, goalBeingViewed, cancel, finishEditing } = navigation;
 
   const viewGoalScreen = goalBeingViewed && (
     <Overlay>

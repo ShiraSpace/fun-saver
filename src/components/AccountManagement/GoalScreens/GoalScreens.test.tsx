@@ -31,7 +31,7 @@ describe('GoalScreens', () => {
   });
 
   it('draws the screen that sets a goal while setting one', () => {
-    renderGoalScreens({ mode: APP_MODE.settingGoal });
+    renderGoalScreens({ mode: APP_MODE.settingGoal, accountSettingGoal: mockAccountSummary });
 
     expect(screen.getByTestId(SET_GOAL_TEST_IDS.container)).toBeInTheDocument();
   });

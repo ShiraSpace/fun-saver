@@ -22,14 +22,8 @@ export interface GoalFormState {
   setAmount: (typed: string) => void;
   picture: GoalPicture | null;
   setPicture: (picture: GoalPicture) => void;
-  requestState: RequestState;
   errors: GoalEntryErrors;
   handleSubmit: (submitEvent: Pick<FormEvent, 'preventDefault'>) => void;
-}
-
-interface GoalRequestState {
-  requestState: RequestState;
-  sendGoal: (request: GoalRequest) => Promise<void>;
 }
 
 function amountFrom(typed: string): number {
@@ -38,14 +32,11 @@ function amountFrom(typed: string): number {
   return Number(wholeShekels.replace(GOAL_AMOUNT_ENTRY.notDigits, ''));
 }
 
-function useGoalRequest({ onSubmit, onRequestStateChange }: GoalFormOptions): GoalRequestState {
-  const [requestState, setRequestState] = useState<RequestState>(REQUEST_STATE.idle);
+function useSendGoal({
+  onSubmit,
+  onRequestStateChange,
+}: GoalFormOptions): (request: GoalRequest) => Promise<void> {
   const isRequestPendingRef = useRef(false);
-
-  const reportRequestState = (nextRequestState: RequestState): void => {
-    setRequestState(nextRequestState);
-    onRequestStateChange(nextRequestState);
-  };
 
   const sendGoal = async (request: GoalRequest): Promise<void> => {
     if (isRequestPendingRef.current) {
@@ -53,17 +44,17 @@ function useGoalRequest({ onSubmit, onRequestStateChange }: GoalFormOptions): Go
     }
 
     isRequestPendingRef.current = true;
-    reportRequestState(REQUEST_STATE.pending);
+    onRequestStateChange(REQUEST_STATE.pending);
 
     try {
       await onSubmit(request);
     } catch {
       isRequestPendingRef.current = false;
-      reportRequestState(REQUEST_STATE.failed);
+      onRequestStateChange(REQUEST_STATE.failed);
     }
   };
 
-  return { requestState, sendGoal };
+  return sendGoal;
 }
 
 export function useGoalForm(options: GoalFormOptions): GoalFormState {
@@ -71,7 +62,7 @@ export function useGoalForm(options: GoalFormOptions): GoalFormState {
   const [amountShekels, setAmountShekels] = useState(0);
   const [picture, setPicture] = useState<GoalPicture | null>(null);
   const [showsErrors, setShowsErrors] = useState(false);
-  const { requestState, sendGoal } = useGoalRequest(options);
+  const sendGoal = useSendGoal(options);
   const errors = goalEntryErrors({ goalName, amountShekels });
 
   const handleSubmit = (submitEvent: Pick<FormEvent, 'preventDefault'>): void => {
@@ -96,7 +87,6 @@ export function useGoalForm(options: GoalFormOptions): GoalFormState {
     setAmount: (typed): void => setAmountShekels(amountFrom(typed)),
     picture,
     setPicture,
-    requestState,
     errors: showsErrors ? errors : NO_GOAL_ENTRY_ERRORS,
     handleSubmit,
   };

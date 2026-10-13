@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
+import type { Themed } from '@/theme/themed';
 
-interface CardProps {
+interface CardProps extends Themed {
   invalid: boolean;
-  theme: Theme;
 }
 
 const cardBorder = ({ invalid, theme }: CardProps): string =>

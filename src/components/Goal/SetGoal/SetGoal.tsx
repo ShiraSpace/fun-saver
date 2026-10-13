@@ -60,6 +60,7 @@ export function SetGoal({ account, onClose, onFinished }: SetGoalProps): JSX.Ele
       <GoalFields
         savingsBalance={savingsBalanceOf(account)}
         submitLabel={SET_GOAL_COPY.submit}
+        requestState={requestState}
         onSubmit={submitGoal}
         onRequestStateChange={setRequestState}
       />

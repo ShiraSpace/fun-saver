@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, within } from '@/test-utils/render';
 import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
+import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
 import { APP_MODE, AppModeProvider } from '@/components/AccountManagement/app-mode-context';
 import { GOAL_PROGRESS_TEST_IDS } from '@/components/Goal/GoalProgress/constants';
 import { GoalLine } from './GoalLine';
@@ -8,6 +9,8 @@ import { hexToRgb } from '@/test-utils/css-color';
 import { GOAL_LINE_COPY, GOAL_LINE_TEST_IDS } from './constants';
 
 describe('GoalLine', () => {
+  const mockSavingsWallet = createMockWalletSummary();
+
   describe('without a goal', () => {
     const mockSetMode = jest.fn();
 
@@ -15,7 +18,7 @@ describe('GoalLine', () => {
       jest.clearAllMocks();
       render(
         <AppModeProvider value={{ mode: APP_MODE.viewing, setMode: mockSetMode }}>
-          <GoalLine />
+          <GoalLine wallet={mockSavingsWallet} />
         </AppModeProvider>
       );
     });
@@ -38,7 +41,7 @@ describe('GoalLine', () => {
   });
 
   it("writes the prompt in the theme's strong text colour", () => {
-    render(<GoalLine />, { themeId: THEME_ID.midnightBlue });
+    render(<GoalLine wallet={mockSavingsWallet} />, { themeId: THEME_ID.midnightBlue });
     const [prompt] = screen.getByTestId(GOAL_LINE_TEST_IDS.setGoal).children;
 
     expect(getComputedStyle(prompt).color).toBe(
@@ -53,7 +56,7 @@ describe('GoalLine', () => {
       jest.clearAllMocks();
       render(
         <AppModeProvider value={{ mode: APP_MODE.viewing, setMode: mockSetMode }}>
-          <GoalLine savedTowardGoal={createMockSavedTowardGoal()} />
+          <GoalLine wallet={mockSavingsWallet} savedTowardGoal={createMockSavedTowardGoal()} />
         </AppModeProvider>
       );
     });
