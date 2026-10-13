@@ -60,7 +60,7 @@ export function useCloseOnBack(onClose: () => void): () => boolean {
     openModalIds.push(modalId);
 
     const handlePopState = (): void => {
-      if (!isTopModal(modalId) || ownsCurrentEntry(modalId)) {
+      if (ownsCurrentEntry(modalId)) {
         return;
       }
 
