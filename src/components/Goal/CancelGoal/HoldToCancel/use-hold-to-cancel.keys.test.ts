@@ -63,6 +63,32 @@ describe('useHoldToCancel, by keyboard', () => {
     });
   });
 
+  describe('a key hold the button loses focus during', () => {
+    const mockHalfHoldMs = mockHoldMs / 2;
+
+    beforeEach(() => {
+      pressKey();
+      advanceTime(mockHalfHoldMs);
+      act(() => hook.result.current.handlers.onBlur());
+      pressKey('Enter');
+      advanceTime(mockHalfHoldMs);
+    });
+
+    it('does not finish the hold it ended', () => {
+      expect(mockOnHeld).not.toHaveBeenCalled();
+    });
+
+    describe('and a new key held on', () => {
+      beforeEach(() => {
+        advanceTime(mockHalfHoldMs);
+      });
+
+      it('finishes the new hold', () => {
+        expect(mockOnHeld).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
   describe('a key hold', () => {
     const letGoOfKey = (key: string): void =>
       act(() => hook.result.current.handlers.onKeyUp(createMockKeyEvent(key)));
@@ -103,18 +129,6 @@ describe('useHoldToCancel, by keyboard', () => {
       });
 
       it('does not start the hold over, so onHeld comes on time', () => {
-        expect(mockOnHeld).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('when the button loses focus', () => {
-      beforeEach(() => {
-        act(() => hook.result.current.handlers.onBlur());
-        pressKey('Enter');
-        advanceTime(mockHoldMs);
-      });
-
-      it('lets go of the key, so a new key press starts a hold', () => {
         expect(mockOnHeld).toHaveBeenCalledTimes(1);
       });
     });
