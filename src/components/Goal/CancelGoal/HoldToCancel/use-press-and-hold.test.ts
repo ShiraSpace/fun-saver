@@ -96,22 +96,34 @@ describe('usePressAndHold', () => {
       waitFor(mockHoldMs);
     };
 
-    it('by pointercancel does not call onHeld', () => {
-      holdThenInterrupt(() => hook.result.current.handlers.onPointerCancel());
+    describe('by pointercancel', () => {
+      beforeEach(() => {
+        holdThenInterrupt(() => hook.result.current.handlers.onPointerCancel());
+      });
 
-      expect(mockOnHeld).not.toHaveBeenCalled();
+      it('does not call onHeld', () => {
+        expect(mockOnHeld).not.toHaveBeenCalled();
+      });
     });
 
-    it('by the pointer leaving the button does not call onHeld', () => {
-      holdThenInterrupt(() => hook.result.current.handlers.onPointerLeave());
+    describe('by the pointer leaving the button', () => {
+      beforeEach(() => {
+        holdThenInterrupt(() => hook.result.current.handlers.onPointerLeave());
+      });
 
-      expect(mockOnHeld).not.toHaveBeenCalled();
+      it('does not call onHeld', () => {
+        expect(mockOnHeld).not.toHaveBeenCalled();
+      });
     });
 
-    it('by the button losing focus does not call onHeld', () => {
-      holdThenInterrupt(() => hook.result.current.handlers.onBlur());
+    describe('by the button losing focus', () => {
+      beforeEach(() => {
+        holdThenInterrupt(() => hook.result.current.handlers.onBlur());
+      });
 
-      expect(mockOnHeld).not.toHaveBeenCalled();
+      it('does not call onHeld', () => {
+        expect(mockOnHeld).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -180,23 +192,34 @@ describe('usePressAndHold', () => {
   });
 
   describe('a key hold', () => {
+    const letGoOfKey = (key: string): void =>
+      act(() => hook.result.current.handlers.onKeyUp(createMockKeyEvent(key)));
+
     beforeEach(() => {
       pressKey();
       waitFor(mockHoldMs - 1);
     });
 
-    it('let go of before 2 seconds does not call onHeld', () => {
-      act(() => hook.result.current.handlers.onKeyUp(createMockKeyEvent()));
-      waitFor(mockHoldMs);
+    describe('let go of before 2 seconds', () => {
+      beforeEach(() => {
+        letGoOfKey(' ');
+        waitFor(mockHoldMs);
+      });
 
-      expect(mockOnHeld).not.toHaveBeenCalled();
+      it('does not call onHeld', () => {
+        expect(mockOnHeld).not.toHaveBeenCalled();
+      });
     });
 
-    it('carries on through another key being let go', () => {
-      act(() => hook.result.current.handlers.onKeyUp(createMockKeyEvent('Shift')));
-      waitFor(1);
+    describe('while another key is let go', () => {
+      beforeEach(() => {
+        letGoOfKey('Shift');
+        waitFor(1);
+      });
 
-      expect(mockOnHeld).toHaveBeenCalledTimes(1);
+      it('carries on and calls onHeld', () => {
+        expect(mockOnHeld).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
