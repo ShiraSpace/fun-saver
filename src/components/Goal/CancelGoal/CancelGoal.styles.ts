@@ -32,10 +32,3 @@ export const KeepButton = styled(PrimaryButton)`
   padding: 13px;
   font-size: 16px;
 `;
-
-export const CancelError = styled.p`
-  margin: 10px 0 0;
-  font-size: ${({ theme }): number => theme.typography.label}px;
-  font-weight: 600;
-  color: ${({ theme }): string => theme.colors.alertText};
-`;

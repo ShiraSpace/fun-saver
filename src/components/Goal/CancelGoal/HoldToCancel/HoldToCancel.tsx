@@ -1,13 +1,14 @@
 'use client';
 
 import { JSX, MouseEvent, Ref } from 'react';
+import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { usePressAndHold } from './use-press-and-hold';
 import { HOLD_TO_CANCEL, HOLD_TO_CANCEL_COPY, HOLD_TO_CANCEL_TEST_IDS } from './constants';
-import { Fill, Hint, HoldButton, Label } from './HoldToCancel.styles';
+import { CancelError, Fill, Hint, HoldButton, Label } from './HoldToCancel.styles';
 
 interface HoldToCancelProps {
   ref: Ref<HTMLButtonElement>;
-  isPending: boolean;
+  requestState: RequestState;
   onHeld: () => void;
 }
 
@@ -15,7 +16,8 @@ function withoutLongPressMenu(mouseEvent: MouseEvent<HTMLButtonElement>): void {
   mouseEvent.preventDefault();
 }
 
-export function HoldToCancel({ ref, isPending, onHeld }: HoldToCancelProps): JSX.Element {
+export function HoldToCancel({ ref, requestState, onHeld }: HoldToCancelProps): JSX.Element {
+  const isPending = requestState === REQUEST_STATE.pending;
   const { isHolding, handlers } = usePressAndHold({
     holdMs: HOLD_TO_CANCEL.holdMs,
     isDisabled: isPending,
@@ -41,6 +43,11 @@ export function HoldToCancel({ ref, isPending, onHeld }: HoldToCancelProps): JSX
         <Label>{HOLD_TO_CANCEL_COPY.label}</Label>
       </HoldButton>
       <Hint aria-hidden="true">{HOLD_TO_CANCEL_COPY.hint}</Hint>
+      {requestState === REQUEST_STATE.failed && (
+        <CancelError role="alert" data-testid={HOLD_TO_CANCEL_TEST_IDS.cancelError}>
+          {HOLD_TO_CANCEL_COPY.cancelError}
+        </CancelError>
+      )}
     </>
   );
 }

@@ -9,7 +9,7 @@ import { HoldToCancel } from './HoldToCancel';
 import { useCancelGoal } from './use-cancel-goal';
 import { useFocusKeptInside } from './use-focus-kept-inside';
 import { CANCEL_GOAL_COPY, CANCEL_GOAL_TEST_IDS } from './constants';
-import { CancelError, Card, KeepButton, Scrim } from './CancelGoal.styles';
+import { Card, KeepButton, Scrim } from './CancelGoal.styles';
 
 export interface CancelGoalProps {
   savedTowardGoal: SavedTowardGoal;
@@ -19,15 +19,11 @@ export interface CancelGoalProps {
 
 export function CancelGoal(props: CancelGoalProps): JSX.Element {
   const titleId = useId();
+  const descriptionId = useId();
   const { requestState, cancelGoal, keep } = useCancelGoal(props);
   const isPending = requestState === REQUEST_STATE.pending;
   const modalRef = useModal(keep);
-  const { firstRef, lastRef, onKeyDown } = useFocusKeptInside();
-  const cancelError = requestState === REQUEST_STATE.failed && (
-    <CancelError role="alert" data-testid={CANCEL_GOAL_TEST_IDS.cancelError}>
-      {CANCEL_GOAL_COPY.cancelError}
-    </CancelError>
-  );
+  const { firstRef, lastRef, onKeyDown } = useFocusKeptInside(requestState);
 
   return (
     <>
@@ -37,11 +33,16 @@ export function CancelGoal(props: CancelGoalProps): JSX.Element {
         role="alertdialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        aria-describedby={descriptionId}
         tabIndex={-1}
         onKeyDown={onKeyDown}
         data-testid={CANCEL_GOAL_TEST_IDS.container}
       >
-        <GoalBeingCancelled savedTowardGoal={props.savedTowardGoal} titleId={titleId} />
+        <GoalBeingCancelled
+          savedTowardGoal={props.savedTowardGoal}
+          titleId={titleId}
+          descriptionId={descriptionId}
+        />
         <KeepButton
           ref={firstRef}
           type="button"
@@ -51,8 +52,7 @@ export function CancelGoal(props: CancelGoalProps): JSX.Element {
         >
           {CANCEL_GOAL_COPY.keep}
         </KeepButton>
-        <HoldToCancel ref={lastRef} isPending={isPending} onHeld={cancelGoal} />
-        {cancelError}
+        <HoldToCancel ref={lastRef} requestState={requestState} onHeld={cancelGoal} />
       </Card>
     </>
   );

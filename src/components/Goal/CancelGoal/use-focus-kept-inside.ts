@@ -2,6 +2,7 @@
 
 import { RefObject, useEffect, useRef } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { TAB_KEY } from './constants';
 
 interface FocusKeptInside {
@@ -10,13 +11,19 @@ interface FocusKeptInside {
   onKeyDown: (keyboardEvent: ReactKeyboardEvent<HTMLElement>) => void;
 }
 
-export function useFocusKeptInside(): FocusKeptInside {
+function isOnEitherButton(...buttons: (HTMLButtonElement | null)[]): boolean {
+  return buttons.some((button) => button !== null && button === document.activeElement);
+}
+
+export function useFocusKeptInside(requestState: RequestState): FocusKeptInside {
   const firstRef = useRef<HTMLButtonElement>(null);
   const lastRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    firstRef.current?.focus();
-  }, []);
+    if (requestState !== REQUEST_STATE.pending) {
+      firstRef.current?.focus();
+    }
+  }, [requestState]);
 
   const onKeyDown = (keyboardEvent: ReactKeyboardEvent<HTMLElement>): void => {
     if (keyboardEvent.key !== TAB_KEY) {
@@ -27,7 +34,7 @@ export function useFocusKeptInside(): FocusKeptInside {
       ? [firstRef.current, lastRef.current]
       : [lastRef.current, firstRef.current];
 
-    if (document.activeElement === edge) {
+    if (isOnEitherButton(edge) || !isOnEitherButton(firstRef.current, lastRef.current)) {
       keyboardEvent.preventDefault();
       wrapTo?.focus();
     }

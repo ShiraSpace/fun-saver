@@ -62,3 +62,10 @@ export const Hint = styled.div`
   font-size: 11px;
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
+
+export const CancelError = styled.p`
+  margin: 10px 0 0;
+  font-size: ${({ theme }): number => theme.typography.label}px;
+  font-weight: 600;
+  color: ${alertText};
+`;
