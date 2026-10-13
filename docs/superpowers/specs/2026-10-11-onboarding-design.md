@@ -292,17 +292,18 @@ Fixed once, in PR 1, since `SetGoal` hits it first. Closes the open item in
   leaves an onboarding whose account exists.
   `APP_MODE.creatingAccount` keeps its name, because every onboarding creates
   an account; `EmptyState` and `AddAccountButton` do not change.
-- `APP_MODE` gains `settingGoal`, drawn by `GoalScreens`, which returns to
-  `viewing` and refreshes through `finishEditing` once the goal is set.
-- `GoalLine`: with no goal it renders **🎯 קובעים יעד חיסכון? ←**, which opens
-  `settingGoal`. `WalletList` renders `GoalLine` on every card today and passes
-  `savedTowardGoalIn(wallet, …)`, which is `undefined` for spending and good
-  deeds too. "No goal" cannot be read from it, so `WalletList` renders
-  `GoalLine` only on the savings card; otherwise the prompt shows on all three.
-  No view-mode check is needed: `WalletList` and `MenuGoal` render only in
-  parent mode (`ShownAccount`, `MenuContent`).
-- `MenuGoal`: with no goal it renders **🎯 קביעת יעד חיסכון +**, as the
-  saving-goal spec draws it, opening `settingGoal`.
+- Built in PR 1:
+  - `APP_MODE` gained `settingGoal`, drawn by `GoalScreens`, which returns to
+    `viewing` and refreshes through `finishEditing` once the goal is set.
+  - `GoalLine`: with no goal it renders **🎯 קובעים יעד חיסכון? ←**, which
+    opens `settingGoal`. On `main` `WalletList` rendered `GoalLine` on every
+    card with `savedTowardGoalIn(wallet, …)`, which is `undefined` for spending
+    and good deeds too, so "no goal" could not be read from it. `WalletList`
+    now renders `GoalLine` only on the savings card. No view-mode check is
+    needed: `WalletList` and `MenuGoal` render only in parent mode
+    (`ShownAccount`, `MenuContent`).
+  - `MenuGoal`: with no goal it renders **🎯 קביעת יעד חיסכון +**, as the
+    saving-goal spec draws it, opening `settingGoal`.
 - `CreateAccount` and its folder are deleted, with `CreateAccount.test.tsx`;
   `use-create-account.ts` and its test move to `Onboarding/AccountStep/`, and
   `use-update-account.ts` and its test to `src/hooks/` and
@@ -320,16 +321,14 @@ Fixed once, in PR 1, since `SetGoal` hits it first. Closes the open item in
     size) and `e2e/avatar-picker.visual.ts`, rewritten for the pig frame;
   - `.claude/skills/pr-screenshots/SKILL.md`, which names the `createAccount`
     driver.
-- Glossary, on top of `main`'s rows for `GoalLine`, `MenuGoal`, `ViewGoal`
-  and `useModal`: «Setting a goal» → `SetGoal`, opened by
-  `APP_MODE.settingGoal`, its fields `GoalFields`, state `useGoalForm`;
-  `GoalLine` and `MenuGoal` open `SetGoal` when there is no goal; «Setting up a
-  new child account» → `onboarding`, `Onboarding`, `ONBOARDING_STEPS`,
+- Glossary: PR 1 added «Setting a goal» (`SetGoal`, `GoalFields`,
+  `useGoalForm`), «What setting a goal promises» (`SavingsLockNote`) and the
+  goal's screens (`GoalScreens`), and `GoalLine` and `MenuGoal` open `SetGoal`
+  when there is no goal. Still to come: «Setting up a new child account» → `onboarding`, `Onboarding`, `ONBOARDING_STEPS`,
   `OnboardingStep`, `AccountStep`, `GoalStep` (not wizard, setup, flow,
   `ChildStep`); «What onboarding has saved so far» → `OnboardingAnswers`,
   `answers` (not `saved`, which is money saved toward a goal); «A goal's
-  changes» → `GoalEdits`; the goal's screens → `GoalScreens` (not overlays);
-  `requestState` reworded "sent until the server replies", since `answered`
+  changes» → `GoalEdits`; `requestState` reworded "sent until the server replies", since `answered`
   now means the parent's answers.
 
 ## Errors and loading
