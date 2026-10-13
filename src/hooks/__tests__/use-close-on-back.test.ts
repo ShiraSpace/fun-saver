@@ -14,10 +14,13 @@ describe('useCloseOnBack', () => {
     jest.restoreAllMocks();
   });
 
-  it('pushes a history entry while open', () => {
+  it('pushes a history entry named for this opening', () => {
+    const mockNow = 1_700_000_000_000;
+    jest.spyOn(Date, 'now').mockReturnValue(mockNow);
+
     renderHook(() => useCloseOnBack(jest.fn()));
 
-    expect(window.history.state?.[DRAWER_HISTORY_KEY]).toBeDefined();
+    expect(window.history.state?.[DRAWER_HISTORY_KEY]).toMatch(new RegExp(`^${mockNow}-\\d+$`));
   });
 
   it('closes on back', async () => {
@@ -79,10 +82,11 @@ describe('useCloseOnBack', () => {
 
   it('keeps its history entry when it refuses to close', async () => {
     renderHook(() => useCloseOnBack(jest.fn()));
+    const ownEntry = window.history.state?.[DRAWER_HISTORY_KEY];
 
     await pressBack();
 
-    expect(window.history.state?.[DRAWER_HISTORY_KEY]).toBeDefined();
+    expect(window.history.state?.[DRAWER_HISTORY_KEY]).toBe(ownEntry);
   });
 
   it('removes the entry it took over from a modal closing in the same moment', async () => {

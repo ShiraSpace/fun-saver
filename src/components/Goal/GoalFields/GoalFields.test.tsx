@@ -1,5 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
-import { PICTURE_TILES_COPY } from '@/components/Goal/GoalPictureSearch/PictureTiles/constants';
+import { fireEvent, render, screen } from '@/test-utils/render';
 import { PICTURE_TILE_TEST_IDS } from '@/components/Goal/GoalPictureSearch/PictureTiles/PictureTile/constants';
 import { CHOOSE_BUTTON_TEST_IDS } from '@/components/Goal/GoalPictureSearch/ChooseButton/constants';
 import { GOAL_PICTURE_SEARCH_TEST_IDS } from '@/components/Goal/GoalPictureSearch/constants';
@@ -13,7 +12,7 @@ import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 
 async function openLoadedPictureSearch(): Promise<void> {
   fireEvent.click(screen.getByTestId(GOAL_PICTURE_FIELD_TEST_IDS.preview));
-  await waitFor(() => expect(screen.queryByText(PICTURE_TILES_COPY.loading)).toBeNull());
+  await screen.findAllByTestId(PICTURE_TILE_TEST_IDS.pictureTile);
 }
 
 describe('GoalFields', () => {

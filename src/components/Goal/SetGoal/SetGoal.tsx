@@ -10,7 +10,7 @@ import { CloseButton } from '@/components/CloseButton';
 import { ScreenTitle } from '@/components/ScreenTitle';
 import { GoalDialog } from '../GoalDialog';
 import { GoalFields } from '../GoalFields';
-import { useSetGoal, type GoalSetting } from './use-set-goal';
+import { useSetGoal, type GoalSetRequest } from './use-set-goal';
 import { SET_GOAL_COPY, SET_GOAL_TEST_IDS } from './constants';
 import { CancelButton } from './SetGoal.styles';
 
@@ -21,11 +21,11 @@ interface SetGoalProps {
 }
 
 async function setGoalUnlessStale(
-  setGoal: (setting: GoalSetting) => Promise<unknown>,
-  setting: GoalSetting
+  setGoal: (setRequest: GoalSetRequest) => Promise<unknown>,
+  setRequest: GoalSetRequest
 ): Promise<void> {
   try {
-    await setGoal(setting);
+    await setGoal(setRequest);
   } catch (error) {
     if (!isConflict(error)) {
       throw error;

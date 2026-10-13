@@ -3,7 +3,11 @@
 import { JSX } from 'react';
 import { savedTowardGoalOf } from '@/lib/goal/saved-toward-goal';
 import { useAccounts } from '@/components/Home/accounts-context';
-import { APP_MODE, AppMode, useAppMode } from '@/components/AccountManagement/app-mode-context';
+import {
+  APP_MODE,
+  useAppMode,
+  type AppMode,
+} from '@/components/AccountManagement/app-mode-context';
 import { GoalProgress } from '@/components/Goal/GoalProgress';
 import { useMenu } from '../use-menu-state';
 import { MENU_GOAL_COPY, MENU_GOAL_TEST_IDS } from './constants';
