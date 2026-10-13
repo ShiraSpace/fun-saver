@@ -8,7 +8,7 @@ export interface GoalSetRequest {
 }
 
 interface GoalSetter {
-  setGoal: (setRequest: GoalSetRequest) => Promise<Goal>;
+  setGoal: (goalSetRequest: GoalSetRequest) => Promise<Goal>;
 }
 
 export function useSetGoal(): GoalSetter {

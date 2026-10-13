@@ -21,11 +21,11 @@ interface SetGoalProps {
 }
 
 async function setGoalUnlessStale(
-  setGoal: (setRequest: GoalSetRequest) => Promise<unknown>,
-  setRequest: GoalSetRequest
+  setGoal: (goalSetRequest: GoalSetRequest) => Promise<unknown>,
+  goalSetRequest: GoalSetRequest
 ): Promise<void> {
   try {
-    await setGoal(setRequest);
+    await setGoal(goalSetRequest);
   } catch (error) {
     if (!isConflict(error)) {
       throw error;
