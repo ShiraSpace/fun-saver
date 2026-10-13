@@ -1,15 +1,11 @@
 import { render, screen } from '@/test-utils/render';
 import { createMockSavedTowardGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
+import { goalPictureGlow } from '@/test-utils/goal-picture';
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
 import { GOAL_PROGRESS_BAR_TEST_IDS } from '@/components/Goal/GoalProgressBar/constants';
 import { GoalProgress } from './GoalProgress';
 import { GOAL_PROGRESS_COPY, GOAL_PROGRESS_SIZE, GOAL_PROGRESS_TEST_IDS } from './constants';
-
-const pictureGlow = (): string =>
-  getComputedStyle(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture)).boxShadow;
-
-const heightOf = (element: HTMLElement): number => parseFloat(getComputedStyle(element).height);
 
 describe('GoalProgress', () => {
   describe('while saving toward the goal', () => {
@@ -35,6 +31,8 @@ describe('GoalProgress', () => {
   });
 
   describe('small beside large', () => {
+    const heightOf = (element: HTMLElement): number => parseFloat(getComputedStyle(element).height);
+
     beforeEach(() => {
       const mockSavedTowardGoal = createMockSavedTowardGoal();
 
@@ -59,27 +57,41 @@ describe('GoalProgress', () => {
     });
   });
 
-  it('glows in the gain colour once reached, when asked to', () => {
-    render(
-      <GoalProgress
-        savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
-        glowWhenReached
-      />,
-      { themeId: THEME_ID.midnightBlue }
-    );
+  describe("the picture's glow", () => {
+    describe('once reached, when asked to', () => {
+      beforeEach(() => {
+        render(
+          <GoalProgress
+            savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
+            glowWhenReached
+          />,
+          { themeId: THEME_ID.midnightBlue }
+        );
+      });
 
-    expect(pictureGlow()).toContain(getThemeTokens(THEME_ID.midnightBlue).colors.gainText);
-  });
+      it('glows in the gain colour', () => {
+        expect(goalPictureGlow()).toContain(getThemeTokens(THEME_ID.midnightBlue).colors.gainText);
+      });
+    });
 
-  it('does not glow while still saving', () => {
-    render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal()} glowWhenReached />);
+    describe('while still saving, when asked to', () => {
+      beforeEach(() => {
+        render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal()} glowWhenReached />);
+      });
 
-    expect(pictureGlow()).toBe('none');
-  });
+      it('does not glow', () => {
+        expect(goalPictureGlow()).toBe('none');
+      });
+    });
 
-  it('does not glow once reached unless asked to', () => {
-    render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal({ reached: true })} />);
+    describe('once reached, without being asked to', () => {
+      beforeEach(() => {
+        render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal({ reached: true })} />);
+      });
 
-    expect(pictureGlow()).toBe('none');
+      it('does not glow', () => {
+        expect(goalPictureGlow()).toBe('none');
+      });
+    });
   });
 });
