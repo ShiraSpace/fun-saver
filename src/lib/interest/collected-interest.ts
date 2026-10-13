@@ -63,12 +63,12 @@ export function uncollectedInterestOf({
   savings,
   collectedInterest,
 }: CollectedInterestParams): number {
-  const interestEarnedShown = savingsWithoutAgorot(savings).interestEarned;
-  const interestEarnedCollected = savingsWithoutAgorot(
+  const interestEarnedWithoutAgorot = savingsWithoutAgorot(savings).interestEarned;
+  const interestEarnedAtCollectedInterest = savingsWithoutAgorot(
     savingsAtCollectedInterest({ savings, collectedInterest })
   ).interestEarned;
 
-  return interestEarnedShown - interestEarnedCollected;
+  return interestEarnedWithoutAgorot - interestEarnedAtCollectedInterest;
 }
 
 export function interestCoinsOf(uncollectedInterest: number): number[] {
@@ -88,7 +88,7 @@ export function collectInterest({
   savings,
   collectedInterest,
 }: CollectInterestParams): number {
-  const storedOrResolved = resolveCollectedInterest({ storedCollectedInterest, savings });
+  const resolvedCollectedInterest = resolveCollectedInterest({ storedCollectedInterest, savings });
 
-  return Math.min(Math.max(collectedInterest, storedOrResolved), savings.interestEarned);
+  return Math.min(Math.max(collectedInterest, resolvedCollectedInterest), savings.interestEarned);
 }
