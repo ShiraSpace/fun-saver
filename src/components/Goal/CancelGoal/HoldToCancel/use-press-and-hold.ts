@@ -11,12 +11,12 @@ interface PressAndHoldOptions {
 }
 
 export interface PressAndHoldHandlers {
-  onPointerDown: (event: ReactPointerEvent<HTMLElement>) => void;
+  onPointerDown: (pointerEvent: ReactPointerEvent<HTMLElement>) => void;
   onPointerUp: () => void;
   onPointerCancel: () => void;
   onPointerLeave: () => void;
-  onKeyDown: (event: ReactKeyboardEvent<HTMLElement>) => void;
-  onKeyUp: () => void;
+  onKeyDown: (keyboardEvent: ReactKeyboardEvent<HTMLElement>) => void;
+  onKeyUp: (keyboardEvent: ReactKeyboardEvent<HTMLElement>) => void;
   onBlur: () => void;
 }
 
@@ -31,8 +31,12 @@ interface HoldTimer {
   letGo: () => void;
 }
 
-function isFirstPressOfHoldKey(event: ReactKeyboardEvent<HTMLElement>): boolean {
-  return HOLD_KEYS.includes(event.key) && !event.repeat;
+function isHoldKey(keyboardEvent: ReactKeyboardEvent<HTMLElement>): boolean {
+  return HOLD_KEYS.includes(keyboardEvent.key);
+}
+
+function isFirstPressOfHoldKey(keyboardEvent: ReactKeyboardEvent<HTMLElement>): boolean {
+  return isHoldKey(keyboardEvent) && !keyboardEvent.repeat;
 }
 
 function useHoldTimer({ holdMs, isDisabled, onHeld }: PressAndHoldOptions): HoldTimer {
@@ -73,23 +77,27 @@ export function usePressAndHold(options: PressAndHoldOptions): PressAndHold {
   return {
     isHolding,
     handlers: {
-      onPointerDown: (event): void => {
-        if (event.button !== PRIMARY_POINTER_BUTTON) {
+      onPointerDown: (pointerEvent): void => {
+        if (pointerEvent.button !== PRIMARY_POINTER_BUTTON) {
           return;
         }
 
-        event.currentTarget.releasePointerCapture?.(event.pointerId);
+        pointerEvent.currentTarget.releasePointerCapture?.(pointerEvent.pointerId);
         startHolding();
       },
       onPointerUp: letGo,
       onPointerCancel: letGo,
       onPointerLeave: letGo,
-      onKeyDown: (event): void => {
-        if (isFirstPressOfHoldKey(event)) {
+      onKeyDown: (keyboardEvent): void => {
+        if (isFirstPressOfHoldKey(keyboardEvent)) {
           startHolding();
         }
       },
-      onKeyUp: letGo,
+      onKeyUp: (keyboardEvent): void => {
+        if (isHoldKey(keyboardEvent)) {
+          letGo();
+        }
+      },
       onBlur: letGo,
     },
   };
