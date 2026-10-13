@@ -1,4 +1,5 @@
 export const SAVED_OUT_OF_GOAL_TEST_IDS = {
+  amounts: 'goal-saved-out-of-amount',
   saved: 'goal-saved',
   amount: 'goal-amount',
 } as const;

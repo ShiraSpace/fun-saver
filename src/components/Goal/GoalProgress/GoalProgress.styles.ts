@@ -84,7 +84,7 @@ export const GoalHeading = styled.span<GoalHeadingProps>`
     reached ? theme.colors.gainText : theme.colors.textStrong};
 `;
 
-export const GoalName = styled.span`
+export const GoalHeadingText = styled.span`
   min-width: 0;
   overflow-wrap: anywhere;
 `;
