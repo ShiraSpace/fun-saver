@@ -1,6 +1,7 @@
 import { JSX } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
+import { savingsWithoutAgorot } from '@/lib/wallet/wallet';
 import { InterestStats } from '../../WalletCard/InterestStats';
 
 interface SavingsInterestStatsProps {
@@ -12,10 +13,12 @@ export function SavingsInterestStats({ wallet }: SavingsInterestStatsProps): JSX
     return null;
   }
 
+  const { principal, interestEarned } = savingsWithoutAgorot(wallet);
+
   return (
     <InterestStats
-      principal={wallet.principal}
-      interestEarned={wallet.interestEarned}
+      principal={principal}
+      interestEarned={interestEarned}
       interestEarnedToday={wallet.interestEarnedToday}
     />
   );

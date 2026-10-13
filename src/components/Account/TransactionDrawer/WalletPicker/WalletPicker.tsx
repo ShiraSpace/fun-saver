@@ -29,7 +29,6 @@ export function WalletPicker({
 }: WalletPickerProps): JSX.Element {
   const tiles = wallets.map((wallet) => {
     const savedTowardGoalInWallet = savedTowardGoalIn(wallet, savedTowardGoal);
-    const tileAmount = savedTowardGoalInWallet ? withoutAgorot(wallet.balance) : wallet.balance;
     const isTileLocked = savingsLocked(savedTowardGoalInWallet);
 
     return (
@@ -37,7 +36,7 @@ export function WalletPicker({
         key={wallet.id}
         walletName={wallet.name}
         icon={wallet.icon}
-        amountAgorot={tileAmount}
+        amountAgorot={withoutAgorot(wallet.balance)}
         testId={WALLET_PICKER_TEST_IDS.wallet(wallet.name)}
         amountTestId={WALLET_PICKER_TEST_IDS.balance(wallet.name)}
         selected={wallet.id === selectedWalletId}
