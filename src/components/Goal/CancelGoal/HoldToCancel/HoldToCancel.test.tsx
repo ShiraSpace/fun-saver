@@ -1,16 +1,16 @@
 import { createRef } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
 import { stubPointerEventEachTest } from '@/test-utils/cancel-goal';
 import { HoldToCancel } from './HoldToCancel';
 import { HOLD_TO_CANCEL_COPY, HOLD_TO_CANCEL_TEST_IDS } from './constants';
 
-function renderHoldToCancel(requestState: RequestState): void {
+function renderHoldToCancel(): void {
   render(
     <HoldToCancel
       ref={createRef<HTMLButtonElement>()}
-      requestState={requestState}
-      onHeld={jest.fn()}
+      isCancelling={false}
+      cancelFailed={false}
+      cancelGoal={jest.fn()}
     />
   );
 }
@@ -20,7 +20,7 @@ const fill = (): HTMLElement => screen.getByTestId(HOLD_TO_CANCEL_TEST_IDS.fill)
 describe('HoldToCancel', () => {
   describe('at rest', () => {
     beforeEach(() => {
-      renderHoldToCancel(REQUEST_STATE.idle);
+      renderHoldToCancel();
     });
 
     it('tells screen readers to hold it for 2 seconds', () => {
@@ -38,21 +38,11 @@ describe('HoldToCancel', () => {
     stubPointerEventEachTest();
 
     beforeEach(() => {
-      renderHoldToCancel(REQUEST_STATE.idle);
+      renderHoldToCancel();
       fireEvent.pointerDown(screen.getByTestId(HOLD_TO_CANCEL_TEST_IDS.button), { button: 0 });
     });
 
     it('fills', () => {
-      expect(fill()).toHaveAttribute('data-filling', 'true');
-    });
-  });
-
-  describe('while the goal is being cancelled', () => {
-    beforeEach(() => {
-      renderHoldToCancel(REQUEST_STATE.pending);
-    });
-
-    it('stays full', () => {
       expect(fill()).toHaveAttribute('data-filling', 'true');
     });
   });

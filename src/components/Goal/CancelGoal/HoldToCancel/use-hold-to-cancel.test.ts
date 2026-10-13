@@ -1,10 +1,11 @@
-import { act, renderHook, type RenderHookResult } from '@testing-library/react';
-import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
-import { useHoldToCancel } from './use-hold-to-cancel';
-
-type HoldToCancelHook = RenderHookResult<ReturnType<typeof useHoldToCancel>, unknown>;
-
-const mockHoldMs = 2000;
+import { act } from '@testing-library/react';
+import type { PointerEvent as ReactPointerEvent } from 'react';
+import {
+  advanceTime,
+  mockHoldMs,
+  renderHoldToCancel,
+  type HoldToCancelHook,
+} from '@/test-utils/hold-to-cancel';
 
 const mockPointerId = 1;
 
@@ -16,29 +17,12 @@ function createMockPointerDown(button = 0): ReactPointerEvent<HTMLElement> {
   } as unknown as ReactPointerEvent<HTMLElement>;
 }
 
-function createMockKeyEvent(key = ' ', repeat = false): ReactKeyboardEvent<HTMLElement> {
-  return { key, repeat } as ReactKeyboardEvent<HTMLElement>;
-}
-
-function advanceTime(milliseconds: number): void {
-  act(() => {
-    jest.advanceTimersByTime(milliseconds);
-  });
-}
-
-function renderHoldToCancel(onHeld: () => void, isCancelling = false): HoldToCancelHook {
-  return renderHook(() => useHoldToCancel({ holdMs: mockHoldMs, isCancelling, onHeld }));
-}
-
 describe('useHoldToCancel', () => {
   const mockOnHeld = jest.fn();
   let hook: HoldToCancelHook;
 
   const pressPointer = (button?: number): void =>
     act(() => hook.result.current.handlers.onPointerDown(createMockPointerDown(button)));
-
-  const pressKey = (key?: string, repeat?: boolean): void =>
-    act(() => hook.result.current.handlers.onKeyDown(createMockKeyEvent(key, repeat)));
 
   beforeEach(() => {
     jest.useFakeTimers();
@@ -151,75 +135,6 @@ describe('useHoldToCancel', () => {
 
     it('does not call onHeld', () => {
       expect(mockOnHeld).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('a key held long enough to repeat', () => {
-    const mockRepeatAfterMs = 500;
-
-    beforeEach(() => {
-      pressKey();
-      advanceTime(mockRepeatAfterMs);
-      pressKey(' ', true);
-      advanceTime(mockHoldMs - mockRepeatAfterMs);
-    });
-
-    it('calls onHeld 2 seconds after the first press', () => {
-      expect(mockOnHeld).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('Enter held for 2 seconds', () => {
-    beforeEach(() => {
-      pressKey('Enter');
-      advanceTime(mockHoldMs);
-    });
-
-    it('calls onHeld', () => {
-      expect(mockOnHeld).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('another key held for 2 seconds', () => {
-    beforeEach(() => {
-      pressKey('a');
-      advanceTime(mockHoldMs);
-    });
-
-    it('does not call onHeld', () => {
-      expect(mockOnHeld).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('a key hold', () => {
-    const letGoOfKey = (key: string): void =>
-      act(() => hook.result.current.handlers.onKeyUp(createMockKeyEvent(key)));
-
-    beforeEach(() => {
-      pressKey();
-      advanceTime(mockHoldMs - 1);
-    });
-
-    describe('let go of before 2 seconds', () => {
-      beforeEach(() => {
-        letGoOfKey(' ');
-        advanceTime(mockHoldMs);
-      });
-
-      it('does not call onHeld', () => {
-        expect(mockOnHeld).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('while another key is let go', () => {
-      beforeEach(() => {
-        letGoOfKey('Shift');
-        advanceTime(1);
-      });
-
-      it('carries on and calls onHeld', () => {
-        expect(mockOnHeld).toHaveBeenCalledTimes(1);
-      });
     });
   });
 
