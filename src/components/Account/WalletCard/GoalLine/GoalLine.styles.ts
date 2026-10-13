@@ -18,4 +18,5 @@ export const Line = styled.button`
 export const SetGoalPrompt = styled.span`
   font-size: ${({ theme }): number => theme.typography.body}px;
   font-weight: 700;
+  color: ${({ theme }): string => theme.colors.textStrong};
 `;

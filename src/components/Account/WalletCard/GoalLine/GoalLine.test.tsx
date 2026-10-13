@@ -3,6 +3,8 @@ import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
 import { APP_MODE, AppModeProvider } from '@/components/AccountManagement/app-mode-context';
 import { GOAL_PROGRESS_TEST_IDS } from '@/components/Goal/GoalProgress/constants';
 import { GoalLine } from './GoalLine';
+import { getThemeTokens, THEME_ID } from '@/theme/registry';
+import { hexToRgb } from '@/test-utils/css-color';
 import { GOAL_LINE_COPY, GOAL_LINE_TEST_IDS } from './constants';
 
 describe('GoalLine', () => {
@@ -33,6 +35,15 @@ describe('GoalLine', () => {
 
       expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.settingGoal);
     });
+  });
+
+  it("writes the prompt in the theme's strong text colour", () => {
+    render(<GoalLine />, { themeId: THEME_ID.midnightBlue });
+    const [prompt] = screen.getByTestId(GOAL_LINE_TEST_IDS.setGoal).children;
+
+    expect(getComputedStyle(prompt).color).toBe(
+      hexToRgb(getThemeTokens(THEME_ID.midnightBlue).colors.textStrong)
+    );
   });
 
   describe('with a goal', () => {
