@@ -19,10 +19,10 @@ export interface CancelGoalProps {
 export function CancelGoal(props: CancelGoalProps): JSX.Element {
   const titleId = useId();
   const descriptionId = useId();
-  const cancelRequest = useCancelGoal(props);
-  const { isCancelling, keepGoal } = cancelRequest;
+  const goalCancellation = useCancelGoal(props);
+  const { isCancelling, keepGoal } = goalCancellation;
   const { dialogRef, keepGoalRef, holdToCancelRef, keepFocusInside } =
-    useCancelGoalDialog(cancelRequest);
+    useCancelGoalDialog(goalCancellation);
 
   return (
     <>
@@ -51,7 +51,7 @@ export function CancelGoal(props: CancelGoalProps): JSX.Element {
         >
           {CANCEL_GOAL_COPY.keepGoal}
         </KeepButton>
-        <HoldToCancel ref={holdToCancelRef} {...cancelRequest} />
+        <HoldToCancel ref={holdToCancelRef} {...goalCancellation} />
       </Card>
     </>
   );

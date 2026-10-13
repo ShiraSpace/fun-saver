@@ -3,13 +3,10 @@
 import { RefObject, useEffect, useRef } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useModal } from '@/hooks/use-modal';
-import type { CancelGoalRequest } from './use-cancel-goal';
-import { TAB_KEY } from './constants';
+import type { GoalCancellation } from './use-cancel-goal';
+import { TAB_KEY } from '@/hooks/constants';
 
-type CancelGoalDialogOptions = Pick<
-  CancelGoalRequest,
-  'isCancelling' | 'cancelFailed' | 'keepGoal'
->;
+type CancelGoalDialogOptions = Pick<GoalCancellation, 'isCancelling' | 'keepGoal'>;
 
 interface CancelGoalDialog {
   dialogRef: RefObject<HTMLDivElement | null>;
@@ -20,7 +17,6 @@ interface CancelGoalDialog {
 
 export function useCancelGoalDialog({
   isCancelling,
-  cancelFailed,
   keepGoal,
 }: CancelGoalDialogOptions): CancelGoalDialog {
   const dialogRef = useModal(keepGoal);
@@ -30,7 +26,7 @@ export function useCancelGoalDialog({
   useEffect(() => {
     const focusHolder = isCancelling ? dialogRef : keepGoalRef;
     focusHolder.current?.focus();
-  }, [isCancelling, cancelFailed, dialogRef]);
+  }, [isCancelling, dialogRef]);
 
   const keepFocusInside = (keyboardEvent: ReactKeyboardEvent<HTMLElement>): void => {
     if (keyboardEvent.key !== TAB_KEY) {

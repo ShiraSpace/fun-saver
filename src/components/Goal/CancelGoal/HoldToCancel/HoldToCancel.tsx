@@ -1,13 +1,13 @@
 'use client';
 
 import { JSX, MouseEvent, Ref } from 'react';
-import type { CancelGoalRequest } from '../use-cancel-goal';
+import type { GoalCancellation } from '../use-cancel-goal';
 import { useHoldToCancel } from './use-hold-to-cancel';
 import { HOLD_TO_CANCEL, HOLD_TO_CANCEL_COPY, HOLD_TO_CANCEL_TEST_IDS } from './constants';
 import { CancelError, Fill, Hint, HoldButton, Label } from './HoldToCancel.styles';
 
 interface HoldToCancelProps extends Pick<
-  CancelGoalRequest,
+  GoalCancellation,
   'isCancelling' | 'cancelFailed' | 'cancelGoal'
 > {
   ref: Ref<HTMLButtonElement>;
@@ -28,6 +28,11 @@ export function HoldToCancel({
     isCancelling,
     onHeld: cancelGoal,
   });
+  const cancelError = cancelFailed && (
+    <CancelError role="alert" data-testid={HOLD_TO_CANCEL_TEST_IDS.cancelError}>
+      {HOLD_TO_CANCEL_COPY.cancelError}
+    </CancelError>
+  );
 
   return (
     <>
@@ -48,11 +53,7 @@ export function HoldToCancel({
         <Label>{HOLD_TO_CANCEL_COPY.label}</Label>
       </HoldButton>
       <Hint aria-hidden="true">{HOLD_TO_CANCEL_COPY.hint}</Hint>
-      {cancelFailed && (
-        <CancelError role="alert" data-testid={HOLD_TO_CANCEL_TEST_IDS.cancelError}>
-          {HOLD_TO_CANCEL_COPY.cancelError}
-        </CancelError>
-      )}
+      {cancelError}
     </>
   );
 }

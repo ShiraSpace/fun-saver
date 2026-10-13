@@ -16,26 +16,29 @@ export function GoalBeingCancelled({
   descriptionId,
 }: GoalBeingCancelledProps): JSX.Element {
   const { goal, saved, reached } = savedTowardGoal;
+  const title = GOAL_BEING_CANCELLED_COPY.title(goal.name);
+  const savedSoFarLine = (
+    <>
+      {GOAL_BEING_CANCELLED_COPY.savedSoFar}{' '}
+      <Money amountAgorot={saved} testId={GOAL_BEING_CANCELLED_TEST_IDS.saved} />{' '}
+      {GOAL_BEING_CANCELLED_COPY.outOf}{' '}
+      <Money amountAgorot={goal.amount} testId={GOAL_BEING_CANCELLED_TEST_IDS.amount} />
+      {GOAL_BEING_CANCELLED_COPY.sentenceEnd}
+    </>
+  );
+  const whereTheMoneyGoes = reached
+    ? GOAL_BEING_CANCELLED_COPY.moneyStays
+    : GOAL_BEING_CANCELLED_COPY.moneyStaysAndSavingsOpens;
 
   return (
     <>
       <Picture aria-hidden="true">{goal.picture.emoji}</Picture>
       <Title id={titleId} data-testid={GOAL_BEING_CANCELLED_TEST_IDS.title}>
-        {GOAL_BEING_CANCELLED_COPY.title(goal.name)}
+        {title}
       </Title>
       <div id={descriptionId}>
-        <Line>
-          {GOAL_BEING_CANCELLED_COPY.savedSoFar}{' '}
-          <Money amountAgorot={saved} testId={GOAL_BEING_CANCELLED_TEST_IDS.saved} />{' '}
-          {GOAL_BEING_CANCELLED_COPY.outOf}{' '}
-          <Money amountAgorot={goal.amount} testId={GOAL_BEING_CANCELLED_TEST_IDS.amount} />
-          {GOAL_BEING_CANCELLED_COPY.sentenceEnd}
-        </Line>
-        <Line data-testid={GOAL_BEING_CANCELLED_TEST_IDS.moneyStays}>
-          {reached
-            ? GOAL_BEING_CANCELLED_COPY.moneyStays
-            : GOAL_BEING_CANCELLED_COPY.moneyStaysAndSavingsOpens}
-        </Line>
+        <Line>{savedSoFarLine}</Line>
+        <Line data-testid={GOAL_BEING_CANCELLED_TEST_IDS.moneyStays}>{whereTheMoneyGoes}</Line>
       </div>
     </>
   );

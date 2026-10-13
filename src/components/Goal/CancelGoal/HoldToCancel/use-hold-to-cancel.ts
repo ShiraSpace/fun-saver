@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { HOLD_KEYS, PRIMARY_POINTER_BUTTON } from './constants';
 
 interface HoldToCancelOptions {
@@ -10,13 +9,23 @@ interface HoldToCancelOptions {
   onHeld: () => void;
 }
 
+export interface HoldPointerEvent {
+  button: number;
+  pointerId: number;
+  currentTarget: { releasePointerCapture?: (pointerId: number) => void };
+}
+
+export interface HoldKeyEvent {
+  key: string;
+}
+
 export interface HoldHandlers {
-  onPointerDown: (pointerEvent: ReactPointerEvent<HTMLElement>) => void;
+  onPointerDown: (pointerEvent: HoldPointerEvent) => void;
   onPointerUp: () => void;
   onPointerCancel: () => void;
   onPointerLeave: () => void;
-  onKeyDown: (keyboardEvent: ReactKeyboardEvent<HTMLElement>) => void;
-  onKeyUp: (keyboardEvent: ReactKeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (keyboardEvent: HoldKeyEvent) => void;
+  onKeyUp: (keyboardEvent: HoldKeyEvent) => void;
   onBlur: () => void;
 }
 
@@ -33,7 +42,7 @@ interface Hold {
   releaseKey: (key: string) => void;
 }
 
-function isHoldKey(keyboardEvent: ReactKeyboardEvent<HTMLElement>): boolean {
+function isHoldKey(keyboardEvent: HoldKeyEvent): boolean {
   return HOLD_KEYS.includes(keyboardEvent.key);
 }
 
