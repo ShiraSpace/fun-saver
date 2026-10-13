@@ -2,7 +2,12 @@ import type { AccountSummary } from '@/lib/account/types';
 import { createMockAccount } from '@/test-utils/mocks/account.mocks';
 import { createMockGoal, createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
 import { createMockWalletSummary, mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
-import { savedTowardGoalIn, savedTowardGoalOf, savingsLocked } from '../saved-toward-goal';
+import {
+  savedTowardGoalIn,
+  savedTowardGoalOf,
+  savingsBalanceOf,
+  savingsLocked,
+} from '../saved-toward-goal';
 
 const mockGoalAmount = 30000;
 
@@ -73,5 +78,17 @@ describe('savedTowardGoalIn', () => {
 
   it('is nothing when no wallet is picked', () => {
     expect(savedTowardGoalIn(undefined, mockSavedTowardGoal)).toBeUndefined();
+  });
+});
+
+describe('savingsBalanceOf', () => {
+  it("is the savings wallet's balance", () => {
+    const mockSavingsBalance = 4200;
+
+    expect(savingsBalanceOf(createMockAccountSaving(mockSavingsBalance))).toBe(mockSavingsBalance);
+  });
+
+  it('is zero for an account without a savings wallet', () => {
+    expect(savingsBalanceOf({ wallets: [] })).toBe(0);
   });
 });

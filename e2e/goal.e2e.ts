@@ -79,3 +79,50 @@ describe('a parent opens the goal from the menu on the Method page, then taps âœ
     assert.equal(driver.appBrowser.currentPath(), METHOD_ROUTE);
   });
 });
+
+describe('a parent sets a goal from the savings card', () => {
+  const { goal } = useDriver({ accounts: [mockAccount], transactions: mockTransactions });
+
+  beforeEach(async () => {
+    await goal.openSetGoalFromGoalLine();
+    await goal.fillGoal(mockGoal.name, agorotToShekels(mockGoal.amount));
+    await goal.saveGoal();
+  });
+
+  it('shows the goal on the savings card', async () => {
+    assert.match(await goal.goalLine(), new RegExp(mockGoal.name));
+  });
+});
+
+describe('a parent chooses a picture while setting a goal', () => {
+  const { goal } = useDriver({ accounts: [mockAccount], transactions: mockTransactions });
+
+  beforeEach(async () => {
+    await goal.openSetGoalFromGoalLine();
+    await goal.fillGoal(mockGoal.name, agorotToShekels(mockGoal.amount));
+    await goal.openPictureSearch();
+    await goal.chooseFirstPicture();
+  });
+
+  it('is still setting the goal', async () => {
+    assert.equal(await goal.setGoalExists(), true);
+  });
+});
+
+describe('a parent opens the picture search while setting a goal, then presses back', () => {
+  const { goal, appBrowser } = useDriver({
+    accounts: [mockAccount],
+    transactions: mockTransactions,
+  });
+
+  beforeEach(async () => {
+    await goal.openSetGoalFromGoalLine();
+    await goal.openPictureSearch();
+    await appBrowser.back();
+    await goal.waitForPictureSearchGone();
+  });
+
+  it('is still setting the goal', async () => {
+    assert.equal(await goal.setGoalExists(), true);
+  });
+});
