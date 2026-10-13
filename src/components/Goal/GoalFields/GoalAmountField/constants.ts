@@ -14,4 +14,5 @@ export const GOAL_AMOUNT_FIELD_COPY = {
 export const GOAL_AMOUNT_ENTRY = {
   maxDigits: String(MAX_GOAL_SHEKELS).length,
   notDigits: /\D/g,
+  decimalPoint: '.',
 } as const;

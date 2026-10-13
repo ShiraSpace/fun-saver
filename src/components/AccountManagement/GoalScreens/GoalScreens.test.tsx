@@ -8,7 +8,7 @@ import { APP_MODE } from '../app-mode-context';
 import { GoalScreens } from './GoalScreens';
 
 function renderGoalScreens(overrides: Partial<AccountNavigation>): void {
-  const navigation: AccountNavigation = {
+  const mockNavigation: AccountNavigation = {
     mode: APP_MODE.viewing,
     setMode: () => {},
     currentAccount: mockAccountSummary,
@@ -20,7 +20,7 @@ function renderGoalScreens(overrides: Partial<AccountNavigation>): void {
     ...overrides,
   };
 
-  render(<GoalScreens navigation={navigation} />);
+  render(<GoalScreens navigation={mockNavigation} />);
 }
 
 describe('GoalScreens', () => {

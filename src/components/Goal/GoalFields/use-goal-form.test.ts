@@ -51,6 +51,14 @@ describe('useGoalForm', () => {
     expect(result.current.amountShekels).toBe(300);
   });
 
+  it('keeps only the whole shekels of an amount with a decimal point', () => {
+    const { result } = renderGoalForm();
+
+    act(() => result.current.setAmount('1,250.75'));
+
+    expect(result.current.amountShekels).toBe(1250);
+  });
+
   describe('filled in', () => {
     const mockAmountShekels = 300;
 
@@ -101,6 +109,28 @@ describe('useGoalForm', () => {
       act(() => result.current.handleSubmit(mockSubmitEvent));
 
       expect(mockOnRequestStateChange).toHaveBeenLastCalledWith(REQUEST_STATE.pending);
+    });
+
+    it('sends once when two saves arrive before the screen updates', () => {
+      mockOnSubmit.mockReturnValue(new Promise(() => {}));
+      const { result } = renderFilledGoalForm();
+
+      act(() => {
+        result.current.handleSubmit(mockSubmitEvent);
+        result.current.handleSubmit(mockSubmitEvent);
+      });
+
+      expect(mockOnSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    it('sends again once a failed save is retried', async () => {
+      mockOnSubmit.mockRejectedValueOnce(new Error('mock failure'));
+      const { result } = renderFilledGoalForm();
+      await act(async () => result.current.handleSubmit(mockSubmitEvent));
+
+      act(() => result.current.handleSubmit(mockSubmitEvent));
+
+      expect(mockOnSubmit).toHaveBeenCalledTimes(2);
     });
 
     it('sends once when the parent taps save twice while it is pending', () => {

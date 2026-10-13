@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { DEFAULT_GOAL_PICTURE } from '@/lib/goal/constants';
 import type { GoalPicture, GoalRequest } from '@/lib/goal/types';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
@@ -33,11 +33,14 @@ interface GoalRequestState {
 }
 
 function amountFrom(typed: string): number {
-  return Number(typed.replace(GOAL_AMOUNT_ENTRY.notDigits, ''));
+  const [wholeShekels] = typed.split(GOAL_AMOUNT_ENTRY.decimalPoint);
+
+  return Number(wholeShekels.replace(GOAL_AMOUNT_ENTRY.notDigits, ''));
 }
 
 function useGoalRequest({ onSubmit, onRequestStateChange }: GoalFormOptions): GoalRequestState {
   const [requestState, setRequestState] = useState<RequestState>(REQUEST_STATE.idle);
+  const isRequestPendingRef = useRef(false);
 
   const reportRequestState = (nextRequestState: RequestState): void => {
     setRequestState(nextRequestState);
@@ -45,11 +48,17 @@ function useGoalRequest({ onSubmit, onRequestStateChange }: GoalFormOptions): Go
   };
 
   const sendGoal = async (request: GoalRequest): Promise<void> => {
+    if (isRequestPendingRef.current) {
+      return;
+    }
+
+    isRequestPendingRef.current = true;
     reportRequestState(REQUEST_STATE.pending);
 
     try {
       await onSubmit(request);
     } catch {
+      isRequestPendingRef.current = false;
       reportRequestState(REQUEST_STATE.failed);
     }
   };
@@ -69,7 +78,7 @@ export function useGoalForm(options: GoalFormOptions): GoalFormState {
     submitEvent.preventDefault();
     setShowsErrors(true);
 
-    if (requestState === REQUEST_STATE.pending || hasGoalEntryErrors(errors)) {
+    if (hasGoalEntryErrors(errors)) {
       return;
     }
 
