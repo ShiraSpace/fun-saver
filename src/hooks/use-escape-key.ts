@@ -9,6 +9,16 @@ interface EscapeKeyOptions {
   takesPrecedence?: boolean;
 }
 
+type EscapeListener = (event: KeyboardEvent) => void;
+
+const listenersTakingPrecedence: EscapeListener[] = [];
+
+function isOutranked(listener: EscapeListener): boolean {
+  const topListener = listenersTakingPrecedence.at(-1);
+
+  return topListener !== undefined && topListener !== listener;
+}
+
 export function useEscapeKey({
   isListening,
   onEscape,
@@ -26,7 +36,7 @@ export function useEscapeKey({
     }
 
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key !== ESCAPE_KEY) {
+      if (event.key !== ESCAPE_KEY || (takesPrecedence && isOutranked(onKeyDown))) {
         return;
       }
 
@@ -37,8 +47,18 @@ export function useEscapeKey({
       onEscapeRef.current();
     };
 
+    if (takesPrecedence) {
+      listenersTakingPrecedence.push(onKeyDown);
+    }
+
     document.addEventListener(KEY_DOWN_EVENT, onKeyDown, takesPrecedence);
 
-    return (): void => document.removeEventListener(KEY_DOWN_EVENT, onKeyDown, takesPrecedence);
+    return (): void => {
+      document.removeEventListener(KEY_DOWN_EVENT, onKeyDown, takesPrecedence);
+
+      if (takesPrecedence) {
+        listenersTakingPrecedence.splice(listenersTakingPrecedence.indexOf(onKeyDown), 1);
+      }
+    };
   }, [isListening, takesPrecedence]);
 }

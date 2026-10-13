@@ -3,7 +3,7 @@ import { MONEY_STYLE } from './constants';
 
 export const Amount = styled.span`
   display: inline-flex;
-  align-items: flex-end;
+  align-items: baseline;
   line-height: 1;
   font-weight: 700;
 `;

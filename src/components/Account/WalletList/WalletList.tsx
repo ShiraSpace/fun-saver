@@ -21,7 +21,7 @@ export function WalletList({ wallets, savedTowardGoal }: WalletListProps): JSX.E
     return (
       <WalletCard key={wallet.id} wallet={wallet} savedTowardGoal={savedTowardGoalInWallet}>
         <SavingsInterestStats wallet={wallet} />
-        <GoalLine savedTowardGoal={savedTowardGoalInWallet} />
+        <GoalLine wallet={wallet} savedTowardGoal={savedTowardGoal} />
       </WalletCard>
     );
   });

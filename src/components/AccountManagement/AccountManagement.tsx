@@ -3,10 +3,10 @@
 import { JSX, ReactNode } from 'react';
 import { CreateAccount } from '@/components/CreateAccount';
 import { EditAccount } from '@/components/EditAccount';
-import { ViewGoal } from '@/components/Goal/ViewGoal';
 import type { AccountNavigation } from '@/hooks/use-account-navigation';
 import { AppModeProvider } from './app-mode-context';
-import { Overlay } from './AccountManagement.styles';
+import { GoalScreens } from './GoalScreens';
+import { Overlay } from './overlay-parts';
 
 interface AccountManagementProps {
   navigation: AccountNavigation;
@@ -34,15 +34,7 @@ export function AccountManagement({ navigation, children }: AccountManagementPro
           />
         </Overlay>
       )}
-      {navigation.goalBeingViewed && (
-        <Overlay>
-          <ViewGoal
-            accountName={navigation.goalBeingViewed.accountName}
-            savedTowardGoal={navigation.goalBeingViewed.savedTowardGoal}
-            onClose={cancel}
-          />
-        </Overlay>
-      )}
+      <GoalScreens navigation={navigation} />
     </AppModeProvider>
   );
 }

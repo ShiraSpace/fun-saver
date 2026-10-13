@@ -10,7 +10,7 @@ interface SavedOutOfGoalProps {
 
 export function SavedOutOfGoal({ savedTowardGoal }: SavedOutOfGoalProps): JSX.Element {
   return (
-    <Amounts dir="ltr">
+    <Amounts dir="ltr" data-testid={SAVED_OUT_OF_GOAL_TEST_IDS.amounts}>
       <Money amountAgorot={savedTowardGoal.saved} testId={SAVED_OUT_OF_GOAL_TEST_IDS.saved} />
       {SAVED_OUT_OF_GOAL_COPY.separator}
       <Money

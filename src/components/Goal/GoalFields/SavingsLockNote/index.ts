@@ -1,0 +1,1 @@
+export { SavingsLockNote } from './SavingsLockNote';

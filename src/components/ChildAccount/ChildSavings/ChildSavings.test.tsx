@@ -1,11 +1,17 @@
 import { render, screen } from '@/test-utils/render';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
-import { createMockGoal, createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
+import { createMockGoal, createMockSavedTowardGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import {
   COINS_IN_A_FULL_PILE,
   COINS_IN_HALF_A_PILE,
   coinsDrawnInPile,
 } from '@/test-utils/coin-pile';
+import {
+  GOAL_PROGRESS_COPY,
+  GOAL_PROGRESS_TEST_IDS,
+} from '@/components/Goal/GoalProgress/constants';
+import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
+import { goalPictureGlow } from '@/test-utils/goal-picture';
 import { ChildSavings } from './ChildSavings';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
 import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
@@ -52,6 +58,10 @@ describe('ChildSavings', () => {
     it('is named «החיסכון שלך» for screen readers', () => {
       expect(screen.getByRole('region', { name: CHILD_SAVINGS_COPY.title })).toBeInTheDocument();
     });
+
+    it('shows no goal', () => {
+      expect(screen.queryByTestId(GOAL_PROGRESS_TEST_IDS.heading)).not.toBeInTheDocument();
+    });
   });
 
   describe('₪50 saved toward a ₪100 goal', () => {
@@ -73,6 +83,18 @@ describe('ChildSavings', () => {
     it('fills the piggy bank halfway to the goal', () => {
       expect(coinsDrawnInPile()).toBe(COINS_IN_HALF_A_PILE);
     });
+
+    it('names the goal', () => {
+      expect(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.heading)).toHaveTextContent(mockGoal.name);
+    });
+
+    it("shows the goal's amount", () => {
+      expect(screen.getByTestId(SAVED_OUT_OF_GOAL_TEST_IDS.amount)).toHaveTextContent('₪100');
+    });
+
+    it('fills the goal bar with what is saved', () => {
+      expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50');
+    });
   });
 
   describe('a goal reached while the card shows less than its amount', () => {
@@ -92,6 +114,16 @@ describe('ChildSavings', () => {
 
     it('draws the piggy bank full', () => {
       expect(coinsDrawnInPile()).toBe(COINS_IN_A_FULL_PILE);
+    });
+
+    it('says the goal is reached', () => {
+      expect(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.heading)).toHaveTextContent(
+        GOAL_PROGRESS_COPY.reached
+      );
+    });
+
+    it("makes the goal's picture glow", () => {
+      expect(goalPictureGlow()).not.toBe('none');
     });
   });
 });

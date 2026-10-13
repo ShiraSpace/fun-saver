@@ -149,17 +149,15 @@ describe('fetchJson', () => {
 });
 
 describe('isConflict', () => {
-  const mockMessage = 'DELETE /api/accounts/a1/goals/g1 failed';
-
-  it('is true for a request the route refused with a conflict', () => {
-    expect(isConflict(new RequestFailedError(mockMessage, StatusCodes.CONFLICT))).toBe(true);
+  it('is true for a failed request answered with a conflict', () => {
+    expect(isConflict(new RequestFailedError('mock conflict', StatusCodes.CONFLICT))).toBe(true);
   });
 
-  it('is false for a request the route refused for any other reason', () => {
-    expect(isConflict(new RequestFailedError(mockMessage, StatusCodes.FORBIDDEN))).toBe(false);
+  it('is false for a failed request answered with another status', () => {
+    expect(isConflict(new RequestFailedError('mock failure', StatusCodes.BAD_REQUEST))).toBe(false);
   });
 
-  it('is false when the request never reached the route', () => {
-    expect(isConflict(connectionError)).toBe(false);
+  it('is false for an error that is not a failed request', () => {
+    expect(isConflict(new Error('mock error'))).toBe(false);
   });
 });
