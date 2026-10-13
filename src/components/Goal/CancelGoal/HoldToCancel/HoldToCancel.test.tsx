@@ -1,6 +1,6 @@
 import { createRef } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { stubPointerEventEachTest } from '@/test-utils/cancel-goal';
+import { pressHoldToCancel, stubPointerEventEachTest } from '@/test-utils/cancel-goal';
 import { HoldToCancel } from './HoldToCancel';
 import { HOLD_TO_CANCEL_COPY, HOLD_TO_CANCEL_TEST_IDS } from './constants';
 
@@ -39,7 +39,7 @@ describe('HoldToCancel', () => {
 
     beforeEach(() => {
       renderHoldToCancel();
-      fireEvent.pointerDown(screen.getByTestId(HOLD_TO_CANCEL_TEST_IDS.button), { button: 0 });
+      pressHoldToCancel();
     });
 
     it('fills', () => {

@@ -1,4 +1,6 @@
+import { StatusCodes } from 'http-status-codes';
 import { act, fireEvent, screen } from '@/test-utils/render';
+import { fakeTimersEachTest } from '@/test-utils/hold-to-cancel';
 import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 import { IS_LOADER_SHOWN_TEST_ID } from '@/test-utils/is-loader-shown';
@@ -20,20 +22,16 @@ describe('CancelGoal, cancelling', () => {
 
   restoreFetchAfterEach();
   stubPointerEventEachTest();
+  fakeTimersEachTest();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useFakeTimers();
     stubFetch(mockFetch.mockResolvedValue({ ok: true, json: async () => mockGoal }));
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
+    renderCancelGoal({ onKeep: mockOnKeep, onFinished: mockOnFinished });
   });
 
   describe('a completed hold', () => {
     beforeEach(async () => {
-      renderCancelGoal({ onKeep: mockOnKeep, onFinished: mockOnFinished });
       await completeHold();
     });
 
@@ -51,8 +49,11 @@ describe('CancelGoal, cancelling', () => {
 
   describe('a completed hold on a goal that has already ended', () => {
     beforeEach(async () => {
-      mockFetch.mockResolvedValue({ ok: false, status: 409, json: async () => ({}) });
-      renderCancelGoal({ onKeep: mockOnKeep, onFinished: mockOnFinished });
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: StatusCodes.CONFLICT,
+        json: async () => ({}),
+      });
       await completeHold();
     });
 
@@ -63,11 +64,16 @@ describe('CancelGoal, cancelling', () => {
 
   describe('a completed hold that fails after a while', () => {
     beforeEach(async () => {
-      let answerCancel: (response: unknown) => void = () => {};
-      mockFetch.mockReturnValue(new Promise((resolve) => (answerCancel = resolve)));
-      renderCancelGoal({ onKeep: mockOnKeep, onFinished: mockOnFinished });
+      let mockAnswerCancel: (response: unknown) => void = () => {};
+      mockFetch.mockReturnValue(new Promise((resolve) => (mockAnswerCancel = resolve)));
       await completeHold();
-      await act(async () => answerCancel({ ok: false, status: 500, json: async () => ({}) }));
+      await act(async () =>
+        mockAnswerCancel({
+          ok: false,
+          status: StatusCodes.INTERNAL_SERVER_ERROR,
+          json: async () => ({}),
+        })
+      );
     });
 
     it('says the goal was not cancelled', () => {
@@ -86,7 +92,6 @@ describe('CancelGoal, cancelling', () => {
   describe('while the goal is being cancelled', () => {
     beforeEach(async () => {
       mockFetch.mockReturnValue(new Promise(() => {}));
-      renderCancelGoal({ onKeep: mockOnKeep, onFinished: mockOnFinished });
       await completeHold();
     });
 

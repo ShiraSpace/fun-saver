@@ -5,6 +5,16 @@ export type HoldToCancelHook = RenderHookResult<ReturnType<typeof useHoldToCance
 
 export const mockHoldMs = 2000;
 
+export function fakeTimersEachTest(): void {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+}
+
 export function advanceTime(milliseconds: number): void {
   act(() => {
     jest.advanceTimersByTime(milliseconds);

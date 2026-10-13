@@ -1,20 +1,22 @@
 import { act } from '@testing-library/react';
-import type { PointerEvent as ReactPointerEvent } from 'react';
 import {
   advanceTime,
+  fakeTimersEachTest,
   mockHoldMs,
   renderHoldToCancel,
   type HoldToCancelHook,
 } from '@/test-utils/hold-to-cancel';
+import type { HoldPointerEvent } from './use-hold-to-cancel';
+import { PRIMARY_POINTER_BUTTON } from './constants';
 
 const mockPointerId = 1;
 
-function createMockPointerDown(button = 0): ReactPointerEvent<HTMLElement> {
+function createMockPointerDown(button = PRIMARY_POINTER_BUTTON): HoldPointerEvent {
   return {
     button,
     pointerId: mockPointerId,
     currentTarget: { releasePointerCapture: jest.fn() },
-  } as unknown as ReactPointerEvent<HTMLElement>;
+  };
 }
 
 describe('useHoldToCancel', () => {
@@ -24,14 +26,11 @@ describe('useHoldToCancel', () => {
   const pressPointer = (button?: number): void =>
     act(() => hook.result.current.handlers.onPointerDown(createMockPointerDown(button)));
 
+  fakeTimersEachTest();
+
   beforeEach(() => {
-    jest.useFakeTimers();
     mockOnHeld.mockClear();
     hook = renderHoldToCancel(mockOnHeld);
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
   });
 
   describe('a pointer held for 2 seconds', () => {

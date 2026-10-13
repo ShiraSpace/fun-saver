@@ -1,14 +1,15 @@
 import { act } from '@testing-library/react';
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import {
   advanceTime,
+  fakeTimersEachTest,
   mockHoldMs,
   renderHoldToCancel,
   type HoldToCancelHook,
 } from '@/test-utils/hold-to-cancel';
+import type { HoldKeyEvent } from './use-hold-to-cancel';
 
-function createMockKeyEvent(key = ' ', repeat = false): ReactKeyboardEvent<HTMLElement> {
-  return { key, repeat } as ReactKeyboardEvent<HTMLElement>;
+function createMockKeyEvent(key = ' ', repeat = false): HoldKeyEvent & { repeat: boolean } {
+  return { key, repeat };
 }
 
 describe('useHoldToCancel, by keyboard', () => {
@@ -18,14 +19,11 @@ describe('useHoldToCancel, by keyboard', () => {
   const pressKey = (key?: string, repeat?: boolean): void =>
     act(() => hook.result.current.handlers.onKeyDown(createMockKeyEvent(key, repeat)));
 
+  fakeTimersEachTest();
+
   beforeEach(() => {
-    jest.useFakeTimers();
     mockOnHeld.mockClear();
     hook = renderHoldToCancel(mockOnHeld);
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
   });
 
   describe('a key held long enough to repeat', () => {
@@ -105,6 +103,18 @@ describe('useHoldToCancel, by keyboard', () => {
       });
 
       it('does not start the hold over, so onHeld comes on time', () => {
+        expect(mockOnHeld).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('when the button loses focus', () => {
+      beforeEach(() => {
+        act(() => hook.result.current.handlers.onBlur());
+        pressKey('Enter');
+        advanceTime(mockHoldMs);
+      });
+
+      it('lets go of the key, so a new key press starts a hold', () => {
         expect(mockOnHeld).toHaveBeenCalledTimes(1);
       });
     });

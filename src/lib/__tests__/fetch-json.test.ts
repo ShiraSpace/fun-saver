@@ -4,7 +4,7 @@ import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 import { goTo } from '../navigate';
-import { fetchJson, RequestFailedError } from '../fetch-json';
+import { fetchJson, isConflict, RequestFailedError } from '../fetch-json';
 
 jest.mock('../navigate', () => ({ goTo: jest.fn() }));
 
@@ -145,5 +145,21 @@ describe('fetchJson', () => {
       const [, init] = mockFetch.mock.calls[0];
       expect(init.body).toBeUndefined();
     });
+  });
+});
+
+describe('isConflict', () => {
+  const mockMessage = 'DELETE /api/accounts/a1/goals/g1 failed';
+
+  it('is true for a request the route refused with a conflict', () => {
+    expect(isConflict(new RequestFailedError(mockMessage, StatusCodes.CONFLICT))).toBe(true);
+  });
+
+  it('is false for a request the route refused for any other reason', () => {
+    expect(isConflict(new RequestFailedError(mockMessage, StatusCodes.FORBIDDEN))).toBe(false);
+  });
+
+  it('is false when the request never reached the route', () => {
+    expect(isConflict(connectionError)).toBe(false);
   });
 });
