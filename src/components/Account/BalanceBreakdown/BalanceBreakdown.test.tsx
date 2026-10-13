@@ -1,5 +1,8 @@
 import { render, screen } from '@/test-utils/render';
-import { createMockWalletSummary, mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
+import {
+  mockWalletSummaries,
+  mockWalletSummariesWithAgorot,
+} from '@/test-utils/mocks/wallet.mocks';
 import { prefersReducedMotion } from '@/test-utils/motion';
 import { BalanceBreakdown } from './BalanceBreakdown';
 import { BALANCE_BREAKDOWN_COPY, BALANCE_BREAKDOWN_TEST_IDS } from './constants';
@@ -43,12 +46,7 @@ describe('BalanceBreakdown', () => {
 
   describe('when a balance has agorot', () => {
     beforeEach(() => {
-      const mockWalletsWithAgorot = [
-        createMockWalletSummary({ id: 'w1', name: 'savings', balance: 4669 }),
-        createMockWalletSummary({ id: 'w2', name: 'spending', balance: 5000 }),
-        createMockWalletSummary({ id: 'w3', name: 'goodDeeds', balance: 1000 }),
-      ];
-      render(<BalanceBreakdown wallets={mockWalletsWithAgorot} />);
+      render(<BalanceBreakdown wallets={mockWalletSummariesWithAgorot} />);
     });
 
     it('totals the balances after rounding each one down', () => {

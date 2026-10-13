@@ -136,10 +136,7 @@ describe('walletsWithoutAgorot', () => {
     });
 
     it('keeps the rest of each wallet', () => {
-      expect(walletsWithoutAgorot(mockWallets).map((wallet) => wallet.name)).toEqual([
-        'savings',
-        'spending',
-      ]);
+      expect(walletsWithoutAgorot(mockWallets)[1]).toEqual(mockWallets[1]);
     });
   });
 });
