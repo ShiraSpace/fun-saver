@@ -4,8 +4,10 @@ import { VIEW_MODE } from '@/lib/view-mode';
 import { createMockAccount, mockAccount } from '@/test-utils/mocks/account.mocks';
 import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
+import { shekelsToAgorot } from '@/lib/money';
 import { useDriver } from './driver/use-driver';
-import { PHONE_IN_SAFARI } from './driver/viewports';
+import { holds } from './driver/box-geometry';
+import { PHONE_IN_SAFARI, SMALL_PHONE } from './driver/viewports';
 import { METHOD_ROUTE } from '@/components/Method/constants';
 import { TRANSACTIONS_ROUTE } from '@/components/Transactions/constants';
 
@@ -141,6 +143,7 @@ describe('a child with a goal, on an iPhone in Safari', () => {
   beforeEach(async () => {
     await appBrowser.resize(PHONE_IN_SAFARI);
     await childAccount.waitForScreen();
+    await childAccount.waitForGoal();
   });
 
   it('sees every wallet without scrolling', async () => {
@@ -152,3 +155,34 @@ describe('a child with a goal, on an iPhone in Safari', () => {
     );
   });
 });
+
+const mockLongGoalNames = ['אופניים חשמליים חדשים עם סלסלה', 'אופנייםחשמלייםחדשיםעםסלסלהגדו'];
+
+for (const mockGoalName of mockLongGoalNames) {
+  describe(`a child saving for «${mockGoalName}», on a small phone`, () => {
+    const { childAccount, appBrowser } = useDriver(
+      {
+        accounts: [mockAccount],
+        transactions: mockTransactions,
+        goals: [createMockGoal({ name: mockGoalName, amount: shekelsToAgorot(5000) })],
+      },
+      { viewMode: VIEW_MODE.child }
+    );
+
+    beforeEach(async () => {
+      await appBrowser.resize(SMALL_PHONE);
+      await childAccount.waitForScreen();
+      await childAccount.waitForGoal();
+    });
+
+    it('sees what is saved out of the goal on one line', async () => {
+      assert.equal(await childAccount.goalAmountsLines(), 1);
+    });
+
+    it('sees what is saved out of the goal inside the screen', async () => {
+      const screenBox = { x: 0, y: 0, ...SMALL_PHONE };
+
+      assert.equal(holds(screenBox, await childAccount.goalAmountsBox()), true);
+    });
+  });
+}

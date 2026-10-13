@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
-import { GOAL_PROGRESS_SIZE, type GoalProgressSize } from './constants';
+import type { ThemeTypography } from '@/theme/typography';
+import type { GoalProgressSize } from './constants';
 
 interface PictureProps {
   progressSize: GoalProgressSize;
@@ -12,18 +13,38 @@ interface GoalHeadingProps {
   reached: boolean;
 }
 
-type Themed<Props> = Props & { theme: Theme };
+interface SizeStyle {
+  pictureSide: number;
+  pictureCorner: number;
+  emoji: number;
+  heading: (typography: ThemeTypography) => number;
+  thinBar: boolean;
+}
 
-const PICTURE_SIZE: Record<GoalProgressSize, { side: number; emoji: number; corner: number }> = {
-  small: { side: 34, emoji: 20, corner: 10 },
-  large: { side: 44, emoji: 26, corner: 14 },
+const SIZE_STYLE: Record<GoalProgressSize, SizeStyle> = {
+  small: {
+    pictureSide: 34,
+    pictureCorner: 10,
+    emoji: 20,
+    heading: (typography) => typography.label + 1,
+    thinBar: true,
+  },
+  large: {
+    pictureSide: 44,
+    pictureCorner: 14,
+    emoji: 26,
+    heading: (typography) => typography.body,
+    thinBar: false,
+  },
 };
 
-const pictureGlow = ({ glowing, theme }: Themed<PictureProps>): string =>
+export const barIsThin = (size: GoalProgressSize): boolean => SIZE_STYLE[size].thinBar;
+
+const pictureGlow = ({ glowing, theme }: PictureProps & { theme: Theme }): string =>
   glowing ? `0 0 0 4px ${theme.colors.gainSoftBg}, 0 0 18px 4px ${theme.colors.gainText}` : 'none';
 
-const headingSize = ({ progressSize, theme }: Themed<GoalHeadingProps>): number =>
-  progressSize === GOAL_PROGRESS_SIZE.large ? theme.typography.body : theme.typography.label + 1;
+const headingSize = ({ progressSize, theme }: GoalHeadingProps & { theme: Theme }): number =>
+  SIZE_STYLE[progressSize].heading(theme.typography);
 
 export const Progress = styled.span`
   display: flex;
@@ -36,16 +57,17 @@ export const Picture = styled.span<PictureProps>`
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  width: ${({ progressSize }): number => PICTURE_SIZE[progressSize].side}px;
-  height: ${({ progressSize }): number => PICTURE_SIZE[progressSize].side}px;
-  border-radius: ${({ progressSize }): number => PICTURE_SIZE[progressSize].corner}px;
-  font-size: ${({ progressSize }): number => PICTURE_SIZE[progressSize].emoji}px;
+  width: ${({ progressSize }): number => SIZE_STYLE[progressSize].pictureSide}px;
+  height: ${({ progressSize }): number => SIZE_STYLE[progressSize].pictureSide}px;
+  border-radius: ${({ progressSize }): number => SIZE_STYLE[progressSize].pictureCorner}px;
+  font-size: ${({ progressSize }): number => SIZE_STYLE[progressSize].emoji}px;
   background: ${({ theme }): string => theme.gradients.walletSavings};
   box-shadow: ${pictureGlow};
 `;
 
 export const Body = styled.span`
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -54,8 +76,15 @@ export const Body = styled.span`
 export const GoalHeading = styled.span<GoalHeadingProps>`
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 8px;
   font-size: ${headingSize}px;
   font-weight: 700;
   color: ${({ reached, theme }): string =>
     reached ? theme.colors.gainText : theme.colors.textStrong};
+`;
+
+export const GoalHeadingText = styled.span`
+  min-width: 0;
+  overflow-wrap: anywhere;
 `;

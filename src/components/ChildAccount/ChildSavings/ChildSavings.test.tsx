@@ -11,6 +11,7 @@ import {
   GOAL_PROGRESS_TEST_IDS,
 } from '@/components/Goal/GoalProgress/constants';
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
+import { goalPictureGlow } from '@/test-utils/goal-picture';
 import { ChildSavings } from './ChildSavings';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
 import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
@@ -122,9 +123,7 @@ describe('ChildSavings', () => {
     });
 
     it("makes the goal's picture glow", () => {
-      expect(
-        getComputedStyle(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture)).boxShadow
-      ).not.toBe('none');
+      expect(goalPictureGlow()).not.toBe('none');
     });
   });
 });
