@@ -7,5 +7,5 @@ export const CHILD_MENU_ACCOUNT_LIST_TEST_IDS = {
 export const CHILD_MENU_ACCOUNT_LIST_COPY = {
   icon: '🔁',
   title: 'להחליף ל…',
-  arrow: '‹',
+  arrow: '›',
 } as const;

@@ -24,6 +24,10 @@ export function savedTowardGoalIn(
   return wallet?.name === WALLET_NAMES.savings ? savedTowardGoal : undefined;
 }
 
+export function savingsBalanceOf(account: Pick<AccountSummary, 'wallets'>): number {
+  return walletNamed(account.wallets, WALLET_NAMES.savings)?.balance ?? 0;
+}
+
 export function savedTowardGoalOf(account: AccountSummary): SavedTowardGoal | undefined {
   const { goal } = account;
 
@@ -31,7 +35,7 @@ export function savedTowardGoalOf(account: AccountSummary): SavedTowardGoal | un
     return;
   }
 
-  const savingsBalance = walletNamed(account.wallets, WALLET_NAMES.savings)?.balance ?? 0;
+  const savingsBalance = savingsBalanceOf(account);
   const saved = withoutAgorot(savingsBalance);
 
   return {

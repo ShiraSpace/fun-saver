@@ -4,7 +4,7 @@ import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { SIGN_IN_PATH } from '@/lib/user/constants';
 import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 import { goTo } from '../navigate';
-import { fetchJson, RequestFailedError } from '../fetch-json';
+import { fetchJson, isConflict, RequestFailedError } from '../fetch-json';
 
 jest.mock('../navigate', () => ({ goTo: jest.fn() }));
 
@@ -145,5 +145,19 @@ describe('fetchJson', () => {
       const [, init] = mockFetch.mock.calls[0];
       expect(init.body).toBeUndefined();
     });
+  });
+});
+
+describe('isConflict', () => {
+  it('is true for a failed request answered with a conflict', () => {
+    expect(isConflict(new RequestFailedError('mock conflict', StatusCodes.CONFLICT))).toBe(true);
+  });
+
+  it('is false for a failed request answered with another status', () => {
+    expect(isConflict(new RequestFailedError('mock failure', StatusCodes.BAD_REQUEST))).toBe(false);
+  });
+
+  it('is false for an error that is not a failed request', () => {
+    expect(isConflict(new Error('mock error'))).toBe(false);
   });
 });

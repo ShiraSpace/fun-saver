@@ -34,6 +34,16 @@ describe('WalletList', () => {
     it('shows no goal line', () => {
       expect(screen.queryByTestId(GOAL_LINE_TEST_IDS.line)).not.toBeInTheDocument();
     });
+
+    it('offers to set a goal on the savings card alone', () => {
+      expect(screen.getAllByTestId(GOAL_LINE_TEST_IDS.setGoal)).toHaveLength(1);
+    });
+
+    it('offers to set a goal on the savings card', () => {
+      const [savingsCard] = screen.getAllByTestId(WALLET_CARD_TEST_IDS.card);
+
+      expect(within(savingsCard).getByTestId(GOAL_LINE_TEST_IDS.setGoal)).toBeInTheDocument();
+    });
   });
 
   describe('with a goal', () => {

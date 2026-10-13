@@ -18,6 +18,7 @@ export interface AccountNavigation {
   cancel: () => void;
   isCreating: boolean;
   editingAccount?: AccountSummary;
+  accountSettingGoal?: AccountSummary;
   goalBeingViewed?: GoalBeingViewed;
 }
 
@@ -107,6 +108,7 @@ export function useAccountNavigation(
     cancel: returnToViewing,
     isCreating: mode === APP_MODE.creatingAccount,
     editingAccount: isEditing ? currentAccount : undefined,
+    accountSettingGoal: mode === APP_MODE.settingGoal ? currentAccount : undefined,
     goalBeingViewed,
   };
 }

@@ -54,6 +54,7 @@ export const SavedSuffix = styled.span`
 export const Amount = styled.span`
   display: flex;
   gap: 4px;
+  align-items: baseline;
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
 

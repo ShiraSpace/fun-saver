@@ -23,16 +23,24 @@ export function isValidPictureEmoji(emoji: unknown): emoji is string {
   );
 }
 
-function isValidName({ name }: Record<string, unknown>): boolean {
+export function isValidGoalName(name: unknown): boolean {
   return isNameWithin(name, MAX_GOAL_NAME_LENGTH);
+}
+
+export function isGoalAmountMissing(amountShekels: number): boolean {
+  return amountShekels < 1;
+}
+
+export function isGoalAmountTooHigh(amountShekels: number): boolean {
+  return amountShekels > MAX_GOAL_SHEKELS;
 }
 
 function isValidAmountShekels({ amount }: Record<string, unknown>): boolean {
   return (
     typeof amount === 'number' &&
     Number.isInteger(amount) &&
-    amount >= 1 &&
-    amount <= MAX_GOAL_SHEKELS
+    !isGoalAmountMissing(amount) &&
+    !isGoalAmountTooHigh(amount)
   );
 }
 
@@ -53,7 +61,7 @@ function isGoalRequest(body: unknown): body is GoalRequest {
   return (
     requested !== undefined &&
     hasOnlyFields(requested, GOAL_FIELDS) &&
-    isValidName(requested) &&
+    isValidGoalName(requested.name) &&
     isValidAmountShekels(requested) &&
     isValidPicture(requested)
   );

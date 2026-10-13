@@ -5,18 +5,42 @@ import { mockAccountSavingForGoal } from '@/test-utils/mocks/goal.mocks';
 import { APP_MODE, AppModeProvider } from '@/components/AccountManagement/app-mode-context';
 import { GOAL_PROGRESS_TEST_IDS } from '@/components/Goal/GoalProgress/constants';
 import { MenuGoal } from './MenuGoal';
-import { MENU_GOAL_TEST_IDS } from './constants';
+import { MENU_GOAL_COPY, MENU_GOAL_TEST_IDS } from './constants';
 
 describe('MenuGoal', () => {
-  it('shows nothing without a goal', () => {
-    render(
-      <WithMenu>
-        <MenuGoal />
-      </WithMenu>,
-      { accounts: mockAccountsContext }
-    );
+  describe('without a goal', () => {
+    const mockCloseMenu = jest.fn();
+    const mockSetMode = jest.fn();
 
-    expect(screen.queryByTestId(MENU_GOAL_TEST_IDS.row)).not.toBeInTheDocument();
+    beforeEach(() => {
+      jest.clearAllMocks();
+      render(
+        <AppModeProvider value={{ mode: APP_MODE.viewing, setMode: mockSetMode }}>
+          <WithMenu closeMenu={mockCloseMenu}>
+            <MenuGoal />
+          </WithMenu>
+        </AppModeProvider>,
+        { accounts: mockAccountsContext }
+      );
+    });
+
+    it('offers to set a goal', () => {
+      expect(screen.getByTestId(MENU_GOAL_TEST_IDS.setGoal)).toHaveTextContent(
+        MENU_GOAL_COPY.setGoal
+      );
+    });
+
+    it('closes the menu when tapped', () => {
+      fireEvent.click(screen.getByTestId(MENU_GOAL_TEST_IDS.setGoal));
+
+      expect(mockCloseMenu).toHaveBeenCalled();
+    });
+
+    it('opens the screen that sets a goal when tapped', () => {
+      fireEvent.click(screen.getByTestId(MENU_GOAL_TEST_IDS.setGoal));
+
+      expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.settingGoal);
+    });
   });
 
   describe('with a goal', () => {

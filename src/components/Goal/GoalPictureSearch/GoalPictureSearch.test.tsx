@@ -5,6 +5,7 @@ import { createMockGoalPicture } from '@/test-utils/mocks/goal.mocks';
 import { ESCAPE_KEY, KEY_DOWN_EVENT } from '@/hooks/constants';
 import { LAYERS } from '@/theme/layers';
 import { layerOf } from '@/test-utils/layer';
+import { pressBack } from '@/test-utils/history';
 import { PICTURE_TILE_TEST_IDS } from './PictureTiles/PictureTile/constants';
 import { GoalPictureSearch } from './GoalPictureSearch';
 import { GOAL_PICTURE_SEARCH_TEST_IDS } from './constants';
@@ -67,8 +68,8 @@ describe('GoalPictureSearch', () => {
     });
 
     describe('after the phone’s Back button', () => {
-      beforeEach(() => {
-        fireEvent.popState(window);
+      beforeEach(async () => {
+        await pressBack();
       });
 
       it('closes', () => {

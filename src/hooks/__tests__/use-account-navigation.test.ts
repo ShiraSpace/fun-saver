@@ -46,6 +46,16 @@ describe('useAccountNavigation', () => {
     });
   });
 
+  it('gives the current account as the one setting a goal while setting one', () => {
+    const { result } = renderHook(() =>
+      useAccountNavigation([mockAccountSummary], mockAccountSummary.id)
+    );
+
+    act(() => result.current.setMode(APP_MODE.settingGoal));
+
+    expect(result.current.accountSettingGoal).toBe(mockAccountSummary);
+  });
+
   describe('while viewing the goal of an account saving for it', () => {
     let mockAccounts: AccountSummary[];
     let hook: RenderHookResult<AccountNavigation, void>;

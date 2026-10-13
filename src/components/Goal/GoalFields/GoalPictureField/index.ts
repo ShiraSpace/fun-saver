@@ -1,0 +1,1 @@
+export { GoalPictureField } from './GoalPictureField';
