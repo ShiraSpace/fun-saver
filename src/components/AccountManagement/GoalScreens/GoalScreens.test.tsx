@@ -24,27 +24,34 @@ function renderGoalScreens(overrides: Partial<AccountNavigation>): void {
 }
 
 describe('GoalScreens', () => {
-  it('draws no goal screen while viewing the page', () => {
-    renderGoalScreens({});
+  describe('while viewing the page', () => {
+    beforeEach(() => renderGoalScreens({}));
 
-    expect(screen.queryByTestId(SET_GOAL_TEST_IDS.container)).not.toBeInTheDocument();
-  });
-
-  it('draws the screen that sets a goal while setting one', () => {
-    renderGoalScreens({ mode: APP_MODE.settingGoal, accountSettingGoal: mockAccountSummary });
-
-    expect(screen.getByTestId(SET_GOAL_TEST_IDS.container)).toBeInTheDocument();
-  });
-
-  it('draws the goal screen while viewing the goal', () => {
-    renderGoalScreens({
-      mode: APP_MODE.viewingGoal,
-      goalBeingViewed: {
-        accountName: mockAccountSummary.name,
-        savedTowardGoal: createMockSavedTowardGoal(),
-      },
+    it('draws no goal screen', () => {
+      expect(screen.queryByTestId(SET_GOAL_TEST_IDS.container)).not.toBeInTheDocument();
     });
+  });
 
-    expect(screen.getByTestId(VIEW_GOAL_TEST_IDS.container)).toBeInTheDocument();
+  describe('while setting a goal', () => {
+    beforeEach(() => renderGoalScreens({ accountSettingGoal: mockAccountSummary }));
+
+    it('draws the screen that sets a goal', () => {
+      expect(screen.getByTestId(SET_GOAL_TEST_IDS.container)).toBeInTheDocument();
+    });
+  });
+
+  describe('while viewing the goal', () => {
+    beforeEach(() =>
+      renderGoalScreens({
+        goalBeingViewed: {
+          accountName: mockAccountSummary.name,
+          savedTowardGoal: createMockSavedTowardGoal(),
+        },
+      })
+    );
+
+    it('draws the goal screen', () => {
+      expect(screen.getByTestId(VIEW_GOAL_TEST_IDS.container)).toBeInTheDocument();
+    });
   });
 });

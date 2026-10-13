@@ -40,13 +40,18 @@ describe('GoalLine', () => {
     });
   });
 
-  it("writes the prompt in the theme's strong text colour", () => {
-    render(<GoalLine wallet={mockSavingsWallet} />, { themeId: THEME_ID.midnightBlue });
-    const [prompt] = screen.getByTestId(GOAL_LINE_TEST_IDS.setGoal).children;
+  describe('without a goal in a theme other than the default', () => {
+    beforeEach(() => {
+      render(<GoalLine wallet={mockSavingsWallet} />, { themeId: THEME_ID.midnightBlue });
+    });
 
-    expect(getComputedStyle(prompt).color).toBe(
-      hexToRgb(getThemeTokens(THEME_ID.midnightBlue).colors.textStrong)
-    );
+    it("writes the prompt in the theme's strong text colour", () => {
+      const [prompt] = screen.getByTestId(GOAL_LINE_TEST_IDS.setGoal).children;
+
+      expect(getComputedStyle(prompt).color).toBe(
+        hexToRgb(getThemeTokens(THEME_ID.midnightBlue).colors.textStrong)
+      );
+    });
   });
 
   describe('with a goal', () => {

@@ -4,17 +4,25 @@ import { GoalNameField } from './GoalNameField';
 import { GOAL_NAME_FIELD_COPY, GOAL_NAME_FIELD_TEST_IDS } from './constants';
 
 describe('GoalNameField', () => {
-  it('shows the goal name', () => {
-    render(<GoalNameField goalName={mockGoal.name} missing={false} onChange={jest.fn()} />);
+  describe('with a name', () => {
+    beforeEach(() => {
+      render(<GoalNameField goalName={mockGoal.name} missing={false} onChange={jest.fn()} />);
+    });
 
-    expect(screen.getByTestId(GOAL_NAME_FIELD_TEST_IDS.input)).toHaveValue(mockGoal.name);
+    it('shows the goal name', () => {
+      expect(screen.getByTestId(GOAL_NAME_FIELD_TEST_IDS.input)).toHaveValue(mockGoal.name);
+    });
   });
 
-  it('asks for the name when it is missing', () => {
-    render(<GoalNameField goalName="" missing onChange={jest.fn()} />);
+  describe('when the name is missing', () => {
+    beforeEach(() => {
+      render(<GoalNameField goalName="" missing onChange={jest.fn()} />);
+    });
 
-    expect(screen.getByTestId(GOAL_NAME_FIELD_TEST_IDS.error)).toHaveTextContent(
-      GOAL_NAME_FIELD_COPY.missing
-    );
+    it('asks for the name', () => {
+      expect(screen.getByTestId(GOAL_NAME_FIELD_TEST_IDS.error)).toHaveTextContent(
+        GOAL_NAME_FIELD_COPY.missing
+      );
+    });
   });
 });

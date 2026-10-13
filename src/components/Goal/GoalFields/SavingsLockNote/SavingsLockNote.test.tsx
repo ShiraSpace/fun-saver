@@ -5,58 +5,52 @@ import { mockGoal } from '@/test-utils/mocks/goal.mocks';
 
 const mockSavingsBalance = 8500;
 
+function renderSavingsLockNote(amountShekels: number): void {
+  render(
+    <SavingsLockNote
+      goalName={mockGoal.name}
+      amountShekels={amountShekels}
+      savingsBalance={mockSavingsBalance}
+    />
+  );
+}
+
 describe('SavingsLockNote', () => {
-  it('promises savings is kept until the amount is there', () => {
-    render(
-      <SavingsLockNote
-        goalName={mockGoal.name}
-        amountShekels={300}
-        savingsBalance={mockSavingsBalance}
-      />
-    );
+  describe('with an amount savings does not cover', () => {
+    beforeEach(() => renderSavingsLockNote(300));
 
-    expect(screen.getByTestId(SAVINGS_LOCK_NOTE_TEST_IDS.note)).toHaveTextContent(
-      SAVINGS_LOCK_NOTE_COPY.locked(300)
-    );
+    it('promises savings is kept until the amount is there', () => {
+      expect(screen.getByTestId(SAVINGS_LOCK_NOTE_TEST_IDS.note)).toHaveTextContent(
+        SAVINGS_LOCK_NOTE_COPY.locked(300)
+      );
+    });
   });
 
-  it('leaves the amount open before one is typed', () => {
-    render(
-      <SavingsLockNote
-        goalName={mockGoal.name}
-        amountShekels={0}
-        savingsBalance={mockSavingsBalance}
-      />
-    );
+  describe('before an amount is typed', () => {
+    beforeEach(() => renderSavingsLockNote(0));
 
-    expect(screen.getByTestId(SAVINGS_LOCK_NOTE_TEST_IDS.note)).toHaveTextContent('₪…');
+    it('leaves the amount open', () => {
+      expect(screen.getByTestId(SAVINGS_LOCK_NOTE_TEST_IDS.note)).toHaveTextContent('₪…');
+    });
   });
 
-  it('says the goal can be bought now when savings already covers it', () => {
-    render(
-      <SavingsLockNote
-        goalName={mockGoal.name}
-        amountShekels={85}
-        savingsBalance={mockSavingsBalance}
-      />
-    );
+  describe('when savings already covers the amount', () => {
+    beforeEach(() => renderSavingsLockNote(85));
 
-    expect(screen.getByTestId(SAVINGS_LOCK_NOTE_TEST_IDS.note)).toHaveTextContent(
-      SAVINGS_LOCK_NOTE_COPY.reached(mockGoal.name)
-    );
+    it('says the goal can be bought now', () => {
+      expect(screen.getByTestId(SAVINGS_LOCK_NOTE_TEST_IDS.note)).toHaveTextContent(
+        SAVINGS_LOCK_NOTE_COPY.reached(mockGoal.name)
+      );
+    });
   });
 
-  it('keeps the promise when savings is a shekel short', () => {
-    render(
-      <SavingsLockNote
-        goalName={mockGoal.name}
-        amountShekels={86}
-        savingsBalance={mockSavingsBalance}
-      />
-    );
+  describe('when savings is a shekel short', () => {
+    beforeEach(() => renderSavingsLockNote(86));
 
-    expect(screen.getByTestId(SAVINGS_LOCK_NOTE_TEST_IDS.note)).toHaveTextContent(
-      SAVINGS_LOCK_NOTE_COPY.locked(86)
-    );
+    it('keeps the promise', () => {
+      expect(screen.getByTestId(SAVINGS_LOCK_NOTE_TEST_IDS.note)).toHaveTextContent(
+        SAVINGS_LOCK_NOTE_COPY.locked(86)
+      );
+    });
   });
 });

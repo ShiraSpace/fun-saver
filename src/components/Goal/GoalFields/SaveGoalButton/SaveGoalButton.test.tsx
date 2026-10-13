@@ -46,11 +46,15 @@ describe('SaveGoalButton', () => {
     });
   });
 
-  it('shows the save error once saving failed', () => {
-    render(<SaveGoalButton submitLabel={mockSubmitLabel} requestState={REQUEST_STATE.failed} />);
+  describe('once saving failed', () => {
+    beforeEach(() => {
+      render(<SaveGoalButton submitLabel={mockSubmitLabel} requestState={REQUEST_STATE.failed} />);
+    });
 
-    expect(screen.getByTestId(SAVE_GOAL_BUTTON_TEST_IDS.saveError)).toHaveTextContent(
-      SAVE_GOAL_BUTTON_COPY.saveError
-    );
+    it('shows the save error', () => {
+      expect(screen.getByTestId(SAVE_GOAL_BUTTON_TEST_IDS.saveError)).toHaveTextContent(
+        SAVE_GOAL_BUTTON_COPY.saveError
+      );
+    });
   });
 });

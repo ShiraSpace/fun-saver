@@ -2,7 +2,7 @@ import { FormEvent, useRef, useState } from 'react';
 import { DEFAULT_GOAL_PICTURE } from '@/lib/goal/constants';
 import type { GoalPicture, GoalRequest } from '@/lib/goal/types';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
-import { GOAL_AMOUNT_ENTRY } from './GoalAmountField/constants';
+import { TYPED_AMOUNT } from './constants';
 import {
   goalEntryErrors,
   hasGoalEntryErrors,
@@ -27,9 +27,9 @@ export interface GoalFormState {
 }
 
 function amountFrom(typed: string): number {
-  const [wholeShekels] = typed.split(GOAL_AMOUNT_ENTRY.decimalPoint);
+  const [wholeShekels] = typed.split(TYPED_AMOUNT.decimalPoint);
 
-  return Number(wholeShekels.replace(GOAL_AMOUNT_ENTRY.notDigits, ''));
+  return Number(wholeShekels.replace(TYPED_AMOUNT.notDigits, ''));
 }
 
 function useSendGoal({

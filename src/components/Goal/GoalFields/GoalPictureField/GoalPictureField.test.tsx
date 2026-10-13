@@ -5,26 +5,34 @@ import { GoalPictureField } from './GoalPictureField';
 import { GOAL_PICTURE_FIELD_TEST_IDS } from './constants';
 
 describe('GoalPictureField', () => {
-  it('shows 🎯 before a picture is chosen', () => {
-    render(<GoalPictureField picture={null} onSearch={jest.fn()} />);
-
-    expect(screen.getByTestId(GOAL_PICTURE_FIELD_TEST_IDS.preview)).toHaveTextContent(
-      DEFAULT_GOAL_PICTURE.emoji
-    );
-  });
-
-  it('shows the chosen picture', () => {
-    render(<GoalPictureField picture={createMockGoalPicture('🚲')} onSearch={jest.fn()} />);
-
-    expect(screen.getByTestId(GOAL_PICTURE_FIELD_TEST_IDS.preview)).toHaveTextContent('🚲');
-  });
-
-  it('opens the search when the picture is tapped', () => {
+  describe('before a picture is chosen', () => {
     const mockOnSearch = jest.fn();
-    render(<GoalPictureField picture={null} onSearch={mockOnSearch} />);
 
-    fireEvent.click(screen.getByTestId(GOAL_PICTURE_FIELD_TEST_IDS.preview));
+    beforeEach(() => {
+      mockOnSearch.mockClear();
+      render(<GoalPictureField picture={null} onSearch={mockOnSearch} />);
+    });
 
-    expect(mockOnSearch).toHaveBeenCalledTimes(1);
+    it('shows 🎯', () => {
+      expect(screen.getByTestId(GOAL_PICTURE_FIELD_TEST_IDS.preview)).toHaveTextContent(
+        DEFAULT_GOAL_PICTURE.emoji
+      );
+    });
+
+    it('opens the search when the picture is tapped', () => {
+      fireEvent.click(screen.getByTestId(GOAL_PICTURE_FIELD_TEST_IDS.preview));
+
+      expect(mockOnSearch).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('with a chosen picture', () => {
+    beforeEach(() => {
+      render(<GoalPictureField picture={createMockGoalPicture('🚲')} onSearch={jest.fn()} />);
+    });
+
+    it('shows the chosen picture', () => {
+      expect(screen.getByTestId(GOAL_PICTURE_FIELD_TEST_IDS.preview)).toHaveTextContent('🚲');
+    });
   });
 });
