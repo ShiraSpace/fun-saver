@@ -75,6 +75,17 @@ describe('a transaction row', () => {
     });
   });
 
+  it('floors the balance to whole shekels', () => {
+    const [mockInterestRow] = transactionListRowsFor(
+      [mockDayOfInterest],
+      INTEREST_MODE.daily,
+      mockDayOfInterest.occurredAt
+    );
+    render(<TransactionRow transactionListRow={{ ...mockInterestRow, balance: 16060 }} />);
+
+    expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balance)).toHaveTextContent('₪160');
+  });
+
   it.each(createMockWallets())(
     'names a withdrawal from $name by what the money was for',
     (wallet) => {
