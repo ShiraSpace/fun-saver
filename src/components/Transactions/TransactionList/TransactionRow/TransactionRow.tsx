@@ -2,6 +2,7 @@ import { JSX } from 'react';
 import { dayMonth } from '@/lib/dates';
 import type { TransactionListRow } from '@/lib/transaction/transaction-rows';
 import { Money } from '@/components/Money';
+import { MONEY_ROUNDING } from '@/components/Money/constants';
 import { BalanceChange } from '../../BalanceChange';
 import { needsAgorot } from '../../money-text';
 import { TRANSACTION_LIST_COPY } from '../constants';
@@ -53,7 +54,11 @@ export function TransactionRow({ transactionListRow }: TransactionRowProps): JSX
         </ChangeAmount>
         <BalanceColumn>
           <ColumnName>{TRANSACTION_LIST_COPY.columns.balance}</ColumnName>
-          <Money amountAgorot={balance} testId={TRANSACTION_ROW_TEST_IDS.balance} />
+          <Money
+            amountAgorot={balance}
+            testId={TRANSACTION_ROW_TEST_IDS.balance}
+            rounding={MONEY_ROUNDING.floorToShekels}
+          />
         </BalanceColumn>
       </Amounts>
     </Row>
