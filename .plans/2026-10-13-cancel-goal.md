@@ -16,20 +16,11 @@ Setting a goal is **not** in this plan. Onboarding PR 1
 
 | PR | Branch | What | Users can | State |
 | --- | --- | --- | --- | --- |
-| 4b-1 | `feat/cancel-goal` | Steps 1–2: press-and-hold and `CancelGoal`, shown nowhere yet | nothing new | Built and tested; PR open for review |
-| 4b-2 | `feat/cancel-goal-menu` | Step 3: the menu's «ביטול היעד» opens `CancelGoal` | cancel a goal | Waits for onboarding PR 1 and 4b-1 to merge |
+| 4b-1 | `feat/cancel-goal` | Steps 1–2: press-and-hold and `CancelGoal`, shown nowhere yet | nothing new | Merged as #211 (`5866d45`) |
+| 4b-2 | `feat/cancel-goal-menu` | Step 3: the menu's «ביטול היעד» opens `CancelGoal`; goal-screen fixes | cancel a goal | PR #214 open for review |
 
-4b-1 is in worktree `fun-saver-cancel-goal`, off `origin/main` (`48c78e9`,
-#207). Neither of its steps needs onboarding PR 1: `CancelGoal` never opens a
-sheet over itself, so `main`'s `useModal` serves it. It moves `isConflict`
-from `use-amount-entry.ts` to `fetch-json.ts`, the same move PR 1 makes, so
-the two merge cleanly.
-
-4b-2 touches `app-mode-context.ts`, `MenuGoal` and `GoalScreens`, which PR 1
-rewrites. It starts fresh off `origin/main` once both PR 1 and 4b-1 have
-merged; first confirm by content that they landed:
-`git grep -n "openModalIds\|isConflict\|GoalScreens\|CancelGoal" origin/main -- src`.
-If a name differs on `main`, `main` wins; update this plan first.
+Both are in worktree `fun-saver-cancel-goal`. 4b-2 started off `origin/main`
+after onboarding PR 1 (#209) and 4b-1 (#211) merged.
 
 Each step: production code → "commit" → first three tests (watched failing)
 → approval → the rest → "commit tests".
@@ -171,10 +162,25 @@ parent controls taller, so add a third account if the list stops short.
 Screenshots (`pr-screenshots`): frame 3a (the menu with the link) and 3c
 (the dialog, and the hold mid-fill with `page.clock` paused) at `PHONE`.
 
+#### As built (#214)
+
+- The holds use real waits, not `page.clock`. `e2e/driver/hold-request.ts`
+  holds the `DELETE` so a test decides its answer, or proves it never left.
+- Escape is tested arriving home from the Method page: one Back after
+  closing reaches `METHOD_ROUTE`, which proves no leftover history entry.
+- «ביטול היעד» sits at the menu's end side with the mockup's spacing, and
+  keeps a 44px tap target through negative margins.
+- Goal screens, from the mockup review: «חזרה» and «קובעים יעד» span the
+  screen through one `GoalScreenButton` (`src/components/Goal/goal-parts.ts`);
+  the goal screen's line ends «ומגיעים! 💪»; «🔒 שומרים עד היעד» is gone,
+  and `SavingsLock` became `SavingsOpen`, shown only once the goal is reached.
+
 ---
 
 ## Open points
 
 - Viewers see «ביטול היעד» and get `403` (spec: deliberate). They see the
   error line.
-- After 4b-2, update `.plans/2026-10-03-saving-goal.md`: 4b done.
+- After #214 merges, update `.plans/2026-10-03-saving-goal.md`: 4b done.
+- Follow-up PR: one standard button on every screen, same size everywhere,
+  only content and colour vary; it replaces `GoalScreenButton`.
