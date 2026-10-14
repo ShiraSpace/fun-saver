@@ -1,4 +1,5 @@
 import { eachDayInclusive } from '@/lib/dates';
+import { withoutAgorot } from '@/lib/money';
 import { balanceChange } from './balance';
 import type { Transaction } from '@/lib/transaction/types';
 import { WALLET_NAMES } from './constants';
@@ -67,7 +68,10 @@ function walletTransactions(
 function totalBalances(walletBalances: WalletBalances, days: string[]): number[] {
   const balancesOfEachWallet = Object.values(walletBalances);
   const totalBalanceOn = (dayIndex: number): number =>
-    balancesOfEachWallet.reduce((totalBalance, balances) => totalBalance + balances[dayIndex], 0);
+    balancesOfEachWallet.reduce(
+      (totalBalance, balances) => totalBalance + withoutAgorot(balances[dayIndex]),
+      0
+    );
 
   return days.map((_, dayIndex) => totalBalanceOn(dayIndex));
 }
