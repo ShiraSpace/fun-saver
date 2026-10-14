@@ -169,7 +169,8 @@ Screenshots (`pr-screenshots`): frame 3a (the menu with the link) and 3c
 - Escape is tested arriving home from the Method page: one Back after
   closing reaches `METHOD_ROUTE`, which proves no leftover history entry.
 - «ביטול היעד» sits at the menu's end side with the mockup's spacing, and
-  keeps a 44px tap target through negative margins.
+  its tap target fills the 32px between the goal row and «עריכת», never
+  overlapping either, since a 44px one took taps from the goal row.
 - Goal screens, from the mockup review: «חזרה» and «קובעים יעד» span the
   screen through one `GoalScreenButton` (`src/components/Goal/goal-parts.ts`);
   the goal screen's line ends «ומגיעים! 💪»; «🔒 שומרים עד היעד» is gone,

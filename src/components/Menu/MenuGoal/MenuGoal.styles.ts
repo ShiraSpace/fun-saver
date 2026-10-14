@@ -11,12 +11,12 @@ export const Chevron = styled.span`
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
 
-export const CancelGoalLink = styled.button`
+export const CancelGoalButton = styled.button`
   display: block;
-  min-height: 44px;
-  margin-block: -8px -11px;
+  min-height: 32px;
+  margin-block: 0 -7px;
   margin-inline-start: auto;
-  padding: 0 6px;
+  padding: 0 6px 4px;
   border: none;
   background: none;
   font-family: inherit;

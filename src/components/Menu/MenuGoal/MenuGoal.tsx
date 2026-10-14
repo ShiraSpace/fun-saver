@@ -11,7 +11,7 @@ import {
 import { GoalProgress } from '@/components/Goal/GoalProgress';
 import { useMenu } from '../use-menu-state';
 import { MENU_GOAL_COPY, MENU_GOAL_TEST_IDS } from './constants';
-import { CancelGoalLink, Chevron, GoalRow } from './MenuGoal.styles';
+import { CancelGoalButton, Chevron, GoalRow } from './MenuGoal.styles';
 
 export function MenuGoal(): JSX.Element {
   const { currentAccount } = useAccounts();
@@ -41,13 +41,13 @@ export function MenuGoal(): JSX.Element {
         <GoalProgress savedTowardGoal={savedTowardGoal} />
         <Chevron aria-hidden="true">{MENU_GOAL_COPY.chevron}</Chevron>
       </GoalRow>
-      <CancelGoalLink
+      <CancelGoalButton
         type="button"
         data-testid={MENU_GOAL_TEST_IDS.cancelGoal}
         onClick={askToCancelGoal}
       >
         {MENU_GOAL_COPY.cancelGoal}
-      </CancelGoalLink>
+      </CancelGoalButton>
     </>
   );
 }
