@@ -129,5 +129,31 @@ describe('the balance history', () => {
         ]);
       });
     });
+
+    describe('when savings holds ₪46.69 and spending ₪50.50', () => {
+      const mockSavingsDeposit = createMockTransaction({
+        id: 'savings',
+        walletId: 'w1',
+        amount: 4669,
+      });
+      const mockSpendingDepositWithAgorot = createMockTransaction({
+        id: 'spending',
+        walletId: 'w2',
+        amount: 5050,
+      });
+      const accountBalanceHistory = balanceHistory({
+        wallets: mockWallets,
+        transactions: [mockSavingsDeposit, mockSpendingDepositWithAgorot],
+        asOf: '2026-01-01',
+      });
+
+      it('totals the wallets after rounding each one down', () => {
+        expect(accountBalanceHistory.totalBalance).toEqual([9600]);
+      });
+
+      it('keeps each wallet’s agorot', () => {
+        expect(accountBalanceHistory.wallets.savings).toEqual([4669]);
+      });
+    });
   });
 });
