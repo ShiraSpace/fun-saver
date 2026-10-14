@@ -92,8 +92,8 @@ Props: `{ savedTowardGoal, onKeep, onFinished }`.
   cancelling.
 - `use-cancel-goal.ts`: `DELETE /api/accounts/[accountId]/goals/[goalId]`
   through `fetchJson`; success or `isConflict` → `onFinished`; any other
-  failure (`403` for a viewer included) → `failed`. It alone reads the
-  request state and hands `isCancelling` and `cancelFailed` to the rest. While cancelling it shows
+  failure (`403` for a viewer included) → `failed`. It hands its
+  `requestState` to the rest, each of which reads what it needs. While cancelling it shows
   the header loader, and keeping the goal does nothing, so Escape and Back
   cannot close a dialog whose cancel is in flight.
 - `use-cancel-goal-dialog.ts`: `useModal` (Escape and Back keep the goal);

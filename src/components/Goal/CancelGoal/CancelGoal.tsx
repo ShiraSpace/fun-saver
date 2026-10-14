@@ -2,6 +2,7 @@
 
 import { JSX, useId } from 'react';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
+import { REQUEST_STATE } from '@/lib/request-state';
 import { BottomSheetScrim } from '@/components/BottomSheet';
 import { GoalBeingCancelled } from './GoalBeingCancelled';
 import { HoldToCancel } from './HoldToCancel';
@@ -20,9 +21,9 @@ export function CancelGoal(props: CancelGoalProps): JSX.Element {
   const titleId = useId();
   const descriptionId = useId();
   const goalCancellation = useCancelGoal(props);
-  const { isCancelling, keepGoal } = goalCancellation;
-  const { dialogRef, keepGoalRef, holdToCancelRef, keepFocusInside } =
-    useCancelGoalDialog(goalCancellation);
+  const { requestState, keepGoal } = goalCancellation;
+  const isCancelling = requestState === REQUEST_STATE.pending;
+  const { dialogRef, keepFocusInside } = useCancelGoalDialog(goalCancellation);
 
   return (
     <>
@@ -43,7 +44,6 @@ export function CancelGoal(props: CancelGoalProps): JSX.Element {
           descriptionId={descriptionId}
         />
         <KeepButton
-          ref={keepGoalRef}
           type="button"
           disabled={isCancelling}
           onClick={keepGoal}
@@ -51,7 +51,7 @@ export function CancelGoal(props: CancelGoalProps): JSX.Element {
         >
           {CANCEL_GOAL_COPY.keepGoal}
         </KeepButton>
-        <HoldToCancel ref={holdToCancelRef} {...goalCancellation} />
+        <HoldToCancel {...goalCancellation} />
       </Card>
     </>
   );

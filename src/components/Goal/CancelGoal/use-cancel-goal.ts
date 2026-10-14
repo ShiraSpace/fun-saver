@@ -8,8 +8,7 @@ import { useReportLoader } from '@/hooks/loader-context';
 import type { CancelGoalProps } from './CancelGoal';
 
 export interface GoalCancellation {
-  isCancelling: boolean;
-  cancelFailed: boolean;
+  requestState: RequestState;
   cancelGoal: () => void;
   keepGoal: () => void;
 }
@@ -52,8 +51,7 @@ export function useCancelGoal({
   };
 
   return {
-    isCancelling,
-    cancelFailed: requestState === REQUEST_STATE.failed,
+    requestState,
     cancelGoal: (): void => void cancelGoal(),
     keepGoal,
   };

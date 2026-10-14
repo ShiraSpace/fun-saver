@@ -1,18 +1,11 @@
-import { createRef } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { pressHoldToCancel, stubPointerSupportEachTest } from '@/test-utils/cancel-goal';
+import { REQUEST_STATE } from '@/lib/request-state';
 import { HoldToCancel } from './HoldToCancel';
 import { HOLD_TO_CANCEL_COPY, HOLD_TO_CANCEL_TEST_IDS } from './constants';
 
 function renderHoldToCancel(): void {
-  render(
-    <HoldToCancel
-      ref={createRef<HTMLButtonElement>()}
-      isCancelling={false}
-      cancelFailed={false}
-      cancelGoal={jest.fn()}
-    />
-  );
+  render(<HoldToCancel requestState={REQUEST_STATE.idle} cancelGoal={jest.fn()} />);
 }
 
 const fill = (): HTMLElement => screen.getByTestId(HOLD_TO_CANCEL_TEST_IDS.fill);

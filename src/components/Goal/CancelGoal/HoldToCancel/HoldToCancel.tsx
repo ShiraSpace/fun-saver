@@ -1,28 +1,21 @@
 'use client';
 
-import { JSX, MouseEvent, Ref } from 'react';
+import { JSX, MouseEvent } from 'react';
+import { REQUEST_STATE } from '@/lib/request-state';
 import type { GoalCancellation } from '../use-cancel-goal';
 import { useHoldToCancel } from './use-hold-to-cancel';
 import { HOLD_TO_CANCEL, HOLD_TO_CANCEL_COPY, HOLD_TO_CANCEL_TEST_IDS } from './constants';
 import { CancelError, Fill, Hint, HoldButton, Label } from './HoldToCancel.styles';
 
-interface HoldToCancelProps extends Pick<
-  GoalCancellation,
-  'isCancelling' | 'cancelFailed' | 'cancelGoal'
-> {
-  ref: Ref<HTMLButtonElement>;
-}
+type HoldToCancelProps = Pick<GoalCancellation, 'requestState' | 'cancelGoal'>;
 
 function withoutLongPressMenu(mouseEvent: MouseEvent<HTMLButtonElement>): void {
   mouseEvent.preventDefault();
 }
 
-export function HoldToCancel({
-  ref,
-  isCancelling,
-  cancelFailed,
-  cancelGoal,
-}: HoldToCancelProps): JSX.Element {
+export function HoldToCancel({ requestState, cancelGoal }: HoldToCancelProps): JSX.Element {
+  const isCancelling = requestState === REQUEST_STATE.pending;
+  const cancelFailed = requestState === REQUEST_STATE.failed;
   const { isHolding, handlers } = useHoldToCancel({
     holdMs: HOLD_TO_CANCEL.holdMs,
     isCancelling,
@@ -37,7 +30,6 @@ export function HoldToCancel({
   return (
     <>
       <HoldButton
-        ref={ref}
         type="button"
         disabled={isCancelling}
         aria-label={HOLD_TO_CANCEL_COPY.ariaLabel}
