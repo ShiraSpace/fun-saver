@@ -13,8 +13,8 @@ export const Chevron = styled.span`
 
 export const CancelGoalLink = styled.button`
   align-self: center;
-  margin-top: 4px;
-  padding: 6px 10px;
+  min-height: 44px;
+  padding: 0 14px;
   border: none;
   background: none;
   font-family: inherit;

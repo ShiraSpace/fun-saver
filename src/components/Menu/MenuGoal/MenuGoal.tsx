@@ -25,7 +25,7 @@ export function MenuGoal(): JSX.Element {
   };
   const setGoal = (): void => openGoalScreen(APP_MODE.settingGoal);
   const viewGoal = (): void => openGoalScreen(APP_MODE.viewingGoal);
-  const cancelGoal = (): void => openGoalScreen(APP_MODE.cancellingGoal);
+  const askToCancelGoal = (): void => openGoalScreen(APP_MODE.cancellingGoal);
 
   if (!savedTowardGoal) {
     return (
@@ -44,7 +44,7 @@ export function MenuGoal(): JSX.Element {
       <CancelGoalLink
         type="button"
         data-testid={MENU_GOAL_TEST_IDS.cancelGoal}
-        onClick={cancelGoal}
+        onClick={askToCancelGoal}
       >
         {MENU_GOAL_COPY.cancelGoal}
       </CancelGoalLink>

@@ -42,19 +42,22 @@ interface GoalOnScreenParams {
 const MODES_SHOWING_THE_GOAL: readonly AppMode[] = [APP_MODE.viewingGoal, APP_MODE.cancellingGoal];
 
 function useGoalOnScreen({ mode, setMode, currentAccount }: GoalOnScreenParams): GoalOnScreen {
-  const savedTowardGoal = currentAccount && savedTowardGoalOf(currentAccount);
-
-  if (!MODES_SHOWING_THE_GOAL.includes(mode) || !currentAccount || !savedTowardGoal) {
-    if (MODES_SHOWING_THE_GOAL.includes(mode)) {
-      setMode(APP_MODE.viewing);
-    }
-
+  if (!MODES_SHOWING_THE_GOAL.includes(mode)) {
     return {};
   }
 
-  return mode === APP_MODE.viewingGoal
-    ? { goalBeingViewed: { accountName: currentAccount.name, savedTowardGoal } }
-    : { goalBeingCancelled: savedTowardGoal };
+  const savedTowardGoal = currentAccount && savedTowardGoalOf(currentAccount);
+
+  if (!currentAccount || !savedTowardGoal) {
+    setMode(APP_MODE.viewing);
+    return {};
+  }
+
+  if (mode === APP_MODE.cancellingGoal) {
+    return { goalBeingCancelled: savedTowardGoal };
+  }
+
+  return { goalBeingViewed: { accountName: currentAccount.name, savedTowardGoal } };
 }
 
 export function useAccountNavigation(
