@@ -50,21 +50,17 @@ describe('GoalBeingCancelled', () => {
     });
   });
 
-  describe('a goal already reached', () => {
-    beforeEach(() => {
-      render(
-        <GoalBeingCancelled
-          savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
-          titleId={mockTitleId}
-          descriptionId={mockDescriptionId}
-        />
-      );
-    });
+  it('only says the money stays for a goal already reached, since savings is already open', () => {
+    render(
+      <GoalBeingCancelled
+        savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
+        titleId={mockTitleId}
+        descriptionId={mockDescriptionId}
+      />
+    );
 
-    it('only says the money stays, since savings is already open', () => {
-      expect(screen.getByTestId(GOAL_BEING_CANCELLED_TEST_IDS.moneyStays)).toHaveTextContent(
-        new RegExp(`^${GOAL_BEING_CANCELLED_COPY.moneyStays}$`)
-      );
-    });
+    expect(screen.getByTestId(GOAL_BEING_CANCELLED_TEST_IDS.moneyStays)).toHaveTextContent(
+      new RegExp(`^${GOAL_BEING_CANCELLED_COPY.moneyStays}$`)
+    );
   });
 });

@@ -47,19 +47,16 @@ describe('CancelGoal, cancelling', () => {
     });
   });
 
-  describe('a completed hold on a goal that has already ended', () => {
-    beforeEach(async () => {
-      mockFetch.mockResolvedValue({
-        ok: false,
-        status: StatusCodes.CONFLICT,
-        json: async () => ({}),
-      });
-      await completeHold();
+  it('finishes a completed hold on a goal that has already ended, since the screen was out of date', async () => {
+    mockFetch.mockResolvedValue({
+      ok: false,
+      status: StatusCodes.CONFLICT,
+      json: async () => ({}),
     });
 
-    it('finishes, since the screen was out of date', () => {
-      expect(mockOnFinished).toHaveBeenCalledTimes(1);
-    });
+    await completeHold();
+
+    expect(mockOnFinished).toHaveBeenCalledTimes(1);
   });
 
   describe('a completed hold that fails after a while', () => {
@@ -111,24 +108,16 @@ describe('CancelGoal, cancelling', () => {
       expect(screen.getByTestId(IS_LOADER_SHOWN_TEST_ID)).toHaveTextContent('true');
     });
 
-    describe('and the dimmed page is tapped', () => {
-      beforeEach(() => {
-        fireEvent.click(screen.getByTestId(CANCEL_GOAL_TEST_IDS.scrim));
-      });
+    it('does not close when the dimmed page is tapped', () => {
+      fireEvent.click(screen.getByTestId(CANCEL_GOAL_TEST_IDS.scrim));
 
-      it('does not close', () => {
-        expect(mockOnKeep).not.toHaveBeenCalled();
-      });
+      expect(mockOnKeep).not.toHaveBeenCalled();
     });
 
-    describe('and Escape is pressed', () => {
-      beforeEach(() => {
-        fireEvent.keyDown(document, { key: ESCAPE_KEY });
-      });
+    it('does not close when Escape is pressed', () => {
+      fireEvent.keyDown(document, { key: ESCAPE_KEY });
 
-      it('does not close', () => {
-        expect(mockOnKeep).not.toHaveBeenCalled();
-      });
+      expect(mockOnKeep).not.toHaveBeenCalled();
     });
   });
 });

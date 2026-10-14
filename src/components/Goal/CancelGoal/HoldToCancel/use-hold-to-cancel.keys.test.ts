@@ -26,57 +26,39 @@ describe('useHoldToCancel, by keyboard', () => {
     hook = renderUseHoldToCancel(mockOnHeld);
   });
 
-  describe('a key held long enough to repeat', () => {
+  it('calls onHeld 2 seconds after the first press of a key held long enough to repeat', () => {
     const mockRepeatAfterMs = 500;
 
-    beforeEach(() => {
-      pressKey();
-      advanceTime(mockRepeatAfterMs);
-      pressKey(' ', true);
-      advanceTime(mockHoldMs - mockRepeatAfterMs);
-    });
+    pressKey();
+    advanceTime(mockRepeatAfterMs);
+    pressKey(' ', true);
+    advanceTime(mockHoldMs - mockRepeatAfterMs);
 
-    it('calls onHeld 2 seconds after the first press', () => {
-      expect(mockOnHeld).toHaveBeenCalledTimes(1);
-    });
+    expect(mockOnHeld).toHaveBeenCalledTimes(1);
   });
 
-  describe('Enter held for 2 seconds', () => {
-    beforeEach(() => {
-      pressKey('Enter');
-      advanceTime(mockHoldMs);
-    });
+  it('calls onHeld when Enter is held for 2 seconds', () => {
+    pressKey('Enter');
+    advanceTime(mockHoldMs);
 
-    it('calls onHeld', () => {
-      expect(mockOnHeld).toHaveBeenCalledTimes(1);
-    });
+    expect(mockOnHeld).toHaveBeenCalledTimes(1);
   });
 
-  describe('another key held for 2 seconds', () => {
-    beforeEach(() => {
-      pressKey('a');
-      advanceTime(mockHoldMs);
-    });
+  it('does not call onHeld when another key is held for 2 seconds', () => {
+    pressKey('a');
+    advanceTime(mockHoldMs);
 
-    it('does not call onHeld', () => {
-      expect(mockOnHeld).not.toHaveBeenCalled();
-    });
+    expect(mockOnHeld).not.toHaveBeenCalled();
   });
 
-  describe('a key hold the button loses focus during, then a new key held', () => {
-    const mockHalfHoldMs = mockHoldMs / 2;
+  it('finishes a new key hold after the button lost focus during the first', () => {
+    pressKey();
+    advanceTime(mockHoldMs / 2);
+    act(() => hook.result.current.handlers.onBlur());
+    pressKey('Enter');
+    advanceTime(mockHoldMs);
 
-    beforeEach(() => {
-      pressKey();
-      advanceTime(mockHalfHoldMs);
-      act(() => hook.result.current.handlers.onBlur());
-      pressKey('Enter');
-      advanceTime(mockHoldMs);
-    });
-
-    it('finishes the new hold', () => {
-      expect(mockOnHeld).toHaveBeenCalledTimes(1);
-    });
+    expect(mockOnHeld).toHaveBeenCalledTimes(1);
   });
 
   describe('a key hold', () => {
@@ -88,39 +70,25 @@ describe('useHoldToCancel, by keyboard', () => {
       advanceTime(mockHoldMs - 1);
     });
 
-    describe('let go of before 2 seconds', () => {
-      beforeEach(() => {
-        letGoOfKey(' ');
-        advanceTime(mockHoldMs);
-      });
+    it('let go of before 2 seconds does not call onHeld', () => {
+      letGoOfKey(' ');
+      advanceTime(mockHoldMs);
 
-      it('does not call onHeld', () => {
-        expect(mockOnHeld).not.toHaveBeenCalled();
-      });
+      expect(mockOnHeld).not.toHaveBeenCalled();
     });
 
-    describe('while the other hold key is let go', () => {
-      beforeEach(() => {
-        letGoOfKey('Enter');
-        advanceTime(1);
-      });
+    it('carries on and calls onHeld while the other hold key is let go', () => {
+      letGoOfKey('Enter');
+      advanceTime(1);
 
-      it('carries on and calls onHeld', () => {
-        expect(mockOnHeld).toHaveBeenCalledTimes(1);
-      });
+      expect(mockOnHeld).toHaveBeenCalledTimes(1);
     });
 
-    describe('while the other hold key is pressed too', () => {
-      const mockSecondPressAfterMs = 1;
+    it('does not start over when the other hold key is pressed too, so onHeld comes on time', () => {
+      pressKey('Enter');
+      advanceTime(1);
 
-      beforeEach(() => {
-        pressKey('Enter');
-        advanceTime(mockSecondPressAfterMs);
-      });
-
-      it('does not start the hold over, so onHeld comes on time', () => {
-        expect(mockOnHeld).toHaveBeenCalledTimes(1);
-      });
+      expect(mockOnHeld).toHaveBeenCalledTimes(1);
     });
   });
 });

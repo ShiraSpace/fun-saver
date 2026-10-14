@@ -8,9 +8,9 @@ function renderHoldToCancel(): void {
   render(<HoldToCancel requestState={REQUEST_STATE.idle} cancelGoal={jest.fn()} />);
 }
 
-const fill = (): HTMLElement => screen.getByTestId(HOLD_TO_CANCEL_TEST_IDS.fill);
-
 describe('HoldToCancel', () => {
+  stubPointerSupportEachTest();
+
   describe('at rest', () => {
     beforeEach(() => {
       renderHoldToCancel();
@@ -27,16 +27,13 @@ describe('HoldToCancel', () => {
     });
   });
 
-  describe('while held', () => {
-    stubPointerSupportEachTest();
+  it('fills while held', () => {
+    renderHoldToCancel();
+    pressHoldToCancel();
 
-    beforeEach(() => {
-      renderHoldToCancel();
-      pressHoldToCancel();
-    });
-
-    it('fills', () => {
-      expect(fill()).toHaveAttribute('data-filling', 'true');
-    });
+    expect(screen.getByTestId(HOLD_TO_CANCEL_TEST_IDS.fill)).toHaveAttribute(
+      'data-filling',
+      'true'
+    );
   });
 });

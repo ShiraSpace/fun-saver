@@ -22,6 +22,7 @@ function pressTab(from: HTMLElement, shiftKey = false): void {
 describe('CancelGoal', () => {
   const mockOnKeep = jest.fn();
 
+  restoreFetchAfterEach();
   stubPointerSupportEachTest();
   fakeTimersEachTest();
 
@@ -48,85 +49,55 @@ describe('CancelGoal', () => {
     });
   });
 
-  describe('Escape', () => {
-    beforeEach(() => {
-      fireEvent.keyDown(document, { key: ESCAPE_KEY });
-    });
+  it('keeps the goal on Escape', () => {
+    fireEvent.keyDown(document, { key: ESCAPE_KEY });
 
-    it('keeps the goal', () => {
-      expect(mockOnKeep).toHaveBeenCalledTimes(1);
-    });
+    expect(mockOnKeep).toHaveBeenCalledTimes(1);
   });
 
-  describe('a tap on keeping the goal', () => {
-    beforeEach(() => {
-      fireEvent.click(keepGoalButton());
-    });
+  it('keeps the goal on a tap on keeping the goal', () => {
+    fireEvent.click(keepGoalButton());
 
-    it('keeps the goal', () => {
-      expect(mockOnKeep).toHaveBeenCalledTimes(1);
-    });
+    expect(mockOnKeep).toHaveBeenCalledTimes(1);
   });
 
-  describe('a tap on the dimmed page behind', () => {
-    beforeEach(() => {
-      fireEvent.click(screen.getByTestId(CANCEL_GOAL_TEST_IDS.scrim));
-    });
+  it('keeps the goal on a tap on the dimmed page behind', () => {
+    fireEvent.click(screen.getByTestId(CANCEL_GOAL_TEST_IDS.scrim));
 
-    it('keeps the goal', () => {
-      expect(mockOnKeep).toHaveBeenCalledTimes(1);
-    });
+    expect(mockOnKeep).toHaveBeenCalledTimes(1);
   });
 
-  describe('a quick tap on the hold button', () => {
+  it('does not cancel the goal on a quick tap on the hold button', () => {
     const mockFetch = jest.fn();
+    stubFetch(mockFetch);
 
-    restoreFetchAfterEach();
-
-    beforeEach(() => {
-      stubFetch(mockFetch);
-      pressHoldToCancel();
-      fireEvent.pointerUp(holdToCancelButton());
-      fireEvent.click(holdToCancelButton());
-      act(() => {
-        jest.advanceTimersByTime(HOLD_TO_CANCEL.holdMs);
-      });
+    pressHoldToCancel();
+    fireEvent.pointerUp(holdToCancelButton());
+    fireEvent.click(holdToCancelButton());
+    act(() => {
+      jest.advanceTimersByTime(HOLD_TO_CANCEL.holdMs);
     });
 
-    it('does not cancel the goal', () => {
-      expect(mockFetch).not.toHaveBeenCalled();
-    });
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   describe('Tab', () => {
-    describe('from the hold button', () => {
-      beforeEach(() => {
-        pressTab(holdToCancelButton());
-      });
+    it('from the hold button comes back round to keeping the goal', () => {
+      pressTab(holdToCancelButton());
 
-      it('comes back round to keeping the goal', () => {
-        expect(keepGoalButton()).toHaveFocus();
-      });
+      expect(keepGoalButton()).toHaveFocus();
     });
 
-    describe('backwards from keeping the goal', () => {
-      beforeEach(() => {
-        pressTab(keepGoalButton(), true);
-      });
+    it('backwards from keeping the goal comes back round to the hold button', () => {
+      pressTab(keepGoalButton(), true);
 
-      it('comes back round to the hold button', () => {
-        expect(holdToCancelButton()).toHaveFocus();
-      });
+      expect(holdToCancelButton()).toHaveFocus();
     });
 
-    describe('from the dialog itself', () => {
-      beforeEach(() => {
-        pressTab(screen.getByTestId(CANCEL_GOAL_TEST_IDS.container));
-      });
+    it('from the dialog itself stays inside, on keeping the goal', () => {
+      pressTab(screen.getByTestId(CANCEL_GOAL_TEST_IDS.container));
 
-      it('stays inside, on keeping the goal', () => {
-        expect(keepGoalButton()).toHaveFocus();
-      });
+      expect(keepGoalButton()).toHaveFocus();
     });
   });
 });

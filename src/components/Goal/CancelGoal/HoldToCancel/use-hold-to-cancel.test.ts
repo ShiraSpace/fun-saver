@@ -48,27 +48,19 @@ describe('useHoldToCancel', () => {
     });
   });
 
-  describe('a pointer still held', () => {
-    beforeEach(() => {
-      pressPointer();
-    });
+  it('reports a hold while the pointer is still held', () => {
+    pressPointer();
 
-    it('reports a hold', () => {
-      expect(hook.result.current.isHolding).toBe(true);
-    });
+    expect(hook.result.current.isHolding).toBe(true);
   });
 
-  describe('a pointer let go before 2 seconds', () => {
-    beforeEach(() => {
-      pressPointer();
-      advanceTime(mockHoldMs - 1);
-      act(() => hook.result.current.handlers.onPointerUp());
-      advanceTime(mockHoldMs);
-    });
+  it('does not call onHeld when the pointer is let go before 2 seconds', () => {
+    pressPointer();
+    advanceTime(mockHoldMs - 1);
+    act(() => hook.result.current.handlers.onPointerUp());
+    advanceTime(mockHoldMs);
 
-    it('does not call onHeld', () => {
-      expect(mockOnHeld).not.toHaveBeenCalled();
-    });
+    expect(mockOnHeld).not.toHaveBeenCalled();
   });
 
   describe('a hold interrupted before 2 seconds', () => {
@@ -79,85 +71,55 @@ describe('useHoldToCancel', () => {
       advanceTime(mockHoldMs);
     };
 
-    describe('by pointercancel', () => {
-      beforeEach(() => {
-        holdThenInterrupt(() => hook.result.current.handlers.onPointerCancel());
-      });
+    it('by pointercancel does not call onHeld', () => {
+      holdThenInterrupt(() => hook.result.current.handlers.onPointerCancel());
 
-      it('does not call onHeld', () => {
-        expect(mockOnHeld).not.toHaveBeenCalled();
-      });
+      expect(mockOnHeld).not.toHaveBeenCalled();
     });
 
-    describe('by the pointer leaving the button', () => {
-      beforeEach(() => {
-        holdThenInterrupt(() => hook.result.current.handlers.onPointerLeave());
-      });
+    it('by the pointer leaving the button does not call onHeld', () => {
+      holdThenInterrupt(() => hook.result.current.handlers.onPointerLeave());
 
-      it('does not call onHeld', () => {
-        expect(mockOnHeld).not.toHaveBeenCalled();
-      });
+      expect(mockOnHeld).not.toHaveBeenCalled();
     });
 
-    describe('by the button losing focus', () => {
-      beforeEach(() => {
-        holdThenInterrupt(() => hook.result.current.handlers.onBlur());
-      });
+    it('by the button losing focus does not call onHeld', () => {
+      holdThenInterrupt(() => hook.result.current.handlers.onBlur());
 
-      it('does not call onHeld', () => {
-        expect(mockOnHeld).not.toHaveBeenCalled();
-      });
+      expect(mockOnHeld).not.toHaveBeenCalled();
     });
   });
 
-  describe('a pointer press', () => {
+  it('releases the pointer capture on a press, so sliding off the button lets go', () => {
     const mockPointerDown = createMockPointerDown();
 
-    beforeEach(() => {
-      act(() => hook.result.current.handlers.onPointerDown(mockPointerDown));
-    });
+    act(() => hook.result.current.handlers.onPointerDown(mockPointerDown));
 
-    it('releases the pointer capture, so sliding off the button lets go', () => {
-      expect(mockPointerDown.currentTarget.releasePointerCapture).toHaveBeenCalledWith(
-        mockPointerId
-      );
-    });
+    expect(mockPointerDown.currentTarget.releasePointerCapture).toHaveBeenCalledWith(mockPointerId);
   });
 
-  describe('a secondary mouse button held for 2 seconds', () => {
+  it('does not call onHeld when a secondary mouse button is held for 2 seconds', () => {
     const mockSecondaryButton = 2;
 
-    beforeEach(() => {
-      pressPointer(mockSecondaryButton);
-      advanceTime(mockHoldMs);
-    });
+    pressPointer(mockSecondaryButton);
+    advanceTime(mockHoldMs);
 
-    it('does not call onHeld', () => {
-      expect(mockOnHeld).not.toHaveBeenCalled();
-    });
+    expect(mockOnHeld).not.toHaveBeenCalled();
   });
 
-  describe('a hold while the goal is being cancelled', () => {
-    beforeEach(() => {
-      hook = renderUseHoldToCancel(mockOnHeld, true);
-      pressPointer();
-      advanceTime(mockHoldMs);
-    });
+  it('does not call onHeld for a hold while the goal is being cancelled', () => {
+    hook = renderUseHoldToCancel(mockOnHeld, true);
+    pressPointer();
+    advanceTime(mockHoldMs);
 
-    it('does not call onHeld', () => {
-      expect(mockOnHeld).not.toHaveBeenCalled();
-    });
+    expect(mockOnHeld).not.toHaveBeenCalled();
   });
 
-  describe('a hold whose button goes away', () => {
-    beforeEach(() => {
-      pressPointer();
-      hook.unmount();
-      advanceTime(mockHoldMs);
-    });
+  it('does not call onHeld when the button goes away mid-hold', () => {
+    pressPointer();
+    hook.unmount();
+    advanceTime(mockHoldMs);
 
-    it('does not call onHeld', () => {
-      expect(mockOnHeld).not.toHaveBeenCalled();
-    });
+    expect(mockOnHeld).not.toHaveBeenCalled();
   });
 });
