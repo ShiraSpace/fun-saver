@@ -41,6 +41,10 @@ describe('MenuGoal', () => {
 
       expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.settingGoal);
     });
+
+    it('offers no way to cancel a goal', () => {
+      expect(screen.queryByTestId(MENU_GOAL_TEST_IDS.cancelGoal)).not.toBeInTheDocument();
+    });
   });
 
   describe('with a goal', () => {
@@ -77,6 +81,18 @@ describe('MenuGoal', () => {
       fireEvent.click(screen.getByTestId(MENU_GOAL_TEST_IDS.row));
 
       expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.viewingGoal);
+    });
+
+    it('offers to cancel the goal', () => {
+      expect(screen.getByTestId(MENU_GOAL_TEST_IDS.cancelGoal)).toHaveTextContent(
+        MENU_GOAL_COPY.cancelGoal
+      );
+    });
+
+    it('opens the screen that cancels the goal when «ביטול היעד» is tapped', () => {
+      fireEvent.click(screen.getByTestId(MENU_GOAL_TEST_IDS.cancelGoal));
+
+      expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.cancellingGoal);
     });
   });
 });
