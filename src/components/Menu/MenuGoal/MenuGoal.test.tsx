@@ -89,6 +89,12 @@ describe('MenuGoal', () => {
       );
     });
 
+    it('closes the menu when «ביטול היעד» is tapped', () => {
+      fireEvent.click(screen.getByTestId(MENU_GOAL_TEST_IDS.cancelGoal));
+
+      expect(mockCloseMenu).toHaveBeenCalled();
+    });
+
     it('opens the screen that cancels the goal when «ביטול היעד» is tapped', () => {
       fireEvent.click(screen.getByTestId(MENU_GOAL_TEST_IDS.cancelGoal));
 

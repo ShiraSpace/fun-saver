@@ -1,6 +1,7 @@
-import { renderHook } from '@testing-library/react';
-import { toggleMenu, WithToggleableMenu } from '@/test-utils/menu';
-import { useOnMenuClose } from './use-menu-state';
+import { JSX } from 'react';
+import { fireEvent, render, renderHook, screen } from '@testing-library/react';
+import { menuToggle, toggleMenu, WithToggleableMenu } from '@/test-utils/menu';
+import { useMenu, useOnMenuClose } from './use-menu-state';
 
 const mockOnMenuClose = jest.fn();
 
@@ -21,5 +22,28 @@ describe('useOnMenuClose', () => {
     toggleMenu();
 
     expect(mockOnMenuClose).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('closing the menu', () => {
+  const mockCloseMenuTestId = 'mock-close-menu';
+
+  function CloseMenuButton(): JSX.Element {
+    const { closeMenu } = useMenu();
+
+    return <button data-testid={mockCloseMenuTestId} onClick={closeMenu} />;
+  }
+
+  it('puts the focus on the menu toggle', () => {
+    render(
+      <WithToggleableMenu>
+        <CloseMenuButton />
+      </WithToggleableMenu>
+    );
+    toggleMenu();
+
+    fireEvent.click(screen.getByTestId(mockCloseMenuTestId));
+
+    expect(menuToggle()).toHaveFocus();
   });
 });

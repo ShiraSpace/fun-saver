@@ -33,6 +33,10 @@ export function WithToggleableMenu({ children }: WithToggleableMenuProps): JSX.E
   );
 }
 
+export function menuToggle(): HTMLElement {
+  return screen.getByTestId(MENU_TOGGLE_TESTID);
+}
+
 export function toggleMenu(): void {
   fireEvent.click(screen.getByTestId(MENU_TOGGLE_TESTID));
 }

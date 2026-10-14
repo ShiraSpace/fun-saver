@@ -4,6 +4,7 @@ import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
 import type { AccountNavigation } from '@/hooks/use-account-navigation';
 import { SET_GOAL_TEST_IDS } from '@/components/Goal/SetGoal/constants';
 import { VIEW_GOAL_TEST_IDS } from '@/components/Goal/ViewGoal/constants';
+import { CANCEL_GOAL_TEST_IDS } from '@/components/Goal/CancelGoal/constants';
 import { APP_MODE } from '../app-mode-context';
 import { GoalScreens } from './GoalScreens';
 
@@ -53,5 +54,11 @@ describe('GoalScreens', () => {
     it('draws the goal screen', () => {
       expect(screen.getByTestId(VIEW_GOAL_TEST_IDS.container)).toBeInTheDocument();
     });
+  });
+
+  it('draws the screen that cancels the goal while cancelling it', () => {
+    renderGoalScreens({ goalBeingCancelled: createMockSavedTowardGoal() });
+
+    expect(screen.getByTestId(CANCEL_GOAL_TEST_IDS.container)).toBeInTheDocument();
   });
 });
