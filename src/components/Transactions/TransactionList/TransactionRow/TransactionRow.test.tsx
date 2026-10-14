@@ -13,6 +13,11 @@ import { TransactionRow } from './TransactionRow';
 
 describe('a transaction row', () => {
   const [mockDayOfInterest] = mockMonthOfInterest;
+  const [mockInterestRow] = transactionListRowsFor(
+    [mockDayOfInterest],
+    INTEREST_MODE.daily,
+    mockDayOfInterest.occurredAt
+  );
 
   function row(): HTMLElement {
     return screen.getByTestId(TRANSACTION_ROW_TEST_IDS.row);
@@ -23,12 +28,6 @@ describe('a transaction row', () => {
   }
 
   describe('a day of interest', () => {
-    const [mockInterestRow] = transactionListRowsFor(
-      [mockDayOfInterest],
-      INTEREST_MODE.daily,
-      mockDayOfInterest.occurredAt
-    );
-
     beforeEach(() => {
       render(<TransactionRow transactionListRow={mockInterestRow} />);
     });
@@ -76,14 +75,11 @@ describe('a transaction row', () => {
   });
 
   it('floors the balance to whole shekels', () => {
-    const [mockInterestRow] = transactionListRowsFor(
-      [mockDayOfInterest],
-      INTEREST_MODE.daily,
-      mockDayOfInterest.occurredAt
-    );
     render(<TransactionRow transactionListRow={{ ...mockInterestRow, balance: 16060 }} />);
 
-    expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balance)).toHaveTextContent('₪160');
+    expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balance)).toHaveTextContent(
+      `${MONEY_COPY.currencySign}160`
+    );
   });
 
   it.each(createMockWallets())(
