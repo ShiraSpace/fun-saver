@@ -119,4 +119,44 @@ describe('the balance over a range', () => {
       expect(balanceOverRange(accountBalanceHistory, 7)).toEqual(accountBalanceHistory);
     });
   });
+
+  describe('when the balances have agorot', () => {
+    it('counts the agorot savings gained, though its whole shekels did not move', () => {
+      const mockOpeningDepositWithAgorot = createMockTransaction({ id: 'opening', amount: 4610 });
+      const mockInterest = createMockTransaction({
+        id: 'interest',
+        amount: 80,
+        occurredAt: '2026-01-10',
+      });
+      const accountBalanceHistory = balanceHistory({
+        wallets: mockWallets,
+        transactions: [mockOpeningDepositWithAgorot, mockInterest],
+        asOf: '2026-01-10',
+      });
+
+      expect(totalBalanceChange(accountBalanceHistory, 7)).toBe(mockInterest.amount);
+    });
+
+    it('counts the agorot every wallet gained', () => {
+      const mockSavingsDeposit = createMockTransaction({ id: 'savings', amount: 4669 });
+      const mockSpendingDeposit = createMockTransaction({
+        id: 'spending',
+        walletId: 'w2',
+        amount: 5050,
+      });
+      const mockLaterSpendingDeposit = createMockTransaction({
+        id: 'later-spending',
+        walletId: 'w2',
+        amount: 30,
+        occurredAt: '2026-01-10',
+      });
+      const accountBalanceHistory = balanceHistory({
+        wallets: mockWallets,
+        transactions: [mockSavingsDeposit, mockSpendingDeposit, mockLaterSpendingDeposit],
+        asOf: '2026-01-10',
+      });
+
+      expect(totalBalanceChange(accountBalanceHistory, 7)).toBe(mockLaterSpendingDeposit.amount);
+    });
+  });
 });
