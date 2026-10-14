@@ -57,15 +57,19 @@ describe('AccountRow', () => {
     });
   });
 
-  it('totals the balances after rounding each one down', () => {
-    render(
-      <AccountRow
-        account={mockAccountSummaryWithAgorot}
-        isCurrent={false}
-        onSelect={mockOnSelect}
-      />
-    );
+  describe('when a balance has agorot', () => {
+    beforeEach(() => {
+      render(
+        <AccountRow
+          account={mockAccountSummaryWithAgorot}
+          isCurrent={false}
+          onSelect={mockOnSelect}
+        />
+      );
+    });
 
-    expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.total)).toHaveTextContent('₪106');
+    it('totals the balances after rounding each one down', () => {
+      expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.total)).toHaveTextContent('₪106');
+    });
   });
 });

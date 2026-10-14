@@ -83,6 +83,6 @@ export const mockWalletShares: number[] = [53, 31, 16];
 
 export const mockWalletSummariesWithAgorot: WalletSummary[] = [
   createMockWalletSummary({ id: 'w1', name: 'savings', balance: 4669 }),
-  createMockWalletSummary({ id: 'w2', name: 'spending', balance: 5000 }),
+  createMockWalletSummary({ id: 'w2', name: 'spending', balance: 5050 }),
   createMockWalletSummary({ id: 'w3', name: 'goodDeeds', balance: 1000 }),
 ];
