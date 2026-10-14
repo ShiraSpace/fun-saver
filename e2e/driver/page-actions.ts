@@ -1,4 +1,4 @@
-import { type Page } from 'puppeteer';
+import { type KeyInput, type Page } from 'puppeteer';
 import { THEME_COOKIE } from '@/lib/cookies';
 import { findByTest, requireMatch } from './page-element';
 
@@ -85,4 +85,28 @@ export async function storeTheme({ page, url, themeId }: StoredTheme): Promise<v
     domain: new URL(url).hostname,
     path: '/',
   });
+}
+
+interface HeldPress {
+  page: Page;
+  testId: string;
+  holdMs: number;
+}
+
+export async function pressAndHold({ page, testId, holdMs }: HeldPress): Promise<void> {
+  const element = await findByTest(page, testId);
+  const box = await element.boundingBox();
+
+  if (!box) {
+    throw new Error(`${testId} has no box to press`);
+  }
+
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await new Promise((resolve) => setTimeout(resolve, holdMs));
+  await page.mouse.up();
+}
+
+export async function pressKey(page: Page, key: KeyInput): Promise<void> {
+  await page.keyboard.press(key);
 }

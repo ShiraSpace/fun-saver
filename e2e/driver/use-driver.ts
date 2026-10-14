@@ -22,6 +22,7 @@ import { ChildAccountDriver } from './child-account-driver';
 import { MethodDriver } from './method-driver';
 import { LoadingShellDriver } from './loading-shell-driver';
 import { GoalDriver } from './goal-driver';
+import { CancelGoalDriver } from './cancel-goal-driver';
 import { AnotherPhoneDriver } from './another-phone-driver';
 import { startServer, type RunningServer } from '../server';
 
@@ -51,6 +52,7 @@ export interface AppDriver {
   method: MethodDriver;
   loadingShell: LoadingShellDriver;
   goal: GoalDriver;
+  cancelGoal: CancelGoalDriver;
 }
 
 export interface TestDriver extends AppDriver {
@@ -59,10 +61,11 @@ export interface TestDriver extends AppDriver {
 
 export function createAppDriver(appBrowser: AppBrowser): AppDriver {
   const account = new AccountDriver(appBrowser);
+  const menu = new MenuDriver(appBrowser);
 
   return {
     appBrowser,
-    menu: new MenuDriver(appBrowser),
+    menu,
     header: new HeaderDriver(appBrowser),
     emptyState: new EmptyStateDriver(appBrowser),
     createAccount: new AccountFormDriver(appBrowser, CREATE_ACCOUNT_TEST_IDS.container),
@@ -73,6 +76,7 @@ export function createAppDriver(appBrowser: AppBrowser): AppDriver {
     method: new MethodDriver(appBrowser),
     loadingShell: new LoadingShellDriver(appBrowser),
     goal: new GoalDriver(appBrowser, account),
+    cancelGoal: new CancelGoalDriver(appBrowser, menu),
   };
 }
 

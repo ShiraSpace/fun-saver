@@ -100,6 +100,10 @@ export class GoalDriver {
     return this.appBrowser.exists(WALLET_CARD_TEST_IDS.lock);
   }
 
+  waitForSavingsLockGone(): Promise<void> {
+    return this.appBrowser.waits.testIdGone(WALLET_CARD_TEST_IDS.lock);
+  }
+
   async startWithdrawal(amountShekels: number): Promise<void> {
     await this.account.openTransactionDrawer();
     await this.account.switchToWithdrawal();
