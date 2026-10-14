@@ -8,19 +8,21 @@ export interface HeldRequest {
 
 export async function holdRequest(page: Page, method: string): Promise<HeldRequest> {
   const heldRequests: HTTPRequest[] = [];
-  const isHeld = (request: HTTPRequest): boolean => request.method() === method;
+  let markRequested = (): void => {};
+  const requested = new Promise<void>((resolve) => {
+    markRequested = resolve;
+  });
 
   await page.setRequestInterception(true);
 
   page.on('request', (request) => {
-    if (isHeld(request)) {
+    if (request.method() === method) {
       heldRequests.push(request);
+      markRequested();
       return;
     }
     void request.continue();
   });
-
-  const requested = page.waitForRequest(isHeld).then(() => {});
 
   const answer = async (status: number): Promise<void> => {
     await Promise.all(

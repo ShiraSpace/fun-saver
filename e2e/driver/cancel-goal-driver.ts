@@ -19,6 +19,7 @@ export class CancelGoalDriver {
   ) {}
 
   async openFromMenu(): Promise<void> {
+    await this.menu.open();
     await this.appBrowser.click(MENU_GOAL_TEST_IDS.cancelGoal);
     await this.appBrowser.waits.testId(CANCEL_GOAL_TEST_IDS.container);
     await this.menu.waitForClosed();

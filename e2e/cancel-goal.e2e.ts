@@ -21,7 +21,6 @@ describe('a parent holds «ביטול היעד» for 2 seconds', () => {
   const { menu, goal, cancelGoal } = useDriver(mockStoreWithGoal);
 
   beforeEach(async () => {
-    await menu.open();
     await cancelGoal.openFromMenu();
     await cancelGoal.holdToCancel();
     await cancelGoal.waitForDialogGone();
@@ -40,10 +39,9 @@ describe('a parent holds «ביטול היעד» for 2 seconds', () => {
 });
 
 describe('cancelling a goal', () => {
-  const { menu, cancelGoal } = useDriver(mockStoreWithGoal);
+  const { cancelGoal } = useDriver(mockStoreWithGoal);
 
   it('needs more than a tap on the hold button', async () => {
-    await menu.open();
     await cancelGoal.openFromMenu();
     const mockCancel = await cancelGoal.holdTheCancel();
     await cancelGoal.tapHoldToCancel();
@@ -55,11 +53,10 @@ describe('cancelling a goal', () => {
 
 describe('a parent who came home from the Method page presses Escape in the cancel dialog', () => {
   const driver = useDriver(mockStoreWithGoal);
-  const { menu, goal, cancelGoal } = driver;
+  const { goal, cancelGoal } = driver;
 
   beforeEach(async () => {
     await cameHomeFromTheMethodPage(driver);
-    await menu.open();
     await cancelGoal.openFromMenu();
     await cancelGoal.pressEscape();
     await cancelGoal.waitForDialogGone();
@@ -79,11 +76,10 @@ describe('a parent who came home from the Method page presses Escape in the canc
 
 describe('a parent presses Back while the cancel is on its way, and it fails', () => {
   const driver = useDriver(mockStoreWithGoal);
-  const { menu, cancelGoal } = driver;
+  const { cancelGoal } = driver;
   let mockCancel: HeldRequest;
 
   beforeEach(async () => {
-    await menu.open();
     await cancelGoal.openFromMenu();
     mockCancel = await cancelGoal.holdTheCancel();
     await cancelGoal.holdToCancel();
