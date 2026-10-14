@@ -4,13 +4,13 @@ import { JSX } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { savingsWithoutAgorot } from '@/lib/wallet/wallet';
-import { Money } from '@/components/Money';
 import { GoalProgress } from '@/components/Goal/GoalProgress';
 import { GOAL_PROGRESS_SIZE } from '@/components/Goal/GoalProgress/constants';
 import { PiggyBank, piggyBankFillOf } from './PiggyBank';
 import { PrincipalAndInterest } from './PrincipalAndInterest';
+import { SavingsBalance } from './SavingsBalance';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
-import { Card, GoalSpace, PiggyBankSpace, Total } from './ChildSavings.styles';
+import { Card, GoalSpace, PiggyBankSpace } from './ChildSavings.styles';
 
 interface ChildSavingsProps {
   savings: WalletSummary;
@@ -35,9 +35,7 @@ export function ChildSavings({ savings, savedTowardGoal }: ChildSavingsProps): J
       <PiggyBankSpace>
         <PiggyBank piggyBankFill={piggyBankFill} />
       </PiggyBankSpace>
-      <Total>
-        <Money amountAgorot={balance} testId={CHILD_SAVINGS_TEST_IDS.balance} />
-      </Total>
+      <SavingsBalance balance={balance} />
       {goalProgress}
       <PrincipalAndInterest principal={principal} interestEarned={interestEarned} />
     </Card>

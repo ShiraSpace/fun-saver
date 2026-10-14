@@ -13,13 +13,6 @@ export const PiggyBankSpace = styled.div`
   margin: 0 auto 4px;
 `;
 
-export const Total = styled.div`
-  margin: 2px 0 0;
-  font-size: ${({ theme }): number => theme.typography.display}px;
-  font-weight: 800;
-  color: ${({ theme }): string => theme.colors.textStrong};
-`;
-
 export const GoalSpace = styled.div`
   margin: 8px 2px 0;
   text-align: start;

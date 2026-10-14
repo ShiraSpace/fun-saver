@@ -13,8 +13,9 @@ import {
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
 import { goalPictureGlow } from '@/test-utils/goal-picture';
 import { ChildSavings } from './ChildSavings';
-import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
+import { CHILD_SAVINGS_COPY } from './constants';
 import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
+import { SAVINGS_BALANCE_TEST_IDS } from './SavingsBalance/constants';
 
 describe('ChildSavings', () => {
   describe('savings of ₪148.90, ₪6.40 of it interest', () => {
@@ -30,7 +31,7 @@ describe('ChildSavings', () => {
     });
 
     it('shows the savings without agorot, never rounded up', () => {
-      expect(screen.getByTestId(CHILD_SAVINGS_TEST_IDS.balance)).toHaveTextContent('₪148');
+      expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.balance)).toHaveTextContent('₪148');
     });
 
     it('shows what the child put in: the savings less the interest', () => {
