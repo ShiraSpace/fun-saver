@@ -10,6 +10,7 @@ export const GOAL_HERO_TEST_IDS = {
 export const GOAL_HERO_COPY = {
   savedSuffix: 'נחסכו',
   amountPrefix: 'מתוך',
+  cheer: 'ומגיעים! 💪',
   canBuy: (goalName: string, emoji: string): string =>
     `כל הכבוד! אפשר לקנות את „${goalName}” ${emoji}`,
 } as const;

@@ -2,14 +2,13 @@
 
 import { JSX } from 'react';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
-import { PrimaryButton } from '@/components/PrimaryButton';
 import { CloseButton } from '@/components/CloseButton';
 import { ScreenTitle } from '@/components/ScreenTitle';
 import { GoalDialog } from '../GoalDialog';
 import { GoalHero } from './GoalHero';
 import { SavingsLock } from './SavingsLock';
 import { VIEW_GOAL_COPY, VIEW_GOAL_TEST_IDS } from './constants';
-import { ReachedHeading } from './ViewGoal.styles';
+import { BackButton, ReachedHeading } from './ViewGoal.styles';
 
 interface ViewGoalProps {
   accountName: string;
@@ -33,9 +32,9 @@ export function ViewGoal({ accountName, savedTowardGoal, onClose }: ViewGoalProp
       {reachedHeading}
       <GoalHero savedTowardGoal={savedTowardGoal} />
       <SavingsLock reached={reached} />
-      <PrimaryButton type="button" data-testid={VIEW_GOAL_TEST_IDS.back} onClick={onClose}>
+      <BackButton type="button" data-testid={VIEW_GOAL_TEST_IDS.back} onClick={onClose}>
         {VIEW_GOAL_COPY.back}
-      </PrimaryButton>
+      </BackButton>
     </GoalDialog>
   );
 }
