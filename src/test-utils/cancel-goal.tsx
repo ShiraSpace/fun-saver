@@ -9,34 +9,22 @@ import {
   PRIMARY_POINTER_BUTTON,
 } from '@/components/Goal/CancelGoal/HoldToCancel/constants';
 
-function setWindowPointerEvent(pointerEvent: unknown): void {
-  Object.defineProperty(window, 'PointerEvent', {
-    value: pointerEvent,
-    configurable: true,
-    writable: true,
-  });
+function setProperty(target: object, key: string, value: unknown): void {
+  Object.defineProperty(target, key, { value, configurable: true, writable: true });
 }
 
-function setReleasePointerCapture(releasePointerCapture: unknown): void {
-  Object.defineProperty(Element.prototype, 'releasePointerCapture', {
-    value: releasePointerCapture,
-    configurable: true,
-    writable: true,
-  });
-}
-
-export function stubPointerEventEachTest(): void {
+export function stubPointerSupportEachTest(): void {
   const originalPointerEvent = window.PointerEvent;
   const originalReleasePointerCapture = Element.prototype.releasePointerCapture;
 
   beforeEach(() => {
-    setWindowPointerEvent(MouseEvent);
-    setReleasePointerCapture(jest.fn());
+    setProperty(window, 'PointerEvent', MouseEvent);
+    setProperty(Element.prototype, 'releasePointerCapture', jest.fn());
   });
 
   afterEach(() => {
-    setWindowPointerEvent(originalPointerEvent);
-    setReleasePointerCapture(originalReleasePointerCapture);
+    setProperty(window, 'PointerEvent', originalPointerEvent);
+    setProperty(Element.prototype, 'releasePointerCapture', originalReleasePointerCapture);
   });
 }
 

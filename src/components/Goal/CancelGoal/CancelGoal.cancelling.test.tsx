@@ -9,7 +9,7 @@ import {
   holdToCancelButton,
   keepGoalButton,
   renderCancelGoal,
-  stubPointerEventEachTest,
+  stubPointerSupportEachTest,
 } from '@/test-utils/cancel-goal';
 import { ESCAPE_KEY } from '@/hooks/constants';
 import { CANCEL_GOAL_TEST_IDS } from './constants';
@@ -21,7 +21,7 @@ describe('CancelGoal, cancelling', () => {
   const mockOnFinished = jest.fn();
 
   restoreFetchAfterEach();
-  stubPointerEventEachTest();
+  stubPointerSupportEachTest();
   fakeTimersEachTest();
 
   beforeEach(() => {

@@ -7,7 +7,7 @@ import {
   keepGoalButton,
   pressHoldToCancel,
   renderCancelGoal,
-  stubPointerEventEachTest,
+  stubPointerSupportEachTest,
 } from '@/test-utils/cancel-goal';
 import { ESCAPE_KEY, TAB_KEY } from '@/hooks/constants';
 import { CANCEL_GOAL_TEST_IDS } from './constants';
@@ -22,7 +22,7 @@ function pressTab(from: HTMLElement, shiftKey = false): void {
 describe('CancelGoal', () => {
   const mockOnKeep = jest.fn();
 
-  stubPointerEventEachTest();
+  stubPointerSupportEachTest();
   fakeTimersEachTest();
 
   beforeEach(() => {
