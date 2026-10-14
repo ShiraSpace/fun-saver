@@ -123,14 +123,22 @@ export function todaysTotalBalance(balanceHistory: BalanceHistory): number {
   return closingBalance(balanceHistory.totalBalance);
 }
 
+function totalBalanceWithAgorotOn(walletBalances: WalletBalances, dayIndex: number): number {
+  return Object.values(walletBalances).reduce(
+    (totalBalance, balances) => totalBalance + (balances[dayIndex] ?? 0),
+    0
+  );
+}
+
 export function totalBalanceChange(balanceHistory: BalanceHistory, rangeInDays: number): number {
+  const todayIndex = balanceHistory.days.length - 1;
   const carriedInDay = carriedInDayIndex(balanceHistory, rangeInDays);
   const accountIsYoungerThanRange = carriedInDay < 0;
   const carriedInTotalBalance = accountIsYoungerThanRange
     ? 0
-    : balanceHistory.totalBalance[carriedInDay];
+    : totalBalanceWithAgorotOn(balanceHistory.wallets, carriedInDay);
 
-  return todaysTotalBalance(balanceHistory) - carriedInTotalBalance;
+  return totalBalanceWithAgorotOn(balanceHistory.wallets, todayIndex) - carriedInTotalBalance;
 }
 
 export function totalBalanceByDay(balanceHistory: BalanceHistory): Map<string, number> {

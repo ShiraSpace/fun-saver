@@ -54,9 +54,9 @@ export function savingsWithoutAgorot(
   };
 }
 
-export function walletsWithoutAgorot<Candidate extends Pick<WalletSummary, 'balance'>>(
-  wallets: readonly Candidate[]
-): Candidate[] {
+export function walletsWithoutAgorot<ShownWallet extends Pick<WalletSummary, 'balance'>>(
+  wallets: readonly ShownWallet[]
+): ShownWallet[] {
   return wallets.map((wallet) => ({ ...wallet, balance: withoutAgorot(wallet.balance) }));
 }
 
