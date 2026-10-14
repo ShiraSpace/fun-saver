@@ -1,6 +1,7 @@
 import { JSX } from 'react';
 import { balanceChangeInShekels } from '@/lib/money';
 import { Money } from '@/components/Money';
+import { MONEY_ROUNDING } from '@/components/Money/constants';
 import { BalanceChange } from '../../BalanceChange';
 import { TOTAL_BALANCE_COPY, TOTAL_BALANCE_TEST_IDS } from './constants';
 import {
@@ -27,7 +28,11 @@ export function TotalBalance({
     <Head>
       <TotalBalanceLabel>{TOTAL_BALANCE_COPY.label}</TotalBalanceLabel>
       <TotalBalanceAmount>
-        <Money amountAgorot={totalBalance} testId={TOTAL_BALANCE_TEST_IDS.totalBalance} />
+        <Money
+          amountAgorot={totalBalance}
+          testId={TOTAL_BALANCE_TEST_IDS.totalBalance}
+          rounding={MONEY_ROUNDING.floorToShekels}
+        />
       </TotalBalanceAmount>
       <ChangeOverRange
         data-balance-fell={balanceFell}
