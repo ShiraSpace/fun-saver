@@ -94,7 +94,7 @@ describe('CancelGoal', () => {
       expect(holdToCancelButton()).toHaveFocus();
     });
 
-    it('from the dialog itself stays inside, on keeping the goal', () => {
+    it('from the dialog itself moves to keeping the goal', () => {
       pressTab(screen.getByTestId(CANCEL_GOAL_TEST_IDS.container));
 
       expect(keepGoalButton()).toHaveFocus();

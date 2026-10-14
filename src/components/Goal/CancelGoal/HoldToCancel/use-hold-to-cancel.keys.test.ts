@@ -70,7 +70,7 @@ describe('useHoldToCancel, by keyboard', () => {
       advanceTime(mockHoldMs - 1);
     });
 
-    it('let go of before 2 seconds does not call onHeld', () => {
+    it('does not call onHeld when let go of before 2 seconds', () => {
       letGoOfKey(' ');
       advanceTime(mockHoldMs);
 
