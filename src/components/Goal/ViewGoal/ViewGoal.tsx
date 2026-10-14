@@ -25,6 +25,7 @@ export function ViewGoal({ accountName, savedTowardGoal, onClose }: ViewGoalProp
       {VIEW_GOAL_COPY.reachedHeading}
     </ReachedHeading>
   );
+  const savingsOpen = reached && <SavingsOpen />;
 
   return (
     <GoalDialog title={title} onClose={onClose} data-testid={VIEW_GOAL_TEST_IDS.container}>
@@ -32,7 +33,7 @@ export function ViewGoal({ accountName, savedTowardGoal, onClose }: ViewGoalProp
       <ScreenTitle title={title} titleIcon={VIEW_GOAL_COPY.titleIcon} />
       {reachedHeading}
       <GoalHero savedTowardGoal={savedTowardGoal} />
-      {reached && <SavingsOpen />}
+      {savingsOpen}
       <GoalScreenButton type="button" data-testid={VIEW_GOAL_TEST_IDS.back} onClick={onClose}>
         {VIEW_GOAL_COPY.back}
       </GoalScreenButton>

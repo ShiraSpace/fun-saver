@@ -30,6 +30,10 @@ describe('ViewGoal', () => {
     it('shows no reached heading', () => {
       expect(screen.queryByTestId(VIEW_GOAL_TEST_IDS.reachedHeading)).not.toBeInTheDocument();
     });
+
+    it('does not say savings are open', () => {
+      expect(screen.queryByTestId(SAVINGS_OPEN_TEST_IDS.label)).not.toBeInTheDocument();
+    });
   });
 
   describe('once the goal is reached', () => {
