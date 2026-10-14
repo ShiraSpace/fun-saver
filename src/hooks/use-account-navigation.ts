@@ -20,6 +20,7 @@ export interface AccountNavigation {
   editingAccount?: AccountSummary;
   accountSettingGoal?: AccountSummary;
   goalBeingViewed?: GoalBeingViewed;
+  goalBeingCancelled?: SavedTowardGoal;
 }
 
 export interface GoalBeingViewed {
@@ -27,43 +28,33 @@ export interface GoalBeingViewed {
   savedTowardGoal: SavedTowardGoal;
 }
 
-interface GoalBeingViewedParams {
+interface GoalOnScreen {
+  goalBeingViewed?: GoalBeingViewed;
+  goalBeingCancelled?: SavedTowardGoal;
+}
+
+interface GoalOnScreenParams {
   mode: AppMode;
+  setMode: Dispatch<SetStateAction<AppMode>>;
   currentAccount?: AccountSummary;
 }
 
-interface LeavingGoneGoalParams extends GoalBeingViewedParams {
-  setMode: Dispatch<SetStateAction<AppMode>>;
-}
+const MODES_SHOWING_THE_GOAL: readonly AppMode[] = [APP_MODE.viewingGoal, APP_MODE.cancellingGoal];
 
-function goalBeingViewedOf({
-  mode,
-  currentAccount,
-}: GoalBeingViewedParams): GoalBeingViewed | undefined {
-  if (mode !== APP_MODE.viewingGoal || !currentAccount) {
-    return;
+function useGoalOnScreen({ mode, setMode, currentAccount }: GoalOnScreenParams): GoalOnScreen {
+  const savedTowardGoal = currentAccount && savedTowardGoalOf(currentAccount);
+
+  if (!MODES_SHOWING_THE_GOAL.includes(mode) || !currentAccount || !savedTowardGoal) {
+    if (MODES_SHOWING_THE_GOAL.includes(mode)) {
+      setMode(APP_MODE.viewing);
+    }
+
+    return {};
   }
 
-  const savedTowardGoal = savedTowardGoalOf(currentAccount);
-
-  if (!savedTowardGoal) {
-    return;
-  }
-
-  return { accountName: currentAccount.name, savedTowardGoal };
-}
-
-function useGoalBeingViewed({
-  setMode,
-  ...params
-}: LeavingGoneGoalParams): GoalBeingViewed | undefined {
-  const goalBeingViewed = goalBeingViewedOf(params);
-
-  if (params.mode === APP_MODE.viewingGoal && !goalBeingViewed) {
-    setMode(APP_MODE.viewing);
-  }
-
-  return goalBeingViewed;
+  return mode === APP_MODE.viewingGoal
+    ? { goalBeingViewed: { accountName: currentAccount.name, savedTowardGoal } }
+    : { goalBeingCancelled: savedTowardGoal };
 }
 
 export function useAccountNavigation(
@@ -93,7 +84,7 @@ export function useAccountNavigation(
 
   const currentAccount = findCurrentAccount(accounts, currentAccountId);
   const isEditing = mode === APP_MODE.editingAccount;
-  const goalBeingViewed = useGoalBeingViewed({ mode, setMode, currentAccount });
+  const goalOnScreen = useGoalOnScreen({ mode, setMode, currentAccount });
 
   return {
     mode,
@@ -109,6 +100,6 @@ export function useAccountNavigation(
     isCreating: mode === APP_MODE.creatingAccount,
     editingAccount: isEditing ? currentAccount : undefined,
     accountSettingGoal: mode === APP_MODE.settingGoal ? currentAccount : undefined,
-    goalBeingViewed,
+    ...goalOnScreen,
   };
 }

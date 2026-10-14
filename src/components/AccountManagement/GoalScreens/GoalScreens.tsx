@@ -4,6 +4,7 @@ import { JSX } from 'react';
 import type { AccountNavigation } from '@/hooks/use-account-navigation';
 import { ViewGoal } from '@/components/Goal/ViewGoal';
 import { SetGoal } from '@/components/Goal/SetGoal';
+import { CancelGoal } from '@/components/Goal/CancelGoal';
 import { Overlay } from '../overlay-parts';
 
 interface GoalScreensProps {
@@ -11,7 +12,8 @@ interface GoalScreensProps {
 }
 
 export function GoalScreens({ navigation }: GoalScreensProps): JSX.Element {
-  const { accountSettingGoal, goalBeingViewed, cancel, finishEditing } = navigation;
+  const { accountSettingGoal, goalBeingViewed, goalBeingCancelled, cancel, finishEditing } =
+    navigation;
 
   const viewGoalScreen = goalBeingViewed && (
     <Overlay>
@@ -29,10 +31,17 @@ export function GoalScreens({ navigation }: GoalScreensProps): JSX.Element {
     </Overlay>
   );
 
+  const cancelGoalScreen = goalBeingCancelled && (
+    <Overlay>
+      <CancelGoal savedTowardGoal={goalBeingCancelled} onKeep={cancel} onFinished={finishEditing} />
+    </Overlay>
+  );
+
   return (
     <>
       {viewGoalScreen}
       {setGoalScreen}
+      {cancelGoalScreen}
     </>
   );
 }

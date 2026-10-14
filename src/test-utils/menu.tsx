@@ -1,4 +1,4 @@
-import { Fragment, JSX, ReactElement, ReactNode } from 'react';
+import { Fragment, JSX, ReactElement, ReactNode, useRef } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { MenuProvider, useMenuState } from '@/components/Menu/use-menu-state';
 
@@ -22,11 +22,12 @@ export function WithMenu({ children, closeMenu = (): void => {} }: WithMenuProps
 }
 
 export function WithToggleableMenu({ children }: WithToggleableMenuProps): JSX.Element {
-  const menu = useMenuState();
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const menu = useMenuState(toggleRef);
 
   return (
     <Fragment>
-      <button data-testid={MENU_TOGGLE_TESTID} onClick={menu.toggle} />
+      <button ref={toggleRef} data-testid={MENU_TOGGLE_TESTID} onClick={menu.toggle} />
       <MenuProvider value={menu}>{children}</MenuProvider>
     </Fragment>
   );

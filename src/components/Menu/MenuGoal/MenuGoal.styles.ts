@@ -10,3 +10,17 @@ export const Chevron = styled.span`
   font-size: ${({ theme }): number => theme.typography.body}px;
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
+
+export const CancelGoalLink = styled.button`
+  align-self: center;
+  margin-top: 4px;
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: ${({ theme }): number => theme.typography.label}px;
+  font-weight: 600;
+  color: ${({ theme }): string => theme.colors.alertText};
+  text-decoration: underline;
+  cursor: pointer;
+`;
