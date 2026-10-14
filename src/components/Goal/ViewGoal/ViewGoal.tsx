@@ -5,10 +5,11 @@ import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { CloseButton } from '@/components/CloseButton';
 import { ScreenTitle } from '@/components/ScreenTitle';
 import { GoalDialog } from '../GoalDialog';
+import { GoalScreenButton } from '../goal-parts';
 import { GoalHero } from './GoalHero';
-import { SavingsLock } from './SavingsLock';
+import { SavingsOpen } from './SavingsOpen';
 import { VIEW_GOAL_COPY, VIEW_GOAL_TEST_IDS } from './constants';
-import { BackButton, ReachedHeading } from './ViewGoal.styles';
+import { ReachedHeading } from './ViewGoal.styles';
 
 interface ViewGoalProps {
   accountName: string;
@@ -31,10 +32,10 @@ export function ViewGoal({ accountName, savedTowardGoal, onClose }: ViewGoalProp
       <ScreenTitle title={title} titleIcon={VIEW_GOAL_COPY.titleIcon} />
       {reachedHeading}
       <GoalHero savedTowardGoal={savedTowardGoal} />
-      <SavingsLock reached={reached} />
-      <BackButton type="button" data-testid={VIEW_GOAL_TEST_IDS.back} onClick={onClose}>
+      {reached && <SavingsOpen />}
+      <GoalScreenButton type="button" data-testid={VIEW_GOAL_TEST_IDS.back} onClick={onClose}>
         {VIEW_GOAL_COPY.back}
-      </BackButton>
+      </GoalScreenButton>
     </GoalDialog>
   );
 }

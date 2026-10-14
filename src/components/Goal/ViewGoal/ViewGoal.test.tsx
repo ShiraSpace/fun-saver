@@ -3,7 +3,7 @@ import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
 import { ESCAPE_KEY } from '@/hooks/constants';
 import { ViewGoal } from './ViewGoal';
 import { VIEW_GOAL_COPY, VIEW_GOAL_TEST_IDS } from './constants';
-import { SAVINGS_LOCK_COPY, SAVINGS_LOCK_TEST_IDS } from './SavingsLock/constants';
+import { SAVINGS_OPEN_COPY, SAVINGS_OPEN_TEST_IDS } from './SavingsOpen/constants';
 import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
 import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
 
@@ -50,8 +50,8 @@ describe('ViewGoal', () => {
     });
 
     it('says savings are open', () => {
-      expect(screen.getByTestId(SAVINGS_LOCK_TEST_IDS.label)).toHaveTextContent(
-        SAVINGS_LOCK_COPY.savingsOpen
+      expect(screen.getByTestId(SAVINGS_OPEN_TEST_IDS.label)).toHaveTextContent(
+        SAVINGS_OPEN_COPY.label
       );
     });
   });
