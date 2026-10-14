@@ -131,7 +131,7 @@ describe('the balance history', () => {
     });
 
     describe('when savings holds ₪46.69 and spending ₪50.50', () => {
-      const mockSavingsDeposit = createMockTransaction({
+      const mockSavingsDepositWithAgorot = createMockTransaction({
         id: 'savings',
         walletId: 'w1',
         amount: 4669,
@@ -143,7 +143,7 @@ describe('the balance history', () => {
       });
       const accountBalanceHistory = balanceHistory({
         wallets: mockWallets,
-        transactions: [mockSavingsDeposit, mockSpendingDepositWithAgorot],
+        transactions: [mockSavingsDepositWithAgorot, mockSpendingDepositWithAgorot],
         asOf: '2026-01-01',
       });
 
