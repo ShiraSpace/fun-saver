@@ -3,6 +3,7 @@ import * as actions from './page-actions';
 import * as queries from './page-queries';
 import { PageWaits } from './page-waits';
 import { holdNextPage, type HeldPage } from './hold-next-page';
+import { ELEMENT_WAIT_MS, PAGE_LOAD_MS } from './wait-limits';
 
 interface OpenOptions {
   baseUrl: string;
@@ -43,6 +44,8 @@ export class AppBrowser {
     const browser = this.requireBrowser();
     this.baseUrl = baseUrl;
     this.activePage = await browser.newPage();
+    this.activePage.setDefaultTimeout(ELEMENT_WAIT_MS);
+    this.activePage.setDefaultNavigationTimeout(PAGE_LOAD_MS);
     await this.clearCookies(browser);
     await browser.setCookie(...cookies);
     await this.activePage.emulateMediaFeatures(queries.motionFeatures(motion));
