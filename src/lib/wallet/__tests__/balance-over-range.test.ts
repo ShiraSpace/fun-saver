@@ -123,21 +123,21 @@ describe('the balance over a range', () => {
   describe('when the balances have agorot', () => {
     it('counts the agorot savings gained, though its whole shekels did not move', () => {
       const mockOpeningDepositWithAgorot = createMockTransaction({ id: 'opening', amount: 4610 });
-      const mockInterest = createMockTransaction({
-        id: 'interest',
+      const mockLaterDeposit = createMockTransaction({
+        id: 'later',
         amount: 80,
         occurredAt: '2026-01-10',
       });
       const accountBalanceHistory = balanceHistory({
         wallets: mockWallets,
-        transactions: [mockOpeningDepositWithAgorot, mockInterest],
+        transactions: [mockOpeningDepositWithAgorot, mockLaterDeposit],
         asOf: '2026-01-10',
       });
 
-      expect(totalBalanceChange(accountBalanceHistory, 7)).toBe(mockInterest.amount);
+      expect(totalBalanceChange(accountBalanceHistory, 7)).toBe(mockLaterDeposit.amount);
     });
 
-    it('counts the agorot every wallet gained', () => {
+    it('counts the agorot spending gained while savings holds agorot of its own', () => {
       const mockSavingsDeposit = createMockTransaction({ id: 'savings', amount: 4669 });
       const mockSpendingDeposit = createMockTransaction({
         id: 'spending',
