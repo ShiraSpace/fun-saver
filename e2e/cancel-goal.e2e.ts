@@ -24,22 +24,25 @@ describe('a parent holds «ביטול היעד» for 2 seconds', () => {
     await cancelGoal.openFromMenu();
     await cancelGoal.holdToCancel();
     await cancelGoal.waitForDialogGone();
-    await goal.waitForSavingsLockGone();
   });
 
   it('frees savings for withdrawals', async () => {
+    await goal.waitForSavingsLockGone();
+
     assert.equal(await goal.savingsLockExists(), false);
   });
 
   it('offers to set a goal again in the menu', async () => {
     await menu.open();
+    await cancelGoal.waitForSetGoalOfferedInMenu();
 
     assert.equal(await cancelGoal.setGoalOfferedInMenu(), true);
   });
 });
 
 describe('cancelling a goal', () => {
-  const { cancelGoal } = useDriver(mockStoreWithGoal);
+  const driver = useDriver(mockStoreWithGoal);
+  const { cancelGoal } = driver;
 
   it('needs more than a tap on the hold button', async () => {
     await cancelGoal.openFromMenu();
@@ -49,24 +52,21 @@ describe('cancelling a goal', () => {
 
     assert.equal(mockCancel.wasSent(), false);
   });
-});
 
-describe('a parent who came home from the Method page presses Escape in the cancel dialog', () => {
-  const driver = useDriver(mockStoreWithGoal);
-  const { goal, cancelGoal } = driver;
+  it('is never sent when Escape closes the dialog', async () => {
+    await cancelGoal.openFromMenu();
+    const mockCancel = await cancelGoal.holdTheCancel();
+    await cancelGoal.pressEscape();
+    await cancelGoal.waitForDialogGone();
 
-  beforeEach(async () => {
+    assert.equal(mockCancel.wasSent(), false);
+  });
+
+  it('leaves no step behind on Escape, so one Back returns to the Method page', async () => {
     await cameHomeFromTheMethodPage(driver);
     await cancelGoal.openFromMenu();
     await cancelGoal.pressEscape();
     await cancelGoal.waitForDialogGone();
-  });
-
-  it('keeps the goal', async () => {
-    assert.equal(await goal.savingsLockExists(), true);
-  });
-
-  it('then goes back to the Method page on one Back, with no leftover step', async () => {
     await driver.appBrowser.back();
     await driver.header.waitForTitle(METHOD_COPY.title);
 

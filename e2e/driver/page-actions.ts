@@ -20,6 +20,10 @@ interface NthMatch {
   index: number;
 }
 
+export function pause(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export async function click(page: Page, testId: string): Promise<void> {
   const element = await findByTest(page, testId);
   await element.click();
@@ -103,7 +107,7 @@ export async function pressAndHold({ page, testId, holdMs }: HeldPress): Promise
 
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.mouse.down();
-  await new Promise((resolve) => setTimeout(resolve, holdMs));
+  await pause(holdMs);
   await page.mouse.up();
 }
 

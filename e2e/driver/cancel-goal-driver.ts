@@ -6,6 +6,7 @@ import {
 } from '@/components/Goal/CancelGoal/HoldToCancel/constants';
 import { AppBrowser } from './app-browser';
 import type { HeldRequest } from './hold-request';
+import { pause } from './page-actions';
 import type { MenuDriver } from './menu-driver';
 
 const HOLD_MARGIN_MS = 300;
@@ -37,7 +38,7 @@ export class CancelGoalDriver {
   }
 
   waitOutTheHold(): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, HOLD_TO_CANCEL.holdMs + HOLD_MARGIN_MS));
+    return pause(HOLD_TO_CANCEL.holdMs + HOLD_MARGIN_MS);
   }
 
   holdTheCancel(): Promise<HeldRequest> {
@@ -58,6 +59,10 @@ export class CancelGoalDriver {
 
   dialogExists(): Promise<boolean> {
     return this.appBrowser.exists(CANCEL_GOAL_TEST_IDS.container);
+  }
+
+  waitForSetGoalOfferedInMenu(): Promise<void> {
+    return this.appBrowser.waits.testId(MENU_GOAL_TEST_IDS.setGoal);
   }
 
   setGoalOfferedInMenu(): Promise<boolean> {
