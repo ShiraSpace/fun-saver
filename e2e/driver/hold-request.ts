@@ -2,6 +2,7 @@ import { type HTTPRequest, type Page } from 'puppeteer';
 
 export interface HeldRequest {
   requested: Promise<void>;
+  wasSent: () => boolean;
   answer: (status: number) => Promise<void>;
 }
 
@@ -29,5 +30,5 @@ export async function holdRequest(page: Page, method: string): Promise<HeldReque
     );
   };
 
-  return { requested, answer };
+  return { requested, wasSent: (): boolean => heldRequests.length > 0, answer };
 }

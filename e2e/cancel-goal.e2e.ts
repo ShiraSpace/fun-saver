@@ -39,17 +39,17 @@ describe('a parent holds «ביטול היעד» for 2 seconds', () => {
   });
 });
 
-describe('a parent only taps the hold button', () => {
+describe('cancelling a goal', () => {
   const { menu, cancelGoal } = useDriver(mockStoreWithGoal);
 
-  beforeEach(async () => {
+  it('needs more than a tap on the hold button', async () => {
     await menu.open();
     await cancelGoal.openFromMenu();
-    await cancelGoal.pressBriefly();
-  });
+    const mockCancel = await cancelGoal.holdTheCancel();
+    await cancelGoal.tapHoldToCancel();
+    await cancelGoal.waitOutTheHold();
 
-  it('keeps the goal', async () => {
-    assert.equal(await cancelGoal.dialogExists(), true);
+    assert.equal(mockCancel.wasSent(), false);
   });
 });
 

@@ -31,8 +31,12 @@ export class CancelGoalDriver {
     );
   }
 
-  pressBriefly(): Promise<void> {
+  tapHoldToCancel(): Promise<void> {
     return this.appBrowser.pressAndHold(HOLD_TO_CANCEL_TEST_IDS.button, SHORT_PRESS_MS);
+  }
+
+  waitOutTheHold(): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, HOLD_TO_CANCEL.holdMs + HOLD_MARGIN_MS));
   }
 
   holdTheCancel(): Promise<HeldRequest> {
