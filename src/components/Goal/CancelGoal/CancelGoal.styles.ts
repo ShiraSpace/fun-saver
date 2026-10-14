@@ -10,6 +10,8 @@ export const Card = styled.div`
   inset-inline: 18px;
   box-sizing: border-box;
   max-width: 420px;
+  max-height: calc(100dvh - 36px);
+  overflow-y: auto;
   margin-inline: auto;
   padding: 22px 18px 18px;
   border-radius: 24px;
