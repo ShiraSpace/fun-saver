@@ -14,6 +14,10 @@ export function floorToShekels(agorot: number): number {
   return Math.floor(agorot / AGOROT_PER_SHEKEL);
 }
 
+export function floorToHalfShekels(agorot: number): number {
+  return agorotToShekels(Math.floor(agorot / HALF_SHEKEL_AGOROT) * HALF_SHEKEL_AGOROT);
+}
+
 export function shekelsToAgorot(shekels: number): number {
   return shekels * AGOROT_PER_SHEKEL;
 }
