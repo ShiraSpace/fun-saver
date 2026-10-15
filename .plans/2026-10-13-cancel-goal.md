@@ -175,6 +175,9 @@ Screenshots (`pr-screenshots`): frame 3a (the menu with the link) and 3c
   screen through one `GoalScreenButton` (`src/components/Goal/goal-parts.ts`);
   the goal screen's line ends «ומגיעים! 💪»; «🔒 שומרים עד היעד» is gone,
   and `SavingsLock` became `SavingsOpen`, shown only once the goal is reached.
+- Review fixes (`d871ca5`): the goal on screen is worked out by
+  `goalOnScreenOf`, not a `use…` name, since it calls no hooks; the modes
+  that show it, `MODES_SHOWING_THE_GOAL`, live beside `APP_MODE`.
 
 ---
 
@@ -185,3 +188,9 @@ Screenshots (`pr-screenshots`): frame 3a (the menu with the link) and 3c
 - After #214 merges, update `.plans/2026-10-03-saving-goal.md`: 4b done.
 - Follow-up PR: one standard button on every screen, same size everywhere,
   only content and colour vary; it replaces `GoalScreenButton`.
+- Follow-up PR, fresh off `main`: nothing that looks like a hook unless it is
+  one. `useSetGoal`, `useCreateAccount`, `useUpdateAccount` and
+  `useAddTransaction` (and its `__mocks__` copy) become plain exported
+  functions; the transaction one splits into `addDeposit` and
+  `addWithdrawal`. Tests `jest.mock` the module instead of `renderHook`.
+  `useDriver` (e2e) stays.
