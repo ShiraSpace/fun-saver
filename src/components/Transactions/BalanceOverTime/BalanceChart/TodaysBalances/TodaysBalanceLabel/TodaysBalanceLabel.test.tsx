@@ -25,9 +25,9 @@ describe('today’s balance at the end of a line', () => {
     );
   });
 
-  it('shows today’s balance in whole shekels, rounded down', () => {
+  it('shows today’s balance rounded down to the half shekel', () => {
     expect(screen.getByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)).toHaveTextContent(
-      new RegExp(`${MONEY_COPY.currencySign}18$`)
+      new RegExp(`${MONEY_COPY.currencySign}18\\.5$`)
     );
   });
 

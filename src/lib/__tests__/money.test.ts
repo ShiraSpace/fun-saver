@@ -2,6 +2,7 @@ import {
   agorotToShekels,
   balanceChangeInShekels,
   agorotToWholeShekels,
+  floorToHalfShekels,
   floorToShekels,
   nearestHalfShekel,
   shekelsToAgorot,
@@ -82,6 +83,16 @@ describe('floorToShekels', () => {
 
   it('shows less than a shekel as nothing', () => {
     expect(floorToShekels(99)).toBe(0);
+  });
+});
+
+describe('floorToHalfShekels', () => {
+  it('drops to the half shekel below rather than rounding up', () => {
+    expect(floorToHalfShekels(9690)).toBe(96.5);
+  });
+
+  it('keeps an exact half shekel', () => {
+    expect(floorToHalfShekels(9650)).toBe(96.5);
   });
 });
 
