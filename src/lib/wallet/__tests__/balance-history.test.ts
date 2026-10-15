@@ -155,7 +155,7 @@ describe('the balance history', () => {
         expect(accountBalanceHistory.wallets.savings).toEqual([4669]);
       });
 
-      it('totals the wallets with their agorot, for the chart’s line', () => {
+      it('totals the wallets with their agorot', () => {
         expect(totalBalanceWithAgorot(accountBalanceHistory)).toEqual([9719]);
       });
     });
