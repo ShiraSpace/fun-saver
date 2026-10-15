@@ -1,5 +1,6 @@
 import { type KeyInput, type Page } from 'puppeteer';
 import { THEME_COOKIE } from '@/lib/cookies';
+import { wait } from '@/lib/wait';
 import { findByTest, requireMatch } from './page-element';
 
 interface TypedInput {
@@ -18,10 +19,6 @@ interface NthMatch {
   page: Page;
   selector: string;
   index: number;
-}
-
-export function pause(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function click(page: Page, testId: string): Promise<void> {
@@ -107,7 +104,7 @@ export async function pressAndHold({ page, testId, holdMs }: HeldPress): Promise
 
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.mouse.down();
-  await pause(holdMs);
+  await wait(holdMs);
   await page.mouse.up();
 }
 

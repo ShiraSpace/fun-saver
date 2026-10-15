@@ -1,6 +1,6 @@
 import { type HTTPRequest, type Page } from 'puppeteer';
+import { wait } from '@/lib/wait';
 import { holdRequests } from './hold-request';
-import { pause } from './page-actions';
 
 const PAGE_DATA_QUERY = '_rsc=';
 const PREFETCH_HEADER = 'next-router-prefetch';
@@ -26,7 +26,7 @@ export async function holdNextPage(page: Page): Promise<HeldPage> {
     (request) => isHolding && isNextPageRequest(request)
   );
 
-  const settle = (): Promise<void> => pause(SETTLE_MS);
+  const settle = (): Promise<void> => wait(SETTLE_MS);
 
   const requested = page.waitForRequest(isNextPageRequest).then(() => {});
 

@@ -26,18 +26,16 @@ export async function holdRequests(
 }
 
 export async function holdRequest(page: Page, method: string): Promise<HeldRequest> {
-  let markRequested = (): void => {};
+  const isHeld = (request: HTTPRequest): boolean => request.method() === method;
   const requested = new Promise<void>((resolve) => {
-    markRequested = resolve;
+    page.on('request', (request) => {
+      if (isHeld(request)) {
+        resolve();
+      }
+    });
   });
 
-  const heldRequests = await holdRequests(page, (request) => {
-    const isHeld = request.method() === method;
-    if (isHeld) {
-      markRequested();
-    }
-    return isHeld;
-  });
+  const heldRequests = await holdRequests(page, isHeld);
 
   const answer = async (status: number): Promise<void> => {
     await Promise.all(

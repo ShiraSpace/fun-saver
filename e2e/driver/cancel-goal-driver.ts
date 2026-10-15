@@ -4,9 +4,9 @@ import {
   HOLD_TO_CANCEL,
   HOLD_TO_CANCEL_TEST_IDS,
 } from '@/components/Goal/CancelGoal/HoldToCancel/constants';
+import { wait } from '@/lib/wait';
 import { AppBrowser } from './app-browser';
 import type { HeldRequest } from './hold-request';
-import { pause } from './page-actions';
 import type { MenuDriver } from './menu-driver';
 
 const HOLD_MARGIN_MS = 300;
@@ -38,7 +38,7 @@ export class CancelGoalDriver {
   }
 
   waitOutTheHold(): Promise<void> {
-    return pause(HOLD_TO_CANCEL.holdMs + HOLD_MARGIN_MS);
+    return wait(HOLD_TO_CANCEL.holdMs + HOLD_MARGIN_MS);
   }
 
   holdTheCancel(): Promise<HeldRequest> {
