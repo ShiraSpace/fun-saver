@@ -14,6 +14,8 @@ const SERVER_ADDRESS_LINE = /- Local:\s+(http:\/\/\S+)/;
 
 const SERVER_READY_LINE = 'Ready in';
 
+const SERVER_START_MS = 30_000;
+
 type ServerProcess = ChildProcessByStdio<null, Readable, null>;
 
 export interface RunningServer {
@@ -41,6 +43,7 @@ export async function startServer(): Promise<RunningServer> {
 
   const removeStore = (): Promise<void> => rm(storeDir, { recursive: true, force: true });
   const baseUrl = await serverAddressOnceReady(server).catch(async (error: unknown) => {
+    server.kill('SIGTERM');
     await removeStore();
     throw error;
   });
@@ -59,6 +62,9 @@ export async function startServer(): Promise<RunningServer> {
 function serverAddressOnceReady(server: ServerProcess): Promise<string> {
   return new Promise((resolve, reject) => {
     let baseUrl = '';
+    setTimeout(() => {
+      reject(new Error(`server was not ready within ${SERVER_START_MS}ms`));
+    }, SERVER_START_MS).unref();
     server.once('error', reject);
     server.once('exit', (code, signal) => {
       const exitReason = code === null ? `signal ${signal}` : `code ${code}`;
