@@ -148,10 +148,16 @@ export function useDriver(
   { motion = 'reduce', viewMode = VIEW_MODE.parent }: DriverOptions = {}
 ): TestDriver {
   const appBrowser = AppBrowser.create();
-  let server: RunningServer;
+  let server: RunningServer | undefined;
+  const requireServer = (): RunningServer => {
+    if (!server) {
+      throw new Error('the app server is not started; its before hook failed');
+    }
+    return server;
+  };
   const appDriver = {
     ...createAppDriver(appBrowser),
-    anotherPhone: new AnotherPhoneDriver(() => server),
+    anotherPhone: new AnotherPhoneDriver(requireServer),
   };
 
   before(async () => {
@@ -159,7 +165,7 @@ export function useDriver(
   });
 
   beforeEach(async () => {
-    await openApp({ appBrowser, server, initialStore, motion, viewMode });
+    await openApp({ appBrowser, server: requireServer(), initialStore, motion, viewMode });
   });
 
   afterEach(async () => {
