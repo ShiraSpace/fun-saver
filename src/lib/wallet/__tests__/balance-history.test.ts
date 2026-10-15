@@ -1,4 +1,4 @@
-import { balanceHistory } from '../balance-history';
+import { balanceHistory, totalBalanceWithAgorot } from '../balance-history';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { eachDayInclusive } from '@/lib/dates';
 import { createMockTransaction, mockOpeningDeposit } from '@/test-utils/mocks/transaction.mocks';
@@ -153,6 +153,10 @@ describe('the balance history', () => {
 
       it('keeps each wallet’s agorot', () => {
         expect(accountBalanceHistory.wallets.savings).toEqual([4669]);
+      });
+
+      it('totals the wallets with their agorot, for the chart’s line', () => {
+        expect(totalBalanceWithAgorot(accountBalanceHistory)).toEqual([9719]);
       });
     });
   });

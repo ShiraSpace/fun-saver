@@ -89,10 +89,16 @@ describe('the balances the chart shows', () => {
     ]);
   });
 
-  it('reads the total from the total balance', () => {
-    expect(eachShownBalanceHistory(mockBalanceHistory, [SHOWN_BALANCE.totalBalance])).toEqual([
-      { shownBalance: SHOWN_BALANCE.totalBalance, dailyBalances: [900, 1000] },
-    ]);
+  it('draws the total from every wallet’s balance, agorot included', () => {
+    const mockBalanceHistoryWithAgorot = {
+      days: ['2026-01-01', '2026-01-02'],
+      totalBalance: [9600, 9600],
+      wallets: { savings: [4610, 4690], spending: [5000, 5000], goodDeeds: [0, 0] },
+    };
+
+    expect(
+      eachShownBalanceHistory(mockBalanceHistoryWithAgorot, [SHOWN_BALANCE.totalBalance])
+    ).toEqual([{ shownBalance: SHOWN_BALANCE.totalBalance, dailyBalances: [9610, 9690] }]);
   });
 
   it('scales to the lowest and highest balance of every line, not just the first', () => {
