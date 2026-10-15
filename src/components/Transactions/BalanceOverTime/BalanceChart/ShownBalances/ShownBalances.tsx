@@ -30,6 +30,7 @@ export function ShownBalances({
   const balanceY = balanceYWithin(balanceBounds);
   const firstDayX = firstDayXOf(chartWidth);
   const dayX = dayXWithin(days.length, firstDayX);
+  const totalBalanceToday = todaysTotalBalance(balanceHistory);
 
   return (
     <g>
@@ -37,7 +38,7 @@ export function ShownBalances({
       <BalanceLines shownBalanceHistories={shownBalanceHistories} dayX={dayX} balanceY={balanceY} />
       <TodaysBalances
         shownBalanceHistories={shownBalanceHistories}
-        todaysTotalBalance={todaysTotalBalance(balanceHistory)}
+        todaysTotalBalance={totalBalanceToday}
         balanceY={balanceY}
       />
       <DayAxis days={days} dayX={dayX} firstDayX={firstDayX} />
