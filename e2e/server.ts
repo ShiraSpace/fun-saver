@@ -39,7 +39,11 @@ export async function startServer(): Promise<RunningServer> {
     stdio: ['ignore', 'pipe', 'inherit'],
   });
 
-  const baseUrl = await serverAddressOnceReady(server);
+  const removeStore = (): Promise<void> => rm(storeDir, { recursive: true, force: true });
+  const baseUrl = await serverAddressOnceReady(server).catch(async (error: unknown) => {
+    await removeStore();
+    throw error;
+  });
 
   return {
     baseUrl,
@@ -47,7 +51,7 @@ export async function startServer(): Promise<RunningServer> {
     authSecret: TEST_AUTH_SECRET,
     stop: async (): Promise<void> => {
       server.kill('SIGTERM');
-      await rm(storeDir, { recursive: true, force: true });
+      await removeStore();
     },
   };
 }
@@ -55,8 +59,10 @@ export async function startServer(): Promise<RunningServer> {
 function serverAddressOnceReady(server: ServerProcess): Promise<string> {
   return new Promise((resolve, reject) => {
     let baseUrl = '';
-    server.once('exit', (code) => {
-      reject(new Error(`server exited with code ${code} before it was ready`));
+    server.once('error', reject);
+    server.once('exit', (code, signal) => {
+      const exitReason = code === null ? `signal ${signal}` : `code ${code}`;
+      reject(new Error(`server exited with ${exitReason} before it was ready`));
     });
     createInterface({ input: server.stdout }).on('line', (line) => {
       console.log(line);
