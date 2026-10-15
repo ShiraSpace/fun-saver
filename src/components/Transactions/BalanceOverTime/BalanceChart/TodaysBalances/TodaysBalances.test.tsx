@@ -16,6 +16,7 @@ describe('today’s balances at the end of the lines', () => {
             },
             { shownBalance: SHOWN_BALANCE.savings, dailyBalances: [500, 600] },
           ]}
+          todaysTotalBalance={1000}
           balanceY={balanceYWithin({ lowest: 500, highest: 1000 })}
         />
       </svg>

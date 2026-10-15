@@ -1,4 +1,5 @@
 import { JSX } from 'react';
+import { SHOWN_BALANCE } from '../../../constants';
 import {
   todaysBalancesSpacedApart,
   type BalanceY,
@@ -8,24 +9,27 @@ import { TodaysBalanceLabel } from './TodaysBalanceLabel';
 
 interface TodaysBalancesProps {
   shownBalanceHistories: ShownBalanceHistory[];
+  todaysTotalBalance: number;
   balanceY: BalanceY;
 }
 
-function todaysBalanceOf({ dailyBalances }: ShownBalanceHistory): number {
+function lineEndOf({ dailyBalances }: ShownBalanceHistory): number {
   return dailyBalances[dailyBalances.length - 1];
 }
 
 export function TodaysBalances({
   shownBalanceHistories,
+  todaysTotalBalance,
   balanceY,
 }: TodaysBalancesProps): JSX.Element {
   const todaysBalances = shownBalanceHistories.map((shownBalanceHistory) => {
-    const todaysBalance = todaysBalanceOf(shownBalanceHistory);
+    const lineEnd = lineEndOf(shownBalanceHistory);
+    const isTotalBalance = shownBalanceHistory.shownBalance === SHOWN_BALANCE.totalBalance;
 
     return {
       shownBalance: shownBalanceHistory.shownBalance,
-      todaysBalance,
-      y: balanceY(todaysBalance),
+      todaysBalance: isTotalBalance ? todaysTotalBalance : lineEnd,
+      y: balanceY(lineEnd),
     };
   });
 

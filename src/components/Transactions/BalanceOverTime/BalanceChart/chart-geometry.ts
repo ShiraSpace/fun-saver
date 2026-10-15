@@ -1,6 +1,6 @@
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { HALF_SHEKEL_AGOROT, withoutAgorot } from '@/lib/money';
-import type { BalanceHistory } from '@/lib/wallet/balance-history';
+import { totalBalanceWithAgorot, type BalanceHistory } from '@/lib/wallet/balance-history';
 import { SHOWN_BALANCE, type ShownBalance } from '../../constants';
 import {
   BALANCE_TICK_COUNT,
@@ -34,7 +34,7 @@ export type DayX = (dayIndex: number) => number;
 
 function dailyBalancesOf(balanceHistory: BalanceHistory, shownBalance: ShownBalance): number[] {
   return shownBalance === SHOWN_BALANCE.totalBalance
-    ? balanceHistory.totalBalance
+    ? totalBalanceWithAgorot(balanceHistory)
     : balanceHistory.wallets[shownBalance];
 }
 

@@ -141,6 +141,12 @@ export function totalBalanceChange(balanceHistory: BalanceHistory, rangeInDays: 
   return totalBalanceWithAgorotOn(balanceHistory.wallets, todayIndex) - carriedInTotalBalance;
 }
 
+export function totalBalanceWithAgorot(balanceHistory: BalanceHistory): number[] {
+  return balanceHistory.days.map((_, dayIndex) =>
+    totalBalanceWithAgorotOn(balanceHistory.wallets, dayIndex)
+  );
+}
+
 export function totalBalanceByDay(balanceHistory: BalanceHistory): Map<string, number> {
   return new Map(
     balanceHistory.days.map((day, dayIndex) => [day, balanceHistory.totalBalance[dayIndex]])

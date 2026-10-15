@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import type { BalanceHistory } from '@/lib/wallet/balance-history';
+import { todaysTotalBalance, type BalanceHistory } from '@/lib/wallet/balance-history';
 import type { ShownBalance } from '../../../constants';
 import { BalanceAxis } from '../BalanceAxis';
 import { BalanceLines } from '../BalanceLines';
@@ -35,7 +35,11 @@ export function ShownBalances({
     <g>
       <BalanceAxis balanceBounds={balanceBounds} balanceY={balanceY} firstDayX={firstDayX} />
       <BalanceLines shownBalanceHistories={shownBalanceHistories} dayX={dayX} balanceY={balanceY} />
-      <TodaysBalances shownBalanceHistories={shownBalanceHistories} balanceY={balanceY} />
+      <TodaysBalances
+        shownBalanceHistories={shownBalanceHistories}
+        todaysTotalBalance={todaysTotalBalance(balanceHistory)}
+        balanceY={balanceY}
+      />
       <DayAxis days={days} dayX={dayX} firstDayX={firstDayX} />
     </g>
   );
