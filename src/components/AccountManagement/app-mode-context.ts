@@ -13,6 +13,11 @@ export const APP_MODE = {
 
 export type AppMode = (typeof APP_MODE)[keyof typeof APP_MODE];
 
+export const MODES_SHOWING_THE_GOAL: readonly AppMode[] = [
+  APP_MODE.viewingGoal,
+  APP_MODE.cancellingGoal,
+];
+
 export interface AppModeContextValue {
   mode: AppMode;
   setMode: (mode: AppMode) => void;

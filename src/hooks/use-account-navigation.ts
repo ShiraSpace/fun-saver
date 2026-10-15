@@ -1,6 +1,10 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import type { Account, AccountSummary } from '@/lib/account/types';
-import { APP_MODE, AppMode } from '@/components/AccountManagement/app-mode-context';
+import {
+  APP_MODE,
+  AppMode,
+  MODES_SHOWING_THE_GOAL,
+} from '@/components/AccountManagement/app-mode-context';
 import { CURRENT_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
 import { findCurrentAccount } from '@/lib/account/current-account';
 import { savedTowardGoalOf, type SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
@@ -39,9 +43,7 @@ interface GoalOnScreenParams {
   currentAccount?: AccountSummary;
 }
 
-const MODES_SHOWING_THE_GOAL: readonly AppMode[] = [APP_MODE.viewingGoal, APP_MODE.cancellingGoal];
-
-function useGoalOnScreen({ mode, setMode, currentAccount }: GoalOnScreenParams): GoalOnScreen {
+function goalOnScreenOf({ mode, setMode, currentAccount }: GoalOnScreenParams): GoalOnScreen {
   if (!MODES_SHOWING_THE_GOAL.includes(mode)) {
     return {};
   }
@@ -87,7 +89,7 @@ export function useAccountNavigation(
 
   const currentAccount = findCurrentAccount(accounts, currentAccountId);
   const isEditing = mode === APP_MODE.editingAccount;
-  const goalOnScreen = useGoalOnScreen({ mode, setMode, currentAccount });
+  const goalOnScreen = goalOnScreenOf({ mode, setMode, currentAccount });
 
   return {
     mode,
