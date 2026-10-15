@@ -77,9 +77,19 @@ export function createAppDriver(appBrowser: AppBrowser): AppDriver {
 }
 
 export async function startApp(appBrowser: AppBrowser): Promise<RunningServer> {
-  const [server] = await Promise.all([startServer(), appBrowser.start()]);
+  const [serverStart, browserStart] = await Promise.allSettled([startServer(), appBrowser.start()]);
 
-  return server;
+  if (serverStart.status === 'rejected') {
+    await appBrowser.stop();
+    throw serverStart.reason;
+  }
+
+  if (browserStart.status === 'rejected') {
+    await serverStart.value.stop();
+    throw browserStart.reason;
+  }
+
+  return serverStart.value;
 }
 
 export async function openApp({
@@ -158,7 +168,7 @@ export function useDriver(
 
   after(async () => {
     await appBrowser.stop();
-    await server.stop();
+    await server?.stop();
   });
 
   return appDriver;
