@@ -1,4 +1,5 @@
-import { floorToTenthsText } from './money-text';
+import { MONEY_ROUNDING } from './constants';
+import { floorToTenthsText, shekelsText } from './money-text';
 
 describe('an amount written to the tenth of a shekel', () => {
   it('drops what is below the tenth rather than rounding up', () => {
@@ -17,7 +18,13 @@ describe('an amount written to the tenth of a shekel', () => {
     expect(floorToTenthsText(0)).toBe('0');
   });
 
-  it('drops toward zero on a fall too', () => {
-    expect(floorToTenthsText(-9689)).toBe('-96.8');
+  it('drops a fall to the tenth below it too', () => {
+    expect(floorToTenthsText(-9689)).toBe('-96.9');
+  });
+});
+
+describe('an amount written to the agora', () => {
+  it('keeps both decimals on a whole amount', () => {
+    expect(shekelsText(9600, MONEY_ROUNDING.toTheAgora)).toBe('96.00');
   });
 });

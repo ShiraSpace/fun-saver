@@ -31,7 +31,7 @@ describe('a transaction row', () => {
       render(<TransactionRow transactionListRow={mockInterestRow} />);
     });
 
-    it('shows its change to the tenth of a shekel', () => {
+    it('shows a day of interest to the agora', () => {
       expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balanceChange)).toHaveTextContent(
         `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}0.09`
       );
@@ -73,11 +73,19 @@ describe('a transaction row', () => {
     });
   });
 
-  it('shows the balance to the tenth of a shekel', () => {
+  it('shows the balance to the agora', () => {
     render(<TransactionRow transactionListRow={{ ...mockInterestRow, balance: 16060 }} />);
 
     expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balance)).toHaveTextContent(
-      new RegExp(`^${MONEY_COPY.currencySign}160\\.6$`)
+      new RegExp(`^${MONEY_COPY.currencySign}160\\.60$`)
+    );
+  });
+
+  it('shows a change of more than a tenth to the agora too', () => {
+    render(<TransactionRow transactionListRow={{ ...mockInterestRow, balanceChange: 1234 }} />);
+
+    expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balanceChange)).toHaveTextContent(
+      `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}12.34`
     );
   });
 
