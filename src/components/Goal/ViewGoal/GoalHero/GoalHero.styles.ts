@@ -63,7 +63,8 @@ export const Encouragement = styled.div<{ isGoalReached: boolean }>`
   padding: 9px;
   border-radius: 14px;
   border: 1.5px solid
-    ${({ isGoalReached, theme }): string => (isGoalReached ? theme.colors.gainText : theme.colors.softBorder)};
+    ${({ isGoalReached, theme }): string =>
+      isGoalReached ? theme.colors.gainText : theme.colors.softBorder};
   background: ${({ isGoalReached, theme }): string =>
     isGoalReached ? theme.colors.gainSoftBg : theme.colors.softBg};
   color: ${({ isGoalReached, theme }): string =>
