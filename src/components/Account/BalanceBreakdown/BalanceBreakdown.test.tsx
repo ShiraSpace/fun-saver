@@ -3,13 +3,21 @@ import {
   mockWalletSummaries,
   mockWalletSummariesWithAgorot,
 } from '@/test-utils/mocks/wallet.mocks';
-import { prefersReducedMotion } from '@/test-utils/motion';
+import { prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
 import { BalanceBreakdown } from './BalanceBreakdown';
 import { BALANCE_BREAKDOWN_COPY, BALANCE_BREAKDOWN_TEST_IDS } from './constants';
 
 describe('BalanceBreakdown', () => {
   beforeEach(() => {
     prefersReducedMotion();
+  });
+
+  it('counts the total up from nothing when the browser allows motion', () => {
+    prefersMotion();
+
+    render(<BalanceBreakdown wallets={mockWalletSummaries} />);
+
+    expect(screen.getByTestId(BALANCE_BREAKDOWN_TEST_IDS.total)).toHaveTextContent('₪0');
   });
 
   describe('with whole-shekel balances', () => {
