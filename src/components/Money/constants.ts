@@ -1,6 +1,8 @@
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 
-export const AGOROT_PER_TENTH = AGOROT_PER_SHEKEL / 10;
+const TENTHS_PER_SHEKEL = 10;
+
+export const AGOROT_PER_TENTH = AGOROT_PER_SHEKEL / TENTHS_PER_SHEKEL;
 
 export const MONEY_COPY = {
   currencySign: '₪',
