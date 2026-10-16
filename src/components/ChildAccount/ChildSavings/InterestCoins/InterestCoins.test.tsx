@@ -2,9 +2,10 @@ import { createRef } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { InterestCoins, type InterestCoin } from './InterestCoins';
 import { INTEREST_COINS_COPY, INTEREST_COINS_TEST_IDS } from './constants';
+import { INTEREST_COIN_BUTTON_TEST_IDS } from './InterestCoinButton/constants';
 
 function shownCoins(): HTMLElement[] {
-  return screen.getAllByTestId(INTEREST_COINS_TEST_IDS.coin);
+  return screen.getAllByTestId(INTEREST_COIN_BUTTON_TEST_IDS.coin);
 }
 
 describe('InterestCoins with ₪3, ₪2 and ₪2 waiting', () => {
@@ -32,7 +33,9 @@ describe('InterestCoins with ₪3, ₪2 and ₪2 waiting', () => {
 
   it('shows what each coin holds', () => {
     expect(
-      screen.getAllByTestId(INTEREST_COINS_TEST_IDS.amount).map((amount) => amount.textContent)
+      screen
+        .getAllByTestId(INTEREST_COIN_BUTTON_TEST_IDS.amount)
+        .map((amount) => amount.textContent)
     ).toEqual(['₪3', '₪2', '₪2']);
   });
 

@@ -5,7 +5,7 @@ import { createMockGoal, createMockSavedTowardGoal } from '@/test-utils/mocks/go
 import { collectedInterestCookie } from '@/lib/cookies';
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
 import { ChildSavings } from './ChildSavings';
-import { INTEREST_COINS_TEST_IDS } from './InterestCoins/constants';
+import { INTEREST_COIN_BUTTON_TEST_IDS } from './InterestCoins/InterestCoinButton/constants';
 import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
 import { SAVINGS_BALANCE_TEST_IDS } from './SavingsBalance/constants';
 
@@ -24,11 +24,13 @@ function savedMark(collectedInterest: number): RegExp {
 }
 
 function shownCoins(): HTMLElement[] {
-  return screen.queryAllByTestId(INTEREST_COINS_TEST_IDS.coin);
+  return screen.queryAllByTestId(INTEREST_COIN_BUTTON_TEST_IDS.coin);
 }
 
 function shownCoinAmounts(): (string | null)[] {
-  return screen.getAllByTestId(INTEREST_COINS_TEST_IDS.amount).map((amount) => amount.textContent);
+  return screen
+    .getAllByTestId(INTEREST_COIN_BUTTON_TEST_IDS.amount)
+    .map((amount) => amount.textContent);
 }
 
 describe('ChildSavings with ₪5 of interest waiting as ₪2, ₪2 and ₪1, after the first coin is tapped', () => {

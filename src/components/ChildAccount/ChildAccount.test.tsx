@@ -15,7 +15,7 @@ import { ChildAccount } from './ChildAccount';
 import { CHILD_ACCOUNT_TEST_IDS } from './constants';
 import { CHILD_SAVINGS_TEST_IDS } from './ChildSavings/constants';
 import { CHILD_WALLET_TEST_IDS } from './ChildWallet/constants';
-import { INTEREST_COINS_TEST_IDS } from './ChildSavings/InterestCoins/constants';
+import { INTEREST_COIN_BUTTON_TEST_IDS } from './ChildSavings/InterestCoins/InterestCoinButton/constants';
 
 describe('ChildAccount', () => {
   beforeEach(() => {
@@ -49,7 +49,7 @@ describe('ChildAccount', () => {
       .querySelectorAll('button, a');
 
     expect([...pressable].map((element) => element.getAttribute('data-testid'))).toEqual(
-      Array(3).fill(INTEREST_COINS_TEST_IDS.coin)
+      Array(3).fill(INTEREST_COIN_BUTTON_TEST_IDS.coin)
     );
   });
 });
@@ -94,6 +94,6 @@ it("shows a sibling's own coins after a switch, not the first child's", () => {
   rerender(<ChildAccount account={mockSiblingWithThreeShekelsOfInterest} />);
 
   expect(
-    screen.getAllByTestId(INTEREST_COINS_TEST_IDS.amount).map((amount) => amount.textContent)
+    screen.getAllByTestId(INTEREST_COIN_BUTTON_TEST_IDS.amount).map((amount) => amount.textContent)
   ).toEqual(['₪1', '₪1', '₪1']);
 });

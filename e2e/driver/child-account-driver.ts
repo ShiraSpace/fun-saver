@@ -8,6 +8,7 @@ import {
   INTEREST_COIN_SELECTOR,
   INTEREST_COINS_TEST_IDS,
 } from '@/components/ChildAccount/ChildSavings/InterestCoins/constants';
+import { INTEREST_COIN_BUTTON_TEST_IDS } from '@/components/ChildAccount/ChildSavings/InterestCoins/InterestCoinButton/constants';
 import { SAVINGS_BALANCE_TEST_IDS } from '@/components/ChildAccount/ChildSavings/SavingsBalance/constants';
 import { AppBrowser } from './app-browser';
 import { bottomOf } from './box-geometry';
@@ -56,7 +57,7 @@ export class ChildAccountDriver {
   }
 
   async waitForInterestCoins(): Promise<void> {
-    await this.appBrowser.waits.anyTestId([INTEREST_COINS_TEST_IDS.coin]);
+    await this.appBrowser.waits.anyTestId([INTEREST_COIN_BUTTON_TEST_IDS.coin]);
   }
 
   interestCoinsCopy(): Promise<string> {
@@ -64,13 +65,13 @@ export class ChildAccountDriver {
   }
 
   interestCoinCount(): Promise<number> {
-    return this.appBrowser.count(INTEREST_COINS_TEST_IDS.coin);
+    return this.appBrowser.count(INTEREST_COIN_BUTTON_TEST_IDS.coin);
   }
 
   async tapInterestCoin(coinIndex: number): Promise<void> {
     const coinsBefore = await this.interestCoinCount();
     await this.appBrowser.clickNth(INTEREST_COIN_SELECTOR, coinIndex);
-    await this.appBrowser.waits.count(INTEREST_COINS_TEST_IDS.coin, coinsBefore - 1);
+    await this.appBrowser.waits.count(INTEREST_COIN_BUTTON_TEST_IDS.coin, coinsBefore - 1);
   }
 
   savingsBalance(): Promise<string> {
