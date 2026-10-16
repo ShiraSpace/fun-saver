@@ -72,7 +72,7 @@ export interface ThemeGradients {
 
 export interface ThemeTokens {
   readonly colors: ThemeColors;
-  readonly celebrationGlow: number;
+  readonly celebrationGlowOpacity: number;
   readonly gradients: ThemeGradients;
   readonly shadows: ThemeShadows;
   readonly tints: ThemeTints;
@@ -82,7 +82,7 @@ export interface ThemeTokens {
 declare module '@emotion/react' {
   export interface Theme {
     readonly colors: ThemeColors;
-    readonly celebrationGlow: number;
+    readonly celebrationGlowOpacity: number;
     readonly gradients: ThemeGradients;
     readonly shadows: ThemeShadows;
     readonly tints: ThemeTints;

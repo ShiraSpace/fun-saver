@@ -58,7 +58,7 @@ export function travellingBorder(theme: Theme, cornerRadius: number): Serialized
     &::after {
       inset: -8px;
       filter: blur(16px);
-      opacity: ${theme.celebrationGlow};
+      opacity: ${theme.celebrationGlowOpacity};
     }
 
     @media ${REDUCED_MOTION} {

@@ -63,7 +63,7 @@ export const midnightBlue: ThemeTokens = {
     celebrationOutline: '#93C5FD',
     reachedBarStart: '#3B82F6',
   },
-  celebrationGlow: 0.55,
+  celebrationGlowOpacity: 0.55,
   gradients: themeGradients(GRADIENT_STOPS),
   shadows: SHADOW_SCALE,
   tints: TINT_SCALE,
