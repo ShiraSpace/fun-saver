@@ -110,12 +110,12 @@ export class GoalDriver {
   }
 
   waitForTravellingBorderToTurn(from: string): Promise<void> {
-    return this.appBrowser.waits.pseudoStyleChange(
-      WALLET_CARD_TEST_IDS.card,
-      '::before',
-      TRAVELLING_BORDER_ANGLE,
-      from
-    );
+    return this.appBrowser.waits.pseudoStyleChange({
+      testId: WALLET_CARD_TEST_IDS.card,
+      pseudo: '::before',
+      property: TRAVELLING_BORDER_ANGLE,
+      from,
+    });
   }
 
   async travellingBorderShown(): Promise<boolean> {

@@ -1,11 +1,11 @@
 import { fireEvent, render, screen, within } from '@/test-utils/render';
 import { WithMenu } from '@/test-utils/menu';
-import { moves } from '@/test-utils/motion';
 import { mockAccountsContext, createMockAccountsContext } from '@/test-utils/mocks/account.mocks';
 import {
   mockAccountSavingForGoal,
   mockAccountWithGoalReached,
 } from '@/test-utils/mocks/goal.mocks';
+import { moves } from '@/test-utils/motion';
 import { APP_MODE, AppModeProvider } from '@/components/AccountManagement/app-mode-context';
 import { GOAL_PROGRESS_TEST_IDS } from '@/components/Goal/GoalProgress/constants';
 import { MenuGoal } from './MenuGoal';

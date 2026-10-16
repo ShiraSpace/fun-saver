@@ -129,6 +129,7 @@ describe('a goal reached, on a phone that allows motion', () => {
 
   it('turns a border around the savings card, smoothly rather than in jumps', async () => {
     await goal.waitForTravellingBorderToTurn(await goal.travellingBorderAngle());
+
     const degrees = parseFloat(await goal.travellingBorderAngle());
 
     assert.ok(degrees > 0 && degrees < 360, `the border sits at ${degrees}deg`);
