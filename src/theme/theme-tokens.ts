@@ -42,6 +42,14 @@ export interface ThemeColors {
   readonly celebrationGreen: string;
   readonly celebrationBlue: string;
   readonly celebrationOrange: string;
+  readonly celebrationShine: string;
+  readonly celebrationWhite: string;
+  readonly celebrationBorderLight: string;
+  readonly celebrationBorderMain: string;
+  readonly celebrationBorderAccent: string;
+  readonly celebrationBorderDeep: string;
+  readonly celebrationOutline: string;
+  readonly reachedBarStart: string;
 }
 
 export interface ThemeGradientStops {
@@ -64,6 +72,7 @@ export interface ThemeGradients {
 
 export interface ThemeTokens {
   readonly colors: ThemeColors;
+  readonly celebrationGlowOpacity: number;
   readonly gradients: ThemeGradients;
   readonly shadows: ThemeShadows;
   readonly tints: ThemeTints;
@@ -73,6 +82,7 @@ export interface ThemeTokens {
 declare module '@emotion/react' {
   export interface Theme {
     readonly colors: ThemeColors;
+    readonly celebrationGlowOpacity: number;
     readonly gradients: ThemeGradients;
     readonly shadows: ThemeShadows;
     readonly tints: ThemeTints;

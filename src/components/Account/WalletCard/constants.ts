@@ -5,6 +5,7 @@ import { agorotToWholeShekels } from '@/lib/money';
 
 export const WALLET_CARD_TEST_IDS = {
   card: 'wallet-card',
+  icon: 'wallet-icon',
   balance: 'wallet-balance',
   summary: 'wallet-sub-line',
   lock: 'wallet-lock',

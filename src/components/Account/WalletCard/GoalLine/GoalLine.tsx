@@ -34,7 +34,7 @@ export function GoalLine({ wallet, savedTowardGoal }: GoalLineProps): JSX.Elemen
 
   return (
     <Line type="button" data-testid={GOAL_LINE_TEST_IDS.line} onClick={viewGoal}>
-      <GoalProgress savedTowardGoal={savedTowardGoal} />
+      <GoalProgress savedTowardGoal={savedTowardGoal} celebratesWhenReached />
     </Line>
   );
 }

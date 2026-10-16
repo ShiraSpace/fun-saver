@@ -1,7 +1,6 @@
 import { render, screen } from '@/test-utils/render';
 import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
-import { hexToRgb } from '@/test-utils/css-color';
-import { getThemeTokens } from '@/theme/registry';
+import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { GoalProgressBar } from './GoalProgressBar';
 import { GOAL_PROGRESS_BAR_TEST_IDS, HEAD_START_FILL_PERCENT } from './constants';
 
@@ -44,7 +43,8 @@ describe('GoalProgressBar', () => {
             saved: 40000,
             isGoalReached: true,
           })}
-        />
+        />,
+        { themeId: THEME_ID.midnightBlue }
       );
     });
 
@@ -56,9 +56,15 @@ describe('GoalProgressBar', () => {
       expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '300');
     });
 
-    it('turns the gain colour', () => {
-      expect(getComputedStyle(fill()).backgroundColor).toBe(
-        hexToRgb(getThemeTokens().colors.gainText)
+    it("starts from the theme's reached colour", () => {
+      expect(getComputedStyle(fill()).backgroundImage).toContain(
+        getThemeTokens(THEME_ID.midnightBlue).colors.reachedBarStart
+      );
+    });
+
+    it('fills toward the gain colour of the theme in use', () => {
+      expect(getComputedStyle(fill()).backgroundImage).toContain(
+        getThemeTokens(THEME_ID.midnightBlue).colors.gainText
       );
     });
   });

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>fun-saver — Bar shine strength</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Rubik', sans-serif; background: #111; color: #eee; }
+  .page { max-width: 1280px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1.doc { text-align: center; font-size: 24px; margin: 0 0 6px; }
+  .subtitle { text-align: center; color: #aaa; margin: 0 auto 36px; font-size: 14px; line-height: 1.6; max-width: 760px; }
+  section.step { margin-bottom: 48px; }
+  section.step > h2 { font-size: 18px; margin: 0 0 16px; text-align: center; }
+  .row { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+  .col { width: 250px; flex-shrink: 0; }
+  .cap { text-align: center; color: #ccc; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .cap .tag { display: inline-block; background: #2b6; color: #fff; border-radius: 999px; padding: 1px 8px; font-size: 11px; margin-inline-start: 6px; }
+  h1.doc, .subtitle, section.step > h2, .cap { direction: ltr; unicode-bidi: plaintext; }
+
+  @keyframes sweep { from { background-position: 200% 0; } to { background-position: -100% 0; } }
+
+  .screen { border-radius: 22px; padding: 18px 14px; background: var(--screen); }
+  .card { background: var(--surface); border-radius: 16px; padding: 12px; box-shadow: 0 0 0 3px var(--outline); color: var(--textStrong); }
+  .goal { display: flex; align-items: center; gap: 10px; }
+  .thumb { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-size: 20px; background: var(--walletSavings); flex-shrink: 0; box-shadow: 0 0 0 2px var(--outline); }
+  .goalBody { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+  .top { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--gainText); }
+  .top span { color: var(--textMuted); font-weight: 600; }
+  .bar { position: relative; height: 8px; border-radius: 999px; overflow: hidden; background: var(--walletTrack); }
+  .bar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--barStart), var(--gainText)); }
+  .bar::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, var(--shine) 50%, transparent 70%); background-size: 200% 100%; background-repeat: no-repeat; animation: sweep 1.4s linear infinite both; }
+  .zoom { margin-top: 10px; height: 26px; }
+  .zoom .bar { height: 26px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1 class="doc">Bar shine — how white the sweep is</h1>
+  <p class="subtitle">celebrationShine is the highlight that sweeps along the reached goal's bar on the savings card (7 sweeps of 1.4 s while the celebration plays). Here it loops so the strengths can be compared side by side. The lower bar in each frame is the same bar drawn larger.</p>
+  <div id="themes"></div>
+</div>
+<script>
+  const THEMES = [
+    {
+      name: 'sunshine-quest', current: 0.85,
+      vars: { '--screen': 'linear-gradient(160deg, #FFC34D, #FF8A4C, #E94E89)', '--surface': '#FFFFFF', '--textStrong': '#3A1F5A', '--textMuted': '#675A80', '--gainText': '#276E2C', '--walletTrack': '#F3ECE4', '--walletSavings': 'linear-gradient(135deg, #FFE6B0, #FFC34D)', '--barStart': '#5CC870', '--outline': '#FFD23F' },
+    },
+    {
+      name: 'jungle-quest', current: 0.85,
+      vars: { '--screen': 'linear-gradient(160deg, #2A9D8F, #43AA8B, #90BE6D)', '--surface': '#FFFDF5', '--textStrong': '#1B4332', '--textMuted': '#4B655B', '--gainText': '#316A26', '--walletTrack': '#E8EFDC', '--walletSavings': 'linear-gradient(135deg, #52B69A, #2A9D8F)', '--barStart': '#90BE6D', '--outline': '#F9C74F' },
+    },
+    {
+      name: 'midnight-blue', current: 0.6,
+      vars: { '--screen': 'linear-gradient(160deg, #0A0E14, #0F1620, #122036)', '--surface': '#141B24', '--textStrong': '#ECF1F8', '--textMuted': '#8A96A8', '--gainText': '#34D399', '--walletTrack': '#1E2A40', '--walletSavings': 'linear-gradient(135deg, #1E40AF, #172554)', '--barStart': '#3B82F6', '--outline': '#93C5FD' },
+    },
+  ];
+  const STRENGTHS = [0.4, 0.6, 0.85, 1];
+
+  function frame(theme, strength) {
+    const vars = Object.entries({ ...theme.vars, '--shine': `rgba(255, 255, 255, ${strength})` }).map(([k, v]) => `${k}:${v}`).join(';');
+    const tag = strength === theme.current ? '<span class="tag">now</span>' : '';
+    return `
+      <div class="col">
+        <div class="cap">${Math.round(strength * 100)}% white${tag}</div>
+        <div class="screen" style="${vars}">
+          <div class="card">
+            <div class="goal">
+              <div class="thumb">🚲</div>
+              <div class="goalBody"><div class="top">🎉 הגעת ליעד! <span>₪50 / ₪85</span></div><div class="bar"><i style="width:100%"></i></div></div>
+            </div>
+            <div class="zoom"><div class="bar"><i style="width:100%"></i></div></div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  document.getElementById('themes').innerHTML = THEMES.map((theme) => `
+    <section class="step">
+      <h2>${theme.name}</h2>
+      <div class="row">${STRENGTHS.map((strength) => frame(theme, strength)).join('')}</div>
+    </section>`).join('');
+</script>
+</body>
+</html>

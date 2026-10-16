@@ -179,6 +179,10 @@ export class AppBrowser {
     return queries.computedStyle({ page: this.page, testId, property });
   }
 
+  pseudoStyle(testId: string, pseudo: string, property: string): Promise<string> {
+    return queries.pseudoStyle({ page: this.page, testId, pseudo, property });
+  }
+
   styleOf(selector: string, property: string): Promise<string> {
     return queries.styleOf({ page: this.page, selector, property });
   }
