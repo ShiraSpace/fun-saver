@@ -1,0 +1,1 @@
+export { InterestCoinButton } from './InterestCoinButton';

@@ -14,6 +14,16 @@ export class PageWaits {
     });
   }
 
+  async count(testId: string, expected: number): Promise<void> {
+    await this.currentPage().waitForFunction(
+      (testId, expected) =>
+        document.querySelectorAll(`[data-testid="${testId}"]`).length === expected,
+      {},
+      testId,
+      expected
+    );
+  }
+
   async anyTestId(testIds: readonly string[]): Promise<void> {
     await this.currentPage().waitForSelector(
       testIds.map((testId) => `[data-testid="${testId}"]`).join(', ')

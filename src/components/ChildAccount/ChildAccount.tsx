@@ -21,7 +21,12 @@ export function ChildAccount({ account }: ChildAccountProps): JSX.Element {
   const spending = walletNamed(account.wallets, WALLET_NAMES.spending);
   const goodDeeds = walletNamed(account.wallets, WALLET_NAMES.goodDeeds);
   const savingsCard = savings && (
-    <ChildSavings savings={savings} savedTowardGoal={savedTowardGoalOf(account)} />
+    <ChildSavings
+      key={account.id}
+      accountId={account.id}
+      savings={savings}
+      savedTowardGoal={savedTowardGoalOf(account)}
+    />
   );
   const spendingCard = spending && <ChildWallet wallet={spending} />;
   const goodDeedsCard = goodDeeds && <ChildWallet wallet={goodDeeds} />;

@@ -10,6 +10,8 @@ import {
   mockWalletSummariesWithAgorot,
 } from './wallet.mocks';
 
+export const mockAccountId = 'mock-account';
+
 export function createMockAccount(overrides: Partial<Account> = {}): Account {
   return {
     id: 'a1',
