@@ -169,7 +169,7 @@ it('shows the real savings once the goal is reached, coins or not', () => {
         goal: createMockGoal({ amount: 10000 }),
         saved: 10500,
         stillToSave: 0,
-        reached: true,
+        isGoalReached: true,
       })}
     />,
     mockNoCoinsCollected

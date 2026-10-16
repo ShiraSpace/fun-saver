@@ -34,7 +34,7 @@ function savedTowardGoalAtCollectedInterest({
   savedTowardGoal,
   savingsAtCollectedInterest,
 }: SavingsShownParams): SavedTowardGoal | undefined {
-  if (!savedTowardGoal || savedTowardGoal.reached) {
+  if (!savedTowardGoal || savedTowardGoal.isGoalReached) {
     return savedTowardGoal;
   }
 
