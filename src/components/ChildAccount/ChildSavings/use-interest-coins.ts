@@ -37,6 +37,19 @@ function visitStartingAt(savings: WalletSummary, collectedInterest: number): Vis
   };
 }
 
+function visitAfterCollecting(visit: Visit, place: number): Visit {
+  const coin = visit.interestCoins.find((interestCoin) => interestCoin.place === place);
+
+  if (!coin) {
+    return visit;
+  }
+
+  return {
+    collectedInterest: visit.collectedInterest + coin.amount,
+    interestCoins: visit.interestCoins.filter((interestCoin) => interestCoin !== coin),
+  };
+}
+
 export function useInterestCoins({ savings, accountId }: InterestCoinsParams): VisitInterestCoins {
   const { storedCollectedInterest, readStoredCollectedInterest, saveCollectedInterest } =
     useCollectedInterest(accountId);
@@ -53,19 +66,8 @@ export function useInterestCoins({ savings, accountId }: InterestCoinsParams): V
 
   useEffect((): void => saveVisitMark(visit.collectedInterest), [visit.collectedInterest]);
 
-  function collect(place: number): void {
-    const coin = visit.interestCoins.find((interestCoin) => interestCoin.place === place);
-
-    if (!coin) {
-      return;
-    }
-
-    const collectedInterest = visit.collectedInterest + coin.amount;
-    setVisit({
-      collectedInterest,
-      interestCoins: visit.interestCoins.filter((interestCoin) => interestCoin !== coin),
-    });
-  }
+  const collect = (place: number): void =>
+    setVisit((current) => visitAfterCollecting(current, place));
 
   return {
     interestCoins: visit.interestCoins,
