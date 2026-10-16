@@ -94,6 +94,10 @@ describe('a goal reached', () => {
     assert.equal(await goal.celebrationShown(), false);
   });
 
+  it("keeps the savings card's travelling border off a phone that reduces motion", async () => {
+    assert.equal(await goal.travellingBorderShown(), false);
+  });
+
   it('says on the goal screen that savings are open', async () => {
     await goal.tapGoalLine();
     await goal.waitForGoalScreen();
@@ -121,6 +125,13 @@ describe('a goal reached, on a phone that allows motion', () => {
 
   it('celebrates over home', async () => {
     assert.equal(await goal.celebrationShown(), true);
+  });
+
+  it('turns a border around the savings card, smoothly rather than in jumps', async () => {
+    await goal.waitForTravellingBorderToTurn(await goal.travellingBorderAngle());
+    const degrees = parseFloat(await goal.travellingBorderAngle());
+
+    assert.ok(degrees > 0 && degrees < 360, `the border sits at ${degrees}deg`);
   });
 });
 

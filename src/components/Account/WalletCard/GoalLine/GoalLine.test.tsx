@@ -10,6 +10,7 @@ import { GOAL_PROGRESS_TEST_IDS } from '@/components/Goal/GoalProgress/constants
 import { GoalLine } from './GoalLine';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
+import { moves } from '@/test-utils/motion';
 import { GOAL_LINE_COPY, GOAL_LINE_TEST_IDS } from './constants';
 
 describe('GoalLine', () => {
@@ -103,8 +104,6 @@ describe('GoalLine', () => {
       />
     );
 
-    expect(getComputedStyle(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture)).animation).not.toBe(
-      ''
-    );
+    expect(moves(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture))).toBe(true);
   });
 });

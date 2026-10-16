@@ -4,6 +4,7 @@ import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
 import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
+import { moves } from '@/test-utils/motion';
 
 const mockSavingsSubLine = 'צובר 15% בחודש · פעיל מאז 1 בינואר';
 
@@ -181,9 +182,7 @@ describe('WalletCard', () => {
     });
 
     it('wobbles its piggy bank', () => {
-      expect(getComputedStyle(screen.getByTestId(WALLET_CARD_TEST_IDS.icon)).animation).not.toBe(
-        ''
-      );
+      expect(moves(screen.getByTestId(WALLET_CARD_TEST_IDS.icon))).toBe(true);
     });
   });
 

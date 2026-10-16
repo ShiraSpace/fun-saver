@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, within } from '@/test-utils/render';
 import { WithMenu } from '@/test-utils/menu';
+import { moves } from '@/test-utils/motion';
 import { mockAccountsContext, createMockAccountsContext } from '@/test-utils/mocks/account.mocks';
 import {
   mockAccountSavingForGoal,
@@ -117,6 +118,6 @@ describe('MenuGoal', () => {
       { accounts: createMockAccountsContext({ currentAccount: mockAccountWithGoalReached }) }
     );
 
-    expect(getComputedStyle(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture)).animation).toBe('');
+    expect(moves(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture))).toBe(false);
   });
 });

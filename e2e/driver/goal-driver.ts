@@ -18,7 +18,10 @@ import { SAVE_GOAL_BUTTON_TEST_IDS } from '@/components/Goal/GoalFields/SaveGoal
 import { GOAL_PICTURE_SEARCH_TEST_IDS } from '@/components/Goal/GoalPictureSearch/constants';
 import { PICTURE_TILE_TEST_IDS } from '@/components/Goal/GoalPictureSearch/PictureTiles/PictureTile/constants';
 import { CHOOSE_BUTTON_TEST_IDS } from '@/components/Goal/GoalPictureSearch/ChooseButton/constants';
-import { CELEBRATION_TEST_IDS } from '@/components/Goal/Celebration/constants';
+import {
+  CELEBRATION_TEST_IDS,
+  TRAVELLING_BORDER_ANGLE,
+} from '@/components/Goal/Celebration/constants';
 import { AppBrowser } from './app-browser';
 import type { AccountDriver } from './account-driver';
 import { holds } from './box-geometry';
@@ -92,6 +95,33 @@ export class GoalDriver {
 
     const display = await this.appBrowser.computedStyle(
       CELEBRATION_TEST_IDS.celebration,
+      'display'
+    );
+
+    return display !== 'none';
+  }
+
+  travellingBorderAngle(): Promise<string> {
+    return this.appBrowser.pseudoStyle(
+      WALLET_CARD_TEST_IDS.card,
+      '::before',
+      TRAVELLING_BORDER_ANGLE
+    );
+  }
+
+  waitForTravellingBorderToTurn(from: string): Promise<void> {
+    return this.appBrowser.waits.pseudoStyleChange(
+      WALLET_CARD_TEST_IDS.card,
+      '::before',
+      TRAVELLING_BORDER_ANGLE,
+      from
+    );
+  }
+
+  async travellingBorderShown(): Promise<boolean> {
+    const display = await this.appBrowser.pseudoStyle(
+      WALLET_CARD_TEST_IDS.card,
+      '::before',
       'display'
     );
 

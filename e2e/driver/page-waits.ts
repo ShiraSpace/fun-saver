@@ -32,6 +32,27 @@ export class PageWaits {
     );
   }
 
+  async pseudoStyleChange(
+    testId: string,
+    pseudo: string,
+    property: string,
+    from: string
+  ): Promise<void> {
+    await this.currentPage().waitForFunction(
+      (testId, pseudo, property, from) => {
+        const element = document.querySelector(`[data-testid="${testId}"]`);
+        return (
+          element !== null && getComputedStyle(element, pseudo).getPropertyValue(property) !== from
+        );
+      },
+      {},
+      testId,
+      pseudo,
+      property,
+      from
+    );
+  }
+
   async text(testId: string, expected: string): Promise<void> {
     await this.currentPage().waitForFunction(
       (testId, expected) => {
