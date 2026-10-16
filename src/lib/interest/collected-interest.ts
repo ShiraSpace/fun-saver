@@ -124,7 +124,7 @@ export function savedTowardGoalLessUncollectedInterest({
   uncollectedInterest,
 }: SavedTowardGoalLessUncollectedInterestParams): SavedTowardGoal | undefined {
   if (!savedTowardGoal) {
-    return undefined;
+    return;
   }
 
   const saved = savedTowardGoal.saved - uncollectedInterest;
