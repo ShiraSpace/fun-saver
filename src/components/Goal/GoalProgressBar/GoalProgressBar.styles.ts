@@ -8,10 +8,10 @@ export const Track = styled.span<{ thin: boolean }>`
   background: ${({ theme }): string => theme.colors.walletTrack};
 `;
 
-export const Fill = styled.span<{ reached: boolean }>`
+export const Fill = styled.span<{ isGoalReached: boolean }>`
   display: block;
   height: 100%;
   border-radius: 999px;
-  background: ${({ reached, theme }): string =>
-    reached ? theme.colors.gainText : theme.gradients.walletSavings};
+  background: ${({ isGoalReached, theme }): string =>
+    isGoalReached ? theme.colors.gainText : theme.gradients.walletSavings};
 `;

@@ -25,8 +25,7 @@ export function Account({ account }: AccountProps): JSX.Element {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const refreshWithLoader = useRefreshWithLoader();
   const balancesShown = `${account.id}:${totalBalance(wallets)}`;
-  const isGoalReached = savedTowardGoal?.reached;
-  const celebration = isGoalReached && <Celebration key={account.id} />;
+  const celebration = savedTowardGoal?.isGoalReached && <Celebration key={account.id} />;
 
   const showNewBalances = (): void => {
     setIsDrawerOpen(false);

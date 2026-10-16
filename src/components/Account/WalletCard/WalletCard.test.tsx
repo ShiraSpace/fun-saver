@@ -149,7 +149,7 @@ describe('WalletCard', () => {
     render(
       <WalletCard
         wallet={createMockWalletSummary()}
-        savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
+        savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
       />
     );
 

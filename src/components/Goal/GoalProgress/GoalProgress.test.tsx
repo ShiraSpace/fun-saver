@@ -23,7 +23,7 @@ describe('GoalProgress', () => {
   });
 
   it('says the goal is reached once it is', () => {
-    render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal({ reached: true })} />);
+    render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })} />);
 
     expect(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.heading)).toHaveTextContent(
       GOAL_PROGRESS_COPY.reached
@@ -62,7 +62,7 @@ describe('GoalProgress', () => {
       beforeEach(() => {
         render(
           <GoalProgress
-            savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
+            savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
             glowWhenReached
           />,
           { themeId: THEME_ID.midnightBlue }
@@ -86,7 +86,9 @@ describe('GoalProgress', () => {
 
     describe('once reached, without being asked to', () => {
       beforeEach(() => {
-        render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal({ reached: true })} />);
+        render(
+          <GoalProgress savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })} />
+        );
       });
 
       it('does not glow', () => {

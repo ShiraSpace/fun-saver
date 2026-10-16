@@ -15,7 +15,7 @@ export function GoalBeingCancelled({
   titleId,
   descriptionId,
 }: GoalBeingCancelledProps): JSX.Element {
-  const { goal, saved, reached } = savedTowardGoal;
+  const { goal, saved, isGoalReached } = savedTowardGoal;
   const title = GOAL_BEING_CANCELLED_COPY.title(goal.name);
   const savedSoFarLine = (
     <>
@@ -26,7 +26,7 @@ export function GoalBeingCancelled({
       {GOAL_BEING_CANCELLED_COPY.sentenceEnd}
     </>
   );
-  const whereTheMoneyGoes = reached
+  const whereTheMoneyGoes = isGoalReached
     ? GOAL_BEING_CANCELLED_COPY.moneyStays
     : GOAL_BEING_CANCELLED_COPY.moneyStaysAndSavingsOpens;
 

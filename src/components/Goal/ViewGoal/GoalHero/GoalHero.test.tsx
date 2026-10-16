@@ -43,7 +43,7 @@ describe('GoalHero', () => {
 
   describe('once the goal is reached', () => {
     beforeEach(() => {
-      render(<GoalHero savedTowardGoal={createMockSavedTowardGoal({ reached: true })} />);
+      render(<GoalHero savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })} />);
     });
 
     it('says it can be bought', () => {

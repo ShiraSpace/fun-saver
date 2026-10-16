@@ -43,7 +43,10 @@ describe('piggyBankFillOf', () => {
 
     it('is full once the goal is reached, even below its amount', () => {
       const full = 1;
-      const mockSavedTowardGoal = createMockSavedTowardGoal({ goal: mockGoal, reached: true });
+      const mockSavedTowardGoal = createMockSavedTowardGoal({
+        goal: mockGoal,
+        isGoalReached: true,
+      });
 
       expect(piggyBankFillOf({ savingsBalance: 5000, savedTowardGoal: mockSavedTowardGoal })).toBe(
         full

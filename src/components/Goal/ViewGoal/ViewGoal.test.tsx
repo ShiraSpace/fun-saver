@@ -46,7 +46,7 @@ describe('ViewGoal', () => {
       render(
         <ViewGoal
           accountName={mockAccountName}
-          savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
+          savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
           onClose={jest.fn()}
         />
       );

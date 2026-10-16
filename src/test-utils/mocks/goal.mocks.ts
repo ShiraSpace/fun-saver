@@ -30,7 +30,7 @@ export function createMockSavedTowardGoal(
     goal: mockGoal,
     saved: 8500,
     stillToSave: 21500,
-    reached: false,
+    isGoalReached: false,
     ...overrides,
   };
 }

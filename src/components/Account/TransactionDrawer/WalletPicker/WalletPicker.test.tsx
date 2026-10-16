@@ -77,7 +77,7 @@ describe('WalletPicker', () => {
   });
 
   it('locks nothing once the goal is reached', () => {
-    renderPicker(mockSpending.id, createMockSavedTowardGoal({ reached: true }));
+    renderPicker(mockSpending.id, createMockSavedTowardGoal({ isGoalReached: true }));
 
     expect(screen.queryByTestId(WALLET_TILE_TEST_IDS.lock)).not.toBeInTheDocument();
   });

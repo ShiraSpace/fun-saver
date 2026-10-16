@@ -19,7 +19,7 @@ interface ViewGoalProps {
 }
 
 export function ViewGoal({ accountName, savedTowardGoal, onClose }: ViewGoalProps): JSX.Element {
-  const isGoalReached = savedTowardGoal.reached;
+  const { isGoalReached } = savedTowardGoal;
   const title = VIEW_GOAL_COPY.title(accountName);
   const reachedHeading = isGoalReached && (
     <ReachedHeading data-testid={VIEW_GOAL_TEST_IDS.reachedHeading}>

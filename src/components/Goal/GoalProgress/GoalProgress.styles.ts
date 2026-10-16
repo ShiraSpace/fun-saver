@@ -10,7 +10,7 @@ interface PictureProps {
 
 interface GoalHeadingProps {
   progressSize: GoalProgressSize;
-  reached: boolean;
+  isGoalReached: boolean;
 }
 
 interface SizeStyle {
@@ -80,8 +80,8 @@ export const GoalHeading = styled.span<GoalHeadingProps>`
   gap: 8px;
   font-size: ${headingSize}px;
   font-weight: 700;
-  color: ${({ reached, theme }): string =>
-    reached ? theme.colors.gainText : theme.colors.textStrong};
+  color: ${({ isGoalReached, theme }): string =>
+    isGoalReached ? theme.colors.gainText : theme.colors.textStrong};
 `;
 
 export const GoalHeadingText = styled.span`
