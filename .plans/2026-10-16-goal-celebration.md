@@ -1,0 +1,141 @@
+# Saving goal PR 5 — the celebration
+
+Parent plan: `.plans/2026-10-03-saving-goal.md` (PR 5). Spec: Decisions «How
+often the celebration plays», New components (`Celebration`), Changes to
+existing components (`WalletCard, savings`). Mockup: `.savingsCard.celebrating`,
+`.savingsCard.reachedOutline` and the reduced-motion block
+(`mockups/saving-goal.html:64-106`).
+
+Worktree `fun-saver-celebration`.
+
+| PR | Branch | What | State |
+| --- | --- | --- | --- |
+| 5a | `feat/goal-celebration-plays` | Step 1, and `SavedTowardGoal.reached` → `isGoalReached` | Merged #217 (`a4645f5`) |
+| 5b | `feat/goal-celebration-card` | Steps 2–3, off `a4645f5` | Step 2 done; step 3 in progress |
+
+`feat/goal-celebration` on the remote is #188's merged branch; not reused.
+
+## Decisions (2026-10-16)
+
+- Only the parent's savings card celebrates. The child's piggy bank keeps the
+  reached glow it has today; child mode mounts no `Celebration`.
+- The confetti plays on home and on the goal screen, as the spec says.
+- The motion is the mockup's: the border goes round every 2 s, 5 times; 🐷
+  wobbles every 0.8 s, 12 times; the goal picture wobbles the same way 0.4 s
+  later; the bar shines every 1.4 s, 7 times. The border fades with the confetti
+  (`CELEBRATION_MOTION.fadeDelayMs` / `fadeMs`), so the whole card is still by
+  10 s. No motion choice is open.
+- Each theme owns the border's colours (`celebrationBorderLight/Main/Accent/Deep`,
+  apart from the confetti's), `celebrationOutline` (card outline, picture ring,
+  goal-screen ring), `reachedBarStart` and `celebrationGlowOpacity`. sunshine
+  and jungle look as the mockup; midnight-blue is "night sky"
+  (`mockups/saving-goal-celebration-themes.html`, option B). The shine is 60%
+  white everywhere (`mockups/saving-goal-shine.html`).
+- The border's angle is registered from code (`registerTravellingBorderAngle`,
+  on `WalletCard` mount): `next dev`'s Tailwind pipeline drops an `@property`
+  rule in `globals.css`, which left the border standing still.
+- A reached goal's picture keeps a ring and its bar a gradient wherever
+  `GoalProgress` draws it, as the mockup's `.goalProgress.reached` does.
+- Wallet cards sit 10 px apart (was 8).
+
+## How it plays, and replays
+
+All of it is CSS that runs once when the element mounts. No timer and no
+"celebrated" state:
+
+- **Home opens or the goal screen opens:** the elements mount, so it plays.
+- **`router.refresh()`:** the same elements stay mounted, so nothing replays.
+- **Account switch:** `WalletCard` is keyed by `wallet.id`, which repeats across
+  accounts (`savings`), so today a switch does **not** remount the card. `Account`
+  keys `WalletList` and `Celebration` by `account.id`, the way it already keys
+  `BalanceBreakdown`.
+- **A deposit reaches the goal while home is open:** after the refresh the card
+  becomes reached, so `Celebration` mounts for the first time and plays. This is
+  the first play, not a replay.
+- **Reduced motion:** `Celebration` already hides itself through
+  `@media (prefers-reduced-motion: reduce)`. The card's border, wobble and shine
+  do the same, and the gold outline stays.
+
+---
+
+### Step 1 — the confetti on home and on the goal screen
+
+Production:
+- `Account.tsx`: `{isGoalReached && <Celebration key={account.id} />}`
+  after `Column`, and `key={account.id}` on `WalletList`. `ChildAccount` is not
+  touched.
+- `ViewGoal.tsx`: `{isGoalReached && <Celebration />}`. The goal screen sits in
+  `Overlay` (`LAYERS.modal`), so the confetti falls over it; the home confetti
+  underneath is covered by the overlay.
+
+First three tests (`Account.test.tsx`):
+
+| Test | Break |
+| --- | --- |
+| a reached goal plays the celebration | drop the `Celebration` mount |
+| a goal not yet reached does not | mount it whenever there is a goal |
+| switching to another account with a reached goal plays it again (a new element) | drop `key={account.id}` |
+
+Rest: refreshing with the same account keeps the same element (no replay);
+`ViewGoal` plays it for a reached goal; `ViewGoal` does not for an unreached one.
+
+### Step 2 — the savings card celebrates
+
+Production:
+- `WalletCard` works out `isGoalReached` from the `savedTowardGoal` it already
+  receives (savings only), and passes it to `Card` and `WalletIcon` as
+  `celebrating`.
+  - `Card`, when celebrating: a `star` gold outline that stays. Two pseudo
+    elements (`::before` the border, `::after` its blurred glow) draw a
+    `conic-gradient` from `--travellingBorderAngle`. It turns 5 times and then
+    fades out with the confetti.
+  - `WalletIcon` (🐷): the wobble.
+- `GoalLine` passes `celebratesWhenReached` to `GoalProgress`, next to its
+  `glowWhenReached`. `GoalProgress` passes `celebrating` to `Picture` (the wobble,
+  0.4 s later) and to `GoalProgressBar`, whose `Track` runs the shine.
+  `MenuGoal` and `ChildSavings` do not pass it, so they stay still.
+- `WalletList`'s `List` gets `isolation: isolate`, so the border's
+  `z-index: -1` sits behind the card but above the screen's background.
+- `globals.css`: `@property --travellingBorderAngle` (an `<angle>`). Emotion
+  cannot register a property from inside a component. Without `@property`
+  support, the border shows but does not turn.
+- Colours: the existing `celebrationGold` / `celebrationPink` /
+  `celebrationPurple`, plus a new `celebrationShine` for the white of the border
+  and the shine. `surface` can't be used for that white, because it is dark in
+  `midnight-blue`. The new token is set in the three theme files, and
+  `no-color-leaks.test.ts` stays green.
+- Every animation is turned off under `@media ${REDUCED_MOTION}`, the way
+  `entrance()` does it. The outline stays.
+
+First three tests (`WalletCard.test.tsx`):
+
+| Test | Break |
+| --- | --- |
+| a reached goal's savings card celebrates | `celebrating` always false |
+| a goal not yet reached does not | `celebrating` from "has a goal" |
+| spending never celebrates, even with a reached goal | drop the savings-only guard |
+
+Asserted through a `data-celebrating` attribute or a test id on the card, not a
+CSS class. I'll settle which with you on the first three.
+
+Rest: `GoalProgress` wobbles the picture and shines the bar only with
+`celebratesWhenReached` and a reached goal; `GoalLine` passes it, and `MenuGoal`
+does not.
+
+### Step 3 — e2e and docs
+
+- `e2e/goal.visual.ts` «a goal reached»: the celebration shows over home; with
+  reduced motion (`AppBrowser`'s motion setting) it does not. `GoalDriver` gets
+  `celebrationShown()`. I'll ask before running the suite.
+- `.plans/2026-10-03-saving-goal.md`: 4b row → merged (#209, #211, #214); PR 5
+  row → this PR.
+- `docs/glossary.md`, the «A goal reached, shown» row: add the card's part
+  (`celebrating`, `celebratesWhenReached`) and «the travelling border». Not:
+  shimmer, sparkle, animate.
+- Screenshots and a short recording of home reached, playing and settled (gold
+  outline), through `pr-screenshots`.
+
+## Not in this PR
+
+- The child's piggy bank celebrating (decided 2026-10-16).
+- A seeded "reached" goal for local Neon `dev`: still none (as in PR 3).
