@@ -17,11 +17,14 @@ import { CHILD_SAVINGS_COPY } from './constants';
 import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
 import { SAVINGS_BALANCE_TEST_IDS } from './SavingsBalance/constants';
 
+const mockAccountId = 'mock-account';
+
 describe('ChildSavings', () => {
   describe('savings of ₪148.90, ₪6.40 of it interest', () => {
     beforeEach(() => {
       render(
         <ChildSavings
+          accountId={mockAccountId}
           savings={createMockWalletSummary({
             balance: 14890,
             interestEarned: 640,
@@ -49,7 +52,12 @@ describe('ChildSavings', () => {
 
   describe('₪150 saved, with no goal', () => {
     beforeEach(() => {
-      render(<ChildSavings savings={createMockWalletSummary({ balance: 15000 })} />);
+      render(
+        <ChildSavings
+          accountId={mockAccountId}
+          savings={createMockWalletSummary({ balance: 15000 })}
+        />
+      );
     });
 
     it('fills the piggy bank halfway to ₪300', () => {
@@ -75,6 +83,7 @@ describe('ChildSavings', () => {
 
       render(
         <ChildSavings
+          accountId={mockAccountId}
           savings={createMockWalletSummary({ balance: 5000 })}
           savedTowardGoal={mockSavedTowardGoal}
         />
@@ -107,6 +116,7 @@ describe('ChildSavings', () => {
 
       render(
         <ChildSavings
+          accountId={mockAccountId}
           savings={createMockWalletSummary({ balance: 5000 })}
           savedTowardGoal={mockSavedTowardGoal}
         />

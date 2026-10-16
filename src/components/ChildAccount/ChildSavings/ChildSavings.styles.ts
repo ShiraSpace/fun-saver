@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Card = styled.section`
-  padding: 22px 18px 18px;
+  padding: 8px 18px 18px;
   text-align: center;
   background: ${({ theme }): string => theme.colors.surface};
   border-radius: 22px;

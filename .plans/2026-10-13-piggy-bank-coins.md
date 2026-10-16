@@ -27,4 +27,11 @@ Each step is production code, a commit, then three tests, approval, the rest, an
    by account id, `useDriver`'s `collectedInterest` option, `e2e/interest-coins.e2e.ts`, a visual shot. Layout shown as
    e2e screenshots at 393×745 before it is decided.
 
+## Layout (decided 2026-10-16 from e2e shots and `mockups/coin-space.html`)
+
+- The copy line and the coin row exist only while coins wait; with none the pig sits at the top of the card.
+- The coins never overlap the pig: the coin row pulls the pig up 8px (5.2px clear of the ears) and the card's top
+  padding is 8px. Coins waiting, with a goal, at 393×745: the wallets end at 742.6px; 5px between the copy line and the coins.
+- When the last coin goes in the space closes at once; PR 4 makes it wait for the landing and close slowly.
+
 Then: every review round fixed, the hydration check in a real browser (proved on a planted mismatch), PR screenshots.

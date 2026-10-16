@@ -1,11 +1,9 @@
 'use client';
 
 import { JSX, RefObject, useRef } from 'react';
-import { floorToShekels } from '@/lib/money';
-import { Money } from '@/components/Money';
-import { MONEY_COPY } from '@/components/Money/constants';
+import { InterestCoinButton } from './InterestCoinButton';
 import { INTEREST_COINS_COPY, INTEREST_COINS_TEST_IDS } from './constants';
-import { CoinAmount, CoinButton, CoinRow, TapTheCoins } from './InterestCoins.styles';
+import { CoinRow, TapTheCoins } from './InterestCoins.styles';
 
 export interface InterestCoin {
   place: number;
@@ -26,7 +24,7 @@ export function InterestCoins({
   interestCoins,
   onCollect,
   whereFocusGoesLast,
-}: InterestCoinsProps): JSX.Element {
+}: InterestCoinsProps): JSX.Element | null {
   const coinRow = useRef<HTMLDivElement>(null);
 
   function collect(place: number, tappedIndex: number): void {
@@ -35,30 +33,22 @@ export function InterestCoins({
     onCollect(place);
   }
 
+  if (interestCoins.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <TapTheCoins data-testid={INTEREST_COINS_TEST_IDS.copy}>
-        {interestCoins.length > 0 && INTEREST_COINS_COPY.tapTheCoins}
+        {INTEREST_COINS_COPY.tapTheCoins}
       </TapTheCoins>
       <CoinRow ref={coinRow}>
-        {interestCoins.map(({ place, amount }, coinIndex) => (
-          <CoinButton
-            key={place}
-            type="button"
-            aria-label={INTEREST_COINS_COPY.coinLabel(floorToShekels(amount))}
-            data-testid={INTEREST_COINS_TEST_IDS.coin}
-            onClick={(): void => collect(place, coinIndex)}
-          >
-            {MONEY_COPY.currencySign}
-            <CoinAmount dir="ltr">
-              {INTEREST_COINS_COPY.earnedSign}
-              <Money
-                amountAgorot={amount}
-                testId={INTEREST_COINS_TEST_IDS.amount}
-                fullSizeCurrency
-              />
-            </CoinAmount>
-          </CoinButton>
+        {interestCoins.map((interestCoin, coinIndex) => (
+          <InterestCoinButton
+            key={interestCoin.place}
+            amount={interestCoin.amount}
+            onTap={(): void => collect(interestCoin.place, coinIndex)}
+          />
         ))}
       </CoinRow>
     </>
