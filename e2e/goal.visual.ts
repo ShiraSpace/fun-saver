@@ -6,7 +6,7 @@ import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { createMockGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { MAX_GOAL_NAME_LENGTH } from '@/lib/goal/constants';
 import { GOAL_COPY } from '@/components/Goal/constants';
-import { SAVINGS_LOCK_COPY } from '@/components/Goal/ViewGoal/SavingsLock/constants';
+import { SAVINGS_OPEN_COPY } from '@/components/Goal/ViewGoal/SavingsOpen/constants';
 import { HOME_ROUTE } from '@/components/Home/constants';
 import { useDriver } from './driver/use-driver';
 import { SMALL_PHONE } from './driver/viewports';
@@ -94,7 +94,7 @@ describe('a goal reached', () => {
     await goal.tapGoalLine();
     await goal.waitForGoalScreen();
 
-    assert.equal(await goal.goalScreenSavingsLock(), SAVINGS_LOCK_COPY.savingsOpen);
+    assert.equal(await goal.goalScreenSavingsOpen(), SAVINGS_OPEN_COPY.label);
   });
 
   it('warns in the drawer that withdrawing savings completes it', async () => {

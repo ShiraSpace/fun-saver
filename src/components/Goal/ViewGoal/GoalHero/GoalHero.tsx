@@ -23,7 +23,7 @@ function encouragementFor({ goal, stillToSave, reached }: SavedTowardGoal): Reac
   return reached ? (
     GOAL_HERO_COPY.canBuy(goal.name, goal.picture.emoji)
   ) : (
-    <StillToSave stillToSave={stillToSave} />
+    <StillToSave stillToSave={stillToSave} cheer={GOAL_HERO_COPY.cheer} />
   );
 }
 

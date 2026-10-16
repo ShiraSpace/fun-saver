@@ -22,6 +22,7 @@ import { ChildAccountDriver } from './child-account-driver';
 import { MethodDriver } from './method-driver';
 import { LoadingShellDriver } from './loading-shell-driver';
 import { GoalDriver } from './goal-driver';
+import { CancelGoalDriver } from './cancel-goal-driver';
 import { AnotherPhoneDriver } from './another-phone-driver';
 import { startServer, type RunningServer } from '../server';
 
@@ -51,6 +52,7 @@ export interface AppDriver {
   method: MethodDriver;
   loadingShell: LoadingShellDriver;
   goal: GoalDriver;
+  cancelGoal: CancelGoalDriver;
 }
 
 export interface TestDriver extends AppDriver {
@@ -59,10 +61,11 @@ export interface TestDriver extends AppDriver {
 
 export function createAppDriver(appBrowser: AppBrowser): AppDriver {
   const account = new AccountDriver(appBrowser);
+  const menu = new MenuDriver(appBrowser);
 
   return {
     appBrowser,
-    menu: new MenuDriver(appBrowser),
+    menu,
     header: new HeaderDriver(appBrowser),
     emptyState: new EmptyStateDriver(appBrowser),
     createAccount: new AccountFormDriver(appBrowser, CREATE_ACCOUNT_TEST_IDS.container),
@@ -73,13 +76,24 @@ export function createAppDriver(appBrowser: AppBrowser): AppDriver {
     method: new MethodDriver(appBrowser),
     loadingShell: new LoadingShellDriver(appBrowser),
     goal: new GoalDriver(appBrowser, account),
+    cancelGoal: new CancelGoalDriver(appBrowser, menu),
   };
 }
 
 export async function startApp(appBrowser: AppBrowser): Promise<RunningServer> {
-  const [server] = await Promise.all([startServer(), appBrowser.start()]);
+  const [serverStart, browserStart] = await Promise.allSettled([startServer(), appBrowser.start()]);
 
-  return server;
+  if (serverStart.status === 'rejected') {
+    await appBrowser.stop();
+    throw serverStart.reason;
+  }
+
+  if (browserStart.status === 'rejected') {
+    await serverStart.value.stop();
+    throw browserStart.reason;
+  }
+
+  return serverStart.value;
 }
 
 export async function openApp({
@@ -138,10 +152,16 @@ export function useDriver(
   { motion = 'reduce', viewMode = VIEW_MODE.parent }: DriverOptions = {}
 ): TestDriver {
   const appBrowser = AppBrowser.create();
-  let server: RunningServer;
+  let server: RunningServer | undefined;
+  const requireServer = (): RunningServer => {
+    if (!server) {
+      throw new Error('the app server is not started; its before hook failed');
+    }
+    return server;
+  };
   const appDriver = {
     ...createAppDriver(appBrowser),
-    anotherPhone: new AnotherPhoneDriver(() => server),
+    anotherPhone: new AnotherPhoneDriver(requireServer),
   };
 
   before(async () => {
@@ -149,7 +169,7 @@ export function useDriver(
   });
 
   beforeEach(async () => {
-    await openApp({ appBrowser, server, initialStore, motion, viewMode });
+    await openApp({ appBrowser, server: requireServer(), initialStore, motion, viewMode });
   });
 
   afterEach(async () => {
@@ -158,7 +178,7 @@ export function useDriver(
 
   after(async () => {
     await appBrowser.stop();
-    await server.stop();
+    await server?.stop();
   });
 
   return appDriver;

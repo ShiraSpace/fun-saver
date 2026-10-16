@@ -87,4 +87,26 @@ describe('useAccountNavigation', () => {
       });
     });
   });
+
+  describe('while cancelling the goal of an account saving for it', () => {
+    let mockAccounts: AccountSummary[];
+    let hook: RenderHookResult<AccountNavigation, void>;
+
+    beforeEach(() => {
+      mockAccounts = [mockAccountSavingForGoal];
+      hook = renderHook(() => useAccountNavigation(mockAccounts, mockAccountSavingForGoal.id));
+      act(() => hook.result.current.setMode(APP_MODE.cancellingGoal));
+    });
+
+    it("carries what is saved toward the account's goal", () => {
+      expect(hook.result.current.goalBeingCancelled?.goal).toEqual(mockAccountSavingForGoal.goal);
+    });
+
+    it('returns to viewing when a refresh brings the account back without a goal', () => {
+      mockAccounts = [mockAccountSummary];
+      hook.rerender();
+
+      expect(hook.result.current.mode).toBe(APP_MODE.viewing);
+    });
+  });
 });

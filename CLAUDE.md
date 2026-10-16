@@ -117,7 +117,7 @@ agreed before the volume. Once they are approved, the rest follow in one go.
 - Each component has a dedicated test file
 - Use `data-testid` for element selection in tests
 - Store test IDs and content in constants file
-- Place `render()` in `beforeEach` block
+- Place `render()` in `beforeEach` block when several tests share it; a single test renders inside itself
 - Use `getByTestId` for element queries
 - Mock dependencies appropriately
 - Use centralized mocks in `__mocks__/` directory for shared module mocks (e.g., `__mocks__/next/image.tsx`) — do not
@@ -129,9 +129,8 @@ agreed before the volume. Once they are approved, the rest follow in one go.
   that test. One used by several tests goes in the `describe` that holds exactly those tests, nesting a `describe` when
   only some of them share it. One repeated across files becomes a helper in `src/test-utils/`. When a change leaves a
   shared value with a single user, move it back in
-- The same goes for setup steps. A `beforeEach` exists to share steps between tests; one serving a single test is
-  inlined into that test, and a `describe` left holding only that test goes too, its words moving into the test name.
-  This includes `render()` when only one test needs it
+- A `beforeEach` exists to share steps between tests. One serving a single test is inlined into that test, and a
+  `describe` left holding only that test goes too, its words moving into the test name
 - Name things with the words in [`docs/glossary.md`](./docs/glossary.md)
 
 ### Code Formatting

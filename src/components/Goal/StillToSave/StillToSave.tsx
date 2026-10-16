@@ -4,16 +4,20 @@ import { STILL_TO_SAVE_COPY, STILL_TO_SAVE_TEST_IDS } from './constants';
 
 interface StillToSaveProps {
   stillToSave: number;
+  cheer?: string;
 }
 
-export function StillToSave({ stillToSave }: StillToSaveProps): JSX.Element {
+export function StillToSave({
+  stillToSave,
+  cheer = STILL_TO_SAVE_COPY.after,
+}: StillToSaveProps): JSX.Element {
   const amount = (
     <Money amountAgorot={stillToSave} testId={STILL_TO_SAVE_TEST_IDS.amount} fullSizeCurrency />
   );
 
   return (
     <>
-      {STILL_TO_SAVE_COPY.before} {amount} {STILL_TO_SAVE_COPY.after}
+      {STILL_TO_SAVE_COPY.before} {amount} {cheer}
     </>
   );
 }

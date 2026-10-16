@@ -1,9 +1,22 @@
-import { spawn } from 'node:child_process';
+import { spawn, type ChildProcessByStdio } from 'node:child_process';
 import { mkdtemp, rm } from 'node:fs/promises';
-import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { createInterface } from 'node:readline';
+import { type Readable } from 'node:stream';
 import { TEST_AUTH_SECRET } from './driver/auth-session';
+
+const NEXT_COMMAND = join('node_modules', '.bin', 'next');
+
+const ANY_FREE_PORT = '0';
+
+const SERVER_ADDRESS_LINE = /- Local:\s+(http:\/\/\S+)/;
+
+const SERVER_READY_LINE = 'Ready in';
+
+const SERVER_START_MS = 30_000;
+
+type ServerProcess = ChildProcessByStdio<null, Readable, null>;
 
 export interface RunningServer {
   baseUrl: string;
@@ -13,25 +26,27 @@ export interface RunningServer {
 }
 
 export async function startServer(): Promise<RunningServer> {
-  const port = await getFreePort();
   const storeDir = await mkdtemp(join(tmpdir(), 'funsaver-e2e-'));
   const storePath = join(storeDir, 'data.json');
 
   const env: NodeJS.ProcessEnv = {
     ...process.env,
-    PORT: String(port),
     FUNSAVER_DATA_PATH: storePath,
     FUNSAVER_NOW: '2026-01-01',
     AUTH_SECRET: TEST_AUTH_SECRET,
     AUTH_TRUST_HOST: 'true',
   };
-  const baseUrl = `http://localhost:${port}`;
-  const server = spawn('npx', ['next', 'start', '-p', String(port)], {
+  const server = spawn(NEXT_COMMAND, ['start', '-p', ANY_FREE_PORT], {
     env,
-    stdio: 'inherit',
+    stdio: ['ignore', 'pipe', 'inherit'],
   });
 
-  await waitForServer(baseUrl);
+  const removeStore = (): Promise<void> => rm(storeDir, { recursive: true, force: true });
+  const baseUrl = await serverAddressOnceReady(server).catch(async (error: unknown) => {
+    server.kill('SIGTERM');
+    await removeStore();
+    throw error;
+  });
 
   return {
     baseUrl,
@@ -39,31 +54,26 @@ export async function startServer(): Promise<RunningServer> {
     authSecret: TEST_AUTH_SECRET,
     stop: async (): Promise<void> => {
       server.kill('SIGTERM');
-      await rm(storeDir, { recursive: true, force: true });
+      await removeStore();
     },
   };
 }
 
-function getFreePort(): Promise<number> {
+function serverAddressOnceReady(server: ServerProcess): Promise<string> {
   return new Promise((resolve, reject) => {
-    const portFinder = createServer();
-    portFinder.once('error', reject);
-    portFinder.listen(0, () => {
-      const { port } = portFinder.address() as { port: number };
-      portFinder.close(() => resolve(port));
+    let baseUrl = '';
+    setTimeout(() => {
+      reject(new Error(`server was not ready within ${SERVER_START_MS}ms`));
+    }, SERVER_START_MS).unref();
+    server.once('error', reject);
+    server.once('exit', (code, signal) => {
+      const exitReason = code === null ? `signal ${signal}` : `code ${code}`;
+      reject(new Error(`server exited with ${exitReason} before it was ready`));
+    });
+    createInterface({ input: server.stdout }).on('line', (line) => {
+      console.log(line);
+      baseUrl ||= SERVER_ADDRESS_LINE.exec(line)?.[1] ?? '';
+      if (baseUrl && line.includes(SERVER_READY_LINE)) resolve(baseUrl);
     });
   });
-}
-
-async function waitForServer(url: string): Promise<void> {
-  for (let attempt = 0; attempt < 60; attempt++) {
-    try {
-      const response = await fetch(url);
-      if (response.ok || response.status === 404) return;
-    } catch {
-      void 0;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  }
-  throw new Error('server did not start');
 }

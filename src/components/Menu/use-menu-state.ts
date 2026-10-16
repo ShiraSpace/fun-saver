@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createRequiredContext } from '@/hooks/create-required-context';
 
 export interface MenuState {
@@ -11,7 +11,7 @@ export interface MenuState {
 
 export const [MenuProvider, useMenu] = createRequiredContext<MenuState>('MenuProvider');
 
-export function useMenuState(): MenuState {
+export function useMenuState(toggleRef: RefObject<HTMLButtonElement | null>): MenuState {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = useCallback((): void => {
@@ -20,7 +20,8 @@ export function useMenuState(): MenuState {
 
   const closeMenu = useCallback((): void => {
     setIsOpen(false);
-  }, []);
+    toggleRef.current?.focus();
+  }, [toggleRef]);
 
   return useMemo(() => ({ isOpen, toggle, closeMenu }), [isOpen, toggle, closeMenu]);
 }

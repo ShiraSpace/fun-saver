@@ -2,12 +2,12 @@
 
 import { JSX } from 'react';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
-import { PrimaryButton } from '@/components/PrimaryButton';
 import { CloseButton } from '@/components/CloseButton';
 import { ScreenTitle } from '@/components/ScreenTitle';
 import { GoalDialog } from '../GoalDialog';
+import { GoalScreenButton } from '../goal-parts';
 import { GoalHero } from './GoalHero';
-import { SavingsLock } from './SavingsLock';
+import { SavingsOpen } from './SavingsOpen';
 import { VIEW_GOAL_COPY, VIEW_GOAL_TEST_IDS } from './constants';
 import { ReachedHeading } from './ViewGoal.styles';
 
@@ -25,6 +25,7 @@ export function ViewGoal({ accountName, savedTowardGoal, onClose }: ViewGoalProp
       {VIEW_GOAL_COPY.reachedHeading}
     </ReachedHeading>
   );
+  const savingsOpen = reached && <SavingsOpen />;
 
   return (
     <GoalDialog title={title} onClose={onClose} data-testid={VIEW_GOAL_TEST_IDS.container}>
@@ -32,10 +33,10 @@ export function ViewGoal({ accountName, savedTowardGoal, onClose }: ViewGoalProp
       <ScreenTitle title={title} titleIcon={VIEW_GOAL_COPY.titleIcon} />
       {reachedHeading}
       <GoalHero savedTowardGoal={savedTowardGoal} />
-      <SavingsLock reached={reached} />
-      <PrimaryButton type="button" data-testid={VIEW_GOAL_TEST_IDS.back} onClick={onClose}>
+      {savingsOpen}
+      <GoalScreenButton type="button" data-testid={VIEW_GOAL_TEST_IDS.back} onClick={onClose}>
         {VIEW_GOAL_COPY.back}
-      </PrimaryButton>
+      </GoalScreenButton>
     </GoalDialog>
   );
 }
