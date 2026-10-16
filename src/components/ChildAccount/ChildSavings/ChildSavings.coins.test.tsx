@@ -180,7 +180,7 @@ it('leaves what waits out of a reached goal too, so it matches the total', () =>
   expect(screen.getByTestId(SAVED_OUT_OF_GOAL_TEST_IDS.saved)).toHaveTextContent('₪100');
 });
 
-describe('ChildSavings on ₪50.90 holding ₪13.20 of interest, ₪10.50 of it collected', () => {
+describe('ChildSavings on ₪50.90 holding ₪13.20 of interest, ₪10.50 of it collected and ₪3 of it waiting', () => {
   beforeEach(() => {
     render(
       <ChildSavings

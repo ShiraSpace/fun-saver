@@ -7,21 +7,21 @@ import {
 } from '../collected-interest';
 
 describe('savingsLessUncollectedInterest with ₪3 waiting, on ₪50.90 holding ₪13.20 of interest', () => {
-  const mockSavingsShown = savingsLessUncollectedInterest({
+  const savingsShown = savingsLessUncollectedInterest({
     savings: { balance: 5090, interestEarned: 1320 },
     uncollectedInterest: 300,
   });
 
   it('takes it off the whole shekels of the balance', () => {
-    expect(mockSavingsShown.balance).toBe(4700);
+    expect(savingsShown.balance).toBe(4700);
   });
 
   it('takes it off the whole shekels the money earned by itself', () => {
-    expect(mockSavingsShown.interestEarned).toBe(1000);
+    expect(savingsShown.interestEarned).toBe(1000);
   });
 
   it("leaves the child's own money as it is", () => {
-    expect(mockSavingsShown.principal).toBe(3700);
+    expect(savingsShown.principal).toBe(3700);
   });
 });
 
@@ -44,22 +44,22 @@ it('never shows less than ₪0 after the interest was spent', () => {
 });
 
 describe('savedTowardGoalLessUncollectedInterest with ₪5 waiting, ₪105 saved toward ₪300', () => {
-  const mockSavedTowardGoalShown = savedTowardGoalLessUncollectedInterest({
+  const savedTowardGoalShown = savedTowardGoalLessUncollectedInterest({
     savedTowardGoal: createMockSavedTowardGoal({ saved: 10500, stillToSave: 19500 }),
     uncollectedInterest: 500,
   });
 
   it('takes it off what is saved', () => {
-    expect(mockSavedTowardGoalShown.saved).toBe(10000);
+    expect(savedTowardGoalShown.saved).toBe(10000);
   });
 
   it('adds it to what is still to save', () => {
-    expect(mockSavedTowardGoalShown.stillToSave).toBe(20000);
+    expect(savedTowardGoalShown.stillToSave).toBe(20000);
   });
 });
 
 describe('savedTowardGoalLessUncollectedInterest with ₪5 waiting, ₪105 saved toward a reached ₪102', () => {
-  const mockSavedTowardGoalShown = savedTowardGoalLessUncollectedInterest({
+  const savedTowardGoalShown = savedTowardGoalLessUncollectedInterest({
     savedTowardGoal: createMockSavedTowardGoal({
       goal: createMockGoal({ amount: 10200 }),
       saved: 10500,
@@ -70,10 +70,10 @@ describe('savedTowardGoalLessUncollectedInterest with ₪5 waiting, ₪105 saved
   });
 
   it('keeps the goal reached, as the real savings reached it', () => {
-    expect(mockSavedTowardGoalShown.isGoalReached).toBe(true);
+    expect(savedTowardGoalShown.isGoalReached).toBe(true);
   });
 
   it('leaves nothing still to save', () => {
-    expect(mockSavedTowardGoalShown.stillToSave).toBe(0);
+    expect(savedTowardGoalShown.stillToSave).toBe(0);
   });
 });
