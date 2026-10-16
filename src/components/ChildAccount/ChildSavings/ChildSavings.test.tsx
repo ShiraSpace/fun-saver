@@ -101,7 +101,7 @@ describe('ChildSavings', () => {
     beforeEach(() => {
       const mockSavedTowardGoal = createMockSavedTowardGoal({
         goal: createMockGoal({ amount: 10000 }),
-        reached: true,
+        isGoalReached: true,
       });
 
       render(

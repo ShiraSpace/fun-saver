@@ -2,19 +2,21 @@ import styled from '@emotion/styled';
 import type { Themed } from '@/theme/themed';
 
 interface NoteProps extends Themed {
-  reached: boolean;
+  isGoalReached: boolean;
 }
 
-const background = ({ reached, theme }: NoteProps): string =>
-  reached ? theme.colors.gainSoftBg : theme.tints.film;
+const background = ({ isGoalReached, theme }: NoteProps): string =>
+  isGoalReached ? theme.colors.gainSoftBg : theme.tints.film;
 
-const border = ({ reached, theme }: NoteProps): string =>
-  reached ? `1.5px solid ${theme.colors.gainText}` : `1.5px dashed ${theme.colors.textOnPrimary}`;
+const border = ({ isGoalReached, theme }: NoteProps): string =>
+  isGoalReached
+    ? `1.5px solid ${theme.colors.gainText}`
+    : `1.5px dashed ${theme.colors.textOnPrimary}`;
 
-const color = ({ reached, theme }: NoteProps): string =>
-  reached ? theme.colors.gainText : theme.colors.textOnPrimary;
+const color = ({ isGoalReached, theme }: NoteProps): string =>
+  isGoalReached ? theme.colors.gainText : theme.colors.textOnPrimary;
 
-export const Note = styled.p<{ reached: boolean }>`
+export const Note = styled.p<{ isGoalReached: boolean }>`
   box-sizing: border-box;
   display: flex;
   gap: 8px;

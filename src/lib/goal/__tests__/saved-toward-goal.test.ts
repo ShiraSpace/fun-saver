@@ -38,11 +38,11 @@ describe('savedTowardGoalOf', () => {
   });
 
   it('is reached once savings hold the goal amount', () => {
-    expect(savedTowardGoalOf(createMockAccountSaving(mockGoalAmount))?.reached).toBe(true);
+    expect(savedTowardGoalOf(createMockAccountSaving(mockGoalAmount))?.isGoalReached).toBe(true);
   });
 
   it('is not reached while savings are short of the goal', () => {
-    expect(savedTowardGoalOf(createMockAccountSaving(29950))?.reached).toBe(false);
+    expect(savedTowardGoalOf(createMockAccountSaving(29950))?.isGoalReached).toBe(false);
   });
 
   it('never has a negative amount still to save', () => {
@@ -52,11 +52,11 @@ describe('savedTowardGoalOf', () => {
 
 describe('savingsLocked', () => {
   it('keeps savings while the goal is not reached', () => {
-    expect(savingsLocked(createMockSavedTowardGoal({ reached: false }))).toBe(true);
+    expect(savingsLocked(createMockSavedTowardGoal({ isGoalReached: false }))).toBe(true);
   });
 
   it('lets savings go once the goal is reached', () => {
-    expect(savingsLocked(createMockSavedTowardGoal({ reached: true }))).toBe(false);
+    expect(savingsLocked(createMockSavedTowardGoal({ isGoalReached: true }))).toBe(false);
   });
 
   it('keeps nothing without a goal', () => {

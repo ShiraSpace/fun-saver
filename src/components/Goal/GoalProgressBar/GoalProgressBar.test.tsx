@@ -42,7 +42,7 @@ describe('GoalProgressBar', () => {
         <GoalProgressBar
           savedTowardGoal={createMockSavedTowardGoal({
             saved: 40000,
-            reached: true,
+            isGoalReached: true,
           })}
         />
       );

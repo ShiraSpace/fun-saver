@@ -6,6 +6,7 @@ import { VIEW_GOAL_COPY, VIEW_GOAL_TEST_IDS } from './constants';
 import { SAVINGS_OPEN_COPY, SAVINGS_OPEN_TEST_IDS } from './SavingsOpen/constants';
 import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
 import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
+import { CELEBRATION_TEST_IDS } from '../Celebration/constants';
 
 const mockAccountName = 'נועה';
 
@@ -34,6 +35,10 @@ describe('ViewGoal', () => {
     it('does not say savings are open', () => {
       expect(screen.queryByTestId(SAVINGS_OPEN_TEST_IDS.label)).not.toBeInTheDocument();
     });
+
+    it('does not play the celebration', () => {
+      expect(screen.queryByTestId(CELEBRATION_TEST_IDS.celebration)).not.toBeInTheDocument();
+    });
   });
 
   describe('once the goal is reached', () => {
@@ -41,7 +46,7 @@ describe('ViewGoal', () => {
       render(
         <ViewGoal
           accountName={mockAccountName}
-          savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
+          savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
           onClose={jest.fn()}
         />
       );
@@ -57,6 +62,10 @@ describe('ViewGoal', () => {
       expect(screen.getByTestId(SAVINGS_OPEN_TEST_IDS.label)).toHaveTextContent(
         SAVINGS_OPEN_COPY.label
       );
+    });
+
+    it('plays the celebration', () => {
+      expect(screen.getByTestId(CELEBRATION_TEST_IDS.celebration)).toBeInTheDocument();
     });
   });
 

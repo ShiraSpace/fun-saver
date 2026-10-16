@@ -15,15 +15,15 @@ export function SavingsLockNote({
   amountShekels,
   savingsBalance,
 }: SavingsLockNoteProps): JSX.Element {
-  const reached =
+  const isGoalReached =
     amountShekels > 0 && goalReached({ amount: shekelsToAgorot(amountShekels) }, savingsBalance);
-  const icon = reached ? SAVINGS_LOCK_NOTE_COPY.reachedIcon : SAVINGS_LOCK_NOTE_COPY.lockIcon;
-  const text = reached
+  const icon = isGoalReached ? SAVINGS_LOCK_NOTE_COPY.reachedIcon : SAVINGS_LOCK_NOTE_COPY.lockIcon;
+  const text = isGoalReached
     ? SAVINGS_LOCK_NOTE_COPY.reached(goalName.trim())
     : SAVINGS_LOCK_NOTE_COPY.locked(amountShekels);
 
   return (
-    <Note reached={reached} data-testid={SAVINGS_LOCK_NOTE_TEST_IDS.note}>
+    <Note isGoalReached={isGoalReached} data-testid={SAVINGS_LOCK_NOTE_TEST_IDS.note}>
       <span aria-hidden="true">{icon}</span>
       <span>{text}</span>
     </Note>

@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
 
-export const Hero = styled.div<{ reached: boolean }>`
+export const Hero = styled.div<{ isGoalReached: boolean }>`
   box-sizing: border-box;
   width: 100%;
   padding: 18px;
   border-radius: 22px;
   background: ${({ theme }): string => theme.colors.surface};
-  box-shadow: ${({ reached, theme }): string =>
-    reached
+  box-shadow: ${({ isGoalReached, theme }): string =>
+    isGoalReached
       ? `0 5px 0 ${theme.shadows.soft}, 0 0 0 4px ${theme.colors.celebrationGold}, 0 0 34px ${theme.colors.celebrationGold}`
       : `0 5px 0 ${theme.shadows.soft}`};
 `;
@@ -58,16 +58,16 @@ export const Amount = styled.span`
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
 
-export const Encouragement = styled.div<{ reached: boolean }>`
+export const Encouragement = styled.div<{ isGoalReached: boolean }>`
   margin-top: 14px;
   padding: 9px;
   border-radius: 14px;
   border: 1.5px solid
-    ${({ reached, theme }): string => (reached ? theme.colors.gainText : theme.colors.softBorder)};
-  background: ${({ reached, theme }): string =>
-    reached ? theme.colors.gainSoftBg : theme.colors.softBg};
-  color: ${({ reached, theme }): string =>
-    reached ? theme.colors.gainText : theme.colors.softText};
+    ${({ isGoalReached, theme }): string => (isGoalReached ? theme.colors.gainText : theme.colors.softBorder)};
+  background: ${({ isGoalReached, theme }): string =>
+    isGoalReached ? theme.colors.gainSoftBg : theme.colors.softBg};
+  color: ${({ isGoalReached, theme }): string =>
+    isGoalReached ? theme.colors.gainText : theme.colors.softText};
   font-size: ${({ theme }): number => theme.typography.body}px;
   font-weight: 700;
 `;

@@ -4,6 +4,7 @@ import { JSX } from 'react';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { CloseButton } from '@/components/CloseButton';
 import { ScreenTitle } from '@/components/ScreenTitle';
+import { Celebration } from '../Celebration';
 import { GoalDialog } from '../GoalDialog';
 import { GoalScreenButton } from '../goal-parts';
 import { GoalHero } from './GoalHero';
@@ -18,14 +19,15 @@ interface ViewGoalProps {
 }
 
 export function ViewGoal({ accountName, savedTowardGoal, onClose }: ViewGoalProps): JSX.Element {
-  const { reached } = savedTowardGoal;
+  const { isGoalReached } = savedTowardGoal;
   const title = VIEW_GOAL_COPY.title(accountName);
-  const reachedHeading = reached && (
+  const reachedHeading = isGoalReached && (
     <ReachedHeading data-testid={VIEW_GOAL_TEST_IDS.reachedHeading}>
       {VIEW_GOAL_COPY.reachedHeading}
     </ReachedHeading>
   );
-  const savingsOpen = reached && <SavingsOpen />;
+  const savingsOpen = isGoalReached && <SavingsOpen />;
+  const celebration = isGoalReached && <Celebration />;
 
   return (
     <GoalDialog title={title} onClose={onClose} data-testid={VIEW_GOAL_TEST_IDS.container}>
@@ -37,6 +39,7 @@ export function ViewGoal({ accountName, savedTowardGoal, onClose }: ViewGoalProp
       <GoalScreenButton type="button" data-testid={VIEW_GOAL_TEST_IDS.back} onClick={onClose}>
         {VIEW_GOAL_COPY.back}
       </GoalScreenButton>
+      {celebration}
     </GoalDialog>
   );
 }

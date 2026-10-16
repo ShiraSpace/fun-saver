@@ -19,8 +19,8 @@ interface GoalHeroProps {
   savedTowardGoal: SavedTowardGoal;
 }
 
-function encouragementFor({ goal, stillToSave, reached }: SavedTowardGoal): ReactNode {
-  return reached ? (
+function encouragementFor({ goal, stillToSave, isGoalReached }: SavedTowardGoal): ReactNode {
+  return isGoalReached ? (
     GOAL_HERO_COPY.canBuy(goal.name, goal.picture.emoji)
   ) : (
     <StillToSave stillToSave={stillToSave} cheer={GOAL_HERO_COPY.cheer} />
@@ -28,11 +28,11 @@ function encouragementFor({ goal, stillToSave, reached }: SavedTowardGoal): Reac
 }
 
 export function GoalHero({ savedTowardGoal }: GoalHeroProps): JSX.Element {
-  const { goal, saved, reached } = savedTowardGoal;
+  const { goal, saved, isGoalReached } = savedTowardGoal;
   const encouragement = encouragementFor(savedTowardGoal);
 
   return (
-    <Hero reached={reached} data-testid={GOAL_HERO_TEST_IDS.hero}>
+    <Hero isGoalReached={isGoalReached} data-testid={GOAL_HERO_TEST_IDS.hero}>
       <Picture aria-hidden="true" data-testid={GOAL_HERO_TEST_IDS.picture}>
         {goal.picture.emoji}
       </Picture>
@@ -48,7 +48,7 @@ export function GoalHero({ savedTowardGoal }: GoalHeroProps): JSX.Element {
           <Money amountAgorot={goal.amount} testId={GOAL_HERO_TEST_IDS.amount} />
         </Amount>
       </Legend>
-      <Encouragement reached={reached} data-testid={GOAL_HERO_TEST_IDS.encouragement}>
+      <Encouragement isGoalReached={isGoalReached} data-testid={GOAL_HERO_TEST_IDS.encouragement}>
         {encouragement}
       </Encouragement>
     </Hero>

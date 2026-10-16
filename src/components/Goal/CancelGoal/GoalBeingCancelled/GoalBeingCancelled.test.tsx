@@ -53,7 +53,7 @@ describe('GoalBeingCancelled', () => {
   it('only says the money stays for a goal already reached, since savings is already open', () => {
     render(
       <GoalBeingCancelled
-        savedTowardGoal={createMockSavedTowardGoal({ reached: true })}
+        savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
         titleId={mockTitleId}
         descriptionId={mockDescriptionId}
       />

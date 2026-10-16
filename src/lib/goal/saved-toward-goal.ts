@@ -10,11 +10,11 @@ export interface SavedTowardGoal {
   goal: Goal;
   saved: number;
   stillToSave: number;
-  reached: boolean;
+  isGoalReached: boolean;
 }
 
 export function savingsLocked(savedTowardGoal?: SavedTowardGoal): boolean {
-  return !!savedTowardGoal && !savedTowardGoal.reached;
+  return !!savedTowardGoal && !savedTowardGoal.isGoalReached;
 }
 
 export function savedTowardGoalIn(
@@ -42,6 +42,6 @@ export function savedTowardGoalOf(account: AccountSummary): SavedTowardGoal | un
     goal,
     saved,
     stillToSave: Math.max(goal.amount - saved, 0),
-    reached: goalReached(goal, savingsBalance),
+    isGoalReached: goalReached(goal, savingsBalance),
   };
 }

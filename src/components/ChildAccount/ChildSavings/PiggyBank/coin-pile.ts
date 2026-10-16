@@ -16,7 +16,7 @@ export interface PiggyBankFillParams {
 export function piggyBankFillOf({ savingsBalance, savedTowardGoal }: PiggyBankFillParams): number {
   const fullAt = savedTowardGoal?.goal.amount ?? PIGGY_BANK_FULL_AT;
 
-  if (savedTowardGoal?.reached || fullAt <= 0) {
+  if (savedTowardGoal?.isGoalReached || fullAt <= 0) {
     return PIGGY_BANK_FILL.full;
   }
 

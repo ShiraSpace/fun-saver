@@ -7,7 +7,12 @@ import { WALLET_CARD_TEST_IDS } from './WalletCard/constants';
 import { TRANSACTION_DRAWER_TEST_IDS } from './TransactionDrawer/constants';
 import { AMOUNT_KEYPAD_TEST_IDS } from './TransactionDrawer/AmountKeypad/constants';
 import { ACCOUNT_COPY, ACCOUNT_TEST_IDS } from './constants';
+import { CELEBRATION_TEST_IDS } from '@/components/Goal/Celebration/constants';
 import { createMockAccount, mockAccountsContext } from '@/test-utils/mocks/account.mocks';
+import {
+  mockAccountSavingForGoal,
+  mockAccountWithGoalReached,
+} from '@/test-utils/mocks/goal.mocks';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { AccountSummary } from '@/lib/account/types';
@@ -143,5 +148,55 @@ describe('Account', () => {
         expect(screen.queryByTestId(HEADER_TEST_IDS.progress)).not.toBeInTheDocument()
       );
     });
+  });
+
+  describe('with its goal reached', () => {
+    let view: RenderResult;
+
+    beforeEach(() => {
+      view = render(<Account account={mockAccountWithGoalReached} />, {
+        accounts: mockAccountsContext,
+        user: mockUser,
+      });
+    });
+
+    it('plays the celebration', () => {
+      expect(screen.getByTestId(CELEBRATION_TEST_IDS.celebration)).toBeInTheDocument();
+    });
+
+    describe('when another account with its goal reached is shown', () => {
+      let celebrationBefore: HTMLElement;
+
+      beforeEach(() => {
+        celebrationBefore = screen.getByTestId(CELEBRATION_TEST_IDS.celebration);
+        view.rerender(<Account account={{ ...mockAccountWithGoalReached, id: 'account-2' }} />);
+      });
+
+      it('plays the celebration again', () => {
+        expect(screen.getByTestId(CELEBRATION_TEST_IDS.celebration)).not.toBe(celebrationBefore);
+      });
+    });
+
+    describe('when the same account is refreshed', () => {
+      let celebrationBefore: HTMLElement;
+
+      beforeEach(() => {
+        celebrationBefore = screen.getByTestId(CELEBRATION_TEST_IDS.celebration);
+        view.rerender(<Account account={{ ...mockAccountWithGoalReached }} />);
+      });
+
+      it('does not play the celebration again', () => {
+        expect(screen.getByTestId(CELEBRATION_TEST_IDS.celebration)).toBe(celebrationBefore);
+      });
+    });
+  });
+
+  it('does not play the celebration while the goal is not yet reached', () => {
+    render(<Account account={mockAccountSavingForGoal} />, {
+      accounts: mockAccountsContext,
+      user: mockUser,
+    });
+
+    expect(screen.queryByTestId(CELEBRATION_TEST_IDS.celebration)).not.toBeInTheDocument();
   });
 });
