@@ -162,7 +162,7 @@ it('leaves what waits out of the goal', () => {
   expect(screen.getByTestId(SAVED_OUT_OF_GOAL_TEST_IDS.saved)).toHaveTextContent('₪100');
 });
 
-it('shows the real savings once the goal is reached, coins or not', () => {
+it('leaves what waits out of a reached goal too, so it matches the total', () => {
   render(
     <ChildSavings
       accountId={mockAccountId}
@@ -177,5 +177,45 @@ it('shows the real savings once the goal is reached, coins or not', () => {
     mockNoCoinsCollected
   );
 
-  expect(screen.getByTestId(SAVED_OUT_OF_GOAL_TEST_IDS.saved)).toHaveTextContent('₪105');
+  expect(screen.getByTestId(SAVED_OUT_OF_GOAL_TEST_IDS.saved)).toHaveTextContent('₪100');
+});
+
+describe('ChildSavings on ₪50.90 holding ₪13.20 of interest, ₪10.50 of it collected', () => {
+  beforeEach(() => {
+    render(
+      <ChildSavings
+        accountId={mockAccountId}
+        savings={createMockWalletSummary({ balance: 5090, interestEarned: 1320 })}
+      />,
+      { collectedInterest: { [mockAccountId]: '1050' } }
+    );
+  });
+
+  it('shows the savings less the three ₪1 coins', () => {
+    expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.balance)).toHaveTextContent('₪47');
+  });
+
+  it("shows the child's own money whole while the coins wait", () => {
+    expect(screen.getByTestId(PRINCIPAL_AND_INTEREST_TEST_IDS.principal)).toHaveTextContent('₪37');
+  });
+
+  it('lands the last coin in the total', () => {
+    fireEvent.click(shownCoins()[0]);
+    fireEvent.click(shownCoins()[0]);
+    fireEvent.click(shownCoins()[0]);
+
+    expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.balance)).toHaveTextContent('₪50');
+  });
+});
+
+it('shows the whole savings while less than ₪1 of interest waits', () => {
+  render(
+    <ChildSavings
+      accountId={mockAccountId}
+      savings={createMockWalletSummary({ balance: 5010, interestEarned: 1320 })}
+    />,
+    { collectedInterest: { [mockAccountId]: '1305' } }
+  );
+
+  expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.balance)).toHaveTextContent('₪50');
 });
