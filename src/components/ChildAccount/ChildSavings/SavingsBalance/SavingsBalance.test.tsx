@@ -14,6 +14,12 @@ describe('SavingsBalance of ₪148', () => {
     ).not.toBeNull();
   });
 
+  it('leaves the announced total where a screen reader can read it', () => {
+    expect(
+      screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.announcedBalance).closest('[aria-hidden="true"]')
+    ).toBeNull();
+  });
+
   it('announces the total', () => {
     expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.announcedBalance)).toHaveTextContent('₪148');
   });
@@ -31,11 +37,11 @@ describe('SavingsBalance of ₪148', () => {
   });
 });
 
-it('takes focus once the last coin goes in', () => {
-  const mockBalance = createRef<HTMLDivElement>();
-  render(<SavingsBalance balance={14800} ref={mockBalance} />);
+it('can be focused through its ref, for the last coin to hand focus to', () => {
+  const mockBalanceElement = createRef<HTMLDivElement>();
+  render(<SavingsBalance balance={14800} ref={mockBalanceElement} />);
 
-  mockBalance.current?.focus();
+  mockBalanceElement.current?.focus();
 
-  expect(mockBalance.current).toHaveFocus();
+  expect(mockBalanceElement.current).toHaveFocus();
 });
