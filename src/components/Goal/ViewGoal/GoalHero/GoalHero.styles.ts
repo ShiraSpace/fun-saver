@@ -8,7 +8,7 @@ export const Hero = styled.div<{ isGoalReached: boolean }>`
   background: ${({ theme }): string => theme.colors.surface};
   box-shadow: ${({ isGoalReached, theme }): string =>
     isGoalReached
-      ? `0 5px 0 ${theme.shadows.soft}, 0 0 0 4px ${theme.colors.celebrationGold}, 0 0 34px ${theme.colors.celebrationGold}`
+      ? `0 5px 0 ${theme.shadows.soft}, 0 0 0 4px ${theme.colors.celebrationOutline}, 0 0 34px ${theme.colors.celebrationOutline}`
       : `0 5px 0 ${theme.shadows.soft}`};
 `;
 
