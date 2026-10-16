@@ -2,6 +2,7 @@ import { render, screen } from '@/test-utils/render';
 import { createMockSavedTowardGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { moneyAsShown, stillToSaveAsShown } from '@/test-utils/money';
 import { GoalHero } from './GoalHero';
+import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { GOAL_HERO_COPY, GOAL_HERO_TEST_IDS } from './constants';
 
 describe('GoalHero', () => {
@@ -51,5 +52,15 @@ describe('GoalHero', () => {
         GOAL_HERO_COPY.canBuy(mockGoal.name, mockGoal.picture.emoji)
       );
     });
+  });
+
+  it("rings a reached goal in the theme's celebration outline", () => {
+    render(<GoalHero savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })} />, {
+      themeId: THEME_ID.midnightBlue,
+    });
+
+    expect(getComputedStyle(screen.getByTestId(GOAL_HERO_TEST_IDS.hero)).boxShadow).toContain(
+      getThemeTokens(THEME_ID.midnightBlue).colors.celebrationOutline
+    );
   });
 });

@@ -18,6 +18,7 @@ import { SAVE_GOAL_BUTTON_TEST_IDS } from '@/components/Goal/GoalFields/SaveGoal
 import { GOAL_PICTURE_SEARCH_TEST_IDS } from '@/components/Goal/GoalPictureSearch/constants';
 import { PICTURE_TILE_TEST_IDS } from '@/components/Goal/GoalPictureSearch/PictureTiles/PictureTile/constants';
 import { CHOOSE_BUTTON_TEST_IDS } from '@/components/Goal/GoalPictureSearch/ChooseButton/constants';
+import { CELEBRATION_TEST_IDS } from '@/components/Goal/Celebration/constants';
 import { AppBrowser } from './app-browser';
 import type { AccountDriver } from './account-driver';
 import { holds } from './box-geometry';
@@ -82,6 +83,19 @@ export class GoalDriver {
 
   waitForGoalScreenGone(): Promise<void> {
     return this.appBrowser.waits.testIdGone(VIEW_GOAL_TEST_IDS.container);
+  }
+
+  async celebrationShown(): Promise<boolean> {
+    if (!(await this.appBrowser.exists(CELEBRATION_TEST_IDS.celebration))) {
+      return false;
+    }
+
+    const display = await this.appBrowser.computedStyle(
+      CELEBRATION_TEST_IDS.celebration,
+      'display'
+    );
+
+    return display !== 'none';
   }
 
   goalScreenExists(): Promise<boolean> {
