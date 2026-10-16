@@ -63,9 +63,9 @@ describe('Money', () => {
     });
   });
 
-  it('shows the agorot when asked to keep them', () => {
-    render(<Money amountAgorot={26484} testId="amount" rounding={MONEY_ROUNDING.withAgorot} />);
+  it('shows the tenth of a shekel when rounding down to it', () => {
+    render(<Money amountAgorot={26484} testId="amount" rounding={MONEY_ROUNDING.floorToTenths} />);
 
-    expect(screen.getByTestId('amount')).toHaveTextContent(/^₪264\.84$/);
+    expect(screen.getByTestId('amount')).toHaveTextContent(/^₪264\.8$/);
   });
 });

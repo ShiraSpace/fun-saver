@@ -6,7 +6,7 @@ import { dayMonth } from '@/lib/dates';
 import { INTEREST_MODE } from '@/lib/transaction/constants';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { BALANCE_CHANGE_COPY } from '../../BalanceChange/constants';
-import { shekelsText } from '../../money-text';
+import { floorToTenthsText } from '@/components/Money/money-text';
 import { TRANSACTION_LIST_COPY } from '../constants';
 import { TRANSACTION_ROW_COPY, TRANSACTION_ROW_TEST_IDS } from './constants';
 import { TransactionRow } from './TransactionRow';
@@ -32,9 +32,9 @@ describe('a transaction row', () => {
       render(<TransactionRow transactionListRow={mockInterestRow} />);
     });
 
-    it('shows its change in agorot, so it never reads ₪0', () => {
+    it('shows its change to the tenth of a shekel', () => {
       expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balanceChange)).toHaveTextContent(
-        `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${shekelsText(mockInterestRow.balanceChange, true)}`
+        `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${floorToTenthsText(mockInterestRow.balanceChange)}`
       );
     });
 
@@ -74,11 +74,11 @@ describe('a transaction row', () => {
     });
   });
 
-  it('shows the balance with its agorot', () => {
+  it('shows the balance to the tenth of a shekel', () => {
     render(<TransactionRow transactionListRow={{ ...mockInterestRow, balance: 16060 }} />);
 
     expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balance)).toHaveTextContent(
-      new RegExp(`^${MONEY_COPY.currencySign}160\\.60$`)
+      new RegExp(`^${MONEY_COPY.currencySign}160\\.6$`)
     );
   });
 

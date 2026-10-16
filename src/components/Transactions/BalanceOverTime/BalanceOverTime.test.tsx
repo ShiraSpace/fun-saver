@@ -2,7 +2,7 @@ import { render, screen } from '@/test-utils/render';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { balanceHistory, totalBalanceChange } from '@/lib/wallet/balance-history';
-import { balanceChangeInShekels } from '@/lib/money';
+import { floorToTenthsText } from '@/components/Money/money-text';
 import { ALL_TRANSACTION_TYPES, INTEREST_MODE } from '@/lib/transaction/constants';
 import { SHOWN_BALANCE } from '../constants';
 import { TOTAL_BALANCE_TEST_IDS } from './TotalBalance/constants';
@@ -39,9 +39,7 @@ function renderBalanceOverTime(rangeId: RangeId): void {
 }
 
 function balanceChangeOver(rangeId: RangeId): string {
-  return String(
-    balanceChangeInShekels(totalBalanceChange(mockBalanceHistory, RANGE[rangeId].days))
-  );
+  return floorToTenthsText(totalBalanceChange(mockBalanceHistory, RANGE[rangeId].days));
 }
 
 describe('the balance over time', () => {

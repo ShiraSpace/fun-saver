@@ -1,8 +1,6 @@
 import {
   agorotToShekels,
-  balanceChangeInShekels,
   agorotToWholeShekels,
-  floorToHalfShekels,
   floorToShekels,
   nearestHalfShekel,
   shekelsToAgorot,
@@ -58,20 +56,6 @@ describe('nearestHalfShekel', () => {
   });
 });
 
-describe('balanceChangeInShekels', () => {
-  it('keeps a fall falling while rounding it to the nearest half shekel', () => {
-    expect(balanceChangeInShekels(-140)).toBe(-1.5);
-  });
-
-  it('keeps a rise rising while rounding it to the nearest half shekel', () => {
-    expect(balanceChangeInShekels(140)).toBe(1.5);
-  });
-
-  it('reads a change too small to show as no change, not as a fall', () => {
-    expect(balanceChangeInShekels(-20)).toBe(0);
-  });
-});
-
 describe('floorToShekels', () => {
   it('drops agorot rather than rounding up to money that is not there', () => {
     expect(floorToShekels(2399)).toBe(23);
@@ -83,16 +67,6 @@ describe('floorToShekels', () => {
 
   it('shows less than a shekel as nothing', () => {
     expect(floorToShekels(99)).toBe(0);
-  });
-});
-
-describe('floorToHalfShekels', () => {
-  it('drops to the half shekel below rather than rounding up', () => {
-    expect(floorToHalfShekels(9690)).toBe(96.5);
-  });
-
-  it('keeps an exact half shekel', () => {
-    expect(floorToHalfShekels(9650)).toBe(96.5);
   });
 });
 

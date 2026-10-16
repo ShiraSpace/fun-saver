@@ -1,4 +1,4 @@
-import { balanceHistory, totalBalanceByDay, totalBalanceWithAgorot } from '../balance-history';
+import { balanceHistory, totalBalanceByDay } from '../balance-history';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import { eachDayInclusive } from '@/lib/dates';
 import { createMockTransaction, mockOpeningDeposit } from '@/test-utils/mocks/transaction.mocks';
@@ -147,16 +147,12 @@ describe('the balance history', () => {
         asOf: '2026-01-01',
       });
 
-      it('totals the wallets after rounding each one down', () => {
-        expect(accountBalanceHistory.totalBalance).toEqual([9600]);
+      it('totals the wallets with their agorot', () => {
+        expect(accountBalanceHistory.totalBalance).toEqual([9719]);
       });
 
       it('keeps each wallet’s agorot', () => {
         expect(accountBalanceHistory.wallets.savings).toEqual([4669]);
-      });
-
-      it('totals the wallets with their agorot', () => {
-        expect(totalBalanceWithAgorot(accountBalanceHistory)).toEqual([9719]);
       });
 
       it('ends the day on the wallets’ total with their agorot', () => {
