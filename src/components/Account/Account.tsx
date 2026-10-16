@@ -22,10 +22,11 @@ interface AccountProps {
 export function Account({ account }: AccountProps): JSX.Element {
   const wallets = savingsFirst(account.wallets);
   const savedTowardGoal = savedTowardGoalOf(account);
-  const isGoalReached = savedTowardGoal?.reached;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const refreshWithLoader = useRefreshWithLoader();
   const balancesShown = `${account.id}:${totalBalance(wallets)}`;
+  const isGoalReached = savedTowardGoal?.reached;
+  const celebration = isGoalReached && <Celebration key={account.id} />;
 
   const showNewBalances = (): void => {
     setIsDrawerOpen(false);
@@ -46,7 +47,7 @@ export function Account({ account }: AccountProps): JSX.Element {
           {ACCOUNT_COPY.newTransaction}
         </PrimaryButton>
       </Column>
-      {isGoalReached && <Celebration key={account.id} />}
+      {celebration}
       {isDrawerOpen && (
         <TransactionDrawer
           account={account}
