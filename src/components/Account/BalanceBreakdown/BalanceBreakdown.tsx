@@ -6,13 +6,14 @@ import { totalBalance, walletShares } from '@/lib/wallet/balance';
 import { walletsWithoutAgorot } from '@/lib/wallet/wallet';
 import { agorotToWholeShekels } from '@/lib/money';
 import { Money } from '@/components/Money';
+import { useCountUp } from '@/hooks/use-count-up';
 import { Donut } from './Donut';
-import { useCountUpTotalBalance } from './use-count-up-total-balance';
 import { Legend } from './Legend';
 import {
   BALANCE_BREAKDOWN_COPY,
   BALANCE_BREAKDOWN_STYLE,
   BALANCE_BREAKDOWN_TEST_IDS,
+  TOTAL_ANIMATION,
 } from './constants';
 import {
   Card,
@@ -48,7 +49,11 @@ export function BalanceBreakdown({ wallets }: BalanceBreakdownProps): JSX.Elemen
     share: shares[index],
   }));
   const totalBalanceAgorot = totalBalance(shownWallets);
-  const countingTotalBalance = useCountUpTotalBalance(totalBalanceAgorot);
+  const countingTotalBalance = useCountUp({
+    startAt: 0,
+    to: totalBalanceAgorot,
+    timing: TOTAL_ANIMATION,
+  });
 
   return (
     <Card data-testid={BALANCE_BREAKDOWN_TEST_IDS.card}>
