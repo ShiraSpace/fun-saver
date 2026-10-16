@@ -174,9 +174,9 @@ describe('WalletCard', () => {
       );
     });
 
-    it('wears a gold outline in the theme in use', () => {
+    it("wears the theme's celebration outline", () => {
       expect(getComputedStyle(screen.getByTestId(WALLET_CARD_TEST_IDS.card)).boxShadow).toContain(
-        getThemeTokens(THEME_ID.midnightBlue).colors.celebrationGold
+        getThemeTokens(THEME_ID.midnightBlue).colors.celebrationOutline
       );
     });
 
@@ -187,7 +187,7 @@ describe('WalletCard', () => {
     });
   });
 
-  it('wears no gold outline while savings is kept for the goal', () => {
+  it('wears no celebration outline while savings is kept for the goal', () => {
     render(
       <WalletCard
         wallet={createMockWalletSummary()}
@@ -197,7 +197,7 @@ describe('WalletCard', () => {
     );
 
     expect(getComputedStyle(screen.getByTestId(WALLET_CARD_TEST_IDS.card)).boxShadow).not.toContain(
-      getThemeTokens(THEME_ID.midnightBlue).colors.celebrationGold
+      getThemeTokens(THEME_ID.midnightBlue).colors.celebrationOutline
     );
   });
 });

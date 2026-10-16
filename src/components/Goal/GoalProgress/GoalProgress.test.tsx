@@ -98,9 +98,9 @@ describe('GoalProgress', () => {
         );
       });
 
-      it('wears a gold ring', () => {
+      it("wears a ring in the theme's celebration outline", () => {
         expect(goalPictureGlow()).toContain(
-          getThemeTokens(THEME_ID.midnightBlue).colors.celebrationGold
+          getThemeTokens(THEME_ID.midnightBlue).colors.celebrationOutline
         );
       });
     });

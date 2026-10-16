@@ -106,9 +106,11 @@ describe('MenuGoal', () => {
   });
 
   it('keeps a reached goal still, leaving the celebration to the savings card', () => {
+    const mockSetMode = jest.fn();
+    const mockCloseMenu = jest.fn();
     render(
-      <AppModeProvider value={{ mode: APP_MODE.viewing, setMode: jest.fn() }}>
-        <WithMenu closeMenu={jest.fn()}>
+      <AppModeProvider value={{ mode: APP_MODE.viewing, setMode: mockSetMode }}>
+        <WithMenu closeMenu={mockCloseMenu}>
           <MenuGoal />
         </WithMenu>
       </AppModeProvider>,

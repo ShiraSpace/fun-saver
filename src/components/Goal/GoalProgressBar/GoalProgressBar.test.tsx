@@ -56,6 +56,12 @@ describe('GoalProgressBar', () => {
       expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '300');
     });
 
+    it("starts from the theme's reached colour", () => {
+      expect(getComputedStyle(fill()).backgroundImage).toContain(
+        getThemeTokens(THEME_ID.midnightBlue).colors.reachedBarStart
+      );
+    });
+
     it('fills toward the gain colour of the theme in use', () => {
       expect(getComputedStyle(fill()).backgroundImage).toContain(
         getThemeTokens(THEME_ID.midnightBlue).colors.gainText
