@@ -39,8 +39,12 @@ function renderBalanceOverTime(rangeId: RangeId): void {
   );
 }
 
-function shownRise(shekels: string): RegExp {
-  return new RegExp(`^\\${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${shekels}$`);
+function shownRise(shekels: string): string {
+  return `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${shekels}`;
+}
+
+function shownBalanceChange(): string | null {
+  return screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange).textContent;
 }
 
 describe('the balance over time', () => {
@@ -50,9 +54,7 @@ describe('the balance over time', () => {
     });
 
     it('shows how much the total balance moved that week', () => {
-      expect(screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange)).toHaveTextContent(
-        shownRise('20')
-      );
+      expect(shownBalanceChange()).toBe(shownRise('20'));
     });
 
     it('names the week as the range it measured', () => {
@@ -68,9 +70,7 @@ describe('the balance over time', () => {
     });
 
     it('shows how much the total balance moved since the first transaction', () => {
-      expect(screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange)).toHaveTextContent(
-        shownRise('100')
-      );
+      expect(shownBalanceChange()).toBe(shownRise('100'));
     });
   });
 });
