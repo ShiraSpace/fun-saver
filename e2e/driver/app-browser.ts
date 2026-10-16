@@ -183,6 +183,10 @@ export class AppBrowser {
     return queries.pseudoStyle({ page: this.page, testId, pseudo, property });
   }
 
+  textDrop(testId: string, besideTestId: string): Promise<number> {
+    return queries.textDrop({ page: this.page, testId, besideTestId });
+  }
+
   styleOf(selector: string, property: string): Promise<string> {
     return queries.styleOf({ page: this.page, selector, property });
   }

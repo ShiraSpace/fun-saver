@@ -117,6 +117,31 @@ export function pseudoStyle({ page, testId, pseudo, property }: PseudoStyleQuery
   );
 }
 
+export interface TextDropQuery {
+  page: Page;
+  testId: string;
+  besideTestId: string;
+}
+
+export function textDrop({ page, testId, besideTestId }: TextDropQuery): Promise<number> {
+  return page.evaluate(
+    (testId, besideTestId) => {
+      const element = document.querySelector(`[data-testid="${testId}"]`);
+      const ownText = [...(element?.childNodes ?? [])].find(
+        (node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim()
+      );
+      const beside = document.querySelector(`[data-testid="${besideTestId}"]`)?.lastElementChild;
+      const range = document.createRange();
+      if (ownText) range.selectNodeContents(ownText);
+      const ownTextBottom = range.getBoundingClientRect().bottom;
+      if (beside) range.selectNodeContents(beside);
+      return ownTextBottom - range.getBoundingClientRect().bottom;
+    },
+    testId,
+    besideTestId
+  );
+}
+
 export function computedStyle({ page, testId, property }: TestIdStyleQuery): Promise<string> {
   return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
 }
