@@ -2,7 +2,10 @@ import { createRef } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { InterestCoins, type InterestCoin } from './InterestCoins';
 import { INTEREST_COINS_COPY, INTEREST_COINS_TEST_IDS } from './constants';
-import { INTEREST_COIN_BUTTON_TEST_IDS } from './InterestCoinButton/constants';
+import {
+  INTEREST_COIN_BUTTON_COPY,
+  INTEREST_COIN_BUTTON_TEST_IDS,
+} from './InterestCoinButton/constants';
 
 function shownCoins(): HTMLElement[] {
   return screen.getAllByTestId(INTEREST_COIN_BUTTON_TEST_IDS.coin);
@@ -40,7 +43,7 @@ describe('InterestCoins with ₪3, ₪2 and ₪2 waiting', () => {
   });
 
   it('names each coin for a screen reader', () => {
-    expect(shownCoins()[0]).toHaveAccessibleName('₪3 ריבית, לחצו כדי להכניס לחיסכון');
+    expect(shownCoins()[0]).toHaveAccessibleName(INTEREST_COIN_BUTTON_COPY.coinLabel(3));
   });
 
   it('tells the child to tap them', () => {

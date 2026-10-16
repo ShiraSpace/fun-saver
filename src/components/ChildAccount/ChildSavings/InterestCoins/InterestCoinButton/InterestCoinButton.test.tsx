@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
 import { InterestCoinButton } from './InterestCoinButton';
-import { INTEREST_COIN_BUTTON_TEST_IDS } from './constants';
+import { INTEREST_COIN_BUTTON_COPY, INTEREST_COIN_BUTTON_TEST_IDS } from './constants';
 
 describe('InterestCoinButton holding ₪3', () => {
   const mockOnTap = jest.fn();
@@ -11,7 +11,7 @@ describe('InterestCoinButton holding ₪3', () => {
 
   it('names itself for a screen reader', () => {
     expect(screen.getByTestId(INTEREST_COIN_BUTTON_TEST_IDS.coin)).toHaveAccessibleName(
-      '₪3 ריבית, לחצו כדי להכניס לחיסכון'
+      INTEREST_COIN_BUTTON_COPY.coinLabel(3)
     );
   });
 

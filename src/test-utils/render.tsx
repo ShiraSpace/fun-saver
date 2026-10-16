@@ -28,7 +28,7 @@ export interface RenderOptions {
   accounts?: AccountsContextValue;
   route?: string;
   viewMode?: ViewMode;
-  collectedInterest?: Record<string, string>;
+  collectedInterest?: CollectedInterestCookies;
 }
 
 function withAccounts(element: ReactNode, accounts?: AccountsContextValue): ReactNode {
