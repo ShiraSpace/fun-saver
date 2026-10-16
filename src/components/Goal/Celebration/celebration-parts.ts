@@ -22,17 +22,17 @@ const sweep = keyframes`
 `;
 
 function borderColours(theme: Theme): string {
-  const { celebrationWhite, celebrationPaleGold, celebrationGold } = theme.colors;
-  const { celebrationPink, celebrationPurple } = theme.colors;
+  const { celebrationWhite, celebrationBorderLight, celebrationBorderMain } = theme.colors;
+  const { celebrationBorderAccent, celebrationBorderDeep } = theme.colors;
 
   return `conic-gradient(
     from var(${TRAVELLING_BORDER_ANGLE}, 0deg),
     ${celebrationWhite} 0deg,
-    ${celebrationPaleGold} 30deg,
-    ${celebrationGold} 70deg,
-    ${celebrationPink} 180deg,
-    ${celebrationPurple} 250deg,
-    ${celebrationGold} 320deg,
+    ${celebrationBorderLight} 30deg,
+    ${celebrationBorderMain} 70deg,
+    ${celebrationBorderAccent} 180deg,
+    ${celebrationBorderDeep} 250deg,
+    ${celebrationBorderMain} 320deg,
     ${celebrationWhite} 360deg
   )`;
 }
@@ -58,6 +58,7 @@ export function travellingBorder(theme: Theme, cornerRadius: number): Serialized
     &::after {
       inset: -8px;
       filter: blur(16px);
+      opacity: ${theme.celebrationGlow};
     }
 
     @media ${REDUCED_MOTION} {

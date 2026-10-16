@@ -11,7 +11,7 @@ interface CelebratingProps {
 }
 
 const goldOutline = ({ celebrating, theme }: CelebratingProps): string =>
-  celebrating ? `, 0 0 0 3px ${theme.colors.celebrationGold}` : '';
+  celebrating ? `, 0 0 0 3px ${theme.colors.celebrationOutline}` : '';
 
 export const Card = styled.div<{ celebrating?: boolean }>`
   padding: ${WALLET_CARD_STYLE.paddingY}px ${WALLET_CARD_STYLE.paddingX}px;

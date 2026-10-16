@@ -7,5 +7,5 @@ export const WALLET_LIST_COPY = {
 } as const;
 
 export const WALLET_LIST_STYLE = {
-  gap: 8,
+  gap: 10,
 } as const;

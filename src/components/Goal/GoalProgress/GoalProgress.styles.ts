@@ -48,7 +48,7 @@ function pictureRing({ glowing, isGoalReached, theme }: PictureProps & { theme: 
     return `0 0 0 4px ${theme.colors.gainSoftBg}, 0 0 18px 4px ${theme.colors.gainText}`;
   }
 
-  return isGoalReached ? `0 0 0 2px ${theme.colors.celebrationGold}` : 'none';
+  return isGoalReached ? `0 0 0 2px ${theme.colors.celebrationOutline}` : 'none';
 }
 
 const headingSize = ({ progressSize, theme }: GoalHeadingProps & { theme: Theme }): number =>
