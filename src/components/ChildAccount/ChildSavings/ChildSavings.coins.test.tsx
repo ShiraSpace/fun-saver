@@ -100,18 +100,6 @@ describe('ChildSavings on the first visit on this phone', () => {
   });
 });
 
-it('keeps a larger mark another tab saved, at the tap', () => {
-  render(
-    <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
-    mockNoCoinsCollected
-  );
-  document.cookie = `${collectedInterestCookie(mockAccountId)}=400`;
-
-  fireEvent.click(shownCoins()[0]);
-
-  expect(written).toContainEqual(expect.stringMatching(savedMark(400)));
-});
-
 it('saves the mark again on a return visit, so the cookie does not expire', () => {
   render(
     <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
@@ -121,32 +109,41 @@ it('saves the mark again on a return visit, so the cookie does not expire', () =
   expect(written).toContainEqual(expect.stringMatching(savedMark(500)));
 });
 
-it('collects a coin tapped twice once', () => {
-  render(
-    <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
-    mockNoCoinsCollected
-  );
-  const [firstCoin] = shownCoins();
-
-  fireEvent.click(firstCoin);
-  fireEvent.click(firstCoin);
-
-  expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.balance)).toHaveTextContent('₪102');
-});
-
-it('collects two coins tapped before the screen redraws', () => {
-  render(
-    <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
-    mockNoCoinsCollected
-  );
-  const [firstCoin, secondCoin] = shownCoins();
-
-  act(() => {
-    fireEvent.click(firstCoin);
-    fireEvent.click(secondCoin);
+describe('ChildSavings with ₪5 of interest waiting as ₪2, ₪2 and ₪1', () => {
+  beforeEach(() => {
+    render(
+      <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
+      mockNoCoinsCollected
+    );
   });
 
-  expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.balance)).toHaveTextContent('₪104');
+  it('keeps a larger mark another tab saved, at the tap', () => {
+    document.cookie = `${collectedInterestCookie(mockAccountId)}=400`;
+
+    fireEvent.click(shownCoins()[0]);
+
+    expect(written).toContainEqual(expect.stringMatching(savedMark(400)));
+  });
+
+  it('collects a coin tapped twice once', () => {
+    const [firstCoin] = shownCoins();
+
+    fireEvent.click(firstCoin);
+    fireEvent.click(firstCoin);
+
+    expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.balance)).toHaveTextContent('₪102');
+  });
+
+  it('collects two coins tapped before the screen redraws', () => {
+    const [firstCoin, secondCoin] = shownCoins();
+
+    act(() => {
+      fireEvent.click(firstCoin);
+      fireEvent.click(secondCoin);
+    });
+
+    expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.balance)).toHaveTextContent('₪104');
+  });
 });
 
 it('leaves what waits out of the goal', () => {

@@ -50,11 +50,11 @@ describe('savedTowardGoalLessUncollectedInterest with ₪5 waiting, ₪105 saved
   });
 
   it('takes it off what is saved', () => {
-    expect(savedTowardGoalShown.saved).toBe(10000);
+    expect(savedTowardGoalShown?.saved).toBe(10000);
   });
 
   it('adds it to what is still to save', () => {
-    expect(savedTowardGoalShown.stillToSave).toBe(20000);
+    expect(savedTowardGoalShown?.stillToSave).toBe(20000);
   });
 });
 
@@ -70,10 +70,14 @@ describe('savedTowardGoalLessUncollectedInterest with ₪5 waiting, ₪105 saved
   });
 
   it('keeps the goal reached, as the real savings reached it', () => {
-    expect(savedTowardGoalShown.isGoalReached).toBe(true);
+    expect(savedTowardGoalShown?.isGoalReached).toBe(true);
   });
 
   it('leaves nothing still to save', () => {
-    expect(savedTowardGoalShown.stillToSave).toBe(0);
+    expect(savedTowardGoalShown?.stillToSave).toBe(0);
   });
+});
+
+it('savedTowardGoalLessUncollectedInterest leaves no goal when there is none', () => {
+  expect(savedTowardGoalLessUncollectedInterest({ uncollectedInterest: 500 })).toBeUndefined();
 });

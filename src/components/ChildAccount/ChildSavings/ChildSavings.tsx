@@ -41,9 +41,10 @@ function savingsShownToTheChild({
   uncollectedInterest,
 }: SavingsShownParams): SavingsShown {
   const savingsShown = savingsLessUncollectedInterest({ savings, uncollectedInterest });
-  const savedTowardGoalShown =
-    savedTowardGoal &&
-    savedTowardGoalLessUncollectedInterest({ savedTowardGoal, uncollectedInterest });
+  const savedTowardGoalShown = savedTowardGoalLessUncollectedInterest({
+    savedTowardGoal,
+    uncollectedInterest,
+  });
 
   return {
     ...savingsShown,
@@ -62,11 +63,11 @@ export function ChildSavings({
 }: ChildSavingsProps): JSX.Element {
   const balanceElement = useRef<HTMLDivElement>(null);
   const { interestCoins, uncollectedInterest, collect } = useInterestCoins({ savings, accountId });
-  const shown = savingsShownToTheChild({ savings, savedTowardGoal, uncollectedInterest });
-  const goalProgress = shown.savedTowardGoal && (
+  const savingsShown = savingsShownToTheChild({ savings, savedTowardGoal, uncollectedInterest });
+  const goalProgress = savingsShown.savedTowardGoal && (
     <GoalSpace>
       <GoalProgress
-        savedTowardGoal={shown.savedTowardGoal}
+        savedTowardGoal={savingsShown.savedTowardGoal}
         size={GOAL_PROGRESS_SIZE.large}
         glowWhenReached
       />
@@ -81,11 +82,14 @@ export function ChildSavings({
         whereFocusGoesLast={balanceElement}
       />
       <PiggyBankSpace>
-        <PiggyBank piggyBankFill={shown.piggyBankFill} />
+        <PiggyBank piggyBankFill={savingsShown.piggyBankFill} />
       </PiggyBankSpace>
-      <SavingsBalance balance={shown.balance} ref={balanceElement} />
+      <SavingsBalance balance={savingsShown.balance} ref={balanceElement} />
       {goalProgress}
-      <PrincipalAndInterest principal={shown.principal} interestEarned={shown.interestEarned} />
+      <PrincipalAndInterest
+        principal={savingsShown.principal}
+        interestEarned={savingsShown.interestEarned}
+      />
     </Card>
   );
 }

@@ -89,21 +89,21 @@ describe('resolveCollectedInterest', () => {
 describe('savingsAtCollectedInterest', () => {
   describe('with ₪6 of interest not yet collected', () => {
     const mockSavings = createMockWalletSummary({ balance: 10000, interestEarned: 1000 });
-    const mockSavingsAtCollectedInterest = savingsAtCollectedInterest({
+    const savingsAtTheMark = savingsAtCollectedInterest({
       savings: mockSavings,
       collectedInterest: 400,
     });
 
     it('takes it off the balance', () => {
-      expect(mockSavingsAtCollectedInterest.balance).toBe(9400);
+      expect(savingsAtTheMark.balance).toBe(9400);
     });
 
     it('takes it off the interest earned', () => {
-      expect(mockSavingsAtCollectedInterest.interestEarned).toBe(400);
+      expect(savingsAtTheMark.interestEarned).toBe(400);
     });
 
     it('is still the same wallet', () => {
-      expect(mockSavingsAtCollectedInterest.name).toBe(mockSavings.name);
+      expect(savingsAtTheMark.name).toBe(mockSavings.name);
     });
   });
 

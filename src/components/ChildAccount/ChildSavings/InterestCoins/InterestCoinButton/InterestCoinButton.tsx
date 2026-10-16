@@ -11,10 +11,12 @@ interface InterestCoinButtonProps {
 }
 
 export function InterestCoinButton({ amount, onTap }: InterestCoinButtonProps): JSX.Element {
+  const coinLabel = INTEREST_COIN_BUTTON_COPY.coinLabel(floorToShekels(amount));
+
   return (
     <CoinButton
       type="button"
-      aria-label={INTEREST_COIN_BUTTON_COPY.coinLabel(floorToShekels(amount))}
+      aria-label={coinLabel}
       data-testid={INTEREST_COIN_BUTTON_TEST_IDS.coin}
       onClick={onTap}
     >

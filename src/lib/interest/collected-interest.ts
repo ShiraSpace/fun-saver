@@ -28,7 +28,7 @@ export interface SavingsLessUncollectedInterestParams {
 }
 
 export interface SavedTowardGoalLessUncollectedInterestParams {
-  savedTowardGoal: SavedTowardGoal;
+  savedTowardGoal?: SavedTowardGoal;
   uncollectedInterest: number;
 }
 
@@ -122,7 +122,11 @@ export function savingsLessUncollectedInterest({
 export function savedTowardGoalLessUncollectedInterest({
   savedTowardGoal,
   uncollectedInterest,
-}: SavedTowardGoalLessUncollectedInterestParams): SavedTowardGoal {
+}: SavedTowardGoalLessUncollectedInterestParams): SavedTowardGoal | undefined {
+  if (!savedTowardGoal) {
+    return undefined;
+  }
+
   const saved = savedTowardGoal.saved - uncollectedInterest;
   const stillToSave = savedTowardGoal.isGoalReached
     ? 0
