@@ -8,6 +8,7 @@ import { totalBalance } from '@/lib/wallet/balance';
 import { Column, Screen } from '@/components/Screen';
 import { Header } from '@/components/Header';
 import { PrimaryButton } from '@/components/PrimaryButton';
+import { Celebration } from '@/components/Goal/Celebration';
 import { useRefreshWithLoader } from '@/hooks/loader-context';
 import { BalanceBreakdown } from './BalanceBreakdown';
 import { WalletList } from './WalletList/WalletList';
@@ -21,6 +22,7 @@ interface AccountProps {
 export function Account({ account }: AccountProps): JSX.Element {
   const wallets = savingsFirst(account.wallets);
   const savedTowardGoal = savedTowardGoalOf(account);
+  const isGoalReached = savedTowardGoal?.reached;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const refreshWithLoader = useRefreshWithLoader();
   const balancesShown = `${account.id}:${totalBalance(wallets)}`;
@@ -35,7 +37,7 @@ export function Account({ account }: AccountProps): JSX.Element {
       <Column>
         <Header title={account.name} account={account} />
         <BalanceBreakdown key={balancesShown} wallets={wallets} />
-        <WalletList wallets={wallets} savedTowardGoal={savedTowardGoal} />
+        <WalletList key={account.id} wallets={wallets} savedTowardGoal={savedTowardGoal} />
         <PrimaryButton
           type="button"
           data-testid={ACCOUNT_TEST_IDS.newTransaction}
@@ -44,6 +46,7 @@ export function Account({ account }: AccountProps): JSX.Element {
           {ACCOUNT_COPY.newTransaction}
         </PrimaryButton>
       </Column>
+      {isGoalReached && <Celebration key={account.id} />}
       {isDrawerOpen && (
         <TransactionDrawer
           account={account}
