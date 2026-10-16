@@ -34,14 +34,10 @@ describe('the total balance', () => {
     });
   });
 
-  describe('when the balance fell by too little to show', () => {
-    beforeEach(() => {
-      renderTotalBalance(-20);
-    });
+  it('marks a fall of a few agorot as a fall', () => {
+    renderTotalBalance(-20);
 
-    it('does not mark it as a fall', () => {
-      expect(changeOverRange()).toHaveAttribute('data-balance-fell', 'false');
-    });
+    expect(changeOverRange()).toHaveAttribute('data-balance-fell', 'true');
   });
 
   describe('when the balance did not move over the range', () => {
@@ -54,11 +50,11 @@ describe('the total balance', () => {
     });
   });
 
-  it('rounds the balance down to whole shekels', () => {
+  it('shows the balance to the tenth of a shekel', () => {
     render(<TotalBalance totalBalance={22060} balanceChange={0} changeLabel={mockChangeLabel} />);
 
     expect(screen.getByTestId(TOTAL_BALANCE_TEST_IDS.totalBalance)).toHaveTextContent(
-      `${MONEY_COPY.currencySign}220`
+      new RegExp(`^${MONEY_COPY.currencySign}220\\.6$`)
     );
   });
 });

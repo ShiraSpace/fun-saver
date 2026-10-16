@@ -1,5 +1,4 @@
 import { JSX } from 'react';
-import { balanceChangeInShekels } from '@/lib/money';
 import { Money } from '@/components/Money';
 import { MONEY_ROUNDING } from '@/components/Money/constants';
 import { BalanceChange } from '../../BalanceChange';
@@ -22,7 +21,7 @@ export function TotalBalance({
   balanceChange,
   changeLabel,
 }: TotalBalanceProps): JSX.Element {
-  const balanceFell = balanceChangeInShekels(balanceChange) < 0;
+  const balanceFell = balanceChange < 0;
 
   return (
     <Head>
@@ -31,7 +30,7 @@ export function TotalBalance({
         <Money
           amountAgorot={totalBalance}
           testId={TOTAL_BALANCE_TEST_IDS.totalBalance}
-          rounding={MONEY_ROUNDING.floorToShekels}
+          rounding={MONEY_ROUNDING.floorToTenths}
         />
       </TotalBalanceAmount>
       <ChangeOverRange
