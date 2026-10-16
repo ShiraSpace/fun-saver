@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
+import { mockAccountSummary, mockAccountSummaryWithAgorot } from '@/test-utils/mocks/account.mocks';
 import { totalBalance } from '@/lib/wallet/balance';
 import { agorotToWholeShekels } from '@/lib/money';
 import { CurrentAccountButton } from './CurrentAccountButton';
@@ -66,5 +66,19 @@ describe('CurrentAccountButton', () => {
         'true'
       );
     });
+  });
+
+  it('totals the balances after rounding each one down', () => {
+    render(
+      <CurrentAccountButton
+        account={mockAccountSummaryWithAgorot}
+        isOpen={false}
+        onToggle={mockOnToggle}
+      />
+    );
+
+    expect(screen.getByTestId(ACCOUNT_PICKER_TEST_IDS.currentTotalBalance)).toHaveTextContent(
+      '₪106'
+    );
   });
 });

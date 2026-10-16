@@ -1,4 +1,5 @@
 import { eachDayInclusive } from '@/lib/dates';
+import { withoutAgorot } from '@/lib/money';
 import { balanceChange } from './balance';
 import type { Transaction } from '@/lib/transaction/types';
 import { WALLET_NAMES } from './constants';
@@ -67,7 +68,10 @@ function walletTransactions(
 function totalBalances(walletBalances: WalletBalances, days: string[]): number[] {
   const balancesOfEachWallet = Object.values(walletBalances);
   const totalBalanceOn = (dayIndex: number): number =>
-    balancesOfEachWallet.reduce((totalBalance, balances) => totalBalance + balances[dayIndex], 0);
+    balancesOfEachWallet.reduce(
+      (totalBalance, balances) => totalBalance + withoutAgorot(balances[dayIndex]),
+      0
+    );
 
   return days.map((_, dayIndex) => totalBalanceOn(dayIndex));
 }
@@ -119,14 +123,22 @@ export function todaysTotalBalance(balanceHistory: BalanceHistory): number {
   return closingBalance(balanceHistory.totalBalance);
 }
 
+function totalBalanceWithAgorotOn(walletBalances: WalletBalances, dayIndex: number): number {
+  return Object.values(walletBalances).reduce(
+    (totalBalance, balances) => totalBalance + (balances[dayIndex] ?? 0),
+    0
+  );
+}
+
 export function totalBalanceChange(balanceHistory: BalanceHistory, rangeInDays: number): number {
+  const todayIndex = balanceHistory.days.length - 1;
   const carriedInDay = carriedInDayIndex(balanceHistory, rangeInDays);
   const accountIsYoungerThanRange = carriedInDay < 0;
   const carriedInTotalBalance = accountIsYoungerThanRange
     ? 0
-    : balanceHistory.totalBalance[carriedInDay];
+    : totalBalanceWithAgorotOn(balanceHistory.wallets, carriedInDay);
 
-  return todaysTotalBalance(balanceHistory) - carriedInTotalBalance;
+  return totalBalanceWithAgorotOn(balanceHistory.wallets, todayIndex) - carriedInTotalBalance;
 }
 
 export function totalBalanceByDay(balanceHistory: BalanceHistory): Map<string, number> {

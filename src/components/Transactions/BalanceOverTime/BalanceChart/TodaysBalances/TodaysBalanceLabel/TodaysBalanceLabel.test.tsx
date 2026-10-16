@@ -1,5 +1,4 @@
 import { render, screen } from '@/test-utils/render';
-import { agorotToWholeShekels } from '@/lib/money';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { SHOWN_BALANCE } from '../../../../constants';
@@ -8,7 +7,7 @@ import { shownBalanceColor } from '../../chart-parts';
 import { TODAYS_BALANCE_LABEL_TEST_IDS } from './constants';
 import { TodaysBalanceLabel } from './TodaysBalanceLabel';
 
-const mockTodaysBalance = 1827;
+const mockTodaysBalance = 1867;
 
 describe('today’s balance at the end of a line', () => {
   beforeEach(() => {
@@ -26,9 +25,9 @@ describe('today’s balance at the end of a line', () => {
     );
   });
 
-  it('shows today’s balance in whole shekels', () => {
+  it('shows today’s balance in whole shekels, rounded down', () => {
     expect(screen.getByTestId(TODAYS_BALANCE_LABEL_TEST_IDS.label)).toHaveTextContent(
-      new RegExp(`${MONEY_COPY.currencySign}${agorotToWholeShekels(mockTodaysBalance)}$`)
+      new RegExp(`${MONEY_COPY.currencySign}18$`)
     );
   });
 

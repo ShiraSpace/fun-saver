@@ -1,4 +1,5 @@
 import { render, screen } from '@/test-utils/render';
+import { MONEY_COPY } from '@/components/Money/constants';
 import { TOTAL_BALANCE_TEST_IDS } from './constants';
 import { TotalBalance } from './TotalBalance';
 
@@ -51,5 +52,13 @@ describe('the total balance', () => {
     it('does not mark it as a fall', () => {
       expect(changeOverRange()).toHaveAttribute('data-balance-fell', 'false');
     });
+  });
+
+  it('rounds the balance down to whole shekels', () => {
+    render(<TotalBalance totalBalance={22060} balanceChange={0} changeLabel={mockChangeLabel} />);
+
+    expect(screen.getByTestId(TOTAL_BALANCE_TEST_IDS.totalBalance)).toHaveTextContent(
+      `${MONEY_COPY.currencySign}220`
+    );
   });
 });

@@ -41,9 +41,6 @@ function walletSummaryText(wallet: CardWallet): string | undefined {
 export function WalletCard({ wallet, savedTowardGoal, children }: WalletCardProps): JSX.Element {
   const summaryText = walletSummaryText(wallet);
   const isSavingsLocked = savingsLocked(savedTowardGoal);
-  const balanceRounding = savedTowardGoal
-    ? MONEY_ROUNDING.floorToShekels
-    : MONEY_ROUNDING.nearestShekel;
 
   return (
     <Card data-testid={WALLET_CARD_TEST_IDS.card}>
@@ -64,7 +61,7 @@ export function WalletCard({ wallet, savedTowardGoal, children }: WalletCardProp
           <Money
             amountAgorot={wallet.balance}
             testId={WALLET_CARD_TEST_IDS.balance}
-            rounding={balanceRounding}
+            rounding={MONEY_ROUNDING.floorToShekels}
           />
         </Balance>
       </Head>

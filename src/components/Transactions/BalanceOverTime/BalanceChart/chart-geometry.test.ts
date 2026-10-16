@@ -48,6 +48,10 @@ describe('where the chart draws a balance', () => {
   it('puts a history of one day at today', () => {
     expect(dayXWithin(1, mockFirstDayX)(0)).toBe(TODAY_X);
   });
+
+  it('labels a balance with agorot that did not move by its whole shekels, rounded down', () => {
+    expect(balanceTicks({ lowest: 22060, highest: 22060 })).toEqual([22000]);
+  });
 });
 
 describe('the balances labelled on the side', () => {

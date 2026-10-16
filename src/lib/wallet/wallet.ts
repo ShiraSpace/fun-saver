@@ -54,6 +54,12 @@ export function savingsWithoutAgorot(
   };
 }
 
+export function walletsWithoutAgorot<ShownWallet extends Pick<WalletSummary, 'balance'>>(
+  wallets: readonly ShownWallet[]
+): ShownWallet[] {
+  return wallets.map((wallet) => ({ ...wallet, balance: withoutAgorot(wallet.balance) }));
+}
+
 export interface SummarizeWalletParams {
   wallet: Wallet;
   transactions: Transaction[];
