@@ -57,7 +57,7 @@ export function TransactionRow({ transactionListRow }: TransactionRowProps): JSX
           <Money
             amountAgorot={balance}
             testId={TRANSACTION_ROW_TEST_IDS.balance}
-            rounding={MONEY_ROUNDING.floorToShekels}
+            rounding={MONEY_ROUNDING.withAgorot}
           />
         </BalanceColumn>
       </Amounts>

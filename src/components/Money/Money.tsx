@@ -1,7 +1,12 @@
 'use client';
 
 import { JSX } from 'react';
-import { agorotToWholeShekels, floorToShekels, nearestHalfShekel } from '@/lib/money';
+import {
+  agorotToShekels,
+  agorotToWholeShekels,
+  floorToShekels,
+  nearestHalfShekel,
+} from '@/lib/money';
 import { MONEY_COPY, MONEY_ROUNDING, type MoneyRounding } from './constants';
 import { Amount, Currency, Shekels } from './Money.styles';
 
@@ -10,15 +15,16 @@ interface ShownShekelsParams {
   rounding: MoneyRounding;
 }
 
-type RoundToShekels = (amountAgorot: number) => number;
+type RoundToShekels = (amountAgorot: number) => number | string;
 
 const ROUND_TO_SHEKELS: Record<MoneyRounding, RoundToShekels> = {
   nearestShekel: agorotToWholeShekels,
   nearestHalfShekel: (amountAgorot: number): number => nearestHalfShekel(amountAgorot) ?? 0,
   floorToShekels,
+  withAgorot: (amountAgorot: number): string => agorotToShekels(amountAgorot).toFixed(2),
 };
 
-function shownShekels({ amountAgorot, rounding }: ShownShekelsParams): number {
+function shownShekels({ amountAgorot, rounding }: ShownShekelsParams): number | string {
   return ROUND_TO_SHEKELS[rounding](amountAgorot);
 }
 

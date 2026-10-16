@@ -148,7 +148,7 @@ export function totalBalanceWithAgorot(balanceHistory: BalanceHistory): number[]
 }
 
 export function totalBalanceByDay(balanceHistory: BalanceHistory): Map<string, number> {
-  return new Map(
-    balanceHistory.days.map((day, dayIndex) => [day, balanceHistory.totalBalance[dayIndex]])
-  );
+  const totalBalances = totalBalanceWithAgorot(balanceHistory);
+
+  return new Map(balanceHistory.days.map((day, dayIndex) => [day, totalBalances[dayIndex]]));
 }

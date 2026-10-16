@@ -6,6 +6,7 @@ export const MONEY_ROUNDING = {
   nearestShekel: 'nearestShekel',
   nearestHalfShekel: 'nearestHalfShekel',
   floorToShekels: 'floorToShekels',
+  withAgorot: 'withAgorot',
 } as const;
 
 export type MoneyRounding = (typeof MONEY_ROUNDING)[keyof typeof MONEY_ROUNDING];
