@@ -101,10 +101,6 @@ describe('savingsAtCollectedInterest', () => {
     it('takes it off the interest earned', () => {
       expect(savingsAtTheMark.interestEarned).toBe(400);
     });
-
-    it('is still the same wallet', () => {
-      expect(savingsAtTheMark.name).toBe(mockSavings.name);
-    });
   });
 
   it('never takes the balance below ₪0', () => {

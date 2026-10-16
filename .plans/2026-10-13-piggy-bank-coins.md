@@ -5,11 +5,13 @@
 
 ## Decision
 
-The card's numbers **reuse the interest already worked out** on the savings `WalletSummary`. Instead of new arithmetic
-for the total, «הרוויח לבד», the fill and the goal, `savingsAtCollectedInterest` builds the savings wallet as it stood
-at the collected mark, and the existing `savingsWithoutAgorot`, `piggyBankFillOf` and `savedTowardGoalOf` run on it
-unchanged. The coins are «הרוויח לבד» of the real wallet less «הרוויח לבד» of the wallet at the mark. The real
-`savedTowardGoalOf` is kept once the goal is `reached`.
+The card's numbers **reuse the interest already worked out** on the savings `WalletSummary`. `savingsAtCollectedInterest`
+builds the savings wallet as it stood at the collected mark, and the coins are «הרוויח לבד» of the real wallet less
+«הרוויח לבד» of the wallet at the mark (`uncollectedInterestOf`), in whole shekels. The card then takes exactly those
+shekels off `savingsWithoutAgorot` of the real wallet and off what is saved toward the goal
+(`savingsLessUncollectedInterest`, `savedTowardGoalLessUncollectedInterest`), so each coin lands exactly: running
+`savingsWithoutAgorot` on the wallet at the mark instead could round the total a shekel away from the coins. The fill
+comes from that total. The real `isGoalReached` is kept.
 
 The raise keeps the mark at least at the interest spent: `interestEarned` above the `balance`.
 

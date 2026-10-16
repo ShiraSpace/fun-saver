@@ -13,8 +13,8 @@ export interface StoredCollectedInterestParams {
   savings: Savings;
 }
 
-export interface CollectedInterestParams<CollectedSavings extends Savings = Savings> {
-  savings: CollectedSavings;
+export interface CollectedInterestParams {
+  savings: Savings;
   collectedInterest: number;
 }
 
@@ -59,14 +59,13 @@ export function resolveCollectedInterest({
   return Math.max(collectedInterest, interestSpent(savings));
 }
 
-export function savingsAtCollectedInterest<CollectedSavings extends Savings>({
+export function savingsAtCollectedInterest({
   savings,
   collectedInterest,
-}: CollectedInterestParams<CollectedSavings>): CollectedSavings {
+}: CollectedInterestParams): Savings {
   const uncollectedInterest = Math.max(savings.interestEarned - collectedInterest, 0);
 
   return {
-    ...savings,
     balance: Math.max(savings.balance - uncollectedInterest, 0),
     interestEarned: savings.interestEarned - uncollectedInterest,
   };
@@ -87,13 +86,12 @@ export function uncollectedInterestOf({
 export function interestCoinsOf(uncollectedInterest: number): number[] {
   const shekels = floorToShekels(uncollectedInterest);
   const coinCount = Math.min(shekels, MAX_INTEREST_COINS);
+  const evenShare = Math.floor(shekels / coinCount);
+  const leftover = shekels % coinCount;
 
-  return Array.from({ length: coinCount }, (_, coinIndex) => {
-    const evenShare = Math.floor(shekels / coinCount);
-    const getsLeftover = coinIndex < shekels % coinCount;
-
-    return shekelsToAgorot(getsLeftover ? evenShare + 1 : evenShare);
-  });
+  return Array.from({ length: coinCount }, (_, coinIndex) =>
+    shekelsToAgorot(coinIndex < leftover ? evenShare + 1 : evenShare)
+  );
 }
 
 export function collectInterest({
