@@ -2,8 +2,8 @@
 
 import { JSX } from 'react';
 import { useTheme } from '@emotion/react';
-import { MONEY_COPY } from '@/components/Money/constants';
-import { floorToTenthsText } from '@/components/Money/money-text';
+import { MONEY_COPY, MONEY_ROUNDING } from '@/components/Money/constants';
+import { shekelsText } from '@/components/Money/money-text';
 import { shownBalanceLabel } from '../../../constants';
 import type { PlacedTodaysBalance } from '../../chart-geometry';
 import { shownBalanceColor } from '../../chart-parts';
@@ -26,7 +26,7 @@ export function TodaysBalanceLabel({
   const swatchY = y - SWATCH.size / 2;
   const swatchColor = shownBalanceColor(theme.colors, shownBalance);
   const labelY = y + LABEL_OFFSET.y;
-  const labelText = `${shownBalanceLabel(shownBalance)} ${MONEY_COPY.currencySign}${floorToTenthsText(todaysBalance)}`;
+  const labelText = `${shownBalanceLabel(shownBalance)} ${MONEY_COPY.currencySign}${shekelsText(todaysBalance, MONEY_ROUNDING.floorToTenths)}`;
 
   return (
     <g data-testid={TODAYS_BALANCE_LABEL_TEST_IDS.label}>

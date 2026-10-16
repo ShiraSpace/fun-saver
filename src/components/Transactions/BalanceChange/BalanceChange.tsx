@@ -16,12 +16,13 @@ export function BalanceChange({
   rounding = MONEY_ROUNDING.floorToTenths,
 }: BalanceChangeProps): JSX.Element {
   const sign = balanceChange < 0 ? BALANCE_CHANGE_COPY.fell : BALANCE_CHANGE_COPY.rose;
+  const shekelsMoved = shekelsText(Math.abs(balanceChange), rounding);
 
   return (
     <Amount dir="ltr" data-testid={testId}>
       {sign}
       {MONEY_COPY.currencySign}
-      {shekelsText(Math.abs(balanceChange), rounding)}
+      {shekelsMoved}
     </Amount>
   );
 }
