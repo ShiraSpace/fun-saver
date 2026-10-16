@@ -14,10 +14,6 @@ export function floorToShekels(agorot: number): number {
   return Math.floor(agorot / AGOROT_PER_SHEKEL);
 }
 
-export function floorToHalfShekels(agorot: number): number {
-  return agorotToShekels(Math.floor(agorot / HALF_SHEKEL_AGOROT) * HALF_SHEKEL_AGOROT);
-}
-
 export function shekelsToAgorot(shekels: number): number {
   return shekels * AGOROT_PER_SHEKEL;
 }
@@ -34,14 +30,4 @@ export function nearestHalfShekel(agorot: number): number | null {
   }
 
   return agorotToShekels(halfShekels * HALF_SHEKEL_AGOROT);
-}
-
-export function balanceChangeInShekels(balanceChange: number): number {
-  const shekels = nearestHalfShekel(Math.abs(balanceChange));
-
-  if (shekels === null) {
-    return 0;
-  }
-
-  return Math.sign(balanceChange) * shekels;
 }
