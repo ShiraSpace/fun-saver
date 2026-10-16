@@ -31,9 +31,11 @@ Worktree `fun-saver-celebration`.
   and jungle look as the mockup; midnight-blue is "night sky"
   (`mockups/saving-goal-celebration-themes.html`, option B). The shine is 60%
   white everywhere (`mockups/saving-goal-shine.html`).
-- The border's angle is registered from code (`registerTravellingBorderAngle`,
-  on `WalletCard` mount): `next dev`'s Tailwind pipeline drops an `@property`
-  rule in `globals.css`, which left the border standing still.
+- The border's angle is declared by an `@property` rule the root layout writes
+  in its own `<style>` (`TRAVELLING_BORDER_ANGLE_RULE`), before the first paint.
+  `next dev`'s Tailwind pipeline drops the same rule from `globals.css`, which
+  left the border standing still. Its laps, wobbles and shines repeat as many
+  times as fit in the celebration's 10 s (`timesWithinCelebration`).
 - A reached goal's picture keeps a ring and its bar a gradient wherever
   `GoalProgress` draws it, as the mockup's `.goalProgress.reached` does.
 - Wallet cards sit 10 px apart (was 8).
@@ -86,7 +88,7 @@ Production, as built:
   `wobble(delayMs)` and `shine(theme)`, each off under reduced motion.
 - `WalletCard`: `Card` gets the theme's `celebrationOutline` and, while it plays,
   the travelling border and its glow (`celebrationGlowOpacity`); `WalletIcon`
-  (🐷) wobbles. It mounts `registerTravellingBorderAngle` (see Decisions).
+  (🐷) wobbles.
 - `GoalLine` passes `celebratesWhenReached` to `GoalProgress`, which wobbles the
   picture 0.4 s after 🐷 and passes `celebrating` to `GoalProgressBar` for the
   shine. `MenuGoal` and `ChildSavings` don't pass it.
@@ -100,16 +102,19 @@ Tests (each watched failing against its own break): the card's outline and 🐷
 wobble (`WalletCard`), the picture ring, glow and wobble (`GoalProgress`), the
 reached bar's colours (`GoalProgressBar`), the goal screen's ring (`GoalHero`),
 `GoalLine` celebrates and `MenuGoal`
-stays still, and `registerTravellingBorderAngle`. jsdom can't read `::before` /
+stays still; a shared `moves(element)` rejects both `''` and `animation: none`.
+jsdom can't read `::before` /
 `::after`, so the border, glow and shine are checked in screenshots.
 
 ### Step 3 — e2e and docs (done)
 
 - `e2e/goal.visual.ts`: «a goal reached» keeps the celebration off a phone that
   reduces motion; «a goal reached, on a phone that allows motion» celebrates over
-  home. `GoalDriver.celebrationShown()` checks it is mounted and displayed. Both
-  run and watched failing in a separate worktree, so the dev server's `.next` is
-  left alone.
+  home. The same two scenarios check the savings card itself: no travelling
+  border under reduced motion, and otherwise a border that turns smoothly, its
+  angle strictly between 0° and 360° rather than jumping (which also catches a
+  missing `@property` rule). All run and watched failing in a separate worktree,
+  so the dev server's `.next` is left alone.
 - `.plans/2026-10-03-saving-goal.md`: 4b row → merged (#209, #211, #214); PR 5
   row → this PR.
 - `docs/glossary.md`, the «A goal reached, shown» row: add the card's part
