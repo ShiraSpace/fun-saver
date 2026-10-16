@@ -1,5 +1,5 @@
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import { HALF_SHEKEL_AGOROT, withoutAgorot } from '@/lib/money';
+import { downToTheTenth, HALF_SHEKEL_AGOROT } from '@/lib/money';
 import type { BalanceHistory } from '@/lib/wallet/balance-history';
 import { SHOWN_BALANCE, type ShownBalance } from '../../constants';
 import {
@@ -137,7 +137,7 @@ function ticksRoundedTo(roundingAgorot: number, { lowest, highest }: BalanceBoun
 
 export function balanceTicks(balanceBounds: BalanceBounds): number[] {
   if (balanceBounds.lowest === balanceBounds.highest) {
-    return [withoutAgorot(balanceBounds.lowest)];
+    return [downToTheTenth(balanceBounds.lowest)];
   }
 
   const wholeShekelTicks = ticksRoundedTo(AGOROT_PER_SHEKEL, balanceBounds);
