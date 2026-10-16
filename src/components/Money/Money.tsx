@@ -15,17 +15,25 @@ interface ShownShekelsParams {
   rounding: MoneyRounding;
 }
 
-type RoundToShekels = (amountAgorot: number) => number | string;
+type RoundToShekels = (amountAgorot: number) => number;
+
+function shekelsWithAgorot(amountAgorot: number): string {
+  return agorotToShekels(amountAgorot).toFixed(2);
+}
 
 const ROUND_TO_SHEKELS: Record<MoneyRounding, RoundToShekels> = {
   nearestShekel: agorotToWholeShekels,
   nearestHalfShekel: (amountAgorot: number): number => nearestHalfShekel(amountAgorot) ?? 0,
   floorToShekels,
-  withAgorot: (amountAgorot: number): string => agorotToShekels(amountAgorot).toFixed(2),
+  withAgorot: agorotToShekels,
 };
 
-function shownShekels({ amountAgorot, rounding }: ShownShekelsParams): number | string {
-  return ROUND_TO_SHEKELS[rounding](amountAgorot);
+function shownShekels({ amountAgorot, rounding }: ShownShekelsParams): string {
+  const keepsAgorot = rounding === MONEY_ROUNDING.withAgorot;
+
+  return keepsAgorot
+    ? shekelsWithAgorot(amountAgorot)
+    : String(ROUND_TO_SHEKELS[rounding](amountAgorot));
 }
 
 interface MoneyProps {
