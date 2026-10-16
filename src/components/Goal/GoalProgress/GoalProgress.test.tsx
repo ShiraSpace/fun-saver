@@ -87,13 +87,50 @@ describe('GoalProgress', () => {
     describe('once reached, without being asked to', () => {
       beforeEach(() => {
         render(
-          <GoalProgress savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })} />
+          <GoalProgress savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })} />,
+          { themeId: THEME_ID.midnightBlue }
         );
       });
 
       it('does not glow', () => {
-        expect(goalPictureGlow()).toBe('none');
+        expect(goalPictureGlow()).not.toContain(
+          getThemeTokens(THEME_ID.midnightBlue).colors.gainText
+        );
       });
+
+      it('wears a gold ring', () => {
+        expect(goalPictureGlow()).toContain(
+          getThemeTokens(THEME_ID.midnightBlue).colors.celebrationGold
+        );
+      });
+    });
+  });
+
+  describe("the picture's wobble", () => {
+    const pictureAnimation = (): string =>
+      getComputedStyle(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture)).animation;
+
+    it('wobbles once reached, when asked to celebrate', () => {
+      render(
+        <GoalProgress
+          savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
+          celebratesWhenReached
+        />
+      );
+
+      expect(pictureAnimation()).not.toBe('');
+    });
+
+    it('keeps still once reached, without being asked to', () => {
+      render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })} />);
+
+      expect(pictureAnimation()).toBe('');
+    });
+
+    it('keeps still while saving, when asked to celebrate', () => {
+      render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal()} celebratesWhenReached />);
+
+      expect(pictureAnimation()).toBe('');
     });
   });
 });

@@ -3,6 +3,7 @@ import { WalletCard } from './WalletCard';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
 import { createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
+import { getThemeTokens, THEME_ID } from '@/theme/registry';
 
 const mockSavingsSubLine = 'צובר 15% בחודש · פעיל מאז 1 בינואר';
 
@@ -160,5 +161,43 @@ describe('WalletCard', () => {
     render(<WalletCard wallet={createMockWalletSummary({ name: 'spending', balance: 4650 })} />);
 
     expect(screen.getByTestId(WALLET_CARD_TEST_IDS.balance)).toHaveTextContent('₪46');
+  });
+
+  describe('savings once the goal is reached', () => {
+    beforeEach(() => {
+      render(
+        <WalletCard
+          wallet={createMockWalletSummary()}
+          savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
+        />,
+        { themeId: THEME_ID.midnightBlue }
+      );
+    });
+
+    it('wears a gold outline in the theme in use', () => {
+      expect(getComputedStyle(screen.getByTestId(WALLET_CARD_TEST_IDS.card)).boxShadow).toContain(
+        getThemeTokens(THEME_ID.midnightBlue).colors.celebrationGold
+      );
+    });
+
+    it('wobbles its piggy bank', () => {
+      expect(getComputedStyle(screen.getByTestId(WALLET_CARD_TEST_IDS.icon)).animation).not.toBe(
+        ''
+      );
+    });
+  });
+
+  it('wears no gold outline while savings is kept for the goal', () => {
+    render(
+      <WalletCard
+        wallet={createMockWalletSummary()}
+        savedTowardGoal={createMockSavedTowardGoal()}
+      />,
+      { themeId: THEME_ID.midnightBlue }
+    );
+
+    expect(getComputedStyle(screen.getByTestId(WALLET_CARD_TEST_IDS.card)).boxShadow).not.toContain(
+      getThemeTokens(THEME_ID.midnightBlue).colors.celebrationGold
+    );
   });
 });

@@ -94,4 +94,17 @@ describe('GoalLine', () => {
       expect(screen.queryByTestId(GOAL_LINE_TEST_IDS.setGoal)).not.toBeInTheDocument();
     });
   });
+
+  it('celebrates a reached goal by wobbling its picture', () => {
+    render(
+      <GoalLine
+        wallet={mockSavingsWallet}
+        savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
+      />
+    );
+
+    expect(getComputedStyle(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture)).animation).not.toBe(
+      ''
+    );
+  });
 });
