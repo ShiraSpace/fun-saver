@@ -8,7 +8,7 @@ import { useDriver } from './driver/use-driver';
 import { PHONE_IN_SAFARI } from './driver/viewports';
 
 const mockNoCoinsCollected = { [mockAccount.id]: '0' };
-const mockChildModeWithCoinsWaiting = {
+const mockChildModeWithUncollectedInterest = {
   viewMode: VIEW_MODE.child,
   collectedInterest: mockNoCoinsCollected,
 };
@@ -16,7 +16,7 @@ const mockChildModeWithCoinsWaiting = {
 describe('a child with ₪5 of interest waiting since the last visit', () => {
   const { childAccount, appBrowser } = useDriver(
     { accounts: [mockAccount], transactions: mockTransactions },
-    mockChildModeWithCoinsWaiting
+    mockChildModeWithUncollectedInterest
   );
 
   beforeEach(async () => {
@@ -53,7 +53,7 @@ describe('a child who taps a coin, then switches to a sibling and back', () => {
   const mockSibling = createMockAccount({ id: 'a2', name: 'שירה', avatarId: 'kid-08' });
   const { childAccount, menu, header } = useDriver(
     { accounts: [mockAccount, mockSibling], transactions: mockTransactions },
-    mockChildModeWithCoinsWaiting
+    mockChildModeWithUncollectedInterest
   );
 
   it('still sees the coin in the savings', async () => {
@@ -74,7 +74,7 @@ describe('a child who taps a coin, then switches to a sibling and back', () => {
 describe('a child who taps a coin, then the phone goes to parent mode and back', () => {
   const { childAccount, menu, account } = useDriver(
     { accounts: [mockAccount], transactions: mockTransactions },
-    mockChildModeWithCoinsWaiting
+    mockChildModeWithUncollectedInterest
   );
 
   it('still sees the coin in the savings', async () => {
@@ -116,7 +116,7 @@ describe('a child on the first visit on this phone', () => {
 describe('a child with a goal and coins waiting, on an iPhone in Safari', () => {
   const { childAccount, appBrowser } = useDriver(
     { accounts: [mockAccount], transactions: mockTransactions, goals: [createMockGoal()] },
-    mockChildModeWithCoinsWaiting
+    mockChildModeWithUncollectedInterest
   );
 
   it('sees every wallet without scrolling', async () => {

@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@/test-utils/render';
 import { captureCookies } from '@/test-utils/cookies';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
+import { mockAccountId } from '@/test-utils/mocks/account.mocks';
 import { createMockGoal, createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
 import { collectedInterestCookie } from '@/lib/cookies';
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
@@ -9,7 +10,6 @@ import { INTEREST_COIN_BUTTON_TEST_IDS } from './InterestCoins/InterestCoinButto
 import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
 import { SAVINGS_BALANCE_TEST_IDS } from './SavingsBalance/constants';
 
-const mockAccountId = 'mock-account';
 const mockSavingsWithFiveShekelsOfInterest = createMockWalletSummary({
   balance: 10500,
   interestEarned: 500,

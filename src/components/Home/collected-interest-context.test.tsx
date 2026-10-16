@@ -2,11 +2,11 @@ import { JSX } from 'react';
 import { renderToString } from 'react-dom/server';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { captureCookies } from '@/test-utils/cookies';
+import { mockAccountId } from '@/test-utils/mocks/account.mocks';
 import { collectedInterestCookie } from '@/lib/cookies';
 import { CollectedInterestProvider, useCollectedInterest } from './collected-interest-context';
 import { COLLECTED_INTEREST_PROBE_TEST_IDS } from './constants';
 
-const mockAccountId = 'mock-account';
 const mockServerCollectedInterest = '300';
 const mockSavedCollectedInterest = 700;
 

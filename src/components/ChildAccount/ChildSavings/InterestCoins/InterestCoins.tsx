@@ -2,7 +2,7 @@
 
 import { JSX, RefObject, useRef } from 'react';
 import { InterestCoinButton } from './InterestCoinButton';
-import { INTEREST_COIN_SELECTOR, INTEREST_COINS_COPY, INTEREST_COINS_TEST_IDS } from './constants';
+import { INTEREST_COINS_COPY, INTEREST_COINS_TEST_IDS } from './constants';
 import { CoinRow, TapTheCoins } from './InterestCoins.styles';
 
 export interface InterestCoin {
@@ -28,9 +28,7 @@ export function InterestCoins({
   const coinRow = useRef<HTMLDivElement>(null);
 
   function collect(place: number, tappedIndex: number): void {
-    const tappableCoins = [
-      ...(coinRow.current?.querySelectorAll<HTMLElement>(INTEREST_COIN_SELECTOR) ?? []),
-    ];
+    const tappableCoins = [...(coinRow.current?.querySelectorAll<HTMLElement>('button') ?? [])];
     (nextFocus(tappableCoins, tappedIndex) ?? whereFocusGoesLast.current)?.focus();
     onCollect(place);
   }
