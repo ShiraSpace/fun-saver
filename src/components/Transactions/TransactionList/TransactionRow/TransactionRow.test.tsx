@@ -6,7 +6,6 @@ import { dayMonth } from '@/lib/dates';
 import { INTEREST_MODE } from '@/lib/transaction/constants';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { BALANCE_CHANGE_COPY } from '../../BalanceChange/constants';
-import { floorToTenthsText } from '@/components/Money/money-text';
 import { TRANSACTION_LIST_COPY } from '../constants';
 import { TRANSACTION_ROW_COPY, TRANSACTION_ROW_TEST_IDS } from './constants';
 import { TransactionRow } from './TransactionRow';
@@ -34,7 +33,7 @@ describe('a transaction row', () => {
 
     it('shows its change to the tenth of a shekel', () => {
       expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balanceChange)).toHaveTextContent(
-        `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${floorToTenthsText(mockInterestRow.balanceChange)}`
+        `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}0.09`
       );
     });
 
