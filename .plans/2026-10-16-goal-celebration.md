@@ -54,7 +54,7 @@ All of it is CSS that runs once when the element mounts. No timer and no
   the first play, not a replay.
 - **Reduced motion:** `Celebration` already hides itself through
   `@media (prefers-reduced-motion: reduce)`. The card's border, wobble and shine
-  do the same, and the gold outline stays.
+  do the same, and the outline stays.
 
 ---
 
@@ -79,48 +79,26 @@ First three tests (`Account.test.tsx`):
 Rest: refreshing with the same account keeps the same element (no replay);
 `ViewGoal` plays it for a reached goal; `ViewGoal` does not for an unreached one.
 
-### Step 2 — the savings card celebrates
+### Step 2 — the savings card celebrates (done)
 
-Production:
-- `WalletCard` works out `isGoalReached` from the `savedTowardGoal` it already
-  receives (savings only), and passes it to `Card` and `WalletIcon` as
-  `celebrating`.
-  - `Card`, when celebrating: a `star` gold outline that stays. Two pseudo
-    elements (`::before` the border, `::after` its blurred glow) draw a
-    `conic-gradient` from `--travellingBorderAngle`. It turns 5 times and then
-    fades out with the confetti.
-  - `WalletIcon` (🐷): the wobble.
-- `GoalLine` passes `celebratesWhenReached` to `GoalProgress`, next to its
-  `glowWhenReached`. `GoalProgress` passes `celebrating` to `Picture` (the wobble,
-  0.4 s later) and to `GoalProgressBar`, whose `Track` runs the shine.
-  `MenuGoal` and `ChildSavings` do not pass it, so they stay still.
-- `WalletList`'s `List` gets `isolation: isolate`, so the border's
-  `z-index: -1` sits behind the card but above the screen's background.
-- `globals.css`: `@property --travellingBorderAngle` (an `<angle>`). Emotion
-  cannot register a property from inside a component. Without `@property`
-  support, the border shows but does not turn.
-- Colours: the existing `celebrationGold` / `celebrationPink` /
-  `celebrationPurple`, plus a new `celebrationShine` for the white of the border
-  and the shine. `surface` can't be used for that white, because it is dark in
-  `midnight-blue`. The new token is set in the three theme files, and
-  `no-color-leaks.test.ts` stays green.
-- Every animation is turned off under `@media ${REDUCED_MOTION}`, the way
-  `entrance()` does it. The outline stays.
+Production, as built:
+- `Celebration/celebration-parts.ts`: `travellingBorder(theme, cornerRadius)`,
+  `wobble(delayMs)` and `shine(theme)`, each off under reduced motion.
+- `WalletCard`: `Card` gets the theme's `celebrationOutline` and, while it plays,
+  the travelling border and its glow (`celebrationGlowOpacity`); `WalletIcon`
+  (🐷) wobbles. It mounts `registerTravellingBorderAngle` (see Decisions).
+- `GoalLine` passes `celebratesWhenReached` to `GoalProgress`, which wobbles the
+  picture 0.4 s after 🐷 and passes `celebrating` to `GoalProgressBar` for the
+  shine. `MenuGoal` and `ChildSavings` don't pass it.
+- `WalletList`'s list has `isolation: isolate`, so the border's `z-index: -1`
+  sits behind the card.
+- Colours: the theme tokens listed under Decisions; no literals in components.
 
-First three tests (`WalletCard.test.tsx`):
-
-| Test | Break |
-| --- | --- |
-| a reached goal's savings card celebrates | `celebrating` always false |
-| a goal not yet reached does not | `celebrating` from "has a goal" |
-| spending never celebrates, even with a reached goal | drop the savings-only guard |
-
-Asserted through a `data-celebrating` attribute or a test id on the card, not a
-CSS class. I'll settle which with you on the first three.
-
-Rest: `GoalProgress` wobbles the picture and shines the bar only with
-`celebratesWhenReached` and a reached goal; `GoalLine` passes it, and `MenuGoal`
-does not.
+Tests (each watched failing against its own break): the card's outline and 🐷
+wobble (`WalletCard`), the picture ring, glow and wobble (`GoalProgress`), the
+reached bar's colours (`GoalProgressBar`), `GoalLine` celebrates and `MenuGoal`
+stays still, and `registerTravellingBorderAngle`. jsdom can't read `::before` /
+`::after`, so the border, glow and shine are checked in screenshots.
 
 ### Step 3 — e2e and docs
 
@@ -130,9 +108,8 @@ does not.
 - `.plans/2026-10-03-saving-goal.md`: 4b row → merged (#209, #211, #214); PR 5
   row → this PR.
 - `docs/glossary.md`, the «A goal reached, shown» row: add the card's part
-  (`celebrating`, `celebratesWhenReached`) and «the travelling border». Not:
-  shimmer, sparkle, animate.
-- Screenshots and a short recording of home reached, playing and settled (gold
+  (`celebratesWhenReached`) and «the travelling border». Done.
+- Screenshots and a short recording of home reached, playing and settled (its
   outline), through `pr-screenshots`.
 
 ## Not in this PR
