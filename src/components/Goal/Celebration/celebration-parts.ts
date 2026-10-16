@@ -21,7 +21,17 @@ const sweep = keyframes`
   to { background-position: -100% 0; }
 `;
 
-function borderColours(theme: Theme): string {
+const BORDER_LAP_MS = 2000;
+const WOBBLE_MS = 800;
+const SHINE_MS = 1400;
+
+function timesWithinCelebration(onceMs: number): number {
+  const { fadeDelayMs, fadeMs } = CELEBRATION_MOTION;
+
+  return Math.floor((fadeDelayMs + fadeMs) / onceMs);
+}
+
+function borderColors(theme: Theme): string {
   const { celebrationWhite, celebrationBorderLight, celebrationBorderMain } = theme.colors;
   const { celebrationBorderAccent, celebrationBorderDeep } = theme.colors;
 
@@ -48,9 +58,9 @@ export function travellingBorder(theme: Theme, cornerRadius: number): Serialized
       inset: -5px;
       z-index: -1;
       border-radius: ${cornerRadius + 5}px;
-      background: ${borderColours(theme)};
+      background: ${borderColors(theme)};
       animation:
-        ${travel} 2000ms linear 0ms 5,
+        ${travel} ${BORDER_LAP_MS}ms linear 0ms ${timesWithinCelebration(BORDER_LAP_MS)},
         ${settle} ${CELEBRATION_MOTION.fadeMs}ms ease-in ${CELEBRATION_MOTION.fadeDelayMs}ms
           forwards;
     }
@@ -72,7 +82,7 @@ export function travellingBorder(theme: Theme, cornerRadius: number): Serialized
 
 export function wobble(delayMs: number): SerializedStyles {
   return css`
-    animation: ${hop} 800ms ease-in-out ${delayMs}ms 12;
+    animation: ${hop} ${WOBBLE_MS}ms ease-in-out ${delayMs}ms ${timesWithinCelebration(WOBBLE_MS)};
 
     @media ${REDUCED_MOTION} {
       animation: none;
@@ -96,7 +106,7 @@ export function shine(theme: Theme): SerializedStyles {
       );
       background-size: 200% 100%;
       background-repeat: no-repeat;
-      animation: ${sweep} 1400ms linear 0ms 7 both;
+      animation: ${sweep} ${SHINE_MS}ms linear 0ms ${timesWithinCelebration(SHINE_MS)} both;
     }
 
     @media ${REDUCED_MOTION} {

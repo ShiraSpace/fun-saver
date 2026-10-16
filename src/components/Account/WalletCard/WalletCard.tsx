@@ -1,13 +1,12 @@
 'use client';
 
-import { JSX, ReactNode, useEffect } from 'react';
+import { JSX, ReactNode } from 'react';
 import type { SpendableWalletName, WalletSummary } from '@/lib/wallet/types';
 import { WALLET_NAMES } from '@/lib/wallet/constants';
 import { savingsLocked, type SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { Money } from '@/components/Money';
 import { MONEY_ROUNDING } from '@/components/Money/constants';
 import { GOAL_COPY } from '@/components/Goal/constants';
-import { registerTravellingBorderAngle } from '@/components/Goal/Celebration/travelling-border-angle';
 import { WALLET_CARD_COPY, WALLET_CARD_TEST_IDS } from './constants';
 import { Card, Head, WalletIcon, Name, Balance, Summary, Lock } from './WalletCard.styles';
 
@@ -42,8 +41,6 @@ function walletSummaryText(wallet: CardWallet): string | undefined {
 export function WalletCard({ wallet, savedTowardGoal, children }: WalletCardProps): JSX.Element {
   const summaryText = walletSummaryText(wallet);
   const isSavingsLocked = savingsLocked(savedTowardGoal);
-
-  useEffect(registerTravellingBorderAngle, []);
 
   return (
     <Card celebrating={savedTowardGoal?.isGoalReached} data-testid={WALLET_CARD_TEST_IDS.card}>

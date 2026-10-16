@@ -10,14 +10,14 @@ interface CelebratingProps {
   theme: Theme;
 }
 
-const goldOutline = ({ celebrating, theme }: CelebratingProps): string =>
+const celebrationOutline = ({ celebrating, theme }: CelebratingProps): string =>
   celebrating ? `, 0 0 0 3px ${theme.colors.celebrationOutline}` : '';
 
 export const Card = styled.div<{ celebrating?: boolean }>`
   padding: ${WALLET_CARD_STYLE.paddingY}px ${WALLET_CARD_STYLE.paddingX}px;
   background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${WALLET_CARD_STYLE.radius}px;
-  box-shadow: 0 3px 0 ${({ theme }): string => theme.shadows.faint}${goldOutline};
+  box-shadow: 0 3px 0 ${({ theme }): string => theme.shadows.faint}${celebrationOutline};
   ${({ celebrating, theme }): SerializedStyles | false =>
     !!celebrating && travellingBorder(theme, WALLET_CARD_STYLE.radius)}
 `;

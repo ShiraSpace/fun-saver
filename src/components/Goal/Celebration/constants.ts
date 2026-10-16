@@ -16,6 +16,8 @@ export const CELEBRATION_COLORS = [
 
 export const TRAVELLING_BORDER_ANGLE = '--travellingBorderAngle';
 
+export const TRAVELLING_BORDER_ANGLE_RULE = `@property ${TRAVELLING_BORDER_ANGLE}{syntax:'<angle>';inherits:false;initial-value:0deg}`;
+
 export const CELEBRATION_MOTION = {
   fadeDelayMs: 9200,
   fadeMs: 800,
