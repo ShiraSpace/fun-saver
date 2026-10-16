@@ -1,6 +1,10 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import type { Account, AccountSummary } from '@/lib/account/types';
-import { APP_MODE, AppMode } from '@/components/AccountManagement/app-mode-context';
+import {
+  APP_MODE,
+  AppMode,
+  MODES_SHOWING_THE_GOAL,
+} from '@/components/AccountManagement/app-mode-context';
 import { CURRENT_ACCOUNT_COOKIE, writeCookie } from '@/lib/cookies';
 import { findCurrentAccount } from '@/lib/account/current-account';
 import { savedTowardGoalOf, type SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
@@ -20,6 +24,7 @@ export interface AccountNavigation {
   editingAccount?: AccountSummary;
   accountSettingGoal?: AccountSummary;
   goalBeingViewed?: GoalBeingViewed;
+  goalBeingCancelled?: SavedTowardGoal;
 }
 
 export interface GoalBeingViewed {
@@ -27,43 +32,34 @@ export interface GoalBeingViewed {
   savedTowardGoal: SavedTowardGoal;
 }
 
-interface GoalBeingViewedParams {
+interface GoalOnScreen {
+  goalBeingViewed?: GoalBeingViewed;
+  goalBeingCancelled?: SavedTowardGoal;
+}
+
+interface GoalOnScreenParams {
   mode: AppMode;
+  setMode: Dispatch<SetStateAction<AppMode>>;
   currentAccount?: AccountSummary;
 }
 
-interface LeavingGoneGoalParams extends GoalBeingViewedParams {
-  setMode: Dispatch<SetStateAction<AppMode>>;
-}
-
-function goalBeingViewedOf({
-  mode,
-  currentAccount,
-}: GoalBeingViewedParams): GoalBeingViewed | undefined {
-  if (mode !== APP_MODE.viewingGoal || !currentAccount) {
-    return;
+function goalOnScreenOf({ mode, setMode, currentAccount }: GoalOnScreenParams): GoalOnScreen {
+  if (!MODES_SHOWING_THE_GOAL.includes(mode)) {
+    return {};
   }
 
-  const savedTowardGoal = savedTowardGoalOf(currentAccount);
+  const savedTowardGoal = currentAccount && savedTowardGoalOf(currentAccount);
 
-  if (!savedTowardGoal) {
-    return;
-  }
-
-  return { accountName: currentAccount.name, savedTowardGoal };
-}
-
-function useGoalBeingViewed({
-  setMode,
-  ...params
-}: LeavingGoneGoalParams): GoalBeingViewed | undefined {
-  const goalBeingViewed = goalBeingViewedOf(params);
-
-  if (params.mode === APP_MODE.viewingGoal && !goalBeingViewed) {
+  if (!currentAccount || !savedTowardGoal) {
     setMode(APP_MODE.viewing);
+    return {};
   }
 
-  return goalBeingViewed;
+  if (mode === APP_MODE.cancellingGoal) {
+    return { goalBeingCancelled: savedTowardGoal };
+  }
+
+  return { goalBeingViewed: { accountName: currentAccount.name, savedTowardGoal } };
 }
 
 export function useAccountNavigation(
@@ -93,7 +89,7 @@ export function useAccountNavigation(
 
   const currentAccount = findCurrentAccount(accounts, currentAccountId);
   const isEditing = mode === APP_MODE.editingAccount;
-  const goalBeingViewed = useGoalBeingViewed({ mode, setMode, currentAccount });
+  const goalOnScreen = goalOnScreenOf({ mode, setMode, currentAccount });
 
   return {
     mode,
@@ -109,6 +105,6 @@ export function useAccountNavigation(
     isCreating: mode === APP_MODE.creatingAccount,
     editingAccount: isEditing ? currentAccount : undefined,
     accountSettingGoal: mode === APP_MODE.settingGoal ? currentAccount : undefined,
-    goalBeingViewed,
+    ...goalOnScreen,
   };
 }

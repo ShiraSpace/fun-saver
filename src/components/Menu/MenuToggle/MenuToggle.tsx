@@ -1,18 +1,20 @@
 'use client';
 
-import { JSX } from 'react';
+import { JSX, Ref } from 'react';
 import { BurgerIcon } from '../BurgerIcon';
 import { MENU_TEST_IDS } from '../constants';
 import { ToggleButton } from './MenuToggle.styles';
 
 export interface MenuToggleProps {
+  ref?: Ref<HTMLButtonElement>;
   isOpen: boolean;
   onToggle: () => void;
 }
 
-export function MenuToggle({ isOpen, onToggle }: MenuToggleProps): JSX.Element {
+export function MenuToggle({ ref, isOpen, onToggle }: MenuToggleProps): JSX.Element {
   return (
     <ToggleButton
+      ref={ref}
       type="button"
       aria-expanded={isOpen}
       data-open={isOpen}

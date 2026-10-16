@@ -36,7 +36,7 @@ describe('GoalHero', () => {
 
     it('says how much is still to save', () => {
       expect(screen.getByTestId(GOAL_HERO_TEST_IDS.encouragement)).toHaveTextContent(
-        stillToSaveAsShown(mockSavedTowardGoal.stillToSave)
+        stillToSaveAsShown(mockSavedTowardGoal.stillToSave, GOAL_HERO_COPY.cheer)
       );
     });
   });

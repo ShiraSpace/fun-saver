@@ -8,9 +8,15 @@ export const APP_MODE = {
   editingAccount: 'editingAccount',
   viewingGoal: 'viewingGoal',
   settingGoal: 'settingGoal',
+  cancellingGoal: 'cancellingGoal',
 } as const;
 
 export type AppMode = (typeof APP_MODE)[keyof typeof APP_MODE];
+
+export const MODES_SHOWING_THE_GOAL: readonly AppMode[] = [
+  APP_MODE.viewingGoal,
+  APP_MODE.cancellingGoal,
+];
 
 export interface AppModeContextValue {
   mode: AppMode;

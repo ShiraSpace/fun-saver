@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX } from 'react';
+import { JSX, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import type { Account } from '@/lib/account/types';
 import { MenuHeaderBackdrop, MenuOverlay, MenuProvider, MenuToggle, useMenuState } from '../Menu';
@@ -19,7 +19,8 @@ export interface HeaderProps {
 }
 
 export function Header({ title, account }: HeaderProps): JSX.Element {
-  const menu = useMenuState();
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const menu = useMenuState(toggleRef);
   const isHome = usePathname() === HOME_ROUTE;
   const isLoaderShown = useIsLoaderShown();
 
@@ -30,7 +31,7 @@ export function Header({ title, account }: HeaderProps): JSX.Element {
         data-testid={MENU_HEADER_BACKDROP_TEST_IDS.backdrop}
       />
       <Bar data-testid={HEADER_TEST_IDS.bar}>
-        <MenuToggle isOpen={menu.isOpen} onToggle={menu.toggle} />
+        <MenuToggle ref={toggleRef} isOpen={menu.isOpen} onToggle={menu.toggle} />
         <HeaderTitle text={title} />
         {account && (
           <HeaderAccountAvatar account={account} isHome={isHome} isHidden={menu.isOpen} />

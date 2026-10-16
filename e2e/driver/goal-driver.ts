@@ -8,7 +8,7 @@ import { LOCKED_SAVINGS_TEST_IDS } from '@/components/Account/TransactionDrawer/
 import { WITHDRAWAL_FORM_TEST_IDS } from '@/components/Account/TransactionDrawer/WithdrawalForm/constants';
 import { MENU_GOAL_TEST_IDS } from '@/components/Menu/MenuGoal/constants';
 import { VIEW_GOAL_TEST_IDS } from '@/components/Goal/ViewGoal/constants';
-import { SAVINGS_LOCK_TEST_IDS } from '@/components/Goal/ViewGoal/SavingsLock/constants';
+import { SAVINGS_OPEN_TEST_IDS } from '@/components/Goal/ViewGoal/SavingsOpen/constants';
 import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
 import { SET_GOAL_TEST_IDS } from '@/components/Goal/SetGoal/constants';
 import { GOAL_NAME_FIELD_TEST_IDS } from '@/components/Goal/GoalFields/GoalNameField/constants';
@@ -92,12 +92,16 @@ export class GoalDriver {
     return this.appBrowser.click(CLOSE_BUTTON_TEST_IDS.button);
   }
 
-  goalScreenSavingsLock(): Promise<string> {
-    return this.appBrowser.text(SAVINGS_LOCK_TEST_IDS.label);
+  goalScreenSavingsOpen(): Promise<string> {
+    return this.appBrowser.text(SAVINGS_OPEN_TEST_IDS.label);
   }
 
   savingsLockExists(): Promise<boolean> {
     return this.appBrowser.exists(WALLET_CARD_TEST_IDS.lock);
+  }
+
+  waitForSavingsLockGone(): Promise<void> {
+    return this.appBrowser.waits.testIdGone(WALLET_CARD_TEST_IDS.lock);
   }
 
   async startWithdrawal(amountShekels: number): Promise<void> {

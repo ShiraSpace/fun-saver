@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import { PrimaryButton } from '@/components/PrimaryButton';
+import { GoalScreenButton } from '../../goal-parts';
 import { LoaderBar } from '@/components/Header/LoaderBar';
 
-export const SubmitButton = styled(PrimaryButton)`
+export const SubmitButton = styled(GoalScreenButton)`
   position: relative;
   overflow: hidden;
 

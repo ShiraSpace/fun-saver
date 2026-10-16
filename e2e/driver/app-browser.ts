@@ -1,8 +1,15 @@
-import puppeteer, { type BoundingBox, type Browser, type CookieData, type Page } from 'puppeteer';
+import puppeteer, {
+  type BoundingBox,
+  type Browser,
+  type CookieData,
+  type KeyInput,
+  type Page,
+} from 'puppeteer';
 import * as actions from './page-actions';
 import * as queries from './page-queries';
 import { PageWaits } from './page-waits';
 import { holdNextPage, type HeldPage } from './hold-next-page';
+import { holdRequest, type HeldRequest } from './hold-request';
 import { ELEMENT_WAIT_MS, PAGE_LOAD_MS } from './wait-limits';
 
 interface OpenOptions {
@@ -104,6 +111,10 @@ export class AppBrowser {
     return holdNextPage(this.page);
   }
 
+  holdRequest(method: string): Promise<HeldRequest> {
+    return holdRequest(this.page, method);
+  }
+
   rawResponse(path: string, cookie: string): Promise<queries.RawResponse> {
     return queries.rawResponse(`${this.baseUrl}${path}`, cookie);
   }
@@ -202,6 +213,14 @@ export class AppBrowser {
 
   clickNth(selector: string, index: number): Promise<void> {
     return actions.clickNth({ page: this.page, selector, index });
+  }
+
+  pressAndHold(testId: string, holdMs: number): Promise<void> {
+    return actions.pressAndHold({ page: this.page, testId, holdMs });
+  }
+
+  pressKey(key: KeyInput): Promise<void> {
+    return actions.pressKey(this.page, key);
   }
 
   private get page(): Page {

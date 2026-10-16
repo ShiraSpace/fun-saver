@@ -7,23 +7,38 @@ describe('StillToSave', () => {
   const mockStillToSave = 12500;
   const mockSentenceTestId = 'sentence';
 
-  beforeEach(() => {
+  describe('with its usual ending', () => {
+    beforeEach(() => {
+      render(
+        <p data-testid={mockSentenceTestId}>
+          <StillToSave stillToSave={mockStillToSave} />
+        </p>
+      );
+    });
+
+    it('shows the amount still to save', () => {
+      expect(screen.getByTestId(STILL_TO_SAVE_TEST_IDS.amount)).toHaveTextContent(
+        moneyAsShown(mockStillToSave)
+      );
+    });
+
+    it('says it as one sentence', () => {
+      expect(screen.getByTestId(mockSentenceTestId)).toHaveTextContent(
+        stillToSaveAsShown(mockStillToSave)
+      );
+    });
+  });
+
+  it('ends with the cheer it is given', () => {
+    const mockCheer = 'ומגיעים! 💪';
     render(
       <p data-testid={mockSentenceTestId}>
-        <StillToSave stillToSave={mockStillToSave} />
+        <StillToSave stillToSave={mockStillToSave} cheer={mockCheer} />
       </p>
     );
-  });
 
-  it('shows the amount still to save', () => {
-    expect(screen.getByTestId(STILL_TO_SAVE_TEST_IDS.amount)).toHaveTextContent(
-      moneyAsShown(mockStillToSave)
-    );
-  });
-
-  it('says it as one sentence', () => {
     expect(screen.getByTestId(mockSentenceTestId)).toHaveTextContent(
-      stillToSaveAsShown(mockStillToSave)
+      stillToSaveAsShown(mockStillToSave, mockCheer)
     );
   });
 });

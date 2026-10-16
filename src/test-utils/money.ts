@@ -6,6 +6,9 @@ export function moneyAsShown(amountAgorot: number): string {
   return `${MONEY_COPY.currencySign}${agorotToWholeShekels(amountAgorot)}`;
 }
 
-export function stillToSaveAsShown(stillToSave: number): string {
-  return `${STILL_TO_SAVE_COPY.before} ${moneyAsShown(stillToSave)} ${STILL_TO_SAVE_COPY.after}`;
+export function stillToSaveAsShown(
+  stillToSave: number,
+  cheer: string = STILL_TO_SAVE_COPY.after
+): string {
+  return `${STILL_TO_SAVE_COPY.before} ${moneyAsShown(stillToSave)} ${cheer}`;
 }
