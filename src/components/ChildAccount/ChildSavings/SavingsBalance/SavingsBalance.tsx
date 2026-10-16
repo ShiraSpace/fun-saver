@@ -14,7 +14,7 @@ export function SavingsBalance({ balance, ref }: SavingsBalanceProps): JSX.Eleme
       <span aria-hidden>
         <Money amountAgorot={balance} testId={SAVINGS_BALANCE_TEST_IDS.balance} />
       </span>
-      <AnnouncedBalance aria-live="polite">
+      <AnnouncedBalance aria-live="polite" aria-atomic>
         <Money amountAgorot={balance} testId={SAVINGS_BALANCE_TEST_IDS.announcedBalance} />
       </AnnouncedBalance>
     </Balance>
