@@ -2,6 +2,7 @@ import { render, screen } from '@/test-utils/render';
 import { createMockSavedTowardGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { goalPictureGlow } from '@/test-utils/goal-picture';
+import { moves } from '@/test-utils/motion';
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
 import { GOAL_PROGRESS_BAR_TEST_IDS } from '@/components/Goal/GoalProgressBar/constants';
 import { GoalProgress } from './GoalProgress';
@@ -87,13 +88,49 @@ describe('GoalProgress', () => {
     describe('once reached, without being asked to', () => {
       beforeEach(() => {
         render(
-          <GoalProgress savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })} />
+          <GoalProgress savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })} />,
+          { themeId: THEME_ID.midnightBlue }
         );
       });
 
       it('does not glow', () => {
-        expect(goalPictureGlow()).toBe('none');
+        expect(goalPictureGlow()).not.toContain(
+          getThemeTokens(THEME_ID.midnightBlue).colors.gainText
+        );
       });
+
+      it("wears a ring in the theme's celebration outline", () => {
+        expect(goalPictureGlow()).toContain(
+          getThemeTokens(THEME_ID.midnightBlue).colors.celebrationOutline
+        );
+      });
+    });
+  });
+
+  describe("the picture's wobble", () => {
+    const pictureMoves = (): boolean => moves(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture));
+
+    it('wobbles once reached, when asked to celebrate', () => {
+      render(
+        <GoalProgress
+          savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
+          celebratesWhenReached
+        />
+      );
+
+      expect(pictureMoves()).toBe(true);
+    });
+
+    it('keeps still once reached, without being asked to', () => {
+      render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })} />);
+
+      expect(pictureMoves()).toBe(false);
+    });
+
+    it('keeps still while saving, when asked to celebrate', () => {
+      render(<GoalProgress savedTowardGoal={createMockSavedTowardGoal()} celebratesWhenReached />);
+
+      expect(pictureMoves()).toBe(false);
     });
   });
 });

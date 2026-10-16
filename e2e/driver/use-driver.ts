@@ -4,7 +4,8 @@ import { after, afterEach, before, beforeEach } from 'node:test';
 import type { CookieData } from 'puppeteer';
 import type { StoreContents } from '@/db/data-store';
 import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
-import { VIEW_MODE_COOKIE } from '@/lib/cookies';
+import { collectedInterestCookie, VIEW_MODE_COOKIE } from '@/lib/cookies';
+import type { CollectedInterestCookies } from '@/lib/interest/collected-interest';
 import { createMockAccountUser, mockOwner } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { CREATE_ACCOUNT_TEST_IDS } from '@/components/CreateAccount/constants';
@@ -32,11 +33,13 @@ interface OpenAppOptions {
   initialStore: Partial<StoreContents>;
   motion: MotionPreference;
   viewMode: ViewMode;
+  collectedInterest?: CollectedInterestCookies;
 }
 
-interface DriverOptions {
+export interface DriverOptions {
   motion?: MotionPreference;
   viewMode?: ViewMode;
+  collectedInterest?: CollectedInterestCookies;
 }
 
 export interface AppDriver {
@@ -102,13 +105,27 @@ export async function openApp({
   initialStore,
   motion,
   viewMode,
+  collectedInterest = {},
 }: OpenAppOptions): Promise<void> {
   await writeInitialStore(server.storePath, initialStore);
   await appBrowser.open({
     baseUrl: server.baseUrl,
     motion,
-    cookies: [await sessionCookie(mockUser, server.authSecret), viewModeCookie(viewMode)],
+    cookies: [
+      await sessionCookie(mockUser, server.authSecret),
+      viewModeCookie(viewMode),
+      ...collectedInterestCookies(collectedInterest),
+    ],
   });
+}
+
+function collectedInterestCookies(collectedInterest: CollectedInterestCookies): CookieData[] {
+  return Object.entries(collectedInterest).map(([accountId, storedCollectedInterest]) => ({
+    name: collectedInterestCookie(accountId),
+    value: storedCollectedInterest ?? '',
+    domain: APP_COOKIE_DOMAIN,
+    path: '/',
+  }));
 }
 
 function viewModeCookie(viewMode: ViewMode): CookieData {
@@ -149,7 +166,7 @@ async function writeInitialStore(
 
 export function useDriver(
   initialStore: Partial<StoreContents> = {},
-  { motion = 'reduce', viewMode = VIEW_MODE.parent }: DriverOptions = {}
+  { motion = 'reduce', viewMode = VIEW_MODE.parent, collectedInterest }: DriverOptions = {}
 ): TestDriver {
   const appBrowser = AppBrowser.create();
   let server: RunningServer | undefined;
@@ -169,7 +186,14 @@ export function useDriver(
   });
 
   beforeEach(async () => {
-    await openApp({ appBrowser, server: requireServer(), initialStore, motion, viewMode });
+    await openApp({
+      appBrowser,
+      server: requireServer(),
+      initialStore,
+      motion,
+      viewMode,
+      collectedInterest,
+    });
   });
 
   afterEach(async () => {

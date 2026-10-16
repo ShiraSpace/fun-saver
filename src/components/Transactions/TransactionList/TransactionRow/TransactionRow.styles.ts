@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
-import { readByScreenReaderOnly } from '../../transactions-parts';
+import { readByScreenReaderOnly } from '@/theme/accessibility';
 import { ChangeColumn } from '../transaction-list-parts';
 
 export const Row = styled.li`

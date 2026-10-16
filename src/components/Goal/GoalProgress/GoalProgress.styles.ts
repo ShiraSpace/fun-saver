@@ -1,11 +1,14 @@
 import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
+import type { SerializedStyles, Theme } from '@emotion/react';
 import type { ThemeTypography } from '@/theme/typography';
+import { wobble } from '../Celebration/celebration-parts';
 import type { GoalProgressSize } from './constants';
 
 interface PictureProps {
   progressSize: GoalProgressSize;
   glowing: boolean;
+  isGoalReached: boolean;
+  celebrating: boolean;
 }
 
 interface GoalHeadingProps {
@@ -40,8 +43,13 @@ const SIZE_STYLE: Record<GoalProgressSize, SizeStyle> = {
 
 export const barIsThin = (size: GoalProgressSize): boolean => SIZE_STYLE[size].thinBar;
 
-const pictureGlow = ({ glowing, theme }: PictureProps & { theme: Theme }): string =>
-  glowing ? `0 0 0 4px ${theme.colors.gainSoftBg}, 0 0 18px 4px ${theme.colors.gainText}` : 'none';
+function pictureRing({ glowing, isGoalReached, theme }: PictureProps & { theme: Theme }): string {
+  if (glowing) {
+    return `0 0 0 4px ${theme.colors.gainSoftBg}, 0 0 18px 4px ${theme.colors.gainText}`;
+  }
+
+  return isGoalReached ? `0 0 0 2px ${theme.colors.celebrationOutline}` : 'none';
+}
 
 const headingSize = ({ progressSize, theme }: GoalHeadingProps & { theme: Theme }): number =>
   SIZE_STYLE[progressSize].heading(theme.typography);
@@ -62,7 +70,8 @@ export const Picture = styled.span<PictureProps>`
   border-radius: ${({ progressSize }): number => SIZE_STYLE[progressSize].pictureCorner}px;
   font-size: ${({ progressSize }): number => SIZE_STYLE[progressSize].emoji}px;
   background: ${({ theme }): string => theme.gradients.walletSavings};
-  box-shadow: ${pictureGlow};
+  box-shadow: ${pictureRing};
+  ${({ celebrating }): SerializedStyles | false => celebrating && wobble(400)}
 `;
 
 export const Body = styled.span`

@@ -7,6 +7,7 @@ import { mockAccount } from '@/test-utils/mocks/account.mocks';
 import { mockTransactions } from '@/test-utils/mocks/transaction.mocks';
 import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
 import { COIN_PILE_SPOTS } from '@/components/ChildAccount/ChildSavings/PiggyBank/coin-pile';
+import { INTEREST_COINS_COPY } from '@/components/ChildAccount/ChildSavings/InterestCoins/constants';
 import { useDriver } from './driver/use-driver';
 
 const mockSavings = shekelsToAgorot(85);
@@ -70,5 +71,24 @@ describe('the child home with the goal reached', () => {
 
   it('fills the whole pile', async () => {
     assert.equal(await childAccount.coinsDrawnInPile(), COIN_PILE_SPOTS.length);
+  });
+});
+
+describe('the child home with ₪5 of interest waiting', () => {
+  const { childAccount } = useDriver(
+    { accounts: [mockAccount], transactions: mockTransactions },
+    { ...childMode, collectedInterest: { [mockAccount.id]: '0' } }
+  );
+
+  beforeEach(async () => {
+    await childAccount.waitForInterestCoins();
+  });
+
+  it('draws it as three coins', async () => {
+    assert.equal(await childAccount.interestCoinCount(), 3);
+  });
+
+  it('asks the child to tap them', async () => {
+    assert.equal(await childAccount.interestCoinsCopy(), INTEREST_COINS_COPY.tapTheCoins);
   });
 });

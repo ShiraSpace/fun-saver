@@ -43,9 +43,15 @@ export function WalletCard({ wallet, savedTowardGoal, children }: WalletCardProp
   const isSavingsLocked = savingsLocked(savedTowardGoal);
 
   return (
-    <Card data-testid={WALLET_CARD_TEST_IDS.card}>
+    <Card celebrating={savedTowardGoal?.isGoalReached} data-testid={WALLET_CARD_TEST_IDS.card}>
       <Head>
-        <WalletIcon walletName={wallet.name}>{wallet.icon}</WalletIcon>
+        <WalletIcon
+          walletName={wallet.name}
+          celebrating={savedTowardGoal?.isGoalReached}
+          data-testid={WALLET_CARD_TEST_IDS.icon}
+        >
+          {wallet.icon}
+        </WalletIcon>
         <Name>
           {WALLET_CARD_COPY.name[wallet.name]}
           {summaryText && (

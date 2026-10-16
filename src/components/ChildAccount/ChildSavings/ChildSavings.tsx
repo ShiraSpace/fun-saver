@@ -1,29 +1,73 @@
 'use client';
 
-import { JSX } from 'react';
+import { JSX, useRef } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
-import { savingsWithoutAgorot } from '@/lib/wallet/wallet';
-import { Money } from '@/components/Money';
+import type { SavingsWithoutAgorot } from '@/lib/wallet/wallet';
+import {
+  savedTowardGoalLessUncollectedInterest,
+  savingsLessUncollectedInterest,
+} from '@/lib/interest/collected-interest';
 import { GoalProgress } from '@/components/Goal/GoalProgress';
 import { GOAL_PROGRESS_SIZE } from '@/components/Goal/GoalProgress/constants';
 import { PiggyBank, piggyBankFillOf } from './PiggyBank';
 import { PrincipalAndInterest } from './PrincipalAndInterest';
+import { SavingsBalance } from './SavingsBalance';
+import { InterestCoins } from './InterestCoins';
+import { useInterestCoins } from './use-interest-coins';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
-import { Card, GoalSpace, PiggyBankSpace, Total } from './ChildSavings.styles';
+import { Card, GoalSpace, PiggyBankSpace } from './ChildSavings.styles';
 
 interface ChildSavingsProps {
+  accountId: string;
   savings: WalletSummary;
   savedTowardGoal?: SavedTowardGoal;
 }
 
-export function ChildSavings({ savings, savedTowardGoal }: ChildSavingsProps): JSX.Element {
-  const { balance, principal, interestEarned } = savingsWithoutAgorot(savings);
-  const piggyBankFill = piggyBankFillOf({ savingsBalance: balance, savedTowardGoal });
-  const goalProgress = savedTowardGoal && (
+interface SavingsShownParams {
+  savings: WalletSummary;
+  savedTowardGoal?: SavedTowardGoal;
+  uncollectedInterest: number;
+}
+
+interface SavingsShown extends SavingsWithoutAgorot {
+  savedTowardGoal?: SavedTowardGoal;
+  piggyBankFill: number;
+}
+
+function savingsShownToTheChild({
+  savings,
+  savedTowardGoal,
+  uncollectedInterest,
+}: SavingsShownParams): SavingsShown {
+  const savingsShown = savingsLessUncollectedInterest({ savings, uncollectedInterest });
+  const savedTowardGoalShown = savedTowardGoalLessUncollectedInterest({
+    savedTowardGoal,
+    uncollectedInterest,
+  });
+
+  return {
+    ...savingsShown,
+    savedTowardGoal: savedTowardGoalShown,
+    piggyBankFill: piggyBankFillOf({
+      savingsBalance: savingsShown.balance,
+      savedTowardGoal: savedTowardGoalShown,
+    }),
+  };
+}
+
+export function ChildSavings({
+  accountId,
+  savings,
+  savedTowardGoal,
+}: ChildSavingsProps): JSX.Element {
+  const balanceElement = useRef<HTMLDivElement>(null);
+  const { interestCoins, uncollectedInterest, collect } = useInterestCoins({ savings, accountId });
+  const savingsShown = savingsShownToTheChild({ savings, savedTowardGoal, uncollectedInterest });
+  const goalProgress = savingsShown.savedTowardGoal && (
     <GoalSpace>
       <GoalProgress
-        savedTowardGoal={savedTowardGoal}
+        savedTowardGoal={savingsShown.savedTowardGoal}
         size={GOAL_PROGRESS_SIZE.large}
         glowWhenReached
       />
@@ -32,14 +76,20 @@ export function ChildSavings({ savings, savedTowardGoal }: ChildSavingsProps): J
 
   return (
     <Card aria-label={CHILD_SAVINGS_COPY.title} data-testid={CHILD_SAVINGS_TEST_IDS.card}>
+      <InterestCoins
+        interestCoins={interestCoins}
+        onCollect={collect}
+        whereFocusGoesLast={balanceElement}
+      />
       <PiggyBankSpace>
-        <PiggyBank piggyBankFill={piggyBankFill} />
+        <PiggyBank piggyBankFill={savingsShown.piggyBankFill} />
       </PiggyBankSpace>
-      <Total>
-        <Money amountAgorot={balance} testId={CHILD_SAVINGS_TEST_IDS.balance} />
-      </Total>
+      <SavingsBalance balance={savingsShown.balance} ref={balanceElement} />
       {goalProgress}
-      <PrincipalAndInterest principal={principal} interestEarned={interestEarned} />
+      <PrincipalAndInterest
+        principal={savingsShown.principal}
+        interestEarned={savingsShown.interestEarned}
+      />
     </Card>
   );
 }

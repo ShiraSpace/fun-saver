@@ -101,6 +101,22 @@ export function styleOf({ page, selector, property }: StyleQuery): Promise<strin
   );
 }
 
+export interface PseudoStyleQuery {
+  page: Page;
+  testId: string;
+  pseudo: string;
+  property: string;
+}
+
+export function pseudoStyle({ page, testId, pseudo, property }: PseudoStyleQuery): Promise<string> {
+  return page.$eval(
+    `[data-testid="${testId}"]`,
+    (element, pseudo, property) => getComputedStyle(element, pseudo).getPropertyValue(property),
+    pseudo,
+    property
+  );
+}
+
 export function computedStyle({ page, testId, property }: TestIdStyleQuery): Promise<string> {
   return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
 }

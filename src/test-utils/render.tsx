@@ -10,9 +10,15 @@ import { DEFAULT_THEME_ID, type ThemeId } from '@/theme/registry';
 import { AccountsProvider, type AccountsContextValue } from '@/components/Home/accounts-context';
 import { SignedInUserProvider } from '@/components/Home/signed-in-user-context';
 import { ViewModeProvider } from '@/components/Home/view-mode-context';
+import { CollectedInterestProvider } from '@/components/Home/collected-interest-context';
 import { LoaderProvider } from '@/hooks/loader-context';
 import { VIEW_MODE, type ViewMode } from '@/lib/view-mode';
-import { VIEW_MODE_COOKIE } from '@/lib/cookies';
+import {
+  COLLECTED_INTEREST_COOKIE_PREFIX,
+  collectedInterestCookie,
+  VIEW_MODE_COOKIE,
+} from '@/lib/cookies';
+import type { CollectedInterestCookies } from '@/lib/interest/collected-interest';
 import type { SignedInUser } from '@/lib/user/types';
 import { setMockPathname } from '@mocks/next/navigation';
 
@@ -22,6 +28,7 @@ export interface RenderOptions {
   accounts?: AccountsContextValue;
   route?: string;
   viewMode?: ViewMode;
+  collectedInterest?: CollectedInterestCookies;
 }
 
 function withAccounts(element: ReactNode, accounts?: AccountsContextValue): ReactNode {
@@ -40,6 +47,18 @@ function withUser(element: ReactNode, user?: SignedInUser): ReactNode {
   return <SignedInUserProvider value={user}>{element}</SignedInUserProvider>;
 }
 
+function setCollectedInterestCookies(collectedInterest: CollectedInterestCookies): void {
+  document.cookie
+    .split('; ')
+    .filter((nameAndValue) => nameAndValue.startsWith(COLLECTED_INTEREST_COOKIE_PREFIX))
+    .forEach((nameAndValue) => {
+      document.cookie = `${nameAndValue.split('=')[0]}=; max-age=0`;
+    });
+  Object.entries(collectedInterest).forEach(([accountId, storedCollectedInterest]) => {
+    document.cookie = `${collectedInterestCookie(accountId)}=${storedCollectedInterest}`;
+  });
+}
+
 interface AppProvidersProps {
   children: ReactNode;
 }
@@ -50,18 +69,22 @@ function appProviders({
   accounts,
   route,
   viewMode = VIEW_MODE.parent,
+  collectedInterest = {},
 }: RenderOptions): (props: AppProvidersProps) => ReactElement {
   if (route) {
     setMockPathname(route);
   }
 
   document.cookie = `${VIEW_MODE_COOKIE}=${viewMode}`;
+  setCollectedInterestCookies(collectedInterest);
 
   return function AppProviders({ children }: AppProvidersProps): ReactElement {
     return (
       <AppThemeProvider initialThemeId={themeId}>
         <ViewModeProvider value={viewMode}>
-          <LoaderProvider>{withUser(withAccounts(children, accounts), user)}</LoaderProvider>
+          <CollectedInterestProvider value={collectedInterest}>
+            <LoaderProvider>{withUser(withAccounts(children, accounts), user)}</LoaderProvider>
+          </CollectedInterestProvider>
         </ViewModeProvider>
       </AppThemeProvider>
     );

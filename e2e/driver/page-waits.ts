@@ -1,6 +1,13 @@
 import { type Page } from 'puppeteer';
 import { findByTest } from './page-element';
 
+interface PseudoStyleChange {
+  testId: string;
+  pseudo: string;
+  property: string;
+  from: string;
+}
+
 export class PageWaits {
   constructor(private readonly currentPage: () => Page) {}
 
@@ -12,6 +19,16 @@ export class PageWaits {
     await this.currentPage().waitForSelector(`[data-testid="${testId}"]`, {
       hidden: true,
     });
+  }
+
+  async count(testId: string, expected: number): Promise<void> {
+    await this.currentPage().waitForFunction(
+      (testId, expected) =>
+        document.querySelectorAll(`[data-testid="${testId}"]`).length === expected,
+      {},
+      testId,
+      expected
+    );
   }
 
   async anyTestId(testIds: readonly string[]): Promise<void> {
@@ -29,6 +46,22 @@ export class PageWaits {
       selector,
       property,
       value
+    );
+  }
+
+  async pseudoStyleChange({ testId, pseudo, property, from }: PseudoStyleChange): Promise<void> {
+    await this.currentPage().waitForFunction(
+      (testId, pseudo, property, from) => {
+        const element = document.querySelector(`[data-testid="${testId}"]`);
+        return (
+          element !== null && getComputedStyle(element, pseudo).getPropertyValue(property) !== from
+        );
+      },
+      {},
+      testId,
+      pseudo,
+      property,
+      from
     );
   }
 
