@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Goal Celebration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --page: #f4efe8; --pageText: #2b2140; --muted: #6b6280; --surface: #fff; --textStrong: #3a1f5a; --textMuted: #6f6488;
+    --gainText: #2e7d32; --gainSoftBg: #e3f3e3; --softBg: #fff6dc; --track: #f1ebe6; --divider: #f2d6c8; --gold: #FFD23F; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #17131f; --pageText: #eee8f6; --muted: #a59cb8; } }
+  :root[data-theme="dark"] { --page: #17131f; --pageText: #eee8f6; --muted: #a59cb8; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px 16px 48px; background: var(--page); color: var(--pageText); font: 15px/1.45 system-ui, sans-serif; direction: ltr; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .lede { margin: 0 0 12px; color: var(--muted); max-width: 90ch; }
+  .global { display: flex; align-items: center; gap: 8px; margin: 0 0 20px; color: var(--muted); }
+  .row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+  .variant { width: 393px; max-width: calc(100vw - 32px); }
+  .variant h2 { font-size: 16px; margin: 0 0 2px; }
+  .variant.chosen h2::after { content: '✓ Chosen'; margin-inline-start: 8px; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: #2e7d32; color: #fff; vertical-align: 2px; }
+  .variant.chosen .phone { outline: 4px solid #2e7d32; outline-offset: 4px; }
+  .variant p { margin: 0 0 10px; color: var(--muted); min-height: 6em; }
+  .controls { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .controls button { font: inherit; font-size: 13px; min-height: 32px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--muted); background: transparent; color: var(--pageText); cursor: pointer; }
+  .phone { position: relative; width: 393px; max-width: calc(100vw - 32px); height: 745px; overflow: hidden; border-radius: 28px;
+    background: linear-gradient(160deg, #ffc145, #ff8a4c 55%, #ec5a8a); direction: rtl; font-family: 'Rubik', system-ui, sans-serif; padding: 16px; }
+  .card { background: var(--surface); border-radius: 22px; box-shadow: 0 5px 0 rgba(0,0,0,.06); }
+  .header { height: 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; margin-bottom: 18px; }
+  .header b { font-size: 22px; color: var(--textStrong); }
+  .header .avatar { width: 36px; height: 36px; border-radius: 50%; background: #ffd27a; display: grid; place-items: center; }
+  .hero { position: relative; padding: 8px 18px 18px; text-align: center; transition: box-shadow .6s; }
+  .hero.goldOutline { box-shadow: 0 0 0 3px var(--gold), 0 5px 0 rgba(0,0,0,.06); }
+  .coinSpace.closing { overflow: hidden; }
+  .coinSpace.animated { transition: height 650ms cubic-bezier(.3,.9,.4,1); }
+  .hint { min-height: 20px; font-size: 12px; font-weight: 700; color: var(--gainText); }
+  .coinRow { display: flex; justify-content: center; align-items: end; gap: 6px; height: 58px; padding-bottom: 16px; }
+  .tapCoin { position: relative; width: 44px; height: 44px; padding: 0; border: none; border-radius: 50%; cursor: pointer; font: 800 18px 'Rubik', sans-serif; color: #B9810C;
+    background: radial-gradient(circle at 35% 30%, #FFF4C4, #FFC93C 55%, #E9A400); box-shadow: inset 0 0 0 3px #E0A21F, inset 0 -4px 0 #B9810C, 0 4px 8px rgba(0,0,0,.12); }
+  .tapCoin .tag { position: absolute; top: 100%; left: 0; right: 0; width: max-content; margin: 4px auto 0; padding: 1px 6px; border-radius: 999px; font-size: 12px; font-weight: 800; color: var(--gainText); background: var(--gainSoftBg); }
+  .pigWrap { width: 50%; margin: 0 auto 4px; }
+  .pigWrap.underCoins { margin-top: -10px; }
+  .pigWrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .pigWrap.wiggle svg { animation: wiggle .45s ease-in-out; }
+  @keyframes wiggle { 25% { rotate: -4deg; } 75% { rotate: 4deg; } }
+  .big { display: inline-block; font-size: 48px; font-weight: 800; color: var(--textStrong); margin-top: 2px; }
+  .big small { font-size: 24px; color: var(--textMuted); }
+  .goal { margin: 8px 2px 0; text-align: start; }
+  .goalHead { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .goalHead .name { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: var(--textStrong); }
+  .goalHead .pic { width: 44px; height: 44px; border-radius: 12px; background: #ffe2a0; display: grid; place-items: center; font-size: 24px; transition: box-shadow .4s; }
+  .goalHead .amounts { font-size: 15px; font-weight: 700; color: var(--textMuted); direction: ltr; }
+  .bar { position: relative; height: 14px; border-radius: 999px; background: var(--track); margin-top: 6px; overflow: hidden; }
+  .bar i { position: relative; display: block; height: 100%; margin-inline-start: auto; overflow: hidden; background: linear-gradient(90deg, #ffd27a, #ffc145); border-radius: 999px; transition: width .4s, background .4s; }
+  .goal.reached .name { color: var(--gainText); }
+  .goal.reached .pic { box-shadow: 0 0 0 3px #e3f3e3, 0 0 16px rgba(92,200,112,.6); }
+  .goal.reached .bar i { background: linear-gradient(90deg, #5CC870, #276E2C); }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1.5px dashed var(--divider); }
+  .split div { display: grid; gap: 2px; padding: 8px 0; border-radius: 14px; font-size: 15px; font-weight: 700; color: var(--textMuted); background: var(--softBg); }
+  .split .earned { color: var(--gainText); background: var(--gainSoftBg); }
+  .split b { font-size: 22px; }
+  .walletRow { display: flex; align-items: center; gap: 14px; margin-top: 12px; min-height: 72px; padding: 12px 16px; }
+  .walletRow .icon { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; font-size: 26px; }
+  .walletRow .who { flex: 1; } .walletRow .who b { display: block; font-size: 19px; color: var(--textStrong); } .walletRow .who span { font-size: 14px; color: var(--textMuted); }
+  .walletRow .amount { font-size: 32px; font-weight: 800; color: var(--textStrong); }
+
+  .fx { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 5; }
+  .fx.fadeAway { animation: fadeAway .8s ease-in 9.2s forwards; }
+  @keyframes fadeAway { to { opacity: 0; } }
+  .piece { position: absolute; top: -20px; border-radius: 2px; opacity: .9; animation: fall linear both; }
+  @keyframes fall { 0% { transform: translate(0,0) rotate(0) } 25% { transform: translate(var(--sway),190px) rotate(180deg) } 50% { transform: translate(0,390px) rotate(360deg) } 75% { transform: translate(calc(var(--sway)*-1),580px) rotate(540deg) } 100% { transform: translate(0,800px) rotate(720deg) } }
+  @property --ringAngle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+  .ring { position: absolute; inset: -5px; border-radius: 27px; padding: 5px; pointer-events: none;
+    background: conic-gradient(from var(--ringAngle), #fff, #FFD23F, #E94E89, #6B2C8E, #fff, #FFD23F, #E94E89, #6B2C8E, #fff);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+    filter: drop-shadow(0 0 8px rgba(255,210,63,.8)); animation: spin 2.2s linear infinite; }
+  @keyframes spin { to { --ringAngle: 360deg; } }
+  @keyframes hop { 0%,100% { transform: translateY(0) scale(1,1) } 20% { transform: translateY(0) scale(1.08,.9) } 50% { transform: translateY(-22px) scale(.95,1.06) } 80% { transform: translateY(0) scale(1.06,.94) } }
+  @keyframes shake { 0%,100% { rotate: 0deg } 25% { rotate: -6deg } 75% { rotate: 6deg } }
+  .shine { position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.85) 45%, transparent 70%); transform: translateX(120%); animation: sweep 1.6s ease-in-out .3s 4 both; }
+  @keyframes sweep { from { transform: translateX(120%) } to { transform: translateX(-120%) } }
+  @keyframes bump { 50% { transform: scale(1.18) } }
+  @keyframes glow { 30% { text-shadow: 0 0 18px #FFD23F, 0 0 4px #FFD23F; } }
+  .flyCoin { position: absolute; left: -11px; top: -11px; width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FFF4C4, #FFC93C 55%, #E9A400); box-shadow: inset 0 0 0 2px #D99400; }
+  .spark { position: absolute; font-size: 20px; animation: twinkle 1.2s ease-in-out both; }
+  @keyframes twinkle { 0%,100% { transform: scale(0) rotate(0); opacity: 0 } 50% { transform: scale(1.2) rotate(90deg); opacity: 1 } }
+  .star { position: absolute; left: -14px; top: -14px; font-size: 26px; }
+  @keyframes crownDrop { 0% { transform: translateY(-150px) rotate(-25deg); opacity: 0 } 60% { opacity: 1 } 100% { transform: translateY(0) rotate(-8deg); opacity: 1 } }
+  .takeover { position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: rgba(43,18,70,.74); color: #fff; text-align: center; animation: fadeIn .35s ease-out both; overflow: hidden; }
+  .takeover.closing { animation: fadeOut .45s ease-in both; }
+  @keyframes fadeIn { from { opacity: 0 } } @keyframes fadeOut { to { opacity: 0 } }
+  .rays { position: absolute; width: 900px; height: 900px; top: 50%; left: 50%; margin: -450px 0 0 -450px; background: repeating-conic-gradient(rgba(255,210,63,.32) 0 10deg, transparent 10deg 20deg); -webkit-mask: radial-gradient(circle, #000 0 25%, transparent 60%); mask: radial-gradient(circle, #000 0 25%, transparent 60%); animation: rotate 14s linear infinite; }
+  @keyframes rotate { to { transform: rotate(360deg) } }
+  .heroPic { position: relative; font-size: 140px; line-height: 1; filter: drop-shadow(0 10px 20px rgba(0,0,0,.35)); animation: rise .9s cubic-bezier(.3,1.5,.5,1) .15s both; }
+  @keyframes rise { from { transform: translateY(240px) scale(.3) } }
+  .takeover h3 { position: relative; margin: 0; font-size: 36px; font-weight: 800; animation: pop .5s cubic-bezier(.3,1.6,.5,1) .7s both; }
+  .takeover p { position: relative; margin: 0; min-height: 0; color: #fff; font-size: 19px; font-weight: 600; animation: pop .5s ease-out .95s both; }
+  @keyframes pop { from { transform: scale(.4); opacity: 0 } }
+  .yes { position: relative; margin-top: 18px; min-width: 220px; min-height: 56px; border: 0; border-radius: 999px; font: 800 22px 'Rubik', sans-serif; color: #fff; background: linear-gradient(#8E3CB8, #6B2C8E); box-shadow: 0 6px 0 #4A1D63; cursor: pointer; animation: pop .5s ease-out 1.3s both; }
+  @keyframes land { from { transform: scale(1.8) } }
+  .reduced .fx, .reduced .ring, .reduced .shine, .reduced .rays { display: none !important; }
+  .reduced * { animation-duration: 0s !important; animation-delay: 0s !important; transition: none !important; }
+  @media (prefers-reduced-motion: reduce) { .fx, .ring, .shine, .rays { display: none !important; } }
+</style>
+</head>
+<body>
+<h1>The goal reached, celebrated in the child view</h1>
+<p class="lede"><b>Chosen (2026-10-16): D, the confetti party and the coin fountain together.</b> The others stay for reference. Plan: <code>.plans/2026-10-16-child-goal-celebration.md</code>.</p>
+<p class="lede">Built on coin-space option C (the space closes after the landing), 393×745, a ₪300 bike. Each phone starts at ₪295 with ₪5 of interest waiting as ₪2, ₪2 and ₪1. Tap the coins: the last one reaches the goal, the space settles, and the celebration plays. «Open home, goal reached» is the next visit, which plays it again on open (the spec: every open while the goal is reached). Every concept ends in a resting state: the goal row turns green and the card keeps a gold outline.</p>
+<label class="global"><input type="checkbox" id="reduced"> Reduced motion (shows only the resting state)</label>
+<div class="row" id="variants"></div>
+<script>
+  const PILE = { cx: 150, cy: 180, rx: 58, ry: 38, coin: 10 };
+  function pileSpots({ cx, cy, rx, ry, coin: r }) {
+    const spots = [];
+    const seeded = (i) => { const x = Math.sin(i * 9301 + 49297) * 233280; return x - Math.floor(x); };
+    for (let row = 0, y = cy + ry - r * 0.42 - 2; y > cy - ry + r * 0.42; row++, y -= r * 0.62) {
+      const dy = (y - cy) / ry;
+      const half = rx * Math.sqrt(Math.max(0, 1 - dy * dy)) - r * 0.85;
+      if (half < 0) continue;
+      const step = r * 1.55;
+      const xs = [];
+      for (let x = -half + (row % 2 ? step / 2 : 0); x <= half; x += step) xs.push(x);
+      xs.sort((m, n) => Math.abs(m) - Math.abs(n));
+      xs.forEach((x) => spots.push({ x: cx + x + (seeded(spots.length) - 0.5) * 4, y: y + (seeded(spots.length + 99) - 0.5) * 3, tilt: (seeded(spots.length + 7) - 0.5) * 16 }));
+    }
+    return spots;
+  }
+  const PILE_SPOTS = pileSpots(PILE);
+
+  function pileCoin({ x, y, tilt }, r, id) {
+    const ry = r * 0.42;
+    return `<g transform="translate(${x} ${y}) rotate(${tilt})"><ellipse cy="3.2" rx="${r}" ry="${ry}" fill="#B9810C"/><ellipse rx="${r}" ry="${ry}" fill="url(#${id}-coinFace)"/><ellipse rx="${r * 0.7}" ry="${ry * 0.68}" fill="none" stroke="#E0A21F" stroke-width="1.1"/><ellipse cx="${-r * 0.35}" cy="${-ry * 0.3}" rx="${r * 0.3}" ry="${ry * 0.22}" fill="#fff" opacity=".7"/></g>`;
+  }
+
+  function pigSvg(id) {
+    return `<svg viewBox="0 0 300 250" data-pig aria-hidden="true"><defs>
+      <radialGradient id="${id}-coinFace" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#FFF4C4"/><stop offset=".55" stop-color="#FFC93C"/><stop offset="1" stop-color="#E9A400"/></radialGradient>
+      <filter id="${id}-shadow"><feGaussianBlur stdDeviation="5"/></filter>
+      <radialGradient id="${id}-body" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#FFE4EE"/><stop offset=".5" stop-color="#FCAEC9"/><stop offset="1" stop-color="#E7799F"/></radialGradient>
+      <linearGradient id="${id}-ear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7A3C2"/><stop offset="1" stop-color="#E06C97"/></linearGradient>
+      <radialGradient id="${id}-snout" cx="45%" cy="30%" r="80%"><stop offset="0" stop-color="#FFC9DB"/><stop offset="1" stop-color="#EA7FA5"/></radialGradient>
+      <linearGradient id="${id}-glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <clipPath id="${id}-clip"><ellipse cx="150" cy="180" rx="58" ry="38"/></clipPath>
+      <filter id="${id}-blur"><feGaussianBlur stdDeviation="6"/></filter></defs>
+      <ellipse cx="150" cy="236" rx="92" ry="8" fill="#000" opacity=".22" filter="url(#${id}-shadow)"/>
+      <g data-body>
+        <ellipse cx="114" cy="226" rx="22" ry="12" fill="#E7799F"/><ellipse cx="186" cy="226" rx="22" ry="12" fill="#E7799F"/>
+        <ellipse cx="150" cy="138" rx="108" ry="92" fill="url(#${id}-body)"/>
+        <ellipse cx="112" cy="76" rx="40" ry="16" fill="#fff" opacity=".55" filter="url(#${id}-blur)"/>
+        <g transform="translate(0 -6)"><g id="${id}-earL">
+          <path d="M74 60 C86 40 116 40 126 58 C116 66 104 82 94 98 C86 108 72 104 70 90 C68 78 68 68 74 60 Z" fill="url(#${id}-ear)"/>
+          <path d="M80 64 C90 52 108 50 116 58" fill="none" stroke="#FFE4EE" stroke-width="4" stroke-linecap="round" opacity=".8"/></g>
+          <use href="#${id}-earL" transform="matrix(-1 0 0 1 300 0)"/></g>
+        <ellipse cx="150" cy="180" rx="66" ry="46" fill="#fff"/><ellipse cx="150" cy="180" rx="58" ry="38" fill="#FFF3E6"/>
+        <g clip-path="url(#${id}-clip)" data-pile></g>
+        <ellipse cx="150" cy="180" rx="58" ry="38" fill="url(#${id}-glass)"/>
+        <path d="M104 168 Q116 150 140 146" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+        <g data-eyes><ellipse cx="108" cy="106" rx="11" ry="13" fill="#3A1F5A"/><circle cx="112" cy="101" r="4.5" fill="#fff"/><circle cx="104" cy="111" r="2" fill="#fff"/>
+        <ellipse cx="192" cy="106" rx="11" ry="13" fill="#3A1F5A"/><circle cx="196" cy="101" r="4.5" fill="#fff"/><circle cx="188" cy="111" r="2" fill="#fff"/></g>
+        <g data-happy-eyes style="display:none"><path d="M97 110 Q108 94 119 110" fill="none" stroke="#3A1F5A" stroke-width="5" stroke-linecap="round"/><path d="M181 110 Q192 94 203 110" fill="none" stroke="#3A1F5A" stroke-width="5" stroke-linecap="round"/></g>
+        <ellipse data-cheek cx="84" cy="130" rx="14" ry="8" fill="#E5568B" opacity=".4"/><ellipse data-cheek cx="216" cy="130" rx="14" ry="8" fill="#E5568B" opacity=".4"/>
+        <ellipse cx="150" cy="120" rx="27" ry="17" fill="url(#${id}-snout)"/>
+        <ellipse cx="141" cy="120" rx="4" ry="6" fill="#A93C66"/><ellipse cx="159" cy="120" rx="4" ry="6" fill="#A93C66"/>
+        <rect data-slot x="128" y="52" width="44" height="4" rx="2" fill="#7A2F55"/><rect x="130" y="57" width="40" height="1.6" rx=".8" fill="#fff" opacity=".7"/>
+        <text data-crown x="150" y="46" text-anchor="middle" font-size="56" style="display:none">👑</text>
+      </g></svg>`;
+  }
+
+  const GOAL_AMOUNT = 30000;
+  const CONFETTI_COLORS = ['#FFD23F', '#E94E89', '#6B2C8E', '#5CC870', '#2563EB', '#FF8A4C'];
+  const CONFETTI = Array.from({ length: 50 }, (_, i) => {
+    const r = (n) => { const x = Math.sin((i + 1) * n) * 10000; return x - Math.floor(x); };
+    return { right: Math.round(r(13) * 96), w: [6, 8, 10][i % 3], h: [6, 10, 14][(i * 7) % 3], fall: 2400 + Math.round(r(29) * 1200), delay: Math.round(r(41) * 1500), sway: Math.round((r(53) - 0.5) * 60) };
+  });
+  const shekels = (agorot) => Math.floor(agorot / 100);
+  const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const CONCEPTS = [
+    { key: 'party', title: 'A · Confetti party (the spec)', text: 'The app\'s confetti falls for 10 seconds, a rainbow border travels round the savings card, the pig hops three times with happy eyes, and a shine runs along the full green bar.', play: ['confetti', 'travellingBorder', 'hop', 'happyEyes', 'barShine'] },
+    { key: 'fountain', title: 'B · Coin fountain', text: 'The pig is so full it overflows: coins pop out of its slot in an arc and rain down, it shakes with joy, and ₪300 bumps and glows gold. About 4 seconds; the pig the child just filled is the star.', play: ['coinFountain', 'shake', 'happyEyes', 'totalGlow', 'sparkles'] },
+    { key: 'takeover', title: 'C · The goal comes true', text: 'The bike flies up from its row into a sunburst: «הגעת ליעד!» and «עכשיו אפשר לקנות את האופניים». The child taps «יש!» and the bike lands back in its row. The one moment a child cannot miss; it needs a tap to close.', play: ['confetti', 'goalTakeover'] },
+    { key: 'partyFountain', chosen: true, title: 'D · Confetti party and coin fountain (A + B)', text: 'Both at once: the confetti falls for 10 seconds and the rainbow border travels round the card, while coins arc out of the pig\'s slot and rain down, the pig hops with happy eyes, ₪300 glows gold and the bar shines.', play: ['confetti', 'travellingBorder', 'coinFountain', 'hop', 'happyEyes', 'totalGlow', 'sparkles', 'barShine'] },
+    { key: 'crown', title: 'E · The pig wins a crown', text: 'Stars burst behind the pig, a crown drops onto its head, and it smiles. The crown stays for as long as the goal is reached, so the win is still there tomorrow; it goes when the goal ends.', play: ['starBurst', 'crown', 'hop', 'happyEyes'], keepsCrown: true },
+  ];
+
+  class Phone {
+    constructor(concept, host) {
+      this.c = concept;
+      host.insertAdjacentHTML('beforeend', `<section class="variant${concept.chosen ? ' chosen' : ''}"><h2>${concept.title}</h2><p>${concept.text}</p>
+        <div class="controls"><button data-act="visitWithCoins">▶ Last coins reach the goal</button><button data-act="visitReached">▶ Open home, goal reached</button></div>
+        <div class="phone" data-phone></div></section>`);
+      this.root = host.lastElementChild;
+      this.q = (s) => this.root.querySelector(s);
+      this.root.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => this[b.dataset.act]()));
+      this.visitWithCoins();
+    }
+    build() {
+      this.timers?.forEach(clearTimeout);
+      this.timers = [];
+      this.q('[data-phone]').innerHTML = `<div class="card header"><span class="avatar">🧢</span><b>נועה</b><span>☰</span></div>
+        <div class="card hero" data-hero>
+          <div class="coinSpace" data-space><div class="hint" data-hint></div><div class="coinRow" data-row></div></div>
+          <div class="pigWrap" data-pigwrap>${pigSvg(this.c.key)}</div>
+          <div class="big" data-total-box tabindex="-1"><small>₪</small><span data-total></span></div>
+          <div class="goal" data-goal><div class="goalHead"><span class="name"><span class="pic" data-pic>🚲</span><span data-goal-name>אופניים</span></span><span class="amounts">₪<span data-saved></span> / ₪300</span></div><div class="bar"><i data-bar></i></div></div>
+          <div class="split"><div>הפקדת<b>₪<span data-principal></span></b></div><div class="earned">✨ הרוויח לבד<b dir="ltr">+₪<span data-earned></span></b></div></div>
+        </div>
+        <div class="card walletRow"><div class="icon" style="background:#ffd9c2">🛍️</div><div class="who"><b>בזבוזים</b><span>יש לך לבזבז</span></div><div class="amount"><small>₪</small>50</div></div>
+        <div class="card walletRow"><div class="icon" style="background:#ffd6e4">💛</div><div class="who"><b>מעשים טובים</b><span>לתת למישהו אחר</span></div><div class="amount"><small>₪</small>25</div></div>`;
+      this.phone = this.q('[data-phone]');
+      this.pig = this.q('[data-pig]');
+    }
+    later(ms, run) { this.timers.push(setTimeout(run, ms)); }
+    visitWithCoins() { this.principal = 28000; this.interest = 2000; this.coins = [200, 200, 100]; this.build(); this.render(false); }
+    visitReached() { this.principal = 28000; this.interest = 2000; this.coins = []; this.build(); this.render(false); this.later(400, () => this.celebrate()); }
+    get waiting() { return this.coins.reduce((s, c) => s + c, 0); }
+    get balance() { return this.principal + this.interest - this.waiting; }
+    collect(index) {
+      this.coins = this.coins.filter((_, i) => i !== index);
+      this.wiggle();
+      this.paintNumbers();
+      this.renderRow();
+      if (this.coins.length) { this.q('.tapCoin').focus({ preventScroll: true }); return; }
+      this.q('[data-total-box]').focus({ preventScroll: true });
+      this.later(450, () => this.setSpace(true));
+      if (this.balance >= GOAL_AMOUNT) this.later(450 + 700, () => this.celebrate());
+    }
+    wiggle() { const w = this.q('[data-pigwrap]'); w.classList.remove('wiggle'); void w.offsetWidth; w.classList.add('wiggle'); }
+    setSpace(animated) {
+      const space = this.q('[data-space]');
+      const open = this.coins.length > 0;
+      space.classList.toggle('animated', animated);
+      space.classList.toggle('closing', !open);
+      space.style.height = `${open ? 78 : 0}px`;
+      const wrap = this.q('[data-pigwrap]');
+      wrap.style.transition = animated ? 'margin-top 650ms cubic-bezier(.3,.9,.4,1)' : 'none';
+      wrap.classList.toggle('underCoins', open);
+    }
+    renderRow() {
+      this.q('[data-hint]').textContent = this.coins.length ? 'הכסף הרוויח לבד! לחצו על המטבעות' : '';
+      this.q('[data-row]').innerHTML = this.coins.map((c, i) => `<button class="tapCoin" data-coin="${i}" aria-label="₪${c / 100} ריבית, לחצו כדי להכניס לחיסכון">₪<span class="tag" dir="ltr">+₪${c / 100}</span></button>`).join('');
+      this.root.querySelectorAll('[data-coin]').forEach((b) => b.addEventListener('click', () => this.collect(Number(b.dataset.coin))));
+    }
+    paintNumbers() {
+      const reached = this.balance >= GOAL_AMOUNT;
+      this.q('[data-total]').textContent = shekels(this.balance);
+      this.q('[data-saved]').textContent = shekels(this.balance);
+      this.q('[data-principal]').textContent = shekels(this.principal);
+      this.q('[data-earned]').textContent = shekels(this.interest - this.waiting);
+      this.q('[data-bar]').style.width = `${Math.min(1, this.balance / GOAL_AMOUNT) * 100}%`;
+      this.q('[data-goal]').classList.toggle('reached', reached);
+      this.q('[data-goal-name]').textContent = reached ? '🎉 הגעת ליעד!' : 'אופניים';
+      const count = Math.round(PILE_SPOTS.length * Math.min(1, this.balance / GOAL_AMOUNT));
+      this.q('[data-pile]').innerHTML = PILE_SPOTS.slice(0, count).map((spot) => pileCoin(spot, PILE.coin, this.c.key)).join('');
+    }
+    render(animated) { this.renderRow(); this.paintNumbers(); this.setSpace(animated); }
+
+    celebrate() {
+      this.happyEyes(true);
+      if (this.c.keepsCrown) this.pig.querySelector('[data-crown]').style.display = '';
+      if (document.body.classList.contains('reduced')) { this.goldOutline(); return; }
+      if (this.c.keepsCrown) this.pig.querySelector('[data-crown]').style.display = 'none';
+      this.happyEyes(false);
+      this.c.play.forEach((effect) => this[effect]());
+      if (!this.c.play.includes('goalTakeover')) this.later(this.c.play.includes('confetti') ? 10000 : 4000, () => this.goldOutline());
+    }
+    layer(fades) { const l = document.createElement('div'); l.className = 'fx' + (fades ? ' fadeAway' : ''); this.phone.appendChild(l); return l; }
+    point(el, fx = 0.5, fy = 0.5) { const p = this.phone.getBoundingClientRect(), r = el.getBoundingClientRect(); return [r.left - p.left + r.width * fx, r.top - p.top + r.height * fy]; }
+    pigPoint(x, y) { return this.point(this.pig, x / 300, y / 250); }
+    goldOutline() { this.q('[data-hero]').classList.add('goldOutline'); this.q('.ring')?.remove(); }
+    happyEyes(now) {
+      const swap = () => {
+        this.pig.querySelector('[data-eyes]').style.display = 'none';
+        this.pig.querySelector('[data-happy-eyes]').style.display = '';
+        this.pig.querySelectorAll('[data-cheek]').forEach((c) => c.setAttribute('opacity', '.75'));
+      };
+      now ? swap() : this.later(300, swap);
+    }
+    confetti() {
+      const l = this.layer(true);
+      CONFETTI.forEach((p, i) => {
+        const piece = document.createElement('i');
+        piece.className = 'piece';
+        piece.style.cssText = `right:${p.right}%;width:${p.w}px;height:${p.h}px;background:${CONFETTI_COLORS[i % 6]};--sway:${p.sway}px;animation-duration:${p.fall}ms;animation-delay:${p.delay}ms;animation-iteration-count:3`;
+        l.appendChild(piece);
+      });
+    }
+    travellingBorder() { const ring = document.createElement('div'); ring.className = 'ring'; this.q('[data-hero]').appendChild(ring); }
+    hop() { const body = this.pig.querySelector('[data-body]'); body.style.transformOrigin = '150px 236px'; body.style.animation = `hop .7s ease-in-out .2s ${this.c.keepsCrown ? 1 : 3}`; }
+    shake() { const svg = this.pig; svg.style.transformOrigin = '50% 90%'; svg.style.animation = 'shake .35s ease-in-out 0s 6'; }
+    barShine() { const s = document.createElement('i'); s.className = 'shine'; this.q('[data-bar]').appendChild(s); }
+    totalGlow() { this.q('[data-total-box]').style.animation = 'bump .5s ease-out .9s 2, glow 2.4s ease-out .9s 1'; }
+    coinFountain() {
+      const l = this.layer(false);
+      const [sx, sy] = this.pigPoint(150, 46);
+      for (let i = 0; i < 26; i++) {
+        const c = document.createElement('i'); c.className = 'flyCoin'; l.appendChild(c);
+        const dx = (Math.sin(i * 12.9898) * 0.5) * 320, up = 70 + ((i * 37) % 80), land = 380 + ((i * 53) % 240);
+        c.animate([
+          { transform: `translate(${sx}px,${sy}px) scale(.4)`, opacity: 0 },
+          { transform: `translate(${sx + dx * .1}px,${sy - up * .5}px) scale(.9) rotateY(180deg)`, opacity: 1, offset: .1 },
+          { transform: `translate(${sx + dx * .45}px,${sy - up}px) scale(1) rotateY(360deg)`, opacity: 1, offset: .35 },
+          { transform: `translate(${sx + dx * .9}px,${sy + land * .8}px) scale(.95) rotateY(760deg)`, opacity: 1, offset: .85 },
+          { transform: `translate(${sx + dx}px,${sy + land}px) scale(.9) rotateY(900deg)`, opacity: 0 },
+        ], { duration: 1900 + (i % 5) * 120, delay: 200 + i * 90, easing: 'cubic-bezier(.3,.6,.5,1)', fill: 'both' });
+      }
+    }
+    sparkles() {
+      const l = this.layer(false);
+      const [cx, cy] = this.point(this.q('[data-total-box]'));
+      for (let i = 0; i < 8; i++) {
+        const s = document.createElement('span'); s.className = 'spark'; s.textContent = '✨';
+        const a = (i / 8) * Math.PI * 2;
+        s.style.left = `${cx + Math.cos(a) * 80 - 10}px`; s.style.top = `${cy + Math.sin(a) * 34 - 14}px`;
+        s.style.animationDelay = `${0.9 + i * 0.15}s`; s.style.animationIterationCount = '2';
+        l.appendChild(s);
+      }
+    }
+    starBurst() {
+      const l = this.layer(false);
+      const [cx, cy] = this.pigPoint(150, 120);
+      for (let i = 0; i < 14; i++) {
+        const s = document.createElement('span'); s.className = 'star'; s.textContent = i % 3 ? '⭐' : '🌟'; l.appendChild(s);
+        const a = (i / 14) * Math.PI * 2, d = 110 + (i % 3) * 28;
+        s.animate([
+          { transform: `translate(${cx}px,${cy}px) scale(.2)`, opacity: 0 },
+          { transform: `translate(${cx + Math.cos(a) * d * .7}px,${cy + Math.sin(a) * d * .7}px) scale(1.1)`, opacity: 1, offset: .5 },
+          { transform: `translate(${cx + Math.cos(a) * d}px,${cy + Math.sin(a) * d}px) scale(.6)`, opacity: 0 },
+        ], { duration: 1500, delay: 150 + (i % 4) * 80, easing: 'ease-out', fill: 'both' });
+      }
+    }
+    crown() {
+      const crown = this.pig.querySelector('[data-crown]');
+      crown.style.display = '';
+      crown.style.transformBox = 'fill-box'; crown.style.transformOrigin = '50% 100%';
+      crown.style.animation = 'crownDrop 1s cubic-bezier(.3,1.6,.5,1) .5s both';
+    }
+    goalTakeover() {
+      const o = document.createElement('div');
+      o.className = 'takeover';
+      o.innerHTML = '<div class="rays"></div><div class="heroPic">🚲</div><h3>הגעת ליעד! 🎉</h3><p>עכשיו אפשר לקנות את האופניים</p><button class="yes" type="button">יש! 🙌</button>';
+      this.phone.appendChild(o);
+      const yes = o.querySelector('.yes');
+      this.later(1400, () => yes.focus({ preventScroll: true }));
+      yes.addEventListener('click', async () => {
+        o.classList.add('closing');
+        await pause(450);
+        o.remove();
+        this.phone.querySelectorAll('.fx').forEach((n) => n.remove());
+        this.q('[data-pic]').style.animation = 'land .6s cubic-bezier(.3,1.6,.5,1) both';
+        this.goldOutline();
+      });
+    }
+  }
+
+  const host = document.getElementById('variants');
+  CONCEPTS.forEach((concept) => new Phone(concept, host));
+  document.getElementById('reduced').addEventListener('change', (e) => document.body.classList.toggle('reduced', e.target.checked));
+</script>
+</body>
+</html>
