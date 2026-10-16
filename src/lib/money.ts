@@ -18,7 +18,7 @@ export function floorToShekels(agorot: number): number {
   return Math.floor(agorot / AGOROT_PER_SHEKEL);
 }
 
-export function downToTheTenth(agorot: number): number {
+export function floorToTenths(agorot: number): number {
   return Math.floor(agorot / AGOROT_PER_TENTH) * AGOROT_PER_TENTH;
 }
 

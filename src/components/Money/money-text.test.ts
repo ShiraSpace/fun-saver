@@ -25,6 +25,6 @@ describe('an amount written to the tenth of a shekel', () => {
 
 describe('an amount written to the agora', () => {
   it('keeps both decimals on a whole amount', () => {
-    expect(shekelsText(9600, MONEY_ROUNDING.toTheAgora)).toBe('96.00');
+    expect(shekelsText(9600, MONEY_ROUNDING.exact)).toBe('96.00');
   });
 });

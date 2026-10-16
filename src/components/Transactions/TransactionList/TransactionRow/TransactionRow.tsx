@@ -47,7 +47,7 @@ export function TransactionRow({ transactionListRow }: TransactionRowProps): JSX
           <BalanceChange
             balanceChange={balanceChange}
             testId={TRANSACTION_ROW_TEST_IDS.balanceChange}
-            rounding={MONEY_ROUNDING.toTheAgora}
+            rounding={MONEY_ROUNDING.exact}
           />
         </ChangeAmount>
         <BalanceColumn>
@@ -55,7 +55,7 @@ export function TransactionRow({ transactionListRow }: TransactionRowProps): JSX
           <Money
             amountAgorot={balance}
             testId={TRANSACTION_ROW_TEST_IDS.balance}
-            rounding={MONEY_ROUNDING.toTheAgora}
+            rounding={MONEY_ROUNDING.exact}
           />
         </BalanceColumn>
       </Amounts>
