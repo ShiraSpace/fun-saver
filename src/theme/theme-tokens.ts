@@ -43,6 +43,8 @@ export interface ThemeColors {
   readonly celebrationBlue: string;
   readonly celebrationOrange: string;
   readonly celebrationShine: string;
+  readonly celebrationWhite: string;
+  readonly celebrationPaleGold: string;
 }
 
 export interface ThemeGradientStops {

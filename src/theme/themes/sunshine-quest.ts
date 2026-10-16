@@ -55,6 +55,8 @@ export const sunshineQuest: ThemeTokens = {
     celebrationBlue: '#2563EB',
     celebrationOrange: '#FF8A4C',
     celebrationShine: 'rgba(255, 255, 255, 0.85)',
+    celebrationWhite: '#FFFFFF',
+    celebrationPaleGold: '#FFF3B0',
   },
   gradients: themeGradients(GRADIENT_STOPS),
   shadows: SHADOW_SCALE,

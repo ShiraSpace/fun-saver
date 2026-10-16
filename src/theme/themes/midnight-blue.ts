@@ -55,6 +55,8 @@ export const midnightBlue: ThemeTokens = {
     celebrationBlue: '#60A5FA',
     celebrationOrange: '#FB923C',
     celebrationShine: 'rgba(255, 255, 255, 0.85)',
+    celebrationWhite: '#FFFFFF',
+    celebrationPaleGold: '#FEF3C7',
   },
   gradients: themeGradients(GRADIENT_STOPS),
   shadows: SHADOW_SCALE,

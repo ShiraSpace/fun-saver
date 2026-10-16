@@ -42,6 +42,7 @@ export function GoalProgress({
         data-testid={GOAL_PROGRESS_TEST_IDS.picture}
         progressSize={size}
         glowing={pictureGlows}
+        isGoalReached={isGoalReached}
         celebrating={celebrating}
       >
         {goal.picture.emoji}

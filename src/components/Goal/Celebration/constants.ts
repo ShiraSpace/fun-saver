@@ -14,6 +14,8 @@ export const CELEBRATION_COLORS = [
   'celebrationOrange',
 ] as const satisfies readonly (keyof ThemeColors)[];
 
+export const TRAVELLING_BORDER_ANGLE = '--travellingBorderAngle';
+
 export const CELEBRATION_MOTION = {
   fadeDelayMs: 9200,
   fadeMs: 800,

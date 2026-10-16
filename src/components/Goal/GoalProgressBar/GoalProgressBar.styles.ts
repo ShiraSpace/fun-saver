@@ -16,5 +16,7 @@ export const Fill = styled.span<{ isGoalReached: boolean }>`
   height: 100%;
   border-radius: 999px;
   background: ${({ isGoalReached, theme }): string =>
-    isGoalReached ? theme.colors.gainText : theme.gradients.walletSavings};
+    isGoalReached
+      ? `linear-gradient(90deg, ${theme.colors.celebrationGreen}, ${theme.colors.gainText})`
+      : theme.gradients.walletSavings};
 `;

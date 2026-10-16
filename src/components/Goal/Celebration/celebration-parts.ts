@@ -1,9 +1,9 @@
 import { css, keyframes, type SerializedStyles, type Theme } from '@emotion/react';
 import { REDUCED_MOTION } from '@/theme/motion';
-import { CELEBRATION_MOTION } from './constants';
+import { CELEBRATION_MOTION, TRAVELLING_BORDER_ANGLE } from './constants';
 
 const travel = keyframes`
-  to { --travellingBorderAngle: 360deg; }
+  to { ${TRAVELLING_BORDER_ANGLE}: 360deg; }
 `;
 
 const settle = keyframes`
@@ -21,9 +21,23 @@ const sweep = keyframes`
   to { background-position: -100% 0; }
 `;
 
-export function travellingBorder(theme: Theme, cornerRadius: number): SerializedStyles {
-  const { celebrationShine, celebrationGold, celebrationPink, celebrationPurple } = theme.colors;
+function borderColours(theme: Theme): string {
+  const { celebrationWhite, celebrationPaleGold, celebrationGold } = theme.colors;
+  const { celebrationPink, celebrationPurple } = theme.colors;
 
+  return `conic-gradient(
+    from var(${TRAVELLING_BORDER_ANGLE}, 0deg),
+    ${celebrationWhite} 0deg,
+    ${celebrationPaleGold} 30deg,
+    ${celebrationGold} 70deg,
+    ${celebrationPink} 180deg,
+    ${celebrationPurple} 250deg,
+    ${celebrationGold} 320deg,
+    ${celebrationWhite} 360deg
+  )`;
+}
+
+export function travellingBorder(theme: Theme, cornerRadius: number): SerializedStyles {
   return css`
     position: relative;
 
@@ -34,15 +48,7 @@ export function travellingBorder(theme: Theme, cornerRadius: number): Serialized
       inset: -5px;
       z-index: -1;
       border-radius: ${cornerRadius + 5}px;
-      background: conic-gradient(
-        from var(--travellingBorderAngle),
-        ${celebrationShine} 0deg,
-        ${celebrationGold} 70deg,
-        ${celebrationPink} 180deg,
-        ${celebrationPurple} 250deg,
-        ${celebrationGold} 320deg,
-        ${celebrationShine} 360deg
-      );
+      background: ${borderColours(theme)};
       animation:
         ${travel} 2000ms linear 0ms 5,
         ${settle} ${CELEBRATION_MOTION.fadeMs}ms ease-in ${CELEBRATION_MOTION.fadeDelayMs}ms
