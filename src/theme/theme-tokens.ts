@@ -42,6 +42,7 @@ export interface ThemeColors {
   readonly celebrationGreen: string;
   readonly celebrationBlue: string;
   readonly celebrationOrange: string;
+  readonly celebrationShine: string;
 }
 
 export interface ThemeGradientStops {

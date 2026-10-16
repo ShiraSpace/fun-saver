@@ -21,16 +21,19 @@ interface GoalProgressProps {
   savedTowardGoal: SavedTowardGoal;
   size?: GoalProgressSize;
   glowWhenReached?: boolean;
+  celebratesWhenReached?: boolean;
 }
 
 export function GoalProgress({
   savedTowardGoal,
   size = GOAL_PROGRESS_SIZE.small,
   glowWhenReached = false,
+  celebratesWhenReached = false,
 }: GoalProgressProps): JSX.Element {
   const { goal, isGoalReached } = savedTowardGoal;
   const heading = isGoalReached ? GOAL_PROGRESS_COPY.reached : goal.name;
   const pictureGlows = glowWhenReached && isGoalReached;
+  const celebrating = celebratesWhenReached && isGoalReached;
 
   return (
     <Progress>
@@ -39,6 +42,7 @@ export function GoalProgress({
         data-testid={GOAL_PROGRESS_TEST_IDS.picture}
         progressSize={size}
         glowing={pictureGlows}
+        celebrating={celebrating}
       >
         {goal.picture.emoji}
       </Picture>
@@ -47,7 +51,11 @@ export function GoalProgress({
           <GoalHeadingText data-testid={GOAL_PROGRESS_TEST_IDS.heading}>{heading}</GoalHeadingText>
           <SavedOutOfGoal savedTowardGoal={savedTowardGoal} />
         </GoalHeading>
-        <GoalProgressBar savedTowardGoal={savedTowardGoal} thin={barIsThin(size)} />
+        <GoalProgressBar
+          savedTowardGoal={savedTowardGoal}
+          thin={barIsThin(size)}
+          celebrating={celebrating}
+        />
       </Body>
     </Progress>
   );

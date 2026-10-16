@@ -54,6 +54,7 @@ export const jungleQuest: ThemeTokens = {
     celebrationGreen: '#90BE6D',
     celebrationBlue: '#2A9D8F',
     celebrationOrange: '#E76F51',
+    celebrationShine: 'rgba(255, 255, 255, 0.85)',
   },
   gradients: themeGradients(GRADIENT_STOPS),
   shadows: SHADOW_SCALE,

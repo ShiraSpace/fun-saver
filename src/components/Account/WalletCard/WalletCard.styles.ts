@@ -1,13 +1,27 @@
 import styled from '@emotion/styled';
+import type { SerializedStyles, Theme } from '@emotion/react';
 import type { WalletName } from '@/lib/wallet/types';
 import { WALLET_GRADIENT } from '@/theme/wallet-gradient';
+import { travellingBorder, wobble } from '@/components/Goal/Celebration/celebration-parts';
 import { WALLET_CARD_STYLE } from './constants';
 
-export const Card = styled.div`
+interface CelebratingProps {
+  celebrating?: boolean;
+  theme: Theme;
+}
+
+const goldOutline = ({ celebrating, theme }: CelebratingProps): string =>
+  celebrating ? `, 0 0 0 3px ${theme.colors.celebrationGold}` : '';
+
+const celebratingCard = ({ celebrating, theme }: CelebratingProps): SerializedStyles | false =>
+  !!celebrating && travellingBorder(theme, WALLET_CARD_STYLE.radius);
+
+export const Card = styled.div<{ celebrating?: boolean }>`
   padding: ${WALLET_CARD_STYLE.paddingY}px ${WALLET_CARD_STYLE.paddingX}px;
   background: ${({ theme }): string => theme.colors.surface};
   border-radius: ${WALLET_CARD_STYLE.radius}px;
-  box-shadow: 0 3px 0 ${({ theme }): string => theme.shadows.faint};
+  box-shadow: 0 3px 0 ${({ theme }): string => theme.shadows.faint}${goldOutline};
+  ${celebratingCard}
 `;
 
 export const Head = styled.div`
@@ -16,7 +30,7 @@ export const Head = styled.div`
   gap: ${WALLET_CARD_STYLE.gap}px;
 `;
 
-export const WalletIcon = styled.span<{ walletName: WalletName }>`
+export const WalletIcon = styled.span<{ walletName: WalletName; celebrating?: boolean }>`
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -26,6 +40,7 @@ export const WalletIcon = styled.span<{ walletName: WalletName }>`
   border-radius: ${WALLET_CARD_STYLE.iconRadius}px;
   font-size: ${WALLET_CARD_STYLE.iconFontSize}px;
   background: ${({ walletName, theme }): string => theme.gradients[WALLET_GRADIENT[walletName]]};
+  ${({ celebrating }): SerializedStyles | false => !!celebrating && wobble(0)}
 `;
 
 export const Name = styled.span`

@@ -1,5 +1,11 @@
 @import 'tailwindcss';
 
+@property --travellingBorderAngle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
 html,
 body {
   overflow-x: clip;

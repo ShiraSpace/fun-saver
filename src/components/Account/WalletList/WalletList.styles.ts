@@ -4,6 +4,7 @@ import { WALLET_LIST_STYLE } from './constants';
 export const List = styled.div`
   display: flex;
   flex-direction: column;
+  isolation: isolate;
   gap: ${WALLET_LIST_STYLE.gap}px;
 `;
 

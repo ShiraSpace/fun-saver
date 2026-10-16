@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
-import type { Theme } from '@emotion/react';
+import type { SerializedStyles, Theme } from '@emotion/react';
 import type { ThemeTypography } from '@/theme/typography';
+import { wobble } from '../Celebration/celebration-parts';
 import type { GoalProgressSize } from './constants';
 
 interface PictureProps {
   progressSize: GoalProgressSize;
   glowing: boolean;
+  celebrating: boolean;
 }
 
 interface GoalHeadingProps {
@@ -63,6 +65,7 @@ export const Picture = styled.span<PictureProps>`
   font-size: ${({ progressSize }): number => SIZE_STYLE[progressSize].emoji}px;
   background: ${({ theme }): string => theme.gradients.walletSavings};
   box-shadow: ${pictureGlow};
+  ${({ celebrating }): SerializedStyles | false => celebrating && wobble(400)}
 `;
 
 export const Body = styled.span`
