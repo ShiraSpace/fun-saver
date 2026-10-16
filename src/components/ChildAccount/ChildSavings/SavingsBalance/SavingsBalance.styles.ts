@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { readByScreenReaderOnly } from '@/theme/accessibility';
 
 export const Balance = styled.div`
   position: relative;
@@ -9,10 +10,5 @@ export const Balance = styled.div`
 `;
 
 export const AnnouncedBalance = styled.div`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  ${readByScreenReaderOnly}
 `;

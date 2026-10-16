@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { readByScreenReaderOnly } from '../transactions-parts';
+import { readByScreenReaderOnly } from '@/theme/accessibility';
 import { CHOICE_CHIPS_VARIANT } from './constants';
 
 export const Group = styled.fieldset`
