@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@/test-utils/render';
+import { act, fireEvent, render, screen } from '@/test-utils/render';
 import { captureCookies } from '@/test-utils/cookies';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
 import { createMockGoal, createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
@@ -14,7 +14,7 @@ const mockSavingsWithFiveShekelsOfInterest = createMockWalletSummary({
   balance: 10500,
   interestEarned: 500,
 });
-const noCoinsCollected = { collectedInterest: { [mockAccountId]: '0' } };
+const mockNoCoinsCollected = { collectedInterest: { [mockAccountId]: '0' } };
 const written = captureCookies();
 
 function savedMark(collectedInterest: number): RegExp {
@@ -35,7 +35,7 @@ describe('ChildSavings with ₪5 of interest waiting as ₪2, ₪2 and ₪1, aft
   beforeEach(() => {
     render(
       <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
-      noCoinsCollected
+      mockNoCoinsCollected
     );
     fireEvent.click(shownCoins()[0]);
   });
@@ -63,7 +63,7 @@ describe('ChildSavings with ₪5 of interest waiting, when the page settles anot
   beforeEach(() => {
     const { rerender } = render(
       <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
-      noCoinsCollected
+      mockNoCoinsCollected
     );
     rerender(
       <ChildSavings
@@ -101,7 +101,7 @@ describe('ChildSavings on the first visit on this phone', () => {
 it('keeps a larger mark another tab saved, at the tap', () => {
   render(
     <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
-    noCoinsCollected
+    mockNoCoinsCollected
   );
   document.cookie = `${collectedInterestCookie(mockAccountId)}=400`;
 
@@ -122,7 +122,7 @@ it('saves the mark again on a return visit, so the cookie does not expire', () =
 it('collects a coin tapped twice once', () => {
   render(
     <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
-    noCoinsCollected
+    mockNoCoinsCollected
   );
   const [firstCoin] = shownCoins();
 
@@ -132,6 +132,21 @@ it('collects a coin tapped twice once', () => {
   expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.balance)).toHaveTextContent('₪102');
 });
 
+it('collects two coins tapped before the screen redraws', () => {
+  render(
+    <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
+    mockNoCoinsCollected
+  );
+  const [firstCoin, secondCoin] = shownCoins();
+
+  act(() => {
+    fireEvent.click(firstCoin);
+    fireEvent.click(secondCoin);
+  });
+
+  expect(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.balance)).toHaveTextContent('₪104');
+});
+
 it('leaves what waits out of the goal', () => {
   render(
     <ChildSavings
@@ -139,7 +154,7 @@ it('leaves what waits out of the goal', () => {
       savings={mockSavingsWithFiveShekelsOfInterest}
       savedTowardGoal={createMockSavedTowardGoal({ saved: 10500, stillToSave: 19500 })}
     />,
-    noCoinsCollected
+    mockNoCoinsCollected
   );
 
   expect(screen.getByTestId(SAVED_OUT_OF_GOAL_TEST_IDS.saved)).toHaveTextContent('₪100');
@@ -157,7 +172,7 @@ it('shows the real savings once the goal is reached, coins or not', () => {
         reached: true,
       })}
     />,
-    noCoinsCollected
+    mockNoCoinsCollected
   );
 
   expect(screen.getByTestId(SAVED_OUT_OF_GOAL_TEST_IDS.saved)).toHaveTextContent('₪105');

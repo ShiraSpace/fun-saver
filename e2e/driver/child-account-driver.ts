@@ -57,7 +57,7 @@ export class ChildAccountDriver {
     await this.appBrowser.waits.anyTestId([INTEREST_COINS_TEST_IDS.coin]);
   }
 
-  tapTheCoins(): Promise<string> {
+  interestCoinsCopy(): Promise<string> {
     return this.appBrowser.text(INTEREST_COINS_TEST_IDS.copy);
   }
 

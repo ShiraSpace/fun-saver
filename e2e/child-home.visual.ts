@@ -89,6 +89,6 @@ describe('the child home with ₪5 of interest waiting', () => {
   });
 
   it('asks the child to tap them', async () => {
-    assert.equal(await childAccount.tapTheCoins(), INTEREST_COINS_COPY.tapTheCoins);
+    assert.equal(await childAccount.interestCoinsCopy(), INTEREST_COINS_COPY.tapTheCoins);
   });
 });

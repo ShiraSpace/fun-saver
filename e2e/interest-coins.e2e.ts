@@ -7,16 +7,16 @@ import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
 import { useDriver } from './driver/use-driver';
 import { PHONE_IN_SAFARI } from './driver/viewports';
 
-const noCoinsCollected = { [mockAccount.id]: '0' };
-const childModeWithCoinsWaiting = {
+const mockNoCoinsCollected = { [mockAccount.id]: '0' };
+const mockChildModeWithCoinsWaiting = {
   viewMode: VIEW_MODE.child,
-  collectedInterest: noCoinsCollected,
+  collectedInterest: mockNoCoinsCollected,
 };
 
 describe('a child with ₪5 of interest waiting since the last visit', () => {
   const { childAccount, appBrowser } = useDriver(
     { accounts: [mockAccount], transactions: mockTransactions },
-    childModeWithCoinsWaiting
+    mockChildModeWithCoinsWaiting
   );
 
   beforeEach(async () => {
@@ -53,10 +53,10 @@ describe('a child who taps a coin, then switches to a sibling and back', () => {
   const mockSibling = createMockAccount({ id: 'a2', name: 'שירה', avatarId: 'kid-08' });
   const { childAccount, menu, header } = useDriver(
     { accounts: [mockAccount, mockSibling], transactions: mockTransactions },
-    childModeWithCoinsWaiting
+    mockChildModeWithCoinsWaiting
   );
 
-  beforeEach(async () => {
+  it('still sees the coin in the savings', async () => {
     await childAccount.waitForInterestCoins();
     await childAccount.tapInterestCoin(0);
     await menu.open();
@@ -66,9 +66,7 @@ describe('a child who taps a coin, then switches to a sibling and back', () => {
     await menu.switchAccountFromChildMenu(0);
     await header.waitForTitle(mockAccount.name);
     await childAccount.waitForInterestCoins();
-  });
 
-  it('still sees the coin in the savings', async () => {
     assert.equal(await childAccount.savingsBalance(), '₪82');
   });
 });
@@ -76,10 +74,10 @@ describe('a child who taps a coin, then switches to a sibling and back', () => {
 describe('a child who taps a coin, then the phone goes to parent mode and back', () => {
   const { childAccount, menu, account } = useDriver(
     { accounts: [mockAccount], transactions: mockTransactions },
-    childModeWithCoinsWaiting
+    mockChildModeWithCoinsWaiting
   );
 
-  beforeEach(async () => {
+  it('still sees the coin in the savings', async () => {
     await childAccount.waitForInterestCoins();
     await childAccount.tapInterestCoin(0);
     await menu.open();
@@ -88,9 +86,7 @@ describe('a child who taps a coin, then the phone goes to parent mode and back',
     await menu.open();
     await menu.tapViewModeSwitch();
     await childAccount.waitForInterestCoins();
-  });
 
-  it('still sees the coin in the savings', async () => {
     assert.equal(await childAccount.savingsBalance(), '₪82');
   });
 });
@@ -120,16 +116,14 @@ describe('a child on the first visit on this phone', () => {
 describe('a child with a goal and coins waiting, on an iPhone in Safari', () => {
   const { childAccount, appBrowser } = useDriver(
     { accounts: [mockAccount], transactions: mockTransactions, goals: [createMockGoal()] },
-    childModeWithCoinsWaiting
+    mockChildModeWithCoinsWaiting
   );
 
-  beforeEach(async () => {
+  it('sees every wallet without scrolling', async () => {
     await appBrowser.resize(PHONE_IN_SAFARI);
     await childAccount.waitForGoal();
     await childAccount.waitForInterestCoins();
-  });
 
-  it('sees every wallet without scrolling', async () => {
     const walletsBottom = await childAccount.walletsBottom();
 
     assert.ok(
