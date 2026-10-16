@@ -66,6 +66,15 @@ export function ChildSavings({
     accountId,
   });
   const shown = savingsShownToTheChild({ savedTowardGoal, savingsAtCollectedInterest });
+  const goalProgress = shown.savedTowardGoal && (
+    <GoalSpace>
+      <GoalProgress
+        savedTowardGoal={shown.savedTowardGoal}
+        size={GOAL_PROGRESS_SIZE.large}
+        glowWhenReached
+      />
+    </GoalSpace>
+  );
 
   return (
     <Card aria-label={CHILD_SAVINGS_COPY.title} data-testid={CHILD_SAVINGS_TEST_IDS.card}>
@@ -78,15 +87,7 @@ export function ChildSavings({
         <PiggyBank piggyBankFill={shown.piggyBankFill} />
       </PiggyBankSpace>
       <SavingsBalance balance={shown.balance} ref={balanceElement} />
-      {shown.savedTowardGoal && (
-        <GoalSpace>
-          <GoalProgress
-            savedTowardGoal={shown.savedTowardGoal}
-            size={GOAL_PROGRESS_SIZE.large}
-            glowWhenReached
-          />
-        </GoalSpace>
-      )}
+      {goalProgress}
       <PrincipalAndInterest principal={shown.principal} interestEarned={shown.interestEarned} />
     </Card>
   );

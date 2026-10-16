@@ -4,13 +4,15 @@ import { COIN_PILE_TEST_IDS } from '@/components/ChildAccount/ChildSavings/Piggy
 import { type BoundingBox } from 'puppeteer';
 import { GOAL_PROGRESS_TEST_IDS } from '@/components/Goal/GoalProgress/constants';
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
-import { INTEREST_COINS_TEST_IDS } from '@/components/ChildAccount/ChildSavings/InterestCoins/constants';
+import {
+  INTEREST_COIN_SELECTOR,
+  INTEREST_COINS_TEST_IDS,
+} from '@/components/ChildAccount/ChildSavings/InterestCoins/constants';
 import { SAVINGS_BALANCE_TEST_IDS } from '@/components/ChildAccount/ChildSavings/SavingsBalance/constants';
 import { AppBrowser } from './app-browser';
 import { bottomOf } from './box-geometry';
 
 const NORMAL_LINE_HEIGHT = 1.2;
-const INTEREST_COIN = `[data-testid="${INTEREST_COINS_TEST_IDS.coin}"]`;
 
 export class ChildAccountDriver {
   constructor(private readonly appBrowser: AppBrowser) {}
@@ -67,7 +69,7 @@ export class ChildAccountDriver {
 
   async tapInterestCoin(coinIndex: number): Promise<void> {
     const coinsBefore = await this.interestCoinCount();
-    await this.appBrowser.clickNth(INTEREST_COIN, coinIndex);
+    await this.appBrowser.clickNth(INTEREST_COIN_SELECTOR, coinIndex);
     await this.appBrowser.waits.count(INTEREST_COINS_TEST_IDS.coin, coinsBefore - 1);
   }
 

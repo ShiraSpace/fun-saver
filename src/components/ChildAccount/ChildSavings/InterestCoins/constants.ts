@@ -4,6 +4,8 @@ export const INTEREST_COINS_TEST_IDS = {
   amount: 'interest-coin-amount',
 } as const;
 
+export const INTEREST_COIN_SELECTOR = `[data-testid="${INTEREST_COINS_TEST_IDS.coin}"]`;
+
 export const INTEREST_COINS_COPY = {
   tapTheCoins: 'הכסף הרוויח לבד! לחצו על המטבעות',
   earnedSign: '+',

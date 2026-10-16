@@ -16,7 +16,7 @@ const [CollectedInterestProvider, useCollectedInterestOnServer] =
 
 export { CollectedInterestProvider };
 
-function noReaderNeedsTelling(): () => void {
+function neverNotifies(): () => void {
   return (): void => {};
 }
 
@@ -25,7 +25,7 @@ export function useCollectedInterest(accountId: string): CollectedInterestValue 
   const cookieName = collectedInterestCookie(accountId);
   const readStoredCollectedInterest = (): string | undefined => readCookie(cookieName);
   const storedCollectedInterest = useSyncExternalStore(
-    noReaderNeedsTelling,
+    neverNotifies,
     readStoredCollectedInterest,
     (): string | undefined => collectedInterestOnServer[accountId]
   );
