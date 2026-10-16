@@ -4,7 +4,6 @@ import type { TransactionListRow } from '@/lib/transaction/transaction-rows';
 import { Money } from '@/components/Money';
 import { MONEY_ROUNDING } from '@/components/Money/constants';
 import { BalanceChange } from '../../BalanceChange';
-import { needsAgorot } from '../../money-text';
 import { TRANSACTION_LIST_COPY } from '../constants';
 import { BalanceColumn, Amounts } from '../transaction-list-parts';
 import { TransactionIcon } from './TransactionIcon';
@@ -34,7 +33,6 @@ export function TransactionRow({ transactionListRow }: TransactionRowProps): JSX
   const { label } = transactionRowCopy(transactionListRow);
   const days = transactionRowDays(transactionListRow);
   const balanceFell = balanceChange < 0;
-  const withAgorot = needsAgorot(balanceChange);
 
   return (
     <Row data-testid={TRANSACTION_ROW_TEST_IDS.row}>
@@ -48,7 +46,6 @@ export function TransactionRow({ transactionListRow }: TransactionRowProps): JSX
           <ColumnName>{TRANSACTION_LIST_COPY.columns.balanceChange}</ColumnName>
           <BalanceChange
             balanceChange={balanceChange}
-            withAgorot={withAgorot}
             testId={TRANSACTION_ROW_TEST_IDS.balanceChange}
           />
         </ChangeAmount>
@@ -57,7 +54,7 @@ export function TransactionRow({ transactionListRow }: TransactionRowProps): JSX
           <Money
             amountAgorot={balance}
             testId={TRANSACTION_ROW_TEST_IDS.balance}
-            rounding={MONEY_ROUNDING.withAgorot}
+            rounding={MONEY_ROUNDING.floorToTenths}
           />
         </BalanceColumn>
       </Amounts>

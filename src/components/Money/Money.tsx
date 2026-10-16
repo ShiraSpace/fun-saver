@@ -1,13 +1,9 @@
 'use client';
 
 import { JSX } from 'react';
-import {
-  agorotToShekels,
-  agorotToWholeShekels,
-  floorToShekels,
-  nearestHalfShekel,
-} from '@/lib/money';
+import { agorotToWholeShekels, floorToShekels, nearestHalfShekel } from '@/lib/money';
 import { MONEY_COPY, MONEY_ROUNDING, type MoneyRounding } from './constants';
+import { floorToTenthsText } from './money-text';
 import { Amount, Currency, Shekels } from './Money.styles';
 
 interface ShownShekelsParams {
@@ -21,7 +17,7 @@ const SHEKELS_TEXT: Record<MoneyRounding, ShekelsText> = {
   nearestShekel: (amountAgorot: number): string => String(agorotToWholeShekels(amountAgorot)),
   nearestHalfShekel: (amountAgorot: number): string => String(nearestHalfShekel(amountAgorot) ?? 0),
   floorToShekels: (amountAgorot: number): string => String(floorToShekels(amountAgorot)),
-  withAgorot: (amountAgorot: number): string => agorotToShekels(amountAgorot).toFixed(2),
+  floorToTenths: floorToTenthsText,
 };
 
 function shownShekels({ amountAgorot, rounding }: ShownShekelsParams): string {

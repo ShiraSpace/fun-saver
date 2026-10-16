@@ -1,3 +1,7 @@
+import { AGOROT_PER_SHEKEL } from '@/lib/constants';
+
+export const AGOROT_PER_TENTH = AGOROT_PER_SHEKEL / 10;
+
 export const MONEY_COPY = {
   currencySign: '₪',
 } as const;
@@ -6,7 +10,7 @@ export const MONEY_ROUNDING = {
   nearestShekel: 'nearestShekel',
   nearestHalfShekel: 'nearestHalfShekel',
   floorToShekels: 'floorToShekels',
-  withAgorot: 'withAgorot',
+  floorToTenths: 'floorToTenths',
 } as const;
 
 export type MoneyRounding = (typeof MONEY_ROUNDING)[keyof typeof MONEY_ROUNDING];
