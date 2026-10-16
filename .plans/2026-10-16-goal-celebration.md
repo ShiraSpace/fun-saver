@@ -92,25 +92,30 @@ Production, as built:
   shine. `MenuGoal` and `ChildSavings` don't pass it.
 - `WalletList`'s list has `isolation: isolate`, so the border's `z-index: -1`
   sits behind the card.
+- The goal screen's reached card (`GoalHero`) rings itself in
+  `celebrationOutline` too.
 - Colours: the theme tokens listed under Decisions; no literals in components.
 
 Tests (each watched failing against its own break): the card's outline and 🐷
 wobble (`WalletCard`), the picture ring, glow and wobble (`GoalProgress`), the
-reached bar's colours (`GoalProgressBar`), `GoalLine` celebrates and `MenuGoal`
+reached bar's colours (`GoalProgressBar`), the goal screen's ring (`GoalHero`),
+`GoalLine` celebrates and `MenuGoal`
 stays still, and `registerTravellingBorderAngle`. jsdom can't read `::before` /
 `::after`, so the border, glow and shine are checked in screenshots.
 
-### Step 3 — e2e and docs
+### Step 3 — e2e and docs (done)
 
-- `e2e/goal.visual.ts` «a goal reached»: the celebration shows over home; with
-  reduced motion (`AppBrowser`'s motion setting) it does not. `GoalDriver` gets
-  `celebrationShown()`. I'll ask before running the suite.
+- `e2e/goal.visual.ts`: «a goal reached» keeps the celebration off a phone that
+  reduces motion; «a goal reached, on a phone that allows motion» celebrates over
+  home. `GoalDriver.celebrationShown()` checks it is mounted and displayed. Both
+  run and watched failing in a separate worktree, so the dev server's `.next` is
+  left alone.
 - `.plans/2026-10-03-saving-goal.md`: 4b row → merged (#209, #211, #214); PR 5
   row → this PR.
 - `docs/glossary.md`, the «A goal reached, shown» row: add the card's part
   (`celebratesWhenReached`) and «the travelling border». Done.
-- Screenshots and a short recording of home reached, playing and settled (its
-  outline), through `pr-screenshots`.
+- Screenshots of home playing and settled, and the goal screen, in all three
+  themes, through `pr-screenshots`.
 
 ## Not in this PR
 

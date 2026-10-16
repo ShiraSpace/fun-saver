@@ -1,8 +1,8 @@
 import { render, screen } from '@/test-utils/render';
 import { createMockSavedTowardGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { moneyAsShown, stillToSaveAsShown } from '@/test-utils/money';
-import { GoalHero } from './GoalHero';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
+import { GoalHero } from './GoalHero';
 import { GOAL_HERO_COPY, GOAL_HERO_TEST_IDS } from './constants';
 
 describe('GoalHero', () => {
