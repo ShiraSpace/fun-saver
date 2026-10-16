@@ -53,6 +53,14 @@ export class ChildAccountDriver {
     return Math.round(amounts.height / (parseFloat(fontSize) * NORMAL_LINE_HEIGHT));
   }
 
+  async waitForInterestCoins(): Promise<void> {
+    await this.appBrowser.waits.anyTestId([INTEREST_COINS_TEST_IDS.coin]);
+  }
+
+  tapTheCoins(): Promise<string> {
+    return this.appBrowser.text(INTEREST_COINS_TEST_IDS.copy);
+  }
+
   interestCoinCount(): Promise<number> {
     return this.appBrowser.count(INTEREST_COINS_TEST_IDS.coin);
   }

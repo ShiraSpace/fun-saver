@@ -59,27 +59,18 @@ describe('InterestCoins with ₪3, ₪2 and ₪2 waiting', () => {
   });
 });
 
-describe('InterestCoins with no coins waiting', () => {
+it('draws nothing with no coins waiting', () => {
   const mockOnCollect = jest.fn();
   const mockWhereFocusGoesLast = createRef<HTMLElement>();
+  const { container } = render(
+    <InterestCoins
+      interestCoins={[]}
+      onCollect={mockOnCollect}
+      whereFocusGoesLast={mockWhereFocusGoesLast}
+    />
+  );
 
-  beforeEach(() => {
-    render(
-      <InterestCoins
-        interestCoins={[]}
-        onCollect={mockOnCollect}
-        whereFocusGoesLast={mockWhereFocusGoesLast}
-      />
-    );
-  });
-
-  it('offers no coin', () => {
-    expect(screen.queryAllByTestId(INTEREST_COINS_TEST_IDS.coin)).toHaveLength(0);
-  });
-
-  it('leaves the copy line empty', () => {
-    expect(screen.getByTestId(INTEREST_COINS_TEST_IDS.copy)).toBeEmptyDOMElement();
-  });
+  expect(container).toBeEmptyDOMElement();
 });
 
 it('collects a coin by the place it had when the visit began', () => {
