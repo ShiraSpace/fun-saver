@@ -2,6 +2,7 @@ import {
   agorotToShekels,
   agorotToWholeShekels,
   floorToShekels,
+  floorToTenths,
   nearestHalfShekel,
   shekelsToAgorot,
   withoutAgorot,
@@ -53,6 +54,16 @@ describe('nearestHalfShekel', () => {
     expect(nearestHalfShekel(0)).toBeNull();
     expect(nearestHalfShekel(18)).toBeNull();
     expect(nearestHalfShekel(20)).toBeNull();
+  });
+});
+
+describe('floorToTenths', () => {
+  it('drops the agorot below the tenth rather than rounding up', () => {
+    expect(floorToTenths(9689)).toBe(9680);
+  });
+
+  it('takes a fall down to the tenth below it', () => {
+    expect(floorToTenths(-9689)).toBe(-9690);
   });
 });
 
