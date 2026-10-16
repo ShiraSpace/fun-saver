@@ -74,11 +74,11 @@ describe('a transaction row', () => {
     });
   });
 
-  it('floors the balance to whole shekels', () => {
+  it('shows the balance with its agorot', () => {
     render(<TransactionRow transactionListRow={{ ...mockInterestRow, balance: 16060 }} />);
 
     expect(screen.getByTestId(TRANSACTION_ROW_TEST_IDS.balance)).toHaveTextContent(
-      `${MONEY_COPY.currencySign}160`
+      new RegExp(`^${MONEY_COPY.currencySign}160\\.60$`)
     );
   });
 
