@@ -1,5 +1,6 @@
 import type { WalletSummary } from '@/lib/wallet/types';
-import { savingsWithoutAgorot } from '@/lib/wallet/wallet';
+import { savingsWithoutAgorot, type SavingsWithoutAgorot } from '@/lib/wallet/wallet';
+import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { floorToShekels, shekelsToAgorot } from '@/lib/money';
 import { MAX_INTEREST_COINS } from './constants';
 
@@ -19,6 +20,16 @@ export interface CollectedInterestParams<CollectedSavings extends Savings = Savi
 
 export interface CollectInterestParams extends StoredCollectedInterestParams {
   collectedInterest: number;
+}
+
+export interface SavingsLessUncollectedInterestParams {
+  savings: Savings;
+  uncollectedInterest: number;
+}
+
+export interface SavedTowardGoalLessUncollectedInterestParams {
+  savedTowardGoal: SavedTowardGoal;
+  uncollectedInterest: number;
 }
 
 function wholeAgorot(storedCollectedInterest: string | undefined): number | undefined {
@@ -93,4 +104,29 @@ export function collectInterest({
   const resolvedCollectedInterest = resolveCollectedInterest({ storedCollectedInterest, savings });
 
   return Math.min(Math.max(collectedInterest, resolvedCollectedInterest), savings.interestEarned);
+}
+
+export function savingsLessUncollectedInterest({
+  savings,
+  uncollectedInterest,
+}: SavingsLessUncollectedInterestParams): SavingsWithoutAgorot {
+  const { balance, principal, interestEarned } = savingsWithoutAgorot(savings);
+
+  return {
+    balance: balance - uncollectedInterest,
+    principal,
+    interestEarned: interestEarned - uncollectedInterest,
+  };
+}
+
+export function savedTowardGoalLessUncollectedInterest({
+  savedTowardGoal,
+  uncollectedInterest,
+}: SavedTowardGoalLessUncollectedInterestParams): SavedTowardGoal {
+  const saved = savedTowardGoal.saved - uncollectedInterest;
+  const stillToSave = savedTowardGoal.isGoalReached
+    ? 0
+    : Math.max(savedTowardGoal.goal.amount - saved, 0);
+
+  return { ...savedTowardGoal, saved, stillToSave };
 }

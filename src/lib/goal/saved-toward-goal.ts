@@ -28,9 +28,7 @@ export function savingsBalanceOf(account: Pick<AccountSummary, 'wallets'>): numb
   return walletNamed(account.wallets, WALLET_NAMES.savings)?.balance ?? 0;
 }
 
-export function savedTowardGoalOf(
-  account: Pick<AccountSummary, 'goal' | 'wallets'>
-): SavedTowardGoal | undefined {
+export function savedTowardGoalOf(account: AccountSummary): SavedTowardGoal | undefined {
   const { goal } = account;
 
   if (!goal) {

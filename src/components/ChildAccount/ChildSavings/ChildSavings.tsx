@@ -2,8 +2,12 @@
 
 import { JSX, useRef } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
-import { savedTowardGoalOf, type SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
-import { savingsWithoutAgorot, type SavingsWithoutAgorot } from '@/lib/wallet/wallet';
+import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
+import type { SavingsWithoutAgorot } from '@/lib/wallet/wallet';
+import {
+  savedTowardGoalLessUncollectedInterest,
+  savingsLessUncollectedInterest,
+} from '@/lib/interest/collected-interest';
 import { GoalProgress } from '@/components/Goal/GoalProgress';
 import { GOAL_PROGRESS_SIZE } from '@/components/Goal/GoalProgress/constants';
 import { PiggyBank, piggyBankFillOf } from './PiggyBank';
@@ -21,8 +25,9 @@ interface ChildSavingsProps {
 }
 
 interface SavingsShownParams {
+  savings: WalletSummary;
   savedTowardGoal?: SavedTowardGoal;
-  savingsAtCollectedInterest: WalletSummary;
+  uncollectedInterest: number;
 }
 
 interface SavingsShown extends SavingsWithoutAgorot {
@@ -30,27 +35,22 @@ interface SavingsShown extends SavingsWithoutAgorot {
   piggyBankFill: number;
 }
 
-function savedTowardGoalAtCollectedInterest({
+function savingsShownToTheChild({
+  savings,
   savedTowardGoal,
-  savingsAtCollectedInterest,
-}: SavingsShownParams): SavedTowardGoal | undefined {
-  if (!savedTowardGoal || savedTowardGoal.isGoalReached) {
-    return savedTowardGoal;
-  }
-
-  return savedTowardGoalOf({ goal: savedTowardGoal.goal, wallets: [savingsAtCollectedInterest] });
-}
-
-function savingsShownToTheChild(params: SavingsShownParams): SavingsShown {
-  const savingsWithoutAgorotShown = savingsWithoutAgorot(params.savingsAtCollectedInterest);
-  const savedTowardGoal = savedTowardGoalAtCollectedInterest(params);
+  uncollectedInterest,
+}: SavingsShownParams): SavingsShown {
+  const savingsShown = savingsLessUncollectedInterest({ savings, uncollectedInterest });
+  const savedTowardGoalShown =
+    savedTowardGoal &&
+    savedTowardGoalLessUncollectedInterest({ savedTowardGoal, uncollectedInterest });
 
   return {
-    ...savingsWithoutAgorotShown,
-    savedTowardGoal,
+    ...savingsShown,
+    savedTowardGoal: savedTowardGoalShown,
     piggyBankFill: piggyBankFillOf({
-      savingsBalance: savingsWithoutAgorotShown.balance,
-      savedTowardGoal,
+      savingsBalance: savingsShown.balance,
+      savedTowardGoal: savedTowardGoalShown,
     }),
   };
 }
@@ -61,11 +61,8 @@ export function ChildSavings({
   savedTowardGoal,
 }: ChildSavingsProps): JSX.Element {
   const balanceElement = useRef<HTMLDivElement>(null);
-  const { interestCoins, savingsAtCollectedInterest, collect } = useInterestCoins({
-    savings,
-    accountId,
-  });
-  const shown = savingsShownToTheChild({ savedTowardGoal, savingsAtCollectedInterest });
+  const { interestCoins, uncollectedInterest, collect } = useInterestCoins({ savings, accountId });
+  const shown = savingsShownToTheChild({ savings, savedTowardGoal, uncollectedInterest });
   const goalProgress = shown.savedTowardGoal && (
     <GoalSpace>
       <GoalProgress

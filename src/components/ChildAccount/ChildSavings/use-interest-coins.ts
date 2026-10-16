@@ -6,7 +6,6 @@ import {
   collectInterest,
   interestCoinsOf,
   resolveCollectedInterest,
-  savingsAtCollectedInterest,
   uncollectedInterestOf,
 } from '@/lib/interest/collected-interest';
 import { useCollectedInterest } from '@/components/Home/collected-interest-context';
@@ -24,7 +23,7 @@ interface Visit {
 
 interface VisitInterestCoins {
   interestCoins: InterestCoin[];
-  savingsAtCollectedInterest: WalletSummary;
+  uncollectedInterest: number;
   collect: (place: number) => void;
 }
 
@@ -71,7 +70,7 @@ export function useInterestCoins({ savings, accountId }: InterestCoinsParams): V
 
   return {
     interestCoins: visit.interestCoins,
-    savingsAtCollectedInterest: savingsAtCollectedInterest({
+    uncollectedInterest: uncollectedInterestOf({
       savings,
       collectedInterest: visit.collectedInterest,
     }),
