@@ -1,5 +1,5 @@
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
-import { floorToTenths, HALF_SHEKEL_AGOROT } from '@/lib/money';
+import { AGOROT_PER_TENTH, floorToTenths, HALF_SHEKEL_AGOROT } from '@/lib/money';
 import type { BalanceHistory } from '@/lib/wallet/balance-history';
 import { SHOWN_BALANCE, type ShownBalance } from '../../constants';
 import {
@@ -135,15 +135,27 @@ function ticksRoundedTo(roundingAgorot: number, { lowest, highest }: BalanceBoun
   return [...new Set(tickBalances)];
 }
 
+function ticksInShekels(balanceBounds: BalanceBounds): number[] {
+  const wholeShekelTicks = ticksRoundedTo(AGOROT_PER_SHEKEL, balanceBounds);
+  const halfShekelTicks = ticksRoundedTo(HALF_SHEKEL_AGOROT, balanceBounds);
+
+  return halfShekelTicks.length > wholeShekelTicks.length ? halfShekelTicks : wholeShekelTicks;
+}
+
 export function balanceTicks(balanceBounds: BalanceBounds): number[] {
   if (balanceBounds.lowest === balanceBounds.highest) {
     return [floorToTenths(balanceBounds.lowest)];
   }
 
-  const wholeShekelTicks = ticksRoundedTo(AGOROT_PER_SHEKEL, balanceBounds);
-  const halfShekelTicks = ticksRoundedTo(HALF_SHEKEL_AGOROT, balanceBounds);
+  const shekelTicks = ticksInShekels(balanceBounds);
 
-  return halfShekelTicks.length > wholeShekelTicks.length ? halfShekelTicks : wholeShekelTicks;
+  if (shekelTicks.length > 0) {
+    return shekelTicks;
+  }
+
+  const tenthTicks = ticksRoundedTo(AGOROT_PER_TENTH, balanceBounds);
+
+  return tenthTicks.length > 0 ? tenthTicks : [balanceBounds.lowest];
 }
 
 function keptAboveBottom(labels: PlacedTodaysBalance[]): PlacedTodaysBalance[] {

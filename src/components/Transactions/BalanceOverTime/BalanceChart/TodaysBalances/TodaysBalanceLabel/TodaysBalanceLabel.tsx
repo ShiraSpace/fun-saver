@@ -26,7 +26,8 @@ export function TodaysBalanceLabel({
   const swatchY = y - SWATCH.size / 2;
   const swatchColor = shownBalanceColor(theme.colors, shownBalance);
   const labelY = y + LABEL_OFFSET.y;
-  const labelText = `${shownBalanceLabel(shownBalance)} ${MONEY_COPY.currencySign}${shekelsText(todaysBalance, MONEY_ROUNDING.floorToTenths)}`;
+  const todaysBalanceText = shekelsText(todaysBalance, MONEY_ROUNDING.floorToTenths);
+  const labelText = `${shownBalanceLabel(shownBalance)} ${MONEY_COPY.currencySign}${todaysBalanceText}`;
 
   return (
     <g data-testid={TODAYS_BALANCE_LABEL_TEST_IDS.label}>
