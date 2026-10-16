@@ -10,13 +10,13 @@ interface SavingsBalanceProps {
 
 export function SavingsBalance({ balance, ref }: SavingsBalanceProps): JSX.Element {
   return (
-    <>
-      <Balance ref={ref} tabIndex={-1}>
+    <Balance ref={ref} tabIndex={-1}>
+      <span aria-hidden>
         <Money amountAgorot={balance} testId={SAVINGS_BALANCE_TEST_IDS.balance} />
-      </Balance>
+      </span>
       <AnnouncedBalance aria-live="polite">
         <Money amountAgorot={balance} testId={SAVINGS_BALANCE_TEST_IDS.announcedBalance} />
       </AnnouncedBalance>
-    </>
+    </Balance>
   );
 }
