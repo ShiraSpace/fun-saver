@@ -13,19 +13,19 @@ export interface CountUpTiming {
   countMs: number;
 }
 
-interface CountUp {
+interface CountUpParams {
   startAt: number;
   to: number;
   timing: CountUpTiming;
 }
 
-export function progressAt(elapsedMs: number, timing: CountUpTiming): number {
+function progressAt(elapsedMs: number, timing: CountUpTiming): number {
   const countingMs = elapsedMs - timing.startDelayMs;
 
   return Math.min(Math.max(countingMs, NO_TIME_PASSED) / timing.countMs, COMPLETE);
 }
 
-export function useCountUp({ startAt, to, timing }: CountUp): number {
+export function useCountUp({ startAt, to, timing }: CountUpParams): number {
   const [shown, setShown] = useState(to);
   const numberOnScreen = useRef(startAt);
 
