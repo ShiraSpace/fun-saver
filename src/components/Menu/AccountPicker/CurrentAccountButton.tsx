@@ -5,6 +5,7 @@ import type { AccountSummary } from '@/lib/account/types';
 import { Avatar } from '@/components/Avatar/Avatar';
 import { Money } from '@/components/Money';
 import { totalBalance } from '@/lib/wallet/balance';
+import { walletsWithoutAgorot } from '@/lib/wallet/wallet';
 import { ACCOUNT_LIST_DOM_ID } from '../AccountList/constants';
 import { ACCOUNT_PICKER_COPY, ACCOUNT_PICKER_STYLE, ACCOUNT_PICKER_TEST_IDS } from './constants';
 import { Trigger, Naming, Name, Current, Caret } from './AccountPicker.styles';
@@ -20,7 +21,7 @@ export function CurrentAccountButton({
   isOpen,
   onToggle,
 }: CurrentAccountButtonProps): JSX.Element {
-  const totalBalanceAgorot = totalBalance(account.wallets);
+  const totalBalanceAgorot = totalBalance(walletsWithoutAgorot(account.wallets));
   const caret = isOpen ? ACCOUNT_PICKER_COPY.openCaret : ACCOUNT_PICKER_COPY.closedCaret;
 
   return (

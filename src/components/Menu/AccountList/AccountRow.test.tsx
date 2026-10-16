@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
+import { mockAccountSummary, mockAccountSummaryWithAgorot } from '@/test-utils/mocks/account.mocks';
 import { totalBalance } from '@/lib/wallet/balance';
 import { agorotToWholeShekels } from '@/lib/money';
 import { AccountRow } from './AccountRow';
@@ -55,5 +55,17 @@ describe('AccountRow', () => {
     it('marks itself current', () => {
       expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.row)).toHaveAttribute('aria-current', 'true');
     });
+  });
+
+  it('totals the balances after rounding each one down', () => {
+    render(
+      <AccountRow
+        account={mockAccountSummaryWithAgorot}
+        isCurrent={false}
+        onSelect={mockOnSelect}
+      />
+    );
+
+    expect(screen.getByTestId(ACCOUNT_LIST_TEST_IDS.total)).toHaveTextContent('₪106');
   });
 });

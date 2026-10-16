@@ -5,6 +5,7 @@ import type { AccountSummary } from '@/lib/account/types';
 import { Avatar } from '@/components/Avatar/Avatar';
 import { Money } from '@/components/Money';
 import { totalBalance } from '@/lib/wallet/balance';
+import { walletsWithoutAgorot } from '@/lib/wallet/wallet';
 import { ACCOUNT_LIST_STYLE, ACCOUNT_LIST_TEST_IDS } from './constants';
 import { Name, Total } from './AccountList.styles';
 import { Row } from '../row-parts';
@@ -16,7 +17,7 @@ interface AccountRowProps {
 }
 
 export function AccountRow({ account, isCurrent, onSelect }: AccountRowProps): JSX.Element {
-  const totalBalanceAgorot = totalBalance(account.wallets);
+  const totalBalanceAgorot = totalBalance(walletsWithoutAgorot(account.wallets));
 
   const handleSelect = (): void => onSelect(account.id);
 

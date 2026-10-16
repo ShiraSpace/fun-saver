@@ -3,6 +3,7 @@
 import { JSX } from 'react';
 import type { WalletSummary } from '@/lib/wallet/types';
 import { totalBalance, walletShares } from '@/lib/wallet/balance';
+import { walletsWithoutAgorot } from '@/lib/wallet/wallet';
 import { agorotToWholeShekels } from '@/lib/money';
 import { Money } from '@/components/Money';
 import { Donut } from './Donut';
@@ -40,12 +41,13 @@ interface BalanceBreakdownProps {
 }
 
 export function BalanceBreakdown({ wallets }: BalanceBreakdownProps): JSX.Element {
-  const shares = walletShares(wallets.map((wallet) => wallet.balance));
-  const walletsWithShare = wallets.map((wallet, index) => ({
+  const shownWallets = walletsWithoutAgorot(wallets);
+  const shares = walletShares(shownWallets.map((wallet) => wallet.balance));
+  const walletsWithShare = shownWallets.map((wallet, index) => ({
     ...wallet,
     share: shares[index],
   }));
-  const totalBalanceAgorot = totalBalance(wallets);
+  const totalBalanceAgorot = totalBalance(shownWallets);
   const countingTotalBalance = useCountUpTotalBalance(totalBalanceAgorot);
 
   return (

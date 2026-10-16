@@ -96,4 +96,18 @@ describe('WalletPicker', () => {
       '₪84'
     );
   });
+
+  it('floors a wallet to whole shekels without a goal', () => {
+    render(
+      <WalletPicker
+        wallets={[mockSavings, { ...mockSpending, balance: 4650 }]}
+        selectedWalletId={mockSpending.id}
+        onSelect={mockOnSelect}
+      />
+    );
+
+    expect(screen.getByTestId(WALLET_PICKER_TEST_IDS.balance(mockSpending.name))).toHaveTextContent(
+      '₪46'
+    );
+  });
 });

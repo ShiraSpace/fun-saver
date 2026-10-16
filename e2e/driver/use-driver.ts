@@ -81,9 +81,19 @@ export function createAppDriver(appBrowser: AppBrowser): AppDriver {
 }
 
 export async function startApp(appBrowser: AppBrowser): Promise<RunningServer> {
-  const [server] = await Promise.all([startServer(), appBrowser.start()]);
+  const [serverStart, browserStart] = await Promise.allSettled([startServer(), appBrowser.start()]);
 
-  return server;
+  if (serverStart.status === 'rejected') {
+    await appBrowser.stop();
+    throw serverStart.reason;
+  }
+
+  if (browserStart.status === 'rejected') {
+    await serverStart.value.stop();
+    throw browserStart.reason;
+  }
+
+  return serverStart.value;
 }
 
 export async function openApp({
@@ -142,10 +152,16 @@ export function useDriver(
   { motion = 'reduce', viewMode = VIEW_MODE.parent }: DriverOptions = {}
 ): TestDriver {
   const appBrowser = AppBrowser.create();
-  let server: RunningServer;
+  let server: RunningServer | undefined;
+  const requireServer = (): RunningServer => {
+    if (!server) {
+      throw new Error('the app server is not started; its before hook failed');
+    }
+    return server;
+  };
   const appDriver = {
     ...createAppDriver(appBrowser),
-    anotherPhone: new AnotherPhoneDriver(() => server),
+    anotherPhone: new AnotherPhoneDriver(requireServer),
   };
 
   before(async () => {
@@ -153,7 +169,7 @@ export function useDriver(
   });
 
   beforeEach(async () => {
-    await openApp({ appBrowser, server, initialStore, motion, viewMode });
+    await openApp({ appBrowser, server: requireServer(), initialStore, motion, viewMode });
   });
 
   afterEach(async () => {
@@ -162,7 +178,7 @@ export function useDriver(
 
   after(async () => {
     await appBrowser.stop();
-    await server.stop();
+    await server?.stop();
   });
 
   return appDriver;
