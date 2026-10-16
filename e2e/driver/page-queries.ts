@@ -131,10 +131,16 @@ export function textDrop({ page, testId, besideTestId }: TextDropQuery): Promise
         (node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim()
       );
       const beside = document.querySelector(`[data-testid="${besideTestId}"]`)?.lastElementChild;
+
+      if (!ownText || !beside) {
+        return Number.NaN;
+      }
+
       const range = document.createRange();
-      if (ownText) range.selectNodeContents(ownText);
+      range.selectNodeContents(ownText);
       const ownTextBottom = range.getBoundingClientRect().bottom;
-      if (beside) range.selectNodeContents(beside);
+      range.selectNodeContents(beside);
+
       return ownTextBottom - range.getBoundingClientRect().bottom;
     },
     testId,
