@@ -1,8 +1,9 @@
 import { render, screen } from '@/test-utils/render';
 import { createMockTransaction } from '@/test-utils/mocks/transaction.mocks';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
-import { balanceHistory, totalBalanceChange } from '@/lib/wallet/balance-history';
-import { balanceChangeInShekels } from '@/lib/money';
+import { balanceHistory } from '@/lib/wallet/balance-history';
+import { MONEY_COPY } from '@/components/Money/constants';
+import { BALANCE_CHANGE_COPY } from '../BalanceChange/constants';
 import { ALL_TRANSACTION_TYPES, INTEREST_MODE } from '@/lib/transaction/constants';
 import { SHOWN_BALANCE } from '../constants';
 import { TOTAL_BALANCE_TEST_IDS } from './TotalBalance/constants';
@@ -38,10 +39,12 @@ function renderBalanceOverTime(rangeId: RangeId): void {
   );
 }
 
-function balanceChangeOver(rangeId: RangeId): string {
-  return String(
-    balanceChangeInShekels(totalBalanceChange(mockBalanceHistory, RANGE[rangeId].days))
-  );
+function shownRise(shekels: string): string {
+  return `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}${shekels}`;
+}
+
+function shownBalanceChange(): string | null {
+  return screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange).textContent;
 }
 
 describe('the balance over time', () => {
@@ -51,9 +54,7 @@ describe('the balance over time', () => {
     });
 
     it('shows how much the total balance moved that week', () => {
-      expect(screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange)).toHaveTextContent(
-        balanceChangeOver('week')
-      );
+      expect(shownBalanceChange()).toBe(shownRise('20'));
     });
 
     it('names the week as the range it measured', () => {
@@ -69,9 +70,7 @@ describe('the balance over time', () => {
     });
 
     it('shows how much the total balance moved since the first transaction', () => {
-      expect(screen.getByTestId(TOTAL_BALANCE_TEST_IDS.balanceChange)).toHaveTextContent(
-        balanceChangeOver('all')
-      );
+      expect(shownBalanceChange()).toBe(shownRise('100'));
     });
   });
 });

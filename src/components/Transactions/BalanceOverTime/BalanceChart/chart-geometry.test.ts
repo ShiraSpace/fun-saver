@@ -49,8 +49,8 @@ describe('where the chart draws a balance', () => {
     expect(dayXWithin(1, mockFirstDayX)(0)).toBe(TODAY_X);
   });
 
-  it('labels a balance with agorot that did not move by its whole shekels, rounded down', () => {
-    expect(balanceTicks({ lowest: 22060, highest: 22060 })).toEqual([22000]);
+  it('labels a balance with agorot that did not move by its tenth of a shekel, rounded down', () => {
+    expect(balanceTicks({ lowest: 22069, highest: 22069 })).toEqual([22060]);
   });
 });
 
@@ -63,8 +63,8 @@ describe('the balances labelled on the side', () => {
     expect(balanceTicks({ lowest: 2630, highest: 2680 })).toEqual([2650]);
   });
 
-  it('marks a balance that did not move in whole shekels', () => {
-    expect(balanceTicks({ lowest: 1827, highest: 1827 })).toEqual([1800]);
+  it('marks a balance that did not move to the tenth of a shekel', () => {
+    expect(balanceTicks({ lowest: 1827, highest: 1827 })).toEqual([1820]);
   });
 
   it('stays in whole shekels when they already read apart', () => {

@@ -2,6 +2,10 @@ import { AGOROT_PER_SHEKEL } from './constants';
 
 export const HALF_SHEKEL_AGOROT = AGOROT_PER_SHEKEL / 2;
 
+const TENTHS_PER_SHEKEL = 10;
+
+export const AGOROT_PER_TENTH = AGOROT_PER_SHEKEL / TENTHS_PER_SHEKEL;
+
 export function agorotToShekels(agorot: number): number {
   return agorot / AGOROT_PER_SHEKEL;
 }
@@ -12,6 +16,10 @@ export function agorotToWholeShekels(agorot: number): number {
 
 export function floorToShekels(agorot: number): number {
   return Math.floor(agorot / AGOROT_PER_SHEKEL);
+}
+
+export function floorToTenths(agorot: number): number {
+  return Math.floor(agorot / AGOROT_PER_TENTH) * AGOROT_PER_TENTH;
 }
 
 export function shekelsToAgorot(shekels: number): number {
@@ -30,14 +38,4 @@ export function nearestHalfShekel(agorot: number): number | null {
   }
 
   return agorotToShekels(halfShekels * HALF_SHEKEL_AGOROT);
-}
-
-export function balanceChangeInShekels(balanceChange: number): number {
-  const shekels = nearestHalfShekel(Math.abs(balanceChange));
-
-  if (shekels === null) {
-    return 0;
-  }
-
-  return Math.sign(balanceChange) * shekels;
 }
