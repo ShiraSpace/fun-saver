@@ -10,6 +10,7 @@ import {
 } from '@/lib/interest/collected-interest';
 import { GoalProgress } from '@/components/Goal/GoalProgress';
 import { GOAL_PROGRESS_SIZE } from '@/components/Goal/GoalProgress/constants';
+import { Celebration } from '@/components/Goal/Celebration';
 import { PiggyBank, piggyBankFillOf } from './PiggyBank';
 import { PrincipalAndInterest } from './PrincipalAndInterest';
 import { SavingsBalance } from './SavingsBalance';
@@ -56,6 +57,23 @@ function savingsShownToTheChild({
   };
 }
 
+function goalProgressOf(savedTowardGoal?: SavedTowardGoal): JSX.Element | undefined {
+  if (!savedTowardGoal) {
+    return;
+  }
+
+  return (
+    <GoalSpace>
+      <GoalProgress
+        savedTowardGoal={savedTowardGoal}
+        size={GOAL_PROGRESS_SIZE.large}
+        glowWhenReached
+        celebratesWhenReached
+      />
+    </GoalSpace>
+  );
+}
+
 export function ChildSavings({
   accountId,
   savings,
@@ -64,18 +82,14 @@ export function ChildSavings({
   const balanceElement = useRef<HTMLDivElement>(null);
   const { interestCoins, uncollectedInterest, collect } = useInterestCoins({ savings, accountId });
   const savingsShown = savingsShownToTheChild({ savings, savedTowardGoal, uncollectedInterest });
-  const goalProgress = savingsShown.savedTowardGoal && (
-    <GoalSpace>
-      <GoalProgress
-        savedTowardGoal={savingsShown.savedTowardGoal}
-        size={GOAL_PROGRESS_SIZE.large}
-        glowWhenReached
-      />
-    </GoalSpace>
-  );
+  const isGoalReached = !!savingsShown.savedTowardGoal?.isGoalReached;
 
   return (
-    <Card aria-label={CHILD_SAVINGS_COPY.title} data-testid={CHILD_SAVINGS_TEST_IDS.card}>
+    <Card
+      aria-label={CHILD_SAVINGS_COPY.title}
+      data-testid={CHILD_SAVINGS_TEST_IDS.card}
+      celebrating={isGoalReached}
+    >
       <InterestCoins
         interestCoins={interestCoins}
         onCollect={collect}
@@ -85,11 +99,12 @@ export function ChildSavings({
         <PiggyBank piggyBankFill={savingsShown.piggyBankFill} />
       </PiggyBankSpace>
       <SavingsBalance balance={savingsShown.balance} ref={balanceElement} />
-      {goalProgress}
+      {goalProgressOf(savingsShown.savedTowardGoal)}
       <PrincipalAndInterest
         principal={savingsShown.principal}
         interestEarned={savingsShown.interestEarned}
       />
+      {isGoalReached && <Celebration />}
     </Card>
   );
 }
