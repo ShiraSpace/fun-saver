@@ -117,13 +117,13 @@ export function pseudoStyle({ page, testId, pseudo, property }: PseudoStyleQuery
   );
 }
 
-export interface TextDropQuery {
+export interface SameLineQuery {
   page: Page;
   testId: string;
   besideTestId: string;
 }
 
-export function textDrop({ page, testId, besideTestId }: TextDropQuery): Promise<number> {
+export function sitsOnSameLine({ page, testId, besideTestId }: SameLineQuery): Promise<boolean> {
   return page.evaluate(
     (testId, besideTestId) => {
       const element = document.querySelector(`[data-testid="${testId}"]`);
@@ -133,7 +133,7 @@ export function textDrop({ page, testId, besideTestId }: TextDropQuery): Promise
       const beside = document.querySelector(`[data-testid="${besideTestId}"]`)?.lastElementChild;
 
       if (!ownText || !beside) {
-        return Number.NaN;
+        return false;
       }
 
       const range = document.createRange();
@@ -141,7 +141,7 @@ export function textDrop({ page, testId, besideTestId }: TextDropQuery): Promise
       const ownTextBottom = range.getBoundingClientRect().bottom;
       range.selectNodeContents(beside);
 
-      return ownTextBottom - range.getBoundingClientRect().bottom;
+      return ownTextBottom === range.getBoundingClientRect().bottom;
     },
     testId,
     besideTestId

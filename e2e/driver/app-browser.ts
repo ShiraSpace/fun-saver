@@ -183,8 +183,8 @@ export class AppBrowser {
     return queries.pseudoStyle({ page: this.page, testId, pseudo, property });
   }
 
-  textDrop(testId: string, besideTestId: string): Promise<number> {
-    return queries.textDrop({ page: this.page, testId, besideTestId });
+  sitsOnSameLine(testId: string, besideTestId: string): Promise<boolean> {
+    return queries.sitsOnSameLine({ page: this.page, testId, besideTestId });
   }
 
   styleOf(selector: string, property: string): Promise<string> {

@@ -27,7 +27,7 @@ describe('a goal not yet reached', () => {
   });
 
   it('sets the slash on the same line as the saved amount and the goal', async () => {
-    assert.equal(await goal.slashDropBelowSavedAmount(), 0);
+    assert.equal(await goal.slashSitsOnAmountsLine(), true);
   });
 
   it('opens the goal screen from the menu', async () => {

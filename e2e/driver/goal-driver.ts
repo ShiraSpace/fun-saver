@@ -129,8 +129,8 @@ export class GoalDriver {
     return display !== 'none';
   }
 
-  slashDropBelowSavedAmount(): Promise<number> {
-    return this.appBrowser.textDrop(
+  slashSitsOnAmountsLine(): Promise<boolean> {
+    return this.appBrowser.sitsOnSameLine(
       SAVED_OUT_OF_GOAL_TEST_IDS.amounts,
       SAVED_OUT_OF_GOAL_TEST_IDS.saved
     );
