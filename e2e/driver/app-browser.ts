@@ -183,6 +183,10 @@ export class AppBrowser {
     return queries.pseudoStyle({ page: this.page, testId, pseudo, property });
   }
 
+  sitsOnSameLine(testId: string, besideTestId: string): Promise<boolean> {
+    return queries.sitsOnSameLine({ page: this.page, testId, besideTestId });
+  }
+
   styleOf(selector: string, property: string): Promise<string> {
     return queries.styleOf({ page: this.page, selector, property });
   }

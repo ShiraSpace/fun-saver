@@ -18,6 +18,7 @@ import { SAVE_GOAL_BUTTON_TEST_IDS } from '@/components/Goal/GoalFields/SaveGoal
 import { GOAL_PICTURE_SEARCH_TEST_IDS } from '@/components/Goal/GoalPictureSearch/constants';
 import { PICTURE_TILE_TEST_IDS } from '@/components/Goal/GoalPictureSearch/PictureTiles/PictureTile/constants';
 import { CHOOSE_BUTTON_TEST_IDS } from '@/components/Goal/GoalPictureSearch/ChooseButton/constants';
+import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
 import {
   CELEBRATION_TEST_IDS,
   TRAVELLING_BORDER_ANGLE,
@@ -126,6 +127,13 @@ export class GoalDriver {
     );
 
     return display !== 'none';
+  }
+
+  slashSitsOnAmountsLine(): Promise<boolean> {
+    return this.appBrowser.sitsOnSameLine(
+      SAVED_OUT_OF_GOAL_TEST_IDS.amounts,
+      SAVED_OUT_OF_GOAL_TEST_IDS.saved
+    );
   }
 
   goalScreenExists(): Promise<boolean> {
