@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "dev:mobile": "next dev -H 0.0.0.0",
+    "dev": "FUNSAVER_DATA_PATH=src/db/data.json next dev",
+    "dev:neon": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --fix",
