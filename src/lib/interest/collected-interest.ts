@@ -1,6 +1,7 @@
 import type { WalletSummary } from '@/lib/wallet/types';
 import { savingsWithoutAgorot, type SavingsWithoutAgorot } from '@/lib/wallet/wallet';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
+import { goalReached } from '@/lib/goal/goal-reached';
 import { floorToShekels, shekelsToAgorot } from '@/lib/money';
 import { MAX_INTEREST_COINS } from './constants';
 
@@ -126,9 +127,10 @@ export function savedTowardGoalLessUncollectedInterest({
   }
 
   const saved = savedTowardGoal.saved - uncollectedInterest;
-  const stillToSave = savedTowardGoal.isGoalReached
-    ? 0
-    : Math.max(savedTowardGoal.goal.amount - saved, 0);
+  const isGoalReached =
+    savedTowardGoal.isGoalReached &&
+    (uncollectedInterest === 0 || goalReached(savedTowardGoal.goal, saved));
+  const stillToSave = isGoalReached ? 0 : Math.max(savedTowardGoal.goal.amount - saved, 0);
 
-  return { ...savedTowardGoal, saved, stillToSave };
+  return { ...savedTowardGoal, saved, stillToSave, isGoalReached };
 }
