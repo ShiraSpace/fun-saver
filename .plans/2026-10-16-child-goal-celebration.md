@@ -6,7 +6,7 @@ piggy bank's coin space, option C (`mockups/coin-space.html` in
 `fun-saver-piggy-bank`: the space closes after the last coin lands).
 
 Worktree `fun-saver-child-celebration`, branch `feat/child-goal-celebration`,
-off `origin/main` `3dd3142`.
+off `origin/main` `3dd3142`, `origin/main` `9dabd6e` (#219) merged in.
 
 ## Why
 
@@ -17,17 +17,18 @@ the child watched fill.
 
 ## Before starting: what must be on `main`
 
-This PR builds on three others. Rebase the plan on whatever they actually
-merged; if a name differs, `main` wins, and update this plan first.
+This PR builds on two others, both on `main` (confirmed by content
+2026-10-16). Where a name differed, `main` won and this plan follows it.
 
-| Needed | From | Check on `main` |
+| Needed | From | On `main` |
 | --- | --- | --- |
-| `Celebration` keyed by account, `celebration-parts.ts` (`travellingBorder`, `wobble`, `shine`), the theme's `celebrationBorder*`, `celebrationOutline`, `celebrationGlowOpacity`, `registerTravellingBorderAngle`, `GoalProgress`'s `celebratesWhenReached` | #219 (saving-goal PR 5b) | `git grep -n "travellingBorder\|celebrationOutline\|celebratesWhenReached" origin/main -- src` |
-| `InterestCoins`, `use-interest-coins.ts`, `SavingsBalance`, the shown savings that leave out uncollected interest | #218 (piggy bank PR 3) | `git grep -n "InterestCoins\|SavingsBalance" origin/main -- src` |
-| The coin space closing slowly after the last coin lands (coin-space option C) and its timing constants | piggy bank PR 4 (motion) | its plan and `ChildSavings.styles.ts` |
+| `Celebration` keyed by account, `celebration-parts.ts` (`travellingBorder`, `wobble`, `shine`), the theme's `celebrationBorder*`, `celebrationOutline`, `celebrationGlowOpacity`, `TRAVELLING_BORDER_ANGLE_RULE` (in `layout.tsx`), `GoalProgress`'s `celebratesWhenReached` | #219 (saving-goal PR 5b) | `9dabd6e` |
+| `InterestCoins`, `use-interest-coins.ts`, `SavingsBalance`, the shown savings that leave out uncollected interest (`collected-interest.ts`) | #218 (piggy bank PR 3) | `7f6f23f` |
 
-Confirm each by content (this repo squash-merges). Start Step 1 only once all
-three are in.
+Piggy bank PR 4 (the coin space closing slowly) is **not** needed. The
+celebration plays as soon as the shown savings reach the goal; on `main` the
+coin space closes at once, so nothing waits. Whichever of this PR and PR 4
+lands second adds the wait after the last coin (see "When it plays").
 
 ## What plays (mockup D)
 
@@ -51,10 +52,10 @@ As in #219: CSS that runs once when the element mounts, so there is no timer
 and no "celebrated" flag.
 
 - **The last coin reaches the goal.** The shown savings become reached when the
-  last coin is tapped in. The celebration waits for the coin space to settle
-  (the wiggle, then the slow close; PR 4's timing) and then plays. Only this
-  path waits: the delay is passed as the animations' `animation-delay`, not a
-  timer.
+  last coin is tapped in, and the celebration mounts and plays on that tap.
+  Later, with PR 4: this path alone waits for the coin space to settle (the
+  wiggle, then the slow close), passed as `animation-delay` from PR 4's timing
+  constants, not a timer. Not in this PR's steps.
 - **Home opens with the goal already reached** (no coins waiting): it plays at
   once, as on the parent's card.
 - **Account switch:** keyed by `account.id`, as #219 does for `Account`.
@@ -70,9 +71,9 @@ and no "celebrated" flag.
 - `Celebration`: reused as is.
 - `CoinFountain`: the coins that pour out of the piggy bank when the goal is
   reached. New glossary row, beside `CoinPile` (not "coin burst", "coin rain").
-- The pig's happy eyes: a `PiggyBankFace` state named after the goal, such as
-  `goalReached`, not a `happy`/`smile` mechanism flag. Check how `PiggyBankFace`
-  names its props on `main` first.
+- The pig's happy eyes: `PiggyBankFace` (props on `main`: `paintIds` only)
+  takes `isGoalReached`, the word `SavedTowardGoal` and `GoalProgress` already
+  use, not a `happy`/`smile` mechanism flag. `PiggyBank` passes it through.
 - The pig's hop and the total's glow are style helpers in their components'
   `.styles.ts`, next to #219's `wobble`/`shine` in `celebration-parts.ts` if
   more than one component uses them.
@@ -88,19 +89,20 @@ watched failing against its own break), then approval, then the rest, then
 Production:
 - `ChildAccount` mounts `Celebration` (keyed by `account.id`) when the shown
   savings reach the goal.
-- `ChildSavings`' card takes #219's `travellingBorder` and `celebrationOutline`;
-  its `GoalProgress` passes `celebratesWhenReached` (shine, picture wobble).
-- The delay after the last coin: `ChildSavings` knows the reached state came
-  from a coin tap this visit, and hands the settle time to the celebration's
-  `animation-delay`.
+- `ChildSavings`' card takes #219's `travellingBorder` and the theme's
+  `celebrationOutline`, as `WalletCard.styles.ts` does; its `GoalProgress`
+  keeps `glowWhenReached` and adds `celebratesWhenReached` (shine, picture
+  wobble).
+- The reached state is the *shown* one (`savingsShown.savedTowardGoal`), so
+  `ChildSavings` mounts the `Celebration` and the last coin's tap plays it.
 
-First three tests (`ChildAccount.test.tsx` / `ChildSavings.test.tsx`):
+First three tests (`ChildSavings.test.tsx` / `ChildSavings.coins.test.tsx`):
 
 | Test | Break |
 | --- | --- |
 | a reached goal plays the celebration in child mode | drop the mount |
 | a goal reached only once the waiting coins are in does not play before the last tap | mount on the stored savings, not the shown ones |
-| the last coin's tap plays it, after the coin space settles | no delay on the coin path |
+| the last coin's tap plays it | mount on the savings as it was when home opened |
 
 Rest: an unreached goal does not; switching account plays it again (new
 element); refresh keeps the same element; the card keeps the outline.
@@ -139,6 +141,6 @@ Motion itself is checked in screenshots, since jsdom has no layout.
 
 ## Open points
 
-- The coin fountain over the wallet rows: in the mockup the coins rain past the
-  bottom cards. Keep, or clip them to the savings card?
+- The coin fountain over the wallet rows: decided 2026-10-16, keep it as in the
+  mockup. The coins arc over the header and rain past the bottom cards.
 - Sound: none, as everywhere else in the app.
