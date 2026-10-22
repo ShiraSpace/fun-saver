@@ -13,6 +13,8 @@ import {
 } from '@/components/Goal/GoalProgress/constants';
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
 import { goalPictureGlow } from '@/test-utils/goal-picture';
+import { CELEBRATION_TEST_IDS } from '@/components/Goal/Celebration/constants';
+import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { ChildSavings } from './ChildSavings';
 import { CHILD_SAVINGS_COPY } from './constants';
 import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
@@ -85,7 +87,8 @@ describe('ChildSavings', () => {
           accountId={mockAccountId}
           savings={createMockWalletSummary({ balance: 5000 })}
           savedTowardGoal={mockSavedTowardGoal}
-        />
+        />,
+        { themeId: THEME_ID.midnightBlue }
       );
     });
 
@@ -104,6 +107,16 @@ describe('ChildSavings', () => {
     it('fills the goal bar with what is saved', () => {
       expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50');
     });
+
+    it('does not play the celebration', () => {
+      expect(screen.queryByTestId(CELEBRATION_TEST_IDS.celebration)).not.toBeInTheDocument();
+    });
+
+    it('wears no celebration outline', () => {
+      expect(
+        getComputedStyle(screen.getByRole('region', { name: CHILD_SAVINGS_COPY.title })).boxShadow
+      ).not.toContain(getThemeTokens(THEME_ID.midnightBlue).colors.celebrationOutline);
+    });
   });
 
   describe('a goal reached while the card shows less than its amount', () => {
@@ -118,7 +131,8 @@ describe('ChildSavings', () => {
           accountId={mockAccountId}
           savings={createMockWalletSummary({ balance: 5000 })}
           savedTowardGoal={mockSavedTowardGoal}
-        />
+        />,
+        { themeId: THEME_ID.midnightBlue }
       );
     });
 
@@ -134,6 +148,16 @@ describe('ChildSavings', () => {
 
     it("makes the goal's picture glow", () => {
       expect(goalPictureGlow()).not.toBe('none');
+    });
+
+    it('plays the celebration', () => {
+      expect(screen.getByTestId(CELEBRATION_TEST_IDS.celebration)).toBeInTheDocument();
+    });
+
+    it("wears the theme's celebration outline", () => {
+      expect(
+        getComputedStyle(screen.getByRole('region', { name: CHILD_SAVINGS_COPY.title })).boxShadow
+      ).toContain(getThemeTokens(THEME_ID.midnightBlue).colors.celebrationOutline);
     });
   });
 });

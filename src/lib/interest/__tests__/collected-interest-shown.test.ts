@@ -69,13 +69,45 @@ describe('savedTowardGoalLessUncollectedInterest with ₪5 waiting, ₪105 saved
     uncollectedInterest: 500,
   });
 
-  it('keeps the goal reached, as the real savings reached it', () => {
-    expect(savedTowardGoalShown?.isGoalReached).toBe(true);
+  it('shows the goal not yet reached while the coins that reach it wait', () => {
+    expect(savedTowardGoalShown?.isGoalReached).toBe(false);
   });
 
-  it('leaves nothing still to save', () => {
-    expect(savedTowardGoalShown?.stillToSave).toBe(0);
+  it('leaves what the waiting coins cover still to save', () => {
+    expect(savedTowardGoalShown?.stillToSave).toBe(200);
   });
+});
+
+describe('savedTowardGoalLessUncollectedInterest with ₪5 waiting, ₪107 saved toward a reached ₪102', () => {
+  const savedTowardGoalShown = savedTowardGoalLessUncollectedInterest({
+    savedTowardGoal: createMockSavedTowardGoal({
+      goal: createMockGoal({ amount: 10200 }),
+      saved: 10700,
+      stillToSave: 0,
+      isGoalReached: true,
+    }),
+    uncollectedInterest: 500,
+  });
+
+  it('keeps the goal reached, as the savings shown cover it', () => {
+    expect(savedTowardGoalShown?.isGoalReached).toBe(true);
+  });
+});
+
+it('savedTowardGoalLessUncollectedInterest never shows reached a goal the real savings have not reached', () => {
+  const mockGoalNotReached = createMockSavedTowardGoal({
+    goal: createMockGoal({ amount: 10000 }),
+    saved: 10500,
+    stillToSave: 0,
+    isGoalReached: false,
+  });
+
+  const savedTowardGoalShown = savedTowardGoalLessUncollectedInterest({
+    savedTowardGoal: mockGoalNotReached,
+    uncollectedInterest: 200,
+  });
+
+  expect(savedTowardGoalShown?.isGoalReached).toBe(false);
 });
 
 it('savedTowardGoalLessUncollectedInterest leaves no goal when there is none', () => {
