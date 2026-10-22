@@ -26,7 +26,7 @@ export const InterestThisMonth = styled(BalanceChangeHighlight)`
 `;
 
 export const ColumnNames = styled(Amounts)`
-  margin-inline-start: auto;
+  margin-inline-end: auto;
   font-weight: 700;
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
