@@ -40,6 +40,7 @@ export function useCoinsCloseTheGap(
   interestCoins: InterestCoin[]
 ): (place: number) => RefCallback<HTMLElement> {
   const coinButtons = useRef(new Map<number, HTMLElement>());
+  const rememberedCoinButtons = useRef(new Map<number, RefCallback<HTMLElement>>());
   const whereCoinsStood = useRef<WhereCoinsStand>(new Map());
 
   useLayoutEffect(() => {
@@ -65,13 +66,25 @@ export function useCoinsCloseTheGap(
     whereCoinsStood.current = whereCoinsStandNow;
   }, [interestCoins]);
 
-  return (place) => (coin) => {
-    if (coin) {
-      coinButtons.current.set(place, coin);
+  return (place) => {
+    const remembered = rememberedCoinButtons.current.get(place);
+
+    if (remembered) {
+      return remembered;
     }
 
-    return (): void => {
-      coinButtons.current.delete(place);
+    const rememberCoinButton: RefCallback<HTMLElement> = (coin) => {
+      if (coin) {
+        coinButtons.current.set(place, coin);
+      }
+
+      return (): void => {
+        coinButtons.current.delete(place);
+      };
     };
+
+    rememberedCoinButtons.current.set(place, rememberCoinButton);
+
+    return rememberCoinButton;
   };
 }

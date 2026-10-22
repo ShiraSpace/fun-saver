@@ -99,4 +99,5 @@ export function dropIntoSlot({ coin, whereThePiggyBankStands, onLand }: DropInto
   });
 
   drop.onfinish = onLand;
+  drop.oncancel = onLand;
 }

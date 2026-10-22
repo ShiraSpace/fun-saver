@@ -1,3 +1,4 @@
+import { PIGGY_BANK_WIGGLE } from '../PiggyBank/constants';
 import { INTEREST_COIN_BUTTON_TEST_IDS } from './InterestCoinButton/constants';
 
 export const INTEREST_COINS_TEST_IDS = {
@@ -19,7 +20,7 @@ export const COINS_CLOSE_THE_GAP = {
 } as const;
 
 export const COIN_SPACE_CLOSE = {
-  waitForTheWiggleMs: 450,
+  waitForTheWiggleMs: PIGGY_BANK_WIGGLE.durationMs,
   durationMs: 650,
   easing: 'cubic-bezier(.3, .9, .4, 1)',
   noHeight: '0px',
