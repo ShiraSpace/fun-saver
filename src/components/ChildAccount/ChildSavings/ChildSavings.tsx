@@ -94,7 +94,7 @@ export function ChildSavings({
   const balanceElement = useRef<HTMLDivElement>(null);
   const { interestCoins, uncollectedInterest, collect } = useInterestCoins({ savings, accountId });
   const savingsShown = savingsShownToTheChild({ savings, savedTowardGoal, uncollectedInterest });
-  const isGoalReached = !!savingsShown.savedTowardGoal?.isGoalReached;
+  const isGoalReached = savingsShown.savedTowardGoal?.isGoalReached ?? false;
   const piggyBank = piggyBankOf(savingsShown.piggyBankFill, isGoalReached);
   const goalProgress = goalProgressOf(savingsShown.savedTowardGoal);
   const celebration = isGoalReached && <Celebration />;
