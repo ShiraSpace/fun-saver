@@ -112,7 +112,11 @@ describe('ChildAccount with its goal reached', () => {
   });
 
   it('plays the celebration again when another account with its goal reached is shown', () => {
-    view.rerender(<ChildAccount account={{ ...mockAccountWithGoalReached, id: 'account-2' }} />);
+    const mockAnotherAccountId = 'another-account';
+
+    view.rerender(
+      <ChildAccount account={{ ...mockAccountWithGoalReached, id: mockAnotherAccountId }} />
+    );
 
     expect(screen.getByTestId(CELEBRATION_TEST_IDS.celebration)).not.toBe(celebrationBefore);
   });

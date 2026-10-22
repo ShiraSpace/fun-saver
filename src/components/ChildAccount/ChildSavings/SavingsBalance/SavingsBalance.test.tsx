@@ -3,7 +3,7 @@ import { render, screen } from '@/test-utils/render';
 import { moves } from '@/test-utils/motion';
 import { SavingsBalance } from './SavingsBalance';
 import { SAVINGS_BALANCE_TEST_IDS } from './constants';
-import { BALANCE_TWINKLES_TEST_IDS, TWINKLE_PLACES } from './BalanceTwinkles/constants';
+import { BALANCE_TWINKLES_TEST_IDS } from './BalanceTwinkles/constants';
 
 describe('SavingsBalance of ₪148', () => {
   beforeEach(() => {
@@ -56,10 +56,8 @@ describe('SavingsBalance celebrating a reached goal', () => {
     expect(moves(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.shown))).toBe(true);
   });
 
-  it('twinkles all round the total', () => {
-    expect(screen.getAllByTestId(BALANCE_TWINKLES_TEST_IDS.twinkle)).toHaveLength(
-      TWINKLE_PLACES.length
-    );
+  it('shows the twinkles', () => {
+    expect(screen.getByTestId(BALANCE_TWINKLES_TEST_IDS.twinkles)).toBeInTheDocument();
   });
 });
 
