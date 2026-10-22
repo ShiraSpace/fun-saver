@@ -34,7 +34,6 @@ describe('the transaction list', () => {
         transactions={transactions}
         wallets={createMockWallets()}
         balanceHistory={balanceHistoryFor(transactions, asOf)}
-        asOf={asOf}
         viewChoices={useTransactionsViewChoices()}
       />
     );

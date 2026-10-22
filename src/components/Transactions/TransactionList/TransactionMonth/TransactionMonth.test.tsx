@@ -5,7 +5,7 @@ import {
   mockOpeningDeposit,
 } from '@/test-utils/mocks/transaction.mocks';
 import { transactionListRowsFor } from '@/test-utils/transaction-rows';
-import { addDays, monthLabel } from '@/lib/dates';
+import { monthLabel } from '@/lib/dates';
 import { INTEREST_MODE } from '@/lib/transaction/constants';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { BALANCE_CHANGE_COPY } from '../../BalanceChange/constants';
@@ -24,15 +24,13 @@ describe('a month of the transaction list', () => {
     return screen.getByTestId(TRANSACTION_MONTH_TEST_IDS.monthName(month)).textContent;
   }
 
-  describe('this year', () => {
+  describe('with interest', () => {
     beforeEach(() => {
-      render(
-        <TransactionMonth monthSection={mockMonthSection} asOf={mockMonthOfInterestLastDay} />
-      );
+      render(<TransactionMonth monthSection={mockMonthSection} />);
     });
 
-    it('is named without the year', () => {
-      expect(monthName()).toBe(monthLabel(month, mockMonthOfInterestLastDay));
+    it('is named with its year', () => {
+      expect(monthName()).toBe(monthLabel(month));
     });
 
     it('shows the month’s interest beside its name', () => {
@@ -58,22 +56,8 @@ describe('a month of the transaction list', () => {
       ),
       [mockOpeningDeposit]
     );
-    render(
-      <TransactionMonth
-        monthSection={mockDepositOnlySection}
-        asOf={mockOpeningDeposit.occurredAt}
-      />
-    );
+    render(<TransactionMonth monthSection={mockDepositOnlySection} />);
 
     expect(screen.queryByText(TRANSACTION_MONTH_COPY.interestThisMonth)).toBeNull();
-  });
-
-  describe('a year ago', () => {
-    it('is named with its year', () => {
-      const mockAYearLater = addDays(mockMonthOfInterestLastDay, 366);
-      render(<TransactionMonth monthSection={mockMonthSection} asOf={mockAYearLater} />);
-
-      expect(monthName()).toBe(monthLabel(month, mockAYearLater));
-    });
   });
 });
