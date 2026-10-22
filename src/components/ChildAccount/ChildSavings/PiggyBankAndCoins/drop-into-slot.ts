@@ -26,13 +26,13 @@ interface DropPath {
   coinHeight: number;
 }
 
-function layoutBoxOf(element: HTMLElement): LayoutBox {
-  const placedIn = element.offsetParent ?? document.body;
-  const placedInBox = placedIn.getBoundingClientRect();
+function whereItStands(element: HTMLElement): LayoutBox {
+  const standsIn = element.offsetParent ?? document.body;
+  const standsInBox = standsIn.getBoundingClientRect();
 
   return {
-    left: placedInBox.left + placedIn.clientLeft + element.offsetLeft,
-    top: placedInBox.top + placedIn.clientTop + element.offsetTop,
+    left: standsInBox.left + standsIn.clientLeft + element.offsetLeft,
+    top: standsInBox.top + standsIn.clientTop + element.offsetTop,
     width: element.offsetWidth,
     height: element.offsetHeight,
   };
@@ -40,7 +40,7 @@ function layoutBoxOf(element: HTMLElement): LayoutBox {
 
 function slotCentreOf(whereThePiggyBankStands: HTMLElement): Point {
   const { slot } = PIGGY_BANK_SHAPE;
-  const piggyBankBox = layoutBoxOf(whereThePiggyBankStands);
+  const piggyBankBox = whereItStands(whereThePiggyBankStands);
   const drawnPerUnit = piggyBankBox.width / PIGGY_BANK_SIZE.width;
 
   return {
@@ -50,7 +50,7 @@ function slotCentreOf(whereThePiggyBankStands: HTMLElement): Point {
 }
 
 function dropPathOf(coin: HTMLElement, whereThePiggyBankStands: HTMLElement): DropPath {
-  const coinBox = layoutBoxOf(coin);
+  const coinBox = whereItStands(coin);
   const slotCentre = slotCentreOf(whereThePiggyBankStands);
 
   return {

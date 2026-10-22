@@ -1,8 +1,8 @@
 import { css, keyframes, type SerializedStyles } from '@emotion/react';
 import styled from '@emotion/styled';
 import { REDUCED_MOTION } from '@/theme/motion';
-import { FIRST_TWINKLE_MS, TWINKLE_GAP_MS, type TwinklePlace } from './constants';
 import { afterTheCelebrationWait } from '@/components/Goal/Celebration/celebration-parts';
+import { FIRST_TWINKLE_MS, TWINKLE_GAP_MS, type TwinklePlace } from './constants';
 
 const twinkle = keyframes`
   0%,

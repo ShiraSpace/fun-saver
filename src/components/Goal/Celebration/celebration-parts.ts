@@ -6,6 +6,10 @@ const travel = keyframes`
   to { ${TRAVELLING_BORDER_ANGLE}: 360deg; }
 `;
 
+const hiddenWhileTheCelebrationWaits = keyframes`
+  from, to { opacity: 0; }
+`;
+
 const settle = keyframes`
   to { opacity: 0; }
 `;
@@ -75,6 +79,7 @@ export function travellingBorder(theme: Theme, cornerRadius: number): Serialized
       border-radius: ${cornerRadius + 5}px;
       background: ${borderColors(theme)};
       animation:
+        ${hiddenWhileTheCelebrationWaits} var(${CELEBRATION_WAIT}, 0ms),
         ${travel} ${BORDER_LAP_MS}ms linear ${afterTheCelebrationWait(0)}
           ${timesWithinCelebration(BORDER_LAP_MS)},
         ${settle} ${CELEBRATION_MOTION.fadeMs}ms ease-in

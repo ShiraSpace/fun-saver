@@ -1,8 +1,8 @@
 import { css, keyframes, type SerializedStyles } from '@emotion/react';
 import styled from '@emotion/styled';
 import { REDUCED_MOTION } from '@/theme/motion';
-import { PIGGY_BANK_SHAPE } from './constants';
 import { afterTheCelebrationWait } from '@/components/Goal/Celebration/celebration-parts';
+import { PIGGY_BANK_SHAPE } from './constants';
 
 const hop = keyframes`
   0%,

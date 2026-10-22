@@ -11,18 +11,42 @@ interface CelebrationWaitParams {
   interestCoins: InterestCoin[];
 }
 
-export function useCelebrationWait({
-  isGoalReached,
-  interestCoins,
-}: CelebrationWaitParams): number {
-  const [celebrationWaitMs, setCelebrationWaitMs] = useState(
-    isGoalReached ? NO_WAIT_MS : undefined
-  );
+interface LastSeen {
+  wasGoalReached: boolean;
+  coinsLeft: number;
+  celebrationWaitMs: number;
+}
 
-  if (isGoalReached && celebrationWaitMs === undefined) {
-    const reachedByTheLastCoin = interestCoins.length === 0;
-    setCelebrationWaitMs(reachedByTheLastCoin ? COIN_SPACE_SETTLES_AFTER_MS : NO_WAIT_MS);
+function celebrationWaitAfter(lastSeen: LastSeen, now: CelebrationWaitParams): number {
+  const isGoalReachedNow = now.isGoalReached && !lastSeen.wasGoalReached;
+  const coinsLeft = now.interestCoins.length;
+  const isReachedByTheLastCoin = coinsLeft === 0 && coinsLeft < lastSeen.coinsLeft;
+
+  if (!isGoalReachedNow) {
+    return lastSeen.celebrationWaitMs;
   }
 
-  return celebrationWaitMs ?? NO_WAIT_MS;
+  return isReachedByTheLastCoin ? COIN_SPACE_SETTLES_AFTER_MS : NO_WAIT_MS;
+}
+
+export function useCelebrationWait(now: CelebrationWaitParams): number {
+  const [lastSeen, setLastSeen] = useState<LastSeen>({
+    wasGoalReached: now.isGoalReached,
+    coinsLeft: now.interestCoins.length,
+    celebrationWaitMs: NO_WAIT_MS,
+  });
+  const celebrationWaitMs = celebrationWaitAfter(lastSeen, now);
+  const hasChanged =
+    now.isGoalReached !== lastSeen.wasGoalReached ||
+    now.interestCoins.length !== lastSeen.coinsLeft;
+
+  if (hasChanged) {
+    setLastSeen({
+      wasGoalReached: now.isGoalReached,
+      coinsLeft: now.interestCoins.length,
+      celebrationWaitMs,
+    });
+  }
+
+  return celebrationWaitMs;
 }

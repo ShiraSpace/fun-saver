@@ -2,8 +2,8 @@ import { css, keyframes, type SerializedStyles, type Theme } from '@emotion/reac
 import styled from '@emotion/styled';
 import { readByScreenReaderOnly } from '@/theme/accessibility';
 import { REDUCED_MOTION } from '@/theme/motion';
-import { BALANCE_CELEBRATION_START_MS } from './constants';
 import { afterTheCelebrationWait } from '@/components/Goal/Celebration/celebration-parts';
+import { BALANCE_CELEBRATION_START_MS } from './constants';
 
 const bump = keyframes`
   50% {
