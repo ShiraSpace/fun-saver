@@ -146,11 +146,12 @@ describe('what the transaction list shows', () => {
   });
 
   describe('across the turn of a month', () => {
-    const mockDecemberInterest = {
-      ...mockMonthOfInterest[0],
+    const mockDecemberInterest = createMockTransaction({
       id: 'december-interest',
+      type: TRANSACTION_TYPE.interest,
+      amount: 9,
       occurredAt: '2025-12-31',
-    };
+    });
     const mockTurnOfTheMonthTransactions = [
       mockDecemberDeposit,
       mockDecemberInterest,
