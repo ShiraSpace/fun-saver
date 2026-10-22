@@ -67,7 +67,7 @@ describe('InterestCoins', () => {
         });
       });
 
-      it('slides nothing when a coin starts tappedAndFalling', () => {
+      it('slides nothing when a tapped coin starts to fall', () => {
         const [first, second, third] = mockThreeInterestCoins;
         const { rerender } = render(coinsWaiting(mockThreeInterestCoins));
 
