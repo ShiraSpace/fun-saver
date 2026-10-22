@@ -24,7 +24,7 @@ iframe { display:block; width:100%; height:900px; border:0; border-radius:10px; 
 <body>
 <p class="sub"><a href="index.html">← כל המוקאפים</a> · 2026-09-23</p>
 <h1>מסך התנועות</h1>
-<p class="sub">מסך «תנועות» לכל חשבון — גרף היתרה לאורך זמן ורשימת התנועות — נבנה ושוחרר בסדרת PR-ים מ-#122 עד #168.</p>
+<p class="sub">מסך «תנועות» לכל חשבון — גרף היתרה לאורך זמן ורשימת התנועות — נבנה ושוחרר בסדרת PR-ים מ-#122 עד #168; היתרה ליד כל תנועה והריבית לפי תקופות נוספו ב-#225.</p>
 <h2>החלטות</h2>
 <table>
   <thead><tr><th>השאלה</th><th>מה הוחלט</th><th>איפה זה נרשם</th></tr></thead>
@@ -36,9 +36,14 @@ iframe { display:block; width:100%; height:900px; border:0; border-radius:10px; 
     <tr><td>האם שומרים את הטווח והקווים לכל ילד בנפרד?</td><td>לא — סט אחד למסך, כך שהחלפת ילד משאירה את מה שהסתכלו עליו ומשווה שני ילדים בלחיצה.</td><td class="source"><a href="../docs/superpowers/specs/2026-09-23-transactions-design.md">docs/superpowers/specs/2026-09-23-transactions-design.md</a></td></tr>
     <tr><td>איך נראה אייקון של תנועה ברשימה?</td><td>אייקון הקופה עם תג בפינה (נבחר 2026-09-15); משיכה מהחיסכון קיבלה «🏦 משיכה».</td><td class="source"><a href="../.plans/2026-09-23-transactions.md">.plans/2026-09-23-transactions.md</a></td></tr>
     <tr><td>מה מראים כשלחשבון עוד אין תנועות?</td><td>בגרף «עוד אין תנועות להציג» וברשימה «כאן יופיעו ההפקדות, המשיכות והריבית», ולא את EmptyState שמציע ליצור חשבון.</td><td class="source"><a href="../.plans/2026-09-23-transactions.md">.plans/2026-09-23-transactions.md</a></td></tr>
+  <tr><td>איזו יתרה מופיעה ליד כל תנועה?</td><td>היתרה מיד אחריה: השורה שמתחתיה ועוד השינוי שלה. שתי משיכות באותו יום כבר לא חולקות את יתרת סוף היום.</td><td class="source"><a href="../.plans/2026-10-17-interest-periods.md">.plans/2026-10-17-interest-periods.md</a></td></tr>
+    <tr><td>איך מקבצים את הריבית?</td><td>«מרוכזת» (הייתה «חודשית»): שורה אחת לכל תקופה בין הפקדה או משיכה לבאה אחריה, ולא מעבר לסוף החודש. «יומית» לא השתנתה.</td><td class="source"><a href="../.plans/2026-10-17-interest-periods.md">.plans/2026-10-17-interest-periods.md</a></td></tr>
+    <tr><td>מה כתוב בשורת ריבית של כמה ימים?</td><td>«10–16 באוקטובר · 7 ימים», בתאריכים של Intl.formatRange; ריבית של יום אחד מראה את התאריך שלה.</td><td class="source"><a href="../.plans/2026-10-17-interest-periods.md">.plans/2026-10-17-interest-periods.md</a></td></tr>
+    <tr><td>מה מופיע ליד שם החודש?</td><td>«ריבית החודש» עם הסכום עד האגורה, כמו השורות שמתחתיו, וגם כשהסינון מסתיר את שורות הריבית.</td><td class="source"><a href="../.plans/2026-10-17-interest-periods.md">.plans/2026-10-17-interest-periods.md</a></td></tr>
+    <tr><td>מתי שם החודש כולל שנה?</td><td>תמיד («אוקטובר 2026»), ולא רק בחודשים של שנים קודמות.</td><td class="source"><a href="../.plans/2026-10-17-interest-periods.md">.plans/2026-10-17-interest-periods.md</a></td></tr>
   </tbody>
 </table>
-<nav><a href="#transactions">מסך התנועות</a> <a href="#chart-contrast">צבעי קווי הגרף — אפשרויות א׳–ח׳</a></nav>
+<nav><a href="#transactions">מסך התנועות</a> <a href="#chart-contrast">צבעי קווי הגרף — אפשרויות א׳–ח׳</a> <a href="#interest-periods">ריבית לפי תקופות</a></nav>
 <section id="transactions">
   <h2>מסך התנועות </h2>
   <iframe title="מסך התנועות" srcdoc="<!DOCTYPE html>
@@ -1370,6 +1375,132 @@ document.getElementById('options').innerHTML = OPTIONS.map(card).join('');
 </body>
 </html>
 "></iframe>
+</section>
+<section id="interest-periods">
+  <h2>ריבית לפי תקופות <span class="badge chosen">✓ נבחר</span></h2>
+  <iframe title="ריבית לפי תקופות" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — ריבית לפי תקופות</title>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+  /* tokens from src/theme/themes/sunshine-quest.ts */
+  :root {
+    --surface:#FFFFFF; --textStrong:#3A1F5A; --textMuted:#675A80; --divider:#F2D9D2;
+    --gainText:#2E7D32; --gainSoftBg:#E3F4E1; --withdrawalText:#D9480F; --softBg:#FFF8E0;
+    --primary:#6B2C8E; --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+    --bad:#FDE6DA; --badText:#9A3C12;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:'Rubik',sans-serif; background:#0a0a0a; color:#fff; }
+  .page { max-width:1100px; margin:0 auto; padding:24px 16px 60px; }
+  .compare { display:flex; gap:26px; justify-content:center; flex-wrap:wrap; }
+  .col { width:430px; max-width:100%; }
+  .cap { text-align:center; font-size:15px; font-weight:700; margin-bottom:4px; }
+  .cap-sub { text-align:center; color:#bdbdbd; font-size:12.5px; margin-bottom:10px; line-height:1.5; min-height:38px; }
+  .screen { border-radius:28px; padding:10px; background:var(--screen); }
+  .card { background:var(--surface); color:var(--textStrong); border-radius:22px; overflow:hidden; padding-top:12px; }
+  .toggle { display:flex; justify-content:flex-start; padding:0 12px 10px; gap:0; }
+  .toggle span { border:1.5px solid var(--divider); padding:6px 14px; font-size:13px; font-weight:600; color:var(--textMuted); }
+  .toggle span:first-child { border-radius:0 999px 999px 0; background:var(--primary); color:#fff; border-color:var(--primary); }
+  .toggle span:last-child { border-radius:999px 0 0 999px; }
+  .heading { display:flex; align-items:center; gap:9px; padding:8px 12px 6px; border-bottom:1px solid var(--divider); }
+  .monthAndInterest { flex:1; min-width:0; display:flex; align-items:center; gap:9px; }
+  .month { font-size:14px; font-weight:700; white-space:nowrap; }
+  .chip { display:inline-flex; gap:4px; padding:4px 9px; border-radius:999px; font-size:13px; font-weight:700;
+    background:var(--gainSoftBg); color:var(--gainText); white-space:nowrap; }
+  .amounts, .cols { display:flex; align-items:center; flex-shrink:0; direction:ltr; font-size:13px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .cols { font-weight:700; color:var(--textMuted); }
+  .change { width:72px; text-align:center; }
+  .balance { width:58px; text-align:end; padding-inline-start:4px; border-left:1px solid var(--divider); }
+  .row { display:flex; align-items:center; gap:9px; padding:9px 12px; border-top:1px solid var(--divider); }
+  .row:first-of-type { border-top:0; }
+  .icon { width:38px; height:38px; border-radius:11px; display:grid; place-items:center; font-size:20px; flex-shrink:0; }
+  .icon.interest { background:linear-gradient(#FFE6B0,#FFC34D); }
+  .icon.buy { background:linear-gradient(#FFB4A2,#FF8A4C); }
+  .icon.deposit { background:var(--softBg); }
+  .what { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .what b { font-size:15px; }
+  .what small { margin-inline-start:6px; font-size:12.5px; color:var(--textMuted); }
+  .row .change { font-weight:600; color:var(--gainText); }
+  .row .change.fell { color:var(--withdrawalText); }
+  .row .balance { font-weight:600; color:var(--textMuted); }
+  .row.bad { background:var(--bad); }
+  .row.bad .balance { color:var(--badText); }
+  .note { max-width:820px; margin:22px auto 0; color:#bdbdbd; font-size:13px; line-height:1.7; }
+</style>
+</head>
+<body>
+<div class=&quot;page&quot;>
+<div class=&quot;compare&quot;>
+
+  <div class=&quot;col&quot;>
+    <div class=&quot;cap&quot;>לפני — «חודשית»</div>
+    <div class=&quot;cap-sub&quot;>כל שורה הראתה את יתרת סוף היום, וריבית החודש ישבה בשורה אחת. השורות האדומות לא מסתכמות.</div>
+    <div class=&quot;screen&quot;><div class=&quot;card&quot;>
+      <div class=&quot;toggle&quot;><span>חודשית</span><span>יומית</span></div>
+      <div class=&quot;heading&quot;><div class=&quot;monthAndInterest&quot;><span class=&quot;month&quot;>ינואר</span></div>
+        <div class=&quot;cols&quot;><span class=&quot;change&quot;>שינוי</span><span class=&quot;balance&quot;>יתרה</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon interest&quot;>🐷</div><div class=&quot;what&quot;><b>ריבית</b><small>יום אחד</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪0.29</span><span class=&quot;balance&quot;>121.30</span></div></div>
+      <div class=&quot;heading&quot;><div class=&quot;monthAndInterest&quot;><span class=&quot;month&quot;>דצמבר 2025</span></div>
+        <div class=&quot;cols&quot;><span class=&quot;change&quot;>שינוי</span><span class=&quot;balance&quot;>יתרה</span></div></div>
+      <div class=&quot;row bad&quot;><div class=&quot;icon interest&quot;>🐷</div><div class=&quot;what&quot;><b>ריבית</b><small>31 ימים</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪7.96</span><span class=&quot;balance&quot;>121.01</span></div></div>
+      <div class=&quot;row bad&quot;><div class=&quot;icon buy&quot;>🛍️</div><div class=&quot;what&quot;><b>קנייה</b><small>16 בדצמבר</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change fell&quot;>-₪6.00</span><span class=&quot;balance&quot;>116.83</span></div></div>
+      <div class=&quot;row bad&quot;><div class=&quot;icon buy&quot;>🛍️</div><div class=&quot;what&quot;><b>קנייה</b><small>16 בדצמבר</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change fell&quot;>-₪3.00</span><span class=&quot;balance&quot;>116.83</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon deposit&quot;>💰</div><div class=&quot;what&quot;><b>הפקדה</b><small>9 בדצמבר</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪20.00</span><span class=&quot;balance&quot;>123.98</span></div></div>
+      <div class=&quot;heading&quot;><div class=&quot;monthAndInterest&quot;><span class=&quot;month&quot;>נובמבר 2025</span></div>
+        <div class=&quot;cols&quot;><span class=&quot;change&quot;>שינוי</span><span class=&quot;balance&quot;>יתרה</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon interest&quot;>🐷</div><div class=&quot;what&quot;><b>ריבית</b><small>10 ימים</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪2.05</span><span class=&quot;balance&quot;>102.05</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon deposit&quot;>💰</div><div class=&quot;what&quot;><b>הפקדה</b><small>20 בנובמבר</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪100.00</span><span class=&quot;balance&quot;>100.00</span></div></div>
+    </div></div>
+  </div>
+
+  <div class=&quot;col&quot;>
+    <div class=&quot;cap&quot;>אחרי — «מרוכזת»</div>
+    <div class=&quot;cap-sub&quot;>כל יתרה היא השורה שמתחתיה ועוד השינוי שלה. ריבית אחת לכל תקופה בין תנועות, וסכום ריבית החודש ליד שמו.</div>
+    <div class=&quot;screen&quot;><div class=&quot;card&quot;>
+      <div class=&quot;toggle&quot;><span>מרוכזת</span><span>יומית</span></div>
+      <div class=&quot;heading&quot;><div class=&quot;monthAndInterest&quot;><span class=&quot;month&quot;>ינואר 2026</span><span class=&quot;chip&quot;>ריבית החודש <span dir=&quot;ltr&quot;>+₪0.29</span></span></div>
+        <div class=&quot;cols&quot;><span class=&quot;change&quot;>שינוי</span><span class=&quot;balance&quot;>יתרה</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon interest&quot;>🐷</div><div class=&quot;what&quot;><b>ריבית</b><small>1 בינואר</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪0.29</span><span class=&quot;balance&quot;>121.30</span></div></div>
+      <div class=&quot;heading&quot;><div class=&quot;monthAndInterest&quot;><span class=&quot;month&quot;>דצמבר 2025</span><span class=&quot;chip&quot;>ריבית החודש <span dir=&quot;ltr&quot;>+₪7.96</span></span></div>
+        <div class=&quot;cols&quot;><span class=&quot;change&quot;>שינוי</span><span class=&quot;balance&quot;>יתרה</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon interest&quot;>🐷</div><div class=&quot;what&quot;><b>ריבית</b><small>17–31 בדצמבר · 15 ימים</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪4.18</span><span class=&quot;balance&quot;>121.01</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon buy&quot;>🛍️</div><div class=&quot;what&quot;><b>קנייה</b><small>16 בדצמבר</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change fell&quot;>-₪6.00</span><span class=&quot;balance&quot;>116.83</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon buy&quot;>🛍️</div><div class=&quot;what&quot;><b>קנייה</b><small>16 בדצמבר</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change fell&quot;>-₪3.00</span><span class=&quot;balance&quot;>122.83</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon interest&quot;>🐷</div><div class=&quot;what&quot;><b>ריבית</b><small>10–16 בדצמבר · 7 ימים</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪1.85</span><span class=&quot;balance&quot;>125.83</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon deposit&quot;>💰</div><div class=&quot;what&quot;><b>הפקדה</b><small>9 בדצמבר</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪20.00</span><span class=&quot;balance&quot;>123.98</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon interest&quot;>🐷</div><div class=&quot;what&quot;><b>ריבית</b><small>1–9 בדצמבר · 9 ימים</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪1.93</span><span class=&quot;balance&quot;>103.98</span></div></div>
+      <div class=&quot;heading&quot;><div class=&quot;monthAndInterest&quot;><span class=&quot;month&quot;>נובמבר 2025</span><span class=&quot;chip&quot;>ריבית החודש <span dir=&quot;ltr&quot;>+₪2.05</span></span></div>
+        <div class=&quot;cols&quot;><span class=&quot;change&quot;>שינוי</span><span class=&quot;balance&quot;>יתרה</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon interest&quot;>🐷</div><div class=&quot;what&quot;><b>ריבית</b><small>21–30 בנובמבר · 10 ימים</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪2.05</span><span class=&quot;balance&quot;>102.05</span></div></div>
+      <div class=&quot;row&quot;><div class=&quot;icon deposit&quot;>💰</div><div class=&quot;what&quot;><b>הפקדה</b><small>20 בנובמבר</small></div>
+        <div class=&quot;amounts&quot;><span class=&quot;change&quot;>+₪100.00</span><span class=&quot;balance&quot;>100.00</span></div></div>
+    </div></div>
+  </div>
+
+</div>
+<p class=&quot;note&quot;>המספרים מצילומי המסך של #225: היום נעוץ ל-1 בינואר 2026. ריבית של יום עם הפקדה או משיכה יושבת מתחת לתנועות של אותו יום, ותקופה לא עוברת את סוף החודש. «יומית» לא השתנתה.</p>
+</div>
+</body>
+</html>"></iframe>
 </section>
 <script>
 for (const f of document.querySelectorAll('iframe')) {
