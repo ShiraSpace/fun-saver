@@ -80,4 +80,12 @@ describe('useCountUp', () => {
 
     expect(result.current).toBe(500);
   });
+
+  it('shows the amount at once where elements cannot animate', () => {
+    prefersMotion();
+
+    const { result } = renderHook(() => useCountUp({ startAt: 100, to: 500, timing: mockTiming }));
+
+    expect(result.current).toBe(500);
+  });
 });
