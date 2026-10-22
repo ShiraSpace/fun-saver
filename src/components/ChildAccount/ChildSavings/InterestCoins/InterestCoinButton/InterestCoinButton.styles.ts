@@ -1,9 +1,6 @@
 import styled from '@emotion/styled';
-import { PIGGY_BANK_COLORS, PIGGY_BANK_GRADIENT_STOPS } from '@/theme/piggy-bank-colors';
-
-const coinFace = `radial-gradient(circle at 35% 30%, ${PIGGY_BANK_GRADIENT_STOPS.coinFace
-  .map(({ offset, color }) => `${color} ${offset * 100}%`)
-  .join(', ')})`;
+import { PIGGY_BANK_COLORS } from '@/theme/piggy-bank-colors';
+import { coinFace } from '../../coin-parts';
 
 export const CoinButton = styled.button`
   position: relative;

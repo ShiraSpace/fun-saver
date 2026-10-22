@@ -1,22 +1,33 @@
 import { JSX, Ref } from 'react';
 import { Money } from '@/components/Money';
+import { BalanceTwinkles } from './BalanceTwinkles';
 import { SAVINGS_BALANCE_TEST_IDS } from './constants';
-import { AnnouncedBalance, Balance } from './SavingsBalance.styles';
+import { AnnouncedBalance, Balance, ShownBalance } from './SavingsBalance.styles';
 
 interface SavingsBalanceProps {
   balance: number;
+  celebrating?: boolean;
   ref?: Ref<HTMLDivElement>;
 }
 
-export function SavingsBalance({ balance, ref }: SavingsBalanceProps): JSX.Element {
+export function SavingsBalance({
+  balance,
+  celebrating = false,
+  ref,
+}: SavingsBalanceProps): JSX.Element {
   return (
     <Balance ref={ref} tabIndex={-1}>
-      <span aria-hidden>
+      <ShownBalance
+        aria-hidden
+        celebrating={celebrating}
+        data-testid={SAVINGS_BALANCE_TEST_IDS.shown}
+      >
         <Money amountAgorot={balance} testId={SAVINGS_BALANCE_TEST_IDS.balance} />
-      </span>
+      </ShownBalance>
       <AnnouncedBalance aria-live="polite" aria-atomic>
         <Money amountAgorot={balance} testId={SAVINGS_BALANCE_TEST_IDS.announcedBalance} />
       </AnnouncedBalance>
+      {celebrating && <BalanceTwinkles />}
     </Balance>
   );
 }

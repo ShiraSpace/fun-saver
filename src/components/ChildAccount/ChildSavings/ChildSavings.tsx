@@ -14,6 +14,7 @@ import { Celebration } from '@/components/Goal/Celebration';
 import { PiggyBank, piggyBankFillOf } from './PiggyBank';
 import { PrincipalAndInterest } from './PrincipalAndInterest';
 import { SavingsBalance } from './SavingsBalance';
+import { CoinFountain } from './CoinFountain';
 import { InterestCoins } from './InterestCoins';
 import { useInterestCoins } from './use-interest-coins';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
@@ -97,9 +98,14 @@ export function ChildSavings({
         whereFocusGoesLast={balanceElement}
       />
       <PiggyBankSpace>
-        <PiggyBank piggyBankFill={savingsShown.piggyBankFill} />
+        <PiggyBank piggyBankFill={savingsShown.piggyBankFill} isGoalReached={isGoalReached} />
+        {isGoalReached && <CoinFountain />}
       </PiggyBankSpace>
-      <SavingsBalance balance={savingsShown.balance} ref={balanceElement} />
+      <SavingsBalance
+        balance={savingsShown.balance}
+        celebrating={isGoalReached}
+        ref={balanceElement}
+      />
       {goalProgress}
       <PrincipalAndInterest
         principal={savingsShown.principal}

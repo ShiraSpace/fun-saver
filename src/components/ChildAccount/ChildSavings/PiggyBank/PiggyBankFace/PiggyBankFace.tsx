@@ -6,20 +6,52 @@ import { PIGGY_BANK_FACE_TEST_IDS } from './constants';
 
 interface PiggyBankFaceProps {
   paintIds: PiggyBankPaintIds;
+  isGoalReached?: boolean;
 }
 
-export function PiggyBankFace({ paintIds }: PiggyBankFaceProps): JSX.Element {
-  const { eyes, cheeks, snout, nostrils, slot, slotShine } = PIGGY_BANK_SHAPE;
-  const eyeShapes = eyes.map(({ eye, glint, sparkle }) => (
+function openEyeShapes(): JSX.Element[] {
+  return PIGGY_BANK_SHAPE.eyes.map(({ eye, glint, sparkle }) => (
     <Fragment key={eye.cx}>
-      <ellipse {...eye} fill={PIGGY_BANK_COLORS.eye} />
+      <ellipse {...eye} fill={PIGGY_BANK_COLORS.eye} data-testid={PIGGY_BANK_FACE_TEST_IDS.eye} />
       <circle {...glint} fill={PIGGY_BANK_COLORS.shine} />
       <circle {...sparkle} fill={PIGGY_BANK_COLORS.shine} />
     </Fragment>
   ));
-  const cheekShapes = cheeks.map((cheek) => (
-    <ellipse key={cheek.cx} {...cheek} fill={PIGGY_BANK_COLORS.cheek} />
+}
+
+function happyEyeShapes(): JSX.Element[] {
+  const { happyEyes, happyEye } = PIGGY_BANK_SHAPE;
+
+  return happyEyes.map((happyEyePath) => (
+    <path
+      key={happyEyePath}
+      d={happyEyePath}
+      {...happyEye}
+      stroke={PIGGY_BANK_COLORS.eye}
+      data-testid={PIGGY_BANK_FACE_TEST_IDS.happyEye}
+    />
   ));
+}
+
+export function PiggyBankFace({
+  paintIds,
+  isGoalReached = false,
+}: PiggyBankFaceProps): JSX.Element {
+  const { cheeks, happyCheekOpacity, snout, nostrils, slot, slotShine } = PIGGY_BANK_SHAPE;
+  const eyeShapes = isGoalReached ? happyEyeShapes() : openEyeShapes();
+  const cheekShapes = cheeks.map((cheek) => {
+    const cheekOpacity = isGoalReached ? happyCheekOpacity : cheek.opacity;
+
+    return (
+      <ellipse
+        key={cheek.cx}
+        {...cheek}
+        opacity={cheekOpacity}
+        fill={PIGGY_BANK_COLORS.cheek}
+        data-testid={PIGGY_BANK_FACE_TEST_IDS.cheek}
+      />
+    );
+  });
   const nostrilShapes = nostrils.map((nostril) => (
     <ellipse key={nostril.cx} {...nostril} fill={PIGGY_BANK_COLORS.nostril} />
   ));
