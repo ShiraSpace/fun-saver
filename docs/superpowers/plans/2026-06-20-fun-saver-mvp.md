@@ -48,7 +48,7 @@ Where these differ from the task list below, these win.
 ## Progress (updated 2026-06-23)
 
 - **Foundations — DONE:** DAL (`DataStore` port + `InMemoryStore`/`JsonFileStore`/`getStore`); pure domain (money, dates, derivations, interest); context-driven theme (`ThemeTokens` + `theme.typography`, Emotion `ThemeProvider`, `test-support/render.tsx`); shared `Screen` + `ActionButton`; `page.tsx` Router (Account ↔ CreateAccount ↔ EmptyState).
-- **Create-account — DONE (full E2E):** empty-state CTA → name card + 4-col avatar picker → `useCreateAccount` `POST /api/accounts` (`createAccount` seeds the 3 default wallets) → dashboard. Matches `mockup-avatar-picker.html`.
+- **Create-account — DONE (full E2E):** empty-state CTA → name card + 4-col avatar picker → `useCreateAccount` `POST /api/accounts` (`createAccount` seeds the 3 default wallets) → dashboard. Matches `mockups/2026-06-20-avatar-picker.html#mockup-avatar-picker`.
 - **App menu (static shell) — DONE (PR #1):** hamburger opens a fixed full-screen `MenuOverlay`; one morphing hamburger↔X toggle floats above it (white when open, Escape closes). Three non-interactive sections — Accounts (`AccountChip` avatar+letter chips + `Edit`/`AddAccountChip`), Appearance (3 swatches), Language (he/EN). Extracted shared `Avatar` (size + fill), `BurgerIcon`, `MenuLabel`; typography moved into `theme.typography`. Spec: `2026-06-21-app-menu-design.md`.
 - **Next (owed):**
   1. Error/loading states for the submit (currently the create promise isn't surfaced to the user) + a `400` guard + test on `POST /api/accounts` for invalid input.

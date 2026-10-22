@@ -2,7 +2,7 @@
 
 **Branch:** `feat/goal-picture-search-ui` (worktree `fun-saver-goal-picture-search-ui`, off `a47859a`).
 **Spec:** `docs/superpowers/specs/2026-10-03-saving-goal-design.md` (Image search v1; New components, row `GoalPictureSearch`, frame 1b).
-**Mockup:** `mockups/saving-goal.html`, frame 1b.
+**Mockup:** `mockups/2026-10-03-saving-goal.html#saving-goal`, frame 1b.
 
 The search sheet, built on its own and not rendered anywhere. PR 4b puts it inside `SetGoal`.
 Out of scope: API routes, `AccountSummary`, `MenuGoal`, `SetGoal`, and wiring it into any screen. Those

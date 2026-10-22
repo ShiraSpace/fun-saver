@@ -14,7 +14,7 @@
 
 **Tech Stack:** Next.js 16 App Router, React, Emotion, Jest + RTL, Postgres (Neon), puppeteer `node:test` e2e.
 
-**Spec:** `docs/superpowers/specs/2026-10-03-child-mode-design.md`. Mockup: `mockups/child-mode.html`, screen 1 and menus 2a and 2b.
+**Spec:** `docs/superpowers/specs/2026-10-03-child-mode-design.md`. Mockup: `mockups/2026-10-03-child-mode.html#child-mode`, screen 1 and menus 2a and 2b.
 
 ## Global Constraints
 
@@ -1119,7 +1119,7 @@ import { isShownToChild } from '@/lib/account/view-mode';
       )}
 ```
 
-Run: `./node_modules/.bin/tsc --noEmit && ./node_modules/.bin/eslint src/components`. Then check it in the browser: `npm run dev`, switch the dev account to child view (`PUT` with curl or a one-off store edit, **dev branch only**), and compare with `mockups/child-mode.html` screen 1. It must fit a 360×760 viewport with no scrolling.
+Run: `./node_modules/.bin/tsc --noEmit && ./node_modules/.bin/eslint src/components`. Then check it in the browser: `npm run dev`, switch the dev account to child view (`PUT` with curl or a one-off store edit, **dev branch only**), and compare with `mockups/2026-10-03-child-mode.html#child-mode` screen 1. It must fit a 360×760 viewport with no scrolling.
 
 - [ ] **Step 2: STOP** for review, with a screenshot next to the mockup. Then on "commit":
 

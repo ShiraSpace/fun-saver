@@ -3,7 +3,7 @@
 Show the sum of all wallet balances as a small chip in the header ribbon,
 between the title and the avatar.
 
-Mockup: `docs/superpowers/specs/mockup-total-balance.html` (chip style B + label).
+Mockup: `mockups/2026-06-17-total-balance.html#mockup-total-balance` (chip style B + label).
 Total = savings + spending + goodDeeds, in agorot, rendered as ₪.
 
 ## Phase 0 — branch (done)

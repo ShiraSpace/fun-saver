@@ -3,7 +3,7 @@
 A parent-facing page explaining what we're trying to achieve, why money is
 split into three wallets, and what the parent has to do. Static and read-only.
 
-- Mockup: `mockups/method-page.html` — **variant E** is the one to build.
+- Mockup: `mockups/2026-09-14-method-page.html` — **variant E** is the one to build.
   A–D stay for reference; don't delete them without asking.
 - Design: `docs/superpowers/specs/2026-09-14-method-page-design.md`
 - Copy: `docs/copy/method-page.he.md` (shipping) · `.en.md` (parked, §2 backlog)

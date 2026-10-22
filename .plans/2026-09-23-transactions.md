@@ -25,7 +25,7 @@ pure, tested helpers beside it.
 `e2e/*.visual.ts`.
 
 **Spec:** `docs/superpowers/specs/2026-09-23-transactions-design.md`. The
-mockup `mockups/account-summary/transactions.html` + `account-summary.js` is the
+mockup `mockups/2026-09-23-transactions.html#transactions` is the
 specification of record for anything either document leaves open. Read both
 before any PR.
 
@@ -217,7 +217,7 @@ Each refines or corrects the spec. None re-opens an approved design call.
 ## Decisions owed, and settled
 
 All five were settled on 2026-09-23. B–E took the proposals below; A was
-settled against `mockups/chart-contrast.html`, drawn during the decision.
+settled against `mockups/2026-09-23-transactions.html#chart-contrast`, drawn during the decision.
 
 | # | Question | Needed before | Answer |
 | --- | --- | --- | --- |
@@ -256,7 +256,7 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
 - Modify: `src/theme/theme-tokens.ts` (`ThemeColors`)
 - Modify: `src/theme/palette.ts`, `src/theme/themes/jungle-quest.ts`, `src/theme/themes/midnight-blue.ts`
 - Modify: `src/test-utils/css-color.ts` (a contrast helper)
-- Create: `mockups/chart-contrast.html` (drawn *during* decision A, records the rejected options)
+- Create: `mockups/2026-09-23-transactions.html#chart-contrast` (drawn *during* decision A, records the rejected options)
 - Test: `src/theme/__tests__/chart-lines.test.ts`
 
 **Interfaces:**
@@ -265,7 +265,7 @@ Branch `feat/chart-line-tokens`. Spec: "Colours", delivery order 1.
   `src/test-utils/css-color.ts`.
 
 - [x] **Step 1: Settle decision A.** Settled 2026-09-23: green `#276E2C` · blue
-      `#2563EB` · pink `#E94E89`. `mockups/chart-contrast.html` draws the sunshine
+      `#2563EB` · pink `#E94E89`. `mockups/2026-09-23-transactions.html#chart-contrast` draws the sunshine
       chart card eight ways over the same four lines and records why each other
       option was rejected.
 - [x] **Step 2: Add the three keys to `ThemeColors`**, after `walletTrack`:

@@ -1,6 +1,6 @@
 # fun-saver — Visual Palettes
 
-The chosen palette is **Sunshine Quest** (Palette C). Palettes A and B are kept as reference for future redesigns. All values verified WCAG AA on listed surfaces. Reference mockup of the home screen: [`mockup-home-screen.html`](./mockup-home-screen.html).
+The chosen palette is **Sunshine Quest** (Palette C). Palettes A and B are kept as reference for future redesigns. All values verified WCAG AA on listed surfaces. Reference mockup of the home screen: [`mockups/2026-06-17-home-screen.html#mockup-home-screen`](../../../mockups/2026-06-17-home-screen.html#mockup-home-screen).
 
 ## Palette C — "Sunshine Quest" · CHOSEN
 
@@ -67,7 +67,7 @@ Display logic: round the actual daily interest to the nearest half-shekel, then 
 
 ### Reference assets
 
-- Home-screen mockup: `mockup-home-screen.html`
+- Home-screen mockup: `mockups/2026-06-17-home-screen.html#mockup-home-screen`
 - Inspiration source: `public/inspiration/Screenshot 2026-06-17 at 22.17.06.png`
 
 ## Shared Design Tokens

@@ -106,12 +106,12 @@ sanctioned place to put styles and nothing was watching them.
 ## Decisions
 
 1. **The swatch is the screen gradient, not a preview token.** Drawn both ways
-   in `mockups/theme-swatches.html`. Deriving makes midnight a near-black tile
+   in `mockups/2026-09-23-theme-parity.html#theme-swatches`. Deriving makes midnight a near-black tile
    in the picker, which is the honest thing it previews; a `preview` pair per
    theme would have kept midnight recognisably blue at the cost of a token
    whose only job is to differ from the theme. Consistency wins.
 2. ~~**Shadows are per-theme, not shared.**~~ **Reversed.** Drawn three ways in
-   `mockups/midnight-shadows.html` — today's values, a middle ladder, and the
+   `mockups/2026-09-23-theme-parity.html#midnight-shadows` — today's values, a middle ladder, and the
    raised one the arithmetic argued for — midnight read best on the values every
    theme already used. The premise for per-theme shadows was that midnight would
    need its own; the theme with the strongest claim did not. One `SHADOW_SCALE`,

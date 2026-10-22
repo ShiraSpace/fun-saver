@@ -1,7 +1,7 @@
 # Donut load animation — the ring draws itself on load
 
 **Date:** 2026-09-14
-**Mockup:** `mockups/donut-load-animation.html` (five candidates, three themes, replay button) — the one
+**Mockup:** `mockups/2026-09-12-home-overview.html#donut-load-animation` (five candidates, three themes, replay button) — the one
 being built is **ה · סוויפ הכי קצר**, 0.6s.
 **Worktree:** `/Users/technotronic/Projects/technotronic/fun-saver-legend-icons` on
 `feat/donut-load-animation`, branched off `origin/main`. This branch carries the mockup and this plan.
@@ -9,7 +9,7 @@ being built is **ה · סוויפ הכי קצר**, 0.6s.
 
 ## Before you start
 
-Open `mockups/donut-load-animation.html` in a browser and press **הרץ שוב** a few times. Candidate ה is the
+Open `mockups/2026-09-12-home-overview.html#donut-load-animation` in a browser and press **הרץ שוב** a few times. Candidate ה is the
 spec; א–ד stay on the page as the record of what was rejected and why. `CLAUDE.md` governs the workflow
 (branch per PR, production code → approval → commit, then tests **one at a time** with approval between
 each). Don't batch tests.

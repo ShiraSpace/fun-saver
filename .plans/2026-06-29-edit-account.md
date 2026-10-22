@@ -123,7 +123,7 @@ surprises were all outside it.
   extending `DataStore` left it incomplete. git called both branches mergeable
   the whole time; they never touched the same lines, they just disagreed about
   a contract.
-- **Create gained a `+` icon** beside its title, per `mockups/edit-account.html`.
+- **Create gained a `+` icon** beside its title, per `mockups/2026-06-29-edit-account.html#edit-account`.
   The one deliberate behaviour change in an otherwise pure extraction.
 - **`key={account.id}` on `EditAccount`** — `AccountForm` seeds state at mount,
   so switching accounts needs a remount, not a syncing effect.

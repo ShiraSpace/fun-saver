@@ -1,7 +1,7 @@
 # Withdraw action — `feat/withdraw-action`
 
 The deposit phase is shipped; withdraw is the owed sibling. Spec mockup:
-`docs/superpowers/specs/mockup-withdraw-drawer.html` (3 states: savings withdraw, good-deeds-as-donation,
+`mockups/2026-06-21-transaction-drawer.html#mockup-withdraw-drawer` (3 states: savings withdraw, good-deeds-as-donation,
 overdraft blocked).
 
 ## Locked decisions (this session)

@@ -1,7 +1,7 @@
 # Child mode — design
 
 > Status: **approved in brainstorming 2026-10-03**, spec awaiting review.
-> Mockup: `mockups/child-mode.html`. Build screen **1 (savings hero)** and
+> Mockup: `mockups/2026-10-03-child-mode.html#child-mode`. Build screen **1 (savings hero)** and
 > menus **2a** and **2b**. The "next feature" phone shows the saving goal and
 > is **not** part of this design.
 > Evidence: `docs/research/jar-method.md` §6. Roadmap: `docs/backlog.md` §6.
