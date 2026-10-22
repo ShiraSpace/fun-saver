@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8">
+<title>fun-saver — מסך התנועות</title>
+<style>
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:22px; margin:0 0 6px; color:#fff; }
+h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:34px 0 10px; color:#fff; display:flex; gap:10px; align-items:center; }
+a { color:#9be7b4; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 6px; max-width:860px; }
+.badge { font-weight:800; font-size:11px; letter-spacing:.06em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.badge.chosen { background:#2f7a4a; color:#eafff1; }
+.badge.rejected { background:#3a3a42; color:#c3c9d4; }
+table { border-collapse:collapse; width:100%; max-width:1080px; font-size:13px; }
+th { text-align:start; font-size:11px; color:#78839a; font-weight:600; padding:0 10px 7px; border-bottom:1px solid #333a46; }
+td { padding:10px; border-bottom:1px solid #2a303a; vertical-align:top; line-height:1.6; }
+td.source { direction:ltr; text-align:left; white-space:nowrap; }
+td.source a { color:#78839a; font-size:11px; }
+nav { display:flex; flex-wrap:wrap; gap:6px 14px; margin:18px 0 0; font-size:13px; }
+iframe { display:block; width:100%; height:900px; border:0; border-radius:10px; background:#fff; }
+</style>
+</head>
+<body>
+<p class="sub"><a href="index.html">← כל המוקאפים</a> · 2026-09-23</p>
+<h1>מסך התנועות</h1>
+<p class="sub">מסך «תנועות» לכל חשבון — גרף היתרה לאורך זמן ורשימת התנועות — נבנה ושוחרר בסדרת PR-ים מ-#122 עד #168.</p>
+<h2>החלטות</h2>
+<table>
+  <thead><tr><th>השאלה</th><th>מה הוחלט</th><th>איפה זה נרשם</th></tr></thead>
+  <tbody>
+    <tr><td>באילו צבעים מצוירים קווי החיסכון וההוצאות בגרף של sunshine-quest?</td><td>חיסכון ירוק #276E2C, הוצאות כחול #2563EB, טוב ורוד #E94E89 — כל הוצאה כתומה נדחתה כי נקראה קרובה מדי לוורוד של הטוב, והחום של softText נדחה לחיסכון.</td><td class="source"><a href="../.plans/2026-09-23-transactions.md">.plans/2026-09-23-transactions.md</a></td></tr>
+    <tr><td>באיזה צבע נכתבות התוויות שליד הקווים בגרף?</td><td>בטוקן טקסט (textStrong) עם ריבוע צבע קטן לידן, ולא בצבע הקו כמו במוקאפ — בצבע הקו הן נפלו מתחת ל-4.5:1.</td><td class="source"><a href="../docs/superpowers/specs/2026-09-23-transactions-design.md">docs/superpowers/specs/2026-09-23-transactions-design.md</a></td></tr>
+    <tr><td>איפה יושב היום בגרף?</td><td>בקצה השמאלי, כמו במוקאפ — הזמן נקרא מימין לשמאל ונגמר בשמאל, כמו שורה בעברית.</td><td class="source"><a href="../.plans/2026-09-23-transactions.md">.plans/2026-09-23-transactions.md</a></td></tr>
+    <tr><td>אילו קווים דולקים כשנכנסים למסך?</td><td>רק «סך הכל»; כל קופה נדלקת בנפרד, ו«כל הקופות» מדליק את שלושתן יחד.</td><td class="source"><a href="../docs/superpowers/specs/2026-09-23-transactions-design.md">docs/superpowers/specs/2026-09-23-transactions-design.md</a></td></tr>
+    <tr><td>האם שומרים את הטווח והקווים לכל ילד בנפרד?</td><td>לא — סט אחד למסך, כך שהחלפת ילד משאירה את מה שהסתכלו עליו ומשווה שני ילדים בלחיצה.</td><td class="source"><a href="../docs/superpowers/specs/2026-09-23-transactions-design.md">docs/superpowers/specs/2026-09-23-transactions-design.md</a></td></tr>
+    <tr><td>איך נראה אייקון של תנועה ברשימה?</td><td>אייקון הקופה עם תג בפינה (נבחר 2026-09-15); משיכה מהחיסכון קיבלה «🏦 משיכה».</td><td class="source"><a href="../.plans/2026-09-23-transactions.md">.plans/2026-09-23-transactions.md</a></td></tr>
+    <tr><td>מה מראים כשלחשבון עוד אין תנועות?</td><td>בגרף «עוד אין תנועות להציג» וברשימה «כאן יופיעו ההפקדות, המשיכות והריבית», ולא את EmptyState שמציע ליצור חשבון.</td><td class="source"><a href="../.plans/2026-09-23-transactions.md">.plans/2026-09-23-transactions.md</a></td></tr>
+  </tbody>
+</table>
+<nav><a href="#transactions">מסך התנועות</a> <a href="#chart-contrast">צבעי קווי הגרף — אפשרויות א׳–ח׳</a></nav>
+<section id="transactions">
+  <h2>מסך התנועות </h2>
+  <iframe title="מסך התנועות" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — סיכום חשבון · מסך התנועות</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+:root, :root[data-theme='sunshine-quest'] {
+  --textOnPrimary:#FFFFFF; --surface:#FFFFFF;
+  --textMuted:#8A7AA7; --textStrong:#3A1F5A;
+  --divider:#F2D9D2; --softBg:#FFF8E0; --softBorder:#FFD23F; --softText:#7A5A0A;
+  --depositBg:#FFF6E0; --gainText:#2E7D32; --gainSoftBg:#E1F4E5; --lossText:#C62828;
+  --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+  --actionButton:linear-gradient(#8A3AAE,#6B2C8E);
+  --sunnyTile:linear-gradient(135deg,#FFE6B0,#FFC34D);
+  --potSavings:linear-gradient(135deg,#FFE6B0,#FFC34D);
+  --potSpending:linear-gradient(135deg,#FFD8C7,#FF8A4C);
+  --potGood:linear-gradient(135deg,#FBC4DA,#E94E89);
+  --arcSavings:#E0A020; --arcSpending:#FF8A4C; --arcGood:#E94E89; --arcTrack:#F3ECE4;
+  --grid:#EFE7F2; --globalBg:#F4EEFA; --globalBorder:#C9B6E4;
+}
+:root[data-theme='jungle-quest'] {
+  --textOnPrimary:#FFFFFF; --surface:#FFFDF5;
+  --textMuted:#5C7A6E; --textStrong:#1B4332;
+  --divider:#DDE7CC; --softBg:#F3F7E4; --softBorder:#B5D94C; --softText:#4A6A1E;
+  --depositBg:#F3F7E4; --gainText:#3A7D2E; --gainSoftBg:#E4F2D9; --lossText:#C0492F;
+  --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+  --actionButton:linear-gradient(#3AB3A3,#2A9D8F);
+  --sunnyTile:linear-gradient(135deg,#52B69A,#2A9D8F);
+  --potSavings:linear-gradient(135deg,#52B69A,#2A9D8F);
+  --potSpending:linear-gradient(135deg,#B5D94C,#90BE6D);
+  --potGood:linear-gradient(135deg,#F4A261,#E76F51);
+  --arcSavings:#2A9D8F; --arcSpending:#6E9B22; --arcGood:#E76F51; --arcTrack:#E8EFDC;
+  --grid:#E8EFDC; --globalBg:#EDF4E6; --globalBorder:#A9C77E;
+}
+:root[data-theme='midnight-blue'] {
+  --textOnPrimary:#FFFFFF; --surface:#141B24;
+  --textMuted:#8A96A8; --textStrong:#ECF1F8;
+  --divider:#1E2A40; --softBg:#121E36; --softBorder:#3B82F6; --softText:#93C5FD;
+  --depositBg:#111B30; --gainText:#34D399; --gainSoftBg:#0E2E2A; --lossText:#F87171;
+  --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  --actionButton:linear-gradient(#60A5FA,#3B82F6);
+  --sunnyTile:linear-gradient(135deg,#1E40AF,#172554);
+  --potSavings:linear-gradient(135deg,#1E40AF,#172554);
+  --potSpending:linear-gradient(135deg,#2563EB,#1E40AF);
+  --potGood:linear-gradient(135deg,#4338CA,#312E81);
+  --arcSavings:#60A5FA; --arcSpending:#38BDF8; --arcGood:#A78BFA; --arcTrack:#1E2A40;
+  --grid:#1E2A40; --globalBg:#101A2C; --globalBorder:#2F4470;
+}
+/* TYPE_SCALE: display 48 / amount 38 / title 22 / heading 18 / body 15 / label 12 */
+
+* { box-sizing:border-box; }
+body { margin:0; padding:24px 20px 60px; background:#20242c; color:#fff; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
+.sub { color:#9aa3b2; font-size:13px; line-height:1.65; margin:0 0 16px; max-width:820px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.sub b { color:#9be7b4; font-weight:600; }
+.new { color:#ffd23f; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; align-items:center; }
+.controls button { font-family:Rubik,sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+  padding:7px 14px; border-radius:999px; border:1.5px solid #3a4150; background:#2a303a; color:#dfe4ec; }
+.controls button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff; }
+.row { display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; }
+.slot { width:392px; }
+.slotTitle { font-family:Fredoka,Rubik,sans-serif; font-size:15px; margin:0 0 4px; }
+.slotNote { font-size:12px; color:#9aa3b2; line-height:1.55; margin:0 0 10px; min-height:60px; }
+.slotNote b { color:#9be7b4; font-weight:600; }
+
+.phone { width:392px; height:812px; border-radius:30px; overflow:hidden; background:var(--screen);
+  box-shadow:0 18px 40px rgba(0,0,0,.45); font-family:Rubik,sans-serif; direction:rtl;
+  display:flex; flex-direction:column; position:relative; }
+.col { display:flex; flex-direction:column; gap:12px; padding:14px 14px 0; flex:1; min-height:0; }
+
+.header { display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--surface);
+  border-radius:18px; box-shadow:0 4px 0 rgba(0,0,0,.06); color:var(--textStrong); flex-shrink:0; }
+.burgerBtn { border:none; background:transparent; padding:0; cursor:pointer; width:22px;
+  display:flex; flex-direction:column; gap:4px; }
+.burgerBtn i { height:2.5px; border-radius:2px; background:var(--textStrong); display:block; }
+.hname { flex:1; min-width:0; text-align:start; font-weight:700; font-size:17px;
+  font-family:Fredoka,Rubik,sans-serif; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hname.asBack { display:flex; align-items:center; gap:6px; border:none; background:transparent;
+  padding:0; cursor:pointer; color:inherit; }
+.hname.asBack .bk { font-size:20px; color:var(--textMuted); }
+.backBtn { flex-shrink:0; width:26px; height:26px; border:none; border-radius:50%; cursor:pointer;
+  background:transparent; color:var(--textStrong); font-size:21px; line-height:1; padding:0;
+  font-family:Rubik,sans-serif; }
+.avatar { width:40px; height:40px; border-radius:50%; background:var(--sunnyTile);
+  display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+/* כל בקרת הבית תופסת 40px כמו האווטאר — הפס לא מתגבה, והתפריט הפתוח לא נחסם */
+.homeBtn { flex-shrink:0; width:40px; height:40px; border:none; border-radius:50%; cursor:pointer;
+  background:var(--globalBg); font-size:20px; line-height:1; padding:0; }
+.homePill { flex-shrink:0; display:flex; align-items:center; gap:5px; height:40px; padding:0 12px;
+  border:1.5px solid var(--globalBorder); border-radius:999px; background:var(--globalBg);
+  color:var(--textStrong); font-family:Rubik,sans-serif; font-size:13px; font-weight:700;
+  cursor:pointer; box-sizing:border-box; }
+.avatar.asHome { border:2.5px solid var(--textStrong); padding:0; cursor:pointer; position:relative;
+  box-sizing:border-box; }
+.avatar.asHome .hb { position:absolute; inset-block-end:-4px; inset-inline-start:-4px; font-size:11px;
+  background:var(--surface); border-radius:50%; width:18px; height:18px; display:flex;
+  align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.28); }
+
+/* ---------- chart card ---------- */
+.card { background:var(--surface); border-radius:24px; padding:13px 14px 11px;
+  box-shadow:0 6px 0 rgba(0,0,0,.06); color:var(--textStrong); flex-shrink:0; }
+.totalHead { display:flex; align-items:flex-end; gap:9px; }
+.totalHead .lbl { font-size:12px; font-weight:600; color:var(--textMuted); }
+.totalHead .amt { font-size:30px; font-weight:800; line-height:1; direction:ltr;
+  font-variant-numeric:tabular-nums; font-family:Fredoka,Rubik,sans-serif; }
+.totalHead .amt small { font-size:.55em; opacity:.6; margin-inline-end:2px; }
+.totalHead .delta { margin-inline-start:auto; font-size:12.5px; font-weight:700; direction:ltr;
+  padding:4px 9px; border-radius:999px; background:var(--gainSoftBg); color:var(--gainText); }
+.totalHead .delta.down { background:var(--depositBg); color:var(--lossText); }
+.chart { display:block; width:100%; margin-top:4px; }
+.chart .grid { stroke:var(--grid); stroke-width:1; }
+.chart .line { fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.chart .total { stroke:var(--textStrong); stroke-width:3.25; }
+.chart .fill { fill:var(--textStrong); opacity:.07; }
+.chart .savings { stroke:var(--arcSavings); stroke-width:2.25; }
+.chart .spending { stroke:var(--arcSpending); stroke-width:2.25; }
+.chart .good { stroke:var(--arcGood); stroke-width:2.25; }
+.chart text { font-family:Rubik,sans-serif; font-size:9.5px; font-weight:700;
+  paint-order:stroke; stroke:var(--surface); stroke-width:3px; stroke-linejoin:round; }
+.chart .axis { font-size:9px; font-weight:500; fill:var(--textMuted); stroke-width:2.5px; }
+.chart .empty { font-size:11px; font-weight:600; fill:var(--textMuted); }
+
+.chips { display:flex; gap:5px; flex-wrap:wrap; }
+.chips.top { margin:8px 0 2px; align-items:center; }
+.chips.top .allWallets { margin-inline-start:auto; }
+.chips.walletChips { margin-top:9px; flex-wrap:nowrap; }
+.chips.walletChips .chip { flex-shrink:0; }
+.chip { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:999px;
+  border:1.5px solid var(--divider); background:transparent; color:var(--textMuted);
+  font-family:Rubik,sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; }
+.chip .sw { width:9px; height:9px; border-radius:3px; flex-shrink:0; }
+.chip[aria-pressed='true'] { background:var(--depositBg); border-color:currentColor; }
+.chip.solid[aria-pressed='true'] { background:var(--textStrong); color:var(--surface); border-color:var(--textStrong); }
+.chip.ghost { border-style:dashed; }
+
+/* ---------- transactions ---------- */
+.txWrap { flex:1; min-height:0; background:var(--surface); border-radius:24px 24px 0 0;
+  box-shadow:0 -6px 0 rgba(0,0,0,.06); color:var(--textStrong); display:flex; flex-direction:column; }
+.txHead { padding:11px 14px 7px; flex-shrink:0; }
+.txTitleRow { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.txTitleRow .t { font-family:Fredoka,Rubik,sans-serif; font-size:16px; font-weight:700; }
+.txTitleRow .count { font-size:11.5px; color:var(--textMuted); font-weight:600; }
+.txHead .subTitle { font-family:Fredoka,Rubik,sans-serif; font-size:13px; font-weight:700;
+  margin:11px 0 5px; text-align:start; }
+.seg { display:inline-flex; border:1.5px solid var(--divider); border-radius:999px; overflow:hidden; }
+.seg button { border:none; background:transparent; cursor:pointer; font-family:Rubik,sans-serif;
+  padding:5px 12px; font-size:12px; font-weight:600; color:var(--textMuted); }
+.seg button[aria-pressed='true'] { background:var(--textStrong); color:var(--surface); }
+.txScroll { flex:1; overflow-y:auto; padding:0 0 14px; }
+.monthHead { position:sticky; top:0; z-index:2; background:var(--surface); padding:8px 12px 6px;
+  border-bottom:1px solid var(--divider); display:flex; align-items:center; gap:9px; }
+.monthHead .mh { flex:1; min-width:0; text-align:start;
+  font-family:Fredoka,Rubik,sans-serif; font-size:12.5px; font-weight:700; color:var(--textStrong); }
+.monthHead .nums .a, .monthHead .nums .b { font-size:10px; font-weight:700; color:var(--textMuted); }
+.tx { display:flex; align-items:center; gap:9px; padding:9px 12px; }
+.tx + .tx { border-top:1px solid var(--divider); }
+.tx .ic { width:34px; height:34px; border-radius:11px; flex-shrink:0; display:flex;
+  align-items:center; justify-content:center; font-size:17px; background:var(--depositBg); }
+.tx .ic.savings { background:var(--potSavings); }
+.tx .ic.spending { background:var(--potSpending); }
+.tx .ic.good { background:var(--potGood); }
+.tx .body { flex:1; min-width:0; text-align:start;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tx .body .n { font-size:14.5px; font-weight:700; }
+.tx .body .m { font-size:11.5px; color:var(--textMuted); margin-inline-start:6px; }
+.txWrap .nums { display:flex; align-items:center; direction:ltr; white-space:nowrap;
+  font-variant-numeric:tabular-nums; flex-shrink:0; }
+.txWrap .nums .a { width:56px; text-align:center; font-size:11.5px; font-weight:600; }
+.txWrap .nums .b { width:46px; text-align:end; font-size:11.5px; color:var(--textMuted);
+  padding-inline-start:4px; margin-inline-start:4px; border-inline-start:1px solid var(--divider); }
+.tx .nums .a.up { color:var(--gainText); }
+.tx .nums .a.down { color:var(--lossText); }
+.tx .ic.savings, .tx .fL.savings, .tx .d1.savings { background:var(--potSavings); }
+.tx .ic.spending, .tx .fL.spending, .tx .d1.spending { background:var(--potSpending); }
+.tx .ic.good, .tx .fL.good, .tx .d1.good { background:var(--potGood); }
+
+/* direction:ltr כדי שיישור ה-flex יהיה פיזי ולא יתהפך עם ה-RTL */
+.tx .ic.split { position:relative; overflow:hidden; direction:ltr; background:var(--depositBg); }
+.tx .ic.split .f { position:absolute; top:0; bottom:0; width:50%; overflow:hidden; }
+.tx .ic.split .fL { left:0; }
+.tx .ic.split .fR { right:0; background:var(--gainSoftBg); }
+/* האמוג'י בגודל מלא וממורכז בריבוע כולו; רק חצי ממנו נחשף בכל צד */
+.tx .ic.split .f > span { position:absolute; top:0; width:34px; height:100%;
+  display:flex; align-items:center; justify-content:center; font-size:27px; line-height:1; }
+.tx .ic.split .fL > span { left:0; }
+.tx .ic.split .fR > span { right:0; }
+.tx .ic.split::after { content:''; position:absolute; top:0; bottom:0; left:calc(50% - 0.75px);
+  width:1.5px; background:var(--surface); z-index:1; }
+
+.tx .ic.badged { position:relative; direction:ltr; overflow:visible; }
+.tx .ic.badged .tag { position:absolute; left:-5px; bottom:-5px; width:19px; height:19px; border-radius:50%;
+  background:var(--surface); border:1.5px solid var(--divider); box-shadow:0 1px 3px rgba(0,0,0,.14);
+  display:flex; align-items:center; justify-content:center; font-size:10px; }
+
+.tx .ic.duo { width:48px; background:transparent; position:relative; direction:ltr; }
+.tx .ic.duo .d1, .tx .ic.duo .d2 { position:absolute; top:2px; width:29px; height:29px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:14px; border:2px solid var(--surface); }
+.tx .ic.duo .d1 { left:0; z-index:1; }
+.tx .ic.duo .d2 { left:19px; background:var(--gainSoftBg); }
+
+.tx.interest .ic:not(.split):not(.duo):not(.badged) { background:var(--gainSoftBg); }
+.tx.interest .body .n { font-weight:600; }
+.txEmpty { padding:28px 16px; text-align:center; color:var(--textMuted); font-size:13px; }
+
+/* ---------- menu ---------- */
+/* גוון עדין כדי שכרטיס הכותרת הלבן לא ייבלע בפאנל הלבן */
+.menuPanel.withAppHeader { background:var(--softBg); }
+.menuPanel.withAppHeader .header { margin:14px 14px 4px; }
+.menuPanel.withAppHeader .menuContent { padding-top:8px; }
+.menuPanel.withAppHeader .menuRow, .menuPanel.withAppHeader .acctBtn { background:var(--surface); }
+/* depositBg כמעט זהה ל-softBg בשני נושאים, ולכן המסך הנוכחי מסומן בקו ובמשקל ולא במילוי */
+.menuPanel.withAppHeader .menuRow[aria-current='page'] { border-color:var(--textStrong); font-weight:700; }
+
+.menuPanel.onGradient { background:transparent; color:var(--textOnPrimary); }
+.menuPanel.onGradient .menuBar .t, .menuPanel.onGradient .scopeHead .ttl { color:var(--textOnPrimary); }
+.menuPanel.onGradient .burgerBtn i { background:var(--textOnPrimary); }
+.menuPanel.onGradient .scopeSub { color:rgba(255,255,255,.75); }
+.menuPanel.onGradient .menuLabel { color:rgba(255,255,255,.72);
+  text-transform:uppercase; letter-spacing:.4px; }
+.menuPanel.onGradient .scopeBlock.global { background:rgba(255,255,255,.16);
+  border-color:rgba(255,255,255,.4); }
+.menuPanel.onGradient .scopeBlock.perAccount { border-color:rgba(255,255,255,.4);
+  box-shadow:inset 4px 0 0 rgba(255,255,255,.55); }
+.menuPanel.onGradient .acctBtn { background:rgba(255,255,255,.22);
+  border-color:rgba(255,255,255,.45); color:var(--textOnPrimary); }
+.menuPanel.onGradient .acctBtn .nm span, .menuPanel.onGradient .acctBtn .car { color:rgba(255,255,255,.8); }
+.menuPanel.onGradient .menuRow { background:rgba(255,255,255,.14);
+  border-color:rgba(255,255,255,.34); color:var(--textOnPrimary); }
+.menuPanel.onGradient .menuRow[aria-current='page'] { background:rgba(255,255,255,.3);
+  border-color:rgba(255,255,255,.72); }
+.menuPanel.onGradient .menuRow .chev { color:rgba(255,255,255,.75); }
+.menuPanel.onGradient .editUnder { color:rgba(255,255,255,.88);
+  text-decoration-color:rgba(255,255,255,.5); }
+.menuPanel.onGradient .seg { border-color:rgba(255,255,255,.42); }
+.menuPanel.onGradient .seg button { color:rgba(255,255,255,.82); }
+.menuPanel.onGradient .seg button[aria-pressed='true'] { background:var(--textOnPrimary); color:var(--textStrong); }
+.menuPanel.onGradient .swatch[aria-pressed='true'] { border-color:var(--textOnPrimary); }
+/* הרשימה נשארת אטומה בשתי הגרסאות — היא שכבה צפה מעל הפאנל */
+.menuPanel.onGradient .acctList { border-color:rgba(0,0,0,.1); }
+
+.menuPanel { position:absolute; inset:0; background:var(--surface); color:var(--textStrong);
+  display:flex; flex-direction:column; z-index:10; transition:transform .22s ease; }
+.menuPanel[data-open='false'] { transform:translateX(-100%); }
+.menuBar { display:flex; align-items:center; gap:10px; padding:16px 16px 10px; flex-shrink:0; }
+.menuBar .t { flex:1; text-align:start; font-family:Fredoka,Rubik,sans-serif; font-size:18px; font-weight:700; }
+.menuContent { padding:0 16px 22px; overflow:auto; }
+
+.scopeBlock { border-radius:20px; padding:12px 13px 14px; margin-bottom:14px; }
+.scopeBlock.global { background:var(--globalBg); border:1.5px solid var(--globalBorder);
+  position:relative; z-index:3; padding:11px; }
+.scopeBlock.perAccount { background:transparent; border:1.5px dashed var(--divider);
+  box-shadow:inset 4px 0 0 var(--softBorder); }
+/* ניווט אינו הגדרה של חשבון — לכן מסגרת רצופה בלי הפס והקו המקווקו של הבלוק תלוי-החשבון */
+.scopeBlock.nav { background:transparent; border:1.5px solid var(--softBorder); padding:8px 11px 11px; }
+.scopeBlock.nav .menuLabel { margin-top:0; }
+.scopeBlock.nav .scopeHead { margin-bottom:8px; }
+.scopeBlock.nav .menuRow:last-child { margin-bottom:0; }
+.tabStrip { display:grid; gap:6px; margin-bottom:14px; }
+.tab { flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:9px 4px; border-radius:15px; border:1.5px solid var(--divider); background:var(--surface);
+  color:var(--textMuted); font-family:Rubik,sans-serif; font-size:11.5px; font-weight:600;
+  cursor:pointer; }
+.tab .ic { font-size:17px; }
+.tab[aria-current='page'] { background:var(--textStrong); border-color:var(--textStrong);
+  color:var(--surface); }
+.scopeHead { display:flex; align-items:center; gap:7px; margin-bottom:3px; }
+.scopeHead .ttl { font-size:13.5px; font-weight:700; }
+.scopeSub { font-size:11.5px; color:var(--textMuted); line-height:1.5; margin-bottom:10px; }
+
+.editUnder { display:flex; align-items:center; justify-content:center; width:100%;
+  gap:6px; margin:7px 0 0; padding:5px 2px;
+  border:none; background:transparent; cursor:pointer; color:var(--textMuted);
+  font-family:Rubik,sans-serif; font-size:12.5px; font-weight:600; text-decoration:underline;
+  text-underline-offset:3px; text-decoration-color:var(--globalBorder); }
+.acctOptRow { display:flex; align-items:stretch; gap:5px; }
+.acctOptRow .acctOpt { flex:1; min-width:0; }
+.editInList { flex-shrink:0; width:34px; border:none; border-radius:12px; cursor:pointer;
+  background:var(--globalBg); font-size:15px; }
+.acctBtn { display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; border-radius:16px;
+  border:1.5px solid var(--globalBorder); background:var(--surface); color:var(--textStrong);
+  font-family:Rubik,sans-serif; cursor:pointer; text-align:start; }
+.acctBtn .av { width:38px; height:38px; border-radius:50%; background:var(--sunnyTile); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:20px; }
+.acctBtn .nm { flex:1; }
+.acctBtn .nm b { display:block; font-size:15.5px; font-weight:700; }
+.acctBtn .nm span { display:block; font-size:11px; color:var(--textMuted); margin-top:1px; }
+.acctBtn .car { font-size:11px; color:var(--textMuted); }
+.acctList { position:absolute; inset-inline:11px; top:calc(100% - 8px); z-index:4;
+  display:flex; flex-direction:column; gap:5px; padding:7px; border-radius:16px;
+  background:var(--surface); border:1.5px solid var(--globalBorder);
+  box-shadow:0 14px 30px rgba(0,0,0,.22); }
+.acctOpt { display:flex; align-items:center; gap:10px; width:100%; padding:8px 11px; border-radius:14px;
+  border:1.5px solid transparent; background:var(--surface); color:var(--textStrong);
+  font-family:Rubik,sans-serif; font-size:14.5px; font-weight:600; cursor:pointer; text-align:start; }
+.acctOpt .av { width:30px; height:30px; border-radius:50%; background:var(--sunnyTile);
+  display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.acctOpt .tot { margin-inline-start:auto; font-size:12.5px; font-weight:700; color:var(--textMuted);
+  direction:ltr; font-variant-numeric:tabular-nums; }
+.acctOpt[aria-current='true'] { border-color:var(--globalBorder); background:var(--globalBg); }
+.acctOpt.add { border-style:dashed; border-color:var(--divider); color:var(--textMuted); }
+
+.menuLabel { font-size:11.5px; font-weight:700; color:var(--textMuted); margin:13px 0 5px; text-align:start; }
+.menuRow { display:flex; align-items:center; gap:11px; width:100%; padding:11px 12px; border-radius:15px;
+  border:1.5px solid var(--divider); background:transparent; color:var(--textStrong);
+  font-family:Rubik,sans-serif; font-size:15px; font-weight:600; cursor:pointer; text-align:start; margin-bottom:5px; }
+.menuRow .ic { font-size:18px; }
+.menuRow[aria-current='page'] { background:var(--depositBg); border-color:var(--softBorder); }
+.menuRow .chev { margin-inline-start:auto; color:var(--textMuted); font-size:13px; }
+.swatches { display:flex; gap:9px; }
+.swatch { width:38px; height:38px; border-radius:12px; border:2.5px solid transparent; cursor:pointer;
+  position:relative; padding:0; }
+.swatch[aria-pressed='true'] { border-color:var(--textStrong); }
+/* ── סטטוס ההחלטה ─────────────────────────────────────────────── */
+.crumb { max-width:392px; margin:0 0 14px; font-size:12.5px; }
+.crumb a { color:#9aa3b2; text-decoration:none; border-bottom:1px solid #3a3a42; }
+.crumb a:hover { color:#fff; }
+.status { display:flex; align-items:flex-start; gap:10px; max-width:392px;
+  margin:0 0 12px; padding:9px 11px; border-radius:10px; font-size:12.5px; line-height:1.65; }
+.status .badge { flex-shrink:0; font-weight:800; font-size:11px; letter-spacing:.06em;
+  padding:3px 8px; border-radius:999px; white-space:nowrap; }
+.status p { margin:0; }
+.status code, .status a { font-size:11.5px; color:inherit; }
+.status.chosen { background:#12301c; color:#b7f0c8; border:1px solid #2f7a4a; }
+.status.chosen .badge { background:#2f7a4a; color:#eafff1; }
+.status.rejected { background:#26262b; color:#9aa3b2; border:1px solid #3a3a42; }
+.status.rejected .badge { background:#3a3a42; color:#c3c9d4; }
+.status.info { background:#1b2740; color:#a8c0e8; border:1px solid #33507f; }
+.status.info .badge { background:#33507f; color:#dbe8ff; }
+.status { max-width:820px; }
+.slot .status { max-width:392px; margin:6px 0 10px; }
+</style>
+</head>
+<body>
+
+
+<p class=&quot;crumb&quot;><a href=&quot;index.html&quot; target=&quot;_top&quot;>← כל המוקאפים</a> · סיכום חשבון · מסך התנועות · <a href=&quot;2026-09-15-menu-redesign.html#menu&quot; target=&quot;_top&quot;>התפריט ←</a></p>
+<h1>fun-saver — סיכום חשבון · מסך התנועות</h1>
+<p class=&quot;sub&quot;>
+  גרף A ורשימת התנועות. הכספים מחושבים ב<b>אגורות</b> כמו בקוד
+  (<code>interestForDay = round(balanceAgorot × 0.15/30)</code>), ולכן הריבית היומית יוצאת סכום ריאלי
+  ולא ₪1 עגול. פיצול הפקדה <code>40/50/10</code> כמו ב-<code>DEPOSIT_SPLIT</code>. 90 יום היסטוריה לכל חשבון.
+  <b>בחירת חשבון בתפריט משנה גם את הגרף, גם את הרשימה וגם את ערכת הנושא</b> — החשבון הוא הדבר הגלובלי היחיד.
+</p>
+<div class=&quot;status info&quot;><span class=&quot;badge&quot;>מסך יחיד</span><p>אין כאן חלופות מתחרות — מסך אחד, והבוררים למטה הם פרטים בתוכו. אפיק «תנועות בחשבון» מתוכנן בתוכנית נפרדת. הבורר <b>חזרה לבית בכותרת</b> משוכפל גם לעמוד התפריט, כי אותה כותרת מופיעה בשניהם.</p></div>
+
+<div class=&quot;controls&quot;>
+  <button data-act=&quot;axis&quot; aria-pressed=&quot;true&quot; id=&quot;axisBtn&quot;>ציר זמן: ימין→שמאל (RTL)</button>
+  <button data-act=&quot;menu&quot;>פתח / סגור תפריט</button>
+</div>
+<div class=&quot;controls&quot;><span class=&quot;ctlLabel&quot;>אייקון תנועה:</span><span class=&quot;ctlGroup&quot; id=&quot;iconControls&quot;></span></div>
+<div class=&quot;controls&quot;><span class=&quot;ctlLabel&quot;>חזרה לבית בכותרת:</span><span class=&quot;ctlGroup&quot; id=&quot;backControls&quot;></span></div>
+
+<div class=&quot;row&quot;>
+  <div class=&quot;slot&quot;>
+    <div class=&quot;slotTitle&quot;>מסך סיכום חשבון — גרף A + רשימה עם בקרת ריבית</div>
+    <div class=&quot;status info&quot;><span class=&quot;badge&quot;>מסך יחיד</span><p>הצ׳יפים, טווח שבוע/חודש/הכל, ומיתוג ריבית חודשית/יומית — כולם פרטים בתוך המסך הזה.</p></div>
+    <div class=&quot;slotNote&quot;>
+      צ'יפים: <b>סך הכל</b> תמיד ניתן לכיבוי/הדלקה, כל קופה בנפרד, ו־<b>הכל</b> מדליק את שלושתן יחד.
+      טווח שבוע/חודש/הכל. ברשימה: מסנני סוג + מיתוג <b>ריבית חודשית / יומית</b>.
+    </div>
+    <div id=&quot;summaryPhone&quot;></div>
+  </div>
+</div>
+
+<script>
+/* fun-saver — מוקאפ אינטראקטיבי למסך סיכום חשבון.
+   כל הסכומים באגורות (כמו בקוד); ההמרה לשקלים נעשית רק בתצוגה. */
+
+const DAYS = 430;                             /* ~14 חודשי היסטוריה, כדי ש'שנה' ו'הכל' יהיו שונים */
+const DAILY_RATE = 0.15 / 30;                 /* dailyRate(SAVINGS_MONTHLY_RATE) */
+const SPLIT = { savings: 0.4, spending: 0.5, good: 0.1 };   /* DEPOSIT_SPLIT */
+const TODAY = Date.UTC(2026, 8, 14);
+
+const WALLETS = [
+  { key: 'savings',  name: 'חיסכון',      short: 'חיסכון',  icon: '🐷', color: 'var(--arcSavings)'  },
+  { key: 'spending', name: 'בזבוזים',     short: 'בזבוזים', icon: '🛍️', color: 'var(--arcSpending)' },
+  { key: 'good',     name: 'מעשים טובים', short: 'מעשים',   icon: '💛', color: 'var(--arcGood)'     },
+];
+const TOTAL_KEY = { key: 'total', name: 'סך הכל', short: 'סך הכל', color: 'var(--textStrong)' };
+
+const ACCOUNTS = [
+  { id: 'eli', name: 'אלי', avatar: '🧒', theme: 'jungle-quest',
+    start: { savings: 1800, spending: 2100, good: 1400 },
+    allowance: 2000, every: 14, offset: 3,
+    buy: 1200, buyEvery: 19, buyOffset: 7,
+    donate: 300, donateEvery: 45, donateOffset: 12 },
+  { id: 'noa', name: 'נועה', avatar: '👧', theme: 'sunshine-quest',
+    start: { savings: 2600, spending: 4300, good: 1500 },
+    allowance: 2500, every: 7, offset: 1,
+    buy: 2600, buyEvery: 11, buyOffset: 4,
+    donate: 700, donateEvery: 20, donateOffset: 9 },
+  { id: 'itay', name: 'איתי', avatar: '👦', theme: 'midnight-blue',
+    start: { savings: 900, spending: 800, good: 300 },
+    allowance: 1000, every: 21, offset: 5,
+    buy: 600, buyEvery: 29, buyOffset: 11,
+    donate: 200, donateEvery: 60, donateOffset: 20 },
+];
+
+/* ---------------- series ---------------- */
+
+function eventFor(account, day) {
+  const hits = (every, offset) => day >= offset &amp;&amp; (day - offset) % every === 0;
+
+  if (hits(account.every, account.offset)) {
+    return { kind: 'deposit', total: account.allowance };
+  }
+  if (hits(account.buyEvery, account.buyOffset)) {
+    return { kind: 'buy', wallet: 'spending', amount: account.buy };
+  }
+  if (hits(account.donateEvery, account.donateOffset)) {
+    return { kind: 'donate', wallet: 'good', amount: account.donate };
+  }
+  return null;
+}
+
+function buildSeries(account) {
+  const series = { savings: [], spending: [], good: [], total: [], interest: [], events: new Map() };
+  const balance = { ...account.start };
+
+  for (let day = 0; day <= DAYS; day++) {
+    let gained = 0;
+
+    if (day > 0) {
+      gained = Math.round(balance.savings * DAILY_RATE);
+      balance.savings += gained;
+
+      const event = eventFor(account, day);
+      if (event &amp;&amp; event.kind === 'deposit') {
+        /* splitDeposit: spending ו-goodDeeds מעוגלים למטה, החיסכון מקבל את השארית */
+        const spending = Math.floor(event.total * SPLIT.spending);
+        const good = Math.floor(event.total * SPLIT.good);
+        const savings = event.total - spending - good;
+        balance.savings += savings;
+        balance.spending += spending;
+        balance.good += good;
+        series.events.set(day, { ...event, savings, spending, good });
+      } else if (event &amp;&amp; balance[event.wallet] >= event.amount) {
+        /* overdraft protection — same rule as addWithdrawal */
+        balance[event.wallet] -= event.amount;
+        series.events.set(day, event);
+      }
+    }
+
+    series.interest.push(gained);
+    for (const wallet of WALLETS) {
+      series[wallet.key].push(balance[wallet.key]);
+    }
+    series.total.push(balance.savings + balance.spending + balance.good);
+  }
+
+  return series;
+}
+
+const SERIES = new Map(ACCOUNTS.map((account) => [account.id, buildSeries(account)]));
+const THEME_BY_ACCOUNT = new Map(ACCOUNTS.map((account) => [account.id, account.theme]));
+
+/* ---------------- state ---------------- */
+
+const state = {
+  accountId: 'eli',
+  range: 30,
+  showTotal: true,
+  wallets: new Set(),
+  interestMode: 'monthly',
+  iconStyle: 'badge',
+  pencilStyle: 'under',
+  backStyle: 'homeSwap',
+  navCount: 3,
+  typeFilter: 'all',
+  menuOpen: true,
+  accountListOpen: false,
+  rtlAxis: true,
+};
+
+const account = () => ACCOUNTS.find((candidate) => candidate.id === state.accountId);
+const series = () => SERIES.get(state.accountId);
+
+/* ---------------- formatting ---------------- */
+
+const MONTHS = ['בינואר', 'בפברואר', 'במרץ', 'באפריל', 'במאי', 'ביוני', 'ביולי',
+  'באוגוסט', 'בספטמבר', 'באוקטובר', 'בנובמבר', 'בדצמבר'];
+const MONTH_NAMES = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי',
+  'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
+
+function dateOf(day) {
+  return new Date(TODAY - (DAYS - day) * 86400000);
+}
+function dayLabel(day) {
+  const date = dateOf(day);
+  return date.getUTCDate() + ' ' + MONTHS[date.getUTCMonth()];
+}
+function monthKey(day) {
+  const date = dateOf(day);
+  return date.getUTCFullYear() + '-' + date.getUTCMonth();
+}
+function monthLabel(day) {
+  return MONTH_NAMES[dateOf(day).getUTCMonth()];
+}
+/* השנה מוצגת רק כשהיא אינה השנה הנוכחית */
+function monthHeadLabel(day) {
+  const date = dateOf(day);
+  const year = date.getUTCFullYear();
+  const currentYear = new Date(TODAY).getUTCFullYear();
+  return monthLabel(day) + (year === currentYear ? '' : ' ' + year);
+}
+const MONTH_SHORT = ['ינו', 'פבר', 'מרץ', 'אפר', 'מאי', 'יונ', 'יול', 'אוג', 'ספט', 'אוק', 'נוב', 'דצמ'];
+function shortDate(day) {
+  const date = dateOf(day);
+  return date.getUTCDate() + '.' + (date.getUTCMonth() + 1);
+}
+function shortMonth(day, withYear) {
+  const date = dateOf(day);
+  const name = MONTH_SHORT[date.getUTCMonth()];
+  return withYear ? name + ' ' + String(date.getUTCFullYear()).slice(2) : name;
+}
+
+/* יתרות בשקלים שלמים; סכומי תנועה עד שתי ספרות אחרי הנקודה */
+function shekels(agorot) {
+  return '₪' + Math.round(agorot / 100);
+}
+/* מתחת ל-₪10 מציגים אגורות (כדי שריבית יומית לא תיעלם), מעל זה שקלים שלמים כמו היתרות */
+const DECIMALS_BELOW_AGOROT = 1000;
+function amount(agorot) {
+  const abs = Math.abs(agorot);
+  const text = abs >= DECIMALS_BELOW_AGOROT || abs % 100 === 0
+    ? String(Math.round(abs / 100))
+    : (abs / 100).toFixed(2);
+  return (agorot < 0 ? '-' : '+') + '₪' + text;
+}
+/* הכותרת הגדולה נשארת בשקלים שלמים כמו בשאר האפליקציה */
+function wholeShekelDelta(agorot) {
+  return (agorot < 0 ? '-' : '+') + '₪' + Math.abs(Math.round(agorot / 100));
+}
+
+/* ---------------- chart ---------------- */
+
+const W = 332;
+const H = 112;
+/* near = הקצה של &quot;היום&quot;; far = הקצה שבו יושבות תוויות ציר ה-Y */
+const PAD = { t: 12, b: 17, near: 6, far: 38 };
+const LABEL_GAP = 11;
+const Y_TICKS = 3;
+const TICK_EDGE = 16;
+/* המסמך כולו dir=&quot;rtl&quot;, ולכן text-anchor הפוך ממה שנראה אינטואיטיבי:
+   'end' מציב את הטקסט מימין ל-x, ו-'start' משמאל לו. */
+const ANCHOR_RIGHTWARD = 'end';
+const ANCHOR_LEFTWARD = 'start';
+
+function windowStart() {
+  return Math.max(0, DAYS - state.range);
+}
+function nearX() {
+  return state.rtlAxis ? PAD.near : W - PAD.near;
+}
+function farX() {
+  return state.rtlAxis ? W - PAD.far : PAD.far;
+}
+function plotLeft() {
+  return Math.min(nearX(), farX());
+}
+function plotRight() {
+  return Math.max(nearX(), farX());
+}
+function xAt(day) {
+  const from = windowStart();
+  const span = DAYS - from || 1;
+  const progress = (day - from) / span;
+  return farX() + (nearX() - farX()) * progress;
+}
+function shownKeys() {
+  const keys = WALLETS.filter((wallet) => state.wallets.has(wallet.key));
+  return state.showTotal ? [TOTAL_KEY, ...keys] : keys;
+}
+function extentOf(keys) {
+  const from = windowStart();
+  const values = keys.flatMap((key) => series()[key.key].slice(from));
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  return { min, max, span: max - min || 1 };
+}
+function scaleY(keys) {
+  const { min, span } = extentOf(keys);
+  return (value) => H - PAD.b - ((value - min) / span) * (H - PAD.t - PAD.b);
+}
+function linePath(key, y) {
+  const from = windowStart();
+  return series()[key.key]
+    .slice(from)
+    .map((value, index) => (index ? 'L' : 'M') + xAt(from + index).toFixed(1) + ' ' + y(value).toFixed(1))
+    .join(' ');
+}
+function directLabels(keys, y) {
+  const x = nearX() + (state.rtlAxis ? 5 : -5);
+  const anchor = state.rtlAxis ? ANCHOR_RIGHTWARD : ANCHOR_LEFTWARD;
+  const placed = keys
+    .map((key) => ({ key, want: y(series()[key.key][DAYS]) }))
+    .sort((a, b) => a.want - b.want);
+
+  let floor = PAD.t;
+  for (const entry of placed) {
+    entry.at = Math.max(entry.want, floor);
+    floor = entry.at + LABEL_GAP;
+  }
+  const overflow = floor - LABEL_GAP - (H - PAD.b);
+  if (overflow > 0) {
+    for (const entry of placed) {
+      entry.at -= overflow;
+    }
+  }
+
+  return placed
+    .map(({ key, at }) => `<text x=&quot;${x.toFixed(1)}&quot; y=&quot;${(at + 3.5).toFixed(1)}&quot; text-anchor=&quot;${anchor}&quot;
+      fill=&quot;${key.color}&quot;>${key.short} ${shekels(series()[key.key][DAYS])}</text>`)
+    .join('');
+}
+/* ציר Y עם מספרים, בקצה הרחוק — בעברית זה הצד הימני */
+function yAxisHtml(y, keys) {
+  const { min, max } = extentOf(keys);
+  const x = state.rtlAxis ? W - PAD.far + 5 : PAD.far - 5;
+  const anchor = state.rtlAxis ? ANCHOR_RIGHTWARD : ANCHOR_LEFTWARD;
+
+  return Array.from({ length: Y_TICKS }, (unused, index) => {
+    const value = min + ((max - min) * index) / (Y_TICKS - 1);
+    const at = y(value);
+    return `<line class=&quot;grid&quot; x1=&quot;${plotLeft()}&quot; x2=&quot;${plotRight()}&quot; y1=&quot;${at.toFixed(1)}&quot; y2=&quot;${at.toFixed(1)}&quot; />
+      <text class=&quot;axis&quot; x=&quot;${x}&quot; y=&quot;${(at + 3).toFixed(1)}&quot; text-anchor=&quot;${anchor}&quot;>${shekels(value)}</text>`;
+  }).join('');
+}
+/* כמה תאריכים על ציר ה-X, בגרנולריות שמתאימה לטווח */
+function axisTicks() {
+  const from = windowStart();
+  const span = DAYS - from;
+  const count = span <= 7 ? 4 : span <= 45 ? 5 : 6;
+  const byMonth = span > 120;
+  const ticks = [];
+
+  for (let index = 0; index < count; index++) {
+    const day = Math.round(from + (span * index) / (count - 1));
+    ticks.push({
+      day,
+      text: index === count - 1 ? 'היום' : byMonth ? shortMonth(day, span > 300) : shortDate(day),
+    });
+  }
+
+  return ticks;
+}
+function axisHtml() {
+  return axisTicks()
+    .map(({ day, text }) => {
+      const x = Math.min(Math.max(xAt(day), plotLeft() + TICK_EDGE), plotRight() - TICK_EDGE);
+      return `<text class=&quot;axis&quot; x=&quot;${x.toFixed(1)}&quot; y=&quot;${H - 3}&quot; text-anchor=&quot;middle&quot;>${text}</text>`;
+    })
+    .join('');
+}
+function chartSvg() {
+  const keys = shownKeys();
+
+  if (keys.length === 0) {
+    return `<svg class=&quot;chart&quot; viewBox=&quot;0 0 ${W} ${H}&quot; role=&quot;img&quot; aria-label=&quot;לא נבחר קו להצגה&quot;>
+      <text class=&quot;empty&quot; x=&quot;${W / 2}&quot; y=&quot;${H / 2}&quot; text-anchor=&quot;middle&quot;>בחרו קו אחד לפחות להצגה</text></svg>`;
+  }
+
+  const y = scaleY(keys);
+  const from = windowStart();
+  const base = (H - PAD.b).toFixed(1);
+  const totalShown = keys.some((key) => key.key === 'total');
+  const walletKeys = keys.filter((key) => key.key !== 'total');
+  const fill = totalShown
+    ? `<path class=&quot;fill&quot; d=&quot;${linePath(TOTAL_KEY, y)} L ${xAt(DAYS).toFixed(1)} ${base} L ${xAt(from).toFixed(1)} ${base} Z&quot; />`
+    : '';
+
+  return `<svg class=&quot;chart&quot; viewBox=&quot;0 0 ${W} ${H}&quot; role=&quot;img&quot; aria-label=&quot;מאזן לאורך זמן&quot;>
+    ${yAxisHtml(y, keys)}
+    ${fill}
+    ${walletKeys.map((key) => `<path class=&quot;line ${key.key}&quot; d=&quot;${linePath(key, y)}&quot; />`).join('')}
+    ${totalShown ? `<path class=&quot;line total&quot; d=&quot;${linePath(TOTAL_KEY, y)}&quot; />` : ''}
+    ${directLabels(keys, y)}
+    ${axisHtml()}
+  </svg>`;
+}
+
+/* ---------------- transactions ---------------- */
+
+/* typeIcon = מה קרה, walletIcon = לאיזו קופה.
+   להפקדה אין קופה אחת — היא מתחלקת לשלוש — ולכן היא מקבלת אייקון בודד. */
+const EVENT_LOOK = {
+  deposit: { typeIcon: '💰', walletIcon: null, cls: '', name: 'הפקדה' },
+  buy:     { typeIcon: '🛒', walletIcon: '🛍️', cls: 'spending', name: 'קנייה', meta: '' },
+  donate:  { typeIcon: '🎁', walletIcon: '💛', cls: 'good', name: 'תרומה', meta: '' },
+};
+
+const PENCIL_STYLES = [
+  { id: 'under', label: 'טקסט מתחת לבורר' },
+  { id: 'inList', label: 'בתוך הרשימה הפתוחה' },
+];
+
+const NAV_COUNTS = [
+  { id: '3', label: '3 מסכים (היום)' },
+  { id: '4', label: '4' },
+  { id: '5', label: '5' },
+  { id: '6', label: '6' },
+];
+
+const BACK_STYLES = [
+  { id: 'none', label: 'בלי חזרה (היום)' },
+  { id: 'lead', label: 'ח1 · חץ לפני ההמבורגר' },
+  { id: 'title', label: 'ח2 · הכותרת היא החזרה' },
+  { id: 'trail', label: 'ח3 · חץ במקום האווטאר' },
+  { id: 'homeSwap', label: 'ב1 · בית במקום האווטאר — נבחר' },
+  { id: 'homeBeside', label: 'ב2 · בית לצד האווטאר' },
+  { id: 'homeAvatar', label: 'ב3 · האווטאר הוא הבית' },
+  { id: 'homePill', label: 'ב4 · כפתור בית עם תווית' },
+];
+
+const ICON_STYLES = [
+  { id: 'split', label: 'חצי־חצי' },
+  { id: 'badge', label: 'תג בפינה' },
+  { id: 'duo', label: 'שני עיגולים' },
+];
+
+function iconHtml(row) {
+  if (!row.walletIcon) {
+    return `<span class=&quot;ic ${row.cls}&quot;>${row.typeIcon}</span>`;
+  }
+  if (state.iconStyle === 'badge') {
+    return `<span class=&quot;ic ${row.cls} badged&quot;>${row.walletIcon}
+      <span class=&quot;tag&quot;>${row.typeIcon}</span></span>`;
+  }
+  if (state.iconStyle === 'duo') {
+    return `<span class=&quot;ic duo&quot;><span class=&quot;d1 ${row.cls}&quot;>${row.walletIcon}</span>
+      <span class=&quot;d2&quot;>${row.typeIcon}</span></span>`;
+  }
+  /* כל חצי חושף מחצית אחרת של אמוג'י שלם — חיתוך אנכי במרכז */
+  return `<span class=&quot;ic split&quot;>
+    <span class=&quot;f fL ${row.cls}&quot;><span>${row.walletIcon}</span></span>
+    <span class=&quot;f fR&quot;><span>${row.typeIcon}</span></span></span>`;
+}
+
+const TYPE_FILTERS = [
+  { id: 'all', label: 'הכל' },
+  { id: 'deposit', label: 'הפקדות' },
+  { id: 'withdrawal', label: 'משיכות' },
+  { id: 'interest', label: 'ריבית' },
+];
+
+function eventRows() {
+  const rows = [];
+
+  for (const [day, event] of series().events) {
+    const look = EVENT_LOOK[event.kind];
+    const signed = event.kind === 'deposit' ? event.total : -event.amount;
+    rows.push({
+      day, group: 'withdrawal', typeIcon: look.typeIcon, walletIcon: look.walletIcon,
+      cls: look.cls, name: look.name, meta: dayLabel(day),
+      value: signed, balance: series().total[day], interest: false,
+    });
+    if (event.kind === 'deposit') {
+      rows[rows.length - 1].group = 'deposit';
+    }
+  }
+
+  return rows;
+}
+
+function dailyInterestRows() {
+  const rows = [];
+
+  for (let day = 1; day <= DAYS; day++) {
+    const gained = series().interest[day];
+    if (gained <= 0) {
+      continue;
+    }
+    const event = series().events.get(day);
+    const spent = event ? (event.kind === 'deposit' ? event.total : -event.amount) : 0;
+    rows.push({
+      day, group: 'interest', typeIcon: '✨', walletIcon: '🐷', cls: 'savings',
+      name: 'ריבית', meta: dayLabel(day),
+      value: gained, balance: series().total[day] - spent, interest: true,
+    });
+  }
+
+  return rows;
+}
+
+function monthlyInterestRows() {
+  const byMonth = new Map();
+
+  for (let day = 1; day <= DAYS; day++) {
+    const gained = series().interest[day];
+    if (gained <= 0) {
+      continue;
+    }
+    const key = monthKey(day);
+    const bucket = byMonth.get(key) ?? { total: 0, days: 0, lastDay: day };
+    bucket.total += gained;
+    bucket.days += 1;
+    bucket.lastDay = day;
+    byMonth.set(key, bucket);
+  }
+
+  return [...byMonth.values()].map((bucket) => ({
+    day: bucket.lastDay, group: 'interest', typeIcon: '✨', walletIcon: '🐷', cls: 'savings',
+    name: 'ריבית ' + monthLabel(bucket.lastDay), meta: `${bucket.days} ימים`,
+    value: bucket.total, balance: series().total[bucket.lastDay], interest: true,
+  }));
+}
+
+function visibleRows() {
+  const interest = state.interestMode === 'daily' ? dailyInterestRows() : monthlyInterestRows();
+  const rows = [...eventRows(), ...interest].filter((row) => {
+    if (state.typeFilter === 'all') {
+      return true;
+    }
+    return row.group === state.typeFilter;
+  });
+
+  /* אחרון־ראשון; בתוך אותו יום התנועה האמיתית מעל הריבית */
+  return rows.sort((a, b) => b.day - a.day || Number(a.interest) - Number(b.interest));
+}
+
+function txRowHtml(row) {
+  const direction = row.value >= 0 ? 'up' : 'down';
+  return `<div class=&quot;tx ${row.interest ? 'interest' : ''}&quot;>
+    ${iconHtml(row)}
+    <span class=&quot;body&quot;><span class=&quot;n&quot;>${row.name}</span><span class=&quot;m&quot;>${row.meta}</span></span>
+    <span class=&quot;nums&quot;><span class=&quot;a ${direction}&quot;>${amount(row.value)}</span>
+    <span class=&quot;b&quot;>${shekels(row.balance)}</span></span></div>`;
+}
+
+function txListHtml() {
+  const rows = visibleRows();
+
+  /* כל חודש עטוף ב-section משלו, אחרת כל הכותרות הדביקות נתקעות יחד בראש */
+  const groups = [];
+  for (const row of rows) {
+    const month = monthKey(row.day);
+    const current = groups[groups.length - 1];
+    if (!current || current.month !== month) {
+      groups.push({ month, label: monthHeadLabel(row.day), rows: [row] });
+    } else {
+      current.rows.push(row);
+    }
+  }
+
+  /* כותרות העמודות יושבות בתוך הכותרת הדביקה, ולכן נשארות גלויות בגלילה */
+  const columnHeads = `<span class=&quot;nums&quot;><span class=&quot;a&quot;>שינוי</span><span class=&quot;b&quot;>יתרה</span></span>`;
+  const body = groups
+    .map((group) => `<section class=&quot;monthGroup&quot;>
+      <div class=&quot;monthHead&quot;><span class=&quot;mh&quot;>${group.label}</span>${columnHeads}</div>
+      ${group.rows.map(txRowHtml).join('')}</section>`)
+    .join('');
+
+  const filters = TYPE_FILTERS.map((filter) => `<button class=&quot;chip&quot; data-act=&quot;filter&quot; data-filter=&quot;${filter.id}&quot;
+    aria-pressed=&quot;${state.typeFilter === filter.id}&quot;>${filter.label}</button>`).join('');
+
+  return `<div class=&quot;txWrap&quot;>
+    <div class=&quot;txHead&quot;>
+      <div class=&quot;txTitleRow&quot;><span class=&quot;t&quot;>התנועות</span>
+        <span class=&quot;count&quot;>${rows.length} שורות · ${DAYS} יום</span></div>
+      <div class=&quot;chips&quot;>${filters}</div>
+      <div class=&quot;subTitle&quot;>ריבית</div>
+      <span class=&quot;seg&quot;>
+        <button data-act=&quot;interest-mode&quot; data-mode=&quot;monthly&quot; aria-pressed=&quot;${state.interestMode === 'monthly'}&quot;>חודשית</button>
+        <button data-act=&quot;interest-mode&quot; data-mode=&quot;daily&quot; aria-pressed=&quot;${state.interestMode === 'daily'}&quot;>יומית</button>
+      </span>
+    </div>
+    <div class=&quot;txScroll&quot; id=&quot;txScroll&quot;>${body || '<div class=&quot;txEmpty&quot;>אין תנועות בסינון הזה</div>'}</div>
+  </div>`;
+}
+
+/* ---------------- summary screen ---------------- */
+
+const RANGES = [
+  { days: 7, label: 'שבוע', delta: 'השבוע' },
+  { days: 30, label: 'חודש', delta: 'החודש' },
+  { days: 365, label: 'שנה', delta: 'השנה' },
+  { days: DAYS, label: 'הכל', delta: 'מאז ההתחלה' },
+];
+
+function chartCardHtml() {
+  const from = windowStart();
+  const range = RANGES.find((candidate) => candidate.days === state.range);
+  const change = series().total[DAYS] - series().total[from];
+  const allOn = WALLETS.every((wallet) => state.wallets.has(wallet.key));
+
+  const ranges = RANGES.map((candidate) => `<button class=&quot;chip&quot; data-act=&quot;range&quot; data-days=&quot;${candidate.days}&quot;
+    aria-pressed=&quot;${state.range === candidate.days}&quot;>${candidate.label}</button>`).join('');
+
+  /* שמות מקוצרים כדי שסך הכל + שלוש הקופות ייכנסו לשורה אחת */
+  const walletChips = WALLETS.map((wallet) => {
+    const on = state.wallets.has(wallet.key);
+    return `<button class=&quot;chip&quot; data-act=&quot;wallet&quot; data-key=&quot;${wallet.key}&quot; aria-pressed=&quot;${on}&quot;
+      style=&quot;${on ? 'color:' + wallet.color : ''}&quot;><span class=&quot;sw&quot; style=&quot;background:${wallet.color}&quot;></span>${wallet.short}</button>`;
+  }).join('');
+
+  return `<div class=&quot;card&quot;>
+    <div class=&quot;totalHead&quot;><span class=&quot;lbl&quot;>סך הכל</span>
+      <span class=&quot;amt&quot;><small>₪</small>${Math.round(series().total[DAYS] / 100)}</span>
+      <span class=&quot;delta ${change < 0 ? 'down' : ''}&quot;>${wholeShekelDelta(change)} ${range.delta}</span></div>
+    <div class=&quot;chips top&quot;>${ranges}
+      <button class=&quot;chip ghost allWallets&quot; data-act=&quot;all-wallets&quot; aria-pressed=&quot;${allOn}&quot;>כל הקופות</button></div>
+    ${chartSvg()}
+    <div class=&quot;chips walletChips&quot;>
+      <button class=&quot;chip solid&quot; data-act=&quot;total&quot; aria-pressed=&quot;${state.showTotal}&quot;>סך הכל</button>
+      ${walletChips}
+    </div>
+  </div>`;
+}
+
+/* חץ חזרה מצביע לכיוון תחילת הקריאה — ב-RTL זה ימינה.
+   הסימן ‹ מתהפך בבידי ומצויר כ-› בדיוק כמו ה-chev בשורות התפריט. */
+const BACK_GLYPH = '‹';
+
+/* בקצה (שמאל ב-RTL) יושב היום האווטאר. כל וריאציה בוחרת מה תופס את המקום הזה,
+   ומה המחיר: לוותר על האווטאר, לצמצם את רוחב הכותרת, או לטעון את האווטאר בתפקיד שני */
+function trailingSlotHtml(current) {
+  const avatar = `<span class=&quot;avatar&quot;>${current.avatar}</span>`;
+  const home = `<button class=&quot;homeBtn&quot; data-act=&quot;noop&quot; aria-label=&quot;חזרה לבית&quot;>🏠</button>`;
+
+  if (state.backStyle === 'trail') return `<button class=&quot;backBtn&quot; data-act=&quot;noop&quot; aria-label=&quot;חזרה לבית&quot;>${BACK_GLYPH}</button>`;
+  if (state.backStyle === 'homeSwap') return home;
+  if (state.backStyle === 'homeBeside') return `${avatar}${home}`;
+  if (state.backStyle === 'homeAvatar') {
+    return `<button class=&quot;avatar asHome&quot; data-act=&quot;noop&quot; aria-label=&quot;חזרה לבית של ${current.name}&quot;>
+      ${current.avatar}<span class=&quot;hb&quot;>🏠</span></button>`;
+  }
+  if (state.backStyle === 'homePill') return `<button class=&quot;homePill&quot; data-act=&quot;noop&quot;>🏠 בית</button>`;
+
+  return avatar;
+}
+
+function appHeaderHtml(burgerLabel) {
+  const current = account();
+  const back = `<button class=&quot;backBtn&quot; data-act=&quot;noop&quot; aria-label=&quot;חזרה לבית&quot;>${BACK_GLYPH}</button>`;
+  const title = state.backStyle === 'title'
+    ? `<button class=&quot;hname asBack&quot; data-act=&quot;noop&quot;><span class=&quot;bk&quot;>${BACK_GLYPH}</span>תנועות בחשבון · ${current.name}</button>`
+    : `<span class=&quot;hname&quot;>תנועות בחשבון · ${current.name}</span>`;
+
+  return `<div class=&quot;header&quot;>
+    ${state.backStyle === 'lead' ? back : ''}
+    <button class=&quot;burgerBtn&quot; data-act=&quot;menu&quot; aria-label=&quot;${burgerLabel}&quot;><i></i><i></i><i></i></button>
+    ${title}
+    ${trailingSlotHtml(current)}
+  </div>`;
+}
+
+function summaryPhoneHtml() {
+  return `<div class=&quot;phone&quot;>
+    <div class=&quot;col&quot;>
+      ${appHeaderHtml('תפריט')}
+      ${chartCardHtml()}
+      ${txListHtml()}
+    </div>
+  </div>`;
+}
+
+/* ---------------- menu ---------------- */
+
+const THEME_SWATCHES = [
+  { id: 'sunshine-quest', background: 'linear-gradient(135deg,#FFC34D,#E94E89)', label: 'Sunshine Quest' },
+  { id: 'jungle-quest', background: 'linear-gradient(135deg,#2A9D8F,#90BE6D)', label: 'Jungle Quest' },
+  { id: 'midnight-blue', background: 'linear-gradient(135deg,#1E40AF,#0A0E14)', label: 'Midnight Blue' },
+];
+
+function accountListHtml() {
+  const options = ACCOUNTS.map((candidate) => {
+    const selected = candidate.id === state.accountId;
+    const option = `<button class=&quot;acctOpt&quot; data-act=&quot;account&quot; data-id=&quot;${candidate.id}&quot;
+      aria-current=&quot;${selected}&quot;>
+      <span class=&quot;av&quot;>${candidate.avatar}</span>${candidate.name}
+      <span class=&quot;tot&quot;>${shekels(SERIES.get(candidate.id).total[DAYS])}</span></button>`;
+
+    /* כפתור נפרד לצד הכפתור — לא בתוכו, כי כפתור בתוך כפתור אינו HTML תקין */
+    return state.pencilStyle === 'inList' &amp;&amp; selected
+      ? `<div class=&quot;acctOptRow&quot;>${option}<button class=&quot;editInList&quot; data-act=&quot;noop&quot;
+          aria-label=&quot;עריכת ${candidate.name}&quot; title=&quot;עריכת ${candidate.name}&quot;>✏️</button></div>`
+      : option;
+  }).join('');
+
+  return `<div class=&quot;acctList&quot;>${options}
+    <button class=&quot;acctOpt add&quot; data-act=&quot;noop&quot;><span class=&quot;av&quot;>＋</span>חשבון חדש</button></div>`;
+}
+
+/* שלושת הראשונים קיימים או מתוכננים באפיק הנוכחי; השאר הם מסכים סבירים מה-roadmap
+   (יעד חיסכון §1, דמי כיס §5, פריסת הפקדה וריבית §3–§4) — כדי לראות איך הרצועה גדלה */
+const NAV_ITEMS = [
+  { id: 'home', icon: '🏠', label: 'בית', short: 'בית' },
+  { id: 'transactions', icon: '📈', label: 'תנועות בחשבון', short: 'תנועות' },
+  { id: 'method', icon: '📖', label: 'השיטה', short: 'השיטה' },
+  { id: 'goal', icon: '🎯', label: 'יעד החיסכון', short: 'יעד' },
+  { id: 'allowance', icon: '🗓️', label: 'דמי כיס', short: 'דמי כיס' },
+  { id: 'rules', icon: '⚙️', label: 'חלוקה וריבית', short: 'חלוקה' },
+];
+const CURRENT_SCREEN = 'transactions';
+const TABS_PER_ROW = 4;
+
+const navItems = () => NAV_ITEMS.slice(0, state.navCount);
+
+/* שורות מאוזנות במקום שארית יתומה: 5 מסכים הם 3+2, לא 4+1 */
+function tabColumns(count) {
+  return Math.ceil(count / Math.ceil(count / TABS_PER_ROW));
+}
+
+function navRowsHtml() {
+  return navItems().map((item) => {
+    const current = item.id === CURRENT_SCREEN;
+    /* אין חץ במסך שכבר נמצאים בו — אין לאן ללכת */
+    return `<button class=&quot;menuRow&quot; data-act=&quot;noop&quot; ${current ? 'aria-current=&quot;page&quot;' : ''}>
+      <span class=&quot;ic&quot;>${item.icon}</span>${item.label}
+      ${current ? '' : '<span class=&quot;chev&quot;>‹</span>'}</button>`;
+  }).join('');
+}
+
+function navTabsHtml() {
+  const tabs = navItems().map((item) => `<button class=&quot;tab&quot; data-act=&quot;noop&quot;
+    ${item.id === CURRENT_SCREEN ? 'aria-current=&quot;page&quot;' : ''}>
+    <span class=&quot;ic&quot;>${item.icon}</span>${item.short}</button>`).join('');
+
+  return `<div class=&quot;tabStrip&quot; style=&quot;grid-template-columns:repeat(${tabColumns(state.navCount)},1fr)&quot;>${tabs}</div>`;
+}
+
+/* ניווט מחוץ לבלוק תלוי-החשבון — שלוש הצורות שנבחנות */
+function navHtml(placement) {
+  if (placement === 'block') {
+    return `<div class=&quot;scopeBlock nav&quot;>
+      <div class=&quot;menuLabel&quot;>מסכים</div>${navRowsHtml()}</div>`;
+  }
+  if (placement === 'bare') {
+    return `<div class=&quot;scopeBlock nav&quot;>
+      <div class=&quot;scopeHead&quot;><span class=&quot;ttl&quot;>ניווט</span></div>
+      ${navRowsHtml()}</div>`;
+  }
+  if (placement === 'tabs') {
+    return navTabsHtml();
+  }
+  return '';
+}
+
+function menuPhoneHtml(variant, navPlacement = 'inAccount') {
+  const current = account();
+  const theme = THEME_BY_ACCOUNT.get(current.id);
+
+  const swatches = THEME_SWATCHES.map((swatch) => `<button class=&quot;swatch&quot; data-act=&quot;theme&quot; data-theme=&quot;${swatch.id}&quot;
+    aria-pressed=&quot;${theme === swatch.id}&quot; aria-label=&quot;${swatch.label}&quot; title=&quot;${swatch.label}&quot;
+    style=&quot;background:${swatch.background}&quot;></button>`).join('');
+
+  const bar = variant === 'appHeader'
+    ? appHeaderHtml('סגירה')
+    : `<div class=&quot;menuBar&quot;>
+        <button class=&quot;burgerBtn&quot; data-act=&quot;menu&quot; aria-label=&quot;סגירה&quot;><i></i><i></i><i></i></button>
+        <span class=&quot;t&quot;>תפריט</span>
+      </div>`;
+
+  return `<div class=&quot;phone&quot;>
+    <div class=&quot;menuPanel ${variant === 'gradient' ? 'onGradient' : ''} ${variant === 'appHeader' ? 'withAppHeader' : ''}&quot;
+      data-open=&quot;${state.menuOpen}&quot;>
+      ${bar}
+      <div class=&quot;menuContent&quot;>
+        ${navPlacement === 'bare' || navPlacement === 'tabs' ? navHtml(navPlacement) : ''}
+
+        <div class=&quot;scopeBlock global&quot;>
+          <button class=&quot;acctBtn&quot; data-act=&quot;account-toggle&quot; aria-expanded=&quot;${state.accountListOpen}&quot;>
+            <span class=&quot;av&quot;>${current.avatar}</span>
+            <span class=&quot;nm&quot;><b>${current.name}</b><span>${shekels(series().total[DAYS])} · מוצג כרגע</span></span>
+            <span class=&quot;car&quot;>${state.accountListOpen ? '▲' : '▼'}</span>
+          </button>
+          ${state.pencilStyle === 'under'
+            ? `<button class=&quot;editUnder&quot; data-act=&quot;noop&quot;>✏️ עריכת ${current.name}</button>`
+            : ''}
+          ${state.accountListOpen ? accountListHtml() : ''}
+        </div>
+
+        ${navPlacement === 'block' ? navHtml('block') : ''}
+
+        <div class=&quot;scopeBlock perAccount&quot;>
+          <div class=&quot;scopeHead&quot;><span class=&quot;ttl&quot;>הגדרות של ${current.name} ${current.avatar}</span></div>
+          <div class=&quot;scopeSub&quot;>נשמר על החשבון הזה בלבד.</div>
+
+          ${navPlacement === 'inAccount'
+            ? `<div class=&quot;menuLabel&quot;>מסכים</div>
+               <button class=&quot;menuRow&quot; data-act=&quot;noop&quot;><span class=&quot;ic&quot;>🏠</span>בית<span class=&quot;chev&quot;>‹</span></button>
+               <button class=&quot;menuRow&quot; aria-current=&quot;page&quot; data-act=&quot;noop&quot;><span class=&quot;ic&quot;>📈</span>תנועות בחשבון<span class=&quot;chev&quot;>‹</span></button>`
+            : ''}
+
+          <div class=&quot;menuLabel&quot;>מראה</div>
+          <div class=&quot;swatches&quot;>${swatches}</div>
+
+          <div class=&quot;menuLabel&quot;>שפה</div>
+          <span class=&quot;seg&quot;><button aria-pressed=&quot;true&quot; data-act=&quot;noop&quot;>עברית</button>
+            <button aria-pressed=&quot;false&quot; data-act=&quot;noop&quot;>EN</button></span>
+        </div>
+
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------------- render + events ---------------- */
+
+function fill(id, html) {
+  const slot = document.getElementById(id);
+  if (slot) {
+    slot.innerHTML = html;
+  }
+}
+
+function renderControlGroup(id, styles, action, selected) {
+  fill(id, styles.map((style) =>
+    `<button data-act=&quot;${action}&quot; data-style=&quot;${style.id}&quot;
+      aria-pressed=&quot;${selected === style.id}&quot;>${style.label}</button>`).join(''));
+}
+function renderIconControls() {
+  renderControlGroup('iconControls', ICON_STYLES, 'icon-style', state.iconStyle);
+  renderControlGroup('pencilControls', PENCIL_STYLES, 'pencil-style', state.pencilStyle);
+  renderControlGroup('backControls', BACK_STYLES, 'back-style', state.backStyle);
+  renderControlGroup('navCountControls', NAV_COUNTS, 'nav-count', String(state.navCount));
+}
+
+function render() {
+  renderIconControls();
+  const scroller = document.getElementById('txScroll');
+  const scrollTop = scroller ? scroller.scrollTop : 0;
+
+  document.documentElement.dataset.theme = THEME_BY_ACCOUNT.get(state.accountId);
+  fill('summaryPhone', summaryPhoneHtml());
+  fill('menuPhone', menuPhoneHtml('surface'));
+  fill('menuPhoneGradient', menuPhoneHtml('gradient'));
+  fill('menuPhoneAppHeader', menuPhoneHtml('appHeader'));
+  fill('menuPhoneNavBlock', menuPhoneHtml('appHeader', 'block'));
+  fill('menuPhoneNavBare', menuPhoneHtml('appHeader', 'bare'));
+  fill('menuPhoneNavTabs', menuPhoneHtml('appHeader', 'tabs'));
+
+  const next = document.getElementById('txScroll');
+  if (next) {
+    next.scrollTop = scrollTop;
+  }
+}
+
+const SKIP_RENDER = true;
+
+const ACTIONS = {
+  noop: () => {},
+  /* מחליף רק את התכונה על הפאנל הקיים; בנייה מחדש של ה-DOM היא מה שגרם לקפיצה */
+  menu: () => {
+    state.menuOpen = !state.menuOpen;
+    for (const panel of document.querySelectorAll('.menuPanel')) {
+      panel.dataset.open = String(state.menuOpen);
+    }
+    return SKIP_RENDER;
+  },
+  axis: (target) => {
+    state.rtlAxis = !state.rtlAxis;
+    target.setAttribute('aria-pressed', String(state.rtlAxis));
+    target.textContent = state.rtlAxis ? 'ציר זמן: ימין→שמאל (RTL)' : 'ציר זמן: שמאל→ימין (LTR)';
+  },
+  range: (target) => { state.range = Number(target.dataset.days); },
+  total: () => { state.showTotal = !state.showTotal; },
+  wallet: (target) => {
+    const key = target.dataset.key;
+    if (state.wallets.has(key)) {
+      state.wallets.delete(key);
+    } else {
+      state.wallets.add(key);
+    }
+  },
+  'all-wallets': () => {
+    const allOn = WALLETS.every((wallet) => state.wallets.has(wallet.key));
+    state.wallets = allOn ? new Set() : new Set(WALLETS.map((wallet) => wallet.key));
+  },
+  filter: (target) => { state.typeFilter = target.dataset.filter; },
+  'icon-style': (target) => { state.iconStyle = target.dataset.style; },
+  'pencil-style': (target) => { state.pencilStyle = target.dataset.style; },
+  'back-style': (target) => { state.backStyle = target.dataset.style; },
+  'nav-count': (target) => { state.navCount = Number(target.dataset.style); },
+  'interest-mode': (target) => { state.interestMode = target.dataset.mode; },
+  'account-toggle': () => { state.accountListOpen = !state.accountListOpen; },
+  account: (target) => {
+    state.accountId = target.dataset.id;
+    state.accountListOpen = false;
+  },
+  theme: (target) => { THEME_BY_ACCOUNT.set(state.accountId, target.dataset.theme); },
+};
+
+document.addEventListener('click', (event) => {
+  if (state.accountListOpen &amp;&amp; !event.target.closest('.scopeBlock.global')) {
+    state.accountListOpen = false;
+    render();
+  }
+
+  const target = event.target.closest('[data-act]');
+  if (!target) {
+    return;
+  }
+  const action = ACTIONS[target.dataset.act];
+  if (!action) {
+    return;
+  }
+  if (action(target) !== SKIP_RENDER) {
+    render();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<section id="chart-contrast">
+  <h2>צבעי קווי הגרף — אפשרויות א׳–ח׳ <span class="badge chosen">✓ נבחר</span></h2>
+  <iframe title="צבעי קווי הגרף — אפשרויות א׳–ח׳" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — קווי הגרף · sunshine-quest</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+body { margin:0; padding:26px 20px 60px; background:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+  min-height:100vh; font-family:Rubik,sans-serif; color:#3A1F5A; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:21px; margin:0 0 6px; color:#fff; }
+.sub { font-size:13px; line-height:1.7; color:#fff; margin:0 0 18px; max-width:840px; }
+.row { display:flex; gap:18px; flex-wrap:wrap; }
+.option { width:340px; }
+.option h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; color:#fff; margin:0 0 8px; }
+.option .why { font-size:12px; color:#fff; opacity:.85; margin:-4px 0 8px; }
+.option.rejected .card { opacity:.6; }
+.card { background:#FFFFFF; border-radius:24px; padding:13px 14px 11px; box-shadow:0 6px 0 rgba(0,0,0,.06); }
+.chart { display:block; width:100%; }
+.chart .grid { stroke:#F2D9D2; stroke-width:1; }
+.chart .line { fill:none; stroke-linecap:round; stroke-linejoin:round; stroke-width:2.25; }
+.chart .total { stroke:#3A1F5A; stroke-width:3.25; }
+.chart .fill { fill:#3A1F5A; fill-opacity:.07; }
+.chart text { font-size:9.5px; font-weight:700; fill:#3A1F5A;
+  paint-order:stroke; stroke:#FFFFFF; stroke-width:3px; stroke-linejoin:round; }
+.chart .axis { font-size:9px; font-weight:500; fill:#675A80; stroke-width:2.5px; }
+.chips { display:flex; gap:5px; margin-top:9px; }
+.chip { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:999px;
+  border:1.5px solid #F2D9D2; color:#675A80; font-size:12.5px; font-weight:600; background:#FFF6E0; }
+.chip .sw { width:9px; height:9px; border-radius:3px; }
+table { margin-top:10px; width:100%; border-collapse:collapse; font-size:12px; background:#fff;
+  border-radius:12px; overflow:hidden; }
+td, th { padding:5px 8px; text-align:start; border-bottom:1px solid #F2D9D2; }
+td.num { direction:ltr; text-align:end; font-variant-numeric:tabular-nums; }
+.fail { color:#C62828; font-weight:700; }
+.pass { color:#2E7D32; font-weight:700; }
+</style>
+</head>
+<body>
+<h1>קווי הגרף ב-sunshine-quest — החלטה A</h1>
+<p class=&quot;sub&quot;>אותם ארבעה קווים על אותו כרטיס בכל אפשרות. רק החיסכון וההוצאות משתנים; טוב (#E94E89)
+  והסה״כ (textStrong) קבועים. הרף לקו גרפי הוא 3:1 מול <code>surface</code> הלבן.</p>
+<div class=&quot;row&quot; id=&quot;options&quot;></div>
+<script>
+const OPTIONS = [
+  { name: 'א · צבעי המוקאפ', savings: '#E0A020', spending: '#FF8A4C', rejected: 'מתחת ל-3:1' },
+  { name: 'ב · ההצעה', savings: '#B07D00', spending: '#E2661F', rejected: 'הוצאות וטוב דומים מדי' },
+  { name: 'ג · כהה יותר', savings: '#8F6500', spending: '#C2410C', rejected: 'הוצאות וטוב דומים מדי' },
+  { name: 'ד · softText · withdrawText', savings: '#7A5A0A', spending: '#D9480F', rejected: 'הוצאות וטוב דומים מדי' },
+  { name: 'ה · softText · gainText', savings: '#7A5A0A', spending: '#276E2C', rejected: 'חיסכון חום' },
+  { name: 'ו · softText · טורקיז', savings: '#7A5A0A', spending: '#0E7490', rejected: 'חיסכון חום' },
+  { name: 'ז · softText · כחול', savings: '#7A5A0A', spending: '#2563EB', rejected: 'חיסכון חום' },
+  { name: 'ח · נבחר: ירוק · כחול · ורוד', savings: '#276E2C', spending: '#2563EB' },
+];
+const GOOD = '#E94E89';
+const TOTAL = '#3A1F5A';
+const SURFACE = '#FFFFFF';
+const W = 312, H = 150, PAD = { near: 6, far: 34, top: 10, bottom: 20 };
+
+function wave(base, amp, phase, drift) {
+  return Array.from({ length: 30 }, (_, i) => base + drift * i + amp * Math.sin(i / 3 + phase));
+}
+const savings = wave(140, 10, 0, 2.2);
+const spending = wave(60, 22, 1.4, -0.4);
+const good = wave(35, 6, 2.6, 0.9);
+const total = savings.map((v, i) => v + spending[i] + good[i]);
+const all = [...savings, ...spending, ...good, ...total];
+const max = Math.max(...all), min = Math.min(...all);
+
+const x = (i) => PAD.near + (W - PAD.near - PAD.far) * (i / 29);
+const y = (v) => PAD.top + (H - PAD.top - PAD.bottom) * (1 - (v - min) / (max - min));
+const path = (s) => s.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+
+function channel(v) { const r = v / 255; return r <= 0.03928 ? r / 12.92 : ((r + 0.055) / 1.055) ** 2.4; }
+function lum(hex) { const n = parseInt(hex.slice(1), 16);
+  return 0.2126 * channel(n >> 16 &amp; 255) + 0.7152 * channel(n >> 8 &amp; 255) + 0.0722 * channel(n &amp; 255); }
+function ratio(a, b) { const [l, d] = [lum(a), lum(b)].sort((p, q) => q - p); return (l + 0.05) / (d + 0.05); }
+
+function label(series, name, color) {
+  const ly = y(series[0]);
+  return `<rect x=&quot;${x(0) + 4}&quot; y=&quot;${ly - 12}&quot; width=&quot;7&quot; height=&quot;7&quot; rx=&quot;2&quot; fill=&quot;${color}&quot;/>
+    <text x=&quot;${x(0) + 14}&quot; y=&quot;${ly - 5}&quot; text-anchor=&quot;end&quot;>${name}</text>`;
+}
+
+function card(o) {
+  const lines = [['חיסכון', savings, o.savings], ['הוצאות', spending, o.spending], ['טוב', good, GOOD]];
+  const ticks = [min, (min + max) / 2, max].map((v) =>
+    `<line class=&quot;grid&quot; x1=&quot;${PAD.near}&quot; x2=&quot;${W - PAD.far}&quot; y1=&quot;${y(v)}&quot; y2=&quot;${y(v)}&quot;/>
+     <text class=&quot;axis&quot; x=&quot;${W - 2}&quot; y=&quot;${y(v) + 3}&quot; text-anchor=&quot;start&quot;>₪${Math.round(v)}</text>`).join('');
+  const area = `${path(total)}L${x(29)},${H - PAD.bottom}L${x(0)},${H - PAD.bottom}Z`;
+  const rows = [['חיסכון', o.savings], ['הוצאות', o.spending], ['טוב', GOOD]].map(([n, c]) => {
+    const r = ratio(c, SURFACE);
+    return `<tr><td><span class=&quot;sw&quot; style=&quot;display:inline-block;width:9px;height:9px;border-radius:3px;background:${c}&quot;></span> ${n}</td>
+      <td class=&quot;num&quot;>${c}</td><td class=&quot;num ${r >= 3 ? 'pass' : 'fail'}&quot;>${r.toFixed(2)}</td></tr>`;
+  }).join('');
+  return `<div class=&quot;option ${o.rejected ? 'rejected' : ''}&quot;><h2>${o.name}</h2>${o.rejected ? `<div class=&quot;why&quot;>נדחה — ${o.rejected}</div>` : ''}<div class=&quot;card&quot;>
+    <svg class=&quot;chart&quot; viewBox=&quot;0 0 ${W} ${H}&quot;>${ticks}
+      <path class=&quot;fill&quot; d=&quot;${area}&quot;/><path class=&quot;line total&quot; d=&quot;${path(total)}&quot;/>
+      ${lines.map(([, s, c]) => `<path class=&quot;line&quot; stroke=&quot;${c}&quot; d=&quot;${path(s)}&quot;/>`).join('')}
+      ${lines.map(([n, s, c]) => label(s, n, c)).join('')}
+      <text x=&quot;${x(0) + 4}&quot; y=&quot;${y(total[0]) - 6}&quot; text-anchor=&quot;end&quot;>סה״כ</text>
+    </svg>
+    <div class=&quot;chips&quot;>${lines.map(([n, , c]) => `<span class=&quot;chip&quot;><span class=&quot;sw&quot; style=&quot;background:${c}&quot;></span>${n}</span>`).join('')}</div>
+  </div><table><tr><th>קו</th><th>צבע</th><th>מול surface</th></tr>${rows}</table></div>`;
+}
+
+document.getElementById('options').innerHTML = OPTIONS.map(card).join('');
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<script>
+for (const f of document.querySelectorAll('iframe')) {
+  const fit = () => { f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; };
+  f.addEventListener('load', () => {
+    f.style.height = '1px';
+    fit();
+    f.contentDocument.addEventListener('click', () => setTimeout(fit, 60));
+  });
+}
+</script>
+</body>
+</html>

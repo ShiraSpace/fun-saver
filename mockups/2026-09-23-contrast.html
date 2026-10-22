@@ -1,12 +1,55 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<title>fun-saver — ניגודיות AA</title>
+<style>
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:22px; margin:0 0 6px; color:#fff; }
+h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:34px 0 10px; color:#fff; display:flex; gap:10px; align-items:center; }
+a { color:#9be7b4; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 6px; max-width:860px; }
+.badge { font-weight:800; font-size:11px; letter-spacing:.06em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.badge.chosen { background:#2f7a4a; color:#eafff1; }
+.badge.rejected { background:#3a3a42; color:#c3c9d4; }
+table { border-collapse:collapse; width:100%; max-width:1080px; font-size:13px; }
+th { text-align:start; font-size:11px; color:#78839a; font-weight:600; padding:0 10px 7px; border-bottom:1px solid #333a46; }
+td { padding:10px; border-bottom:1px solid #2a303a; vertical-align:top; line-height:1.6; }
+td.source { direction:ltr; text-align:left; white-space:nowrap; }
+td.source a { color:#78839a; font-size:11px; }
+nav { display:flex; flex-wrap:wrap; gap:6px 14px; margin:18px 0 0; font-size:13px; }
+iframe { display:block; width:100%; height:900px; border:0; border-radius:10px; background:#fff; }
+</style>
+</head>
+<body>
+<p class="sub"><a href="index.html">← כל המוקאפים</a> · 2026-09-23</p>
+<h1>ניגודיות AA</h1>
+<p class="sub">שני מחזורים שמעלים כל טקסט על צבע באפליקציה לניגודיות AA — שניהם נבנו ושוחררו (מחזור א׳ ב-#98).</p>
+<h2>החלטות</h2>
+<table>
+  <thead><tr><th>השאלה</th><th>מה הוחלט</th><th>איפה זה נרשם</th></tr></thead>
+  <tbody>
+    <tr><td>איך מתקנים את הכפתור הראשי בג'ונגל ובמידנייט?</td><td>גרדיאנט כהה יותר לכפתור, והצל והזוהר זזים איתו — אחרת הצל בהיר מהכפתור והוא נראה זוהר מלמטה.</td><td class="source"><a href="../.plans/2026-09-23-aa-contrast-pass.md">.plans/2026-09-23-aa-contrast-pass.md</a></td></tr>
+    <tr><td>האם primaryText הוא primary מוכהה?</td><td>לא, טוקן נפרד — במידנייט טקסט כהה יותר רק יורד בניגודיות, כי בערכה כהה הטקסט צריך להתבהר.</td><td class="source"><a href="../.plans/2026-09-23-aa-contrast-pass.md">.plans/2026-09-23-aa-contrast-pass.md</a></td></tr>
+    <tr><td>איך מתקנים את «הקופות» הלבן על גרדיאנט המסך?</td><td>רקע שקוף-כהה מאחורי הכיתוב (labelScrim) בסאנשיין ובג'ונגל, ובמידנייט שקוף — בכוונה.</td><td class="source"><a href="../.plans/2026-09-23-aa-contrast-pass.md">.plans/2026-09-23-aa-contrast-pass.md</a></td></tr>
+    <tr><td>הזוהר של הכפתור — לפי הצבע הישן או החדש?</td><td>הולך אחרי הכפתור החדש, כדי שהכפתור והאור שלו ייקראו כאובייקט אחד; החלטת מראה מול המוקאפ.</td><td class="source"><a href="../.plans/2026-09-23-aa-contrast-pass.md">.plans/2026-09-23-aa-contrast-pass.md</a></td></tr>
+    <tr><td>איך מתקנים את הלבן על הגרדיאנט במסך ההתחברות?</td><td>לא מתקנים — רקע לפסקה, דיו כהה, ושלוש הדרכים להזיז את הרקע (עמעום, וינייטה, גרדיאנט עמוק) נדחו כולן כמכוערות, והלבן נשאר על 1.60.</td><td class="source"><a href="../.plans/2026-09-23-aa-contrast-pass-2.md">.plans/2026-09-23-aa-contrast-pass-2.md</a></td></tr>
+    <tr><td>כותרת טופס החשבון ושגיאת השמירה — עם רקע לכיתוב או בלעדיו?</td><td>בלי — גם הרקע מהכותרת הוסר, החלטת מראה שמשאירה אותה גרועה מ-main.</td><td class="source"><a href="../.plans/2026-09-23-aa-contrast-pass-2.md">.plans/2026-09-23-aa-contrast-pass-2.md</a></td></tr>
+    <tr><td>באיזה צבע נכתבת שגיאת שמירה?</td><td>באדום (alertText), כדי ששמירה שנכשלה לא תיראה כמו טקסט רגיל של הטופס — למרות שבסאנשיין זה מוריד את הניגודיות.</td><td class="source"><a href="../.plans/2026-09-23-aa-contrast-pass-2.md">.plans/2026-09-23-aa-contrast-pass-2.md</a></td></tr>
+  </tbody>
+</table>
+<nav><a href="#contrast">ניגודיות AA — מחזור א׳ ומחזור ב׳</a></nav>
+<section id="contrast">
+  <h2>ניגודיות AA — מחזור א׳ ומחזור ב׳ <span class="badge chosen">✓ נבחר</span></h2>
+  <iframe title="ניגודיות AA — מחזור א׳ ומחזור ב׳" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
 <title>fun-saver — ניגודיות AA · שני המחזורים</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
 <style>
 body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,sans-serif; }
 h1 { font-family:Fredoka,Rubik,sans-serif; font-size:21px; margin:0 0 6px; color:#fff; }
@@ -313,128 +356,128 @@ button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff;
 </head>
 <body>
 
-<p class="crumb"><a href="index.html">← כל המוקאפים</a> · ניגודיות AA</p>
+<p class=&quot;crumb&quot;><a href=&quot;index.html&quot; target=&quot;_top&quot;>← כל המוקאפים</a> · ניגודיות AA</p>
 <h1>fun-saver — ניגודיות AA</h1>
-<p class="sub">
+<p class=&quot;sub&quot;>
   שני המחזורים בעמוד אחד. לכל מחזור <b>בוררים משלו, צמודים למסכים שלו</b> — ערכה וגרסה חוזרות בשניהם,
   ולידן רק השאלות של אותו מחזור. הבורר נדבק לראש הסקציה בגלילה.
   <b>הסימן ✓ מסמן את מה שנבחר בפועל</b>, וזו גם ברירת המחדל של העמוד; שאר הכפתורים הם מה שנדחה, ונשארו כדי שאפשר יהיה לראות אותם.
 </p>
 
-<section class="pass pass1" data-theme="sunshine" data-variant="new" data-scrim="on" data-glow="adapt">
+<section class=&quot;pass pass1&quot; data-theme=&quot;sunshine&quot; data-variant=&quot;new&quot; data-scrim=&quot;on&quot; data-glow=&quot;adapt&quot;>
   <h2>מחזור ראשון — הכפתור, הצל, והכיתוב על המסך</h2>
-  <div class="status chosen"><span class="badge">✓ הוחלט</span><p>אושר כפי שצויר, 2026-09-23. <b>אחרי</b> + <b>עם</b> רקע לכיתוב + זוהר <b>מותאם</b>. <a href="../.plans/2026-09-23-aa-contrast-pass.md"><code>.plans/2026-09-23-aa-contrast-pass.md</code></a></p></div>
-  <p class="sub"><code>actionButton</code> יושב מתחת <b>לכל כפתור באפליקציה</b>, ולכן שינוי שלו הוא שינוי בכל המסכים. הקופות הן סיפור קטן יותר: בבית ובמגירה הגרדיאנט נושא <b>אימוג'י בלבד</b>, והמקום היחיד שבו טקסט יושב עליו הוא <code>WalletTrio</code> בעמוד «השיטה».</p>
-  <p class="sub"><b>הזוהר:</b> <code>primaryGlow</code> נגזר מ־<code>primary</code> הישן והבהיר. «כמו היום» משאיר הילה טורקיז/תכלת סביב כפתור כהה בהרבה; «מותאם» גוזר אותה מהכפתור החדש. זו החלטת מראה, לא ניגודיות.</p>
-  <p class="sub"><b>מה עוד נמצא בסריקה:</b> ה<b>צל</b> של הכפתור (<code>primaryShadow</code>) הפך בהיר מהכפתור אחרי ההכהיה — לכן הוא זז איתו. <code>primary</code> כטקסט נכשל בג'ונגל (3.26) ולכן קיבל ערך נפרד. <code>textMuted</code> נכשל בסאנשיין (3.87). ו<b>הכיתוב הלבן על רקע המסך</b> — «הקופות» בבית וכותרת הטופס — הוא 1.60 בסאנשיין ו־2.15 בג'ונגל, הגרוע באפליקציה, ואי אפשר לתקן אותו בצבע בלבד.</p>
-  <div class="bar">
-  <div class="grp"><b>ערכה</b>
-    <button data-t="sunshine" aria-pressed="true">סאנשיין</button>
-    <button data-t="jungle" aria-pressed="false">ג'ונגל</button>
-    <button data-t="midnight" aria-pressed="false">מידנייט</button>
+  <div class=&quot;status chosen&quot;><span class=&quot;badge&quot;>✓ הוחלט</span><p>אושר כפי שצויר, 2026-09-23. <b>אחרי</b> + <b>עם</b> רקע לכיתוב + זוהר <b>מותאם</b>. <a href=&quot;../.plans/2026-09-23-aa-contrast-pass.md&quot; target=&quot;_top&quot;><code>.plans/2026-09-23-aa-contrast-pass.md</code></a></p></div>
+  <p class=&quot;sub&quot;><code>actionButton</code> יושב מתחת <b>לכל כפתור באפליקציה</b>, ולכן שינוי שלו הוא שינוי בכל המסכים. הקופות הן סיפור קטן יותר: בבית ובמגירה הגרדיאנט נושא <b>אימוג'י בלבד</b>, והמקום היחיד שבו טקסט יושב עליו הוא <code>WalletTrio</code> בעמוד «השיטה».</p>
+  <p class=&quot;sub&quot;><b>הזוהר:</b> <code>primaryGlow</code> נגזר מ־<code>primary</code> הישן והבהיר. «כמו היום» משאיר הילה טורקיז/תכלת סביב כפתור כהה בהרבה; «מותאם» גוזר אותה מהכפתור החדש. זו החלטת מראה, לא ניגודיות.</p>
+  <p class=&quot;sub&quot;><b>מה עוד נמצא בסריקה:</b> ה<b>צל</b> של הכפתור (<code>primaryShadow</code>) הפך בהיר מהכפתור אחרי ההכהיה — לכן הוא זז איתו. <code>primary</code> כטקסט נכשל בג'ונגל (3.26) ולכן קיבל ערך נפרד. <code>textMuted</code> נכשל בסאנשיין (3.87). ו<b>הכיתוב הלבן על רקע המסך</b> — «הקופות» בבית וכותרת הטופס — הוא 1.60 בסאנשיין ו־2.15 בג'ונגל, הגרוע באפליקציה, ואי אפשר לתקן אותו בצבע בלבד.</p>
+  <div class=&quot;bar&quot;>
+  <div class=&quot;grp&quot;><b>ערכה</b>
+    <button data-t=&quot;sunshine&quot; aria-pressed=&quot;true&quot;>סאנשיין</button>
+    <button data-t=&quot;jungle&quot; aria-pressed=&quot;false&quot;>ג'ונגל</button>
+    <button data-t=&quot;midnight&quot; aria-pressed=&quot;false&quot;>מידנייט</button>
   </div>
-  <div class="grp"><b>גרסה</b>
-    <button data-v="now" aria-pressed="false">היום</button>
-    <button data-v="new" aria-pressed="true" data-chosen>אחרי</button>
+  <div class=&quot;grp&quot;><b>גרסה</b>
+    <button data-v=&quot;now&quot; aria-pressed=&quot;false&quot;>היום</button>
+    <button data-v=&quot;new&quot; aria-pressed=&quot;true&quot; data-chosen>אחרי</button>
   </div>
-  <div class="grp"><b>רקע לכיתוב על המסך</b>
-    <button data-s="off" aria-pressed="false">בלי</button>
-    <button data-s="on" aria-pressed="true" data-chosen>עם</button>
+  <div class=&quot;grp&quot;><b>רקע לכיתוב על המסך</b>
+    <button data-s=&quot;off&quot; aria-pressed=&quot;false&quot;>בלי</button>
+    <button data-s=&quot;on&quot; aria-pressed=&quot;true&quot; data-chosen>עם</button>
   </div>
-  <div class="grp"><b>זוהר הכפתור</b>
-    <button data-g="keep" aria-pressed="false">כמו היום</button>
-    <button data-g="adapt" aria-pressed="true" data-chosen>מותאם</button>
+  <div class=&quot;grp&quot;><b>זוהר הכפתור</b>
+    <button data-g=&quot;keep&quot; aria-pressed=&quot;false&quot;>כמו היום</button>
+    <button data-g=&quot;adapt&quot; aria-pressed=&quot;true&quot; data-chosen>מותאם</button>
   </div>
-  <span class="readout"></span>
+  <span class=&quot;readout&quot;></span>
   </div>
-<div class="rack">
+<div class=&quot;rack&quot;>
 
-  <div class="scr">
-    <div class="cap">התחברות <span>· GoogleButton</span></div>
-    <div class="phone">
-      <div class="wm">Fun Saver</div>
-      <p class="tag">החיסכון של הילדים, במקום אחד</p>
-      <div class="card">
-        <p class="ttl">התחברות</p>
-        <p class="m">התחברו עם חשבון Google כדי לראות את החשבונות שלכם מכל מכשיר.</p>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>התחברות <span>· GoogleButton</span></div>
+    <div class=&quot;phone&quot;>
+      <div class=&quot;wm&quot;>Fun Saver</div>
+      <p class=&quot;tag&quot;>החיסכון של הילדים, במקום אחד</p>
+      <div class=&quot;card&quot;>
+        <p class=&quot;ttl&quot;>התחברות</p>
+        <p class=&quot;m&quot;>התחברו עם חשבון Google כדי לראות את החשבונות שלכם מכל מכשיר.</p>
       </div>
-      <div class="btn">המשך עם Google</div>
+      <div class=&quot;btn&quot;>המשך עם Google</div>
     </div>
   </div>
 
-  <div class="scr">
-    <div class="cap">מסך ריק <span>· EmptyState</span></div>
-    <div class="phone">
-      <div class="pig">🐷</div>
-      <div class="btn">צור חשבון</div>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>מסך ריק <span>· EmptyState</span></div>
+    <div class=&quot;phone&quot;>
+      <div class=&quot;pig&quot;>🐷</div>
+      <div class=&quot;btn&quot;>צור חשבון</div>
     </div>
   </div>
 
-  <div class="scr">
-    <div class="cap">בית <span>· WalletList label · WalletCard</span></div>
-    <div class="phone tall">
-      <div class="hdr"><span class="brg"><i></i><i></i><i></i></span><h3>נועה</h3><span class="av">🦊</span></div>
-      <div class="card">
-        <p class="ttl">סה״כ ₪248</p>
-        <p class="m">הריבית של היום: ₪5</p>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>בית <span>· WalletList label · WalletCard</span></div>
+    <div class=&quot;phone tall&quot;>
+      <div class=&quot;hdr&quot;><span class=&quot;brg&quot;><i></i><i></i><i></i></span><h3>נועה</h3><span class=&quot;av&quot;>🦊</span></div>
+      <div class=&quot;card&quot;>
+        <p class=&quot;ttl&quot;>סה״כ ₪248</p>
+        <p class=&quot;m&quot;>הריבית של היום: ₪5</p>
       </div>
-      <span class="lbl">הקופות</span>
-      <div class="card">
-        <div class="wrow"><span class="tile p">🛍️</span><span class="nm">בזבוזים</span><span class="amt">₪124</span></div>
-        <div class="wrow"><span class="tile s">🐷</span><span class="nm">חיסכון</span><span class="amt">₪99</span></div>
-        <div class="wrow"><span class="tile g">💛</span><span class="nm">מעשים טובים</span><span class="amt">₪25</span></div>
+      <span class=&quot;lbl&quot;>הקופות</span>
+      <div class=&quot;card&quot;>
+        <div class=&quot;wrow&quot;><span class=&quot;tile p&quot;>🛍️</span><span class=&quot;nm&quot;>בזבוזים</span><span class=&quot;amt&quot;>₪124</span></div>
+        <div class=&quot;wrow&quot;><span class=&quot;tile s&quot;>🐷</span><span class=&quot;nm&quot;>חיסכון</span><span class=&quot;amt&quot;>₪99</span></div>
+        <div class=&quot;wrow&quot;><span class=&quot;tile g&quot;>💛</span><span class=&quot;nm&quot;>מעשים טובים</span><span class=&quot;amt&quot;>₪25</span></div>
       </div>
-      <div class="btn">＋ פעולה חדשה</div>
+      <div class=&quot;btn&quot;>＋ פעולה חדשה</div>
     </div>
   </div>
 
-  <div class="scr">
-    <div class="cap">מגירת הפקדה <span>· WalletTile · ConfirmAmount</span></div>
-    <div class="phone tall">
-      <div class="card">
-        <p class="ttl">כמה מפקידים?</p>
-        <div class="amount">₪30</div>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>מגירת הפקדה <span>· WalletTile · ConfirmAmount</span></div>
+    <div class=&quot;phone tall&quot;>
+      <div class=&quot;card&quot;>
+        <p class=&quot;ttl&quot;>כמה מפקידים?</p>
+        <div class=&quot;amount&quot;>₪30</div>
       </div>
-      <div class="card">
-        <div class="wrow"><span class="tile p">🛍️</span><span class="nm">בזבוזים</span><span class="amt">₪15</span></div>
-        <div class="wrow"><span class="tile s">🐷</span><span class="nm">חיסכון</span><span class="amt">₪12</span></div>
-        <div class="wrow"><span class="tile g">💛</span><span class="nm">מעשים טובים</span><span class="amt">₪3</span></div>
+      <div class=&quot;card&quot;>
+        <div class=&quot;wrow&quot;><span class=&quot;tile p&quot;>🛍️</span><span class=&quot;nm&quot;>בזבוזים</span><span class=&quot;amt&quot;>₪15</span></div>
+        <div class=&quot;wrow&quot;><span class=&quot;tile s&quot;>🐷</span><span class=&quot;nm&quot;>חיסכון</span><span class=&quot;amt&quot;>₪12</span></div>
+        <div class=&quot;wrow&quot;><span class=&quot;tile g&quot;>💛</span><span class=&quot;nm&quot;>מעשים טובים</span><span class=&quot;amt&quot;>₪3</span></div>
       </div>
-      <div class="btn">הפקדה של ₪30</div>
+      <div class=&quot;btn&quot;>הפקדה של ₪30</div>
     </div>
   </div>
 
-  <div class="scr">
-    <div class="cap">חשבון חדש <span>· AccountForm title</span></div>
-    <div class="phone">
-      <span class="lbl">חשבון חדש</span>
-      <div class="card">
-        <p class="ttl">שם הילד/ה</p>
-        <div class="fld">נועה</div>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>חשבון חדש <span>· AccountForm title</span></div>
+    <div class=&quot;phone&quot;>
+      <span class=&quot;lbl&quot;>חשבון חדש</span>
+      <div class=&quot;card&quot;>
+        <p class=&quot;ttl&quot;>שם הילד/ה</p>
+        <div class=&quot;fld&quot;>נועה</div>
       </div>
-      <div class="btn">שמירה</div>
+      <div class=&quot;btn&quot;>שמירה</div>
     </div>
   </div>
 
-  <div class="scr">
-    <div class="cap">השיטה <span>· intro · ספרות · WalletTrio · קישורים</span></div>
-    <div class="phone tall">
-      <div class="hdr"><span class="brg"><i></i><i></i><i></i></span><h3>השיטה</h3></div>
-      <div class="intro">
-        <span class="pill">מה אנחנו מנסים להשיג</span>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>השיטה <span>· intro · ספרות · WalletTrio · קישורים</span></div>
+    <div class=&quot;phone tall&quot;>
+      <div class=&quot;hdr&quot;><span class=&quot;brg&quot;><i></i><i></i><i></i></span><h3>השיטה</h3></div>
+      <div class=&quot;intro&quot;>
+        <span class=&quot;pill&quot;>מה אנחנו מנסים להשיג</span>
         <h4>שהילד יתאמן בלבחור</h4>
         <p>המטרה היא לא שיחסוך. המטרה היא שיהיה לו תרגול שבועי בדחיית סיפוקים.</p>
       </div>
-      <div class="sect"><span class="num">1</span><span class="t">למה לא קופה אחת</span><span class="cv">▾</span></div>
-      <div class="card">
-        <div class="pots">
-          <div class="pot p"><span class="e">🛍️</span><span class="n">בזבוזים</span><span class="v">50%</span></div>
-          <div class="pot s"><span class="e">🐷</span><span class="n">חיסכון</span><span class="v">40%</span></div>
-          <div class="pot g"><span class="e">💛</span><span class="n">מעשים טובים</span><span class="v">10%</span></div>
+      <div class=&quot;sect&quot;><span class=&quot;num&quot;>1</span><span class=&quot;t&quot;>למה לא קופה אחת</span><span class=&quot;cv&quot;>▾</span></div>
+      <div class=&quot;card&quot;>
+        <div class=&quot;pots&quot;>
+          <div class=&quot;pot p&quot;><span class=&quot;e&quot;>🛍️</span><span class=&quot;n&quot;>בזבוזים</span><span class=&quot;v&quot;>50%</span></div>
+          <div class=&quot;pot s&quot;><span class=&quot;e&quot;>🐷</span><span class=&quot;n&quot;>חיסכון</span><span class=&quot;v&quot;>40%</span></div>
+          <div class=&quot;pot g&quot;><span class=&quot;e&quot;>💛</span><span class=&quot;n&quot;>מעשים טובים</span><span class=&quot;v&quot;>10%</span></div>
         </div>
-        <div class="bub"><div class="bl">🗣️ מה אומרים לילד</div><p>"יש לך ₪18 בקופה של המעשים הטובים."</p></div>
-        <p class="m" style="margin-top:9px">בגיל הזה הנתינה המוחשית עובדת הכי טוב.</p>
-        <a>Soman &amp; Cheema, JMR 48, 2011</a>
+        <div class=&quot;bub&quot;><div class=&quot;bl&quot;>🗣️ מה אומרים לילד</div><p>&quot;יש לך ₪18 בקופה של המעשים הטובים.&quot;</p></div>
+        <p class=&quot;m&quot; style=&quot;margin-top:9px&quot;>בגיל הזה הנתינה המוחשית עובדת הכי טוב.</p>
+        <a>Soman &amp;amp; Cheema, JMR 48, 2011</a>
       </div>
     </div>
   </div>
@@ -442,153 +485,153 @@ button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff;
 </div>
 </section>
 
-<section class="pass pass2" data-theme="sunshine" data-variant="new" data-bg="none" data-err="alert" data-fade="on" data-save="bare">
+<section class=&quot;pass pass2&quot; data-theme=&quot;sunshine&quot; data-variant=&quot;new&quot; data-bg=&quot;none&quot; data-err=&quot;alert&quot; data-fade=&quot;on&quot; data-save=&quot;bare&quot;>
   <h2>מחזור שני — מה שהסריקה הראשונה החמיצה</h2>
-  <div class="status chosen"><span class="badge">✓ הוחלט</span><p><b>בלי סקרים ובלי תיקון</b>: שלוש הדרכים להזיז את הרקע בהתחברות — עמעום, וינייטה, גרדיאנט עמוק — <b>נדחו כולן</b>, והלבן נשאר על 1.60. שגיאת השמירה <b>בלי תווית</b>, ולקחה את האדום. <a href="../.plans/2026-09-23-aa-contrast-pass-2.md"><code>.plans/2026-09-23-aa-contrast-pass-2.md</code></a></p></div>
-  <p class="sub">מה שהסריקה הראשונה החמיצה. <b>התחברות</b> מציירת תמיד סאנשיין, ולכן מתג הערכה לא נוגע בה. הכיתוב <b>נשאר לבן</b> והשקיפות <b>נשארת ‎.88</b>, ולכן מה שזז הוא הרקע — בלי שום קופסה, תווית או לוח. שלוש דרכים: <b>עמעום מלא</b> (שכבה אחת של ‎50% שחור על כל המסך), <b>וינייטה</b> (כהה למעלה ולמטה, בהיר באמצע מאחורי הכרטיס — נפילת אור, לא אובייקט), ו<b>גרדיאנט עמוק</b> (אותם גוונים, עצירות כהות יותר, בלי שכבה נוספת). הקריאה במד היא של <b>השורה הקטנה</b>, הגרועה מהשלוש.</p>
-  <p class="sub"><b>הטופס:</b> הכותרת מאבדת את התווית שקיבלה ב‏#98, והשגיאה נשארת כפי שהיא — שתיהן לבן על רקע המסך, 1.60, חריגה מודעת. <b>האדום מותאם לערכה:</b> סאנשיין <code>#A81B3A</code> (גרוע 5.42) נמשך אל הוורוד של הערכה, ג'ונגל <code>#A83A21</code> (4.97) אל הטרקוטה שלה, מידנייט נשאר <code>#F87171</code>. <code>gainText</code> עובר ל־<code>#276E2C</code>/<code>#316A26</code>, <code>textMuted</code> ל־<code>#6F6189</code>/<code>#526E63</code>. <b>מידנייט עובר הכול היום ולא זז.</b></p>
-  <div class="bar">
-  <div class="grp"><b>ערכה</b>
-    <button data-t="sunshine" aria-pressed="true">סאנשיין</button>
-    <button data-t="jungle" aria-pressed="false">ג'ונגל</button>
-    <button data-t="midnight" aria-pressed="false">מידנייט</button>
+  <div class=&quot;status chosen&quot;><span class=&quot;badge&quot;>✓ הוחלט</span><p><b>בלי סקרים ובלי תיקון</b>: שלוש הדרכים להזיז את הרקע בהתחברות — עמעום, וינייטה, גרדיאנט עמוק — <b>נדחו כולן</b>, והלבן נשאר על 1.60. שגיאת השמירה <b>בלי תווית</b>, ולקחה את האדום. <a href=&quot;../.plans/2026-09-23-aa-contrast-pass-2.md&quot; target=&quot;_top&quot;><code>.plans/2026-09-23-aa-contrast-pass-2.md</code></a></p></div>
+  <p class=&quot;sub&quot;>מה שהסריקה הראשונה החמיצה. <b>התחברות</b> מציירת תמיד סאנשיין, ולכן מתג הערכה לא נוגע בה. הכיתוב <b>נשאר לבן</b> והשקיפות <b>נשארת ‎.88</b>, ולכן מה שזז הוא הרקע — בלי שום קופסה, תווית או לוח. שלוש דרכים: <b>עמעום מלא</b> (שכבה אחת של ‎50% שחור על כל המסך), <b>וינייטה</b> (כהה למעלה ולמטה, בהיר באמצע מאחורי הכרטיס — נפילת אור, לא אובייקט), ו<b>גרדיאנט עמוק</b> (אותם גוונים, עצירות כהות יותר, בלי שכבה נוספת). הקריאה במד היא של <b>השורה הקטנה</b>, הגרועה מהשלוש.</p>
+  <p class=&quot;sub&quot;><b>הטופס:</b> הכותרת מאבדת את התווית שקיבלה ב‏#98, והשגיאה נשארת כפי שהיא — שתיהן לבן על רקע המסך, 1.60, חריגה מודעת. <b>האדום מותאם לערכה:</b> סאנשיין <code>#A81B3A</code> (גרוע 5.42) נמשך אל הוורוד של הערכה, ג'ונגל <code>#A83A21</code> (4.97) אל הטרקוטה שלה, מידנייט נשאר <code>#F87171</code>. <code>gainText</code> עובר ל־<code>#276E2C</code>/<code>#316A26</code>, <code>textMuted</code> ל־<code>#6F6189</code>/<code>#526E63</code>. <b>מידנייט עובר הכול היום ולא זז.</b></p>
+  <div class=&quot;bar&quot;>
+  <div class=&quot;grp&quot;><b>ערכה</b>
+    <button data-t=&quot;sunshine&quot; aria-pressed=&quot;true&quot;>סאנשיין</button>
+    <button data-t=&quot;jungle&quot; aria-pressed=&quot;false&quot;>ג'ונגל</button>
+    <button data-t=&quot;midnight&quot; aria-pressed=&quot;false&quot;>מידנייט</button>
   </div>
-  <div class="grp"><b>גרסה</b>
-    <button data-v="now" aria-pressed="false">היום</button>
-    <button data-v="new" aria-pressed="true" data-chosen>אחרי</button>
+  <div class=&quot;grp&quot;><b>גרסה</b>
+    <button data-v=&quot;now&quot; aria-pressed=&quot;false&quot;>היום</button>
+    <button data-v=&quot;new&quot; aria-pressed=&quot;true&quot; data-chosen>אחרי</button>
   </div>
-  <div class="grp"><b>הרקע בהתחברות</b>
-    <button data-b="none" aria-pressed="true" data-chosen>כמו היום</button>
-    <button data-b="dim" aria-pressed="false">עמעום מלא</button>
-    <button data-b="vig" aria-pressed="false">וינייטה</button>
-    <button data-b="deep" aria-pressed="false">גרדיאנט עמוק</button>
+  <div class=&quot;grp&quot;><b>הרקע בהתחברות</b>
+    <button data-b=&quot;none&quot; aria-pressed=&quot;true&quot; data-chosen>כמו היום</button>
+    <button data-b=&quot;dim&quot; aria-pressed=&quot;false&quot;>עמעום מלא</button>
+    <button data-b=&quot;vig&quot; aria-pressed=&quot;false&quot;>וינייטה</button>
+    <button data-b=&quot;deep&quot; aria-pressed=&quot;false&quot;>גרדיאנט עמוק</button>
   </div>
-  <div class="grp"><b>שגיאת מגירה</b>
-    <button data-e="alert" aria-pressed="true" data-chosen>אדום (alertText)</button>
-    <button data-e="accent" aria-pressed="false">ורוד (accent)</button>
+  <div class=&quot;grp&quot;><b>שגיאת מגירה</b>
+    <button data-e=&quot;alert&quot; aria-pressed=&quot;true&quot; data-chosen>אדום (alertText)</button>
+    <button data-e=&quot;accent&quot; aria-pressed=&quot;false&quot;>ורוד (accent)</button>
   </div>
-  <div class="grp"><b>שקיפות השורה הקטנה</b>
-    <button data-f="on" aria-pressed="true" data-chosen>נשארת .88</button>
-    <button data-f="off" aria-pressed="false">יורדת</button>
+  <div class=&quot;grp&quot;><b>שקיפות השורה הקטנה</b>
+    <button data-f=&quot;on&quot; aria-pressed=&quot;true&quot; data-chosen>נשארת .88</button>
+    <button data-f=&quot;off&quot; aria-pressed=&quot;false&quot;>יורדת</button>
   </div>
-  <div class="grp"><b>שגיאת שמירה בטופס</b>
-    <button data-x="bare" aria-pressed="true" data-chosen>בלי</button>
-    <button data-x="chip" aria-pressed="false">עם תווית</button>
+  <div class=&quot;grp&quot;><b>שגיאת שמירה בטופס</b>
+    <button data-x=&quot;bare&quot; aria-pressed=&quot;true&quot; data-chosen>בלי</button>
+    <button data-x=&quot;chip&quot; aria-pressed=&quot;false&quot;>עם תווית</button>
   </div>
-  <span class="readout s"></span>
-  <span class="readout e"></span>
-  <span class="readout v"></span>
+  <span class=&quot;readout s&quot;></span>
+  <span class=&quot;readout e&quot;></span>
+  <span class=&quot;readout v&quot;></span>
   </div>
-<div class="rack">
+<div class=&quot;rack&quot;>
 
-  <div class="scr">
-    <div class="cap">התחברות <span>· Wordmark · Tagline · Fineprint</span></div>
-    <div class="phone login">
-      <div class="pig">🐷</div>
-      <div class="hero">
-        <div class="wm">Fun Saver</div>
-        <p class="tag">החיסכון של הילדים, במקום אחד</p>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>התחברות <span>· Wordmark · Tagline · Fineprint</span></div>
+    <div class=&quot;phone login&quot;>
+      <div class=&quot;pig&quot;>🐷</div>
+      <div class=&quot;hero&quot;>
+        <div class=&quot;wm&quot;>Fun Saver</div>
+        <p class=&quot;tag&quot;>החיסכון של הילדים, במקום אחד</p>
       </div>
-      <div class="card">
-        <p class="ttl">התחברות</p>
-        <p class="m">התחברו עם חשבון Google כדי לראות את החשבונות שלכם מכל מכשיר.</p>
-              <div class="btn">המשך עם Google</div>
+      <div class=&quot;card&quot;>
+        <p class=&quot;ttl&quot;>התחברות</p>
+        <p class=&quot;m&quot;>התחברו עם חשבון Google כדי לראות את החשבונות שלכם מכל מכשיר.</p>
+              <div class=&quot;btn&quot;>המשך עם Google</div>
       </div>
-      <div class="fineplate">
-        <p class="fine">בכניסה ראשונה ניצור לכם חשבון משתמש אוטומטית. אנחנו שומרים רק שם ואימייל.</p>
+      <div class=&quot;fineplate&quot;>
+        <p class=&quot;fine&quot;>בכניסה ראשונה ניצור לכם חשבון משתמש אוטומטית. אנחנו שומרים רק שם ואימייל.</p>
       </div>
     </div>
   </div>
 
-  <div class="scr">
-    <div class="cap">התחברות — כשלון <span>· ErrorMessage על surface</span></div>
-    <div class="phone login">
-      <div class="pig">🐷</div>
-      <div class="hero">
-        <div class="wm">Fun Saver</div>
-        <p class="tag">החיסכון של הילדים, במקום אחד</p>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>התחברות — כשלון <span>· ErrorMessage על surface</span></div>
+    <div class=&quot;phone login&quot;>
+      <div class=&quot;pig&quot;>🐷</div>
+      <div class=&quot;hero&quot;>
+        <div class=&quot;wm&quot;>Fun Saver</div>
+        <p class=&quot;tag&quot;>החיסכון של הילדים, במקום אחד</p>
       </div>
-      <div class="card">
-        <p class="ttl">התחברות</p>
-        <p class="m">התחברו עם חשבון Google כדי לראות את החשבונות שלכם מכל מכשיר.</p>
-        <div class="btn">המשך עם Google</div>
-        <p class="err">ההתחברות נכשלה. בדקו את החיבור לאינטרנט ונסו שוב.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="scr">
-    <div class="cap">מגירת משיכה <span>· ModeToggle · חריגה · שגיאה</span></div>
-    <div class="phone start">
-      <div class="card">
-        <div class="track">
-          <span class="pill">הפקדה<span class="ar in">↓</span></span>
-          <span class="pill on">משיכה<span class="ar out">↑</span></span>
-        </div>
-        <p class="ttl">כמה מושכים?</p>
-        <div class="amount">₪30</div>
-        <span class="over">אין מספיק בקופה — יש ₪12</span>
-        <span class="drawerr">לא הצלחנו לשמור. נסו שוב.</span>
-        <div class="btn">משיכה של ₪30</div>
+      <div class=&quot;card&quot;>
+        <p class=&quot;ttl&quot;>התחברות</p>
+        <p class=&quot;m&quot;>התחברו עם חשבון Google כדי לראות את החשבונות שלכם מכל מכשיר.</p>
+        <div class=&quot;btn&quot;>המשך עם Google</div>
+        <p class=&quot;err&quot;>ההתחברות נכשלה. בדקו את החיבור לאינטרנט ונסו שוב.</p>
       </div>
     </div>
   </div>
 
-  <div class="scr">
-    <div class="cap">בית <span>· StatStrip, הרווח וה«היום»</span></div>
-    <div class="phone start">
-      <div class="card">
-        <div class="wrow">
-          <span class="tile s">🐷</span>
-          <span class="nm">חיסכון<small>ריבית 3% בשבוע</small></span>
-          <span class="am">₪99</span>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>מגירת משיכה <span>· ModeToggle · חריגה · שגיאה</span></div>
+    <div class=&quot;phone start&quot;>
+      <div class=&quot;card&quot;>
+        <div class=&quot;track&quot;>
+          <span class=&quot;pill&quot;>הפקדה<span class=&quot;ar in&quot;>↓</span></span>
+          <span class=&quot;pill on&quot;>משיכה<span class=&quot;ar out&quot;>↑</span></span>
         </div>
-        <div class="strip">
-          <div class="cell d"><span class="lb">הפקדת</span><span class="am">₪90</span></div>
-          <div class="cell g"><span class="lb">רווח מריבית</span><span class="am">₪9</span></div>
-          <div class="cell g"><span class="lb">היום</span><span class="am">₪0.5</span></div>
+        <p class=&quot;ttl&quot;>כמה מושכים?</p>
+        <div class=&quot;amount&quot;>₪30</div>
+        <span class=&quot;over&quot;>אין מספיק בקופה — יש ₪12</span>
+        <span class=&quot;drawerr&quot;>לא הצלחנו לשמור. נסו שוב.</span>
+        <div class=&quot;btn&quot;>משיכה של ₪30</div>
+      </div>
+    </div>
+  </div>
+
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>בית <span>· StatStrip, הרווח וה«היום»</span></div>
+    <div class=&quot;phone start&quot;>
+      <div class=&quot;card&quot;>
+        <div class=&quot;wrow&quot;>
+          <span class=&quot;tile s&quot;>🐷</span>
+          <span class=&quot;nm&quot;>חיסכון<small>ריבית 3% בשבוע</small></span>
+          <span class=&quot;am&quot;>₪99</span>
+        </div>
+        <div class=&quot;strip&quot;>
+          <div class=&quot;cell d&quot;><span class=&quot;lb&quot;>הפקדת</span><span class=&quot;am&quot;>₪90</span></div>
+          <div class=&quot;cell g&quot;><span class=&quot;lb&quot;>רווח מריבית</span><span class=&quot;am&quot;>₪9</span></div>
+          <div class=&quot;cell g&quot;><span class=&quot;lb&quot;>היום</span><span class=&quot;am&quot;>₪0.5</span></div>
         </div>
       </div>
-      <div class="card">
-        <div class="wrow">
-          <span class="tile p">🛍️</span>
-          <span class="nm">בזבוזים<small>בלי ריבית</small></span>
-          <span class="am">₪124</span>
+      <div class=&quot;card&quot;>
+        <div class=&quot;wrow&quot;>
+          <span class=&quot;tile p&quot;>🛍️</span>
+          <span class=&quot;nm&quot;>בזבוזים<small>בלי ריבית</small></span>
+          <span class=&quot;am&quot;>₪124</span>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="scr">
-    <div class="cap">תפריט <span>· עריכת נועה · AppearanceSection</span></div>
-    <div class="phone start">
-      <div class="scope">
-        <div class="picker"><span class="av">🦊</span>נועה<span class="cv">▾</span></div>
-        <div class="editrow"><span>✏️</span><u>עריכת נועה</u></div>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>תפריט <span>· עריכת נועה · AppearanceSection</span></div>
+    <div class=&quot;phone start&quot;>
+      <div class=&quot;scope&quot;>
+        <div class=&quot;picker&quot;><span class=&quot;av&quot;>🦊</span>נועה<span class=&quot;cv&quot;>▾</span></div>
+        <div class=&quot;editrow&quot;><span>✏️</span><u>עריכת נועה</u></div>
       </div>
-      <div class="card">
-        <p class="ttl">מראה</p>
-        <div class="swatches">
-          <span class="sw on" style="background:linear-gradient(160deg,#FFC34D,#E94E89)"></span>
-          <span class="sw" style="background:linear-gradient(160deg,#2A9D8F,#90BE6D)"></span>
-          <span class="sw" style="background:linear-gradient(160deg,#0A0E14,#122036)"></span>
+      <div class=&quot;card&quot;>
+        <p class=&quot;ttl&quot;>מראה</p>
+        <div class=&quot;swatches&quot;>
+          <span class=&quot;sw on&quot; style=&quot;background:linear-gradient(160deg,#FFC34D,#E94E89)&quot;></span>
+          <span class=&quot;sw&quot; style=&quot;background:linear-gradient(160deg,#2A9D8F,#90BE6D)&quot;></span>
+          <span class=&quot;sw&quot; style=&quot;background:linear-gradient(160deg,#0A0E14,#122036)&quot;></span>
         </div>
-        <p class="err">לא הצלחנו לשמור את הערכה. נסו שוב.</p>
+        <p class=&quot;err&quot;>לא הצלחנו לשמור את הערכה. נסו שוב.</p>
       </div>
     </div>
   </div>
 
-  <div class="scr">
-    <div class="cap">עריכת חשבון — שגיאת שמירה <span>· כותרת בלי תווית · SaveError</span></div>
-    <div class="phone">
-      <span class="ttl-bare">✏️ עריכת חשבון</span>
-      <div class="fld" style="width:100%;box-sizing:border-box">שם: נועה</div>
-      <div class="avatars">
-        <span class="av-o"></span><span class="av-o sel"></span>
-        <span class="av-o"></span><span class="av-o"></span>
+  <div class=&quot;scr&quot;>
+    <div class=&quot;cap&quot;>עריכת חשבון — שגיאת שמירה <span>· כותרת בלי תווית · SaveError</span></div>
+    <div class=&quot;phone&quot;>
+      <span class=&quot;ttl-bare&quot;>✏️ עריכת חשבון</span>
+      <div class=&quot;fld&quot; style=&quot;width:100%;box-sizing:border-box&quot;>שם: נועה</div>
+      <div class=&quot;avatars&quot;>
+        <span class=&quot;av-o&quot;></span><span class=&quot;av-o sel&quot;></span>
+        <span class=&quot;av-o&quot;></span><span class=&quot;av-o&quot;></span>
       </div>
-      <div class="btn">✓ שמירת שינויים</div>
-      <span class="saveerr">לא הצלחנו לשמור את החשבון, נסו שוב</span>
+      <div class=&quot;btn&quot;>✓ שמירת שינויים</div>
+      <span class=&quot;saveerr&quot;>לא הצלחנו לשמור את החשבון, נסו שוב</span>
     </div>
   </div>
 
@@ -609,6 +652,20 @@ document.querySelectorAll('.pass .bar button').forEach((toggle) => {
       button.setAttribute('aria-pressed', String(button === toggle)));
   });
 });
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<script>
+for (const f of document.querySelectorAll('iframe')) {
+  const fit = () => { f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; };
+  f.addEventListener('load', () => {
+    f.style.height = '1px';
+    fit();
+    f.contentDocument.addEventListener('click', () => setTimeout(fit, 60));
+  });
+}
 </script>
 </body>
 </html>

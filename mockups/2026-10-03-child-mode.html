@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8">
+<title>fun-saver — מצב ילד</title>
+<style>
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:22px; margin:0 0 6px; color:#fff; }
+h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:34px 0 10px; color:#fff; display:flex; gap:10px; align-items:center; }
+a { color:#9be7b4; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 6px; max-width:860px; }
+.badge { font-weight:800; font-size:11px; letter-spacing:.06em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.badge.chosen { background:#2f7a4a; color:#eafff1; }
+.badge.rejected { background:#3a3a42; color:#c3c9d4; }
+table { border-collapse:collapse; width:100%; max-width:1080px; font-size:13px; }
+th { text-align:start; font-size:11px; color:#78839a; font-weight:600; padding:0 10px 7px; border-bottom:1px solid #333a46; }
+td { padding:10px; border-bottom:1px solid #2a303a; vertical-align:top; line-height:1.6; }
+td.source { direction:ltr; text-align:left; white-space:nowrap; }
+td.source a { color:#78839a; font-size:11px; }
+nav { display:flex; flex-wrap:wrap; gap:6px 14px; margin:18px 0 0; font-size:13px; }
+iframe { display:block; width:100%; height:900px; border:0; border-radius:10px; background:#fff; }
+</style>
+</head>
+<body>
+<p class="sub"><a href="index.html">← כל המוקאפים</a> · 2026-10-03</p>
+<h1>מצב ילד</h1>
+<p class="sub">מסך פשוט לילד, לצפייה בלבד, עם תפריט משלו ומעבר בין ילדים — נבנה, ובסוף הפך למצב אחד לכל האפליקציה בטלפון (#193–#198).</p>
+<h2>החלטות</h2>
+<table>
+  <thead><tr><th>השאלה</th><th>מה הוחלט</th><th>איפה זה נרשם</th></tr></thead>
+  <tbody>
+    <tr><td>מה מראה מסך הבית של הילד?</td><td>חיסכון קודם, אחר כך בזבוזים ומעשים טובים, בשקלים שלמים מעוגלים כלפי מטה, בלי אחוזים, ריבית או גרף — מסך אחד בלי גלילה.</td><td class="source"><a href="../docs/superpowers/specs/2026-10-03-child-mode-design.md">docs/superpowers/specs/2026-10-03-child-mode-design.md</a></td></tr>
+    <tr><td>צריך קוד כדי לצאת ממצב ילד?</td><td>לא, מתג פשוט בלי קוד — המחקר ממליץ על קוד, והוחלט לוותר בינתיים ולהוסיף אם ילדים יחזרו למצב הורה.</td><td class="source"><a href="../docs/superpowers/specs/2026-10-03-child-mode-design.md">docs/superpowers/specs/2026-10-03-child-mode-design.md</a></td></tr>
+    <tr><td>הילד יכול להפקיד או למשוך?</td><td>לא — המסך לצפייה בלבד, וההורה נשאר הבנק.</td><td class="source"><a href="../docs/superpowers/specs/2026-10-03-child-mode-design.md">docs/superpowers/specs/2026-10-03-child-mode-design.md</a></td></tr>
+    <tr><td>איך מחליפים ילד מתוך תפריט מצב ילד?</td><td>אפשרות ג׳ — רק הילדים האחרים, בשורות בגודל כרטיס הילד שמעל, בלי כסף.</td><td class="source"><a href="../.plans/2026-10-04-child-account-switcher.md">.plans/2026-10-04-child-account-switcher.md</a></td></tr>
+    <tr><td>איפה המתג «מצב ילד» בתפריט ההורה?</td><td>אפשרות א׳ — מתג בכל שורה ברשימת החשבונות; נבנתה ב-#191 ונסגרה בלי מיזוג כשמצב ילד עבר לטלפון כולו.</td><td class="source"><a href="../.plans/2026-10-04-child-account-switcher.md">.plans/2026-10-04-child-account-switcher.md</a></td></tr>
+    <tr><td>מצב ילד שמור על החשבון או על הטלפון?</td><td>על הטלפון, בעוגייה — מוסרים את הטלפון לילדים ולא מדליקים כל חשבון בנפרד.</td><td class="source"><a href="../.plans/2026-10-05-global-child-mode.md">.plans/2026-10-05-global-child-mode.md</a></td></tr>
+    <tr><td>איך מדליקים ומכבים את מצב הילד?</td><td>מתג אחד «מצב הורה/ילד» באותה צורה בשני התפריטים — בהורה תחת «⚙️ הגדרות כלליות», בילד ככרטיס למטה.</td><td class="source"><a href="../.plans/2026-10-05-global-child-mode.md">.plans/2026-10-05-global-child-mode.md</a></td></tr>
+    <tr><td>מה קורה לתנועות ולשיטה במצב ילד?</td><td>הדף נשאר דף ההורה והתפריט הוא תפריט הילד — ילדים לא אמורים להגיע לשם, וזה בסדר אם כן.</td><td class="source"><a href="../.plans/2026-10-05-global-child-mode.md">.plans/2026-10-05-global-child-mode.md</a></td></tr>
+  </tbody>
+</table>
+<nav><a href="#child-mode">מסך הילד ותפריטי הילד וההורה</a> <a href="#child-mode-in-menu">איפה המתג בתפריט — א׳/ב׳/ג׳ (הוחלף)</a> <a href="#child-account-switcher">החלפת ילד — א׳/ב׳/ג׳</a> <a href="#global-child-mode">מצב ילד לכל האפליקציה</a></nav>
+<section id="child-mode">
+  <h2>מסך הילד ותפריטי הילד וההורה <span class="badge chosen">✓ נבחר</span></h2>
+  <iframe title="מסך הילד ותפריטי הילד וההורה" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — Child mode</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+  :root {
+    --screen: linear-gradient(170deg, #FFC34D 0%, #FF8A4C 45%, #E94E89 100%);
+    --primary: #6B2C8E;
+    --surface: #FFFFFF;
+    --textStrong: #3A1F5A;
+    --textMuted: #675A80;
+    --divider: #F2D9D2;
+    --softBg: #FFF8E0;
+    --softBorder: #FFD23F;
+    --softText: #7A5A0A;
+    --accountScopeBg: #F4EEFA;
+    --accountScopeBorder: #C9B6E4;
+    --gainText: #276E2C;
+    --gainSoftBg: #E1F4E5;
+    --walletSavings: linear-gradient(#FFE6B0, #FFC34D);
+    --walletSpending: linear-gradient(#FFD8C7, #FF8A4C);
+    --walletGoodDeeds: linear-gradient(#FBC4DA, #E94E89);
+    --savingsSolid: #FFC34D;
+    --spendingSolid: #FF8A4C;
+    --goodDeedsSolid: #E94E89;
+    --walletTrack: #F3ECE4;
+    --lip: 0 5px 0 rgba(0, 0, 0, 0.12);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Rubik', sans-serif; background: #111; color: #eee; }
+  .page { max-width: 1240px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1.doc { text-align: center; font-size: 24px; margin: 0 0 6px; }
+  .subtitle { text-align: center; color: #aaa; margin: 0 0 40px; font-size: 14px; }
+  section.step { margin-bottom: 64px; }
+  section.step > h2 { font-size: 18px; margin: 0 0 4px; text-align: center; }
+  section.step > p.why { text-align: center; color: #aaa; font-size: 13px; margin: 0 auto 22px; max-width: 640px; line-height: 1.6; }
+  .row { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; align-items: flex-start; }
+  .col { width: 360px; }
+  .cap { text-align: center; color: #ccc; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  .cap .tag { display: inline-block; background: #2b6; color: #fff; border-radius: 999px; padding: 1px 8px; font-size: 11px; margin-inline-start: 6px; }
+  h1.doc, .subtitle, section.step > h2, section.step > p.why, .cap, .notes { direction: ltr; unicode-bidi: plaintext; }
+  .notes { color: #aaa; font-size: 12px; line-height: 1.6; margin: 12px 4px 0; padding-inline-start: 18px; }
+  .research { max-width: 760px; margin: 0 auto 48px; background: #1a1a1a; border: 1px solid #2c2c2c; border-radius: 16px; padding: 16px 22px; direction: ltr; font-size: 13px; line-height: 1.7; color: #ccc; }
+  .research h2 { font-size: 15px; margin: 0 0 6px; color: #eee; }
+  .research ul { margin: 0; padding-inline-start: 18px; }
+
+  .phone { width: 360px; background: #1c1c1c; border-radius: 38px; padding: 8px; border: 1px solid #2c2c2c; box-shadow: 0 18px 40px rgba(0,0,0,.6); }
+  .screen { position: relative; border-radius: 31px; overflow: hidden; height: 760px; background: var(--screen); color: var(--textStrong); padding: 16px 14px 24px; }
+  .screen.menuBg { background: #FDF6E0; }
+
+  .card { background: var(--surface); border-radius: 22px; box-shadow: var(--lip); }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; margin-bottom: 16px; }
+  .header .name { font-size: 22px; font-weight: 800; display: flex; gap: 14px; align-items: center; }
+  .burger { width: 26px; display: grid; gap: 4px; }
+  .burger i { display: block; height: 4px; border-radius: 4px; background: var(--textStrong); }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #F6C177; display: grid; place-items: center; font-size: 24px; }
+  .avatar.big { width: 84px; height: 84px; font-size: 50px; margin: 0 auto 8px; }
+
+  .spendHero { padding: 22px 18px 20px; text-align: center; margin-bottom: 14px; }
+  .spendHero .icon { width: 72px; height: 72px; border-radius: 22px; background: var(--walletSpending); display: grid; place-items: center; font-size: 40px; margin: 0 auto 10px; }
+  .spendHero .label { font-size: 18px; font-weight: 700; color: var(--textMuted); }
+  .spendHero .big { font-size: 76px; font-weight: 800; line-height: 1; margin: 6px 0 4px; }
+  .spendHero .big small { font-size: 40px; vertical-align: 18px; margin-inline-end: 2px; }
+
+  .walletRow { padding: 14px 16px; display: flex; align-items: center; gap: 14px; margin-bottom: 12px; min-height: 92px; }
+  .walletRow .icon { width: 58px; height: 58px; border-radius: 18px; display: grid; place-items: center; font-size: 32px; flex: none; }
+  .walletRow .who { flex: 1; }
+  .walletRow .who b { display: block; font-size: 19px; }
+  .walletRow .who span { color: var(--textMuted); font-size: 14px; }
+  .walletRow .amount { font-size: 34px; font-weight: 800; }
+  .walletRow .amount small { font-size: 20px; }
+
+  .growth { display: inline-flex; align-items: center; gap: 6px; background: var(--gainSoftBg); color: var(--gainText); border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: 15px; margin-top: 4px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1.5px dashed var(--divider); }
+  .split div { border-radius: 14px; padding: 8px 0; font-size: 14px; font-weight: 700; color: var(--textMuted); background: var(--softBg); }
+  .split b { display: block; font-size: 24px; color: var(--textStrong); }
+  .split .earned { color: var(--gainText); background: var(--gainSoftBg); }
+  .split .earned b { color: var(--gainText); }
+  .coinDrop { display: inline-block; animation: drop 1.6s ease-in infinite; }
+  @keyframes drop { 0% { transform: translateY(-14px); opacity: 0; } 30% { opacity: 1; } 70%, 100% { transform: translateY(0); opacity: 1; } }
+
+  .jars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .jar { padding: 12px 8px 14px; text-align: center; }
+  .jar.on { outline: 4px solid var(--primary); outline-offset: -4px; }
+  .jar .glass { position: relative; height: 170px; border-radius: 20px 20px 26px 26px; background: var(--walletTrack); overflow: hidden; margin: 0 6px 10px; border: 3px solid #EADFD3; }
+  .jar .glass .fill { position: absolute; inset: auto 0 0 0; }
+  .jar .glass .emoji { position: absolute; inset: 0; display: grid; place-items: center; font-size: 38px; }
+  .jar b { display: block; font-size: 30px; font-weight: 800; }
+  .jar span { font-size: 14px; font-weight: 700; color: var(--textMuted); }
+  .sentence { padding: 16px; text-align: center; font-size: 22px; font-weight: 800; margin-bottom: 14px; }
+  .sentence em { font-style: normal; color: var(--primary); font-size: 30px; }
+  .growthCard { padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+  .growthCard .icon { width: 52px; height: 52px; border-radius: 16px; background: var(--walletSavings); display: grid; place-items: center; font-size: 28px; flex: none; }
+  .growthCard .body { flex: 1; font-size: 16px; font-weight: 700; }
+  .growthCard .body span { display: block; color: var(--textMuted); font-size: 13px; font-weight: 600; }
+
+  .menuChild { text-align: center; padding: 22px 16px; margin-bottom: 16px; }
+  .menuChild b { font-size: 26px; }
+  .menuChild .total { color: var(--textMuted); font-size: 15px; margin-top: 2px; }
+  .menuItem { display: flex; align-items: center; gap: 14px; padding: 16px 18px; margin-bottom: 12px; font-size: 19px; font-weight: 700; min-height: 76px; }
+  .menuItem .ic { font-size: 30px; }
+  .menuItem.on { background: var(--textStrong); color: #fff; }
+  .swatches { display: flex; gap: 12px; margin-inline-start: auto; }
+  .swatches i { width: 34px; height: 34px; border-radius: 50%; display: block; border: 3px solid #fff; box-shadow: 0 0 0 1.5px var(--divider); }
+  .swatches i.on { box-shadow: 0 0 0 3px var(--primary); }
+  .parentExit { position: absolute; inset: auto 14px 22px 14px; text-align: center; color: var(--textMuted); font-size: 14px; font-weight: 600; }
+  .parentExit .switchRow { display: inline-flex; align-items: center; gap: 10px; border: 1.5px solid var(--divider); background: #fff; border-radius: 999px; padding: 8px 16px; }
+
+  .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .tab { background: #fff; border: 1.5px solid var(--divider); border-radius: 20px; padding: 12px 0; text-align: center; font-weight: 700; font-size: 14px; color: var(--textMuted); }
+  .tab div { font-size: 20px; margin-bottom: 4px; }
+  .tab.on { background: var(--textStrong); color: #fff; border-color: var(--textStrong); }
+  .scope { background: var(--accountScopeBg); border: 1.5px solid var(--accountScopeBorder); border-radius: 24px; padding: 14px; }
+  .user { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1.5px solid var(--accountScopeBorder); margin-bottom: 12px; }
+  .user .who { flex: 1; } .user .who b { display: block; font-size: 17px; } .user .who span { color: var(--textMuted); font-size: 13px; }
+  .pill { border: 1.5px solid var(--accountScopeBorder); background: #fff; border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 13px; color: var(--textMuted); }
+  .picker { background: #fff; border: 1.5px solid var(--accountScopeBorder); border-radius: 18px; padding: 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .picker .who { flex: 1; } .picker .who b { display: block; font-size: 17px; } .picker .who span { color: var(--textMuted); font-size: 13px; }
+  .modeRow { background: #fff; border: 1.5px solid var(--softBorder); border-radius: 18px; padding: 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: 700; font-size: 15px; }
+  .modeRow .who { flex: 1; } .modeRow .who span { display: block; color: var(--textMuted); font-size: 12px; font-weight: 600; }
+  .switch { width: 48px; height: 28px; border-radius: 999px; background: #D9D2E4; position: relative; flex: none; }
+  .switch::after { content: ''; position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+  .switch.on { background: var(--primary); }
+  .switch.on::after { right: auto; left: 3px; }
+  .editLink { text-align: center; color: var(--textMuted); font-weight: 700; font-size: 14px; text-decoration: underline; }
+  .new { position: relative; }
+  .new::before { content: 'חדש'; position: absolute; top: -9px; left: 14px; background: #2b6; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 999px; }
+</style>
+</head>
+<body>
+<div class=&quot;page&quot;>
+  <h1 class=&quot;doc&quot;>🧒 Child mode — mockups</h1>
+  <p class=&quot;subtitle&quot;>Sunshine Quest theme, 360px phone. Read-only, one screen, no saving goal (that ships as its own feature). Example: ₪23.40 spending · ₪148.90 savings · ₪9.60 good deeds.</p>
+
+  <div class=&quot;research&quot;>
+    <h2>Research → rules applied here</h2>
+    <ul>
+      <li><b>Whole shekels, rounded down.</b> Decimal money is taught at 8–9, so a 7-year-old sees ₪23, never ₪23.40. Rounding down means the child never sees money they don't have.</li>
+      <li><b>Counts, not percentages.</b> No donut, no rate, no chart. Growth is shown as a count, &quot;earned by itself +₪6&quot;, next to the child's own money (jar-method.md §6.1: show growth, never the mechanism).</li>
+      <li><b>One screen, no scrolling.</b> NN/g: young children avoid scrolling. Everything fits in 760px.</li>
+      <li><b>Big targets, icon plus word.</b> Rows are at least 76px (≈2cm, NN/g). Never an icon alone or text alone (Google Designed for Families).</li>
+      <li><b>Savings leads, spending stays clear.</b> Savings is the hero, as you asked. Spending gets the second biggest number, because it's what a child asks at the shop.</li>
+      <li><b>Not babyish.</b> Same theme and cards as the parent app, only bigger and with less on screen.</li>
+    </ul>
+  </div>
+
+  <section class=&quot;step&quot;>
+    <h2>1 · Child home — savings first</h2>
+    <p class=&quot;why&quot;>Savings is the hero: the biggest number, split into the money the child put in and what it earned by itself since savings began. Spending comes next and stays easy to read at a glance. The saving goal's picture and progress bar will go inside the savings card in the next feature, so the card is built to grow.</p>
+    <div class=&quot;row&quot;>
+
+      <div class=&quot;col&quot;>
+        <div class=&quot;cap&quot;>1 · Savings hero <span class=&quot;tag&quot;>chosen</span></div>
+        <div class=&quot;phone&quot;><div class=&quot;screen&quot;>
+          <div class=&quot;card header&quot;><span class=&quot;name&quot;><span class=&quot;burger&quot;><i></i><i></i><i></i></span>נועה</span><span class=&quot;avatar&quot;>🧢</span></div>
+          <div class=&quot;card spendHero&quot;>
+            <div class=&quot;icon&quot; style=&quot;background:var(--walletSavings)&quot;>🐷</div>
+            <div class=&quot;label&quot;>החיסכון שלך</div>
+            <div class=&quot;big&quot;><small>₪</small>148</div>
+            <div class=&quot;split&quot;><div>הפקדת<b>₪142</b></div><div class=&quot;earned&quot;>✨ הרוויח לבד<b dir=&quot;ltr&quot;>+₪6</b></div></div>
+          </div>
+          <div class=&quot;card walletRow&quot;>
+            <div class=&quot;icon&quot; style=&quot;background:var(--walletSpending)&quot;>🛍️</div>
+            <div class=&quot;who&quot;><b>בזבוזים</b><span>יש לך לבזבז</span></div>
+            <div class=&quot;amount&quot;><small>₪</small>23</div>
+          </div>
+          <div class=&quot;card walletRow&quot;>
+            <div class=&quot;icon&quot; style=&quot;background:var(--walletGoodDeeds)&quot;>💛</div>
+            <div class=&quot;who&quot;><b>מעשים טובים</b><span>לתת למישהו אחר</span></div>
+            <div class=&quot;amount&quot;><small>₪</small>9</div>
+          </div>
+        </div></div>
+        <ul class=&quot;notes&quot;>
+          <li>Savings is the largest number on the screen. Under it: &quot;you deposited&quot; (₪142) and &quot;earned by itself&quot; (+₪6), which add up to the total.</li><li>Rounding: the total and the interest are rounded down, and &quot;you deposited&quot; is total minus interest, so the parts always add up. (Rounding each part down on its own can come to ₪1 less than the total.)</li><li>Once the goal ships, both numbers count from the day the goal was set.</li>
+          <li>Spending is second, with a 34px number and the words &quot;to spend&quot;, so &quot;how much can I spend?&quot; still takes one look.</li>
+          <li>Each wallet appears once. Nothing can be tapped except the menu. View only.</li>
+        </ul>
+      </div>
+
+      <div class=&quot;col&quot;>
+        <div class=&quot;cap&quot;>Next feature · goal inside the savings card</div>
+        <div class=&quot;phone&quot;><div class=&quot;screen&quot;>
+          <div class=&quot;card header&quot;><span class=&quot;name&quot;><span class=&quot;burger&quot;><i></i><i></i><i></i></span>נועה</span><span class=&quot;avatar&quot;>🧢</span></div>
+          <div class=&quot;card spendHero&quot; style=&quot;padding-top:14px&quot;>
+            <div style=&quot;height:120px;border-radius:18px;background:var(--walletSavings);display:grid;place-items:center;font-size:70px;margin-bottom:10px;opacity:.55;border:2px dashed #C9B6E4&quot;>🚲</div>
+            <div class=&quot;label&quot;>החיסכון שלך</div>
+            <div class=&quot;big&quot; style=&quot;font-size:60px&quot;><small style=&quot;font-size:32px;vertical-align:14px&quot;>₪</small>148</div>
+            <div class=&quot;split&quot;><div>הפקדת<b>₪142</b></div><div class=&quot;earned&quot;>✨ הרוויח לבד<b dir=&quot;ltr&quot;>+₪6</b></div></div>
+            <div style=&quot;margin-top:12px;height:14px;border-radius:999px;background:var(--walletTrack);overflow:hidden;opacity:.55;border:2px dashed #C9B6E4&quot;><i style=&quot;display:block;height:100%;width:57%;background:linear-gradient(90deg,#FFC34D,#FF8A4C)&quot;></i></div>
+          </div>
+          <div class=&quot;card walletRow&quot;>
+            <div class=&quot;icon&quot; style=&quot;background:var(--walletSpending)&quot;>🛍️</div>
+            <div class=&quot;who&quot;><b>בזבוזים</b><span>יש לך לבזבז</span></div>
+            <div class=&quot;amount&quot;><small>₪</small>23</div>
+          </div>
+          <div class=&quot;card walletRow&quot;>
+            <div class=&quot;icon&quot; style=&quot;background:var(--walletGoodDeeds)&quot;>💛</div>
+            <div class=&quot;who&quot;><b>מעשים טובים</b><span>לתת למישהו אחר</span></div>
+            <div class=&quot;amount&quot;><small>₪</small>9</div>
+          </div>
+        </div></div>
+        <ul class=&quot;notes&quot;>
+          <li>Shown only to check it fits. The dashed parts are <b>not</b> in this feature.</li>
+          <li>Everything still fits on one screen with no scrolling, once the image and bar are added.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class=&quot;step&quot;>
+    <h2>2 · The menu</h2>
+    <p class=&quot;why&quot;>The parent menu has three page tabs, the account picker, and settings. The child menu has a picture of the child, colours to choose, and the way back to parent mode. Switching back is a plain toggle with no gate, as decided.</p>
+    <div class=&quot;row&quot;>
+
+      <div class=&quot;col&quot;>
+        <div class=&quot;cap&quot;>2a · Child menu <span class=&quot;tag&quot;>recommended</span></div>
+        <div class=&quot;phone&quot;><div class=&quot;screen menuBg&quot;>
+          <div class=&quot;card header&quot;><span class=&quot;name&quot;><span style=&quot;font-size:26px&quot;>✕</span></span><span class=&quot;name&quot;>תפריט</span></div>
+          <div class=&quot;card menuChild&quot;>
+            <div class=&quot;avatar big&quot;>🧢</div>
+            <b>נועה</b>
+          </div>
+          <div class=&quot;card menuItem on&quot;><span class=&quot;ic&quot;>🏠</span>הכסף שלי</div>
+          <div class=&quot;card menuItem&quot;><span class=&quot;ic&quot;>🎨</span>צבעים
+            <span class=&quot;swatches&quot;><i class=&quot;on&quot; style=&quot;background:linear-gradient(#FFC34D,#E94E89)&quot;></i><i style=&quot;background:linear-gradient(#5BC0EB,#3A7BD5)&quot;></i><i style=&quot;background:linear-gradient(#7BD389,#2E9E5B)&quot;></i></span>
+          </div>
+          <div class=&quot;parentExit&quot;><span class=&quot;switchRow&quot;>👤 מצב הורה <span class=&quot;switch&quot;></span></span></div>
+        </div></div>
+        <ul class=&quot;notes&quot;>
+          <li>Two items, each 76px high: home and colours (the existing appearance section, which kids enjoy).</li>
+          <li>&quot;Parent mode&quot; is small and at the bottom, out of the way but reachable.</li>
+          <li>No account picker, no sign-out, no edit, no method page.</li>
+        </ul>
+      </div>
+
+      <div class=&quot;col&quot;>
+        <div class=&quot;cap&quot;>2b · Where the parent turns it on</div>
+        <div class=&quot;phone&quot;><div class=&quot;screen menuBg&quot;>
+          <div class=&quot;card header&quot;><span class=&quot;name&quot;><span style=&quot;font-size:26px&quot;>✕</span></span><span class=&quot;name&quot;>נועה</span></div>
+          <div class=&quot;tabs&quot;>
+            <div class=&quot;tab on&quot;><div>🏠</div>בית</div><div class=&quot;tab&quot;><div>📈</div>תנועות</div><div class=&quot;tab&quot;><div>📖</div>השיטה</div>
+          </div>
+          <div class=&quot;scope&quot;>
+            <div class=&quot;user&quot;><div class=&quot;avatar&quot;>👤</div><div class=&quot;who&quot;><b>אלי</b><span>eli@example.com</span></div><span class=&quot;pill&quot;>יציאה</span></div>
+            <div class=&quot;picker&quot;><div class=&quot;avatar&quot;>🧢</div><div class=&quot;who&quot;><b>נועה</b><span>₪181 · מוצג כרגע</span></div><span>▾</span></div>
+            <div class=&quot;modeRow new&quot;><span style=&quot;font-size:22px&quot;>🧒</span><div class=&quot;who&quot;>מצב ילד<span>מסך פשוט לנועה, רק לצפייה</span></div><span class=&quot;switch on&quot;></span></div>
+            <div class=&quot;editLink&quot;>✏️ עריכת נועה</div>
+          </div>
+        </div></div>
+        <ul class=&quot;notes&quot;>
+          <li>One new row in the account card (purple), because child mode shows one child's money.</li>
+          <li>Turning it on closes the menu and opens the child home for that account.</li>
+          <li>The device remembers it (a cookie, like the theme), so a reload stays in child mode.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+</div>
+</body>
+</html>
+"></iframe>
+</section>
+<section id="child-mode-in-menu">
+  <h2>איפה המתג בתפריט — א׳/ב׳/ג׳ (הוחלף) <span class="badge rejected">נדחה</span></h2>
+  <iframe title="איפה המתג בתפריט — א׳/ב׳/ג׳ (הוחלף)" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — Child mode in the menu</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+  /* tokens from src/theme/themes/sunshine-quest.ts, same as child-account-switcher.html */
+  :root {
+    --primary: #6B2C8E;
+    --surface: #FFFFFF;
+    --textStrong: #3A1F5A;
+    --textMuted: #675A80;
+    --divider: #F2D9D2;
+    --accountScopeBg: #F4EEFA;
+    --accountScopeBorder: #C9B6E4;
+    --lip: 0 5px 0 rgba(0, 0, 0, 0.12);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Rubik', sans-serif; background: #111; color: #eee; }
+  .page { max-width: 1240px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1.doc { text-align: center; font-size: 24px; margin: 0 0 6px; }
+  .subtitle { text-align: center; color: #aaa; margin: 0 auto 18px; font-size: 14px; max-width: 860px; line-height: 1.5; }
+  .controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; direction: ltr; font-size: 13px; color: #aaa; align-items: center; flex-wrap: wrap; }
+  .controls button { font: inherit; background: #222; color: #ddd; border: 1px solid #333; border-radius: 999px; padding: 5px 14px; cursor: pointer; }
+  .controls button.on { background: #6B2C8E; border-color: #6B2C8E; color: #fff; }
+  .row { direction: ltr; display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; align-items: flex-start; margin-top: 24px; }
+  .col { width: 360px; direction: rtl; }
+  .cap { text-align: center; color: #ccc; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  h1.doc, .subtitle, .cap, .notes, .controls { direction: ltr; unicode-bidi: plaintext; }
+  .notes { color: #aaa; font-size: 12px; line-height: 1.6; margin: 12px 4px 0; padding-inline-start: 18px; }
+  .notes .warn { color: #f2b56b; }
+
+  .phone { width: 360px; background: #1c1c1c; border-radius: 38px; padding: 8px; border: 1px solid #2c2c2c; box-shadow: 0 18px 40px rgba(0,0,0,.6); }
+  .screen { position: relative; border-radius: 31px; overflow-y: auto; height: 760px; background: #FDF6E0; color: var(--textStrong); padding: 16px 14px 24px; display: flex; flex-direction: column; }
+  .screen::-webkit-scrollbar { width: 0; }
+  .screen button { font: inherit; color: inherit; cursor: pointer; border: none; background: none; padding: 0; text-align: start; }
+
+  .card { background: var(--surface); border-radius: 22px; box-shadow: var(--lip); flex: none; }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; margin-bottom: 12px; font-size: 22px; font-weight: 800; }
+  .avatar { border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .toast { position: absolute; inset-inline: 24px; bottom: 18px; background: var(--textStrong); color: #fff; border-radius: 14px; padding: 10px 14px; font-size: 13px; font-weight: 600; text-align: center; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+
+  /* switch, as ViewModeSwitch */
+  .switch { width: 44px; height: 26px; border-radius: 999px; background: #E9D6D0; position: relative; flex: none; transition: background .2s; }
+  .switch::after { content: ''; position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: right .2s; }
+  .switch.on { background: var(--primary); }
+  .switch.on::after { right: 21px; }
+
+  /* parent menu */
+  .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; flex: none; }
+  .tab { background: #fff; border: 1.5px solid var(--divider); border-radius: 18px; padding: 10px 0; text-align: center; font-size: 13px; font-weight: 700; }
+  .tab.on { background: var(--textStrong); color: #fff; border-color: var(--textStrong); }
+  .tab i { display: block; font-style: normal; font-size: 20px; margin-bottom: 2px; }
+  .userBlock { background: var(--accountScopeBg); border: 1.5px solid var(--accountScopeBorder); border-radius: 22px; padding: 12px; margin-bottom: 12px; position: relative; flex: none; }
+  .user { display: flex; align-items: center; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--accountScopeBorder); margin-bottom: 10px; }
+  .user .e { width: 34px; height: 34px; border-radius: 50%; background: #3A7BD5; color: #fff; display: grid; place-items: center; font-weight: 700; }
+  .user b { display: block; font-size: 14px; }
+  .user small { color: var(--textMuted); font-size: 11px; }
+  .user .out { margin-inline-start: auto; border: 1.5px solid var(--accountScopeBorder) !important; border-radius: 999px !important; padding: 3px 10px !important; font-size: 12px; font-weight: 700; background: #fff !important; }
+  .picker { position: relative; }
+  .trigger { display: flex; align-items: center; gap: 10px; width: 100%; background: #fff !important; border: 2px solid #3A60C8 !important; border-radius: 16px !important; padding: 8px 12px !important; }
+  .trigger b { display: block; font-size: 15px; }
+  .trigger small { font-size: 11px; color: var(--textMuted); }
+  .trigger .caret { margin-inline-start: auto; font-size: 11px; }
+  .list { position: absolute; inset-inline: 0; top: calc(100% + 5px); background: #fff; border: 1.5px solid var(--accountScopeBorder); border-radius: 16px; padding: 7px; box-shadow: 0 14px 30px rgba(58,31,90,.25); z-index: 5; display: grid; gap: 5px; }
+  .listNote { font-size: 11px; color: var(--textMuted); padding: 2px 6px 4px; display: flex; justify-content: space-between; }
+  .acct { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 14px; border: 1.5px solid transparent; }
+  .acct.current { background: var(--accountScopeBg); border-color: var(--accountScopeBorder); }
+  .acct .pick { display: flex; align-items: center; gap: 10px; flex: 1; font-weight: 600; font-size: 14px; }
+  .acct .pick span.total { font-size: 12px; color: var(--textMuted); font-weight: 700; margin-inline-start: auto; }
+  .add { border: 1.5px dashed var(--divider) !important; border-radius: 14px !important; padding: 9px !important; text-align: center !important; color: var(--textMuted); font-weight: 600; font-size: 13px; }
+  .childSetting { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 8px 10px; background: #fff; border-radius: 14px; font-size: 14px; font-weight: 700; }
+  .childSetting small { display: block; font-size: 11px; color: var(--textMuted); font-weight: 500; }
+  .childSetting .switch { margin-inline-start: auto; }
+  .summary { margin-top: 10px; padding: 8px 10px; border-radius: 14px; background: #fff; font-size: 12px; color: var(--textMuted); line-height: 1.5; }
+  .summary b { color: var(--textStrong); }
+  .edit { display: block; margin-top: 8px; font-size: 13px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+  .settings { border: 1.5px dashed var(--accountScopeBorder); border-radius: 22px; padding: 12px; font-size: 13px; color: var(--textMuted); flex: none; margin-bottom: 12px; }
+  .settings b { color: var(--textStrong); display: block; margin-bottom: 6px; font-size: 14px; }
+  .childCard { background: #fff; border-radius: 22px; box-shadow: var(--lip); padding: 12px; margin-bottom: 12px; flex: none; }
+  .childCard .title { font-size: 14px; font-weight: 700; color: var(--textMuted); margin: 0 4px 4px; }
+  .childCard .hint { font-size: 11px; color: var(--textMuted); margin: 0 4px 8px; }
+  .childRow { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 14px; font-size: 14px; font-weight: 600; }
+  .childRow .switch { margin-inline-start: auto; }
+  .tempBanner { display: flex; align-items: center; gap: 8px; background: #FFF1C9; border: 1.5px solid #F2C94C; border-radius: 16px; padding: 8px 12px; margin-bottom: 12px; font-size: 13px; font-weight: 600; flex: none; }
+  .tempBanner button { margin-inline-start: auto; background: var(--textStrong) !important; color: #fff !important; border-radius: 999px !important; padding: 5px 12px !important; font-size: 12px; font-weight: 700; }
+
+  /* child menu (as on this branch) */
+  .menuChild { display: flex; align-items: center; gap: 14px; padding: 6px 16px; min-height: 56px; margin-bottom: 12px; }
+  .menuChild b { font-size: 18px; }
+  .menuItem { display: flex; align-items: center; gap: 14px; padding: 16px 18px; margin-bottom: 12px; font-size: 19px; font-weight: 700; min-height: 76px; }
+  .menuItem .ic { font-size: 30px; }
+  .menuItem.home { background: var(--textStrong); color: #fff; }
+  .switcher { padding: 12px; margin-bottom: 12px; }
+  .switcher .title { font-size: 15px; font-weight: 700; color: var(--textMuted); margin: 0 4px 10px; }
+  .others { display: grid; gap: 8px; }
+  .other { display: flex !important; align-items: center; gap: 14px; padding: 6px 16px !important; border-radius: 18px !important; background: var(--accountScopeBg) !important; min-height: 56px; font-size: 18px; font-weight: 700; width: 100%; }
+  .other .tag { font-size: 11px; font-weight: 600; color: var(--textMuted); background: #fff; border-radius: 999px; padding: 2px 8px; }
+  .other .go { margin-inline-start: auto; font-size: 22px; color: var(--primary); }
+  .swatches { display: flex; gap: 12px; margin-inline-start: auto; }
+  .swatches i { width: 34px; height: 34px; border-radius: 50%; display: block; border: 3px solid #fff; box-shadow: 0 0 0 1.5px var(--divider); }
+  .swatches i.on { box-shadow: 0 0 0 3px var(--primary); }
+  .parentPeek { margin-top: auto; padding-top: 8px; text-align: center; flex: none; }
+  .parentPeek button { display: inline-flex !important; align-items: center; gap: 6px; font-size: 13px !important; font-weight: 600; color: var(--textMuted) !important; border: 1.5px solid var(--divider) !important; background: #fff !important; border-radius: 999px !important; padding: 6px 14px !important; }
+</style>
+</head>
+<body>
+<div class=&quot;page&quot;>
+  <h1 class=&quot;doc&quot;>🧒 Child mode in the menu: where the toggle lives</h1>
+  <p class=&quot;subtitle&quot;>Sunshine Quest, 360px phone. Each account keeps its saved view (child or parent). In every option the child menu lists <b>all</b> the other children, and its bottom button is a small &quot;view in parent mode&quot; that saves nothing: it lives in memory until reload or switching accounts. Tap a name to switch, flip the toggles, use the bottom button, and watch both menus follow. The three options differ only in the parent menu.</p>
+  <div class=&quot;controls&quot;>Show the menu of:
+    <button data-start=&quot;parent&quot; class=&quot;on&quot;>a parent-view account</button><button data-start=&quot;child&quot;>a child-view account</button>
+  </div>
+  <div class=&quot;controls&quot;>Child menu marks siblings who open on the parent screen:
+    <button data-tag=&quot;off&quot; class=&quot;on&quot;>no</button><button data-tag=&quot;on&quot;>yes, 👤 tag</button>
+  </div>
+
+  <div class=&quot;row&quot;>
+    <div class=&quot;col&quot;>
+      <div class=&quot;cap&quot;>A · Toggle on each row of the account list, nothing below <span style=&quot;background:#2b6;color:#fff;border-radius:999px;padding:1px 8px;font-size:11px&quot;>chosen</span></div>
+      <div class=&quot;phone&quot;><div class=&quot;screen&quot; data-option=&quot;A&quot;></div></div>
+      <ul class=&quot;notes&quot;>
+        <li>The &quot;מצב ילד&quot; setting under the picker is gone, so it can't show through the open list (today's bug).</li>
+        <li>The current account's button says &quot;🧒 מצב ילד&quot; when it is on, so the closed menu still tells you.</li>
+        <li>One line at the top of the list explains the toggle column.</li>
+        <li class=&quot;warn&quot;>You have to open the list to change the current account too: one more tap than today.</li>
+        <li>&quot;חזרה למצב ילד&quot; shows only while a child-view account is being viewed in parent mode. Turning its toggle off, or switching accounts, ends the temporary view.</li>
+      </ul>
+    </div>
+
+    <div class=&quot;col&quot;>
+      <div class=&quot;cap&quot;>B · Toggles in the list, plus a one-line summary below</div>
+      <div class=&quot;phone&quot;><div class=&quot;screen&quot; data-option=&quot;B&quot;></div></div>
+      <ul class=&quot;notes&quot;>
+        <li>The setting under the picker becomes information only: who is in child view right now.</li>
+        <li>Answers &quot;why isn't my son in the switcher?&quot; without opening anything.</li>
+        <li class=&quot;warn&quot;>A line that looks tappable but isn't. The toggles are only in the list.</li>
+      </ul>
+    </div>
+
+    <div class=&quot;col&quot;>
+      <div class=&quot;cap&quot;>C · A &quot;מצב ילד&quot; card of its own, the picker stays as it is</div>
+      <div class=&quot;phone&quot;><div class=&quot;screen&quot; data-option=&quot;C&quot;></div></div>
+      <ul class=&quot;notes&quot;>
+        <li>Every account with its toggle, always visible, in its own card under the account block. No dropdown to open.</li>
+        <li>The picker keeps one job: choosing who you are looking at. Nothing sits under it, so no overlap bug.</li>
+        <li class=&quot;warn&quot;>Grows by one row per child: with 5 children the settings below get pushed down.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  const family = [
+    { name: 'yo', avatar: '🧢', color: '#F6C177', shekels: 516 },
+    { name: 'אלי', avatar: '🦖', color: '#9ED9A8', shekels: 383 },
+    { name: 'מושית', avatar: '🦄', color: '#E9B8E8', shekels: 94 },
+  ];
+  const settings = { start: 'parent', tag: false };
+  const fresh = () => ({ views: settings.start === 'child' ? ['parent', 'child', 'child'] : ['parent', 'child', 'parent'], current: settings.start === 'child' ? 2 : 0, listOpen: false, peek: false });
+  const states = { A: fresh(), B: fresh(), C: fresh() };
+
+  const avatar = (child, size) => `<span class=&quot;avatar&quot; style=&quot;width:${size}px;height:${size}px;font-size:${size * 0.6}px;background:${child.color}&quot;>${child.avatar}</span>`;
+  const toggle = (on, index) => `<button class=&quot;switch ${on ? 'on' : ''}&quot; data-view=&quot;${index}&quot; aria-label=&quot;מצב ילד&quot;></button>`;
+  const shownAsChild = (state) => state.views[state.current] === 'child' &amp;&amp; !state.peek;
+  const isPeeking = (state) => state.peek &amp;&amp; state.views[state.current] === 'child';
+
+  function childMenu(state) {
+    const child = family[state.current];
+    const others = family.map((sibling, index) => index === state.current ? '' :
+      `<button class=&quot;other&quot; data-open=&quot;${index}&quot;>${avatar(sibling, 40)}${sibling.name}${settings.tag &amp;&amp; state.views[index] === 'parent' ? '<span class=&quot;tag&quot;>👤 הורה</span>' : ''}<span class=&quot;go&quot;>‹</span></button>`).join('');
+    return `
+      <div class=&quot;card menuChild&quot;>${avatar(child, 40)}<b>${child.name}</b></div>
+      <div class=&quot;card menuItem home&quot;><span class=&quot;ic&quot;>🏠</span>הכסף שלי</div>
+      <div class=&quot;card switcher&quot;><div class=&quot;title&quot;>🔁 להחליף ל…</div><div class=&quot;others&quot;>${others}</div></div>
+      <div class=&quot;card menuItem&quot;><span class=&quot;ic&quot;>🎨</span>מראה
+        <span class=&quot;swatches&quot;><i class=&quot;on&quot; style=&quot;background:linear-gradient(#FFC34D,#E94E89)&quot;></i><i style=&quot;background:linear-gradient(#5BC0EB,#3A7BD5)&quot;></i><i style=&quot;background:linear-gradient(#111,#223)&quot;></i></span>
+      </div>
+      <div class=&quot;parentPeek&quot;><button data-peek=&quot;on&quot;>👤 לצפות במצב הורה</button></div>`;
+  }
+
+  function accountList(state, withToggles) {
+    if (!state.listOpen) return '';
+    const rows = family.map((child, index) => `
+      <div class=&quot;acct ${index === state.current ? 'current' : ''}&quot;>
+        <button class=&quot;pick&quot; data-open=&quot;${index}&quot;>${avatar(child, 30)}${child.name}<span class=&quot;total&quot;>₪${child.shekels}</span></button>
+        ${withToggles ? toggle(state.views[index] === 'child', index) : ''}
+      </div>`).join('');
+    const note = withToggles ? '<div class=&quot;listNote&quot;><span>חשבון</span><span>🧒 מצב ילד</span></div>' : '';
+    return `<div class=&quot;list&quot;>${note}${rows}<button class=&quot;add&quot;>＋ חשבון חדש</button></div>`;
+  }
+
+  function trigger(state, showsChildBadge) {
+    const child = family[state.current];
+    const status = showsChildBadge &amp;&amp; state.views[state.current] === 'child' ? '🧒 מצב ילד' : 'מוצג כרגע';
+    return `<button class=&quot;trigger&quot; data-list>${avatar(child, 34)}<span><b>${child.name}</b><small>₪${child.shekels} · ${status}</small></span><span class=&quot;caret&quot;>${state.listOpen ? '▲' : '▼'}</span></button>`;
+  }
+
+  function parentMenu(option, state) {
+    const child = family[state.current];
+    const inChildView = family.filter((_, index) => state.views[index] === 'child').map((sibling) => sibling.name);
+    const below = {
+      A: '',
+      B: `<div class=&quot;summary&quot;>🧒 במצב ילד: ${inChildView.length ? `<b>${inChildView.join(', ')}</b>` : 'אף אחד'}<br/>משנים ברשימת החשבונות למעלה</div>`,
+      C: '',
+    }[option];
+    const childCard = option === 'C' ? `
+      <div class=&quot;childCard&quot;><div class=&quot;title&quot;>🧒 מצב ילד</div><div class=&quot;hint&quot;>מסך פשוט לילד, רק לצפייה</div>
+        ${family.map((sibling, index) => `<div class=&quot;childRow&quot;>${avatar(sibling, 30)}${sibling.name}${toggle(state.views[index] === 'child', index)}</div>`).join('')}
+      </div>` : '';
+    const banner = isPeeking(state) ? `<div class=&quot;tempBanner&quot;>👤 צפייה זמנית במצב הורה<button data-peek=&quot;off&quot;>חזרה למצב ילד</button></div>` : '';
+    return `
+      ${banner}
+      <div class=&quot;tabs&quot;><span class=&quot;tab on&quot;><i>🏠</i>בית</span><span class=&quot;tab&quot;><i>📈</i>תנועות</span><span class=&quot;tab&quot;><i>📖</i>השיטה</span></div>
+      <div class=&quot;userBlock&quot;>
+        <div class=&quot;user&quot;><span class=&quot;e&quot;>E</span><span><b>Eli Ponyatovski</b><small>eliponyatovski@gmail.com</small></span><button class=&quot;out&quot;>יציאה</button></div>
+        <div class=&quot;picker&quot;>${trigger(state, option === 'A')}${accountList(state, option !== 'C')}</div>
+        ${below}
+        <button class=&quot;edit&quot;>✏️ עריכת ${child.name}</button>
+      </div>
+      ${childCard}
+      <div class=&quot;settings&quot;><b>ההגדרות של ${child.name}</b>מראה · שפה</div>`;
+  }
+
+  function render(screen) {
+    const option = screen.dataset.option;
+    const state = states[option];
+    const child = family[state.current];
+    screen.innerHTML = `
+      <div class=&quot;card header&quot;><span>✕</span><span>${child.name}</span></div>
+      ${shownAsChild(state) ? childMenu(state) : parentMenu(option, state)}
+      <div class=&quot;toast&quot;></div>`;
+    bind(screen, option, state);
+  }
+
+  function say(screen, text) {
+    const toast = screen.querySelector('.toast');
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1600);
+  }
+
+  function bind(screen, option, state) {
+    screen.querySelectorAll('[data-open]').forEach((button) => button.addEventListener('click', () => {
+      state.current = Number(button.dataset.open);
+      state.listOpen = false;
+      state.peek = false;
+      render(screen);
+      say(screen, `נפתח ${family[state.current].name}: ${state.views[state.current] === 'child' ? 'מסך ילד' : 'מסך הורה'} (לפי מה ששמור)`);
+    }));
+    screen.querySelectorAll('[data-view]').forEach((button) => button.addEventListener('click', () => {
+      const index = Number(button.dataset.view);
+      state.views[index] = state.views[index] === 'child' ? 'parent' : 'child';
+      if (index === state.current) state.peek = false;
+      render(screen);
+      say(screen, `${family[index].name}: ${state.views[index] === 'child' ? 'מצב ילד נשמר' : 'מצב הורה נשמר'}`);
+    }));
+    screen.querySelectorAll('[data-list]').forEach((button) => button.addEventListener('click', () => {
+      state.listOpen = !state.listOpen;
+      render(screen);
+    }));
+    screen.querySelectorAll('[data-peek]').forEach((button) => button.addEventListener('click', () => {
+      state.peek = button.dataset.peek === 'on';
+      render(screen);
+      say(screen, state.peek ? 'מצב הורה זמני: לא נשמר, נעלם בטעינה מחדש' : 'חזרה למסך ילד');
+    }));
+  }
+
+  const renderAll = () => document.querySelectorAll('.screen').forEach(render);
+  const choose = (attribute, apply) => document.querySelectorAll(`[${attribute}]`).forEach((button) => button.addEventListener('click', () => {
+    apply(button.getAttribute(attribute));
+    document.querySelectorAll(`[${attribute}]`).forEach((other) => other.classList.toggle('on', other === button));
+    renderAll();
+  }));
+  choose('data-start', (value) => { settings.start = value; Object.keys(states).forEach((key) => { states[key] = fresh(); }); });
+  choose('data-tag', (value) => { settings.tag = value === 'on'; });
+  renderAll();
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<section id="child-account-switcher">
+  <h2>החלפת ילד — א׳/ב׳/ג׳ <span class="badge chosen">✓ נבחר</span></h2>
+  <iframe title="החלפת ילד — א׳/ב׳/ג׳" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — Child account switcher</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+  /* tokens from src/theme/themes/sunshine-quest.ts, same as child-mode.html */
+  :root {
+    --primary: #6B2C8E;
+    --surface: #FFFFFF;
+    --textStrong: #3A1F5A;
+    --textMuted: #675A80;
+    --divider: #F2D9D2;
+    --accountScopeBg: #F4EEFA;
+    --accountScopeBorder: #C9B6E4;
+    --lip: 0 5px 0 rgba(0, 0, 0, 0.12);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Rubik', sans-serif; background: #111; color: #eee; }
+  .page { max-width: 1240px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1.doc { text-align: center; font-size: 24px; margin: 0 0 6px; }
+  .subtitle { text-align: center; color: #aaa; margin: 0 0 18px; font-size: 14px; }
+  .controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; direction: ltr; font-size: 13px; color: #aaa; align-items: center; }
+  .controls button { font: inherit; background: #222; color: #ddd; border: 1px solid #333; border-radius: 999px; padding: 5px 14px; cursor: pointer; }
+  .controls button.on { background: #6B2C8E; border-color: #6B2C8E; color: #fff; }
+  .row { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; align-items: flex-start; }
+  .col { width: 360px; }
+  .cap { text-align: center; color: #ccc; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  h1.doc, .subtitle, .cap, .notes { direction: ltr; unicode-bidi: plaintext; }
+  .notes { color: #aaa; font-size: 12px; line-height: 1.6; margin: 12px 4px 0; padding-inline-start: 18px; }
+  .notes .warn { color: #f2b56b; }
+
+  .phone { width: 360px; background: #1c1c1c; border-radius: 38px; padding: 8px; border: 1px solid #2c2c2c; box-shadow: 0 18px 40px rgba(0,0,0,.6); }
+  .screen { position: relative; border-radius: 31px; overflow-y: auto; height: 760px; background: #FDF6E0; color: var(--textStrong); padding: 16px 14px 24px; display: flex; flex-direction: column; }
+  .screen::-webkit-scrollbar { width: 0; }
+  .card { background: var(--surface); border-radius: 22px; box-shadow: var(--lip); }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; margin-bottom: 12px; font-size: 22px; font-weight: 800; flex: none; }
+  .avatar { border-radius: 50%; background: #F6C177; display: grid; place-items: center; flex: none; }
+  .menuChild { display: flex; align-items: center; gap: 14px; padding: 6px 16px; min-height: 56px; margin-bottom: 12px; flex: none; }
+  .menuChild .avatar { width: 40px; height: 40px; font-size: 24px; }
+  .menuChild b { font-size: 18px; }
+  .menuItem { display: flex; align-items: center; gap: 14px; padding: 16px 18px; margin-bottom: 12px; font-size: 19px; font-weight: 700; min-height: 76px; flex: none; }
+  .menuItem .ic { font-size: 30px; }
+  .menuItem.home { background: var(--textStrong); color: #fff; }
+  .swatches { display: flex; gap: 12px; margin-inline-start: auto; }
+  .swatches i { width: 34px; height: 34px; border-radius: 50%; display: block; border: 3px solid #fff; box-shadow: 0 0 0 1.5px var(--divider); }
+  .swatches i.on { box-shadow: 0 0 0 3px var(--primary); }
+  .parentExit { margin-top: auto; padding-top: 8px; text-align: center; color: var(--textMuted); font-size: 14px; font-weight: 600; flex: none; }
+  .parentExit .switchRow { display: inline-flex; align-items: center; gap: 10px; border: 1.5px solid var(--divider); background: #fff; border-radius: 999px; padding: 8px 16px; }
+  .switch { width: 48px; height: 28px; border-radius: 999px; background: #D9D2E4; position: relative; }
+  .switch::after { content: ''; position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+
+  .switcher { padding: 12px; margin-bottom: 12px; flex: none; }
+  .switcher .title { font-size: 15px; font-weight: 700; color: var(--textMuted); margin: 0 4px 10px; display: flex; gap: 8px; align-items: center; }
+  .switcher button { font: inherit; color: inherit; cursor: pointer; border: none; }
+
+  /* A · tiles */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 8px; }
+  .tile { display: grid; justify-items: center; gap: 6px; padding: 12px 4px; border-radius: 18px; background: var(--accountScopeBg); border: 3px solid transparent !important; min-height: 96px; position: relative; }
+  .tile .avatar { width: 52px; height: 52px; font-size: 30px; }
+  .tile b { font-size: 18px; }
+  .tile.on { border-color: var(--primary) !important; background: #fff; }
+  .tile.on::after { content: '✓'; position: absolute; top: 6px; left: 8px; width: 22px; height: 22px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 13px; display: grid; place-items: center; font-weight: 800; }
+
+  /* B · big rows */
+  .bigRows { display: grid; gap: 8px; }
+  .bigRow { display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 18px; background: var(--accountScopeBg); min-height: 64px; text-align: start; border: 3px solid transparent !important; }
+  .bigRow .avatar { width: 44px; height: 44px; font-size: 26px; }
+  .bigRow b { flex: 1; font-size: 20px; }
+  .bigRow .total { font-size: 22px; font-weight: 800; }
+  .bigRow .total small { font-size: 14px; }
+  .bigRow.on { background: #fff; border-color: var(--primary) !important; }
+
+  /* C · only the others */
+  .others { display: grid; gap: 8px; }
+  .other { display: flex; align-items: center; gap: 14px; padding: 6px 16px; border-radius: 18px; background: var(--accountScopeBg); min-height: 56px; font-size: 18px; font-weight: 700; text-align: start; }
+  .other .avatar { width: 40px; height: 40px; font-size: 24px; }
+  .other .go { margin-inline-start: auto; font-size: 22px; color: var(--primary); }
+</style>
+</head>
+<body>
+<div class=&quot;page&quot;>
+  <h1 class=&quot;doc&quot;>🔁 Child mode — quick account switcher</h1>
+  <p class=&quot;subtitle&quot;>Sunshine Quest, 360px phone, child menu as shipped on main. The switcher sits under «הכסף שלי». Tap any child to switch: the top card follows, and the device stays in child mode. To make room, the top card is a 56px row (40px face, 18px name) instead of the 84px centred avatar on main, the same size as the C rows.</p>
+  <div class=&quot;controls&quot;>How many children on the family:
+    <button data-count=&quot;2&quot;>2</button><button data-count=&quot;3&quot; class=&quot;on&quot;>3</button><button data-count=&quot;5&quot;>5</button>
+  </div>
+
+  <div class=&quot;row&quot;>
+    <div class=&quot;col&quot;>
+      <div class=&quot;cap&quot;>A · Tiles: everyone, the current one marked</div>
+      <div class=&quot;phone&quot;><div class=&quot;screen&quot; data-option=&quot;A&quot;></div></div>
+      <ul class=&quot;notes&quot;>
+        <li>Faces and names only, no money. Each tile is 96px tall with a 52px face.</li>
+        <li>Every child is always in the same place, so a child learns &quot;mine is the second one&quot;.</li>
+        <li>Wraps to a second line from 4 children and still fits on one screen with 5.</li>
+      </ul>
+    </div>
+
+    <div class=&quot;col&quot;>
+      <div class=&quot;cap&quot;>B · Big rows: the parent picker, always open</div>
+      <div class=&quot;phone&quot;><div class=&quot;screen&quot; data-option=&quot;B&quot;></div></div>
+      <ul class=&quot;notes&quot;>
+        <li>The parent account list, with 64px rows and no dropdown to open.</li>
+        <li>Shows each child's total in whole shekels, rounded down.</li>
+        <li class=&quot;warn&quot;>A child sees a sibling's money. With 5 children the menu scrolls, which the child-mode rules avoid.</li>
+      </ul>
+    </div>
+
+    <div class=&quot;col&quot;>
+      <div class=&quot;cap&quot;>C · Only the others: &quot;switch to…&quot; <span style=&quot;background:#2b6;color:#fff;border-radius:999px;padding:1px 8px;font-size:11px&quot;>chosen</span></div>
+      <div class=&quot;phone&quot;><div class=&quot;screen&quot; data-option=&quot;C&quot;></div></div>
+      <ul class=&quot;notes&quot;>
+        <li>The card at the top already says who is shown, so the list holds only the children you can switch to.</li>
+        <li>Nothing to mark as current, and one fewer item to read.</li>
+        <li>Each row matches the top card: 56px high, a 40px face, a 18px name. Fits on one screen with 5 children.</li><li>Only brothers and sisters who are also in child view are listed. Switching to an account in parent view would hand the child the parent screen. With none, the section is not shown.</li><li class=&quot;warn&quot;>The order changes every time you switch.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  const children = [
+    { name: 'נועה', avatar: '🧢', color: '#F6C177', shekels: 181 },
+    { name: 'איתי', avatar: '🦖', color: '#9ED9A8', shekels: 96 },
+    { name: 'מאיה', avatar: '🦄', color: '#E9B8E8', shekels: 240 },
+    { name: 'יונתן', avatar: '⚽', color: '#A9C8F2', shekels: 57 },
+    { name: 'שירה', avatar: '🌸', color: '#F7B5A8', shekels: 133 },
+  ];
+  const state = { count: 3, current: { A: 0, B: 0, C: 0 } };
+
+  const avatar = (child) => `<span class=&quot;avatar&quot; style=&quot;background:${child.color}&quot;>${child.avatar}</span>`;
+
+  const switchers = {
+    A: (family, current) => `<div class=&quot;tiles&quot;>${family.map((child, index) =>
+      `<button class=&quot;tile ${index === current ? 'on' : ''}&quot; data-index=&quot;${index}&quot;>${avatar(child)}<b>${child.name}</b></button>`).join('')}</div>`,
+    B: (family, current) => `<div class=&quot;bigRows&quot;>${family.map((child, index) =>
+      `<button class=&quot;bigRow ${index === current ? 'on' : ''}&quot; data-index=&quot;${index}&quot;>${avatar(child)}<b>${child.name}</b><span class=&quot;total&quot;><small>₪</small>${child.shekels}</span></button>`).join('')}</div>`,
+    C: (family, current) => `<div class=&quot;others&quot;>${family.map((child, index) => index === current ? '' :
+      `<button class=&quot;other&quot; data-index=&quot;${index}&quot;>${avatar(child)}${child.name}<span class=&quot;go&quot;>‹</span></button>`).join('')}</div>`,
+  };
+  const titles = { A: '👫 מי משתמש?', B: '👫 מי משתמש?', C: '🔁 להחליף ל…' };
+
+  function render(screen) {
+    const option = screen.dataset.option;
+    const family = children.slice(0, state.count);
+    const current = Math.min(state.current[option], family.length - 1);
+    const child = family[current];
+    screen.innerHTML = `
+      <div class=&quot;card header&quot;><span>✕</span><span>תפריט</span></div>
+      <div class=&quot;card menuChild&quot;>${avatar(child)}<b>${child.name}</b></div>
+      <div class=&quot;card menuItem home&quot;><span class=&quot;ic&quot;>🏠</span>הכסף שלי</div>
+      <div class=&quot;card switcher&quot;><div class=&quot;title&quot;>${titles[option]}</div>${switchers[option](family, current)}</div>
+      <div class=&quot;card menuItem&quot;><span class=&quot;ic&quot;>🎨</span>צבעים
+        <span class=&quot;swatches&quot;><i class=&quot;on&quot; style=&quot;background:linear-gradient(#FFC34D,#E94E89)&quot;></i><i style=&quot;background:linear-gradient(#5BC0EB,#3A7BD5)&quot;></i><i style=&quot;background:linear-gradient(#7BD389,#2E9E5B)&quot;></i></span>
+      </div>
+      <div class=&quot;parentExit&quot;><span class=&quot;switchRow&quot;>👤 מצב הורה <span class=&quot;switch&quot;></span></span></div>`;
+    screen.querySelectorAll('[data-index]').forEach((button) => button.addEventListener('click', () => {
+      state.current[option] = Number(button.dataset.index);
+      render(screen);
+    }));
+  }
+
+  const renderAll = () => document.querySelectorAll('.screen').forEach(render);
+  document.querySelectorAll('[data-count]').forEach((button) => button.addEventListener('click', () => {
+    state.count = Number(button.dataset.count);
+    document.querySelectorAll('[data-count]').forEach((other) => other.classList.toggle('on', other === button));
+    renderAll();
+  }));
+  renderAll();
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<section id="global-child-mode">
+  <h2>מצב ילד לכל האפליקציה <span class="badge chosen">✓ נבחר</span></h2>
+  <iframe title="מצב ילד לכל האפליקציה" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — Global child mode</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+  /* tokens from src/theme/themes/jungle-quest.ts */
+  :root {
+    --primary: #2A9D8F;
+    --surface: #FFFDF5;
+    --textStrong: #1B4332;
+    --textMuted: #4B655B;
+    --divider: #DDE7CC;
+    --softBorder: #B5D94C;
+    --softText: #4A6A1E;
+    --accountScopeBg: #EDF4E6;
+    --accountScopeBorder: #A9C77E;
+    --lip: 0 5px 0 rgba(0, 0, 0, 0.08);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Rubik', sans-serif; background: #111; color: #eee; }
+  .page { max-width: 1240px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1.doc { text-align: center; font-size: 24px; margin: 0 0 6px; }
+  .subtitle { text-align: center; color: #aaa; margin: 0 auto 18px; font-size: 14px; max-width: 760px; line-height: 1.5; }
+  .controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 28px; font-size: 13px; color: #aaa; align-items: center; flex-wrap: wrap; }
+  .controls button { font: inherit; background: #222; color: #ddd; border: 1px solid #333; border-radius: 999px; padding: 5px 14px; cursor: pointer; }
+  .controls button.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .row { direction: ltr; display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; align-items: flex-start; }
+  .col { width: 380px; direction: rtl; }
+  .cap { text-align: center; color: #ccc; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  h1.doc, .subtitle, .notes, .controls, .modeBadge, .cap { direction: ltr; unicode-bidi: plaintext; }
+  .notes { color: #aaa; font-size: 12px; line-height: 1.6; margin: 12px 4px 0; padding-inline-start: 18px; }
+  .notes .warn { color: #f2b56b; }
+  .modeBadge { text-align: center; font-size: 12px; margin-bottom: 8px; color: #888; }
+  .modeBadge b { color: #fff; }
+
+  .phone { width: 380px; background: #1c1c1c; border-radius: 38px; padding: 8px; border: 1px solid #2c2c2c; box-shadow: 0 18px 40px rgba(0,0,0,.6); }
+  .screen { position: relative; border-radius: 31px; overflow-y: auto; height: 800px; background: #F3F7E4; color: var(--textStrong); padding: 14px 14px 20px; display: flex; flex-direction: column; }
+  .screen::-webkit-scrollbar { width: 0; }
+  :where(.screen button) { font: inherit; color: inherit; cursor: pointer; border: none; background: none; padding: 0; text-align: start; }
+  .card { background: var(--surface); border-radius: 22px; box-shadow: var(--lip); flex: none; }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; margin-bottom: 12px; font-size: 24px; font-weight: 800; }
+  .avatar { border-radius: 50%; display: grid; place-items: center; flex: none; }
+
+  /* the one mode switch, the same in both menus */
+  .modeSwitch { display: flex; align-items: center; gap: 10px; width: 100%; font-size: 16px; font-weight: 700; }
+  .modeSwitch .sides { margin-inline-start: auto; display: flex; }
+  .switch { width: 48px; height: 28px; border-radius: 999px; background: var(--divider); position: relative; flex: none; transition: background .2s; }
+  .switch::after { content: ''; position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: right .2s; }
+  .switch.on { background: var(--primary); }
+  .switch.on::after { right: 23px; }
+  .switch.withFace { width: 64px; height: 36px; }
+  .switch.withFace::after { content: attr(data-face); width: 30px; height: 30px; display: grid; place-items: center; font-size: 19px; }
+  .switch.withFace.on::after { right: 31px; }
+
+  /* parent menu, as on main */
+  .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; flex: none; }
+  .tab { background: var(--surface); border: 1.5px solid var(--divider); border-radius: 18px; padding: 12px 0; text-align: center; font-size: 14px; font-weight: 700; }
+  .tab.on { background: var(--textStrong); color: #fff; border-color: var(--textStrong); }
+  .tab i { display: block; font-style: normal; font-size: 20px; margin-bottom: 2px; }
+  .userBlock { background: var(--accountScopeBg); border: 1.5px solid var(--accountScopeBorder); border-radius: 22px; padding: 12px; margin-bottom: 14px; position: relative; flex: none; }
+  .user { display: flex; align-items: center; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--accountScopeBorder); margin-bottom: 10px; }
+  .user .e { width: 36px; height: 36px; border-radius: 50%; background: #3A7BD5; color: #fff; display: grid; place-items: center; font-weight: 600; }
+  .user b { display: block; font-size: 15px; }
+  .user small { color: var(--textMuted); font-size: 12px; }
+  .user .out { margin-inline-start: auto; border: 1.5px solid var(--accountScopeBorder) !important; border-radius: 999px !important; padding: 4px 12px !important; font-size: 13px; font-weight: 700; background: var(--surface) !important; }
+  .picker { position: relative; }
+  .trigger { display: flex; align-items: center; gap: 10px; width: 100%; background: var(--surface) !important; border: 1.5px solid var(--accountScopeBorder) !important; border-radius: 16px !important; padding: 8px 12px !important; }
+  .trigger b { display: block; font-size: 16px; }
+  .trigger small { font-size: 12px; color: var(--textMuted); }
+  .trigger .caret { margin-inline-start: auto; font-size: 11px; }
+  .list { position: absolute; inset-inline: 0; top: calc(100% + 5px); background: var(--surface); border: 1.5px solid var(--accountScopeBorder); border-radius: 16px; padding: 7px; box-shadow: 0 14px 30px rgba(27,67,50,.25); z-index: 5; display: grid; gap: 5px; }
+  .acct { display: flex; align-items: center; gap: 10px; padding: 7px 10px !important; border-radius: 14px; border: 1.5px solid transparent !important; font-weight: 600; font-size: 14px; width: 100%; }
+  .acct.current { background: var(--accountScopeBg) !important; border-color: var(--accountScopeBorder) !important; }
+  .acct .total { font-size: 12px; color: var(--textMuted); font-weight: 700; margin-inline-start: auto; }
+  .add { border: 1.5px dashed var(--divider) !important; border-radius: 14px !important; padding: 9px !important; text-align: center !important; color: var(--textMuted); font-weight: 600; font-size: 13px; }
+  .edit { display: block; margin-top: 10px; text-align: center; font-size: 14px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* settings blocks: one look for both, as «הגדרות של …» on main */
+  .settings { border: 1.5px dashed var(--accountScopeBorder); box-shadow: inset 4px 0 0 var(--softBorder); border-radius: 20px; padding: 14px; margin-bottom: 14px; flex: none; }
+  .settings h2 { display: flex; align-items: center; gap: 7px; margin: 0 0 3px; font-size: 16px; font-weight: 700; }
+  .settings p { margin: 0 0 10px; font-size: 12px; color: var(--textMuted); line-height: 1.5; }
+  .settings .label { font-size: 13px; font-weight: 700; color: var(--softText); margin: 6px 0 6px; }
+  .swatches { display: flex; gap: 10px; }
+  .swatches i { width: 40px; height: 40px; border-radius: 10px; display: block; }
+  .swatches i.on { box-shadow: 0 0 0 2.5px var(--textStrong); }
+  .lang { display: inline-flex; border: 1.5px solid var(--divider); border-radius: 999px; overflow: hidden; font-size: 13px; font-weight: 700; }
+  .lang span { padding: 6px 16px; }
+  .lang .on { background: var(--textStrong); color: #fff; }
+
+  /* child menu, as on main + the switcher (original option C, everyone listed) */
+  .menuChild { display: flex; align-items: center; gap: 14px; padding: 6px 16px; min-height: 56px; margin-bottom: 12px; }
+  .menuChild b { font-size: 18px; }
+  .menuItem { display: flex; align-items: center; gap: 14px; padding: 16px 18px; margin-bottom: 12px; font-size: 18px; font-weight: 700; min-height: 76px; }
+  .menuItem .ic { font-size: 28px; }
+  .menuItem.home { background: var(--textStrong); color: #fff; }
+  .switcher { padding: 14px 16px; margin-bottom: 12px; }
+  .switcher .title { font-size: 18px; font-weight: 700; color: var(--softText); margin: 0 2px 10px; }
+  .others { display: grid; gap: 8px; }
+  .other { display: flex; align-items: center; gap: 14px; padding: 6px 16px !important; border-radius: 18px; background: var(--accountScopeBg) !important; min-height: 56px; font-size: 18px; font-weight: 700; width: 100%; }
+  .other .go { margin-inline-start: auto; width: 9px; height: 9px; border-bottom: 3px solid var(--primary); border-left: 3px solid var(--primary); transform: rotate(45deg); }
+  .menuItem.atBottom { margin-top: auto; margin-bottom: 0; }
+  .menuItem .modeSwitch { font-size: inherit; gap: 14px; }
+</style>
+</head>
+<body>
+<div class=&quot;page&quot;>
+  <h1 class=&quot;doc&quot;>🧒 Child mode for the whole app</h1>
+  <p class=&quot;subtitle&quot;>Jungle Quest, phone size. One «מצב הורה/ילד» switch, the same in both menus: off in the parent menu, on in the child menu. Child mode belongs to this phone, not to an account. «הגדרות כלליות» looks like «הגדרות של יעל». Tap the switch, the «להחליף ל…» rows, and the switch again.</p>
+  <div class=&quot;controls&quot;>Children on the family:
+    <button data-count=&quot;2&quot;>2</button><button data-count=&quot;3&quot; class=&quot;on&quot;>3</button><button data-count=&quot;5&quot;>5</button>
+  </div>
+
+  <div class=&quot;row&quot;>
+    <div class=&quot;col&quot;>
+      
+      <div class=&quot;modeBadge&quot; data-badge=&quot;1&quot;></div>
+      <div class=&quot;phone&quot;><div class=&quot;screen&quot; data-option=&quot;1&quot;></div></div>
+    </div>
+    <ul class=&quot;notes&quot; style=&quot;width:360px;margin:0&quot;>
+      <li>The parent menu as on main, minus the «מצב ילד» row under the picker. The picker only picks a child.</li>
+      <li>«⚙️ הגדרות כלליות» looks like «הגדרות של יעל» and holds what belongs to this phone rather than to one child.</li>
+      <li>One «מצב הורה/ילד» switch: off in the parent menu, on in the child menu; its knob carries 👵🏼 for parent mode and 🧒🏼 for child mode. Turning it off returns the whole app to parent mode, so «מצב הורה» is gone.</li>
+      <li>In the child menu the switch is a card the size of «הכסף שלי» and «מראה», at the bottom.</li>
+      <li>«להחליף ל…» lists every other child; each opens in child mode. Child mode survives a reload on this phone (a cookie); nothing is saved on an account.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const family = [
+    { name: 'יעל', avatar: '👧', color: '#F6C177', shekels: 82 },
+    { name: 'איתי', avatar: '🦖', color: '#9ED9A8', shekels: 96 },
+    { name: 'מאיה', avatar: '🦄', color: '#E9B8E8', shekels: 240 },
+    { name: 'יונתן', avatar: '⚽', color: '#A9C8F2', shekels: 57 },
+    { name: 'שירה', avatar: '🌸', color: '#F7B5A8', shekels: 133 },
+  ];
+  const settings = { count: 3 };
+  const states = { 1: fresh() };
+
+  function fresh() {
+    return { isChildMode: false, current: 0, listOpen: false };
+  }
+
+  const avatar = (child, size) =>
+    `<span class=&quot;avatar&quot; style=&quot;width:${size}px;height:${size}px;font-size:${size * 0.6}px;background:${child.color}&quot;>${child.avatar}</span>`;
+
+  const switchTrack = (isChildMode) =>
+    `<span class=&quot;switch withFace ${isChildMode ? 'on' : ''}&quot; data-face=&quot;${isChildMode ? '🧒🏼' : '👵🏼'}&quot;></span>`;
+
+  const modeSwitch = (isChildMode) =>
+    `<button class=&quot;modeSwitch&quot; data-toggle-mode role=&quot;switch&quot; aria-checked=&quot;${isChildMode}&quot;>מצב הורה/ילד<span class=&quot;sides&quot;>${switchTrack(isChildMode)}</span></button>`;
+
+  const globalSettings = (isChildMode) => `
+    <div class=&quot;settings&quot;>
+      <h2>⚙️ הגדרות כלליות</h2>
+      <p>לכל הילדים, במכשיר הזה.</p>
+      ${modeSwitch(isChildMode)}
+    </div>`;
+
+  function accountList(state, children) {
+    if (!state.listOpen) return '';
+    const rows = children.map((child, index) => `
+      <button class=&quot;acct ${index === state.current ? 'current' : ''}&quot; data-pick=&quot;${index}&quot;>${avatar(child, 30)}${child.name}<span class=&quot;total&quot;>₪${child.shekels}</span></button>`).join('');
+    return `<div class=&quot;list&quot;>${rows}<button class=&quot;add&quot;>＋ חשבון חדש</button></div>`;
+  }
+
+  function parentMenu(state, children) {
+    const child = children[state.current];
+    return `
+      <div class=&quot;tabs&quot;><div class=&quot;tab on&quot;><i>🏠</i>בית</div><div class=&quot;tab&quot;><i>📈</i>תנועות</div><div class=&quot;tab&quot;><i>📖</i>השיטה</div></div>
+      <div class=&quot;userBlock&quot;>
+        <div class=&quot;user&quot;><span class=&quot;e&quot;>E</span><span><b>Eli Ponyatovski</b><small>eli@example.com</small></span><button class=&quot;out&quot;>יציאה</button></div>
+        <div class=&quot;picker&quot;>
+          <button class=&quot;trigger&quot; data-list>${avatar(child, 40)}<span><b>${child.name}</b><small>₪${child.shekels} · מוצג כרגע</small></span><span class=&quot;caret&quot;>${state.listOpen ? '▲' : '▼'}</span></button>
+          ${accountList(state, children)}
+        </div>
+        <span class=&quot;edit&quot;>✏️ עריכת ${child.name}</span>
+      </div>
+      <div class=&quot;settings&quot;>
+        <h2>הגדרות של ${child.name} ${avatar(child, 24)}</h2>
+        <p>נשמר על החשבון הזה בלבד.</p>
+        <div class=&quot;label&quot;>מראה</div>
+        <div class=&quot;swatches&quot;><i class=&quot;on&quot; style=&quot;background:linear-gradient(#F4A261,#E76F51)&quot;></i><i style=&quot;background:linear-gradient(#2A9D8F,#90BE6D)&quot;></i><i style=&quot;background:linear-gradient(#0B1320,#1B2A40)&quot;></i></div>
+        <div class=&quot;label&quot;>שפה</div>
+        <span class=&quot;lang&quot;><span class=&quot;on&quot;>עברית</span><span>EN</span></span>
+      </div>
+      ${globalSettings(false)}`;
+  }
+
+  function childMenu(state, children) {
+    const child = children[state.current];
+    const others = children.map((other, index) => index === state.current ? '' :
+      `<button class=&quot;other&quot; data-pick=&quot;${index}&quot;>${avatar(other, 40)}${other.name}<span class=&quot;go&quot;></span></button>`).join('');
+    return `
+      <div class=&quot;card menuChild&quot;>${avatar(child, 40)}<b>${child.name}</b></div>
+      <div class=&quot;card menuItem home&quot;><span class=&quot;ic&quot;>🏠</span>הכסף שלי</div>
+      <div class=&quot;card switcher&quot;><div class=&quot;title&quot;>🔁 להחליף ל…</div><div class=&quot;others&quot;>${others}</div></div>
+      <div class=&quot;card menuItem&quot;><span class=&quot;ic&quot;>🎨</span>מראה<span class=&quot;swatches&quot; style=&quot;margin-inline-start:auto&quot;><i class=&quot;on&quot; style=&quot;background:linear-gradient(#F4A261,#E76F51)&quot;></i><i style=&quot;background:linear-gradient(#2A9D8F,#90BE6D)&quot;></i><i style=&quot;background:linear-gradient(#0B1320,#1B2A40)&quot;></i></span></div>
+      <div class=&quot;card menuItem atBottom&quot;>${modeSwitch(true)}</div>`;
+  }
+
+  function render(screen) {
+    const option = screen.dataset.option;
+    const state = states[option];
+    const children = family.slice(0, settings.count);
+    state.current = Math.min(state.current, children.length - 1);
+    const menu = state.isChildMode ? childMenu(state, children) : parentMenu(state, children);
+    screen.innerHTML = `<div class=&quot;card header&quot;><span>${children[state.current].name}</span><span>✕</span></div>${menu}`;
+    document.querySelector(`[data-badge=&quot;${option}&quot;]`).innerHTML =
+      `This phone is in <b>${state.isChildMode ? 'child mode' : 'parent mode'}</b>`;
+
+    screen.querySelectorAll('[data-toggle-mode]').forEach((button) => button.addEventListener('click', () => {
+      state.isChildMode = !state.isChildMode;
+      state.listOpen = false;
+      render(screen);
+    }));
+    screen.querySelectorAll('[data-list]').forEach((button) => button.addEventListener('click', () => {
+      state.listOpen = !state.listOpen;
+      render(screen);
+    }));
+    screen.querySelectorAll('[data-pick]').forEach((button) => button.addEventListener('click', () => {
+      state.current = Number(button.dataset.pick);
+      state.listOpen = false;
+      render(screen);
+    }));
+  }
+
+  const renderAll = () => document.querySelectorAll('.screen').forEach(render);
+  document.querySelectorAll('[data-count]').forEach((button) => button.addEventListener('click', () => {
+    settings.count = Number(button.dataset.count);
+    document.querySelectorAll('[data-count]').forEach((other) => other.classList.toggle('on', other === button));
+    renderAll();
+  }));
+  renderAll();
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<script>
+for (const f of document.querySelectorAll('iframe')) {
+  const fit = () => { f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; };
+  f.addEventListener('load', () => {
+    f.style.height = '1px';
+    fit();
+    f.contentDocument.addEventListener('click', () => setTimeout(fit, 60));
+  });
+}
+</script>
+</body>
+</html>
