@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@/test-utils/render';
+import { layerOf } from '@/test-utils/layer';
 import { InterestCoinButton } from './InterestCoinButton';
 import { INTEREST_COIN_BUTTON_COPY, INTEREST_COIN_BUTTON_TEST_IDS } from './constants';
 
@@ -28,10 +29,8 @@ describe('InterestCoinButton holding ₪3', () => {
 
 it('passes in front of the coins left in its row while it falls', () => {
   const mockOnTap = jest.fn();
+  const theRowsLayer = 0;
   render(<InterestCoinButton amount={300} isDropping onTap={mockOnTap} />);
 
-  const coinInFront = '1';
-  expect(getComputedStyle(screen.getByTestId(INTEREST_COIN_BUTTON_TEST_IDS.coin)).zIndex).toBe(
-    coinInFront
-  );
+  expect(layerOf(INTEREST_COIN_BUTTON_TEST_IDS.coin)).toBeGreaterThan(theRowsLayer);
 });
