@@ -13,7 +13,8 @@ export const TRANSACTION_ROW_COPY = {
   },
   interest: { badge: '✨', label: 'ריבית' },
   interestDays,
-  interestPeriod: (days: string, dayCount: number): string => `${days} · ${interestDays(dayCount)}`,
+  interestPeriod: (dayRange: string, dayCount: number): string =>
+    `${dayRange} · ${interestDays(dayCount)}`,
 } as const;
 
 export const TRANSACTION_ROW_TEST_IDS = {
