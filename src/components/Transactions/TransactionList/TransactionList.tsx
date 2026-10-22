@@ -73,7 +73,7 @@ export function TransactionList({
   );
   const shownRows = filterByTransactionType(rows, viewChoices.transactionTypeFilter);
   const hasTransactions = transactions.length > 0;
-  const sections = monthSections(shownRows);
+  const sections = monthSections(shownRows, transactions);
 
   return (
     <Card data-testid={TRANSACTION_LIST_TEST_IDS.list}>

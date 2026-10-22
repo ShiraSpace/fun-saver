@@ -1,11 +1,19 @@
 import { JSX } from 'react';
 import { monthLabel } from '@/lib/dates';
 import type { MonthSection } from '@/lib/transaction/transaction-rows';
+import { MONEY_ROUNDING } from '@/components/Money/constants';
+import { BalanceChange } from '../../BalanceChange';
 import { TRANSACTION_LIST_COPY } from '../constants';
 import { BalanceColumn, ChangeColumn } from '../transaction-list-parts';
 import { TransactionRow } from '../TransactionRow';
-import { TRANSACTION_MONTH_TEST_IDS } from './constants';
-import { ColumnNames, Heading, MonthName, Rows } from './TransactionMonth.styles';
+import { TRANSACTION_MONTH_COPY, TRANSACTION_MONTH_TEST_IDS } from './constants';
+import {
+  ColumnNames,
+  Heading,
+  InterestThisMonth,
+  MonthName,
+  Rows,
+} from './TransactionMonth.styles';
 
 interface TransactionMonthProps {
   monthSection: MonthSection;
@@ -13,7 +21,7 @@ interface TransactionMonthProps {
 }
 
 export function TransactionMonth({ monthSection, asOf }: TransactionMonthProps): JSX.Element {
-  const { month, rows } = monthSection;
+  const { month, rows, interestEarned } = monthSection;
   const monthName = monthLabel(month, asOf);
   const transactionRows = rows.map((transactionListRow) => (
     <TransactionRow key={transactionListRow.key} transactionListRow={transactionListRow} />
@@ -23,6 +31,16 @@ export function TransactionMonth({ monthSection, asOf }: TransactionMonthProps):
     <section>
       <Heading>
         <MonthName data-testid={TRANSACTION_MONTH_TEST_IDS.monthName(month)}>{monthName}</MonthName>
+        {interestEarned > 0 && (
+          <InterestThisMonth>
+            {TRANSACTION_MONTH_COPY.interestThisMonth}
+            <BalanceChange
+              balanceChange={interestEarned}
+              testId={TRANSACTION_MONTH_TEST_IDS.interestThisMonth(month)}
+              rounding={MONEY_ROUNDING.exact}
+            />
+          </InterestThisMonth>
+        )}
         <ColumnNames
           dir="ltr"
           aria-hidden

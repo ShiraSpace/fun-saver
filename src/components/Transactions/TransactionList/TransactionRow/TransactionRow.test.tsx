@@ -58,7 +58,7 @@ describe('a transaction row', () => {
     const mockSingleDayOfInterest = [mockDayOfInterest];
     const [mockMonthlyInterestRow] = transactionListRowsFor(
       mockSingleDayOfInterest,
-      INTEREST_MODE.monthly,
+      INTEREST_MODE.byPeriod,
       mockDayOfInterest.occurredAt
     );
 
@@ -94,7 +94,7 @@ describe('a transaction row', () => {
     (wallet) => {
       const [mockWithdrawalRow] = transactionListRowsFor(
         [createMockWithdrawal(wallet)],
-        INTEREST_MODE.monthly,
+        INTEREST_MODE.byPeriod,
         mockDayOfInterest.occurredAt
       );
       render(<TransactionRow transactionListRow={mockWithdrawalRow} />);

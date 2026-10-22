@@ -26,7 +26,7 @@ describe('the transaction list rows', () => {
     let rows: TransactionListRow[];
 
     beforeEach(() => {
-      rows = transactionListRowsFor(mockWalletDeposits, INTEREST_MODE.monthly, '2026-01-01');
+      rows = transactionListRowsFor(mockWalletDeposits, INTEREST_MODE.byPeriod, '2026-01-01');
     });
 
     it('is listed as one deposit', () => {
@@ -51,7 +51,7 @@ describe('the transaction list rows', () => {
 
     const rows = transactionListRowsFor(
       [mockOpeningDeposit, mockNextDayDeposit],
-      INTEREST_MODE.monthly,
+      INTEREST_MODE.byPeriod,
       '2026-01-02'
     );
 
@@ -67,7 +67,7 @@ describe('the transaction list rows', () => {
     }
 
     beforeEach(() => {
-      rows = transactionListRowsFor(mockBusyDayTransactions, INTEREST_MODE.monthly, mockBusyDay);
+      rows = transactionListRowsFor(mockBusyDayTransactions, INTEREST_MODE.byPeriod, mockBusyDay);
       busyDayBalanceHistory = balanceHistoryFor(mockBusyDayTransactions, mockBusyDay);
     });
 
@@ -134,6 +134,6 @@ describe('the transaction list rows', () => {
   });
 
   it('has nothing to list for an account with no transactions', () => {
-    expect(transactionListRowsFor([], INTEREST_MODE.monthly, '2026-01-01')).toEqual([]);
+    expect(transactionListRowsFor([], INTEREST_MODE.byPeriod, '2026-01-01')).toEqual([]);
   });
 });

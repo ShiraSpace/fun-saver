@@ -12,7 +12,8 @@ import { TransactionMonth } from './TransactionMonth';
 
 describe('a month of the transaction list', () => {
   const [mockMonthSection] = monthSections(
-    transactionListRowsFor(mockMonthOfInterest, INTEREST_MODE.monthly, mockMonthOfInterestLastDay)
+    transactionListRowsFor(mockMonthOfInterest, INTEREST_MODE.byPeriod, mockMonthOfInterestLastDay),
+    mockMonthOfInterest
   );
   const { month } = mockMonthSection;
 

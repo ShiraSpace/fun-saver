@@ -30,6 +30,10 @@ export function dayMonth(iso: string): string {
   return HEBREW_DAY_MONTH.format(utcDate(iso));
 }
 
+export function dayRange(firstDay: string, lastDay: string): string {
+  return HEBREW_DAY_MONTH.formatRange(utcDate(firstDay), utcDate(lastDay));
+}
+
 export function shortDayMonth(iso: string): string {
   const date = utcDate(iso);
 

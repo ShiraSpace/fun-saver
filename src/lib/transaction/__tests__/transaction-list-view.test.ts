@@ -24,7 +24,7 @@ describe('what the transaction list shows', () => {
     let rows: TransactionListRow[];
 
     beforeEach(() => {
-      rows = transactionListRowsFor(mockBusyDayTransactions, INTEREST_MODE.monthly, mockBusyDay);
+      rows = transactionListRowsFor(mockBusyDayTransactions, INTEREST_MODE.byPeriod, mockBusyDay);
     });
 
     it('shows every row under הכל', () => {
@@ -65,7 +65,7 @@ describe('what the transaction list shows', () => {
       let interestRow: TransactionListRow;
 
       beforeEach(() => {
-        [interestRow] = interestRowsFor(INTEREST_MODE.monthly);
+        [interestRow] = interestRowsFor(INTEREST_MODE.byPeriod);
       });
 
       it('adds up the whole month in one row', () => {
@@ -73,7 +73,7 @@ describe('what the transaction list shows', () => {
       });
 
       it('counts the days interest was paid', () => {
-        expect(interestRow.interestDays).toBe(mockMonthOfInterest.length);
+        expect(interestRow.interestPeriod?.days).toBe(mockMonthOfInterest.length);
       });
 
       it('sits on the last day interest was paid', () => {
@@ -96,7 +96,7 @@ describe('what the transaction list shows', () => {
           })
       );
 
-      expect(interestRowsFor(INTEREST_MODE.monthly, mockUnnamedWalletsInterest)).toHaveLength(
+      expect(interestRowsFor(INTEREST_MODE.byPeriod, mockUnnamedWalletsInterest)).toHaveLength(
         mockUnnamedWalletsInterest.length
       );
     });
@@ -108,12 +108,12 @@ describe('what the transaction list shows', () => {
       occurredAt: '2025-12-31',
       createdAt: '2025-12-31T08:00:00.000Z',
     });
-    const rows = transactionListRowsFor(
-      [mockDecemberDeposit, mockOpeningDeposit],
-      INTEREST_MODE.monthly,
-      '2026-01-01'
-    );
+    const mockDeposits = [mockDecemberDeposit, mockOpeningDeposit];
+    const rows = transactionListRowsFor(mockDeposits, INTEREST_MODE.byPeriod, '2026-01-01');
 
-    expect(monthSections(rows).map((section) => section.month)).toEqual(['2026-01', '2025-12']);
+    expect(monthSections(rows, mockDeposits).map((section) => section.month)).toEqual([
+      '2026-01',
+      '2025-12',
+    ]);
   });
 });

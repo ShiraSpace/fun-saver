@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { BalanceChangeHighlight } from '../../balance-change-parts';
 import { Amounts } from '../transaction-list-parts';
 
 export const Heading = styled.div`
@@ -19,6 +20,10 @@ export const MonthName = styled.h3`
   margin: 0;
   font-size: ${({ theme }): number => theme.typography.label}px;
   font-weight: 700;
+`;
+
+export const InterestThisMonth = styled(BalanceChangeHighlight)`
+  white-space: nowrap;
 `;
 
 export const ColumnNames = styled(Amounts)`

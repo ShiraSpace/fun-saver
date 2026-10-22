@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { dayMonth } from '@/lib/dates';
+import { dayMonth, dayRange } from '@/lib/dates';
 import type { TransactionListRow } from '@/lib/transaction/transaction-rows';
 import { Money } from '@/components/Money';
 import { MONEY_ROUNDING } from '@/components/Money/constants';
@@ -22,10 +22,10 @@ interface TransactionRowProps {
   transactionListRow: TransactionListRow;
 }
 
-function transactionRowDays({ interestDays, day }: TransactionListRow): string {
-  return interestDays === undefined
-    ? dayMonth(day)
-    : TRANSACTION_ROW_COPY.interestDays(interestDays);
+function transactionRowDays({ interestPeriod, day }: TransactionListRow): string {
+  return interestPeriod
+    ? `${dayRange(interestPeriod.firstDay, day)} · ${TRANSACTION_ROW_COPY.interestDays(interestPeriod.days)}`
+    : dayMonth(day);
 }
 
 export function TransactionRow({ transactionListRow }: TransactionRowProps): JSX.Element {
