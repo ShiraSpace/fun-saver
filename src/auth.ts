@@ -21,12 +21,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
 
     async jwt({ token, profile }): Promise<JWT> {
-      const identity = googleIdentity(profile) ?? identityLookedUpAgainInDevelopment(token);
+      const identity = googleIdentity(profile) ?? token.identity;
 
       if (identity) {
         const user = await provisionUser(getStore(), identity);
-        token.identity = identity;
         token.userId = user.id;
+        token.identity = identityKeptForDevelopment(identity);
       }
 
       return token;
@@ -42,8 +42,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 });
 
-function identityLookedUpAgainInDevelopment(token: JWT): GoogleIdentity | undefined {
-  return process.env.NODE_ENV === 'development' ? token.identity : undefined;
+function identityKeptForDevelopment(identity: GoogleIdentity): GoogleIdentity | undefined {
+  return process.env.NODE_ENV === 'development' ? identity : undefined;
 }
 
 export async function signedInUser(): Promise<SignedInUser | undefined> {
