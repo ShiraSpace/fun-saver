@@ -89,13 +89,18 @@ export class ChildAccountDriver {
   }
 
   async coinFountainShown(): Promise<boolean> {
-    if (!(await this.appBrowser.exists(COIN_FOUNTAIN_TEST_IDS.fountain))) {
+    const isFountainPouredForReachedGoal = await this.appBrowser.exists(
+      COIN_FOUNTAIN_TEST_IDS.fountain
+    );
+
+    if (!isFountainPouredForReachedGoal) {
       return false;
     }
 
     const display = await this.appBrowser.computedStyle(COIN_FOUNTAIN_TEST_IDS.fountain, 'display');
+    const isHiddenForReducedMotion = display === 'none';
 
-    return display !== 'none';
+    return !isHiddenForReducedMotion;
   }
 
   async waitForLastCoinToLand(): Promise<void> {
