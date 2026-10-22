@@ -83,6 +83,7 @@ export function ChildSavings({
   const { interestCoins, uncollectedInterest, collect } = useInterestCoins({ savings, accountId });
   const savingsShown = savingsShownToTheChild({ savings, savedTowardGoal, uncollectedInterest });
   const isGoalReached = !!savingsShown.savedTowardGoal?.isGoalReached;
+  const goalProgress = goalProgressOf(savingsShown.savedTowardGoal);
 
   return (
     <Card
@@ -99,7 +100,7 @@ export function ChildSavings({
         <PiggyBank piggyBankFill={savingsShown.piggyBankFill} />
       </PiggyBankSpace>
       <SavingsBalance balance={savingsShown.balance} ref={balanceElement} />
-      {goalProgressOf(savingsShown.savedTowardGoal)}
+      {goalProgress}
       <PrincipalAndInterest
         principal={savingsShown.principal}
         interestEarned={savingsShown.interestEarned}
