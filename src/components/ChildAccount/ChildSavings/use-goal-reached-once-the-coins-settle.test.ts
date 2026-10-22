@@ -5,7 +5,7 @@ import { COIN_SPACE_SETTLES_AFTER_MS } from './InterestCoins/constants';
 import { useGoalReachedOnceTheCoinsSettle } from './use-goal-reached-once-the-coins-settle';
 
 describe('useGoalReachedOnceTheCoinsSettle where elements animate', () => {
-  const [mockFirstCoin, mockSecondCoin] = mockThreeInterestCoins;
+  const [mockFirstCoin] = mockThreeInterestCoins;
 
   beforeEach(() => {
     prefersMotion();
@@ -58,6 +58,7 @@ describe('useGoalReachedOnceTheCoinsSettle where elements animate', () => {
   });
 
   it('shows the goal reached at once when a coin with others still waiting reaches it', () => {
+    const [, mockSecondCoin] = mockThreeInterestCoins;
     const { result, rerender } = renderHook(useGoalReachedOnceTheCoinsSettle, {
       initialProps: { isGoalReached: false, interestCoins: [mockFirstCoin, mockSecondCoin] },
     });

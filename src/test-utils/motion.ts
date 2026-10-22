@@ -36,12 +36,46 @@ export interface PlayedAnimation {
   cancel: () => void;
 }
 
-function stillAnimation(): Animation {
-  return { cancel: (): void => {} } as Animation;
+interface StillAnimation {
+  cancel: () => void;
+  onfinish: (() => void) | null;
+  oncancel: (() => void) | null;
+}
+
+type Animate = (
+  this: Element,
+  keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+  options?: number | KeyframeAnimationOptions
+) => StillAnimation;
+
+function stillAnimation(): StillAnimation {
+  return { cancel: (): void => {}, onfinish: null, oncancel: null };
+}
+
+function elementsAnimateWith(animate: Animate): void {
+  Object.defineProperty(Element.prototype, 'animate', {
+    value: animate,
+    configurable: true,
+    writable: true,
+  });
+}
+
+function keyframeListOf(keyframes: Keyframe[] | PropertyIndexedKeyframes | null): Keyframe[] {
+  if (!Array.isArray(keyframes)) {
+    throw new Error('captureAnimations records keyframe lists only');
+  }
+
+  return keyframes;
+}
+
+function optionsOf(
+  options?: number | KeyframeAnimationOptions
+): KeyframeAnimationOptions | undefined {
+  return typeof options === 'number' ? { duration: options } : options;
 }
 
 export function elementsCanAnimate(): void {
-  Element.prototype.animate = stillAnimation;
+  elementsAnimateWith(stillAnimation);
 }
 
 export function elementsDoNotAnimate(): void {
@@ -53,22 +87,19 @@ export function captureAnimations(): PlayedAnimation[] {
 
   beforeEach(() => {
     animationsPlayed.length = 0;
-    elementsCanAnimate();
-    Element.prototype.animate = function play(this: Element, keyframes, options): Animation {
+    elementsAnimateWith(function play(keyframes, options): StillAnimation {
       const animation = stillAnimation();
-      const finishEvent = new Event('finish') as AnimationPlaybackEvent;
-      const cancelEvent = new Event('cancel') as AnimationPlaybackEvent;
 
       animationsPlayed.push({
         element: this,
-        keyframes: keyframes as Keyframe[],
-        options: options as KeyframeAnimationOptions | undefined,
-        finish: () => animation.onfinish?.call(animation, finishEvent),
-        cancel: () => animation.oncancel?.call(animation, cancelEvent),
+        keyframes: keyframeListOf(keyframes),
+        options: optionsOf(options),
+        finish: () => animation.onfinish?.(),
+        cancel: () => animation.oncancel?.(),
       });
 
       return animation;
-    };
+    });
   });
 
   return animationsPlayed;
