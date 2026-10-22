@@ -44,6 +44,10 @@ export class ChildAccountDriver {
     return this.appBrowser.count(COIN_PILE_TEST_IDS.coin);
   }
 
+  async waitForPiggyBankToBreathe(): Promise<void> {
+    await this.appBrowser.waits.animationStarts(PIGGY_BANK_TEST_IDS.art);
+  }
+
   async walletsBottom(): Promise<number> {
     return bottomOf(await this.appBrowser.box(CHILD_ACCOUNT_TEST_IDS.wallets));
   }

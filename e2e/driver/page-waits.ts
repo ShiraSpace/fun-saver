@@ -107,6 +107,15 @@ export class PageWaits {
     );
   }
 
+  async animationStarts(testId: string): Promise<void> {
+    await this.currentPage().waitForFunction(
+      (testId) =>
+        (document.querySelector(`[data-testid="${testId}"]`)?.getAnimations().length ?? 0) > 0,
+      {},
+      testId
+    );
+  }
+
   async navigation(): Promise<void> {
     await this.currentPage().waitForNavigation({
       waitUntil: 'domcontentloaded',
