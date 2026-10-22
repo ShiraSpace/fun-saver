@@ -92,3 +92,23 @@ the harness can catch it (visual shots run with reduced motion, so they stay sti
 From `mockups/2026-10-04-child-piggy-bank.html#breathe`, variant A: **3 breaths of 1.5s (4.5s), 3.5% wider and 2% shorter at
 the top of each, from the pig's feet**, easing in and out. After mount, and after each landing once the 450ms wiggle
 ends (4.95s of motion in all, under 5s). Off under reduced motion and where elements cannot animate.
+
+## Shipped (#230, `6d91d15`, 2026-10-22)
+
+Where the build differs from the steps above, the code wins:
+
+- **One motion check.** `canAnimate()` (`src/theme/motion.ts`): `element.animate` exists and motion is not reduced.
+  `useCountUp`, the drop, the wiggle, the breathe and the coin space all use it, so jsdom stands still by default; tests
+  opt in with `captureAnimations()` / `elementsCanAnimate()` (`src/test-utils/motion.ts`).
+- **The drop stacks on the slide** (`composite: 'add'`) and measures its path from the layout (the coin's offset and the
+  pig's space, not the breathing pig), so a coin tapped mid-slide keeps sliding as it falls. A coin still falling is
+  held where it was when the row shifts, and passes in front of its row.
+- **The pig and the coins** live in `PiggyBankAndCoins` (wiring in `useCoinsIntoThePiggyBank`); the fountain and the
+  face's `isGoalReached` moved there with them.
+- **A fifth step, from #224:** when the last coin's landing reaches the goal, `useGoalReachedOnceTheCoinsSettle` holds
+  the shown reached goal back for `COIN_SPACE_SETTLES_AFTER_MS` (the wiggle, then the slow close), so the whole
+  celebration starts together. A timer, not an `animation-delay`: the outline, eyes and reached row are not
+  animations. Nothing is held where elements cannot animate.
+- **Dropped test:** "nothing on mount when `startAt` equals `to`" cannot fail against any break.
+- **Harness:** `appBrowser.watch` records a `.webm` (`@ffmpeg-installer/ffmpeg` dev dependency), captures errors and
+  holds animations at a moment; `e2e/interest-coins.e2e.ts` checks the child home hydrates without errors.

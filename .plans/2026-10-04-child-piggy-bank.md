@@ -2,15 +2,15 @@
 
 > Status: **locked 2026-10-11**, refreshed against `origin/main` daddfee, then reviewed against 26b87a6 twice
 > (Third and Fourth review, below). **PR 1 merged as #207 (48c78e9). PR 2 merged as #210 (b704a75), its review
-> fixes as #212 (9abe018). PR 3 merged as #218 (7f6f23f).** Next: PR 4, planned in
-> `.plans/2026-10-16-piggy-bank-motion.md` on `feat/piggy-bank-motion`. What PR 2 and PR 3 changed is in "After PR 2"
+> fixes as #212 (9abe018). PR 3 merged as #218 (7f6f23f). PR 4 merged as #230 (6d91d15).** All four PRs are on
+> `main`; PR 4's own plan is `.plans/2026-10-16-piggy-bank-motion.md`. What PR 2 and PR 3 changed is in "After PR 2"
 > and "After the layout shots" at the end.
 > Mockup: `mockups/2026-10-04-child-piggy-bank.html#piggy-bank` (the agreed design, with and without a goal, at the live app's real sizes).
 > Research: `docs/research/child-engagement.md` (§ 5–7 for the why, § 9 for the art).
 > Depends on: #171 child mode, the goal (#174, #190, #199) and the phone-wide view mode (#193–#198), all on `main`.
 > Each PR below branches from fresh `origin/main`.
 >
-> **Picking up:** each PR gets a fresh worktree off `origin/main`. Next step: PR 4.
+> **Complete.** Nothing is left to pick up from this plan.
 
 ## Purpose
 
@@ -254,7 +254,9 @@ Each PR ships only code that something on `main` calls. A rule lands in `src/lib
   - the 393×745 fit check, now with coins waiting (the tallest state)
 - A visual shot with coins, and PR screenshots: coins waiting, and after.
 
-### PR 4 — the motion
+### PR 4 — the motion — merged #230
+
+> Where the build differs from the bullets below, see "Shipped" in `.plans/2026-10-16-piggy-bank-motion.md`.
 
 - The drop through the slot (Web Animations), the wiggle, closing the gap.
 - The breathe: a few cycles after mount and after each landing, under 5 seconds, then still (Decisions). Off under
