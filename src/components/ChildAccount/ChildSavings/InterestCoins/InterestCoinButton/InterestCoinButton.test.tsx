@@ -25,3 +25,13 @@ describe('InterestCoinButton holding ₪3', () => {
     expect(mockOnTap).toHaveBeenCalledTimes(1);
   });
 });
+
+it('passes in front of the coins left in its row while it falls', () => {
+  const mockOnTap = jest.fn();
+  render(<InterestCoinButton amount={300} isDropping onTap={mockOnTap} />);
+
+  const coinInFront = '1';
+  expect(getComputedStyle(screen.getByTestId(INTEREST_COIN_BUTTON_TEST_IDS.coin)).zIndex).toBe(
+    coinInFront
+  );
+});
