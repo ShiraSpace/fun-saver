@@ -21,11 +21,12 @@ differs from the steps below, the code wins:
 - The total's ✨ are their own component, `BalanceTwinkles`.
 - The coins fall at most 550 px, so the page never gains a scroll.
 
-Left for piggy bank PR 4 (`feat/piggy-bank-motion`), which lands after this:
-on the last coin's path only, the celebration waits for the coin space to
-settle, as an `animation-delay` from PR 4's timing constants. PR 4 moves the
-piggy bank into `PiggyBankAndCoins`, so the fountain and the face's
-`isGoalReached` move with it.
+Done in piggy bank PR 4 (#230): on the last coin's path only, the
+celebration waits for the coin space to settle. It is a timer, not an
+`animation-delay`: `useGoalReachedOnceTheCoinsSettle` holds the shown reached
+goal back for `COIN_SPACE_SETTLES_AFTER_MS`, so the outline, the eyes and the
+reached row wait too. The fountain and the face's `isGoalReached` moved into
+`PiggyBankAndCoins`.
 
 ## Why
 
@@ -72,9 +73,9 @@ and no "celebrated" flag.
 
 - **The last coin reaches the goal.** The shown savings become reached when the
   last coin is tapped in, and the celebration mounts and plays on that tap.
-  Later, with PR 4: this path alone waits for the coin space to settle (the
-  wiggle, then the slow close), passed as `animation-delay` from PR 4's timing
-  constants, not a timer. Not in this PR's steps.
+  Since piggy bank PR 4 (#230): this path alone waits for the coin space to
+  settle (the wiggle, then the slow close), by holding the shown reached goal
+  back; see Status.
 - **Home opens with the goal already reached** (no coins waiting): it plays at
   once, as on the parent's card.
 - **Account switch:** keyed by `account.id`, as #219 does for `Account`.
