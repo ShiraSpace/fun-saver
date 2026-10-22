@@ -2,14 +2,15 @@ import { canAnimate, EASING } from '@/theme/motion';
 import { PIGGY_BANK_BREATHE, PIGGY_BANK_WIGGLE } from './constants';
 
 function wiggle(piggyBank: Element): Animation {
-  const { durationMs, tiltDegrees, tiltLeftAt, tiltRightAt, upright } = PIGGY_BANK_WIGGLE;
+  const { durationMs, tiltDegrees, tiltLeftAt, tiltRightAt, upright, fromItsMiddle } =
+    PIGGY_BANK_WIGGLE;
 
   return piggyBank.animate(
     [
-      { rotate: upright },
-      { rotate: `${-tiltDegrees}deg`, offset: tiltLeftAt },
-      { rotate: `${tiltDegrees}deg`, offset: tiltRightAt },
-      { rotate: upright },
+      { rotate: upright, transformOrigin: fromItsMiddle },
+      { rotate: `${-tiltDegrees}deg`, transformOrigin: fromItsMiddle, offset: tiltLeftAt },
+      { rotate: `${tiltDegrees}deg`, transformOrigin: fromItsMiddle, offset: tiltRightAt },
+      { rotate: upright, transformOrigin: fromItsMiddle },
     ],
     { duration: durationMs, easing: EASING.easeInOut }
   );

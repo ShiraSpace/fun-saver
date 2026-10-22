@@ -99,6 +99,7 @@ export const PIGGY_BANK_WIGGLE = {
   tiltLeftAt: 0.25,
   tiltRightAt: 0.75,
   upright: '0deg',
+  fromItsMiddle: '50% 50%',
 } as const;
 
 export const PIGGY_BANK_BREATHE = {
