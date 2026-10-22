@@ -48,6 +48,8 @@ export function InterestCoins({
     return null;
   }
 
+  const tapTheCoins = hasCoins && INTEREST_COINS_COPY.tapTheCoins;
+
   const coinButtons = interestCoins.map((interestCoin) => (
     <InterestCoinButton
       key={interestCoin.place}
@@ -60,9 +62,7 @@ export function InterestCoins({
 
   return (
     <CoinSpace ref={coinSpace}>
-      <TapTheCoins data-testid={INTEREST_COINS_TEST_IDS.copy}>
-        {hasCoins && INTEREST_COINS_COPY.tapTheCoins}
-      </TapTheCoins>
+      <TapTheCoins data-testid={INTEREST_COINS_TEST_IDS.copy}>{tapTheCoins}</TapTheCoins>
       <CoinRow ref={coinRow}>{coinButtons}</CoinRow>
     </CoinSpace>
   );

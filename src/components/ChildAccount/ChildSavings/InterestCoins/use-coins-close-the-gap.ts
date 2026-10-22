@@ -22,15 +22,20 @@ export function useCoinsCloseTheGap(
 
   useLayoutEffect(() => {
     const coinSpotsNow: CoinSpots = new Map();
+    const coinsInTheRow = interestCoins.filter((interestCoin) => !interestCoin.isDropping);
 
-    coinElements.current.forEach((coin, place) => {
-      const spotNow = coin.getBoundingClientRect().left;
+    coinsInTheRow.forEach(({ place }) => {
+      const coin = coinElements.current.get(place);
       const spotBefore = coinSpotsBefore.current.get(place);
 
-      coinSpotsNow.set(place, spotNow);
+      if (!coin) {
+        return;
+      }
 
-      if (spotBefore !== undefined && spotBefore !== spotNow && canAnimate()) {
-        slideFrom(coin, spotBefore - spotNow);
+      coinSpotsNow.set(place, coin.offsetLeft);
+
+      if (spotBefore !== undefined && spotBefore !== coin.offsetLeft && canAnimate()) {
+        slideFrom(coin, spotBefore - coin.offsetLeft);
       }
     });
 
