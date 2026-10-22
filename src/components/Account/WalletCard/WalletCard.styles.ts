@@ -1,17 +1,13 @@
 import styled from '@emotion/styled';
-import type { SerializedStyles, Theme } from '@emotion/react';
+import type { SerializedStyles } from '@emotion/react';
 import type { WalletName } from '@/lib/wallet/types';
 import { WALLET_GRADIENT } from '@/theme/wallet-gradient';
-import { travellingBorder, wobble } from '@/components/Goal/Celebration/celebration-parts';
+import {
+  celebrationOutline,
+  travellingBorder,
+  wobble,
+} from '@/components/Goal/Celebration/celebration-parts';
 import { WALLET_CARD_STYLE } from './constants';
-
-interface CelebratingProps {
-  celebrating?: boolean;
-  theme: Theme;
-}
-
-const celebrationOutline = ({ celebrating, theme }: CelebratingProps): string =>
-  celebrating ? `, 0 0 0 3px ${theme.colors.celebrationOutline}` : '';
 
 export const Card = styled.div<{ celebrating?: boolean }>`
   padding: ${WALLET_CARD_STYLE.paddingY}px ${WALLET_CARD_STYLE.paddingX}px;

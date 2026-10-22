@@ -1,7 +1,9 @@
 import { createRef } from 'react';
 import { render, screen } from '@/test-utils/render';
+import { moves } from '@/test-utils/motion';
 import { SavingsBalance } from './SavingsBalance';
 import { SAVINGS_BALANCE_TEST_IDS } from './constants';
+import { BALANCE_TWINKLES_TEST_IDS } from './BalanceTwinkles/constants';
 
 describe('SavingsBalance of ₪148', () => {
   beforeEach(() => {
@@ -34,6 +36,28 @@ describe('SavingsBalance of ₪148', () => {
     expect(
       screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.announcedBalance).closest('[aria-live="polite"]')
     ).not.toBeNull();
+  });
+
+  it('holds the total still', () => {
+    expect(moves(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.shown))).toBe(false);
+  });
+
+  it('shows no twinkles', () => {
+    expect(screen.queryByTestId(BALANCE_TWINKLES_TEST_IDS.twinkles)).not.toBeInTheDocument();
+  });
+});
+
+describe('SavingsBalance celebrating a reached goal', () => {
+  beforeEach(() => {
+    render(<SavingsBalance balance={14800} celebrating />);
+  });
+
+  it('bumps the total and flashes it gold', () => {
+    expect(moves(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.shown))).toBe(true);
+  });
+
+  it('shows the twinkles', () => {
+    expect(screen.getByTestId(BALANCE_TWINKLES_TEST_IDS.twinkles)).toBeInTheDocument();
   });
 });
 

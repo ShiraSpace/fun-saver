@@ -47,6 +47,15 @@ function borderColors(theme: Theme): string {
   )`;
 }
 
+interface CelebratingCard {
+  celebrating?: boolean;
+  theme: Theme;
+}
+
+export function celebrationOutline({ celebrating, theme }: CelebratingCard): string {
+  return celebrating ? `, 0 0 0 3px ${theme.colors.celebrationOutline}` : '';
+}
+
 export function travellingBorder(theme: Theme, cornerRadius: number): SerializedStyles {
   return css`
     position: relative;

@@ -10,9 +10,11 @@ import {
 } from '@/lib/interest/collected-interest';
 import { GoalProgress } from '@/components/Goal/GoalProgress';
 import { GOAL_PROGRESS_SIZE } from '@/components/Goal/GoalProgress/constants';
+import { Celebration } from '@/components/Goal/Celebration';
 import { PiggyBank, piggyBankFillOf } from './PiggyBank';
 import { PrincipalAndInterest } from './PrincipalAndInterest';
 import { SavingsBalance } from './SavingsBalance';
+import { CoinFountain } from './CoinFountain';
 import { InterestCoins } from './InterestCoins';
 import { useInterestCoins } from './use-interest-coins';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
@@ -56,6 +58,34 @@ function savingsShownToTheChild({
   };
 }
 
+function goalProgressOf(savedTowardGoal?: SavedTowardGoal): JSX.Element | undefined {
+  if (!savedTowardGoal) {
+    return;
+  }
+
+  return (
+    <GoalSpace>
+      <GoalProgress
+        savedTowardGoal={savedTowardGoal}
+        size={GOAL_PROGRESS_SIZE.large}
+        glowWhenReached
+        celebratesWhenReached
+      />
+    </GoalSpace>
+  );
+}
+
+function piggyBankOf(piggyBankFill: number, isGoalReached: boolean): JSX.Element {
+  const coinFountain = isGoalReached && <CoinFountain />;
+
+  return (
+    <PiggyBankSpace>
+      <PiggyBank piggyBankFill={piggyBankFill} isGoalReached={isGoalReached} />
+      {coinFountain}
+    </PiggyBankSpace>
+  );
+}
+
 export function ChildSavings({
   accountId,
   savings,
@@ -64,32 +94,34 @@ export function ChildSavings({
   const balanceElement = useRef<HTMLDivElement>(null);
   const { interestCoins, uncollectedInterest, collect } = useInterestCoins({ savings, accountId });
   const savingsShown = savingsShownToTheChild({ savings, savedTowardGoal, uncollectedInterest });
-  const goalProgress = savingsShown.savedTowardGoal && (
-    <GoalSpace>
-      <GoalProgress
-        savedTowardGoal={savingsShown.savedTowardGoal}
-        size={GOAL_PROGRESS_SIZE.large}
-        glowWhenReached
-      />
-    </GoalSpace>
-  );
+  const isGoalReached = savingsShown.savedTowardGoal?.isGoalReached ?? false;
+  const piggyBank = piggyBankOf(savingsShown.piggyBankFill, isGoalReached);
+  const goalProgress = goalProgressOf(savingsShown.savedTowardGoal);
+  const celebration = isGoalReached && <Celebration />;
 
   return (
-    <Card aria-label={CHILD_SAVINGS_COPY.title} data-testid={CHILD_SAVINGS_TEST_IDS.card}>
+    <Card
+      aria-label={CHILD_SAVINGS_COPY.title}
+      data-testid={CHILD_SAVINGS_TEST_IDS.card}
+      celebrating={isGoalReached}
+    >
       <InterestCoins
         interestCoins={interestCoins}
         onCollect={collect}
         whereFocusGoesLast={balanceElement}
       />
-      <PiggyBankSpace>
-        <PiggyBank piggyBankFill={savingsShown.piggyBankFill} />
-      </PiggyBankSpace>
-      <SavingsBalance balance={savingsShown.balance} ref={balanceElement} />
+      {piggyBank}
+      <SavingsBalance
+        balance={savingsShown.balance}
+        celebrating={isGoalReached}
+        ref={balanceElement}
+      />
       {goalProgress}
       <PrincipalAndInterest
         principal={savingsShown.principal}
         interestEarned={savingsShown.interestEarned}
       />
+      {celebration}
     </Card>
   );
 }

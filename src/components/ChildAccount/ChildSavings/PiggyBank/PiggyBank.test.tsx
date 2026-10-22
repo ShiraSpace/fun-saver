@@ -1,13 +1,10 @@
 import { render, screen } from '@/test-utils/render';
+import { moves } from '@/test-utils/motion';
 import { PiggyBank } from './PiggyBank';
 import { PIGGY_BANK_TEST_IDS } from './constants';
 
-function paintIdsIn(drawing: HTMLElement): string[] {
-  return Array.from(drawing.querySelectorAll('defs [id]'), (paint) => paint.id);
-}
-
 describe('PiggyBank', () => {
-  describe('one piggy bank', () => {
+  describe('half full, its goal not yet reached', () => {
     beforeEach(() => {
       render(<PiggyBank piggyBankFill={0.5} />);
     });
@@ -15,22 +12,33 @@ describe('PiggyBank', () => {
     it('hides the drawing from screen readers', () => {
       expect(screen.getByTestId(PIGGY_BANK_TEST_IDS.art)).toHaveAttribute('aria-hidden', 'true');
     });
+
+    it('stands still', () => {
+      expect(moves(screen.getByTestId(PIGGY_BANK_TEST_IDS.body))).toBe(false);
+    });
   });
 
-  describe('two piggy banks on one page', () => {
-    beforeEach(() => {
-      render(
-        <>
-          <PiggyBank piggyBankFill={0.5} />
-          <PiggyBank piggyBankFill={0.5} />
-        </>
-      );
-    });
+  it('hops for a reached goal', () => {
+    render(<PiggyBank piggyBankFill={1} isGoalReached />);
 
-    it('gives each its own paints', () => {
-      const [first, second] = screen.getAllByTestId(PIGGY_BANK_TEST_IDS.art).map(paintIdsIn);
+    expect(moves(screen.getByTestId(PIGGY_BANK_TEST_IDS.body))).toBe(true);
+  });
 
-      expect(first.filter((paintId) => second.includes(paintId))).toEqual([]);
-    });
+  it('gives each piggy bank on a page its own paints', () => {
+    const paintIdsIn = (drawing: HTMLElement): string[] =>
+      Array.from(drawing.querySelectorAll('defs [id]'), (paint) => paint.id);
+    render(
+      <>
+        <PiggyBank piggyBankFill={0.5} />
+        <PiggyBank piggyBankFill={0.5} />
+      </>
+    );
+
+    const [firstPaintIds, secondPaintIds] = screen
+      .getAllByTestId(PIGGY_BANK_TEST_IDS.art)
+      .map(paintIdsIn);
+    const sharedPaintIds = firstPaintIds.filter((paintId) => secondPaintIds.includes(paintId));
+
+    expect(sharedPaintIds).toEqual([]);
   });
 });
