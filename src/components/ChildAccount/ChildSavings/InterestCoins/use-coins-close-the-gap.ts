@@ -10,7 +10,11 @@ type CoinSpots = Map<number, number>;
 function slideFrom(coin: HTMLElement, shift: number): void {
   coin.animate(
     [{ transform: `translateX(${shift}px)` }, { transform: COINS_CLOSE_THE_GAP.inPlace }],
-    { duration: COINS_CLOSE_THE_GAP.durationMs, easing: COINS_CLOSE_THE_GAP.easing }
+    {
+      duration: COINS_CLOSE_THE_GAP.durationMs,
+      easing: COINS_CLOSE_THE_GAP.easing,
+      composite: 'add',
+    }
   );
 }
 
@@ -32,10 +36,12 @@ export function useCoinsCloseTheGap(
         return;
       }
 
-      coinSpotsNow.set(place, coin.offsetLeft);
+      const spotNow = coin.offsetLeft;
 
-      if (spotBefore !== undefined && spotBefore !== coin.offsetLeft && canAnimate()) {
-        slideFrom(coin, spotBefore - coin.offsetLeft);
+      coinSpotsNow.set(place, spotNow);
+
+      if (spotBefore !== undefined && spotBefore !== spotNow && canAnimate()) {
+        slideFrom(coin, spotBefore - spotNow);
       }
     });
 
