@@ -1,7 +1,7 @@
 import { createRef } from 'react';
 import { render, screen } from '@/test-utils/render';
-import { SavingsBalance } from './SavingsBalance';
 import { moves } from '@/test-utils/motion';
+import { SavingsBalance } from './SavingsBalance';
 import { SAVINGS_BALANCE_TEST_IDS } from './constants';
 import { BALANCE_TWINKLES_TEST_IDS, TWINKLE_PLACES } from './BalanceTwinkles/constants';
 

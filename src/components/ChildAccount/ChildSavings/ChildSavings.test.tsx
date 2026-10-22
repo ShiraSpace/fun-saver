@@ -13,6 +13,7 @@ import {
 } from '@/components/Goal/GoalProgress/constants';
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
 import { goalPictureGlow } from '@/test-utils/goal-picture';
+import { moves } from '@/test-utils/motion';
 import { CELEBRATION_TEST_IDS } from '@/components/Goal/Celebration/constants';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { ChildSavings } from './ChildSavings';
@@ -22,7 +23,6 @@ import { SAVINGS_BALANCE_TEST_IDS } from './SavingsBalance/constants';
 import { COIN_FOUNTAIN_TEST_IDS } from './CoinFountain/constants';
 import { PIGGY_BANK_FACE_TEST_IDS } from './PiggyBank/PiggyBankFace/constants';
 import { PIGGY_BANK_SHAPE } from './PiggyBank/constants';
-import { moves } from '@/test-utils/motion';
 
 describe('ChildSavings', () => {
   const midnightBlueCelebrationOutline = getThemeTokens(THEME_ID.midnightBlue).colors

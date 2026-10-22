@@ -52,7 +52,7 @@ describe('PiggyBankFace', () => {
         .getAllByTestId(PIGGY_BANK_FACE_TEST_IDS.cheek)
         .map((cheek) => cheek.getAttribute('opacity'));
 
-      expect(cheekOpacities).toEqual([happyCheekOpacity, happyCheekOpacity]);
+      expect(cheekOpacities).toEqual(PIGGY_BANK_SHAPE.cheeks.map(() => happyCheekOpacity));
     });
   });
 });
