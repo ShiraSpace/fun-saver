@@ -5,7 +5,7 @@
 
 ## Goal
 
-When an account exists, the page renders the dashboard from the mock (`docs/superpowers/specs/mockup-home-screen.html`):
+When an account exists, the page renders the dashboard from the mock (`mockups/2026-06-17-home-screen.html#mockup-home-screen`):
 a **savings hero** (balance + daily-interest coins + deposits/interest split) above the **two wallet cards**
 (spending, good-deeds). Wallet values are **derived from seeded transactions** — no interest accrual engine this round.
 
@@ -101,7 +101,7 @@ parallel session); the daily-interest accrual engine.
 
 ## Styling pass (done — 2026-06-21)
 
-Dashboard styled to mock fidelity (`docs/superpowers/specs/mockup-home-screen.html`), screenshot-driven.
+Dashboard styled to mock fidelity (`mockups/2026-06-17-home-screen.html#mockup-home-screen`), screenshot-driven.
 All theme values are tokens (`@/theme/palette` `COLORS` + per-component `*_STYLE` constants) — no inline hex.
 
 - **Header ribbon** (`b10af65`): white rounded bar, soft shadow, bold ink name; page top-aligned in a
@@ -222,7 +222,7 @@ Dropped from mock: the bottom **dock child-switcher** (will be done from the men
 ## DEPOSIT PHASE — DONE (2026-06-21)
 
 Spec: `docs/superpowers/specs/2026-06-21-transaction-deposit-design.md`. Companion mockup (chosen
-Variant B): `docs/superpowers/specs/mockup-transaction-drawer.html`. Built UI-driven TDD,
+Variant B): `mockups/2026-06-21-transaction-drawer.html#mockup-transaction-drawer`. Built UI-driven TDD,
 red→green→refactor, one test at a time.
 
 **Scope reset (locked with user this session):** deposit-only MVP. A deposit is one amount that

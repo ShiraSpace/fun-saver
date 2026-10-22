@@ -3,7 +3,7 @@
 **Date:** 2026-06-21
 **Branch:** `feat/app-menu`
 **Scope:** Static menu *shell* only. Interactions (account switching, edit, theme switching, language) are deferred to follow-up features.
-**Mockups:** `docs/superpowers/specs/mockup-menu.html` (base), `mockup-menu-edit-chip.html` (edit-as-chip), `mockup-menu-avatar-letter.html` (avatar + letter chip).
+**Mockups:** `mockups/2026-06-17-menu.html#mockup-menu` (base), `mockups/2026-06-17-menu.html#mockup-menu-edit-chip` (edit-as-chip), `mockups/2026-06-17-menu.html#mockup-menu-avatar-letter` (avatar + letter chip).
 
 ## Summary
 

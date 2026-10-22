@@ -1,12 +1,53 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<title>fun-saver — עריכת חשבון</title>
+<style>
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:22px; margin:0 0 6px; color:#fff; }
+h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:34px 0 10px; color:#fff; display:flex; gap:10px; align-items:center; }
+a { color:#9be7b4; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 6px; max-width:860px; }
+.badge { font-weight:800; font-size:11px; letter-spacing:.06em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.badge.chosen { background:#2f7a4a; color:#eafff1; }
+.badge.rejected { background:#3a3a42; color:#c3c9d4; }
+table { border-collapse:collapse; width:100%; max-width:1080px; font-size:13px; }
+th { text-align:start; font-size:11px; color:#78839a; font-weight:600; padding:0 10px 7px; border-bottom:1px solid #333a46; }
+td { padding:10px; border-bottom:1px solid #2a303a; vertical-align:top; line-height:1.6; }
+td.source { direction:ltr; text-align:left; white-space:nowrap; }
+td.source a { color:#78839a; font-size:11px; }
+nav { display:flex; flex-wrap:wrap; gap:6px 14px; margin:18px 0 0; font-size:13px; }
+iframe { display:block; width:100%; height:900px; border:0; border-radius:10px; background:#fff; }
+</style>
+</head>
+<body>
+<p class="sub"><a href="index.html">← כל המוקאפים</a> · 2026-06-29</p>
+<h1>עריכת חשבון</h1>
+<p class="sub">עיגול העיפרון בתפריט פותח את אותו טופס של «צור חשבון», ממולא מראש — נבנה ונמסר בשישה PR-ים.</p>
+<h2>החלטות</h2>
+<table>
+  <thead><tr><th>השאלה</th><th>מה הוחלט</th><th>איפה זה נרשם</th></tr></thead>
+  <tbody>
+    <tr><td>טופס חדש או אותו טופס?</td><td>AccountForm משותף — שם, אווטאר וכפתור — ויצירה ועריכה עוטפות אותו, כדי ששני המסכים יישארו זהים.</td><td class="source"><a href="../.plans/2026-06-29-edit-account.md">.plans/2026-06-29-edit-account.md</a></td></tr>
+    <tr><td>מה אפשר לערוך?</td><td>רק שם ואווטאר; לערכה יש עורך משלה, והקופות והריבית לא משתנות.</td><td class="source"><a href="../.plans/2026-06-29-edit-account.md">.plans/2026-06-29-edit-account.md</a></td></tr>
+    <tr><td>איזה חשבון נערך?</td><td>תמיד החשבון הנבחר, כך שאין צורך לשאול איזה.</td><td class="source"><a href="../.plans/2026-06-29-edit-account.md">.plans/2026-06-29-edit-account.md</a></td></tr>
+    <tr><td>איך מבדילים בין יצירה לעריכה?</td><td>אייקון ליד הכותרת: + ב«צור חשבון» ו-✏️ ב«עריכת חשבון», והכפתור «שמירת שינויים»; ה-+ ביצירה הוא השינוי המכוון היחיד בה.</td><td class="source"><a href="../.plans/2026-06-29-edit-account.md">.plans/2026-06-29-edit-account.md</a></td></tr>
+    <tr><td>איך המסך מתעדכן אחרי שמירה?</td><td>router.refresh() — אותה דרך שיצירת חשבון ושינוי ערכה כבר עוברים בה, בלי שליפה נוספת.</td><td class="source"><a href="../.plans/2026-06-29-edit-account.md">.plans/2026-06-29-edit-account.md</a></td></tr>
+  </tbody>
+</table>
+<nav><a href="#edit-account">יצירה ועריכה זה לצד זה</a></nav>
+<section id="edit-account">
+  <h2>יצירה ועריכה זה לצד זה </h2>
+  <iframe title="יצירה ועריכה זה לצד זה" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
 <title>fun-saver — Edit Account (shared AccountForm)</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
 <style>
   /* ---- design tokens pulled from src/theme/themes/*.ts (jungle-quest, midnight-blue) ---- */
   :root[data-theme='jungle-quest'] {
@@ -110,7 +151,7 @@
     display:flex; align-items:center; justify-content:center; font-size:24px;
   }
   .avatar-opt:hover { transform:translateY(-2px); }
-  /* selected — border textOnPrimary + ring(4) primary, lifted + glow for a strong "chosen" read */
+  /* selected — border textOnPrimary + ring(4) primary, lifted + glow for a strong &quot;chosen&quot; read */
   .avatar-opt[data-selected='true'] {
     border-color:var(--textOnPrimary);
     box-shadow:0 0 0 4px var(--primary), 0 0 16px var(--primaryGlow), 0 3px 0 rgba(0,0,0,0.12);
@@ -133,54 +174,54 @@
 </style>
 </head>
 <body>
-<div class="page">
-  <h1 class="doc">חשבון — טופס משותף (AccountForm)</h1>
-  <p class="subtitle">צד-לצד: "צור חשבון" ו-"עריכת חשבון" חולקים אותו גוף טופס — NameField + AvatarPicker + כפתור פעולה. בעריכה השם והאווטאר מאוכלסים מראש.</p>
+<div class=&quot;page&quot;>
+  <h1 class=&quot;doc&quot;>חשבון — טופס משותף (AccountForm)</h1>
+  <p class=&quot;subtitle&quot;>צד-לצד: &quot;צור חשבון&quot; ו-&quot;עריכת חשבון&quot; חולקים אותו גוף טופס — NameField + AvatarPicker + כפתור פעולה. בעריכה השם והאווטאר מאוכלסים מראש.</p>
 
-  <div class="toolbar">
-    <button id="t-jungle" class="active" onclick="setTheme('jungle-quest')">🌴 jungle-quest</button>
-    <button id="t-midnight" onclick="setTheme('midnight-blue')">🌙 midnight-blue</button>
+  <div class=&quot;toolbar&quot;>
+    <button id=&quot;t-jungle&quot; class=&quot;active&quot; onclick=&quot;setTheme('jungle-quest')&quot;>🌴 jungle-quest</button>
+    <button id=&quot;t-midnight&quot; onclick=&quot;setTheme('midnight-blue')&quot;>🌙 midnight-blue</button>
   </div>
 
-  <div class="compare">
+  <div class=&quot;compare&quot;>
     <!-- CREATE -->
-    <div class="col">
-      <div class="cap">CreateAccount — מצב יצירה</div>
-      <div class="phone"><div class="screen">
-        <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
-        <form class="form" onsubmit="return false">
-          <button type="button" class="close-btn" aria-label="סגירה">✕</button>
-          <h1 class="title"><span class="title-icon title-icon--plus" aria-hidden="true">+</span>צור חשבון</h1>
-          <label class="name-field">
-            <span class="lbl">שם:</span>
-            <input type="text" placeholder="" value="" />
+    <div class=&quot;col&quot;>
+      <div class=&quot;cap&quot;>CreateAccount — מצב יצירה</div>
+      <div class=&quot;phone&quot;><div class=&quot;screen&quot;>
+        <div class=&quot;statusbar&quot;><span>9:41</span><span>● ● ●</span></div>
+        <form class=&quot;form&quot; onsubmit=&quot;return false&quot;>
+          <button type=&quot;button&quot; class=&quot;close-btn&quot; aria-label=&quot;סגירה&quot;>✕</button>
+          <h1 class=&quot;title&quot;><span class=&quot;title-icon title-icon--plus&quot; aria-hidden=&quot;true&quot;>+</span>צור חשבון</h1>
+          <label class=&quot;name-field&quot;>
+            <span class=&quot;lbl&quot;>שם:</span>
+            <input type=&quot;text&quot; placeholder=&quot;&quot; value=&quot;&quot; />
           </label>
-          <div class="avatar-grid" id="grid-create"></div>
-          <button type="submit" class="action-btn" disabled>✓ יצירת חשבון</button>
+          <div class=&quot;avatar-grid&quot; id=&quot;grid-create&quot;></div>
+          <button type=&quot;submit&quot; class=&quot;action-btn&quot; disabled>✓ יצירת חשבון</button>
         </form>
       </div></div>
     </div>
 
     <!-- EDIT -->
-    <div class="col">
-      <div class="cap">AccountForm — מצב עריכה</div>
-      <div class="phone"><div class="screen">
-        <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
-        <form class="form" onsubmit="return false">
-          <button type="button" class="close-btn" aria-label="סגירה">✕</button>
-          <h1 class="title"><span class="title-icon" aria-hidden="true">✏️</span>עריכת חשבון</h1>
-          <label class="name-field has-value">
-            <span class="lbl">שם:</span>
-            <input type="text" value="נועה" />
+    <div class=&quot;col&quot;>
+      <div class=&quot;cap&quot;>AccountForm — מצב עריכה</div>
+      <div class=&quot;phone&quot;><div class=&quot;screen&quot;>
+        <div class=&quot;statusbar&quot;><span>9:41</span><span>● ● ●</span></div>
+        <form class=&quot;form&quot; onsubmit=&quot;return false&quot;>
+          <button type=&quot;button&quot; class=&quot;close-btn&quot; aria-label=&quot;סגירה&quot;>✕</button>
+          <h1 class=&quot;title&quot;><span class=&quot;title-icon&quot; aria-hidden=&quot;true&quot;>✏️</span>עריכת חשבון</h1>
+          <label class=&quot;name-field has-value&quot;>
+            <span class=&quot;lbl&quot;>שם:</span>
+            <input type=&quot;text&quot; value=&quot;נועה&quot; />
           </label>
-          <div class="avatar-grid" id="grid-edit"></div>
-          <button type="submit" class="action-btn">✓ שמירת שינויים</button>
+          <div class=&quot;avatar-grid&quot; id=&quot;grid-edit&quot;></div>
+          <button type=&quot;submit&quot; class=&quot;action-btn&quot;>✓ שמירת שינויים</button>
         </form>
       </div></div>
     </div>
   </div>
 
-  <p class="note">
+  <p class=&quot;note&quot;>
     כל הצבעים, הרדיוסים, הריווחים והגופנים נלקחו ישירות מ-<code>src/theme/themes/*.ts</code>,
     <code>CreateAccount</code>, <code>NameField</code>, <code>AvatarPicker</code> ו-<code>ActionButton</code>.<br />
     האווטארים: רקעים אמיתיים מ-<code>AVATARS</code> (kid-01…kid-20); הפנים הן אימוג'י כמציין מקום
@@ -200,8 +241,8 @@
   var FACES = ['🦁','🐵','🦊','🐸','🐯','🐱','🐶','🐼','🐨','🐰','🐻','🐷','🐔','🐧','🦄','🐢','🦉','🐙','🐝','🐳'];
 
   function avatarHtml(a,i,selected) {
-    return '<button type="button" class="avatar-opt" style="--bg:'+a.bg+'"'
-      + (selected ? ' data-selected="true"' : '')
+    return '<button type=&quot;button&quot; class=&quot;avatar-opt&quot; style=&quot;--bg:'+a.bg+'&quot;'
+      + (selected ? ' data-selected=&quot;true&quot;' : '')
       + '>'+FACES[i]+'</button>';
   }
   function fill(id, selectedId) {
@@ -209,7 +250,7 @@
       AVATARS.map(function(a,i){ return avatarHtml(a,i,a.id===selectedId); }).join('');
   }
   fill('grid-create', null);   // create: nothing pre-selected
-  fill('grid-edit', 'kid-04'); // edit: pre-filled avatar (matches "נועה")
+  fill('grid-edit', 'kid-04'); // edit: pre-filled avatar (matches &quot;נועה&quot;)
 
   function setTheme(name) {
     document.documentElement.setAttribute('data-theme', name);
@@ -217,6 +258,20 @@
     document.getElementById('t-midnight').classList.toggle('active', name==='midnight-blue');
   }
   setTheme('jungle-quest');
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<script>
+for (const f of document.querySelectorAll('iframe')) {
+  const fit = () => { f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; };
+  f.addEventListener('load', () => {
+    f.style.height = '1px';
+    fit();
+    f.contentDocument.addEventListener('click', () => setTimeout(fit, 60));
+  });
+}
 </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 # The child's piggy bank celebrates a reached goal
 
 Chosen design: **D, the confetti party and the coin fountain together**, in
-`mockups/goal-celebration-child.html` (2026-10-16). The mockup is built on the
+`mockups/2026-10-03-saving-goal.html#goal-celebration-child` (2026-10-16). The mockup is built on the
 piggy bank's coin space, option C (`mockups/coin-space.html` in
 `fun-saver-piggy-bank`: the space closes after the last coin lands).
 

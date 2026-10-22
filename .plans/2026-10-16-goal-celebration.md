@@ -4,7 +4,7 @@ Parent plan: `.plans/2026-10-03-saving-goal.md` (PR 5). Spec: Decisions «How
 often the celebration plays», New components (`Celebration`), Changes to
 existing components (`WalletCard, savings`). Mockup: `.savingsCard.celebrating`,
 `.savingsCard.reachedOutline` and the reduced-motion block
-(`mockups/saving-goal.html:64-106`).
+(`mockups/2026-10-03-saving-goal.html#saving-goal`).
 
 Worktree `fun-saver-celebration`.
 
@@ -29,8 +29,8 @@ Worktree `fun-saver-celebration`.
   apart from the confetti's), `celebrationOutline` (card outline, picture ring,
   goal-screen ring), `reachedBarStart` and `celebrationGlowOpacity`. sunshine
   and jungle look as the mockup; midnight-blue is "night sky"
-  (`mockups/saving-goal-celebration-themes.html`, option B). The shine is 60%
-  white everywhere (`mockups/saving-goal-shine.html`).
+  (`mockups/2026-10-03-saving-goal.html#saving-goal-celebration-themes`, option B). The shine is 60%
+  white everywhere (`mockups/2026-10-03-saving-goal.html#saving-goal-shine`).
 - The border's angle is declared by an `@property` rule the root layout writes
   in its own `<style>` (`TRAVELLING_BORDER_ANGLE_RULE`), before the first paint.
   `next dev`'s Tailwind pipeline drops the same rule from `globals.css`, which

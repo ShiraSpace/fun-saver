@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-21
 **Branch:** `feat/transaction-flow` (worktree `/Users/technotronic/Projects/technotronic/fun-saver-account-dashboard`).
-**Companion mockup:** `docs/superpowers/specs/mockup-transaction-drawer.html` (Variant B chosen).
+**Companion mockup:** `mockups/2026-06-21-transaction-drawer.html#mockup-transaction-drawer` (Variant B chosen).
 **Builds on:** the dashboard + create-account flow already merged to `main`.
 
 ## Goal

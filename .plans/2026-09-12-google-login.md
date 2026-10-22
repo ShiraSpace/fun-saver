@@ -378,7 +378,7 @@ switch" of PR 9 is therefore small.
 **Dependencies** — `npm install` has been run in `fun-saver/`; the
 `fun-saver-edit-account` and `fun-saver-ralph-loop` worktrees may still need it.
 
-**Mockup** — `mockups/login.html`, standalone, open in a browser. Four states
+**Mockup** — `mockups/2026-09-12-login.html`, standalone, open in a browser. Four states
 (signed out → signing in → new user → returning user) and all three themes.
 Sign-in and sign-up are deliberately the same button; only the landing screen
 differs.
@@ -752,7 +752,7 @@ Depends on: PR 2. Ships: a working `/api/auth/*`; nothing else changes.
 ### PR 5 — `feat/login-page` — MERGED (#55)
 
 - `src/app/login/page.tsx` + `src/components/SignIn/` — one Google button, RTL,
-  themed, per `mockups/login.html`. Sign-in and sign-up are the same button.
+  themed, per `mockups/2026-09-12-login.html`. Sign-in and sign-up are the same button.
 
 Reachable by URL; nothing redirects to it yet — PR 6 is what does that.
 
@@ -1205,7 +1205,7 @@ at the empty state. No new plumbing is needed to reach the user.
 
 **Decided 2026-09-23 after a mockup round: the empty state gets the `Header`,
 and the menu behind it.** Mockup committed at
-`.plans/2026-09-23-pr12-empty-state-header.html` — open it in a browser; it is
+`mockups/2026-09-15-menu-redesign.html#2026-09-23-pr12-empty-state-header` — open it in a browser; it is
 built from the real tokens, three frames at the `PHONE` viewport. The bar reads
 `שלום` where an account screen reads the account name.
 

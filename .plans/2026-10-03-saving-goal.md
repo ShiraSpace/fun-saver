@@ -1,7 +1,7 @@
 # Saving goal — delivery plan and progress
 
 **Spec:** `docs/superpowers/specs/2026-10-03-saving-goal-design.md` (its Delivery
-section is the PR breakdown). **Mockup:** `mockups/saving-goal.html`.
+section is the PR breakdown). **Mockup:** `mockups/2026-10-03-saving-goal.html#saving-goal`.
 
 Each PR merges on its own and leaves the app working. Each PR gets a
 task-by-task plan in its own session before any code.

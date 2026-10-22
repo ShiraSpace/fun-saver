@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8">
+<title>fun-saver — שוויון בין הערכות</title>
+<style>
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:22px; margin:0 0 6px; color:#fff; }
+h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:34px 0 10px; color:#fff; display:flex; gap:10px; align-items:center; }
+a { color:#9be7b4; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 6px; max-width:860px; }
+.badge { font-weight:800; font-size:11px; letter-spacing:.06em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.badge.chosen { background:#2f7a4a; color:#eafff1; }
+.badge.rejected { background:#3a3a42; color:#c3c9d4; }
+table { border-collapse:collapse; width:100%; max-width:1080px; font-size:13px; }
+th { text-align:start; font-size:11px; color:#78839a; font-weight:600; padding:0 10px 7px; border-bottom:1px solid #333a46; }
+td { padding:10px; border-bottom:1px solid #2a303a; vertical-align:top; line-height:1.6; }
+td.source { direction:ltr; text-align:left; white-space:nowrap; }
+td.source a { color:#78839a; font-size:11px; }
+nav { display:flex; flex-wrap:wrap; gap:6px 14px; margin:18px 0 0; font-size:13px; }
+iframe { display:block; width:100%; height:900px; border:0; border-radius:10px; background:#fff; }
+</style>
+</head>
+<body>
+<p class="sub"><a href="index.html">← כל המוקאפים</a> · 2026-09-23</p>
+<h1>שוויון בין הערכות</h1>
+<p class="sub">כל צבע שהאפליקציה מציירת הופך למשתנה של הערכה, וכל הערכות מצהירות על אותה קבוצה — נבנה ומוזג ב-#110.</p>
+<h2>החלטות</h2>
+<table>
+  <thead><tr><th>השאלה</th><th>מה הוחלט</th><th>איפה זה נרשם</th></tr></thead>
+  <tbody>
+    <tr><td>מה מראים הריבועים בבורר הערכות?</td><td>את גרדיאנט המסך האמיתי של כל ערכה, ולא טוקן תצוגה נפרד — מידנייט יוצא כמעט שחור, אבל זה מה שהערכה באמת נראית.</td><td class="source"><a href="../.plans/2026-09-23-theme-parity.md">.plans/2026-09-23-theme-parity.md</a></td></tr>
+    <tr><td>צללים לכל ערכה או סולם משותף?</td><td>סולם אחד משותף (SHADOW_SCALE) על הערכים של היום — מידנייט, הערכה עם הטענה החזקה ביותר לצללים משלה, נקראה הכי טוב דווקא עליהם.</td><td class="source"><a href="../.plans/2026-09-23-theme-parity.md">.plans/2026-09-23-theme-parity.md</a></td></tr>
+    <tr><td>כמה ערכי צל ושכבה שקופה?</td><td>שישה שלבים במקום שבעה-עשר ערכים — וזה הדבר היחיד במחזור שמשנה איך משהו נראה, בחמישה משטחים.</td><td class="source"><a href="../.plans/2026-09-23-theme-parity.md">.plans/2026-09-23-theme-parity.md</a></td></tr>
+    <tr><td>PR אחד או כמה?</td><td>הכל ב-PR אחד, כדי שהחוזה של הערכה ישתנה פעם אחת.</td><td class="source"><a href="../.plans/2026-09-23-theme-parity.md">.plans/2026-09-23-theme-parity.md</a></td></tr>
+  </tbody>
+</table>
+<nav><a href="#theme-swatches">בורר הערכות — היום מול נגזר</a> <a href="#midnight-shadows">צללי מידנייט — שלושה סולמות</a></nav>
+<section id="theme-swatches">
+  <h2>בורר הערכות — היום מול נגזר <span class="badge chosen">✓ נבחר</span></h2>
+  <iframe title="בורר הערכות — היום מול נגזר" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>בורר הערכות — התצוגה המקדימה</title>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:21px; margin:0 0 6px; color:#fff; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 18px; max-width:780px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.rack { display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; }
+.col { }
+.cap { font-size:12px; font-weight:600; color:#9aa3b2; margin-bottom:9px; }
+.cap b { color:#fff; }
+
+.sheet { background:#FFF8E0; border-radius:18px; padding:14px 16px; width:250px;
+  box-sizing:border-box; color:#3A1F5A; }
+.lbl { font-size:12px; font-weight:700; color:#7A5A0A; margin-bottom:7px; }
+.row { display:flex; gap:9px; }
+.sw { width:38px; height:38px; border-radius:12px; box-sizing:border-box;
+  border:2.5px solid transparent; }
+.sw.on { border-color:#3A1F5A; }
+
+.big { display:flex; gap:14px; margin-top:16px; }
+.bigsw { width:96px; height:96px; border-radius:20px; }
+.name { font-size:11px; color:#78839a; text-align:center; margin-top:5px; }
+
+/* today — three literals in a component constants file */
+.t-sun  { background:linear-gradient(135deg, #FFC34D, #E94E89); }
+.t-jun  { background:linear-gradient(135deg, #2A9D8F, #90BE6D); }
+.t-mid  { background:linear-gradient(135deg, #0F1620, #3B82F6); }
+/* derived — each theme's real screen gradient */
+.d-sun  { background:linear-gradient(160deg, #FFC34D, #FF8A4C, #E94E89); }
+.d-jun  { background:linear-gradient(160deg, #2A9D8F, #43AA8B, #90BE6D); }
+.d-mid  { background:linear-gradient(160deg, #0A0E14, #0F1620, #122036); }
+</style>
+</head>
+<body>
+
+<h1>בורר הערכות — מה הריבועים מראים</h1>
+<p class=&quot;sub&quot;>שורת «מראה» בתפריט. שלושה ריבועים, אחד לכל ערכה, והנבחר עוטה טבעת. היום הם <b>שלושה גרדיאנטים כתובים ביד</b> ב־<code>AppearanceSection/constants.ts</code> — לא נגזרים מהערכות. סאנשיין וג'ונגל מאבדים את העצירה האמצעית ומשנים זווית; <b>מידנייט צבוע ב־<code>#3B82F6</code>, צבע שגרדיאנט המסך שלו לא מכיל בכלל</b>.</p>
+
+<div class=&quot;rack&quot;>
+  <div class=&quot;col&quot;>
+    <div class=&quot;cap&quot;><b>היום</b> · שלושה ליטרלים בקומפוננטה</div>
+    <div class=&quot;sheet&quot;>
+      <div class=&quot;lbl&quot;>מראה</div>
+      <div class=&quot;row&quot;>
+        <span class=&quot;sw t-mid&quot;></span><span class=&quot;sw t-jun&quot;></span><span class=&quot;sw t-sun on&quot;></span>
+      </div>
+    </div>
+    <div class=&quot;big&quot;>
+      <div><div class=&quot;bigsw t-sun&quot;></div><div class=&quot;name&quot;>סאנשיין</div></div>
+      <div><div class=&quot;bigsw t-jun&quot;></div><div class=&quot;name&quot;>ג'ונגל</div></div>
+      <div><div class=&quot;bigsw t-mid&quot;></div><div class=&quot;name&quot;>מידנייט</div></div>
+    </div>
+  </div>
+
+  <div class=&quot;col&quot;>
+    <div class=&quot;cap&quot;><b>נגזר</b> · גרדיאנט המסך האמיתי של כל ערכה</div>
+    <div class=&quot;sheet&quot;>
+      <div class=&quot;lbl&quot;>מראה</div>
+      <div class=&quot;row&quot;>
+        <span class=&quot;sw d-mid&quot;></span><span class=&quot;sw d-jun&quot;></span><span class=&quot;sw d-sun on&quot;></span>
+      </div>
+    </div>
+    <div class=&quot;big&quot;>
+      <div><div class=&quot;bigsw d-sun&quot;></div><div class=&quot;name&quot;>סאנשיין</div></div>
+      <div><div class=&quot;bigsw d-jun&quot;></div><div class=&quot;name&quot;>ג'ונגל</div></div>
+      <div><div class=&quot;bigsw d-mid&quot;></div><div class=&quot;name&quot;>מידנייט</div></div>
+    </div>
+  </div>
+</div>
+
+<p class=&quot;sub&quot; style=&quot;margin-top:22px&quot;><b>ההבדל שמכריע:</b> בטור הנגזר מידנייט הופך למלבן כמעט־שחור — נאמן למסך שלו, אבל קשה להבחין בו בשורה. בטור של היום הוא כחול ובולט, במחיר שהוא לא מראה את הערכה.</p>
+
+</body>
+</html>
+"></iframe>
+</section>
+<section id="midnight-shadows">
+  <h2>צללי מידנייט — שלושה סולמות <span class="badge chosen">✓ נבחר</span></h2>
+  <iframe title="צללי מידנייט — שלושה סולמות" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>מידנייט — סולם הצללים</title>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&amp;family=Rubik:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:21px; margin:0 0 6px; color:#fff; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 18px; max-width:820px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.sub b { color:#fff; }
+
+.rack { display:flex; gap:22px; flex-wrap:wrap; align-items:flex-start; }
+.col { width:260px; }
+.cap { font-size:12px; font-weight:600; color:#9aa3b2; margin-bottom:9px; line-height:1.6; }
+.cap b { color:#fff; display:block; font-size:13px; margin-bottom:2px; }
+.cap span { font-family:ui-monospace,monospace; font-size:11px; color:#78839a; }
+
+/* midnight, exactly as the theme declares it */
+.screen { background:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  border-radius:16px; padding:18px 14px 22px; display:flex; flex-direction:column; gap:18px; }
+.card { background:#141B24; border-radius:14px; padding:13px 14px; color:#ECF1F8; }
+.ttl { font-size:14px; font-weight:600; margin:0; }
+.hint { font-size:11px; color:#8A96A8; margin:3px 0 0; }
+
+.section { box-shadow:0 4px 0 var(--sf); }
+.intro { background:linear-gradient(#1D4ED8,#1E3A8A); color:#fff; border-radius:16px;
+  padding:13px 14px; box-shadow:0 4px 0 var(--ss); }
+.pill { display:inline-block; padding:3px 9px; border-radius:999px;
+  background:rgba(255,255,255,.25); font-size:11px; font-weight:700; margin-bottom:8px; }
+.signin { box-shadow:0 12px 30px var(--sm); }
+.popwrap { position:relative; }
+.pop { box-shadow:0 14px 30px var(--sd); }
+.badge { position:absolute; inset-block-end:-7px; inset-inline-start:-7px;
+  width:22px; height:22px; border-radius:50%; background:#141B24; color:#ECF1F8;
+  display:flex; align-items:center; justify-content:center; font-size:11px;
+  box-shadow:0 1px 3px var(--sd); }
+.tag { font-family:ui-monospace,monospace; font-size:10px; color:#8A96A8; margin:0 0 5px; }
+
+.a { --sf:rgba(0,0,0,.06); --ss:rgba(0,0,0,.12); --sm:rgba(0,0,0,.16); --sd:rgba(0,0,0,.25); }
+.b { --sf:rgba(0,0,0,.35); --ss:rgba(0,0,0,.45); --sm:rgba(0,0,0,.55); --sd:rgba(0,0,0,.65); }
+.c { --sf:rgba(0,0,0,.50); --ss:rgba(0,0,0,.60); --sm:rgba(0,0,0,.70); --sd:rgba(0,0,0,.80); }
+
+.crumb { margin:0 0 14px; font-size:12.5px; color:#9aa3b2; }
+.crumb a { color:#9aa3b2; text-decoration:none; border-bottom:1px solid #3a4150; }
+.crumb a:hover { color:#fff; }
+.status { display:flex; align-items:flex-start; gap:10px; max-width:820px;
+  margin:0 0 14px; padding:9px 11px; border-radius:10px; font-size:12.5px; line-height:1.65; }
+.status p { margin:0; }
+.status code, .status a { font-size:11.5px; color:inherit; }
+.status.chosen { background:#12301c; color:#b7f0c8; border:1px solid #2f7a4a; }
+.status .verdict { margin-inline-start:0; flex-shrink:0; }
+.verdict { display:inline-block; margin-inline-start:8px; font-size:10.5px; font-weight:800;
+  letter-spacing:.06em; padding:2px 8px; border-radius:999px; white-space:nowrap;
+  vertical-align:middle; }
+.verdict[data-state='chosen'] { background:#2f7a4a; color:#eafff1; }
+.verdict[data-state='rejected'] { background:#3a3a42; color:#c3c9d4; }
+</style>
+</head>
+<body>
+
+<p class=&quot;crumb&quot;><a href=&quot;index.html&quot; target=&quot;_top&quot;>← כל המוקאפים</a> · מידנייט — סולם הצללים</p>
+<h1>מידנייט — איזה סולם צללים באמת נראה</h1>
+<div class=&quot;status chosen&quot;><span class=&quot;verdict&quot; data-state=&quot;chosen&quot;>✓ נבחר</span><p><b>היום</b> — <code>.06 · .12 · .16 · .25</code>. מידנייט נקרא הכי טוב דווקא על הערכים שכל הערכות כבר השתמשו בהן, ולכן הצללים נשארו <b>משותפים ולא פר-ערכה</b>: <code>SHADOW_SCALE</code> אחד ב-<code>src/theme/shadows.ts</code>, שוחרר ב-#110. <a href=&quot;../.plans/2026-09-23-theme-parity.md&quot; target=&quot;_top&quot;><code>.plans/2026-09-23-theme-parity.md</code></a></p></div>
+<p class=&quot;sub&quot;>אותם ארבעה טוקנים, שלושה סולמות. כל ריבוע צבוע בצבעי מידנייט האמיתיים: מסך <code>160deg #0A0E14 → #0F1620 → #122036</code>, משטח <code>#141B24</code>, כפתור פעולה <code>#1D4ED8 → #1E3A8A</code>. הגיאומטריה זהה בשלושתם — רק האלפא משתנה. <b>סאנשיין וג׳ונגל לא זזים בכלל</b>; הם שומרים על הערכים הנמדדים.</p>
+
+<div class=&quot;rack&quot;>
+
+  <div class=&quot;col&quot;>
+    <div class=&quot;cap&quot;><b>היום<span class=&quot;verdict&quot; data-state=&quot;chosen&quot;>✓ נבחר</span></b><span>.06 · .12 · .16 · .25</span>הערכים שהיו מקודדים קשיח. שחור על כמעט־שחור.</div>
+    <div class=&quot;screen a&quot;>
+      <div><p class=&quot;tag&quot;>shadowFaint · MethodSection</p><div class=&quot;card section&quot;><p class=&quot;ttl&quot;>איך זה עובד</p><p class=&quot;hint&quot;>שלושה ארנקים, חלוקה אחת</p></div></div>
+      <div><p class=&quot;tag&quot;>shadowSoft · MethodIntro</p><div class=&quot;intro&quot;><span class=&quot;pill&quot;>השיטה</span><p class=&quot;ttl&quot;>כסף שנשאר</p></div></div>
+      <div><p class=&quot;tag&quot;>shadowMid · SignIn</p><div class=&quot;card signin&quot;><p class=&quot;ttl&quot;>ברוכים הבאים</p><p class=&quot;hint&quot;>התחברו כדי להמשיך</p></div></div>
+      <div class=&quot;popwrap&quot;><p class=&quot;tag&quot;>shadowDeep · popover + badge</p><div class=&quot;card pop&quot;><p class=&quot;ttl&quot;>החשבונות שלי</p><p class=&quot;hint&quot;>שלושה חשבונות</p></div><span class=&quot;badge&quot;>🏠</span></div>
+    </div>
+  </div>
+
+  <div class=&quot;col&quot;>
+    <div class=&quot;cap&quot;><b>אמצע<span class=&quot;verdict&quot; data-state=&quot;rejected&quot;>נדחה</span></b><span>.35 · .45 · .55 · .65</span>מספיק כדי להיראות, בלי לפתוח תהום מתחת לכל כרטיס.</div>
+    <div class=&quot;screen b&quot;>
+      <div><p class=&quot;tag&quot;>shadowFaint · MethodSection</p><div class=&quot;card section&quot;><p class=&quot;ttl&quot;>איך זה עובד</p><p class=&quot;hint&quot;>שלושה ארנקים, חלוקה אחת</p></div></div>
+      <div><p class=&quot;tag&quot;>shadowSoft · MethodIntro</p><div class=&quot;intro&quot;><span class=&quot;pill&quot;>השיטה</span><p class=&quot;ttl&quot;>כסף שנשאר</p></div></div>
+      <div><p class=&quot;tag&quot;>shadowMid · SignIn</p><div class=&quot;card signin&quot;><p class=&quot;ttl&quot;>ברוכים הבאים</p><p class=&quot;hint&quot;>התחברו כדי להמשיך</p></div></div>
+      <div class=&quot;popwrap&quot;><p class=&quot;tag&quot;>shadowDeep · popover + badge</p><div class=&quot;card pop&quot;><p class=&quot;ttl&quot;>החשבונות שלי</p><p class=&quot;hint&quot;>שלושה חשבונות</p></div><span class=&quot;badge&quot;>🏠</span></div>
+    </div>
+  </div>
+
+  <div class=&quot;col&quot;>
+    <div class=&quot;cap&quot;><b>ההצעה שלי<span class=&quot;verdict&quot; data-state=&quot;rejected&quot;>נדחה</span></b><span>.50 · .60 · .70 · .80</span>התפר בין כרטיס לרקע ברור בכל דרגה.</div>
+    <div class=&quot;screen c&quot;>
+      <div><p class=&quot;tag&quot;>shadowFaint · MethodSection</p><div class=&quot;card section&quot;><p class=&quot;ttl&quot;>איך זה עובד</p><p class=&quot;hint&quot;>שלושה ארנקים, חלוקה אחת</p></div></div>
+      <div><p class=&quot;tag&quot;>shadowSoft · MethodIntro</p><div class=&quot;intro&quot;><span class=&quot;pill&quot;>השיטה</span><p class=&quot;ttl&quot;>כסף שנשאר</p></div></div>
+      <div><p class=&quot;tag&quot;>shadowMid · SignIn</p><div class=&quot;card signin&quot;><p class=&quot;ttl&quot;>ברוכים הבאים</p><p class=&quot;hint&quot;>התחברו כדי להמשיך</p></div></div>
+      <div class=&quot;popwrap&quot;><p class=&quot;tag&quot;>shadowDeep · popover + badge</p><div class=&quot;card pop&quot;><p class=&quot;ttl&quot;>החשבונות שלי</p><p class=&quot;hint&quot;>שלושה חשבונות</p></div><span class=&quot;badge&quot;>🏠</span></div>
+    </div>
+  </div>
+
+</div>
+
+<p class=&quot;sub&quot; style=&quot;margin-top:22px&quot;><b>מה להסתכל עליו:</b> ב־<code>shadowFaint</code> ו־<code>shadowSoft</code> הצל הוא מדף קשיח (<code>0 4px 0</code>) — השאלה היא אם יש תפר מתחת לכרטיס בכלל. ב־<code>shadowMid</code> ו־<code>shadowDeep</code> הוא טשטוש רחב — השאלה היא אם הוא מרים את הכרטיס או פשוט מלכלך את הרקע.</p>
+
+</body>
+</html>
+"></iframe>
+</section>
+<script>
+for (const f of document.querySelectorAll('iframe')) {
+  const fit = () => { f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; };
+  f.addEventListener('load', () => {
+    f.style.height = '1px';
+    fit();
+    f.contentDocument.addEventListener('click', () => setTimeout(fit, 60));
+  });
+}
+</script>
+</body>
+</html>

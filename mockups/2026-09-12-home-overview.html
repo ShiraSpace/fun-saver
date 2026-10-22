@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8">
+<title>fun-saver — המסך הראשי</title>
+<style>
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:22px; margin:0 0 6px; color:#fff; }
+h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:34px 0 10px; color:#fff; display:flex; gap:10px; align-items:center; }
+a { color:#9be7b4; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 6px; max-width:860px; }
+.badge { font-weight:800; font-size:11px; letter-spacing:.06em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.badge.chosen { background:#2f7a4a; color:#eafff1; }
+.badge.rejected { background:#3a3a42; color:#c3c9d4; }
+table { border-collapse:collapse; width:100%; max-width:1080px; font-size:13px; }
+th { text-align:start; font-size:11px; color:#78839a; font-weight:600; padding:0 10px 7px; border-bottom:1px solid #333a46; }
+td { padding:10px; border-bottom:1px solid #2a303a; vertical-align:top; line-height:1.6; }
+td.source { direction:ltr; text-align:left; white-space:nowrap; }
+td.source a { color:#78839a; font-size:11px; }
+nav { display:flex; flex-wrap:wrap; gap:6px 14px; margin:18px 0 0; font-size:13px; }
+iframe { display:block; width:100%; height:900px; border:0; border-radius:10px; background:#fff; }
+</style>
+</head>
+<body>
+<p class="sub"><a href="index.html">← כל המוקאפים</a> · 2026-09-12</p>
+<h1>המסך הראשי</h1>
+<p class="sub">מסך הבית עם טבעת שמחזיקה את הסך הכל ופירוט לפי קופה, וטבעת שמציירת את עצמה בטעינה — שניהם נבנו.</p>
+<h2>החלטות</h2>
+<table>
+  <thead><tr><th>השאלה</th><th>מה הוחלט</th><th>איפה זה נרשם</th></tr></thead>
+  <tbody>
+    <tr><td>מה נשאר בכותרת?</td><td>המבורגר, שם ואווטאר בלבד — הסך הכל עובר לתוך הטבעת.</td><td class="source"><a href="../.plans/2026-09-12-home-overview-redesign.md">.plans/2026-09-12-home-overview-redesign.md</a></td></tr>
+    <tr><td>האם יש מסך פירוט נפרד לחיסכון?</td><td>לא — הכל על מסך אחד, בלי לחיצה למסך נוסף.</td><td class="source"><a href="../.plans/2026-09-12-home-overview-redesign.md">.plans/2026-09-12-home-overview-redesign.md</a></td></tr>
+    <tr><td>איך מעגלים את «היום»?</td><td>בצעדים של חצי שקל, כמו שהמטבעות עשו, ומוסתר כשהוא מתעגל לאפס.</td><td class="source"><a href="../.plans/2026-09-12-home-overview-redesign.md">.plans/2026-09-12-home-overview-redesign.md</a></td></tr>
+    <tr><td>איך מעגלים את שאר הסכומים?</td><td>לשקל שלם — כך «הפקדת» ועוד «רווח מריבית» מסתכמים ליתרה שעל המסך.</td><td class="source"><a href="../.plans/2026-09-12-home-overview-redesign.md">.plans/2026-09-12-home-overview-redesign.md</a></td></tr>
+    <tr><td>מה מופיע בריבועי המקרא?</td><td>האייקון של כל קופה על צבע הקשת שלה, כך ששורה במקרא מתאימה לקשת גם לפי האייקון ולא רק לפי הצבע.</td><td class="source"><a href="../.plans/2026-09-12-home-overview-redesign.md">.plans/2026-09-12-home-overview-redesign.md</a></td></tr>
+    <tr><td>איזו כניסה מקבלת הטבעת?</td><td>מועמד ה — הסוויפ של ד דחוס ל-0.6 שניות; המחיר הוא שקשת של 8% מקבלת רק 50ms, והתקבל.</td><td class="source"><a href="../.plans/2026-09-14-donut-load-animation.md">.plans/2026-09-14-donut-load-animation.md</a></td></tr>
+    <tr><td>כמה זמן מקבלת כל קשת?</td><td>לפי החלק שלה בסך הכל ולא שווה בשווה — קופה של 57% מקבלת 57% מהזמן.</td><td class="source"><a href="../.plans/2026-09-14-donut-load-animation.md">.plans/2026-09-14-donut-load-animation.md</a></td></tr>
+    <tr><td>מתי הסכום סופר מאפס?</td><td>רק בטעינה; שינוי אחר כך קופץ ישר למספר — אחרת כל הפקדה הופכת להמתנה. החלפת ילד מריצה את זה שוב.</td><td class="source"><a href="../.plans/2026-09-14-donut-load-animation.md">.plans/2026-09-14-donut-load-animation.md</a></td></tr>
+  </tbody>
+</table>
+<nav><a href="#home-overview">המסך הראשי</a> <a href="#donut-load-animation">טעינת הדונאט — חמישה מועמדים</a></nav>
+<section id="home-overview">
+  <h2>המסך הראשי </h2>
+  <iframe title="המסך הראשי" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — Home (ring total + per-wallet detail)</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+:root, :root[data-theme='sunshine-quest'] {
+  --textOnPrimary:#FFFFFF; --surface:#FFFFFF;
+  --textMuted:#8A7AA7; --textStrong:#3A1F5A;
+  --divider:#F2D9D2; --softBg:#FFF8E0; --softBorder:#FFD23F; --softText:#7A5A0A;
+  --depositBg:#FFF6E0; --gainText:#2E7D32; --gainSoftBg:#E1F4E5;
+  --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+  --actionButton:linear-gradient(#8A3AAE,#6B2C8E);
+  --sunnyTile:linear-gradient(135deg,#FFE6B0,#FFC34D);
+  --potSavings:linear-gradient(135deg,#FFE6B0,#FFC34D);
+  --potSpending:linear-gradient(135deg,#FFD8C7,#FF8A4C);
+  --potGood:linear-gradient(135deg,#FBC4DA,#E94E89);
+  --arcSavings:#FFC34D; --arcSpending:#FF8A4C; --arcGood:#E94E89; --arcTrack:#F3ECE4;
+}
+:root[data-theme='jungle-quest'] {
+  --textOnPrimary:#FFFFFF; --surface:#FFFDF5;
+  --textMuted:#5C7A6E; --textStrong:#1B4332;
+  --divider:#DDE7CC; --softBg:#F3F7E4; --softBorder:#B5D94C; --softText:#4A6A1E;
+  --depositBg:#F3F7E4; --gainText:#3A7D2E; --gainSoftBg:#E4F2D9;
+  --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+  --actionButton:linear-gradient(#3AB3A3,#2A9D8F);
+  --sunnyTile:linear-gradient(135deg,#52B69A,#2A9D8F);
+  --potSavings:linear-gradient(135deg,#52B69A,#2A9D8F);
+  --potSpending:linear-gradient(135deg,#B5D94C,#90BE6D);
+  --potGood:linear-gradient(135deg,#F4A261,#E76F51);
+  --arcSavings:#2A9D8F; --arcSpending:#90BE6D; --arcGood:#E76F51; --arcTrack:#E8EFDC;
+}
+:root[data-theme='midnight-blue'] {
+  --textOnPrimary:#FFFFFF; --surface:#141B24;
+  --textMuted:#8A96A8; --textStrong:#ECF1F8;
+  --divider:#1E2A40; --softBg:#121E36; --softBorder:#3B82F6; --softText:#93C5FD;
+  --depositBg:#111B30; --gainText:#34D399; --gainSoftBg:#0E2E2A;
+  --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  --actionButton:linear-gradient(#60A5FA,#3B82F6);
+  --sunnyTile:linear-gradient(135deg,#1E40AF,#172554);
+  --potSavings:linear-gradient(135deg,#1E40AF,#172554);
+  --potSpending:linear-gradient(135deg,#2563EB,#1E40AF);
+  --potGood:linear-gradient(135deg,#4338CA,#312E81);
+  --arcSavings:#1E40AF; --arcSpending:#60A5FA; --arcGood:#818CF8; --arcTrack:#1E2A40;
+}
+/* TYPE_SCALE: display 48 / amount 38 / title 22 / heading 18 / body 15 / label 12 */
+
+* { box-sizing:border-box; }
+body { margin:0; padding:24px 20px 60px; background:#20242c; color:#fff; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
+.sub { color:#9aa3b2; font-size:13px; line-height:1.6; margin:0 0 18px; max-width:620px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.new { color:#ffd23f; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px; }
+.controls button { font-family:Rubik,sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+  padding:7px 14px; border-radius:999px; border:1.5px solid #3a4150; background:#2a303a; color:#dfe4ec; }
+.controls button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff; }
+
+.phone { width:392px; border-radius:30px; overflow:hidden; background:var(--screen);
+  box-shadow:0 18px 40px rgba(0,0,0,.45); font-family:Rubik,sans-serif; direction:rtl; }
+.col { display:flex; flex-direction:column; gap:16px; padding:16px 14px; }
+
+.header { display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--surface);
+  border-radius:18px; box-shadow:0 4px 0 rgba(0,0,0,.06); color:var(--textStrong); }
+.burger { width:22px; display:flex; flex-direction:column; gap:4px; }
+.burger i { height:2.5px; border-radius:2px; background:var(--textStrong); display:block; }
+.hname { flex:1; text-align:start; font-weight:700; font-size:18px; font-family:Fredoka,Rubik,sans-serif; }
+.avatar { width:40px; height:40px; border-radius:50%; background:var(--sunnyTile);
+  display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+
+/* ---- overview card: total inside the ring ---- */
+.card { position:relative; background:var(--surface); border-radius:24px; padding:16px;
+  box-shadow:0 6px 0 rgba(0,0,0,.06); color:var(--textStrong); }
+.donutRow { display:flex; align-items:center; gap:16px; }
+.donut { flex-shrink:0; position:relative; }
+.donut svg { display:block; transform:rotate(-90deg); }
+.donut circle { fill:none; stroke-linecap:butt; }
+.holeText { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.holeText .lbl { font-size:10px; font-weight:600; color:var(--textMuted); letter-spacing:.4px; }
+.holeText .amt { font-size:26px; font-weight:800; line-height:1.05; direction:ltr; font-variant-numeric:tabular-nums; }
+.holeText .amt small { font-size:.55em; opacity:.6; margin-inline-end:2px; }
+
+.legend { flex:1; display:flex; flex-direction:column; gap:11px; }
+.leg { display:flex; align-items:center; gap:9px; font-size:15px; font-weight:600; }
+.dot { width:22px; height:22px; border-radius:7px; flex-shrink:0; display:inline-flex;
+  align-items:center; justify-content:center; font-size:12px; line-height:1; }
+.dot.savings { background:var(--arcSavings); }
+.dot.spending { background:var(--arcSpending); }
+.dot.good { background:var(--arcGood); }
+.leg .pct { font-size:13px; font-weight:500; color:var(--textMuted); }
+.leader { flex:1; border-bottom:2.5px dotted var(--divider); margin-bottom:5px; }
+.leg .val { font-weight:800; direction:ltr; font-variant-numeric:tabular-nums; }
+.leg .val small { font-size:.72em; opacity:.6; margin-inline-end:2px; }
+
+/* ---- per-wallet detail ---- */
+.sectionLabel { text-align:start; padding-inline:4px; font-size:12px; font-weight:700;
+  color:var(--textOnPrimary); opacity:.92; }
+.details { display:flex; flex-direction:column; gap:8px; }
+.detail { background:var(--surface); border-radius:16px; box-shadow:0 3px 0 rgba(0,0,0,.06);
+  color:var(--textStrong); padding:11px 12px; }
+.detailHead { display:flex; align-items:center; gap:11px; }
+.illust { flex-shrink:0; width:40px; height:40px; border-radius:12px; font-size:21px;
+  display:inline-flex; align-items:center; justify-content:center; }
+.illust.savings { background:var(--potSavings); }
+.illust.spending { background:var(--potSpending); }
+.illust.good { background:var(--potGood); }
+.detailName { flex:1; text-align:start; font-size:15px; font-weight:700; }
+.detailName small { display:block; font-size:11.5px; font-weight:500; color:var(--textMuted); margin-top:2px; }
+.pill { padding:5px 11px; border-radius:999px; background:var(--depositBg); border:1.5px solid var(--softBorder);
+  font-size:15px; font-weight:700; direction:ltr; font-variant-numeric:tabular-nums; }
+.pill small { font-size:.72em; opacity:.6; margin-inline-end:3px; }
+
+.stats { display:flex; gap:8px; margin-top:10px; padding-top:10px; border-top:1.5px dashed var(--divider); }
+.stat { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:8px 6px; border-radius:12px; background:var(--depositBg); }
+.stat.gain { background:var(--gainSoftBg); color:var(--gainText); }
+.stat .lbl { font-size:11px; font-weight:600; color:var(--textMuted); }
+.stat.gain .lbl { color:var(--gainText); opacity:.85; }
+.stat .num { font-size:17px; font-weight:800; direction:ltr; font-variant-numeric:tabular-nums; }
+.stat .num small { font-size:.65em; opacity:.6; margin-inline-end:2px; }
+
+.ladder { margin-top:18px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  font-size:12.5px; color:#9aa3b2; max-width:620px; }
+.ladderTitle { font-weight:600; color:#dfe4ec; }
+.step { background:#2a303a; border:1.5px solid #3a4150; border-radius:999px; padding:4px 10px;
+  direction:ltr; color:#9be7b4; font-weight:600; }
+.step.off { color:#8a93a2; }
+.step i { font-style:normal; color:#9aa3b2; font-weight:500; }
+
+.cta { width:100%; padding:15px; border:none; border-radius:20px; background:var(--actionButton);
+  color:var(--textOnPrimary); font-family:Fredoka,Rubik,sans-serif; font-size:18px; font-weight:600;
+  box-shadow:0 5px 0 rgba(0,0,0,.22); cursor:pointer; }
+</style>
+</head>
+<body>
+
+<h1>fun-saver — המסך הראשי</h1>
+<p class=&quot;sub&quot;>
+  Header = burger · name · avatar (no total). Ring card owns the total and the split.
+  Interest is numbers only — no coin row: it lives in the savings stat strip.
+  Seed account אלי: חיסכון ₪204 (57%) · בזבוזים ₪125 (35%) · מעשים טובים ₪30 (8%) → ₪359.
+  <b>היום</b> uses the same half-shekel rounding as the old coin row — <code>coinBreakdown</code> becomes a number formatter (₪0.5 / ₪1 / ₪1.5 / ₪2.5…). Balances stay whole shekels.
+  <br /><span class=&quot;new&quot;>Needs new derivations</span>: <code>ביזבזת ₪45</code> and <code>תרמת ₪18</code>
+  (withdrawals per wallet — today only <code>principal</code> = deposits−withdrawals is exposed).
+</p>
+
+<div class=&quot;controls&quot;>
+  <button data-theme-btn=&quot;sunshine-quest&quot;>sunshine-quest</button>
+  <button data-theme-btn=&quot;jungle-quest&quot; aria-pressed=&quot;true&quot;>jungle-quest</button>
+  <button data-theme-btn=&quot;midnight-blue&quot;>midnight-blue</button>
+</div>
+
+<div class=&quot;phone&quot;><div class=&quot;col&quot;>
+
+  <div class=&quot;header&quot;>
+    <span class=&quot;burger&quot;><i></i><i></i><i></i></span>
+    <span class=&quot;hname&quot;>אלי</span>
+    <span class=&quot;avatar&quot;>🧒</span>
+  </div>
+
+  <div class=&quot;card&quot;>
+    <div class=&quot;donutRow&quot;>
+      <div class=&quot;donut&quot;>
+        <svg width=&quot;122&quot; height=&quot;122&quot; viewBox=&quot;0 0 104 104&quot;>
+          <circle cx=&quot;52&quot; cy=&quot;52&quot; r=&quot;42&quot; stroke=&quot;var(--arcTrack)&quot;     stroke-width=&quot;14&quot; />
+          <circle cx=&quot;52&quot; cy=&quot;52&quot; r=&quot;42&quot; stroke=&quot;var(--arcSavings)&quot;   stroke-width=&quot;14&quot; stroke-dasharray=&quot;149.9 114.0&quot; stroke-dashoffset=&quot;0&quot; />
+          <circle cx=&quot;52&quot; cy=&quot;52&quot; r=&quot;42&quot; stroke=&quot;var(--arcSpending)&quot;  stroke-width=&quot;14&quot; stroke-dasharray=&quot;91.9 172.0&quot;  stroke-dashoffset=&quot;-149.9&quot; />
+          <circle cx=&quot;52&quot; cy=&quot;52&quot; r=&quot;42&quot; stroke=&quot;var(--arcGood)&quot;      stroke-width=&quot;14&quot; stroke-dasharray=&quot;22.1 241.8&quot;  stroke-dashoffset=&quot;-241.8&quot; />
+        </svg>
+        <div class=&quot;holeText&quot;>
+          <span class=&quot;lbl&quot;>סך הכל</span>
+          <span class=&quot;amt&quot;><small>₪</small>359</span>
+        </div>
+      </div>
+      <div class=&quot;legend&quot;>
+        <div class=&quot;leg&quot;><span class=&quot;dot savings&quot;>🐷</span>חיסכון <span class=&quot;pct&quot;>57%</span><span class=&quot;leader&quot;></span><span class=&quot;val&quot;><small>₪</small>204</span></div>
+        <div class=&quot;leg&quot;><span class=&quot;dot spending&quot;>🛍️</span>בזבוזים <span class=&quot;pct&quot;>35%</span><span class=&quot;leader&quot;></span><span class=&quot;val&quot;><small>₪</small>125</span></div>
+        <div class=&quot;leg&quot;><span class=&quot;dot good&quot;>💛</span>מעשים <span class=&quot;pct&quot;>8%</span><span class=&quot;leader&quot;></span><span class=&quot;val&quot;><small>₪</small>30</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class=&quot;details&quot;>
+    <div class=&quot;sectionLabel&quot;>מה קורה בכל קופה</div>
+
+    <div class=&quot;detail&quot;>
+      <div class=&quot;detailHead&quot;>
+        <span class=&quot;illust savings&quot;>🐷</span>
+        <span class=&quot;detailName&quot;>חיסכון<small>צובר 15% בחודש · פעיל מאז 20 ביוני</small></span>
+        <span class=&quot;pill&quot;><small>₪</small>204</span>
+      </div>
+      <div class=&quot;stats&quot;>
+        <div class=&quot;stat&quot;><span class=&quot;lbl&quot;>הפקדת</span><span class=&quot;num&quot;><small>₪</small>137</span></div>
+        <div class=&quot;stat gain&quot;><span class=&quot;lbl&quot;>רווח מריבית</span><span class=&quot;num&quot;><small>₪</small>67</span></div>
+        <div class=&quot;stat gain&quot;><span class=&quot;lbl&quot;>היום</span><span class=&quot;num&quot;><small>₪</small>1</span></div>
+      </div>
+    </div>
+
+    <div class=&quot;detail&quot;>
+      <div class=&quot;detailHead&quot;>
+        <span class=&quot;illust spending&quot;>🛍️</span>
+        <span class=&quot;detailName&quot;>בזבוזים<small>כבר ביזבזת ₪45</small></span>
+        <span class=&quot;pill&quot;><small>₪</small>125</span>
+      </div>
+    </div>
+
+    <div class=&quot;detail&quot;>
+      <div class=&quot;detailHead&quot;>
+        <span class=&quot;illust good&quot;>💛</span>
+        <span class=&quot;detailName&quot;>מעשים טובים<small>תרמת ₪18 עד היום</small></span>
+        <span class=&quot;pill&quot;><small>₪</small>30</span>
+      </div>
+    </div>
+  </div>
+
+  <button class=&quot;cta&quot;>＋ פעולה חדשה</button>
+
+</div></div>
+
+<div class=&quot;ladder&quot;>
+  <span class=&quot;ladderTitle&quot;>היום — half-shekel steps (same rule the coins used):</span>
+  <span class=&quot;step&quot;><i>38אֲ</i> → ₪0.5</span>
+  <span class=&quot;step&quot;><i>102אֲ</i> → ₪1</span>
+  <span class=&quot;step&quot;><i>140אֲ</i> → ₪1.5</span>
+  <span class=&quot;step&quot;><i>238אֲ</i> → ₪2.5</span>
+  <span class=&quot;step off&quot;><i>20אֲ</i> → לא מוצג</span>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('[data-theme-btn]');
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      document.documentElement.dataset.theme = button.dataset.themeBtn;
+      buttons.forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+    });
+  });
+  document.documentElement.dataset.theme = 'jungle-quest';
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<section id="donut-load-animation">
+  <h2>טעינת הדונאט — חמישה מועמדים <span class="badge chosen">✓ נבחר</span></h2>
+  <iframe title="טעינת הדונאט — חמישה מועמדים" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — Donut load animation (three candidates)</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+:root, :root[data-theme='sunshine-quest'] {
+  --surface:#FFFFFF; --textMuted:#8A7AA7; --textStrong:#3A1F5A; --divider:#F2D9D2;
+  --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+  --arcSavings:#FFC34D; --arcSpending:#FF8A4C; --arcGood:#E94E89; --arcTrack:#F3ECE4;
+}
+:root[data-theme='jungle-quest'] {
+  --surface:#FFFDF5; --textMuted:#5C7A6E; --textStrong:#1B4332; --divider:#DDE7CC;
+  --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+  --arcSavings:#2A9D8F; --arcSpending:#90BE6D; --arcGood:#E76F51; --arcTrack:#E8EFDC;
+}
+:root[data-theme='midnight-blue'] {
+  --surface:#141B24; --textMuted:#8A96A8; --textStrong:#ECF1F8; --divider:#1E2A40;
+  --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+  --arcSavings:#1E40AF; --arcSpending:#60A5FA; --arcGood:#818CF8; --arcTrack:#1E2A40;
+}
+
+* { box-sizing:border-box; }
+body { margin:0; padding:24px 20px 60px; background:#20242c; color:#fff; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:20px; margin:0 0 6px; }
+.sub { color:#9aa3b2; font-size:13px; line-height:1.6; margin:0 0 18px; max-width:680px; }
+.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
+.crumb { margin:0 0 14px; font-size:12.5px; color:#9aa3b2; }
+.crumb a { color:#9aa3b2; text-decoration:none; border-bottom:1px solid #3a4150; }
+.crumb a:hover { color:#fff; }
+.status { display:flex; align-items:flex-start; gap:10px; max-width:680px;
+  margin:0 0 14px; padding:9px 11px; border-radius:10px; font-size:12.5px; line-height:1.65; }
+.status .badge { flex-shrink:0; font-weight:800; font-size:11px; letter-spacing:.06em;
+  padding:3px 8px; border-radius:999px; white-space:nowrap; }
+.status p { margin:0; }
+.status code, .status a { font-size:11.5px; color:inherit; }
+.status.chosen { background:#12301c; color:#b7f0c8; border:1px solid #2f7a4a; }
+.status.chosen .badge { background:#2f7a4a; color:#eafff1; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px; }
+.controls button { font-family:Rubik,sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+  padding:7px 14px; border-radius:999px; border:1.5px solid #3a4150; background:#2a303a; color:#dfe4ec; }
+.controls button[aria-pressed='true'] { background:#fff; color:#20242c; border-color:#fff; }
+.controls .replay { background:#ffd23f; border-color:#ffd23f; color:#20242c; }
+
+.grid { display:flex; gap:18px; flex-wrap:wrap; align-items:flex-start; }
+.variant { width:392px; }
+.variantHead { display:flex; align-items:baseline; gap:8px; margin-bottom:8px; }
+.variantHead h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:0; }
+.variantHead .ms { font-size:12px; color:#ffd23f; font-variant-numeric:tabular-nums; }
+.variantHead .verdict { margin-inline-start:auto; font-size:11px; font-weight:800;
+  letter-spacing:.06em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.variantHead .verdict[data-state='chosen'] { background:#2f7a4a; color:#eafff1; }
+.variantHead .verdict[data-state='rejected'] { background:#3a3a42; color:#c3c9d4; }
+.note { color:#9aa3b2; font-size:12px; line-height:1.6; margin:8px 2px 0; }
+.stage { border-radius:26px; padding:16px 14px; background:var(--screen); box-shadow:0 14px 30px rgba(0,0,0,.4); }
+
+.card { background:var(--surface); border-radius:24px; padding:16px;
+  box-shadow:0 6px 0 rgba(0,0,0,.06); color:var(--textStrong); }
+.donutRow { display:flex; align-items:center; gap:16px; }
+.donut { flex-shrink:0; position:relative; }
+.donut svg { display:block; transform:rotate(-90deg); }
+.donut circle { fill:none; stroke-linecap:butt; stroke-width:14; }
+.holeText { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.holeText .lbl { font-size:10px; font-weight:600; color:var(--textMuted); letter-spacing:.4px; }
+.holeText .amt { font-size:26px; font-weight:800; line-height:1.05; direction:ltr; font-variant-numeric:tabular-nums; }
+.holeText .amt small { font-size:.55em; opacity:.6; margin-inline-end:2px; }
+
+.legend { flex:1; display:flex; flex-direction:column; gap:11px; }
+.leg { display:flex; align-items:center; gap:9px; font-size:15px; font-weight:600; }
+.dot { width:22px; height:22px; border-radius:7px; flex-shrink:0; display:inline-flex;
+  align-items:center; justify-content:center; font-size:12px; line-height:1; }
+.dot.savings { background:var(--arcSavings); }
+.dot.spending { background:var(--arcSpending); }
+.dot.good { background:var(--arcGood); }
+.leg .pct { font-size:13px; font-weight:500; color:var(--textMuted); }
+.leader { flex:1; border-bottom:2.5px dotted var(--divider); margin-bottom:5px; }
+.leg .val { font-weight:800; direction:ltr; font-variant-numeric:tabular-nums; }
+.leg .val small { font-size:.72em; opacity:.6; margin-inline-end:2px; }
+
+/* ---- A · sweep: one continuous clockwise draw, arc after arc ---- */
+@keyframes drawArc { from { stroke-dasharray: 0 263.9; } }
+.sweep.play .arc, .sweepFast.play .arc, .sweepFastest.play .arc { animation: drawArc var(--dur) linear backwards; animation-delay: var(--delay); }
+.sweep.play .holeText .amt { animation: fadeUp .3s ease-out backwards 1s; }
+.sweep.play .leg { animation: fadeUp .26s ease-out backwards; animation-delay: calc(1s + var(--i) * .07s); }
+
+/* ---- B · pop: the whole ring lands at once, then the legend ---- */
+@keyframes popRing { from { transform: rotate(-90deg) scale(.72); opacity:0; }
+  60% { transform: rotate(-90deg) scale(1.06); opacity:1; } }
+@keyframes fadeUp { from { opacity:0; transform: translateY(6px); } }
+.pop.play .donut svg { animation: popRing .46s cubic-bezier(.34,1.56,.64,1) backwards; }
+.pop.play .holeText { animation: fadeUp .28s ease-out backwards .2s; }
+.pop.play .leg, .sweepFast.play .leg { animation: fadeUp .24s ease-out backwards; animation-delay: calc(.3s + var(--i) * .06s); }
+
+/* ---- D · סוויפ קצר: the sweep at 0.8s, with the legend fading in over it ---- */
+.sweepFast.play .holeText .amt { animation: fadeUp .3s ease-out backwards .1s; }
+
+/* ---- E · סוויפ הכי קצר: the same shape as D, squeezed into 0.6s ---- */
+.sweepFastest.play .holeText .amt { animation: fadeUp .24s ease-out backwards .08s; }
+.sweepFastest.play .leg { animation: fadeUp .22s ease-out backwards; animation-delay: calc(.22s + var(--i) * .05s); }
+
+/* ---- C · stagger: three arcs draw together, each entering a beat apart ---- */
+.stagger.play .arc { animation: drawArc .52s cubic-bezier(.22,1,.36,1) backwards;
+  animation-delay: calc(var(--i) * .12s); }
+.stagger.play .holeText .amt { animation: fadeUp .3s ease-out backwards .34s; }
+.stagger.play .dot { animation: popDot .34s cubic-bezier(.34,1.56,.64,1) backwards;
+  animation-delay: calc(.2s + var(--i) * .12s); }
+@keyframes popDot { from { transform: scale(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .play .arc, .play .donut svg, .play .holeText, .play .holeText .amt, .play .leg, .play .dot { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<p class=&quot;crumb&quot;><a href=&quot;index.html&quot; target=&quot;_top&quot;>← כל המוקאפים</a> · טעינת הדונאט</p>
+<h1>טעינת הדונאט — חמישה מועמדים</h1>
+<div class=&quot;status chosen&quot;><span class=&quot;badge&quot;>✓ נבחר</span><p><b>ה · סוויפ הכי קצר</b>, 0.6s — נבנה ושוחרר ב-<code>#57</code>. חמשת המועמדים נשארים זה לצד זה כי ההשוואה היא בעין, על הבדל של מאיות שנייה. תיעוד: <a href=&quot;../.plans/2026-09-14-donut-load-animation.md&quot; target=&quot;_top&quot;><code>.plans/2026-09-14-donut-load-animation.md</code></a></p></div>
+<p class=&quot;sub&quot;>
+  אותו כרטיס מ־<code>home-overview.html</code>, חמש כניסות שונות. החלף ערכת נושא והרץ שוב.
+  הסכום בחור סופר מ־0 ל־₪359 יחד עם הקשת. כל וריאנט מכבד <code>prefers-reduced-motion</code> —
+  בהגדרה הזו הכל מופיע מיד, בלי תנועה.
+</p>
+
+<div class=&quot;controls&quot;>
+  <button data-theme-btn=&quot;jungle-quest&quot; aria-pressed=&quot;true&quot;>jungle-quest</button>
+  <button data-theme-btn=&quot;sunshine-quest&quot; aria-pressed=&quot;false&quot;>sunshine-quest</button>
+  <button data-theme-btn=&quot;midnight-blue&quot; aria-pressed=&quot;false&quot;>midnight-blue</button>
+  <button class=&quot;replay&quot; data-replay>הרץ שוב</button>
+</div>
+
+<div class=&quot;grid&quot; id=&quot;grid&quot;></div>
+
+<template id=&quot;cardTemplate&quot;>
+  <div class=&quot;variant&quot;>
+    <div class=&quot;variantHead&quot;><h2></h2><span class=&quot;ms&quot;></span><span class=&quot;verdict&quot;></span></div>
+    <div class=&quot;stage&quot;>
+      <div class=&quot;card&quot;>
+        <div class=&quot;donutRow&quot;>
+          <div class=&quot;donut&quot;>
+            <svg width=&quot;122&quot; height=&quot;122&quot; viewBox=&quot;0 0 104 104&quot;>
+              <circle cx=&quot;52&quot; cy=&quot;52&quot; r=&quot;42&quot; stroke=&quot;var(--arcTrack)&quot; />
+              <circle class=&quot;arc&quot; style=&quot;--i:0&quot; cx=&quot;52&quot; cy=&quot;52&quot; r=&quot;42&quot; stroke=&quot;var(--arcSavings)&quot;  stroke-dasharray=&quot;149.9 114.0&quot; stroke-dashoffset=&quot;0&quot; />
+              <circle class=&quot;arc&quot; style=&quot;--i:1&quot; cx=&quot;52&quot; cy=&quot;52&quot; r=&quot;42&quot; stroke=&quot;var(--arcSpending)&quot; stroke-dasharray=&quot;91.9 172.0&quot;  stroke-dashoffset=&quot;-149.9&quot; />
+              <circle class=&quot;arc&quot; style=&quot;--i:2&quot; cx=&quot;52&quot; cy=&quot;52&quot; r=&quot;42&quot; stroke=&quot;var(--arcGood)&quot;     stroke-dasharray=&quot;22.1 241.8&quot;  stroke-dashoffset=&quot;-241.8&quot; />
+            </svg>
+            <div class=&quot;holeText&quot;>
+              <span class=&quot;lbl&quot;>סך הכל</span>
+              <span class=&quot;amt&quot;><small>₪</small><b data-count>359</b></span>
+            </div>
+          </div>
+          <div class=&quot;legend&quot;>
+            <div class=&quot;leg&quot; style=&quot;--i:0&quot;><span class=&quot;dot savings&quot;>🐷</span>חיסכון <span class=&quot;pct&quot;>57%</span><span class=&quot;leader&quot;></span><span class=&quot;val&quot;><small>₪</small>204</span></div>
+            <div class=&quot;leg&quot; style=&quot;--i:1&quot;><span class=&quot;dot spending&quot;>🛍️</span>בזבוזים <span class=&quot;pct&quot;>35%</span><span class=&quot;leader&quot;></span><span class=&quot;val&quot;><small>₪</small>125</span></div>
+            <div class=&quot;leg&quot; style=&quot;--i:2&quot;><span class=&quot;dot good&quot;>💛</span>מעשים <span class=&quot;pct&quot;>8%</span><span class=&quot;leader&quot;></span><span class=&quot;val&quot;><small>₪</small>30</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class=&quot;note&quot;></p>
+  </div>
+</template>
+
+<script>
+  const TOTAL = 359;
+
+  const VARIANTS = [
+    {
+      key: 'sweep', title: 'א · סוויפ', budget: '1.3s',
+      arcDurations: ['.57s', '.35s', '.09s'],
+      count: { delay: 0, duration: 1010 },
+      note: 'הקשתות נמשכות ברצף — חיסכון, בזבוזים, מעשים — כאילו יד אחת מציירת את הטבעת. הכי מספר סיפור, והכי ארוך: 1.3 שניות עד שהכרטיס שקט. כל קשת נמשכת לפי גודלה, כך שהחיסכון מקבל את רוב הזמן.'
+    },
+    {
+      key: 'pop', title: 'ב · פופ', budget: '0.6s',
+      count: { delay: 200, duration: 320 },
+      note: 'הטבעת נוחתת שלמה עם overshoot קטן, אחריה המקרא. הכי זול והכי מהיר — 0.6 שניות, בלי לעכב את המסך. לא מסביר את החלוקה, רק נותן לכרטיס כניסה.'
+    },
+    {
+      key: 'stagger', title: 'ג · סטאגר', budget: '0.8s',
+      count: { delay: 340, duration: 300 },
+      note: 'שלוש הקשתות נמשכות במקביל, כל אחת מתחילה ביט אחרי הקודמת, והאייקונים קופצים לתוך הריבועים באותו קצב. פשרה: קורא כמו חלוקה ולא כמו רצף, ונגמר ב־0.8 שניות.'
+    },
+    {
+      key: 'sweepFast', title: 'ד · סוויפ קצר', budget: '0.8s',
+      arcDurations: ['.45s', '.28s', '.07s'],
+      count: { delay: 100, duration: 800 },
+      note: 'אותו רצף של א, דחוס ל־0.8 שניות, והמקרא נכנס ב־fade של ב במקום לחכות לסוף הקשת. הסכום עולה יחד עם הטבעת מההתחלה. אותו סיפור כמו א, בלי ההמתנה.'
+    },
+    {
+      key: 'sweepFastest', title: 'ה · סוויפ הכי קצר', budget: '0.6s', chosen: true,
+      arcDurations: ['.34s', '.21s', '.05s'],
+      count: { delay: 80, duration: 600 },
+      note: 'ד באותה צורה בדיוק, דחוס ל־0.6 שניות — תקציב הזמן של ב. גם המקרא מתהדק (מתחיל ב־0.22s, 50ms בין שורות) כדי לא לגלוש מעבר לטבעת. הקשת של מעשים יורדת ל־50ms, כמעט הבהוב.'
+    },
+  ];
+
+  const grid = document.getElementById('grid');
+  const template = document.getElementById('cardTemplate');
+
+  VARIANTS.forEach((variant) => {
+    const node = template.content.cloneNode(true);
+    node.querySelector('h2').textContent = variant.title;
+    node.querySelector('.ms').textContent = variant.budget;
+    node.querySelector('.note').textContent = variant.note;
+    const verdict = node.querySelector('.verdict');
+    verdict.textContent = variant.chosen ? '✓ נבחר' : 'נדחה';
+    verdict.dataset.state = variant.chosen ? 'chosen' : 'rejected';
+    const card = node.querySelector('.card');
+    card.classList.add(variant.key);
+    card.dataset.variant = variant.key;
+    grid.appendChild(node);
+  });
+
+  VARIANTS.filter((variant) => variant.arcDurations).forEach((variant) => {
+    document.querySelectorAll('.' + variant.key + ' .arc').forEach((arc, index) => {
+      const start = variant.arcDurations.slice(0, index).reduce((sum, d) => sum + parseFloat(d), 0);
+      arc.style.setProperty('--dur', variant.arcDurations[index]);
+      arc.style.setProperty('--delay', start + 's');
+    });
+  });
+
+  function countUp(element, duration) {
+    const start = performance.now();
+    function frame(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      element.textContent = Math.round(TOTAL * progress);
+      if (progress < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function play() {
+    VARIANTS.forEach((variant) => {
+      const card = document.querySelector('.card.' + variant.key);
+      const counter = card.querySelector('[data-count]');
+      card.classList.remove('play');
+      void card.offsetWidth;
+      card.classList.add('play');
+      if (reducedMotion.matches) {
+        counter.textContent = TOTAL;
+        return;
+      }
+      counter.textContent = '0';
+      setTimeout(() => countUp(counter, variant.count.duration), variant.count.delay);
+    });
+  }
+
+  const themeButtons = document.querySelectorAll('[data-theme-btn]');
+  themeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      document.documentElement.dataset.theme = button.dataset.themeBtn;
+      themeButtons.forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+      play();
+    });
+  });
+
+  document.querySelector('[data-replay]').addEventListener('click', play);
+  document.documentElement.dataset.theme = 'jungle-quest';
+  play();
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<script>
+for (const f of document.querySelectorAll('iframe')) {
+  const fit = () => { f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; };
+  f.addEventListener('load', () => {
+    f.style.height = '1px';
+    fit();
+    f.contentDocument.addEventListener('click', () => setTimeout(fit, 60));
+  });
+}
+</script>
+</body>
+</html>

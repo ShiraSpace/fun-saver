@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-23
 **Branch:** `feat/menu-header` (off `origin/main`)
-**Mockup:** `docs/superpowers/specs/mockup-menu.html` — closed bar = `.ribbon` (lines 116–122), open bar = transparent `.menu-bar` (lines 160–166). Design spec: `docs/superpowers/specs/2026-06-21-app-menu-design.md`.
+**Mockup:** `mockups/2026-06-17-menu.html#mockup-menu` — closed bar = `.ribbon` (lines 116–122), open bar = transparent `.menu-bar` (lines 160–166). Design spec: `docs/superpowers/specs/2026-06-21-app-menu-design.md`.
 
 ## Problem
 

@@ -1,7 +1,7 @@
 # The Method page — design
 
 > Status: **variant E approved 2026-09-15**, not yet implemented.
-> Mockup: `mockups/method-page.html` — five variants; **E is the one to build**.
+> Mockup: `mockups/2026-09-14-method-page.html` — five variants; **E is the one to build**.
 > A–D are kept for reference; do not delete them without asking.
 > Copy: `docs/copy/method-page.he.md` (shipping) · `method-page.en.md` (parked).
 > Evidence: `docs/research/jar-method.md`. Roadmap: `docs/backlog.md`.

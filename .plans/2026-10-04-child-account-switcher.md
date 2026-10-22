@@ -15,8 +15,8 @@
 > are next**, specified below; each starts from a fresh branch off `main`.
 > The list holds the other accounts **in child view**; the rest are reached
 > through the parent view (decided 2026-10-04, after a round that listed
-> everyone). Mockups: `mockups/child-account-switcher.html` (row layout,
-> option **C**) and `mockups/child-mode-in-menu.html` (where the child-view
+> everyone). Mockups: `mockups/2026-10-03-child-mode.html#child-account-switcher` (row layout,
+> option **C**) and `mockups/2026-10-03-child-mode.html#child-mode-in-menu` (where the child-view
 > toggle lives, option **A**). Builds on child mode
 > (`.plans/2026-10-03-child-mode.md`, merged).
 

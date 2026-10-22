@@ -1,235 +1,53 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
 <title>fun-saver — כל המוקאפים</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
-body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec;
-  font-family:Rubik,system-ui,sans-serif; }
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,system-ui,sans-serif; }
 h1 { font-family:Fredoka,Rubik,sans-serif; font-size:22px; margin:0 0 6px; color:#fff; }
-h2 { font-family:Fredoka,Rubik,sans-serif; font-size:15px; margin:26px 0 10px; color:#fff; }
+h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:34px 0 10px; color:#fff; display:flex; gap:10px; align-items:center; }
+a { color:#9be7b4; }
 .sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 6px; max-width:860px; }
-.sub code { background:#2a303a; padding:1px 5px; border-radius:4px; font-size:12px; }
-.legend { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:16px 0 4px;
-  font-size:12px; color:#9aa3b2; }
-.badge { font-weight:800; font-size:11px; letter-spacing:.06em; padding:3px 9px;
-  border-radius:999px; white-space:nowrap; }
+.badge { font-weight:800; font-size:11px; letter-spacing:.06em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
 .badge.chosen { background:#2f7a4a; color:#eafff1; }
 .badge.rejected { background:#3a3a42; color:#c3c9d4; }
-.badge.info { background:#33507f; color:#dbe8ff; }
-.badge.pending { background:#6b5320; color:#ffe6a8; }
-.badge.orphan { background:#5a2d33; color:#ffc9cf; }
-
 table { border-collapse:collapse; width:100%; max-width:1080px; font-size:13px; }
-th { text-align:start; font-size:11px; letter-spacing:.05em; color:#78839a; font-weight:600;
-  padding:0 10px 7px; border-bottom:1px solid #333a46; }
-td { padding:11px 10px; border-bottom:1px solid #2a303a; vertical-align:top; line-height:1.6; }
-tr:hover td { background:#242932; }
-td.what { white-space:nowrap; }
-td a { color:#9be7b4; text-decoration:none; font-weight:600; }
-td a:hover { text-decoration:underline; }
-td.files { display:flex; flex-direction:column; align-items:flex-start; gap:5px; }
-td .why { color:#9aa3b2; font-size:12.5px; }
-td .why b { color:#dfe4ec; font-weight:600; }
-td .plan { display:block; margin-top:4px; font-size:11px; }
-td .plan a { color:#78839a; font-weight:400; }
-.note { font-size:12.5px; line-height:1.7; color:#78839a; max-width:860px; margin:22px 0 0; }
+th { text-align:start; font-size:11px; color:#78839a; font-weight:600; padding:0 10px 7px; border-bottom:1px solid #333a46; }
+td { padding:10px; border-bottom:1px solid #2a303a; vertical-align:top; line-height:1.6; }
+td.source { direction:ltr; text-align:left; white-space:nowrap; }
+td.source a { color:#78839a; font-size:11px; }
+nav { display:flex; flex-wrap:wrap; gap:6px 14px; margin:18px 0 0; font-size:13px; }
+iframe { display:block; width:100%; height:900px; border:0; border-radius:10px; background:#fff; }
+td.date { white-space:nowrap; color:#9aa3b2; }
+td a { font-weight:600; text-decoration:none; }
+a.plan { color:#78839a; font-size:11px; font-weight:400; }
 </style>
 </head>
 <body>
-
 <h1>fun-saver — כל המוקאפים</h1>
-<p class="sub">
-  כל מסך בקובץ משלו, עם הבוררים ששייכים לו. <b>הסימן ✓ מסמן את מה שנבחר בפועל</b> — והקובץ נפתח על החלופה הזאת.
-  מה שנדחה נשאר בתיק כתיעוד ומסומן <b>נדחה</b>; העמודה האחרונה מפנה לתוכנית שבה ההחלטה נרשמה.
-</p>
-<div class="legend">
-  <span class="badge chosen">✓ נבחר</span> נבנה או אושר לבנייה
-  <span class="badge rejected">נדחה</span> נשאר כתיעוד
-  <span class="badge info">מסך יחיד</span> אין חלופות מתחרות
-  <span class="badge pending">טרם מומש</span> הוחלט, לא נכתב
-</div>
-
-<h2>מסכים עם חלופות מתחרות</h2>
+<p class="sub">קובץ אחד לכל פיצ׳ר, לפי תאריך. כל קובץ נפתח בהחלטות שהתקבלו, ואחריהן כל המוקאפים שלו — ✓ על מה שנבחר, «נדחה» על מה שלא.</p>
 <table>
-  <thead>
-    <tr><th>מסך</th><th>קבצים</th><th>מה נבחר, ולמה</th></tr>
-  </thead>
+  <thead><tr><th>תאריך</th><th>פיצ׳ר</th><th>תוכניות</th></tr></thead>
   <tbody>
-    <tr>
-      <td class="what">עמוד «השיטה»</td>
-      <td class="files">
-        <a href="method-page/e-final.html">e-final</a> <span class="badge chosen">✓ נבחר</span>
-        <a href="method-page/a-scroll.html">a-scroll</a>
-        <a href="method-page/b-tabs.html">b-tabs</a>
-        <a href="method-page/c-six-decisions.html">c-six-decisions</a>
-        <a href="method-page/d-combined.html">d-combined</a>
-      </td>
-      <td>
-        <span class="why">חמישה מבנים לאותו עמוד. <b>E</b> אושרה 2026-09-15 ונבנתה — העמוד חי באפליקציה (PR&rlm; #64–#89). התוכנית מורה במפורש לא למחוק את א׳–ד׳.</span>
-        <span class="plan"><a href="../.plans/2026-09-15-method-page.md">.plans/2026-09-15-method-page.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">התפריט</td>
-      <td class="files">
-        <a href="account-summary/menu.html">account-summary/menu</a> <span class="badge chosen">✓ נבחר</span>
-      </td>
-      <td>
-        <span class="why">שש חלופות בקובץ אחד, כי כולן אותו מסך. <b>תפריט ג׳</b> (משטח בהיר + כותרת זהה לאפליקציה) ו<b>ניווט נ3</b> (רצועת טאבים) אושרו 2026-09-15. א׳, ב׳, נ1 ו-נ2 מסומנים נדחה במקום.</span>
-        <span class="plan"><a href="../.plans/2026-09-15-menu-redesign.md">.plans/2026-09-15-menu-redesign.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">טעינת הדונאט</td>
-      <td class="files"><a href="donut-load-animation.html">donut-load-animation</a> <span class="badge chosen">✓ נבחר</span></td>
-      <td>
-        <span class="why"><b>ה · סוויפ הכי קצר</b> (0.6s) נבנה ב-#57. חמשת המועמדים נשארו בקובץ אחד בכוונה — ההשוואה היא בעין, על הבדל של מאיות שנייה, ופיצול לחמישה קבצים הורג אותה.</span>
-        <span class="plan"><a href="../.plans/2026-09-14-donut-load-animation.md">.plans/2026-09-14-donut-load-animation.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">מעטפת טעינה</td>
-      <td class="files"><a href="loading-states.html">loading-states</a> <span class="badge chosen">✓ נבחר</span></td>
-      <td>
-        <span class="why">ארבעה שלדים וארבע כניסות. הוחלט 2026-09-23: <b>שלד 3</b> — כרטיס כותרת ופס שמתחיל אחרי 150ms, ו<b>כניסה 1</b> — עמעום 240ms ושום דבר לא זז. גם כאן ההשוואה היא בעין, ולכן קובץ אחד.</span>
-        <span class="plan"><a href="../.plans/2026-09-15-menu-redesign.md">.plans/2026-09-15-menu-redesign.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">מעטפת טעינה — שאלות פתוחות</td>
-      <td class="files"><a href="loading-open-questions.html">loading-open-questions</a> <span class="badge chosen">✓ נבחר</span></td>
-      <td>
-        <span class="why">על מה יושב העמעום, ומה רואה מי שביקש הפחתת תנועה. הוחלט 2026-09-23: <b>ב</b> — התוכן של Screen מעמעם, כולל הכותרת; <b>ד</b> — הפס זז גם בהפחתת תנועה.</span>
-        <span class="plan"><a href="../.plans/2026-09-15-menu-redesign.md">.plans/2026-09-15-menu-redesign.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">צללי מידנייט</td>
-      <td class="files"><a href="midnight-shadows.html">midnight-shadows</a> <span class="badge chosen">✓ נבחר</span></td>
-      <td>
-        <span class="why">שלושה סולמות אלפא על צבעי מידנייט האמיתיים. <b>«היום»</b> — <code>.06 · .12 · .16 · .25</code> — נבחר: הערכה עם הטענה החזקה ביותר לצללים משלה נקראה הכי טוב דווקא על הערכים המשותפים, ולכן <code>SHADOW_SCALE</code> נשאר אחד לכל הערכות. שוחרר ב-#110.</span>
-        <span class="plan"><a href="../.plans/2026-09-23-theme-parity.md">.plans/2026-09-23-theme-parity.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">ניגודיות AA</td>
-      <td class="files"><a href="contrast.html">contrast</a> <span class="badge chosen">✓ נבחר</span></td>
-      <td>
-        <span class="why">שני המחזורים בעמוד אחד, כל אחד עם הבוררים שלו צמודים למסכים שלו. <b>מחזור א׳:</b> «אחרי» + רקע לכיתוב + זוהר מותאם. <b>מחזור ב׳:</b> שלוש הדרכים להזיז את הרקע בהתחברות <b>נדחו כולן</b> והלבן נשאר על 1.60; שגיאת שמירה בלי תווית, ולקחה את האדום.</span>
-        <span class="plan"><a href="../.plans/2026-09-23-aa-contrast-pass.md">מחזור א׳</a> · <a href="../.plans/2026-09-23-aa-contrast-pass-2.md">מחזור ב׳</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">מצב ילד · החלפת ילד</td>
-      <td class="files">
-        <a href="child-account-switcher.html">child-account-switcher</a> <span class="badge chosen">✓ נבחר</span>
-      </td>
-      <td>
-        <span class="why">שלוש דרכים להחליף ילד מתוך תפריט מצב ילד, מתחת ל«הכסף שלי»: <b>א׳</b> אריחים לכולם, <b>ב׳</b> שורות גדולות עם יתרה, <b>ג׳</b> רק הילדים האחרים. <b>ג׳</b> נבחרה 2026-10-04: רק הילדים שאפשר לעבור אליהם, בשורות בגודל כרטיס הילד שמעל.</span>
-        <span class="plan"><a href="../.plans/2026-10-04-child-account-switcher.md">.plans/2026-10-04-child-account-switcher.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">מצב ילד · איפה המתג בתפריט</td>
-      <td class="files">
-        <a href="child-mode-in-menu.html">child-mode-in-menu</a> <span class="badge chosen">✓ נבחר</span>
-      </td>
-      <td>
-        <span class="why">המתג «מצב ילד» עובר מתחת לבוחר החשבונות: <b>א׳</b> מתג בכל שורה ברשימה, <b>ב׳</b> מתגים ברשימה ושורת סיכום מתחת, <b>ג׳</b> כרטיס «מצב ילד» נפרד עם כל החשבונות. בכולן (במוקאפ) תפריט הילד מציג את כל האחים, והכפתור למטה הוא «לצפות במצב הורה» שלא נשמר. <b>א׳</b> נבחרה 2026-10-04; «חזרה למצב ילד» מופיע רק כשחשבון במצב ילד מוצג זמנית במצב הורה. בסוף הוחלט שתפריט הילד מציג רק אחים שגם הם במצב ילד; לשאר מגיעים דרך מצב הורה.</span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">אונבורדינג · סגנון</td>
-      <td class="files">
-        <a href="onboarding/2-pig.html">onboarding/2-pig</a> <span class="badge pending">טרם מומש</span>
-        <a href="onboarding/1-style.html">onboarding/1-style</a>
-      </td>
-      <td>
-        <span class="why">אותה זרימה (ילד → יעד → חגיגה) בשלושה סגנונות. <b>א׳ — החזיר מלווה</b> נבחר 2026-10-11; <b>2-pig</b> הוא הגרסה הסופית, עם שורת «קובעים יעד?» בכרטיס החיסכון. ב׳ (מסע) ו-ג׳ (נקי) נדחו.</span>
-        <span class="plan"><a href="../.plans/2026-10-11-onboarding.md">.plans/2026-10-11-onboarding.md</a></span>
-      </td>
-    </tr>
+    <tr><td class="date">2026-06-17</td><td><a href="2026-06-17-home-screen.html">המסך הראשי — הגרסה הראשונה</a><div class="sub">המסך הראשון של חשבון: כרטיס חיסכון גדול עם מטבעות הריבית של היום, שתי הקופות הנוספות וכפתור «פעולה חדשה» — נבנה ומוזג ל-main ב-2026-06-21.</div></td><td><a class="plan" href="../docs/superpowers/specs/visual-palettes.md">docs/superpowers/specs/visual-palettes.md</a><br><a class="plan" href="../docs/superpowers/specs/2026-06-20-fun-saver-design.md">docs/superpowers/specs/2026-06-20-fun-saver-design.md</a><br><a class="plan" href="../.plans/2026-06-21-account-dashboard.md">.plans/2026-06-21-account-dashboard.md</a></td></tr>
+    <tr><td class="date">2026-06-17</td><td><a href="2026-06-17-menu.html">התפריט — הגרסה הראשונה</a><div class="sub">תפריט מסך מלא שנפתח מכפתור ההמבורגר, עם החשבונות, המראה והשפה — נבנה קודם כמעטפת סטטית ואחר כך חובר לחשבונות האמיתיים.</div></td><td><a class="plan" href="../docs/superpowers/specs/2026-06-20-fun-saver-design.md">docs/superpowers/specs/2026-06-20-fun-saver-design.md</a><br><a class="plan" href="../docs/superpowers/specs/2026-06-21-app-menu-design.md">docs/superpowers/specs/2026-06-21-app-menu-design.md</a><br><a class="plan" href="../.plans/2026-06-23-menu-header.md">.plans/2026-06-23-menu-header.md</a><br><a class="plan" href="../.plans/2026-06-23-select-accounts.md">.plans/2026-06-23-select-accounts.md</a></td></tr>
+    <tr><td class="date">2026-06-17</td><td><a href="2026-06-17-total-balance.html">סך הכל ברצועת הכותרת</a><div class="sub">צ׳יפ קטן ברצועת הכותרת עם סכום כל הקופות של החשבון — נבנה ושוחרר ב-#11.</div></td><td><a class="plan" href="../.plans/2026-06-28-total-balance-chip.md">.plans/2026-06-28-total-balance-chip.md</a></td></tr>
+    <tr><td class="date">2026-06-20</td><td><a href="2026-06-20-avatar-picker.html">בוחר האווטאר</a><div class="sub">מסך «צור חשבון» עם שם ורשת אווטארים שהילד בוחר מהם — נבנה, ו-20 האווטארים נמצאים ב-public/avatars.</div></td><td><a class="plan" href="../docs/superpowers/specs/2026-06-20-fun-saver-design.md">docs/superpowers/specs/2026-06-20-fun-saver-design.md</a></td></tr>
+    <tr><td class="date">2026-06-21</td><td><a href="2026-06-21-transaction-drawer.html">מגירת התנועות</a><div class="sub">מגירה שעולה מלמטה להפקדה ולמשיכה, עם מקלדת מספרים משלה — ההפקדה נבנתה ראשונה, המשיכה אחריה (#9), ובסוף המגירה קוצרה ונסגרת בהחלקה.</div></td><td><a class="plan" href="../docs/superpowers/specs/2026-06-21-transaction-deposit-design.md">docs/superpowers/specs/2026-06-21-transaction-deposit-design.md</a><br><a class="plan" href="../.plans/2026-06-28-withdraw-action.md">.plans/2026-06-28-withdraw-action.md</a><br><a class="plan" href="../.plans/2026-06-29-compact-swipeable-drawer.md">.plans/2026-06-29-compact-swipeable-drawer.md</a></td></tr>
+    <tr><td class="date">2026-06-29</td><td><a href="2026-06-29-edit-account.html">עריכת חשבון</a><div class="sub">עיגול העיפרון בתפריט פותח את אותו טופס של «צור חשבון», ממולא מראש — נבנה ונמסר בשישה PR-ים.</div></td><td><a class="plan" href="../.plans/2026-06-29-edit-account.md">.plans/2026-06-29-edit-account.md</a></td></tr>
+    <tr><td class="date">2026-09-12</td><td><a href="2026-09-12-home-overview.html">המסך הראשי</a><div class="sub">מסך הבית עם טבעת שמחזיקה את הסך הכל ופירוט לפי קופה, וטבעת שמציירת את עצמה בטעינה — שניהם נבנו.</div></td><td><a class="plan" href="../.plans/2026-09-12-home-overview-redesign.md">.plans/2026-09-12-home-overview-redesign.md</a><br><a class="plan" href="../.plans/2026-09-14-donut-load-animation.md">.plans/2026-09-14-donut-load-animation.md</a></td></tr>
+    <tr><td class="date">2026-09-12</td><td><a href="2026-09-12-login.html">התחברות עם Google</a><div class="sub">התחברות עם חשבון Google, כך שכל הורה רואה רק את החשבונות שלו — נבנתה, וכל ה-PR-ים בתוכנית נכנסו.</div></td><td><a class="plan" href="../.plans/2026-09-12-google-login.md">.plans/2026-09-12-google-login.md</a></td></tr>
+    <tr><td class="date">2026-09-14</td><td><a href="2026-09-14-method-page.html">עמוד «השיטה»</a><div class="sub">עמוד להורה שמסביר למה הכסף מתחלק לשלוש קופות ומה צריך לעשות — חלופה E אושרה ונבנתה, והעמוד חי באפליקציה.</div></td><td><a class="plan" href="../.plans/2026-09-15-method-page.md">.plans/2026-09-15-method-page.md</a><br><a class="plan" href="../docs/superpowers/specs/2026-09-14-method-page-design.md">docs/superpowers/specs/2026-09-14-method-page-design.md</a></td></tr>
+    <tr><td class="date">2026-09-15</td><td><a href="2026-09-15-loading.html">מעטפת טעינה</a><div class="sub">מה רואים בזמן שעמוד נטען — נבנתה, אבל המעטפת נשארה רק לטעינה ראשונה, ובין עמודים מופיע פס על הכותרת הקיימת.</div></td><td><a class="plan" href="../.plans/2026-09-15-menu-redesign.md">.plans/2026-09-15-menu-redesign.md</a></td></tr>
+    <tr><td class="date">2026-09-15</td><td><a href="2026-09-15-menu-redesign.html">התפריט</a><div class="sub">תפריט עם בורר חשבון, רצועת ניווט והגדרות לפי חשבון, וגם במצב ריק בלי חשבון — נבנה, כל ה-PR-ים נכנסו.</div></td><td><a class="plan" href="../.plans/2026-09-15-menu-redesign.md">.plans/2026-09-15-menu-redesign.md</a><br><a class="plan" href="../.plans/2026-09-12-google-login.md">.plans/2026-09-12-google-login.md</a></td></tr>
+    <tr><td class="date">2026-09-23</td><td><a href="2026-09-23-contrast.html">ניגודיות AA</a><div class="sub">שני מחזורים שמעלים כל טקסט על צבע באפליקציה לניגודיות AA — שניהם נבנו ושוחררו (מחזור א׳ ב-#98).</div></td><td><a class="plan" href="../.plans/2026-09-23-aa-contrast-pass.md">.plans/2026-09-23-aa-contrast-pass.md</a><br><a class="plan" href="../.plans/2026-09-23-aa-contrast-pass-2.md">.plans/2026-09-23-aa-contrast-pass-2.md</a></td></tr>
+    <tr><td class="date">2026-09-23</td><td><a href="2026-09-23-theme-parity.html">שוויון בין הערכות</a><div class="sub">כל צבע שהאפליקציה מציירת הופך למשתנה של הערכה, וכל הערכות מצהירות על אותה קבוצה — נבנה ומוזג ב-#110.</div></td><td><a class="plan" href="../.plans/2026-09-23-theme-parity.md">.plans/2026-09-23-theme-parity.md</a></td></tr>
+    <tr><td class="date">2026-09-23</td><td><a href="2026-09-23-transactions.html">מסך התנועות</a><div class="sub">מסך «תנועות» לכל חשבון — גרף היתרה לאורך זמן ורשימת התנועות — נבנה ושוחרר בסדרת PR-ים מ-#122 עד #168.</div></td><td><a class="plan" href="../.plans/2026-09-23-transactions.md">.plans/2026-09-23-transactions.md</a><br><a class="plan" href="../docs/superpowers/specs/2026-09-23-transactions-design.md">docs/superpowers/specs/2026-09-23-transactions-design.md</a></td></tr>
+    <tr><td class="date">2026-10-03</td><td><a href="2026-10-03-child-mode.html">מצב ילד</a><div class="sub">מסך פשוט לילד, לצפייה בלבד, עם תפריט משלו ומעבר בין ילדים — נבנה, ובסוף הפך למצב אחד לכל האפליקציה בטלפון (#193–#198).</div></td><td><a class="plan" href="../docs/superpowers/specs/2026-10-03-child-mode-design.md">docs/superpowers/specs/2026-10-03-child-mode-design.md</a><br><a class="plan" href="../.plans/2026-10-04-child-account-switcher.md">.plans/2026-10-04-child-account-switcher.md</a><br><a class="plan" href="../.plans/2026-10-05-global-child-mode.md">.plans/2026-10-05-global-child-mode.md</a></td></tr>
+    <tr><td class="date">2026-10-03</td><td><a href="2026-10-03-saving-goal.html">יעד חיסכון</a><div class="sub">יעד שהילד חוסך אליו: קופת החיסכון שמורה עד שמגיעים אליו, ואז חגיגה — נבנה ומוזג במלואו, כולל החגיגה במצב ילד.</div></td><td><a class="plan" href="../docs/superpowers/specs/2026-10-03-saving-goal-design.md">docs/superpowers/specs/2026-10-03-saving-goal-design.md</a><br><a class="plan" href="../.plans/2026-10-16-goal-celebration.md">.plans/2026-10-16-goal-celebration.md</a><br><a class="plan" href="../.plans/2026-10-10-goal-screen.md">.plans/2026-10-10-goal-screen.md</a><br><a class="plan" href="../.plans/2026-10-16-child-goal-celebration.md">.plans/2026-10-16-child-goal-celebration.md</a></td></tr>
+    <tr><td class="date">2026-10-11</td><td><a href="2026-10-11-onboarding.html">אונבורדינג</a><div class="sub">זרימה שפותחת חשבון לילד, קובעת לו יעד ומסיימת במסך «מוכן» — הוחלט ועוצב, וטרם מומש (רק SetGoal ושורת «קובעים יעד חיסכון?» בכרטיס כבר מוזגו).</div></td><td><a class="plan" href="../docs/superpowers/specs/2026-10-11-onboarding-design.md">docs/superpowers/specs/2026-10-11-onboarding-design.md</a><br><a class="plan" href="../.plans/2026-10-11-onboarding.md">.plans/2026-10-11-onboarding.md</a></td></tr>
   </tbody>
 </table>
-
-<h2>מסכים בלי חלופות</h2>
-<table>
-  <thead>
-    <tr><th>מסך</th><th>קבצים</th><th>מצב</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="what">התחברות</td>
-      <td class="files">
-        <a href="login/1-signed-out.html">1 · מסך התחברות</a>
-        <a href="login/2-signing-in.html">2 · מתחברים…</a>
-        <a href="login/3-first-time.html">3 · משתמש חדש</a>
-        <a href="login/4-returning.html">4 · משתמש חוזר</a>
-      </td>
-      <td>
-        <span class="badge info">זרימה</span>
-        <span class="why">ארבעה <b>שלבים בזרימה אחת</b>, לא חלופות מתחרות — אין כאן «נבחר» ו«נדחה», כולם נבנו. רצועת השלבים בראש כל קובץ עוברת ביניהם.</span>
-        <span class="plan"><a href="../.plans/2026-09-12-google-login.md">.plans/2026-09-12-google-login.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">מסך התנועות</td>
-      <td class="files"><a href="account-summary/transactions.html">account-summary/transactions</a></td>
-      <td>
-        <span class="badge info">מסך יחיד</span>
-        <span class="why">גרף A ורשימת התנועות. הבוררים שבו הם פרטים בתוך המסך, לא חלופות. אפיק «תנועות בחשבון» מתוכנן בתוכנית נפרדת.</span>
-        <span class="plan"><a href="../.plans/2026-09-15-menu-redesign.md">.plans/2026-09-15-menu-redesign.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">המסך הראשי</td>
-      <td class="files"><a href="home-overview.html">home-overview</a></td>
-      <td>
-        <span class="badge chosen">✓ נבנה</span>
-        <span class="why">מקור האמת למסך הבית — טבעת עם הסך הכל ופירוט לפי קופה. נבנה ב-#44.</span>
-        <span class="plan"><a href="../.plans/2026-09-12-home-overview-redesign.md">.plans/2026-09-12-home-overview-redesign.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">טופס חשבון</td>
-      <td class="files"><a href="edit-account.html">edit-account</a></td>
-      <td>
-        <span class="badge chosen">✓ נבנה</span>
-        <span class="why">יצירה ועריכה זה לצד זה — אותו <code>AccountForm</code> בשני מצבים. נמסר בשישה PR-ים.</span>
-        <span class="plan"><a href="../.plans/2026-06-29-edit-account.md">.plans/2026-06-29-edit-account.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">בורר הערכות</td>
-      <td class="files"><a href="theme-swatches.html">theme-swatches</a></td>
-      <td>
-        <span class="badge chosen">✓ נבנה</span>
-        <span class="why">שלושת הריבועים בשורת «מראה» נגזרים מהערכות עצמן במקום להיות גרדיאנטים כתובים ביד. מידנייט מציג את הגרדיאנט האמיתי שלו, גם כשהוא כמעט שחור — זה מה שהערכה באמת נראית. שוחרר ב-#110.</span>
-        <span class="plan"><a href="../.plans/2026-09-23-theme-parity.md">.plans/2026-09-23-theme-parity.md</a></span>
-      </td>
-    </tr>
-    <tr>
-      <td class="what">Sprout</td>
-      <td class="files"><a href="homework-companion.html">homework-companion</a></td>
-      <td>
-        <span class="badge orphan">לא שייך</span>
-        <span class="why">מוצר אחר לגמרי — «Sprout, Homework Companion», באנגלית. <b>אין לו אזכור באף תוכנית או מסמך במאגר.</b> נשאר כפי שהוא; המחיקה היא החלטה שלכם.</span>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<p class="note">
-  <b>בדיקות.</b> <code>node mockups/check.js</code> — בלי תלויות, ובלי להתקין דבר. הוא מוודא שכל עמוד סגור
-  כראוי ושום CSS לא דלף מחוץ ל-<code>&lt;style&gt;</code>, שכל קישור מקומי מצביע על קובץ קיים, <b>שהטבלה למעלה
-  מזכירה כל מוקאפ בתיקייה</b>, ששני עמודי סיכום החשבון ממלאים את משבצותיהם וה-JS המשותף שורד את החסרות,
-  ו-<code>contrast.html</code> נפתח על מה שנבחר בפועל ולא על אפשרות שנדחתה.
-</p>
-
 </body>
 </html>

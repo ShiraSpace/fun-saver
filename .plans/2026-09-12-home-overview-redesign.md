@@ -1,7 +1,7 @@
 # Main screen redesign — ring total + per-wallet detail
 
 **Date:** 2026-09-12
-**Mockup:** `mockups/home-overview.html` (single source of truth — three themes, switcher at the top)
+**Mockup:** `mockups/2026-09-12-home-overview.html#home-overview` (single source of truth — three themes, switcher at the top)
 **Worktree:** `/Users/technotronic/Projects/technotronic/fun-saver-home-overview` on `feat/home-overview`,
 branched off `origin/main`. The main `fun-saver` checkout is on `feat/user-store-methods` with unrelated
 in-flight db-store work — do not touch `src/db/` from here.
@@ -10,7 +10,7 @@ and the mockup, and hosts PR 1's branch.
 
 ## Before you start
 
-Read `mockups/home-overview.html` in a browser first — it is the spec, and the theme switcher shows the
+Read `mockups/2026-09-12-home-overview.html#home-overview` in a browser first — it is the spec, and the theme switcher shows the
 three themes the tokens have to satisfy. `CLAUDE.md` governs the workflow (branch per PR, production code →
 approval → commit, then tests **one at a time** with approval between each). Don't batch tests.
 

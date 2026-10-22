@@ -7,7 +7,7 @@ hold where it was applied, and one fade survived.
 
 - Every ratio below was measured on the literal token values, sRGB relative
   luminance, WCAG 2.x, gradients on their **worst stop**.
-- **No mockup was drawn before the decisions.** `mockups/contrast-pass-2.html`
+- **No mockup was drawn before the decisions.** `mockups/2026-09-23-contrast.html`
   was drawn during them, to settle the three calls that were design rather than
   arithmetic, and it records the options that were turned down.
 

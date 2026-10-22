@@ -4,7 +4,7 @@
 > same day** (the second and third checked every claim against the code; the
 > third also against CLDR 48.2.0 and `emoji-test.txt` 18.0), not yet
 > implemented.
-> Mockup: `mockups/saving-goal.html` — every screen and state below, with the
+> Mockup: `mockups/2026-10-03-saving-goal.html#saving-goal` — every screen and state below, with the
 > confetti, border and hold-to-cancel animations live.
 > Backlog: `docs/backlog.md` § "Savings goal on the `savings` wallet" and
 > Roadmap § 1 (the research additions).

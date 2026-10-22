@@ -5,7 +5,7 @@
 > `LanguageSection` is a static stub). This file exists so that when i18n lands
 > it is wiring work, not translation or research work. See `docs/backlog.md` §2.
 >
-> **Structure follows variant E** in `mockups/method-page.html` (chosen
+> **Structure follows variant E** in `mockups/2026-09-14-method-page.html` (chosen
 > 2026-09-15). Keys match the Hebrew file exactly. **If you change a key in one
 > file, change it in both.** Research basis: `../research/jar-method.md`.
 >
@@ -397,7 +397,7 @@ Full write-up, including what we **couldn't** establish:
 ## Formats
 
 Three block types, visually distinct. See variant E in
-`mockups/method-page.html`.
+`mockups/2026-09-14-method-page.html`.
 
 | Type | Looks like | Carries |
 | --- | --- | --- |
