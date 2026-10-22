@@ -12,20 +12,24 @@ import {
   mockMonthOfInterestLastDay,
   mockOpeningDeposit,
   mockWalletDeposits,
-} from '@/test-utils/mocks/transaction.mocks';
-import {
-  balanceHistoryFor,
-  closingBalances,
-  rowsOfType,
-  transactionListRowsFor,
-} from '@/test-utils/transaction-rows';
-import {
   mockBusyDay,
   mockBusyDayTransactions,
   mockBusyDayWithdrawal,
 } from '@/test-utils/mocks/transaction.mocks';
+import {
+  balanceHistoryFor,
+  rowsOfType,
+  transactionListRowsFor,
+} from '@/test-utils/transaction-rows';
+import { totalBalanceByDay } from '@/lib/wallet/balance-history';
 
 describe('what the transaction list shows', () => {
+  const mockDecemberDeposit = createMockTransaction({
+    id: 'december-deposit',
+    occurredAt: '2025-12-30',
+    createdAt: '2025-12-30T08:00:00.000Z',
+  });
+
   describe('filtered by type', () => {
     let rows: TransactionListRow[];
 
@@ -45,10 +49,12 @@ describe('what the transaction list shows', () => {
 
     it('keeps each row’s true balance', () => {
       const withdrawalRows = filterByTransactionType(rows, TRANSACTION_TYPE.withdrawal);
-      const busyDayBalanceHistory = balanceHistoryFor(mockBusyDayTransactions, mockBusyDay);
+      const closingBalanceByDay = totalBalanceByDay(
+        balanceHistoryFor(mockBusyDayTransactions, mockBusyDay)
+      );
 
       expect(withdrawalRows.map((row) => row.balance)).toEqual(
-        closingBalances(withdrawalRows, busyDayBalanceHistory)
+        withdrawalRows.map((row) => closingBalanceByDay.get(row.day))
       );
     });
   });
@@ -140,17 +146,11 @@ describe('what the transaction list shows', () => {
   });
 
   describe('across the turn of a month', () => {
-    const mockDecemberDeposit = createMockTransaction({
-      id: 'december-deposit',
-      occurredAt: '2025-12-30',
-      createdAt: '2025-12-30T08:00:00.000Z',
-    });
-    const mockDecemberInterest = createMockTransaction({
+    const mockDecemberInterest = {
+      ...mockMonthOfInterest[0],
       id: 'december-interest',
-      type: TRANSACTION_TYPE.interest,
-      amount: 9,
       occurredAt: '2025-12-31',
-    });
+    };
     const mockTurnOfTheMonthTransactions = [
       mockDecemberDeposit,
       mockDecemberInterest,
@@ -177,11 +177,6 @@ describe('what the transaction list shows', () => {
   });
 
   it('groups rows under the month they happened in, newest month first', () => {
-    const mockDecemberDeposit = createMockTransaction({
-      id: 'december',
-      occurredAt: '2025-12-31',
-      createdAt: '2025-12-31T08:00:00.000Z',
-    });
     const mockDeposits = [mockDecemberDeposit, mockOpeningDeposit];
     const rows = transactionListRowsFor(mockDeposits, INTEREST_MODE.byPeriod, '2026-01-01');
 
