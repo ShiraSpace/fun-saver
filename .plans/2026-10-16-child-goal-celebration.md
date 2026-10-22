@@ -8,6 +8,25 @@ piggy bank's coin space, option C (`mockups/coin-space.html` in
 Worktree `fun-saver-child-celebration`, branch `feat/child-goal-celebration`,
 off `origin/main` `3dd3142`, `origin/main` `9dabd6e` (#219) merged in.
 
+## Status
+
+Merged #223 (`0308332`, 2026-10-22): Steps 1–3 are done. Where the build
+differs from the steps below, the code wins:
+
+- `ChildSavings` mounts the `Celebration`, not `ChildAccount`: only it knows the
+  shown savings.
+- The shown goal is reached only once the waiting coins that reach it are
+  tapped in (`savedTowardGoalLessUncollectedInterest`), so the last coin's tap
+  plays it.
+- The total's ✨ are their own component, `BalanceTwinkles`.
+- The coins fall at most 550 px, so the page never gains a scroll.
+
+Left for piggy bank PR 4 (`feat/piggy-bank-motion`), which lands after this:
+on the last coin's path only, the celebration waits for the coin space to
+settle, as an `animation-delay` from PR 4's timing constants. PR 4 moves the
+piggy bank into `PiggyBankAndCoins`, so the fountain and the face's
+`isGoalReached` move with it.
+
 ## Why
 
 Saving-goal PR 5 (#217, #219) celebrates a reached goal on the parent's savings
@@ -139,8 +158,9 @@ Motion itself is checked in screenshots, since jsdom has no layout.
 - Screenshots (`pr-screenshots`) in all three themes: mid-play, settled, and
   reduced motion.
 
-## Open points
+## Decisions
 
 - The coin fountain over the wallet rows: decided 2026-10-16, keep it as in the
   mockup. The coins arc over the header and rain past the bottom cards.
+- The total's twinkles: kept, as in the mockup.
 - Sound: none, as everywhere else in the app.
