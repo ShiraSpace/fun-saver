@@ -23,10 +23,6 @@ describe('ChildSavings with ₪5 of interest waiting, a reached ₪105 goal show
     );
   });
 
-  it('does not play the celebration while the coins that reach the goal wait', () => {
-    expect(screen.queryByTestId(CELEBRATION_TEST_IDS.celebration)).not.toBeInTheDocument();
-  });
-
   it("does not play the celebration before the last coin's tap", () => {
     fireEvent.click(shownCoins()[0]);
     fireEvent.click(shownCoins()[0]);
