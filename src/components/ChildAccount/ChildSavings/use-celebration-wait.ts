@@ -18,11 +18,11 @@ interface LastSeen {
 }
 
 function celebrationWaitAfter(lastSeen: LastSeen, now: CelebrationWaitParams): number {
-  const isGoalReachedNow = now.isGoalReached && !lastSeen.wasGoalReached;
+  const isGoalJustReached = now.isGoalReached && !lastSeen.wasGoalReached;
   const coinsLeft = now.interestCoins.length;
   const isReachedByTheLastCoin = coinsLeft === 0 && coinsLeft < lastSeen.coinsLeft;
 
-  if (!isGoalReachedNow) {
+  if (!isGoalJustReached) {
     return lastSeen.celebrationWaitMs;
   }
 
