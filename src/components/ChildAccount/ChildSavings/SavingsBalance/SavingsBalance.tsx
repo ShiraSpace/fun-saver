@@ -15,6 +15,8 @@ export function SavingsBalance({
   celebrating = false,
   ref,
 }: SavingsBalanceProps): JSX.Element {
+  const twinkles = celebrating && <BalanceTwinkles />;
+
   return (
     <Balance ref={ref} tabIndex={-1}>
       <ShownBalance
@@ -27,7 +29,7 @@ export function SavingsBalance({
       <AnnouncedBalance aria-live="polite" aria-atomic>
         <Money amountAgorot={balance} testId={SAVINGS_BALANCE_TEST_IDS.announcedBalance} />
       </AnnouncedBalance>
-      {celebrating && <BalanceTwinkles />}
+      {twinkles}
     </Balance>
   );
 }

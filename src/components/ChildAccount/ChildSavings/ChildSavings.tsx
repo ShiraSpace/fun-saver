@@ -75,6 +75,17 @@ function goalProgressOf(savedTowardGoal?: SavedTowardGoal): JSX.Element | undefi
   );
 }
 
+function piggyBankOf(piggyBankFill: number, isGoalReached: boolean): JSX.Element {
+  const coinFountain = isGoalReached && <CoinFountain />;
+
+  return (
+    <PiggyBankSpace>
+      <PiggyBank piggyBankFill={piggyBankFill} isGoalReached={isGoalReached} />
+      {coinFountain}
+    </PiggyBankSpace>
+  );
+}
+
 export function ChildSavings({
   accountId,
   savings,
@@ -84,7 +95,9 @@ export function ChildSavings({
   const { interestCoins, uncollectedInterest, collect } = useInterestCoins({ savings, accountId });
   const savingsShown = savingsShownToTheChild({ savings, savedTowardGoal, uncollectedInterest });
   const isGoalReached = !!savingsShown.savedTowardGoal?.isGoalReached;
+  const piggyBank = piggyBankOf(savingsShown.piggyBankFill, isGoalReached);
   const goalProgress = goalProgressOf(savingsShown.savedTowardGoal);
+  const celebration = isGoalReached && <Celebration />;
 
   return (
     <Card
@@ -97,10 +110,7 @@ export function ChildSavings({
         onCollect={collect}
         whereFocusGoesLast={balanceElement}
       />
-      <PiggyBankSpace>
-        <PiggyBank piggyBankFill={savingsShown.piggyBankFill} isGoalReached={isGoalReached} />
-        {isGoalReached && <CoinFountain />}
-      </PiggyBankSpace>
+      {piggyBank}
       <SavingsBalance
         balance={savingsShown.balance}
         celebrating={isGoalReached}
@@ -111,7 +121,7 @@ export function ChildSavings({
         principal={savingsShown.principal}
         interestEarned={savingsShown.interestEarned}
       />
-      {isGoalReached && <Celebration />}
+      {celebration}
     </Card>
   );
 }
