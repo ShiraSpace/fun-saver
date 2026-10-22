@@ -33,10 +33,10 @@ describe('a month of the transaction list', () => {
       expect(monthName()).toBe(monthLabel(month));
     });
 
-    it('shows the month’s interest beside its name', () => {
+    it('shows the month’s interest beside its name, to the agora', () => {
       expect(
-        screen.getByTestId(TRANSACTION_MONTH_TEST_IDS.interestThisMonth(month))
-      ).toHaveTextContent(`${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}0.27`);
+        screen.getByTestId(TRANSACTION_MONTH_TEST_IDS.interestThisMonth(month)).textContent
+      ).toBe(`${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}0.27`);
     });
 
     it('keeps the column names out of what a screen reader reads', () => {

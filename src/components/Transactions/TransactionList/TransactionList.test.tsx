@@ -15,6 +15,8 @@ import type { Transaction } from '@/lib/transaction/types';
 import { CHOICE_CHIPS_TEST_IDS } from '../ChoiceChips/constants';
 import { useTransactionsViewChoices } from '../use-transactions-view-choices';
 import { TRANSACTION_ROW_TEST_IDS } from './TransactionRow/constants';
+import { TRANSACTION_MONTH_TEST_IDS } from './TransactionMonth/constants';
+import { calendarMonth } from '@/lib/dates';
 import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { TRANSACTION_LIST_COPY, TRANSACTION_LIST_TEST_IDS } from './constants';
 import { TransactionList } from './TransactionList';
@@ -85,6 +87,22 @@ describe('the transaction list', () => {
         expect(listedRows()).toHaveLength(mockMonthOfInterest.length);
       });
     });
+  });
+
+  it('keeps the month’s interest beside its name when only deposits are listed', () => {
+    render(
+      <TransactionListOnScreen
+        transactions={[mockOpeningDeposit, ...mockMonthOfInterest]}
+        asOf={mockMonthOfInterestLastDay}
+      />
+    );
+    choose(TRANSACTION_LIST_TEST_IDS.filters, TRANSACTION_TYPE.deposit);
+
+    expect(
+      screen.getByTestId(
+        TRANSACTION_MONTH_TEST_IDS.interestThisMonth(calendarMonth(mockMonthOfInterestLastDay))
+      )
+    ).toBeInTheDocument();
   });
 
   describe('a busy day, shown only as its withdrawals', () => {
