@@ -4,6 +4,7 @@
 import NextAuth, { type NextAuthConfig } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import { getStore } from '@/db';
+import { googleIdentity } from '@/lib/user/user-provisioning';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { mutableEnv, withCleanEnv, withTempStoreEnv } from '@/test-utils/test-utils';
 import '../auth';
@@ -19,21 +20,33 @@ jest.mock('next-auth', () => ({
 }));
 jest.mock('next-auth/providers/google', () => ({ __esModule: true, default: jest.fn() }));
 
-type JwtCallbackParams = Parameters<
-  NonNullable<NonNullable<NextAuthConfig['callbacks']>['jwt']>
->[0];
+type JwtCallback = NonNullable<NonNullable<NextAuthConfig['callbacks']>['jwt']>;
+type SignInMoment = Pick<Parameters<JwtCallback>[0], 'token' | 'profile'>;
 
-const authConfig = jest.mocked(NextAuth).mock.calls[0][0] as NextAuthConfig;
+function registeredJwtCallback(): JwtCallback {
+  const config = jest.mocked(NextAuth).mock.calls[0][0];
+  const jwtCallback = typeof config === 'function' ? undefined : config.callbacks?.jwt;
 
-const mockProfile = { sub: mockUser.providerAccountId, email: mockUser.email, name: mockUser.name };
+  if (!jwtCallback) {
+    throw new Error('auth.ts registered no jwt callback');
+  }
 
-async function sessionTokenAfter(params: Partial<JwtCallbackParams>): Promise<JWT | null> {
-  return authConfig.callbacks!.jwt!(params as JwtCallbackParams);
+  return jwtCallback;
+}
+
+async function sessionTokenAfter({ token, profile }: SignInMoment): Promise<JWT | null> {
+  return registeredJwtCallback()({ token, profile, user: {}, account: null });
 }
 
 describe('the session token', () => {
   withCleanEnv(['NODE_ENV']);
   withTempStoreEnv();
+
+  const mockProfile = {
+    sub: mockUser.providerAccountId,
+    email: mockUser.email,
+    name: mockUser.name,
+  };
 
   describe('in development', () => {
     beforeEach(() => {
@@ -44,11 +57,7 @@ describe('the session token', () => {
       await getStore().insertUser(mockUser);
       const mockTokenFromAnotherStore: JWT = {
         userId: 'user-id-in-another-store',
-        identity: {
-          providerAccountId: mockUser.providerAccountId,
-          email: mockUser.email,
-          name: mockUser.name,
-        },
+        identity: googleIdentity(mockProfile),
       };
 
       const token = await sessionTokenAfter({ token: mockTokenFromAnotherStore });
@@ -60,6 +69,12 @@ describe('the session token', () => {
       const token = await sessionTokenAfter({ token: {}, profile: mockProfile });
 
       expect(token?.identity?.providerAccountId).toBe(mockUser.providerAccountId);
+    });
+
+    it('keeps its user when the cookie carries no Google identity yet', async () => {
+      const token = await sessionTokenAfter({ token: { userId: mockUser.id } });
+
+      expect(token?.userId).toBe(mockUser.id);
     });
   });
 
