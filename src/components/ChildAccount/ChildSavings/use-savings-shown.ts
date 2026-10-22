@@ -10,7 +10,7 @@ import {
 import { piggyBankFillOf } from './PiggyBank';
 import type { InterestCoin } from './InterestCoins';
 import { useInterestCoins } from './use-interest-coins';
-import type { ChildSavingsProps } from './ChildSavings';
+import type { ChildSavingsProps } from './types';
 
 interface SavingsShownParams {
   savings: WalletSummary;

@@ -1,7 +1,6 @@
 'use client';
 
 import { JSX, useRef } from 'react';
-import type { WalletSummary } from '@/lib/wallet/types';
 import type { SavedTowardGoal } from '@/lib/goal/saved-toward-goal';
 import { GoalProgress } from '@/components/Goal/GoalProgress';
 import { GOAL_PROGRESS_SIZE } from '@/components/Goal/GoalProgress/constants';
@@ -13,12 +12,7 @@ import { useSavingsShown } from './use-savings-shown';
 import { useGoalReachedOnceTheCoinsSettle } from './use-goal-reached-once-the-coins-settle';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
 import { Card, GoalSpace } from './ChildSavings.styles';
-
-export interface ChildSavingsProps {
-  accountId: string;
-  savings: WalletSummary;
-  savedTowardGoal?: SavedTowardGoal;
-}
+import type { ChildSavingsProps } from './types';
 
 function goalProgressOf(
   savedTowardGoal: SavedTowardGoal | undefined,
@@ -28,10 +22,12 @@ function goalProgressOf(
     return;
   }
 
+  const savedTowardGoalShown = { ...savedTowardGoal, isGoalReached };
+
   return (
     <GoalSpace>
       <GoalProgress
-        savedTowardGoal={{ ...savedTowardGoal, isGoalReached }}
+        savedTowardGoal={savedTowardGoalShown}
         size={GOAL_PROGRESS_SIZE.large}
         glowWhenReached
         celebratesWhenReached
