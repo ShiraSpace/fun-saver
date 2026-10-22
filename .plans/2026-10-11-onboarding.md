@@ -18,7 +18,7 @@ collided with another session's branch.
 | PR | What | State |
 | --- | --- | --- |
 | spec | Design, mockups, this plan | Ships with PR 1 (#209); `feat/onboarding` is retired |
-| 1 | `SetGoal`, its two ways in, top-modal-only Back and Escape | Built; PR #209 open (`feat/onboarding-set-goal`), two review rounds answered, awaiting merge |
+| 1 | `SetGoal`, its two ways in, top-modal-only Back and Escape | Merged as #209 (`90aba94`) |
 | 2 | `Onboarding`: the account step, the goal step (set or skip), the ready screen | Not started |
 | 3 | Changing a goal (`PUT` route) and the goal row's **עריכה** | Not started |
 | later | The wallet step (shares) | Sketched in the spec, not planned |

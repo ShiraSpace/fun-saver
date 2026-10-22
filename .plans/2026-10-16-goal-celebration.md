@@ -11,7 +11,7 @@ Worktree `fun-saver-celebration`.
 | PR | Branch | What | State |
 | --- | --- | --- | --- |
 | 5a | `feat/goal-celebration-plays` | Step 1, and `SavedTowardGoal.reached` → `isGoalReached` | Merged #217 (`a4645f5`) |
-| 5b | `feat/goal-celebration-card` | Steps 2–3, off `a4645f5` | Step 2 done; step 3 in progress |
+| 5b | `feat/goal-celebration-card` | Steps 2–3, off `a4645f5` | Merged #219 (`9dabd6e`) |
 
 `feat/goal-celebration` on the remote is #188's merged branch; not reused.
 
