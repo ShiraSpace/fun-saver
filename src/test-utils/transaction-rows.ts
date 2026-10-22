@@ -1,8 +1,4 @@
-import {
-  balanceHistory,
-  totalBalanceByDay,
-  type BalanceHistory,
-} from '@/lib/wallet/balance-history';
+import { balanceHistory, type BalanceHistory } from '@/lib/wallet/balance-history';
 import {
   transactionListRows,
   type InterestMode,
@@ -26,15 +22,6 @@ export function transactionListRowsFor(
     balanceHistory: balanceHistoryFor(transactions, asOf),
     interestMode,
   });
-}
-
-export function closingBalances(
-  rows: TransactionListRow[],
-  accountBalanceHistory: BalanceHistory
-): (number | undefined)[] {
-  const endOfDayTotalBalance = totalBalanceByDay(accountBalanceHistory);
-
-  return rows.map((row) => endOfDayTotalBalance.get(row.day));
 }
 
 export function rowsOfType(

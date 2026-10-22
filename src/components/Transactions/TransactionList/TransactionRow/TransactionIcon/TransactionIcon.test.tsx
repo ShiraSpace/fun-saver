@@ -18,7 +18,7 @@ describe('a transaction icon', () => {
   describe('of a deposit', () => {
     const [mockDepositRow] = transactionListRowsFor(
       mockWalletDeposits,
-      INTEREST_MODE.monthly,
+      INTEREST_MODE.byPeriod,
       mockDeposit.occurredAt
     );
 
@@ -41,7 +41,7 @@ describe('a transaction icon', () => {
     beforeEach(() => {
       const [mockPurchaseRow] = transactionListRowsFor(
         [createMockWithdrawal(mockSpendingWallet)],
-        INTEREST_MODE.monthly,
+        INTEREST_MODE.byPeriod,
         mockDeposit.occurredAt
       );
       render(<TransactionIcon transactionListRow={mockPurchaseRow} />);

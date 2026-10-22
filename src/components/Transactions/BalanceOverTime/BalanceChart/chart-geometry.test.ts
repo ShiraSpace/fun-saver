@@ -70,6 +70,14 @@ describe('the balances labelled on the side', () => {
   it('stays in whole shekels when they already read apart', () => {
     expect(balanceTicks({ lowest: 2400, highest: 30100 })).toEqual([2400, 16300, 30100]);
   });
+
+  it('marks a balance that moved by less than half a shekel to the tenth of a shekel', () => {
+    expect(balanceTicks({ lowest: 9613, highest: 9622 })).toEqual([9620]);
+  });
+
+  it('marks the lowest balance when no tenth of a shekel falls inside its range', () => {
+    expect(balanceTicks({ lowest: 9613, highest: 9619 })).toEqual([9613]);
+  });
 });
 
 describe('the balances the chart shows', () => {

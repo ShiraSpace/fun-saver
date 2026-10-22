@@ -1,6 +1,6 @@
 # Child piggy bank, PR 3 — the coins, with no motion yet
 
-> Approved 2026-10-13. PR 3 of 4 in `2026-10-04-child-piggy-bank.md` (kept in `fun-saver-piggy-bank`, untracked),
+> Approved 2026-10-13. PR 3 of 4 in `2026-10-04-child-piggy-bank.md`,
 > re-planned against `origin/main` 9abe018. Merged as #218 (`7f6f23f`).
 
 ## Decision
@@ -29,7 +29,7 @@ Each step is production code, a commit, then three tests, approval, the rest, an
    by account id, `useDriver`'s `collectedInterest` option, `e2e/interest-coins.e2e.ts`, a visual shot. Layout shown as
    e2e screenshots at 393×745 before it is decided.
 
-## Layout (decided 2026-10-16 from e2e shots and `mockups/coin-space.html`)
+## Layout (decided 2026-10-16 from e2e shots and `mockups/2026-10-04-child-piggy-bank.html#coin-space`)
 
 - The copy line and the coin row exist only while coins wait; with none the pig sits at the top of the card.
 - The coins never overlap the pig: the coin row pulls the pig up 8px (5.2px clear of the ears) and the card's top

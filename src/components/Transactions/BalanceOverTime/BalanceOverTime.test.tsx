@@ -32,7 +32,7 @@ function renderBalanceOverTime(rangeId: RangeId): void {
         toggleAllWallets: jest.fn(),
         transactionTypeFilter: ALL_TRANSACTION_TYPES,
         setTransactionTypeFilter: jest.fn(),
-        interestMode: INTEREST_MODE.monthly,
+        interestMode: INTEREST_MODE.byPeriod,
         setInterestMode: jest.fn(),
       }}
     />

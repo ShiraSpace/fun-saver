@@ -1,12 +1,18 @@
 import {
   addDays,
   calendarMonth,
-  calendarYear,
+  dayRange,
   eachDayInclusive,
   monthLabel,
   shortDayMonth,
   shortMonth,
 } from '../dates';
+
+describe('dayRange', () => {
+  it('names the month once for days within it', () => {
+    expect(dayRange('2026-10-10', '2026-10-16')).toBe('10–16 באוקטובר');
+  });
+});
 
 describe('addDays', () => {
   it('advances within a month', () => {
@@ -65,24 +71,8 @@ describe('shortMonth', () => {
   });
 });
 
-describe('calendarYear', () => {
-  it('reads the year of a day', () => {
-    expect(calendarYear('2026-09-25')).toBe('2026');
-  });
-
-  it('reads the year of a month', () => {
-    expect(calendarYear('2025-12')).toBe('2025');
-  });
-});
-
 describe('monthLabel', () => {
-  const mockAsOf = '2026-09-25';
-
-  it('names a month of this year without the year', () => {
-    expect(monthLabel('2026-09', mockAsOf)).toBe('ספטמבר');
-  });
-
-  it('adds the year to a month of another year', () => {
-    expect(monthLabel('2025-09', mockAsOf)).toBe('ספטמבר 2025');
+  it('names the month with its year', () => {
+    expect(monthLabel('2026-09')).toBe('ספטמבר 2026');
   });
 });
