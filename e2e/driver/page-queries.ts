@@ -117,6 +117,37 @@ export function pseudoStyle({ page, testId, pseudo, property }: PseudoStyleQuery
   );
 }
 
+export interface SameLineQuery {
+  page: Page;
+  testId: string;
+  besideTestId: string;
+}
+
+export function sitsOnSameLine({ page, testId, besideTestId }: SameLineQuery): Promise<boolean> {
+  return page.evaluate(
+    (testId, besideTestId) => {
+      const element = document.querySelector(`[data-testid="${testId}"]`);
+      const ownText = [...(element?.childNodes ?? [])].find(
+        (node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim()
+      );
+      const beside = document.querySelector(`[data-testid="${besideTestId}"]`)?.lastElementChild;
+
+      if (!ownText || !beside) {
+        return false;
+      }
+
+      const range = document.createRange();
+      range.selectNodeContents(ownText);
+      const ownTextBottom = range.getBoundingClientRect().bottom;
+      range.selectNodeContents(beside);
+
+      return ownTextBottom === range.getBoundingClientRect().bottom;
+    },
+    testId,
+    besideTestId
+  );
+}
+
 export function computedStyle({ page, testId, property }: TestIdStyleQuery): Promise<string> {
   return styleOf({ page, selector: `[data-testid="${testId}"]`, property });
 }
