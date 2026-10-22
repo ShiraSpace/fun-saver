@@ -4,13 +4,14 @@ import type { TransactionListRow } from '../transaction-rows';
 import { balanceChange } from '@/lib/wallet/balance';
 import {
   createMockTransaction,
+  mockMonthOfInterest,
+  mockMonthOfInterestLastDay,
   mockOpeningDeposit,
   mockWalletDeposits,
 } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 import {
   balanceHistoryFor,
-  closingBalances,
   rowsOfType,
   transactionListRowsFor,
 } from '@/test-utils/transaction-rows';
@@ -71,21 +72,17 @@ describe('the transaction list rows', () => {
       busyDayBalanceHistory = balanceHistoryFor(mockBusyDayTransactions, mockBusyDay);
     });
 
-    it('shows the balance the day closed on beside a deposit or a withdrawal', () => {
-      const depositAndWithdrawalRows = rows.filter((row) => row.type !== TRANSACTION_TYPE.interest);
+    it('shows the balance the day closed on beside that day’s newest transaction', () => {
+      const [newestBusyDayRow] = busyDayRows();
+      const busyDayClosingBalance = totalBalanceByDay(busyDayBalanceHistory).get(mockBusyDay);
 
-      expect(depositAndWithdrawalRows.map((row) => row.balance)).toEqual(
-        closingBalances(depositAndWithdrawalRows, busyDayBalanceHistory)
-      );
+      expect(newestBusyDayRow.balance).toBe(busyDayClosingBalance);
     });
 
-    it('gives a deposit and a withdrawal on the same day the same balance', () => {
-      const [withdrawalRow] = rowsOfType(rows, TRANSACTION_TYPE.withdrawal);
-      const busyDayDepositRow = rowsOfType(rows, TRANSACTION_TYPE.deposit).find(
-        (row) => row.day === mockBusyDay
-      );
+    it('shows an earlier transaction that day the balance from before the later one', () => {
+      const [withdrawalRow, depositRow] = busyDayRows();
 
-      expect(withdrawalRow.balance).toBe(busyDayDepositRow?.balance);
+      expect(depositRow.balance).toBe(withdrawalRow.balance - withdrawalRow.balanceChange);
     });
 
     it.each(Object.values(INTEREST_MODE))(
@@ -131,6 +128,19 @@ describe('the transaction list rows', () => {
 
       expect(withdrawalRow.walletName).toBe(withdrawalWallet?.name);
     });
+  });
+
+  it('gives every row the balance of the row below it plus its own change', () => {
+    const rows = transactionListRowsFor(
+      [...mockWalletDeposits, ...mockMonthOfInterest, mockBusyDayWithdrawal],
+      INTEREST_MODE.byPeriod,
+      mockMonthOfInterestLastDay
+    );
+    const rowsAboveTheFirst = rows.slice(0, -1);
+
+    expect(rowsAboveTheFirst.map((row) => row.balance)).toEqual(
+      rowsAboveTheFirst.map((row, index) => rows[index + 1].balance + row.balanceChange)
+    );
   });
 
   it('has nothing to list for an account with no transactions', () => {

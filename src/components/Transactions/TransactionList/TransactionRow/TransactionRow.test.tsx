@@ -1,8 +1,12 @@
 import { render, screen } from '@/test-utils/render';
-import { createMockWithdrawal, mockMonthOfInterest } from '@/test-utils/mocks/transaction.mocks';
+import {
+  createMockWithdrawal,
+  mockMonthOfInterest,
+  mockMonthOfInterestLastDay,
+} from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 import { transactionListRowsFor } from '@/test-utils/transaction-rows';
-import { dayMonth } from '@/lib/dates';
+import { dayMonth, dayRange } from '@/lib/dates';
 import { INTEREST_MODE } from '@/lib/transaction/constants';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { BALANCE_CHANGE_COPY } from '../../BalanceChange/constants';
@@ -54,23 +58,28 @@ describe('a transaction row', () => {
     });
   });
 
-  describe('a month with a single day of interest', () => {
-    const mockSingleDayOfInterest = [mockDayOfInterest];
-    const [mockMonthlyInterestRow] = transactionListRowsFor(
-      mockSingleDayOfInterest,
+  it('shows the date of a single day of interest shown by period', () => {
+    const [mockSingleDayRow] = transactionListRowsFor(
+      [mockDayOfInterest],
       INTEREST_MODE.byPeriod,
       mockDayOfInterest.occurredAt
     );
+    render(<TransactionRow transactionListRow={mockSingleDayRow} />);
 
-    beforeEach(() => {
-      render(<TransactionRow transactionListRow={mockMonthlyInterestRow} />);
-    });
+    expect(row()).toHaveTextContent(dayMonth(mockSingleDayRow.day));
+  });
 
-    it('shows how many days it covers, not a date', () => {
-      expect(row()).toHaveTextContent(
-        TRANSACTION_ROW_COPY.interestDays(mockSingleDayOfInterest.length)
-      );
-    });
+  it('shows the days and how many there are for interest over several days', () => {
+    const [mockPeriodRow] = transactionListRowsFor(
+      mockMonthOfInterest,
+      INTEREST_MODE.byPeriod,
+      mockMonthOfInterestLastDay
+    );
+    render(<TransactionRow transactionListRow={mockPeriodRow} />);
+
+    expect(row()).toHaveTextContent(
+      `${dayRange(mockDayOfInterest.occurredAt, mockMonthOfInterestLastDay)} · ${TRANSACTION_ROW_COPY.interestDays(mockMonthOfInterest.length)}`
+    );
   });
 
   it('shows the balance to the agora', () => {

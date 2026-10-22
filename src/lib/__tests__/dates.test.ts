@@ -2,11 +2,18 @@ import {
   addDays,
   calendarMonth,
   calendarYear,
+  dayRange,
   eachDayInclusive,
   monthLabel,
   shortDayMonth,
   shortMonth,
 } from '../dates';
+
+describe('dayRange', () => {
+  it('names the month once for days within it', () => {
+    expect(dayRange('2026-10-10', '2026-10-16')).toBe('10–16 באוקטובר');
+  });
+});
 
 describe('addDays', () => {
   it('advances within a month', () => {

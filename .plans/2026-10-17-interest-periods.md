@@ -27,5 +27,5 @@ interest day by day.
 ## Progress
 
 - [x] Production code
-- [ ] Tests
+- [x] Tests
 - [ ] PR with screenshots
