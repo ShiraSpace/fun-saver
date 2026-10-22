@@ -3,7 +3,7 @@
 > Status: **locked 2026-10-11**, refreshed against `origin/main` daddfee, then reviewed against 26b87a6 twice
 > (Third and Fourth review, below). **PR 1 merged as #207 (48c78e9). PR 2 merged as #210 (b704a75), its review
 > fixes as #212 (9abe018). PR 3 merged as #218 (7f6f23f).** Next: PR 4, planned in
-> `fun-saver-piggy-bank-motion/.plans/2026-10-16-piggy-bank-motion.md`. What PR 2 and PR 3 changed is in "After PR 2"
+> `.plans/2026-10-16-piggy-bank-motion.md` on `feat/piggy-bank-motion`. What PR 2 and PR 3 changed is in "After PR 2"
 > and "After the layout shots" at the end.
 > Mockup: `mockups/2026-10-04-child-piggy-bank.html#piggy-bank` (the agreed design, with and without a goal, at the live app's real sizes).
 > Research: `docs/research/child-engagement.md` (§ 5–7 for the why, § 9 for the art).
