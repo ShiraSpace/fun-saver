@@ -107,7 +107,7 @@ function depositAndWithdrawalDays(transactions: ListedTransaction[]): string[] {
   return [...new Set(days)].sort();
 }
 
-function interestPeriodEnd(interestDay: string, periodEndDays: string[]): string {
+function interestPeriodKey(interestDay: string, periodEndDays: string[]): string {
   const month = calendarMonth(interestDay);
   const nextDepositOrWithdrawalDay = periodEndDays.find((day) => day >= interestDay);
   const periodEndsWithinTheMonth =
@@ -133,7 +133,7 @@ export function interestPeriodRows(
   const dailyInterest = transactionsOfType(transactions, TRANSACTION_TYPE.interest);
   const dailyRows: InterestPeriodRow[] = dailyInterest.map((transaction) => ({
     ...dailyInterestRow(transaction, walletNameById),
-    key: `interest:${transaction.walletId}:${interestPeriodEnd(transaction.occurredAt, periodEndDays)}`,
+    key: `interest:${transaction.walletId}:${interestPeriodKey(transaction.occurredAt, periodEndDays)}`,
     interestPeriod: { firstDay: transaction.occurredAt, days: 1 },
   }));
 
