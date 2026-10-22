@@ -15,20 +15,17 @@ import { TRANSACTION_LIST_COPY, TRANSACTION_LIST_TEST_IDS } from './constants';
 import { Card, EmptyMessage } from './TransactionList.styles';
 
 interface TransactionListProps extends Omit<TransactionListRowsInput, 'interestMode'> {
-  asOf: string;
   viewChoices: TransactionsViewChoices;
 }
 
 interface TransactionListMonthsProps {
   hasTransactions: boolean;
   sections: MonthSection[];
-  asOf: string;
 }
 
 function TransactionListMonths({
   hasTransactions,
   sections,
-  asOf,
 }: TransactionListMonthsProps): JSX.Element {
   if (!hasTransactions) {
     return (
@@ -47,7 +44,7 @@ function TransactionListMonths({
   }
 
   const months = sections.map((monthSection) => (
-    <TransactionMonth key={monthSection.month} monthSection={monthSection} asOf={asOf} />
+    <TransactionMonth key={monthSection.month} monthSection={monthSection} />
   ));
 
   return <>{months}</>;
@@ -57,7 +54,6 @@ export function TransactionList({
   transactions,
   wallets,
   balanceHistory,
-  asOf,
   viewChoices,
 }: TransactionListProps): JSX.Element {
   const { interestMode } = viewChoices;
@@ -82,7 +78,7 @@ export function TransactionList({
         dayCount={balanceHistory.days.length}
         viewChoices={viewChoices}
       />
-      <TransactionListMonths hasTransactions={hasTransactions} sections={sections} asOf={asOf} />
+      <TransactionListMonths hasTransactions={hasTransactions} sections={sections} />
     </Card>
   );
 }

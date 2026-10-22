@@ -17,12 +17,11 @@ import {
 
 interface TransactionMonthProps {
   monthSection: MonthSection;
-  asOf: string;
 }
 
-export function TransactionMonth({ monthSection, asOf }: TransactionMonthProps): JSX.Element {
+export function TransactionMonth({ monthSection }: TransactionMonthProps): JSX.Element {
   const { month, rows, interestEarned } = monthSection;
-  const monthName = monthLabel(month, asOf);
+  const monthName = monthLabel(month);
   const transactionRows = rows.map((transactionListRow) => (
     <TransactionRow key={transactionListRow.key} transactionListRow={transactionListRow} />
   ));
