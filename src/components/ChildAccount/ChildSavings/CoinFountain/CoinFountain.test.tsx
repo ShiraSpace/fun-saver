@@ -1,4 +1,5 @@
 import { render, screen } from '@/test-utils/render';
+import { waitsForTheCelebration } from '@/test-utils/motion';
 import { CoinFountain } from './CoinFountain';
 import { COIN_FOUNTAIN_COINS, COIN_FOUNTAIN_TEST_IDS } from './constants';
 
@@ -10,6 +11,12 @@ describe('CoinFountain', () => {
   it('pours every coin in its table', () => {
     expect(screen.getAllByTestId(COIN_FOUNTAIN_TEST_IDS.coin)).toHaveLength(
       COIN_FOUNTAIN_COINS.length
+    );
+  });
+
+  it('holds every coin until the celebration has waited', () => {
+    expect(screen.getAllByTestId(COIN_FOUNTAIN_TEST_IDS.coin).every(waitsForTheCelebration)).toBe(
+      true
     );
   });
 

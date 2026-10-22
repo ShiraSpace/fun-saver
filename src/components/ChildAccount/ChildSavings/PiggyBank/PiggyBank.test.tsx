@@ -1,5 +1,5 @@
 import { render, screen } from '@/test-utils/render';
-import { moves } from '@/test-utils/motion';
+import { moves, waitsForTheCelebration } from '@/test-utils/motion';
 import { PiggyBank } from './PiggyBank';
 import { PIGGY_BANK_TEST_IDS } from './constants';
 
@@ -22,6 +22,12 @@ describe('PiggyBank', () => {
     render(<PiggyBank piggyBankFill={1} isGoalReached />);
 
     expect(moves(screen.getByTestId(PIGGY_BANK_TEST_IDS.body))).toBe(true);
+  });
+
+  it('holds its hop until the celebration has waited', () => {
+    render(<PiggyBank piggyBankFill={1} isGoalReached />);
+
+    expect(waitsForTheCelebration(screen.getByTestId(PIGGY_BANK_TEST_IDS.body))).toBe(true);
   });
 
   it('gives each piggy bank on a page its own paints', () => {

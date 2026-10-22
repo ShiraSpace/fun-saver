@@ -2,7 +2,7 @@ import { render, screen } from '@/test-utils/render';
 import { createMockSavedTowardGoal, mockGoal } from '@/test-utils/mocks/goal.mocks';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { goalPictureGlow } from '@/test-utils/goal-picture';
-import { moves } from '@/test-utils/motion';
+import { moves, waitsForTheCelebration } from '@/test-utils/motion';
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
 import { GOAL_PROGRESS_BAR_TEST_IDS } from '@/components/Goal/GoalProgressBar/constants';
 import { GoalProgress } from './GoalProgress';
@@ -119,6 +119,17 @@ describe('GoalProgress', () => {
       );
 
       expect(pictureMoves()).toBe(true);
+    });
+
+    it('holds its wobble until the celebration has waited', () => {
+      render(
+        <GoalProgress
+          savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
+          celebratesWhenReached
+        />
+      );
+
+      expect(waitsForTheCelebration(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture))).toBe(true);
     });
 
     it('keeps still once reached, without being asked to', () => {

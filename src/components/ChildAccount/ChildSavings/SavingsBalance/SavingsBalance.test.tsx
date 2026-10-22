@@ -1,6 +1,6 @@
 import { createRef } from 'react';
 import { render, screen } from '@/test-utils/render';
-import { moves } from '@/test-utils/motion';
+import { moves, waitsForTheCelebration } from '@/test-utils/motion';
 import { SavingsBalance } from './SavingsBalance';
 import { SAVINGS_BALANCE_TEST_IDS } from './constants';
 import { BALANCE_TWINKLES_TEST_IDS } from './BalanceTwinkles/constants';
@@ -54,6 +54,10 @@ describe('SavingsBalance celebrating a reached goal', () => {
 
   it('bumps the total and flashes it gold', () => {
     expect(moves(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.shown))).toBe(true);
+  });
+
+  it('holds the bump until the celebration has waited', () => {
+    expect(waitsForTheCelebration(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.shown))).toBe(true);
   });
 
   it('shows the twinkles', () => {
