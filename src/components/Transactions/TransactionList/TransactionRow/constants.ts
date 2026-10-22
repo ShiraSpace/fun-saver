@@ -1,5 +1,9 @@
 import { countInWords } from '../../count-in-words';
 
+function interestDays(days: number): string {
+  return countInWords(days, 'יום אחד', (count) => `${count} ימים`);
+}
+
 export const TRANSACTION_ROW_COPY = {
   deposit: { icon: '💰', label: 'הפקדה' },
   withdrawal: {
@@ -8,7 +12,8 @@ export const TRANSACTION_ROW_COPY = {
     savings: { badge: '🏦', label: 'משיכה' },
   },
   interest: { badge: '✨', label: 'ריבית' },
-  interestDays: (days: number): string => countInWords(days, 'יום אחד', (count) => `${count} ימים`),
+  interestDays,
+  interestPeriod: (days: string, dayCount: number): string => `${days} · ${interestDays(dayCount)}`,
 } as const;
 
 export const TRANSACTION_ROW_TEST_IDS = {

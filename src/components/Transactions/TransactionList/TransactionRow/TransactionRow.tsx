@@ -24,7 +24,10 @@ interface TransactionRowProps {
 
 function transactionRowDays({ interestPeriod, day }: TransactionListRow): string {
   return interestPeriod
-    ? `${dayRange(interestPeriod.firstDay, day)} · ${TRANSACTION_ROW_COPY.interestDays(interestPeriod.days)}`
+    ? TRANSACTION_ROW_COPY.interestPeriod(
+        dayRange(interestPeriod.firstDay, day),
+        interestPeriod.days
+      )
     : dayMonth(day);
 }
 

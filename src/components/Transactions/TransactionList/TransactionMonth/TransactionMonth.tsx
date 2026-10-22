@@ -23,6 +23,17 @@ interface TransactionMonthProps {
 export function TransactionMonth({ monthSection }: TransactionMonthProps): JSX.Element {
   const { month, rows, interestEarned } = monthSection;
   const monthName = monthLabel(month);
+  const interestThisMonth =
+    interestEarned > 0 ? (
+      <InterestThisMonth>
+        {TRANSACTION_MONTH_COPY.interestThisMonth}
+        <BalanceChange
+          balanceChange={interestEarned}
+          testId={TRANSACTION_MONTH_TEST_IDS.interestThisMonth(month)}
+          rounding={MONEY_ROUNDING.exact}
+        />
+      </InterestThisMonth>
+    ) : null;
   const transactionRows = rows.map((transactionListRow) => (
     <TransactionRow key={transactionListRow.key} transactionListRow={transactionListRow} />
   ));
@@ -34,16 +45,7 @@ export function TransactionMonth({ monthSection }: TransactionMonthProps): JSX.E
           <MonthName data-testid={TRANSACTION_MONTH_TEST_IDS.monthName(month)}>
             {monthName}
           </MonthName>
-          {interestEarned > 0 && (
-            <InterestThisMonth>
-              {TRANSACTION_MONTH_COPY.interestThisMonth}
-              <BalanceChange
-                balanceChange={interestEarned}
-                testId={TRANSACTION_MONTH_TEST_IDS.interestThisMonth(month)}
-                rounding={MONEY_ROUNDING.exact}
-              />
-            </InterestThisMonth>
-          )}
+          {interestThisMonth}
         </MonthNameAndInterest>
         <ColumnNames
           dir="ltr"
