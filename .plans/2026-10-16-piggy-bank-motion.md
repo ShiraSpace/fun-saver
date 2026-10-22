@@ -1,9 +1,9 @@
 # Child piggy bank, PR 4 — the motion
 
-> Planned 2026-10-16, re-checked against `origin/main` 7f6f23f (#218). PR 4 of 4 in `2026-10-04-child-piggy-bank.md`
-> (kept in `~/Projects/technotronic/fun-saver-piggy-bank`, untracked). Its "After PR 2" and "After the layout shots
-> (2026-10-16)" sections override older text there. Motion mockup: `fun-saver-piggy-bank/mockups/coin-space.html`,
-> variant C (chosen). The drop and the roll-up: `mockups/piggy-bank.html`.
+> Planned 2026-10-16, re-checked against `origin/main` 7f6f23f (#218). PR 4 of 4 in `2026-10-04-child-piggy-bank.md`.
+> Its "After PR 2" and "After the layout shots
+> (2026-10-16)" sections override older text there. Motion mockup: `mockups/2026-10-04-child-piggy-bank.html#coin-space`,
+> variant C (chosen). The drop and the roll-up: `mockups/2026-10-04-child-piggy-bank.html#piggy-bank`.
 
 ## What PR 3 left on `main`
 
@@ -84,11 +84,11 @@ the harness can catch it (visual shots run with reduced motion, so they stay sti
 
 ## Timings in the mockups (proposals, not decisions)
 
-`piggy-bank.html`: drop 950ms, gap close 420ms, roll-up 900ms. `coin-space.html` (C): space closes over 650ms after a
+`#piggy-bank`: drop 950ms, gap close 420ms, roll-up 900ms. `#coin-space` (C): space closes over 650ms after a
 450ms wait.
 
 ## The breathe, chosen (2026-10-22)
 
-From `fun-saver-piggy-bank/mockups/breathe.html`, variant A: **3 breaths of 1.5s (4.5s), 3.5% wider and 2% shorter at
+From `mockups/2026-10-04-child-piggy-bank.html#breathe`, variant A: **3 breaths of 1.5s (4.5s), 3.5% wider and 2% shorter at
 the top of each, from the pig's feet**, easing in and out. After mount, and after each landing once the 450ms wiggle
 ends (4.95s of motion in all, under 5s). Off under reduced motion and where elements cannot animate.
