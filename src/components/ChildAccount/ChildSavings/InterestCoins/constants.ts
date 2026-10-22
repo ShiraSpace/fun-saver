@@ -10,7 +10,7 @@ export const INTEREST_COINS_COPY = {
   tapTheCoins: 'הכסף הרוויח לבד! לחצו על המטבעות',
 } as const;
 
-export const TAPPABLE_COIN_SELECTOR = `${INTEREST_COIN_SELECTOR}:enabled`;
+export const COIN_NOT_YET_TAPPED_SELECTOR = `${INTEREST_COIN_SELECTOR}:enabled`;
 
 export const COINS_CLOSE_THE_GAP = {
   durationMs: 420,
@@ -22,5 +22,5 @@ export const COIN_SPACE_CLOSE = {
   waitForTheWiggleMs: 450,
   durationMs: 650,
   easing: 'cubic-bezier(.3, .9, .4, 1)',
-  closed: '0px',
+  noHeight: '0px',
 } as const;

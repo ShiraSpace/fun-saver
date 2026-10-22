@@ -19,7 +19,7 @@ describe('InterestCoins', () => {
     );
   }
 
-  function dropping(interestCoin: InterestCoin): InterestCoin {
+  function tappedAndFalling(interestCoin: InterestCoin): InterestCoin {
     return { ...interestCoin, isDropping: true };
   }
 
@@ -33,20 +33,20 @@ describe('InterestCoins', () => {
       elementsAnimate(mockAnimate);
     });
 
-    describe('in a row where each coin has its own spot', () => {
-      const mockSpotWidth = 50;
-      let mockSpotInRow: jest.SpyInstance;
+    describe('in a row where the coins sit side by side', () => {
+      const mockCoinWidth = 50;
+      let mockCoinsSideBySide: jest.SpyInstance;
 
       beforeEach(() => {
-        mockSpotInRow = jest
+        mockCoinsSideBySide = jest
           .spyOn(HTMLElement.prototype, 'offsetLeft', 'get')
-          .mockImplementation(function spotInRow(this: HTMLElement): number {
-            return [...(this.parentElement?.children ?? [])].indexOf(this) * mockSpotWidth;
+          .mockImplementation(function besideTheCoinBefore(this: HTMLElement): number {
+            return [...(this.parentElement?.children ?? [])].indexOf(this) * mockCoinWidth;
           });
       });
 
       afterEach(() => {
-        mockSpotInRow.mockRestore();
+        mockCoinsSideBySide.mockRestore();
       });
 
       describe('when the first of three lands', () => {
@@ -57,8 +57,8 @@ describe('InterestCoins', () => {
 
         it('slides the coins left over from where they were', () => {
           expect(mockAnimate.mock.calls.map(([keyframes]) => keyframes[0])).toEqual([
-            { transform: `translateX(${mockSpotWidth}px)` },
-            { transform: `translateX(${mockSpotWidth}px)` },
+            { transform: `translateX(${mockCoinWidth}px)` },
+            { transform: `translateX(${mockCoinWidth}px)` },
           ]);
         });
 
@@ -67,11 +67,11 @@ describe('InterestCoins', () => {
         });
       });
 
-      it('slides nothing when a coin starts dropping', () => {
+      it('slides nothing when a coin starts tappedAndFalling', () => {
         const [first, second, third] = mockThreeInterestCoins;
         const { rerender } = render(coinsWaiting(mockThreeInterestCoins));
 
-        rerender(coinsWaiting([dropping(first), second, third]));
+        rerender(coinsWaiting([tappedAndFalling(first), second, third]));
 
         expect(mockAnimate).not.toHaveBeenCalled();
       });
@@ -79,9 +79,9 @@ describe('InterestCoins', () => {
       it('leaves a falling coin to its drop when the coin ahead of it lands', () => {
         const [first, second, third] = mockThreeInterestCoins;
         const { rerender } = render(coinsWaiting(mockThreeInterestCoins));
-        rerender(coinsWaiting([dropping(first), dropping(second), third]));
+        rerender(coinsWaiting([tappedAndFalling(first), tappedAndFalling(second), third]));
 
-        rerender(coinsWaiting([dropping(second), third]));
+        rerender(coinsWaiting([tappedAndFalling(second), third]));
 
         expect(mockAnimate.mock.contexts).toEqual([shownCoins()[1]]);
       });

@@ -5,11 +5,11 @@ import { canAnimate } from '@/theme/motion';
 import { COINS_CLOSE_THE_GAP } from './constants';
 import type { InterestCoin } from './InterestCoins';
 
-type CoinSpots = Map<number, number>;
+type WhereCoinsStand = Map<number, number>;
 
-function slideFrom(coin: HTMLElement, shift: number): void {
+function slideOverFrom(coin: HTMLElement, howFarItMoved: number): void {
   coin.animate(
-    [{ transform: `translateX(${shift}px)` }, { transform: COINS_CLOSE_THE_GAP.inPlace }],
+    [{ transform: `translateX(${howFarItMoved}px)` }, { transform: COINS_CLOSE_THE_GAP.inPlace }],
     {
       duration: COINS_CLOSE_THE_GAP.durationMs,
       easing: COINS_CLOSE_THE_GAP.easing,
@@ -21,40 +21,40 @@ function slideFrom(coin: HTMLElement, shift: number): void {
 export function useCoinsCloseTheGap(
   interestCoins: InterestCoin[]
 ): (place: number) => RefCallback<HTMLElement> {
-  const coinElements = useRef(new Map<number, HTMLElement>());
-  const coinSpotsBefore = useRef<CoinSpots>(new Map());
+  const coinButtons = useRef(new Map<number, HTMLElement>());
+  const whereCoinsStood = useRef<WhereCoinsStand>(new Map());
 
   useLayoutEffect(() => {
-    const coinSpotsNow: CoinSpots = new Map();
-    const coinsInTheRow = interestCoins.filter((interestCoin) => !interestCoin.isDropping);
+    const whereCoinsStandNow: WhereCoinsStand = new Map();
+    const coinsNotYetTapped = interestCoins.filter((interestCoin) => !interestCoin.isDropping);
 
-    coinsInTheRow.forEach(({ place }) => {
-      const coin = coinElements.current.get(place);
-      const spotBefore = coinSpotsBefore.current.get(place);
+    coinsNotYetTapped.forEach(({ place }) => {
+      const coin = coinButtons.current.get(place);
+      const stoodAt = whereCoinsStood.current.get(place);
 
       if (!coin) {
         return;
       }
 
-      const spotNow = coin.offsetLeft;
+      const standsAt = coin.offsetLeft;
 
-      coinSpotsNow.set(place, spotNow);
+      whereCoinsStandNow.set(place, standsAt);
 
-      if (spotBefore !== undefined && spotBefore !== spotNow && canAnimate()) {
-        slideFrom(coin, spotBefore - spotNow);
+      if (stoodAt !== undefined && stoodAt !== standsAt && canAnimate()) {
+        slideOverFrom(coin, stoodAt - standsAt);
       }
     });
 
-    coinSpotsBefore.current = coinSpotsNow;
+    whereCoinsStood.current = whereCoinsStandNow;
   }, [interestCoins]);
 
   return (place) => (coin) => {
     if (coin) {
-      coinElements.current.set(place, coin);
+      coinButtons.current.set(place, coin);
     }
 
     return (): void => {
-      coinElements.current.delete(place);
+      coinButtons.current.delete(place);
     };
   };
 }

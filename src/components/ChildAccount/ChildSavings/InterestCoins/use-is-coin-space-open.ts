@@ -5,7 +5,7 @@ import { canAnimate } from '@/theme/motion';
 import { COIN_SPACE_CLOSE } from './constants';
 
 function closeSlowly(coinSpace: HTMLElement): Animation {
-  const { waitForTheWiggleMs, durationMs, easing, closed } = COIN_SPACE_CLOSE;
+  const { waitForTheWiggleMs, durationMs, easing, noHeight } = COIN_SPACE_CLOSE;
 
   return coinSpace.animate(
     [
@@ -13,13 +13,16 @@ function closeSlowly(coinSpace: HTMLElement): Animation {
         height: `${coinSpace.offsetHeight}px`,
         marginBottom: getComputedStyle(coinSpace).marginBottom,
       },
-      { height: closed, marginBottom: closed },
+      { height: noHeight, marginBottom: noHeight },
     ],
     { delay: waitForTheWiggleMs, duration: durationMs, easing, fill: 'both' }
   );
 }
 
-export function useCoinSpace(coinSpace: RefObject<HTMLElement | null>, hasCoins: boolean): boolean {
+export function useIsCoinSpaceOpen(
+  coinSpace: RefObject<HTMLElement | null>,
+  hasCoins: boolean
+): boolean {
   const [hadCoinsWhenTheVisitBegan] = useState(hasCoins);
   const [isSpaceClosed, setIsSpaceClosed] = useState(false);
 

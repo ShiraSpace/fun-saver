@@ -3,8 +3,12 @@
 import { JSX, RefObject, useRef } from 'react';
 import { InterestCoinButton } from './InterestCoinButton';
 import { useCoinsCloseTheGap } from './use-coins-close-the-gap';
-import { useCoinSpace } from './use-coin-space';
-import { INTEREST_COINS_COPY, INTEREST_COINS_TEST_IDS, TAPPABLE_COIN_SELECTOR } from './constants';
+import { useIsCoinSpaceOpen } from './use-is-coin-space-open';
+import {
+  INTEREST_COINS_COPY,
+  INTEREST_COINS_TEST_IDS,
+  COIN_NOT_YET_TAPPED_SELECTOR,
+} from './constants';
 import { CoinRow, CoinSpace, TapTheCoins } from './InterestCoins.styles';
 
 export interface InterestCoin {
@@ -33,12 +37,12 @@ export function InterestCoins({
   const coinSpace = useRef<HTMLDivElement>(null);
   const coinRow = useRef<HTMLDivElement>(null);
   const hasCoins = interestCoins.length > 0;
-  const isSpaceOpen = useCoinSpace(coinSpace, hasCoins);
-  const coinElementAt = useCoinsCloseTheGap(interestCoins);
+  const isSpaceOpen = useIsCoinSpaceOpen(coinSpace, hasCoins);
+  const rememberCoinButton = useCoinsCloseTheGap(interestCoins);
 
   function collect(place: number, tappedCoin: HTMLElement): void {
     const tappableCoins = [
-      ...(coinRow.current?.querySelectorAll<HTMLElement>(TAPPABLE_COIN_SELECTOR) ?? []),
+      ...(coinRow.current?.querySelectorAll<HTMLElement>(COIN_NOT_YET_TAPPED_SELECTOR) ?? []),
     ];
     (nextFocus(tappableCoins, tappedCoin) ?? whereFocusGoesLast.current)?.focus();
     onCollect(place, tappedCoin);
@@ -53,7 +57,7 @@ export function InterestCoins({
   const coinButtons = interestCoins.map((interestCoin) => (
     <InterestCoinButton
       key={interestCoin.place}
-      ref={coinElementAt(interestCoin.place)}
+      ref={rememberCoinButton(interestCoin.place)}
       amount={interestCoin.amount}
       isDropping={interestCoin.isDropping}
       onTap={(tappedCoin): void => collect(interestCoin.place, tappedCoin)}

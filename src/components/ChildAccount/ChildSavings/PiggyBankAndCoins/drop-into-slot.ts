@@ -42,20 +42,20 @@ function dropPathOf(coin: HTMLElement, piggyBank: SVGSVGElement): DropPath {
 }
 
 function dropKeyframes({ acrossToSlot, downToSlot, coinHeight }: DropPath): Keyframe[] {
-  const { whole, goneThroughTheSlot, atRest } = COIN_DROP;
+  const { wholeCoinShowing, goneThroughTheSlot, whereItWasTapped } = COIN_DROP;
   const edgeOn = `scaleX(${COIN_DROP.edgeOnWidth})`;
 
   return [
-    { transform: atRest, clipPath: whole, offset: 0 },
+    { transform: whereItWasTapped, clipPath: wholeCoinShowing, offset: 0 },
     {
       transform: `translate(${acrossToSlot}px, ${downToSlot - COIN_DROP.hoverAboveSlotPx}px)`,
-      clipPath: whole,
+      clipPath: wholeCoinShowing,
       offset: COIN_DROP.overTheSlotAt,
       easing: EASING.easeInOut,
     },
     {
       transform: `translate(${acrossToSlot}px, ${downToSlot - COIN_DROP.edgeOnAboveSlotPx}px) ${edgeOn}`,
-      clipPath: whole,
+      clipPath: wholeCoinShowing,
       offset: COIN_DROP.edgeOnAt,
       easing: EASING.easeIn,
     },

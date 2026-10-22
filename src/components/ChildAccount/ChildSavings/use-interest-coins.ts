@@ -45,7 +45,7 @@ function coinAt(visit: Visit, place: number): InterestCoin | undefined {
   return visit.interestCoins.find((interestCoin) => interestCoin.place === place);
 }
 
-function droppingInterest(visit: Visit): number {
+function interestStillFalling(visit: Visit): number {
   return visit.interestCoins
     .filter((interestCoin) => interestCoin.isDropping)
     .reduce((dropping, interestCoin) => dropping + interestCoin.amount, 0);
@@ -103,7 +103,7 @@ export function useInterestCoins({ savings, accountId }: InterestCoinsParams): V
     interestCoins: visit.interestCoins,
     interestNotLanded: uncollectedInterestOf({
       savings,
-      collectedInterest: visit.collectedInterest - droppingInterest(visit),
+      collectedInterest: visit.collectedInterest - interestStillFalling(visit),
     }),
     collect,
     land,
