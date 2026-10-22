@@ -12,6 +12,7 @@ import {
   Heading,
   InterestThisMonth,
   MonthName,
+  MonthNameAndInterest,
   Rows,
 } from './TransactionMonth.styles';
 
@@ -29,17 +30,21 @@ export function TransactionMonth({ monthSection }: TransactionMonthProps): JSX.E
   return (
     <section>
       <Heading>
-        <MonthName data-testid={TRANSACTION_MONTH_TEST_IDS.monthName(month)}>{monthName}</MonthName>
-        {interestEarned > 0 && (
-          <InterestThisMonth>
-            {TRANSACTION_MONTH_COPY.interestThisMonth}
-            <BalanceChange
-              balanceChange={interestEarned}
-              testId={TRANSACTION_MONTH_TEST_IDS.interestThisMonth(month)}
-              rounding={MONEY_ROUNDING.exact}
-            />
-          </InterestThisMonth>
-        )}
+        <MonthNameAndInterest>
+          <MonthName data-testid={TRANSACTION_MONTH_TEST_IDS.monthName(month)}>
+            {monthName}
+          </MonthName>
+          {interestEarned > 0 && (
+            <InterestThisMonth>
+              {TRANSACTION_MONTH_COPY.interestThisMonth}
+              <BalanceChange
+                balanceChange={interestEarned}
+                testId={TRANSACTION_MONTH_TEST_IDS.interestThisMonth(month)}
+                rounding={MONEY_ROUNDING.exact}
+              />
+            </InterestThisMonth>
+          )}
+        </MonthNameAndInterest>
         <ColumnNames
           dir="ltr"
           aria-hidden
