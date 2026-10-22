@@ -67,11 +67,17 @@ function dropKeyframes({ acrossToSlot, downToSlot, coinHeight }: DropPath): Keyf
   ];
 }
 
+function settleWhereItStands(coin: HTMLElement): void {
+  coin.getAnimations().forEach((animation) => animation.finish());
+}
+
 export function dropIntoSlot({ coin, piggyBank, onLand }: DropIntoSlotParams): void {
   if (!piggyBank || !canAnimate()) {
     onLand();
     return;
   }
+
+  settleWhereItStands(coin);
 
   const drop = coin.animate(dropKeyframes(dropPathOf(coin, piggyBank)), {
     duration: COIN_DROP.durationMs,

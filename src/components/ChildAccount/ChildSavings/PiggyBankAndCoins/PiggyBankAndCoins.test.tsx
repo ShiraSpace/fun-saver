@@ -1,8 +1,8 @@
 import { createRef } from 'react';
 import { act, fireEvent, render, screen } from '@/test-utils/render';
-import { elementsAnimate, finishAnimation } from '@/test-utils/motion';
+import { animationsOn, captureAnimations } from '@/test-utils/motion';
 import { shownCoins } from '@/test-utils/interest-coins';
-import { PIGGY_BANK_BREATHE, PIGGY_BANK_TEST_IDS } from '../PiggyBank/constants';
+import { PIGGY_BANK_BREATHE, PIGGY_BANK_TEST_IDS, PIGGY_BANK_WIGGLE } from '../PiggyBank/constants';
 import { PiggyBankAndCoins } from './PiggyBankAndCoins';
 
 describe('PiggyBankAndCoins with one ₪2 coin waiting', () => {
@@ -19,6 +19,10 @@ describe('PiggyBankAndCoins with one ₪2 coin waiting', () => {
         whereFocusGoesLast={createRef<HTMLElement>()}
       />
     );
+  }
+
+  function piggyBank(): HTMLElement {
+    return screen.getByTestId(PIGGY_BANK_TEST_IDS.art);
   }
 
   beforeEach(() => {
@@ -42,27 +46,27 @@ describe('PiggyBankAndCoins with one ₪2 coin waiting', () => {
   });
 
   describe('where elements animate', () => {
-    const mockAnimate = jest.fn(() => ({}) as Animation);
-    const aBreath = expect.objectContaining({ iterations: PIGGY_BANK_BREATHE.breaths });
+    const animationsPlayed = captureAnimations();
 
     beforeEach(() => {
-      mockAnimate.mockClear();
-      elementsAnimate(mockAnimate);
       renderWithOneCoin();
     });
 
     it('breathes as the screen opens', () => {
-      expect(mockAnimate).toHaveBeenCalledWith(expect.anything(), aBreath);
+      const [breath] = animationsOn(animationsPlayed, piggyBank());
+
+      expect(breath.options).toEqual(
+        expect.objectContaining({ iterations: PIGGY_BANK_BREATHE.breaths })
+      );
     });
 
     describe('once the coin is tapped', () => {
       beforeEach(() => {
-        mockAnimate.mockClear();
         fireEvent.click(shownCoins()[0]);
       });
 
       it('drops the coin', () => {
-        expect(mockAnimate.mock.contexts[0]).toBe(shownCoins()[0]);
+        expect(animationsOn(animationsPlayed, shownCoins()[0])).toHaveLength(1);
       });
 
       it('waits for the drop before landing it', () => {
@@ -71,7 +75,9 @@ describe('PiggyBankAndCoins with one ₪2 coin waiting', () => {
 
       describe('when the drop finishes', () => {
         beforeEach(() => {
-          act(() => finishAnimation(mockAnimate.mock.results[0].value));
+          const [drop] = animationsOn(animationsPlayed, shownCoins()[0]);
+
+          act(() => drop.finish());
         });
 
         it('lands the coin', () => {
@@ -79,7 +85,11 @@ describe('PiggyBankAndCoins with one ₪2 coin waiting', () => {
         });
 
         it('wiggles the piggy bank', () => {
-          expect(mockAnimate.mock.contexts[1]).toBe(screen.getByTestId(PIGGY_BANK_TEST_IDS.art));
+          const latestOnThePiggyBank = animationsOn(animationsPlayed, piggyBank()).at(-1);
+
+          expect(latestOnThePiggyBank?.options).toEqual(
+            expect.objectContaining({ duration: PIGGY_BANK_WIGGLE.durationMs })
+          );
         });
       });
     });

@@ -1,6 +1,11 @@
 import { act, fireEvent, render, screen } from '@/test-utils/render';
 import { captureCookies } from '@/test-utils/cookies';
-import { elementsAnimate, finishAnimation, prefersReducedMotion } from '@/test-utils/motion';
+import {
+  animationsOn,
+  captureAnimations,
+  elementsCanAnimate,
+  prefersReducedMotion,
+} from '@/test-utils/motion';
 import { savedMark, shownCoins } from '@/test-utils/interest-coins';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
 import { mockAccountId } from '@/test-utils/mocks/account.mocks';
@@ -17,16 +22,14 @@ const mockNoCoinsCollected = { collectedInterest: { [mockAccountId]: '0' } };
 
 describe('ChildSavings with ₪5 of interest waiting as ₪2, ₪2 and ₪1, while the first coin tapped drops', () => {
   const written = captureCookies();
-  const mockAnimate = jest.fn(() => ({}) as Animation);
+  const animationsPlayed = captureAnimations();
 
   beforeEach(() => {
     jest.useFakeTimers();
-    elementsAnimate(mockAnimate);
     render(
       <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
       mockNoCoinsCollected
     );
-    mockAnimate.mockClear();
     fireEvent.click(shownCoins()[0]);
   });
 
@@ -50,9 +53,9 @@ describe('ChildSavings with ₪5 of interest waiting as ₪2, ₪2 and ₪1, whi
 
   describe('when it lands', () => {
     beforeEach(() => {
-      const [drop] = mockAnimate.mock.results.map((result) => result.value);
+      const [drop] = animationsOn(animationsPlayed, shownCoins()[0]);
 
-      act(() => finishAnimation(drop));
+      act(() => drop.finish());
     });
 
     it('reads out the landed total at once', () => {
@@ -92,9 +95,8 @@ describe('ChildSavings with ₪5 of interest waiting as ₪2, ₪2 and ₪1, whi
 });
 
 it('lands a tapped coin at once when the browser asks for reduced motion', () => {
-  const mockAnimate = jest.fn();
   prefersReducedMotion();
-  elementsAnimate(mockAnimate);
+  elementsCanAnimate();
   render(
     <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
     mockNoCoinsCollected

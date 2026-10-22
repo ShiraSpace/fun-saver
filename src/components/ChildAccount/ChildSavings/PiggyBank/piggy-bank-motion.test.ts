@@ -1,23 +1,14 @@
 import { act } from '@testing-library/react';
-import {
-  elementsAnimate,
-  finishAnimation,
-  prefersMotion,
-  prefersReducedMotion,
-} from '@/test-utils/motion';
+import { captureAnimations, prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
 import { breathe, wiggleThenBreathe } from './piggy-bank-motion';
 import { PIGGY_BANK_BREATHE, PIGGY_BANK_WIGGLE } from './constants';
 
 describe("the piggy bank's motion", () => {
-  const mockAnimate = jest.fn<Animation, [Keyframe[], KeyframeAnimationOptions?]>(
-    () => ({}) as Animation
-  );
+  const animationsPlayed = captureAnimations();
   const aBreath = expect.objectContaining({ iterations: PIGGY_BANK_BREATHE.breaths });
 
   beforeEach(() => {
-    mockAnimate.mockClear();
     prefersMotion();
-    elementsAnimate(mockAnimate);
   });
 
   describe('wiggleThenBreathe where elements animate', () => {
@@ -26,21 +17,25 @@ describe("the piggy bank's motion", () => {
     });
 
     it('rocks the piggy bank around its middle', () => {
-      const [wiggleKeyframes] = mockAnimate.mock.calls[0];
+      const [wiggle] = animationsPlayed;
 
-      expect(wiggleKeyframes.map((keyframe) => keyframe.transformOrigin)).toEqual(
-        wiggleKeyframes.map(() => PIGGY_BANK_WIGGLE.fromItsMiddle)
+      expect(wiggle.keyframes).toEqual(
+        wiggle.keyframes.map(() =>
+          expect.objectContaining({ transformOrigin: PIGGY_BANK_WIGGLE.fromItsMiddle })
+        )
       );
     });
 
     it('waits for the wiggle before breathing', () => {
-      expect(mockAnimate).not.toHaveBeenCalledWith(expect.anything(), aBreath);
+      expect(animationsPlayed).toHaveLength(1);
     });
 
     it('breathes once the wiggle has finished', () => {
-      act(() => finishAnimation(mockAnimate.mock.results[0].value));
+      const [wiggle] = animationsPlayed;
 
-      expect(mockAnimate).toHaveBeenLastCalledWith(expect.anything(), aBreath);
+      act(() => wiggle.finish());
+
+      expect(animationsPlayed.at(-1)?.options).toEqual(aBreath);
     });
   });
 
@@ -50,22 +45,26 @@ describe("the piggy bank's motion", () => {
     });
 
     it('breathes a few times, then rests', () => {
-      expect(mockAnimate).toHaveBeenCalledWith(expect.anything(), aBreath);
+      const [breath] = animationsPlayed;
+
+      expect(breath.options).toEqual(aBreath);
     });
 
     it('breathes wider and shorter', () => {
-      const [breathKeyframes] = mockAnimate.mock.calls[0];
+      const [breath] = animationsPlayed;
 
-      expect(breathKeyframes[1].scale).toBe(
+      expect(breath.keyframes[1].scale).toBe(
         `${PIGGY_BANK_BREATHE.wider} ${PIGGY_BANK_BREATHE.shorter}`
       );
     });
 
     it('breathes from its feet', () => {
-      const [breathKeyframes] = mockAnimate.mock.calls[0];
+      const [breath] = animationsPlayed;
 
-      expect(breathKeyframes.map((keyframe) => keyframe.transformOrigin)).toEqual(
-        breathKeyframes.map(() => PIGGY_BANK_BREATHE.fromItsFeet)
+      expect(breath.keyframes).toEqual(
+        breath.keyframes.map(() =>
+          expect.objectContaining({ transformOrigin: PIGGY_BANK_BREATHE.fromItsFeet })
+        )
       );
     });
   });
@@ -78,13 +77,13 @@ describe("the piggy bank's motion", () => {
     it('never breathes', () => {
       breathe(document.createElement('div'));
 
-      expect(mockAnimate).not.toHaveBeenCalled();
+      expect(animationsPlayed).toEqual([]);
     });
 
     it('never wiggles', () => {
       wiggleThenBreathe(document.createElement('div'));
 
-      expect(mockAnimate).not.toHaveBeenCalled();
+      expect(animationsPlayed).toEqual([]);
     });
   });
 });

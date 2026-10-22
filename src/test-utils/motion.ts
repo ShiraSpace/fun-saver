@@ -28,14 +28,54 @@ export function moves(element: Element): boolean {
   return !STILL.includes(getComputedStyle(element).animation);
 }
 
-export function elementsAnimate(mockAnimate: jest.Mock): void {
-  Element.prototype.animate = mockAnimate as unknown as Element['animate'];
+export interface PlayedAnimation {
+  element: Element;
+  keyframes: Keyframe[];
+  options?: KeyframeAnimationOptions;
+  finish: () => void;
+}
+
+function stillAnimation(): Animation {
+  return { cancel: (): void => {} } as Animation;
+}
+
+export function elementsCanAnimate(): void {
+  Element.prototype.animate = stillAnimation;
+  Element.prototype.getAnimations = (): Animation[] => [];
 }
 
 export function elementsDoNotAnimate(): void {
   Reflect.deleteProperty(Element.prototype, 'animate');
+  Reflect.deleteProperty(Element.prototype, 'getAnimations');
 }
 
-export function finishAnimation(animation: Animation): void {
-  animation.onfinish?.call(animation, new Event('finish') as AnimationPlaybackEvent);
+export function captureAnimations(): PlayedAnimation[] {
+  const animationsPlayed: PlayedAnimation[] = [];
+
+  beforeEach(() => {
+    animationsPlayed.length = 0;
+    elementsCanAnimate();
+    Element.prototype.animate = function play(this: Element, keyframes, options): Animation {
+      const animation = stillAnimation();
+      const finishEvent = new Event('finish') as AnimationPlaybackEvent;
+
+      animationsPlayed.push({
+        element: this,
+        keyframes: keyframes as Keyframe[],
+        options: options as KeyframeAnimationOptions | undefined,
+        finish: () => animation.onfinish?.call(animation, finishEvent),
+      });
+
+      return animation;
+    };
+  });
+
+  return animationsPlayed;
+}
+
+export function animationsOn(
+  animationsPlayed: PlayedAnimation[],
+  element: Element
+): PlayedAnimation[] {
+  return animationsPlayed.filter((played) => played.element === element);
 }

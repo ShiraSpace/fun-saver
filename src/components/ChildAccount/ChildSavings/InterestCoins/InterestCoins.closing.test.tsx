@@ -1,6 +1,6 @@
 import { createRef, JSX } from 'react';
 import { act, render, screen } from '@/test-utils/render';
-import { elementsAnimate, finishAnimation } from '@/test-utils/motion';
+import { animationsOn, captureAnimations } from '@/test-utils/motion';
 import { mockThreeInterestCoins, shownCoins } from '@/test-utils/interest-coins';
 import { InterestCoins, type InterestCoin } from './InterestCoins';
 import { INTEREST_COINS_TEST_IDS } from './constants';
@@ -8,6 +8,7 @@ import { INTEREST_COINS_TEST_IDS } from './constants';
 describe('InterestCoins', () => {
   const mockOnCollect = jest.fn();
   const mockWhereFocusGoesLast = createRef<HTMLElement>();
+  const [mockFirstCoin, mockSecondCoin, mockThirdCoin] = mockThreeInterestCoins;
 
   function coinsWaiting(interestCoins: InterestCoin[]): JSX.Element {
     return (
@@ -19,28 +20,26 @@ describe('InterestCoins', () => {
     );
   }
 
-  function tappedAndFalling(interestCoin: InterestCoin): InterestCoin {
+  function falling(interestCoin: InterestCoin): InterestCoin {
     return { ...interestCoin, isDropping: true };
   }
 
+  function coinSpace(): HTMLElement | null {
+    return screen.queryByTestId(INTEREST_COINS_TEST_IDS.copy)?.parentElement ?? null;
+  }
+
   describe('where elements animate', () => {
-    const mockAnimate = jest.fn<Animation, [Keyframe[], KeyframeAnimationOptions?]>(
-      () => ({ cancel: (): void => {} }) as Animation
-    );
+    const animationsPlayed = captureAnimations();
 
-    beforeEach(() => {
-      mockAnimate.mockClear();
-      elementsAnimate(mockAnimate);
-    });
-
-    describe('in a row where the coins sit side by side', () => {
+    describe('in a row where each coin stands one coin further along', () => {
       const mockCoinWidth = 50;
+      const mockOneCoinBack = `${mockCoinWidth}px`;
       let mockCoinsSideBySide: jest.SpyInstance;
 
       beforeEach(() => {
         mockCoinsSideBySide = jest
           .spyOn(HTMLElement.prototype, 'offsetLeft', 'get')
-          .mockImplementation(function besideTheCoinBefore(this: HTMLElement): number {
+          .mockImplementation(function placeInTheRow(this: HTMLElement): number {
             return [...(this.parentElement?.children ?? [])].indexOf(this) * mockCoinWidth;
           });
       });
@@ -52,49 +51,50 @@ describe('InterestCoins', () => {
       describe('when the first of three lands', () => {
         beforeEach(() => {
           const { rerender } = render(coinsWaiting(mockThreeInterestCoins));
-          rerender(coinsWaiting(mockThreeInterestCoins.slice(1)));
+          rerender(coinsWaiting([mockSecondCoin, mockThirdCoin]));
         });
 
-        it('slides the coins left over from where they were', () => {
-          expect(mockAnimate.mock.calls.map(([keyframes]) => keyframes[0])).toEqual([
-            { transform: `translateX(${mockCoinWidth}px)` },
-            { transform: `translateX(${mockCoinWidth}px)` },
+        it('slides each coin over from one coin back', () => {
+          expect(animationsPlayed.map(({ keyframes: [from] }) => from)).toEqual([
+            { transform: `translateX(${mockOneCoinBack})` },
+            { transform: `translateX(${mockOneCoinBack})` },
           ]);
         });
 
         it('lets a slide still running carry on when the next coin lands', () => {
-          expect(mockAnimate.mock.calls[0][1]).toMatchObject({ composite: 'add' });
+          const [slide] = animationsPlayed;
+
+          expect(slide.options).toEqual(expect.objectContaining({ composite: 'add' }));
         });
       });
 
       it('slides nothing when a tapped coin starts to fall', () => {
-        const [first, second, third] = mockThreeInterestCoins;
         const { rerender } = render(coinsWaiting(mockThreeInterestCoins));
 
-        rerender(coinsWaiting([tappedAndFalling(first), second, third]));
+        rerender(coinsWaiting([falling(mockFirstCoin), mockSecondCoin, mockThirdCoin]));
 
-        expect(mockAnimate).not.toHaveBeenCalled();
+        expect(animationsPlayed).toEqual([]);
       });
 
-      it('leaves a falling coin to its drop when the coin ahead of it lands', () => {
-        const [first, second, third] = mockThreeInterestCoins;
+      it('keeps a falling coin where it was when the coin ahead of it lands', () => {
         const { rerender } = render(coinsWaiting(mockThreeInterestCoins));
-        rerender(coinsWaiting([tappedAndFalling(first), tappedAndFalling(second), third]));
+        rerender(coinsWaiting([falling(mockFirstCoin), falling(mockSecondCoin), mockThirdCoin]));
 
-        rerender(coinsWaiting([tappedAndFalling(second), third]));
+        rerender(coinsWaiting([falling(mockSecondCoin), mockThirdCoin]));
 
-        expect(mockAnimate.mock.contexts).toEqual([shownCoins()[1]]);
+        const [hold] = animationsOn(animationsPlayed, shownCoins()[0]);
+        expect(hold.keyframes[0]).toEqual({ translate: `${mockOneCoinBack} 0` });
       });
     });
 
     describe('when the last coin lands', () => {
       beforeEach(() => {
-        const { rerender } = render(coinsWaiting(mockThreeInterestCoins.slice(2)));
+        const { rerender } = render(coinsWaiting([mockThirdCoin]));
         rerender(coinsWaiting([]));
       });
 
       it('keeps the space while it closes', () => {
-        expect(screen.getByTestId(INTEREST_COINS_TEST_IDS.copy)).toBeInTheDocument();
+        expect(coinSpace()).toBeInTheDocument();
       });
 
       it('empties the copy line at once', () => {
@@ -102,24 +102,24 @@ describe('InterestCoins', () => {
       });
 
       it('closes the space slowly', () => {
-        expect(mockAnimate.mock.contexts).toEqual([
-          screen.getByTestId(INTEREST_COINS_TEST_IDS.copy).parentElement,
-        ]);
+        expect(animationsPlayed.map(({ element }) => element)).toEqual([coinSpace()]);
       });
 
       it('draws nothing once the space has closed', () => {
-        act(() => finishAnimation(mockAnimate.mock.results[0].value));
+        const [closing] = animationsPlayed;
 
-        expect(screen.queryByTestId(INTEREST_COINS_TEST_IDS.copy)).not.toBeInTheDocument();
+        act(() => closing.finish());
+
+        expect(coinSpace()).not.toBeInTheDocument();
       });
     });
   });
 
   it('closes the space at once when the last coin lands where elements cannot animate', () => {
-    const { rerender } = render(coinsWaiting(mockThreeInterestCoins.slice(2)));
+    const { rerender } = render(coinsWaiting([mockThirdCoin]));
 
     rerender(coinsWaiting([]));
 
-    expect(screen.queryByTestId(INTEREST_COINS_TEST_IDS.copy)).not.toBeInTheDocument();
+    expect(coinSpace()).not.toBeInTheDocument();
   });
 });

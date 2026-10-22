@@ -1,17 +1,16 @@
 import { act, renderHook } from '@testing-library/react';
-import { elementsAnimate, prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
+import { elementsCanAnimate, prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
 import { useCountUp } from '../use-count-up';
 
 describe('useCountUp', () => {
   const mockTiming = { startDelayMs: 0, countMs: 1600 };
-  const mockAnimate = jest.fn();
 
   describe('when the browser allows motion', () => {
     const halfTheCount = mockTiming.countMs / 2;
 
     beforeEach(() => {
       prefersMotion();
-      elementsAnimate(mockAnimate);
+      elementsCanAnimate();
       jest.useFakeTimers();
     });
 
@@ -74,7 +73,7 @@ describe('useCountUp', () => {
 
   it('shows the amount at once when the browser asks for reduced motion', () => {
     prefersReducedMotion();
-    elementsAnimate(mockAnimate);
+    elementsCanAnimate();
 
     const { result } = renderHook(() => useCountUp({ startAt: 100, to: 500, timing: mockTiming }));
 

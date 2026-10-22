@@ -18,6 +18,24 @@ function slideOverFrom(coin: HTMLElement, howFarItMoved: number): void {
   );
 }
 
+function keepFallingWhereItWas(coin: HTMLElement, howFarItMoved: number): void {
+  const whereItWas = `${howFarItMoved}px 0`;
+
+  coin.animate([{ translate: whereItWas }, { translate: whereItWas }], {
+    fill: 'forwards',
+    composite: 'add',
+  });
+}
+
+function followTheRow(coin: HTMLElement, howFarItMoved: number, isDropping: boolean): void {
+  if (isDropping) {
+    keepFallingWhereItWas(coin, howFarItMoved);
+    return;
+  }
+
+  slideOverFrom(coin, howFarItMoved);
+}
+
 export function useCoinsCloseTheGap(
   interestCoins: InterestCoin[]
 ): (place: number) => RefCallback<HTMLElement> {
@@ -26,9 +44,8 @@ export function useCoinsCloseTheGap(
 
   useLayoutEffect(() => {
     const whereCoinsStandNow: WhereCoinsStand = new Map();
-    const coinsNotYetTapped = interestCoins.filter((interestCoin) => !interestCoin.isDropping);
 
-    coinsNotYetTapped.forEach(({ place }) => {
+    interestCoins.forEach(({ place, isDropping }) => {
       const coin = coinButtons.current.get(place);
       const stoodAt = whereCoinsStood.current.get(place);
 
@@ -41,7 +58,7 @@ export function useCoinsCloseTheGap(
       whereCoinsStandNow.set(place, standsAt);
 
       if (stoodAt !== undefined && stoodAt !== standsAt && canAnimate()) {
-        slideOverFrom(coin, stoodAt - standsAt);
+        followTheRow(coin, stoodAt - standsAt, isDropping);
       }
     });
 
