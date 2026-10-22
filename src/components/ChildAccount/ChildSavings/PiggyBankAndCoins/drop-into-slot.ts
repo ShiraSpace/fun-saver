@@ -1,4 +1,4 @@
-import { canAnimate } from '@/theme/motion';
+import { canAnimate, EASING } from '@/theme/motion';
 import { PIGGY_BANK_SHAPE } from '../PiggyBank/constants';
 import { COIN_DROP } from './constants';
 
@@ -42,26 +42,26 @@ function dropPathOf(coin: HTMLElement, piggyBank: SVGSVGElement): DropPath {
 }
 
 function dropKeyframes({ acrossToSlot, downToSlot, coinHeight }: DropPath): Keyframe[] {
-  const whole = 'inset(0 0 0 0)';
+  const { whole, goneThroughTheSlot, atRest } = COIN_DROP;
   const edgeOn = `scaleX(${COIN_DROP.edgeOnWidth})`;
 
   return [
-    { transform: 'translate(0, 0)', clipPath: whole, offset: 0 },
+    { transform: atRest, clipPath: whole, offset: 0 },
     {
       transform: `translate(${acrossToSlot}px, ${downToSlot - COIN_DROP.hoverAboveSlotPx}px)`,
       clipPath: whole,
       offset: COIN_DROP.overTheSlotAt,
-      easing: 'ease-in-out',
+      easing: EASING.easeInOut,
     },
     {
       transform: `translate(${acrossToSlot}px, ${downToSlot - COIN_DROP.edgeOnAboveSlotPx}px) ${edgeOn}`,
       clipPath: whole,
       offset: COIN_DROP.edgeOnAt,
-      easing: 'ease-in',
+      easing: EASING.easeIn,
     },
     {
       transform: `translate(${acrossToSlot}px, ${downToSlot + coinHeight}px) ${edgeOn}`,
-      clipPath: 'inset(0 0 100% 0)',
+      clipPath: goneThroughTheSlot,
       offset: 1,
     },
   ];

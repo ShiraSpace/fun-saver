@@ -98,4 +98,5 @@ export const PIGGY_BANK_WIGGLE = {
   tiltDegrees: 4,
   tiltLeftAt: 0.25,
   tiltRightAt: 0.75,
+  upright: '0deg',
 } as const;

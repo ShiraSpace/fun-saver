@@ -1,4 +1,4 @@
-import { canAnimate } from '@/theme/motion';
+import { canAnimate, EASING } from '@/theme/motion';
 import { PIGGY_BANK_WIGGLE } from './constants';
 
 export function wiggle(piggyBank: Element | null): void {
@@ -6,15 +6,15 @@ export function wiggle(piggyBank: Element | null): void {
     return;
   }
 
-  const { durationMs, tiltDegrees, tiltLeftAt, tiltRightAt } = PIGGY_BANK_WIGGLE;
+  const { durationMs, tiltDegrees, tiltLeftAt, tiltRightAt, upright } = PIGGY_BANK_WIGGLE;
 
   piggyBank.animate(
     [
-      { rotate: '0deg' },
+      { rotate: upright },
       { rotate: `${-tiltDegrees}deg`, offset: tiltLeftAt },
       { rotate: `${tiltDegrees}deg`, offset: tiltRightAt },
-      { rotate: '0deg' },
+      { rotate: upright },
     ],
-    { duration: durationMs, easing: 'ease-in-out' }
+    { duration: durationMs, easing: EASING.easeInOut }
   );
 }
