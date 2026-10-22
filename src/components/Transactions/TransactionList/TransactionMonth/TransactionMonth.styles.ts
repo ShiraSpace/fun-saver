@@ -15,7 +15,6 @@ export const Heading = styled.div`
 `;
 
 export const MonthName = styled.h3`
-  flex: 1;
   min-width: 0;
   margin: 0;
   font-size: ${({ theme }): number => theme.typography.label}px;
@@ -27,6 +26,7 @@ export const InterestThisMonth = styled(BalanceChangeHighlight)`
 `;
 
 export const ColumnNames = styled(Amounts)`
+  margin-inline-start: auto;
   font-weight: 700;
   color: ${({ theme }): string => theme.colors.textMuted};
 `;
