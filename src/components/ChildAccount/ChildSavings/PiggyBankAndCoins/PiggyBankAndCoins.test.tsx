@@ -2,7 +2,7 @@ import { createRef } from 'react';
 import { act, fireEvent, render, screen } from '@/test-utils/render';
 import { elementsAnimate, finishAnimation } from '@/test-utils/motion';
 import { shownCoins } from '@/test-utils/interest-coins';
-import { PIGGY_BANK_TEST_IDS } from '../PiggyBank/constants';
+import { PIGGY_BANK_BREATHE, PIGGY_BANK_TEST_IDS } from '../PiggyBank/constants';
 import { PiggyBankAndCoins } from './PiggyBankAndCoins';
 
 describe('PiggyBankAndCoins with one ₪2 coin waiting', () => {
@@ -41,35 +41,46 @@ describe('PiggyBankAndCoins with one ₪2 coin waiting', () => {
     });
   });
 
-  describe('where elements animate, once the coin is tapped', () => {
+  describe('where elements animate', () => {
     const mockAnimate = jest.fn(() => ({}) as Animation);
+    const aBreath = expect.objectContaining({ iterations: PIGGY_BANK_BREATHE.breaths });
 
     beforeEach(() => {
+      mockAnimate.mockClear();
       elementsAnimate(mockAnimate);
       renderWithOneCoin();
-      mockAnimate.mockClear();
-      fireEvent.click(shownCoins()[0]);
     });
 
-    it('drops the coin', () => {
-      expect(mockAnimate.mock.contexts[0]).toBe(shownCoins()[0]);
+    it('breathes as the screen opens', () => {
+      expect(mockAnimate).toHaveBeenCalledWith(expect.anything(), aBreath);
     });
 
-    it('waits for the drop before landing it', () => {
-      expect(mockOnLand).not.toHaveBeenCalled();
-    });
-
-    describe('when the drop finishes', () => {
+    describe('once the coin is tapped', () => {
       beforeEach(() => {
-        act(() => finishAnimation(mockAnimate.mock.results[0].value));
+        mockAnimate.mockClear();
+        fireEvent.click(shownCoins()[0]);
       });
 
-      it('lands the coin', () => {
-        expect(mockOnLand).toHaveBeenCalledWith(0);
+      it('drops the coin', () => {
+        expect(mockAnimate.mock.contexts[0]).toBe(shownCoins()[0]);
       });
 
-      it('wiggles the piggy bank', () => {
-        expect(mockAnimate.mock.contexts[1]).toBe(screen.getByTestId(PIGGY_BANK_TEST_IDS.art));
+      it('waits for the drop before landing it', () => {
+        expect(mockOnLand).not.toHaveBeenCalled();
+      });
+
+      describe('when the drop finishes', () => {
+        beforeEach(() => {
+          act(() => finishAnimation(mockAnimate.mock.results[0].value));
+        });
+
+        it('lands the coin', () => {
+          expect(mockOnLand).toHaveBeenCalledWith(0);
+        });
+
+        it('wiggles the piggy bank', () => {
+          expect(mockAnimate.mock.contexts[1]).toBe(screen.getByTestId(PIGGY_BANK_TEST_IDS.art));
+        });
       });
     });
   });
