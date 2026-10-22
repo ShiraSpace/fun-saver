@@ -39,7 +39,7 @@ function followTheRow(coin: HTMLElement, howFarItMoved: number, isDropping: bool
 export function useCoinsCloseTheGap(
   interestCoins: InterestCoin[]
 ): (place: number) => RefCallback<HTMLElement> {
-  const coinButtons = useRef(new Map<number, HTMLElement>());
+  const coinButtonByPlace = useRef(new Map<number, HTMLElement>());
   const rememberCoinButtonByPlace = useRef(new Map<number, RefCallback<HTMLElement>>());
   const whereCoinsStood = useRef<WhereCoinsStand>(new Map());
 
@@ -47,7 +47,7 @@ export function useCoinsCloseTheGap(
     const whereCoinsStandNow: WhereCoinsStand = new Map();
 
     interestCoins.forEach(({ place, isDropping }) => {
-      const coin = coinButtons.current.get(place);
+      const coin = coinButtonByPlace.current.get(place);
       const stoodAt = whereCoinsStood.current.get(place);
 
       if (!coin) {
@@ -75,11 +75,11 @@ export function useCoinsCloseTheGap(
 
     const rememberCoinButton: RefCallback<HTMLElement> = (coin) => {
       if (coin) {
-        coinButtons.current.set(place, coin);
+        coinButtonByPlace.current.set(place, coin);
       }
 
       return (): void => {
-        coinButtons.current.delete(place);
+        coinButtonByPlace.current.delete(place);
       };
     };
 

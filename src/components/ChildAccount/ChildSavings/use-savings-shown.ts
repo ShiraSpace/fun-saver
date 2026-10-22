@@ -10,12 +10,7 @@ import {
 import { piggyBankFillOf } from './PiggyBank';
 import type { InterestCoin } from './InterestCoins';
 import { useInterestCoins } from './use-interest-coins';
-
-export interface ChildSavingsProps {
-  accountId: string;
-  savings: WalletSummary;
-  savedTowardGoal?: SavedTowardGoal;
-}
+import type { ChildSavingsProps } from './ChildSavings';
 
 interface SavingsShownParams {
   savings: WalletSummary;
@@ -29,7 +24,7 @@ interface SavingsShown extends SavingsWithoutAgorot {
   piggyBankFill: number;
 }
 
-interface SavingsOnTheCard {
+interface SavingsShownAndCoins {
   savingsShown: SavingsShown;
   interestCoins: InterestCoin[];
   collect: (place: number) => void;
@@ -65,7 +60,7 @@ export function useSavingsShown({
   accountId,
   savings,
   savedTowardGoal,
-}: ChildSavingsProps): SavingsOnTheCard {
+}: ChildSavingsProps): SavingsShownAndCoins {
   const { interestCoins, interestNotLanded, collect, land } = useInterestCoins({
     savings,
     accountId,
