@@ -35,3 +35,7 @@ export function elementsAnimate(mockAnimate: jest.Mock): void {
 export function elementsDoNotAnimate(): void {
   Reflect.deleteProperty(Element.prototype, 'animate');
 }
+
+export function finishAnimation(animation: Animation): void {
+  animation.onfinish?.call(animation, new Event('finish') as AnimationPlaybackEvent);
+}
