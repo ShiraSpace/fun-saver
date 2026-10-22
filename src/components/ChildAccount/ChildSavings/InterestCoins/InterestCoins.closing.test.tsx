@@ -1,18 +1,13 @@
 import { createRef, JSX } from 'react';
 import { act, render, screen } from '@/test-utils/render';
 import { elementsAnimate, finishAnimation } from '@/test-utils/motion';
-import { shownCoins } from '@/test-utils/interest-coins';
+import { mockThreeInterestCoins, shownCoins } from '@/test-utils/interest-coins';
 import { InterestCoins, type InterestCoin } from './InterestCoins';
 import { INTEREST_COINS_TEST_IDS } from './constants';
 
 describe('InterestCoins', () => {
   const mockOnCollect = jest.fn();
   const mockWhereFocusGoesLast = createRef<HTMLElement>();
-  const mockThreeCoins: InterestCoin[] = [
-    { place: 0, amount: 300, isDropping: false },
-    { place: 1, amount: 200, isDropping: false },
-    { place: 2, amount: 200, isDropping: false },
-  ];
 
   function coinsWaiting(interestCoins: InterestCoin[]): JSX.Element {
     return (
@@ -54,20 +49,27 @@ describe('InterestCoins', () => {
         mockSpotInRow.mockRestore();
       });
 
-      it('slides the coins left over from where they were when the first of three lands', () => {
-        const { rerender } = render(coinsWaiting(mockThreeCoins));
+      describe('when the first of three lands', () => {
+        beforeEach(() => {
+          const { rerender } = render(coinsWaiting(mockThreeInterestCoins));
+          rerender(coinsWaiting(mockThreeInterestCoins.slice(1)));
+        });
 
-        rerender(coinsWaiting(mockThreeCoins.slice(1)));
+        it('slides the coins left over from where they were', () => {
+          expect(mockAnimate.mock.calls.map(([keyframes]) => keyframes[0])).toEqual([
+            { transform: `translateX(${mockSpotWidth}px)` },
+            { transform: `translateX(${mockSpotWidth}px)` },
+          ]);
+        });
 
-        expect(mockAnimate.mock.calls.map(([keyframes]) => keyframes[0])).toEqual([
-          { transform: `translateX(${mockSpotWidth}px)` },
-          { transform: `translateX(${mockSpotWidth}px)` },
-        ]);
+        it('lets a slide still running carry on when the next coin lands', () => {
+          expect(mockAnimate.mock.calls[0][1]).toMatchObject({ composite: 'add' });
+        });
       });
 
       it('slides nothing when a coin starts dropping', () => {
-        const [first, second, third] = mockThreeCoins;
-        const { rerender } = render(coinsWaiting(mockThreeCoins));
+        const [first, second, third] = mockThreeInterestCoins;
+        const { rerender } = render(coinsWaiting(mockThreeInterestCoins));
 
         rerender(coinsWaiting([dropping(first), second, third]));
 
@@ -75,8 +77,8 @@ describe('InterestCoins', () => {
       });
 
       it('leaves a falling coin to its drop when the coin ahead of it lands', () => {
-        const [first, second, third] = mockThreeCoins;
-        const { rerender } = render(coinsWaiting(mockThreeCoins));
+        const [first, second, third] = mockThreeInterestCoins;
+        const { rerender } = render(coinsWaiting(mockThreeInterestCoins));
         rerender(coinsWaiting([dropping(first), dropping(second), third]));
 
         rerender(coinsWaiting([dropping(second), third]));
@@ -87,7 +89,7 @@ describe('InterestCoins', () => {
 
     describe('when the last coin lands', () => {
       beforeEach(() => {
-        const { rerender } = render(coinsWaiting(mockThreeCoins.slice(2)));
+        const { rerender } = render(coinsWaiting(mockThreeInterestCoins.slice(2)));
         rerender(coinsWaiting([]));
       });
 
@@ -114,7 +116,7 @@ describe('InterestCoins', () => {
   });
 
   it('closes the space at once when the last coin lands where elements cannot animate', () => {
-    const { rerender } = render(coinsWaiting(mockThreeCoins.slice(2)));
+    const { rerender } = render(coinsWaiting(mockThreeInterestCoins.slice(2)));
 
     rerender(coinsWaiting([]));
 

@@ -1,29 +1,21 @@
 import { createRef } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { InterestCoins, type InterestCoin } from './InterestCoins';
+import { mockThreeInterestCoins, shownCoins } from '@/test-utils/interest-coins';
+import { InterestCoins } from './InterestCoins';
 import { INTEREST_COINS_COPY, INTEREST_COINS_TEST_IDS } from './constants';
 import {
   INTEREST_COIN_BUTTON_COPY,
   INTEREST_COIN_BUTTON_TEST_IDS,
 } from './InterestCoinButton/constants';
 
-function shownCoins(): HTMLElement[] {
-  return screen.getAllByTestId(INTEREST_COIN_BUTTON_TEST_IDS.coin);
-}
-
 describe('InterestCoins with ₪3, ₪2 and ₪2 waiting', () => {
-  const mockInterestCoins: InterestCoin[] = [
-    { place: 0, amount: 300, isDropping: false },
-    { place: 1, amount: 200, isDropping: false },
-    { place: 2, amount: 200, isDropping: false },
-  ];
   const mockOnCollect = jest.fn();
   const mockWhereFocusGoesLast = createRef<HTMLElement>();
 
   beforeEach(() => {
     render(
       <InterestCoins
-        interestCoins={mockInterestCoins}
+        interestCoins={mockThreeInterestCoins}
         onCollect={mockOnCollect}
         whereFocusGoesLast={mockWhereFocusGoesLast}
       />
