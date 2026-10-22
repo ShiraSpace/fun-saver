@@ -66,6 +66,10 @@ export class HeaderDriver {
     return this.appBrowser.exists(HEADER_TEST_IDS.progress);
   }
 
+  async waitForProgressLineToClear(): Promise<void> {
+    await this.appBrowser.waits.testIdGone(HEADER_TEST_IDS.progress);
+  }
+
   titleColor(): Promise<string> {
     return this.appBrowser.computedStyle(HEADER_TITLE_TEST_IDS.title, 'color');
   }

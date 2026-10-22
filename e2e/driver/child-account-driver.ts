@@ -88,6 +88,10 @@ export class ChildAccountDriver {
     await this.appBrowser.waits.count(INTEREST_COIN_BUTTON_TEST_IDS.coin, coinsBefore - 1);
   }
 
+  dropInterestCoin(coinIndex: number): Promise<void> {
+    return this.appBrowser.clickNth(INTEREST_COIN_SELECTOR, coinIndex);
+  }
+
   savingsBalance(): Promise<string> {
     return this.appBrowser.text(SAVINGS_BALANCE_TEST_IDS.balance);
   }

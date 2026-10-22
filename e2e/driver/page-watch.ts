@@ -8,6 +8,15 @@ export class PageWatch {
     return this.currentPage().screencast({ path, ffmpegPath });
   }
 
+  async holdAnimationsAt(ms: number): Promise<void> {
+    await this.currentPage().evaluate((holdAtMs) => {
+      document.getAnimations().forEach((animation) => {
+        animation.pause();
+        animation.currentTime = holdAtMs;
+      });
+    }, ms);
+  }
+
   captureErrors(): string[] {
     const errorsLogged: string[] = [];
     const page = this.currentPage();
