@@ -109,8 +109,11 @@ describe('what the transaction list shows', () => {
       });
 
       it('gives a single day of interest no period', () => {
-        const singleDayRow = interestRows.at(-1);
+        const singleDayRow = interestRows.find(
+          (row) => row.day === mockBusyDayWithdrawal.occurredAt
+        );
 
+        expect(singleDayRow).toBeDefined();
         expect(singleDayRow).not.toHaveProperty('interestPeriod');
       });
     });

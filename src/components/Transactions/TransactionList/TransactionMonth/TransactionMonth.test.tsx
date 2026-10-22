@@ -10,7 +10,7 @@ import { INTEREST_MODE } from '@/lib/transaction/constants';
 import { MONEY_COPY } from '@/components/Money/constants';
 import { BALANCE_CHANGE_COPY } from '../../BalanceChange/constants';
 import { monthSections } from '@/lib/transaction/transaction-rows';
-import { TRANSACTION_MONTH_COPY, TRANSACTION_MONTH_TEST_IDS } from './constants';
+import { TRANSACTION_MONTH_TEST_IDS } from './constants';
 import { TransactionMonth } from './TransactionMonth';
 
 describe('a month of the transaction list', () => {
@@ -34,9 +34,9 @@ describe('a month of the transaction list', () => {
     });
 
     it('shows the month’s interest beside its name', () => {
-      expect(screen.getByText(TRANSACTION_MONTH_COPY.interestThisMonth)).toHaveTextContent(
-        `${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}0.27`
-      );
+      expect(
+        screen.getByTestId(TRANSACTION_MONTH_TEST_IDS.interestThisMonth(month))
+      ).toHaveTextContent(`${BALANCE_CHANGE_COPY.rose}${MONEY_COPY.currencySign}0.27`);
     });
 
     it('keeps the column names out of what a screen reader reads', () => {
@@ -58,6 +58,10 @@ describe('a month of the transaction list', () => {
     );
     render(<TransactionMonth monthSection={mockDepositOnlySection} />);
 
-    expect(screen.queryByText(TRANSACTION_MONTH_COPY.interestThisMonth)).toBeNull();
+    expect(
+      screen.queryByTestId(
+        TRANSACTION_MONTH_TEST_IDS.interestThisMonth(mockDepositOnlySection.month)
+      )
+    ).toBeNull();
   });
 });
