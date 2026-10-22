@@ -1,10 +1,10 @@
 'use client';
 
-import { JSX, RefObject, useEffect, useRef } from 'react';
+import { JSX, RefObject } from 'react';
 import { InterestCoins, type InterestCoin } from '../InterestCoins';
-import { breathe, PiggyBank, wiggleThenBreathe } from '../PiggyBank';
+import { PiggyBank } from '../PiggyBank';
 import { CoinFountain } from '../CoinFountain';
-import { dropIntoSlot } from './drop-into-slot';
+import { useCoinsIntoThePiggyBank } from './use-coins-into-the-piggy-bank';
 import { PiggyBankSpace } from './PiggyBankAndCoins.styles';
 
 interface PiggyBankAndCoinsProps {
@@ -24,22 +24,10 @@ export function PiggyBankAndCoins({
   onLand,
   whereFocusGoesLast,
 }: PiggyBankAndCoinsProps): JSX.Element {
-  const piggyBankElement = useRef<SVGSVGElement>(null);
-
-  useEffect((): void => breathe(piggyBankElement.current), []);
-
-  const collectAndDrop = (place: number, tappedCoin: HTMLElement): void => {
-    onCollect(place);
-    dropIntoSlot({
-      coin: tappedCoin,
-      piggyBank: piggyBankElement.current,
-      onLand: (): void => {
-        onLand(place);
-        wiggleThenBreathe(piggyBankElement.current);
-      },
-    });
-  };
-
+  const { piggyBankElement, whereThePiggyBankStands, collectAndDrop } = useCoinsIntoThePiggyBank({
+    onCollect,
+    onLand,
+  });
   const coinFountain = isGoalReached && <CoinFountain />;
 
   return (
@@ -49,7 +37,7 @@ export function PiggyBankAndCoins({
         onCollect={collectAndDrop}
         whereFocusGoesLast={whereFocusGoesLast}
       />
-      <PiggyBankSpace>
+      <PiggyBankSpace ref={whereThePiggyBankStands}>
         <PiggyBank
           piggyBankFill={piggyBankFill}
           isGoalReached={isGoalReached}

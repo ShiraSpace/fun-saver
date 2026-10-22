@@ -41,12 +41,10 @@ function stillAnimation(): Animation {
 
 export function elementsCanAnimate(): void {
   Element.prototype.animate = stillAnimation;
-  Element.prototype.getAnimations = (): Animation[] => [];
 }
 
 export function elementsDoNotAnimate(): void {
   Reflect.deleteProperty(Element.prototype, 'animate');
-  Reflect.deleteProperty(Element.prototype, 'getAnimations');
 }
 
 export function captureAnimations(): PlayedAnimation[] {

@@ -1,22 +1,19 @@
-import { render, screen } from '@/test-utils/render';
-import { elementsCanAnimate } from '@/test-utils/motion';
-import { PiggyBank } from '../PiggyBank';
-import { PIGGY_BANK_TEST_IDS } from '../PiggyBank/constants';
+import { captureAnimations } from '@/test-utils/motion';
 import { dropIntoSlot } from './drop-into-slot';
 
-it('finishes a slide still running on the coin before dropping it', () => {
-  const mockSlide = { finish: jest.fn() };
-  const mockCoin = document.createElement('button');
-  const mockOnLand = jest.fn();
-  elementsCanAnimate();
-  mockCoin.getAnimations = (): Animation[] => [mockSlide as unknown as Animation];
-  render(<PiggyBank piggyBankFill={0} />);
+describe('dropIntoSlot where elements animate', () => {
+  const animationsPlayed = captureAnimations();
 
-  dropIntoSlot({
-    coin: mockCoin,
-    piggyBank: screen.getByTestId<SVGSVGElement & HTMLElement>(PIGGY_BANK_TEST_IDS.art),
-    onLand: mockOnLand,
+  it('lets a coin still sliding carry on sliding as it drops', () => {
+    const mockOnLand = jest.fn();
+
+    dropIntoSlot({
+      coin: document.createElement('button'),
+      whereThePiggyBankStands: document.createElement('div'),
+      onLand: mockOnLand,
+    });
+
+    const [drop] = animationsPlayed;
+    expect(drop.options).toEqual(expect.objectContaining({ composite: 'add' }));
   });
-
-  expect(mockSlide.finish).toHaveBeenCalled();
 });

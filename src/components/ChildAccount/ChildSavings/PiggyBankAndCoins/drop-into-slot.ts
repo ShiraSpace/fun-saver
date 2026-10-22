@@ -1,10 +1,10 @@
 import { canAnimate, EASING } from '@/theme/motion';
-import { PIGGY_BANK_SHAPE } from '../PiggyBank/constants';
+import { PIGGY_BANK_SHAPE, PIGGY_BANK_SIZE } from '../PiggyBank/constants';
 import { COIN_DROP } from './constants';
 
 interface DropIntoSlotParams {
   coin: HTMLElement;
-  piggyBank: SVGSVGElement | null;
+  whereThePiggyBankStands: HTMLElement | null;
   onLand: () => void;
 }
 
@@ -13,30 +13,49 @@ interface Point {
   y: number;
 }
 
+interface LayoutBox {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
 interface DropPath {
   acrossToSlot: number;
   downToSlot: number;
   coinHeight: number;
 }
 
-function slotCentreOf(piggyBank: SVGSVGElement): Point {
-  const { slot } = PIGGY_BANK_SHAPE;
-  const piggyBankBox = piggyBank.getBoundingClientRect();
-  const drawnPerViewBoxUnit = piggyBankBox.width / piggyBank.viewBox.baseVal.width;
+function layoutBoxOf(element: HTMLElement): LayoutBox {
+  const placedIn = element.offsetParent ?? document.body;
+  const placedInBox = placedIn.getBoundingClientRect();
 
   return {
-    x: piggyBankBox.left + (slot.x + slot.width / 2) * drawnPerViewBoxUnit,
-    y: piggyBankBox.top + (slot.y + slot.height / 2) * drawnPerViewBoxUnit,
+    left: placedInBox.left + placedIn.clientLeft + element.offsetLeft,
+    top: placedInBox.top + placedIn.clientTop + element.offsetTop,
+    width: element.offsetWidth,
+    height: element.offsetHeight,
   };
 }
 
-function dropPathOf(coin: HTMLElement, piggyBank: SVGSVGElement): DropPath {
-  const coinBox = coin.getBoundingClientRect();
-  const slotCentre = slotCentreOf(piggyBank);
+function slotCentreOf(whereThePiggyBankStands: HTMLElement): Point {
+  const { slot } = PIGGY_BANK_SHAPE;
+  const piggyBankBox = layoutBoxOf(whereThePiggyBankStands);
+  const drawnPerUnit = piggyBankBox.width / PIGGY_BANK_SIZE.width;
+
+  return {
+    x: piggyBankBox.left + (slot.x + slot.width / 2) * drawnPerUnit,
+    y: piggyBankBox.top + (slot.y + slot.height / 2) * drawnPerUnit,
+  };
+}
+
+function dropPathOf(coin: HTMLElement, whereThePiggyBankStands: HTMLElement): DropPath {
+  const coinBox = layoutBoxOf(coin);
+  const slotCentre = slotCentreOf(whereThePiggyBankStands);
 
   return {
     acrossToSlot: slotCentre.x - (coinBox.left + coinBox.width / 2),
-    downToSlot: slotCentre.y - coinBox.bottom,
+    downToSlot: slotCentre.y - (coinBox.top + coinBox.height),
     coinHeight: coinBox.height,
   };
 }
@@ -67,21 +86,16 @@ function dropKeyframes({ acrossToSlot, downToSlot, coinHeight }: DropPath): Keyf
   ];
 }
 
-function settleWhereItStands(coin: HTMLElement): void {
-  coin.getAnimations().forEach((animation) => animation.finish());
-}
-
-export function dropIntoSlot({ coin, piggyBank, onLand }: DropIntoSlotParams): void {
-  if (!piggyBank || !canAnimate()) {
+export function dropIntoSlot({ coin, whereThePiggyBankStands, onLand }: DropIntoSlotParams): void {
+  if (!whereThePiggyBankStands || !canAnimate()) {
     onLand();
     return;
   }
 
-  settleWhereItStands(coin);
-
-  const drop = coin.animate(dropKeyframes(dropPathOf(coin, piggyBank)), {
+  const drop = coin.animate(dropKeyframes(dropPathOf(coin, whereThePiggyBankStands)), {
     duration: COIN_DROP.durationMs,
     fill: 'forwards',
+    composite: 'add',
   });
 
   drop.onfinish = onLand;
