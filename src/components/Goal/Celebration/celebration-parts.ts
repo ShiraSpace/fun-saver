@@ -25,6 +25,12 @@ const BORDER_LAP_MS = 2000;
 const WOBBLE_MS = 800;
 const SHINE_MS = 1400;
 
+export const CELEBRATION_WAIT = '--celebration-wait';
+
+export function afterTheCelebrationWait(delayMs: number): string {
+  return `calc(var(${CELEBRATION_WAIT}, 0ms) + ${delayMs}ms)`;
+}
+
 function timesWithinCelebration(onceMs: number): number {
   const { fadeDelayMs, fadeMs } = CELEBRATION_MOTION;
 
@@ -69,9 +75,10 @@ export function travellingBorder(theme: Theme, cornerRadius: number): Serialized
       border-radius: ${cornerRadius + 5}px;
       background: ${borderColors(theme)};
       animation:
-        ${travel} ${BORDER_LAP_MS}ms linear 0ms ${timesWithinCelebration(BORDER_LAP_MS)},
-        ${settle} ${CELEBRATION_MOTION.fadeMs}ms ease-in ${CELEBRATION_MOTION.fadeDelayMs}ms
-          forwards;
+        ${travel} ${BORDER_LAP_MS}ms linear ${afterTheCelebrationWait(0)}
+          ${timesWithinCelebration(BORDER_LAP_MS)},
+        ${settle} ${CELEBRATION_MOTION.fadeMs}ms ease-in
+          ${afterTheCelebrationWait(CELEBRATION_MOTION.fadeDelayMs)} forwards;
     }
 
     &::after {
@@ -91,7 +98,8 @@ export function travellingBorder(theme: Theme, cornerRadius: number): Serialized
 
 export function wobble(delayMs: number): SerializedStyles {
   return css`
-    animation: ${hop} ${WOBBLE_MS}ms ease-in-out ${delayMs}ms ${timesWithinCelebration(WOBBLE_MS)};
+    animation: ${hop} ${WOBBLE_MS}ms ease-in-out ${afterTheCelebrationWait(delayMs)}
+      ${timesWithinCelebration(WOBBLE_MS)};
 
     @media ${REDUCED_MOTION} {
       animation: none;
@@ -115,7 +123,8 @@ export function shine(theme: Theme): SerializedStyles {
       );
       background-size: 200% 100%;
       background-repeat: no-repeat;
-      animation: ${sweep} ${SHINE_MS}ms linear 0ms ${timesWithinCelebration(SHINE_MS)} both;
+      animation: ${sweep} ${SHINE_MS}ms linear ${afterTheCelebrationWait(0)}
+        ${timesWithinCelebration(SHINE_MS)} both;
     }
 
     @media ${REDUCED_MOTION} {

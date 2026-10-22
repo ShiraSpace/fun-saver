@@ -5,6 +5,7 @@ import { REDUCED_MOTION } from '@/theme/motion';
 import { PIGGY_BANK_COLORS } from '@/theme/piggy-bank-colors';
 import { coinFace } from '../coin-parts';
 import { FLYING_COIN_SIZE, SLOT_CENTRE_PERCENT, type CoinFlight } from './constants';
+import { afterTheCelebrationWait } from '@/components/Goal/Celebration/celebration-parts';
 
 const fly = keyframes`
   0% {
@@ -52,7 +53,7 @@ function flightOf({ coin }: { coin: CoinFlight }): SerializedStyles {
     --rise: ${risePx}px;
     --fall: ${fallPx}px;
     animation-duration: ${flightMs}ms;
-    animation-delay: ${delayMs}ms;
+    animation-delay: ${afterTheCelebrationWait(delayMs)};
   `;
 }
 

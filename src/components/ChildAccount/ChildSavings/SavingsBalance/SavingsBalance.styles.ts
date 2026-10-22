@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { readByScreenReaderOnly } from '@/theme/accessibility';
 import { REDUCED_MOTION } from '@/theme/motion';
 import { BALANCE_CELEBRATION_START_MS } from './constants';
+import { afterTheCelebrationWait } from '@/components/Goal/Celebration/celebration-parts';
 
 const bump = keyframes`
   50% {
@@ -31,8 +32,10 @@ function bumpsAndFlashesGold({ celebrating, theme }: CelebratingBalance): Serial
     css`
       --gold: ${theme.colors.celebrationGold};
       animation:
-        ${bump} ${BUMP_MS}ms ease-out ${BALANCE_CELEBRATION_START_MS}ms ${BUMPS},
-        ${goldFlash} ${GOLD_FLASH_MS}ms ease-out ${BALANCE_CELEBRATION_START_MS}ms 1;
+        ${bump} ${BUMP_MS}ms ease-out ${afterTheCelebrationWait(BALANCE_CELEBRATION_START_MS)}
+          ${BUMPS},
+        ${goldFlash} ${GOLD_FLASH_MS}ms ease-out
+          ${afterTheCelebrationWait(BALANCE_CELEBRATION_START_MS)} 1;
 
       @media ${REDUCED_MOTION} {
         animation: none;

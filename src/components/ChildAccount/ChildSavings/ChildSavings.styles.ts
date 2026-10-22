@@ -1,13 +1,15 @@
 import styled from '@emotion/styled';
 import type { SerializedStyles } from '@emotion/react';
 import {
+  CELEBRATION_WAIT,
   celebrationOutline,
   travellingBorder,
 } from '@/components/Goal/Celebration/celebration-parts';
 
 const CARD_RADIUS = 22;
 
-export const Card = styled.section<{ celebrating: boolean }>`
+export const Card = styled.section<{ celebrating: boolean; celebrationWaitMs: number }>`
+  ${CELEBRATION_WAIT}: ${({ celebrationWaitMs }): number => celebrationWaitMs}ms;
   padding: 8px 18px 18px;
   text-align: center;
   background: ${({ theme }): string => theme.colors.surface};

@@ -3,6 +3,7 @@ import { LAYERS } from '@/theme/layers';
 import { THEME_ID, getThemeTokens } from '@/theme/registry';
 import { Celebration } from './Celebration';
 import { CELEBRATION_TEST_IDS } from './constants';
+import { afterTheCelebrationWait } from './celebration-parts';
 
 describe('Celebration', () => {
   let celebration: HTMLElement;
@@ -29,7 +30,7 @@ describe('Celebration', () => {
   it('fades the whole celebration out once the pieces have fallen', () => {
     expect(celebration).toHaveStyle({
       animationDuration: '800ms',
-      animationDelay: '9200ms',
+      animationDelay: afterTheCelebrationWait(9200),
     });
   });
 
@@ -54,8 +55,8 @@ describe('Celebration', () => {
     });
 
     it('waits its own time before it falls', () => {
-      expect(firstPiece).toHaveStyle({ animationDelay: '4000ms' });
-      expect(secondPiece).toHaveStyle({ animationDelay: '1300ms' });
+      expect(firstPiece).toHaveStyle({ animationDelay: afterTheCelebrationWait(4000) });
+      expect(secondPiece).toHaveStyle({ animationDelay: afterTheCelebrationWait(1300) });
     });
 
     it('starts where the mockup places it', () => {

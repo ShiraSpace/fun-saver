@@ -2,6 +2,7 @@ import { css, keyframes, type SerializedStyles } from '@emotion/react';
 import styled from '@emotion/styled';
 import { REDUCED_MOTION } from '@/theme/motion';
 import { PIGGY_BANK_SHAPE } from './constants';
+import { afterTheCelebrationWait } from '@/components/Goal/Celebration/celebration-parts';
 
 const hop = keyframes`
   0%,
@@ -41,7 +42,7 @@ function hopsWhenGoalReached({
     isGoalReached &&
     css`
       transform-origin: ${cx}px ${cy}px;
-      animation: ${hop} ${HOP_MS}ms ease-in-out ${HOP_DELAY_MS}ms ${HOPS};
+      animation: ${hop} ${HOP_MS}ms ease-in-out ${afterTheCelebrationWait(HOP_DELAY_MS)} ${HOPS};
 
       @media ${REDUCED_MOTION} {
         animation: none;

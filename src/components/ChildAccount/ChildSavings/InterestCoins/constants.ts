@@ -24,3 +24,6 @@ export const COIN_SPACE_CLOSE = {
   easing: 'cubic-bezier(.3, .9, .4, 1)',
   noHeight: '0px',
 } as const;
+
+export const COIN_SPACE_SETTLES_AFTER_MS =
+  COIN_SPACE_CLOSE.waitForTheWiggleMs + COIN_SPACE_CLOSE.durationMs;

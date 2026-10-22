@@ -4,6 +4,7 @@ import { LAYERS } from '@/theme/layers';
 import { REDUCED_MOTION } from '@/theme/motion';
 import type { ThemeColors } from '@/theme/theme-tokens';
 import { CELEBRATION_MOTION, type CelebrationPiece } from './constants';
+import { afterTheCelebrationWait } from './celebration-parts';
 
 const fall = keyframes`
   0% { transform: translate(0, 0) rotate(0deg); }
@@ -26,7 +27,7 @@ export const CelebrationLayer = styled.div`
   animation-name: ${fadeAway};
   animation-duration: ${CELEBRATION_MOTION.fadeMs}ms;
   animation-timing-function: ease-in;
-  animation-delay: ${CELEBRATION_MOTION.fadeDelayMs}ms;
+  animation-delay: ${afterTheCelebrationWait(CELEBRATION_MOTION.fadeDelayMs)};
   animation-fill-mode: forwards;
 
   @media ${REDUCED_MOTION} {
@@ -53,7 +54,7 @@ function pieceLook({ piece, colorName, theme }: ThemedPieceLook): SerializedStyl
     height: ${heightPx}px;
     background: ${theme.colors[colorName]};
     animation-duration: ${fallMs}ms;
-    animation-delay: ${delayMs}ms;
+    animation-delay: ${afterTheCelebrationWait(delayMs)};
   `;
 }
 
