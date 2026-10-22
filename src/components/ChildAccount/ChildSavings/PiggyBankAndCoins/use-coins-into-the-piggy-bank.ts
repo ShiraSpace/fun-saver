@@ -13,6 +13,7 @@ interface CoinsIntoThePiggyBank {
   piggyBankElement: RefObject<SVGSVGElement | null>;
   whereThePiggyBankStands: RefObject<HTMLDivElement | null>;
   collectAndDrop: (place: number, tappedCoin: HTMLElement) => void;
+  onPiggyBankTap: () => void;
 }
 
 export function useCoinsIntoThePiggyBank({
@@ -36,5 +37,7 @@ export function useCoinsIntoThePiggyBank({
     });
   };
 
-  return { piggyBankElement, whereThePiggyBankStands, collectAndDrop };
+  const onPiggyBankTap = (): void => wiggleThenBreathe(piggyBankElement.current);
+
+  return { piggyBankElement, whereThePiggyBankStands, collectAndDrop, onPiggyBankTap };
 }

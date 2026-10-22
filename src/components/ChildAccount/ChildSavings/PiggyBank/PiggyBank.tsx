@@ -13,6 +13,7 @@ interface PiggyBankProps {
   piggyBankFill: number;
   isGoalReached?: boolean;
   ref?: Ref<SVGSVGElement>;
+  onClick?: () => void;
 }
 
 function piggyBankFeet(): JSX.Element[] {
@@ -25,6 +26,7 @@ export function PiggyBank({
   piggyBankFill,
   isGoalReached = false,
   ref,
+  onClick,
 }: PiggyBankProps): JSX.Element {
   const paintIds = piggyBankPaintIds(useId());
   const { shadow, body, bodyShine, earsLift, ear, earShine, earMirror } = PIGGY_BANK_SHAPE;
@@ -33,6 +35,7 @@ export function PiggyBank({
   return (
     <PiggyBankDrawing
       ref={ref}
+      onClick={onClick}
       viewBox={PIGGY_BANK_VIEW_BOX}
       aria-hidden="true"
       data-testid={PIGGY_BANK_TEST_IDS.art}

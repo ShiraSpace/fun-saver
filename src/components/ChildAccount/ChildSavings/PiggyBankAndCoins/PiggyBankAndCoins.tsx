@@ -24,10 +24,8 @@ export function PiggyBankAndCoins({
   onLand,
   whereFocusGoesLast,
 }: PiggyBankAndCoinsProps): JSX.Element {
-  const { piggyBankElement, whereThePiggyBankStands, collectAndDrop } = useCoinsIntoThePiggyBank({
-    onCollect,
-    onLand,
-  });
+  const { piggyBankElement, whereThePiggyBankStands, collectAndDrop, onPiggyBankTap } =
+    useCoinsIntoThePiggyBank({ onCollect, onLand });
   const coinFountain = isGoalReached && <CoinFountain />;
 
   return (
@@ -42,6 +40,7 @@ export function PiggyBankAndCoins({
           piggyBankFill={piggyBankFill}
           isGoalReached={isGoalReached}
           ref={piggyBankElement}
+          onClick={onPiggyBankTap}
         />
         {coinFountain}
       </PiggyBankSpace>
