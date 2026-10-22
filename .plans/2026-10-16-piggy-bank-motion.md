@@ -86,3 +86,9 @@ the harness can catch it (visual shots run with reduced motion, so they stay sti
 
 `piggy-bank.html`: drop 950ms, gap close 420ms, roll-up 900ms. `coin-space.html` (C): space closes over 650ms after a
 450ms wait.
+
+## The breathe, chosen (2026-10-22)
+
+From `fun-saver-piggy-bank/mockups/breathe.html`, variant A: **3 breaths of 1.5s (4.5s), 3.5% wider and 2% shorter at
+the top of each, from the pig's feet**, easing in and out. After mount, and after each landing once the 450ms wiggle
+ends (4.95s of motion in all, under 5s). Off under reduced motion and where elements cannot animate.

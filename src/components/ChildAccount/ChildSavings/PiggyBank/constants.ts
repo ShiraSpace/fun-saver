@@ -100,3 +100,12 @@ export const PIGGY_BANK_WIGGLE = {
   tiltRightAt: 0.75,
   upright: '0deg',
 } as const;
+
+export const PIGGY_BANK_BREATHE = {
+  breaths: 3,
+  breathMs: 1500,
+  wider: 1.035,
+  shorter: 0.98,
+  atRest: '1 1',
+  fromItsFeet: '50% 92%',
+} as const;

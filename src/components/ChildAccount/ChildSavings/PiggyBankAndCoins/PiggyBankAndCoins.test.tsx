@@ -45,9 +45,9 @@ describe('PiggyBankAndCoins with one ₪2 coin waiting', () => {
     const mockAnimate = jest.fn(() => ({}) as Animation);
 
     beforeEach(() => {
-      mockAnimate.mockClear();
       elementsAnimate(mockAnimate);
       renderWithOneCoin();
+      mockAnimate.mockClear();
       fireEvent.click(shownCoins()[0]);
     });
 

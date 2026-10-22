@@ -20,13 +20,13 @@ describe('ChildSavings with ₪5 of interest waiting as ₪2, ₪2 and ₪1, whi
   const mockAnimate = jest.fn(() => ({}) as Animation);
 
   beforeEach(() => {
-    mockAnimate.mockClear();
     jest.useFakeTimers();
     elementsAnimate(mockAnimate);
     render(
       <ChildSavings accountId={mockAccountId} savings={mockSavingsWithFiveShekelsOfInterest} />,
       mockNoCoinsCollected
     );
+    mockAnimate.mockClear();
     fireEvent.click(shownCoins()[0]);
   });
 

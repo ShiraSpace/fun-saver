@@ -1,8 +1,8 @@
 'use client';
 
-import { JSX, RefObject, useRef } from 'react';
+import { JSX, RefObject, useEffect, useRef } from 'react';
 import { InterestCoins, type InterestCoin } from '../InterestCoins';
-import { PiggyBank, wiggle } from '../PiggyBank';
+import { breathe, PiggyBank, wiggleThenBreathe } from '../PiggyBank';
 import { dropIntoSlot } from './drop-into-slot';
 import { PiggyBankSpace } from './PiggyBankAndCoins.styles';
 
@@ -23,6 +23,8 @@ export function PiggyBankAndCoins({
 }: PiggyBankAndCoinsProps): JSX.Element {
   const piggyBankElement = useRef<SVGSVGElement>(null);
 
+  useEffect((): void => breathe(piggyBankElement.current), []);
+
   const collectAndDrop = (place: number, tappedCoin: HTMLElement): void => {
     onCollect(place);
     dropIntoSlot({
@@ -30,7 +32,7 @@ export function PiggyBankAndCoins({
       piggyBank: piggyBankElement.current,
       onLand: (): void => {
         onLand(place);
-        wiggle(piggyBankElement.current);
+        wiggleThenBreathe(piggyBankElement.current);
       },
     });
   };
