@@ -19,8 +19,20 @@ import { ChildSavings } from './ChildSavings';
 import { CHILD_SAVINGS_COPY } from './constants';
 import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
 import { SAVINGS_BALANCE_TEST_IDS } from './SavingsBalance/constants';
+import { COIN_FOUNTAIN_TEST_IDS } from './CoinFountain/constants';
+import { PIGGY_BANK_FACE_TEST_IDS } from './PiggyBank/PiggyBankFace/constants';
+import { PIGGY_BANK_SHAPE } from './PiggyBank/constants';
+import { moves } from '@/test-utils/motion';
 
 describe('ChildSavings', () => {
+  const midnightBlueCelebrationOutline = getThemeTokens(THEME_ID.midnightBlue).colors
+    .celebrationOutline;
+
+  function savingsCardShadow(): string {
+    return getComputedStyle(screen.getByRole('region', { name: CHILD_SAVINGS_COPY.title }))
+      .boxShadow;
+  }
+
   describe('savings of ₪148.90, ₪6.40 of it interest', () => {
     beforeEach(() => {
       render(
@@ -112,10 +124,12 @@ describe('ChildSavings', () => {
       expect(screen.queryByTestId(CELEBRATION_TEST_IDS.celebration)).not.toBeInTheDocument();
     });
 
+    it('pours no coins', () => {
+      expect(screen.queryByTestId(COIN_FOUNTAIN_TEST_IDS.fountain)).not.toBeInTheDocument();
+    });
+
     it('wears no celebration outline', () => {
-      expect(
-        getComputedStyle(screen.getByRole('region', { name: CHILD_SAVINGS_COPY.title })).boxShadow
-      ).not.toContain(getThemeTokens(THEME_ID.midnightBlue).colors.celebrationOutline);
+      expect(savingsCardShadow()).not.toContain(midnightBlueCelebrationOutline);
     });
   });
 
@@ -154,10 +168,22 @@ describe('ChildSavings', () => {
       expect(screen.getByTestId(CELEBRATION_TEST_IDS.celebration)).toBeInTheDocument();
     });
 
+    it('pours coins out of the piggy bank', () => {
+      expect(screen.getByTestId(COIN_FOUNTAIN_TEST_IDS.fountain)).toBeInTheDocument();
+    });
+
+    it('gives the piggy bank happy eyes', () => {
+      expect(screen.getAllByTestId(PIGGY_BANK_FACE_TEST_IDS.happyEye)).toHaveLength(
+        PIGGY_BANK_SHAPE.happyEyes.length
+      );
+    });
+
+    it('makes the total bump and flash gold', () => {
+      expect(moves(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.shown))).toBe(true);
+    });
+
     it("wears the theme's celebration outline", () => {
-      expect(
-        getComputedStyle(screen.getByRole('region', { name: CHILD_SAVINGS_COPY.title })).boxShadow
-      ).toContain(getThemeTokens(THEME_ID.midnightBlue).colors.celebrationOutline);
+      expect(savingsCardShadow()).toContain(midnightBlueCelebrationOutline);
     });
   });
 });
