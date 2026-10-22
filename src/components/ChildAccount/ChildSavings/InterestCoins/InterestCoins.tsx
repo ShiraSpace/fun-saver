@@ -2,8 +2,10 @@
 
 import { JSX, RefObject, useRef } from 'react';
 import { InterestCoinButton } from './InterestCoinButton';
+import { useCoinsCloseTheGap } from './use-coins-close-the-gap';
+import { useCoinSpace } from './use-coin-space';
 import { INTEREST_COINS_COPY, INTEREST_COINS_TEST_IDS, TAPPABLE_COIN_SELECTOR } from './constants';
-import { CoinRow, TapTheCoins } from './InterestCoins.styles';
+import { CoinRow, CoinSpace, TapTheCoins } from './InterestCoins.styles';
 
 export interface InterestCoin {
   place: number;
@@ -28,7 +30,11 @@ export function InterestCoins({
   onCollect,
   whereFocusGoesLast,
 }: InterestCoinsProps): JSX.Element | null {
+  const coinSpace = useRef<HTMLDivElement>(null);
   const coinRow = useRef<HTMLDivElement>(null);
+  const hasCoins = interestCoins.length > 0;
+  const isSpaceOpen = useCoinSpace(coinSpace, hasCoins);
+  const coinElementAt = useCoinsCloseTheGap(interestCoins);
 
   function collect(place: number, tappedCoin: HTMLElement): void {
     const tappableCoins = [
@@ -38,13 +44,14 @@ export function InterestCoins({
     onCollect(place, tappedCoin);
   }
 
-  if (interestCoins.length === 0) {
+  if (!hasCoins && !isSpaceOpen) {
     return null;
   }
 
   const coinButtons = interestCoins.map((interestCoin) => (
     <InterestCoinButton
       key={interestCoin.place}
+      ref={coinElementAt(interestCoin.place)}
       amount={interestCoin.amount}
       isDropping={interestCoin.isDropping}
       onTap={(tappedCoin): void => collect(interestCoin.place, tappedCoin)}
@@ -52,11 +59,11 @@ export function InterestCoins({
   ));
 
   return (
-    <>
+    <CoinSpace ref={coinSpace}>
       <TapTheCoins data-testid={INTEREST_COINS_TEST_IDS.copy}>
-        {INTEREST_COINS_COPY.tapTheCoins}
+        {hasCoins && INTEREST_COINS_COPY.tapTheCoins}
       </TapTheCoins>
       <CoinRow ref={coinRow}>{coinButtons}</CoinRow>
-    </>
+    </CoinSpace>
   );
 }

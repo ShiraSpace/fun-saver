@@ -11,3 +11,16 @@ export const INTEREST_COINS_COPY = {
 } as const;
 
 export const TAPPABLE_COIN_SELECTOR = `${INTEREST_COIN_SELECTOR}:enabled`;
+
+export const COINS_CLOSE_THE_GAP = {
+  durationMs: 420,
+  easing: 'cubic-bezier(.3, 1.35, .5, 1)',
+  inPlace: 'translateX(0)',
+} as const;
+
+export const COIN_SPACE_CLOSE = {
+  waitForTheWiggleMs: 450,
+  durationMs: 650,
+  easing: 'cubic-bezier(.3, .9, .4, 1)',
+  closed: '0px',
+} as const;
