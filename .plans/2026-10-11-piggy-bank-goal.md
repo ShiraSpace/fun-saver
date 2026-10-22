@@ -1,6 +1,6 @@
 # Child piggy bank, PR 2 — the goal under the total
 
-> Approved 2026-10-11. PR 2 of 4 in `2026-10-04-child-piggy-bank.md` (kept in `fun-saver-piggy-bank`, untracked),
+> Approved 2026-10-11. PR 2 of 4 in `2026-10-04-child-piggy-bank.md`,
 > re-planned against `origin/main` 48c78e9, where `GoalProgress` is shared in `src/components/Goal/GoalProgress`.
 
 ## Decision

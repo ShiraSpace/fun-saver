@@ -2,8 +2,8 @@
 
 Chosen design: **D, the confetti party and the coin fountain together**, in
 `mockups/2026-10-03-saving-goal.html#goal-celebration-child` (2026-10-16). The mockup is built on the
-piggy bank's coin space, option C (`mockups/coin-space.html` in
-`fun-saver-piggy-bank`: the space closes after the last coin lands).
+piggy bank's coin space, option C (`mockups/2026-10-04-child-piggy-bank.html#coin-space`:
+the space closes after the last coin lands).
 
 Worktree `fun-saver-child-celebration`, branch `feat/child-goal-celebration`,
 off `origin/main` `3dd3142`, `origin/main` `9dabd6e` (#219) merged in.
