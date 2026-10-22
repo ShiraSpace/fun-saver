@@ -16,4 +16,18 @@ describe('dropIntoSlot where elements animate', () => {
     const [drop] = animationsPlayed;
     expect(drop.options).toEqual(expect.objectContaining({ composite: 'add' }));
   });
+
+  it('lands a coin whose drop is cancelled', () => {
+    const mockOnLand = jest.fn();
+    dropIntoSlot({
+      coin: document.createElement('button'),
+      whereThePiggyBankStands: document.createElement('div'),
+      onLand: mockOnLand,
+    });
+    const [drop] = animationsPlayed;
+
+    drop.cancel();
+
+    expect(mockOnLand).toHaveBeenCalled();
+  });
 });

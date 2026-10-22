@@ -4,6 +4,7 @@ import { animationsOn, captureAnimations } from '@/test-utils/motion';
 import { mockThreeInterestCoins, shownCoins } from '@/test-utils/interest-coins';
 import { InterestCoins, type InterestCoin } from './InterestCoins';
 import { INTEREST_COINS_TEST_IDS } from './constants';
+import { PIGGY_BANK_WIGGLE } from '../PiggyBank/constants';
 
 describe('InterestCoins', () => {
   const mockOnCollect = jest.fn();
@@ -103,6 +104,12 @@ describe('InterestCoins', () => {
 
       it('closes the space slowly', () => {
         expect(animationsPlayed.map(({ element }) => element)).toEqual([coinSpace()]);
+      });
+
+      it('waits for the piggy bank to finish wiggling before closing the space', () => {
+        const [closing] = animationsPlayed;
+
+        expect(closing.options?.delay).toBe(PIGGY_BANK_WIGGLE.durationMs);
       });
 
       it('draws nothing once the space has closed', () => {

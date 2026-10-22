@@ -33,6 +33,7 @@ export interface PlayedAnimation {
   keyframes: Keyframe[];
   options?: KeyframeAnimationOptions;
   finish: () => void;
+  cancel: () => void;
 }
 
 function stillAnimation(): Animation {
@@ -56,12 +57,14 @@ export function captureAnimations(): PlayedAnimation[] {
     Element.prototype.animate = function play(this: Element, keyframes, options): Animation {
       const animation = stillAnimation();
       const finishEvent = new Event('finish') as AnimationPlaybackEvent;
+      const cancelEvent = new Event('cancel') as AnimationPlaybackEvent;
 
       animationsPlayed.push({
         element: this,
         keyframes: keyframes as Keyframe[],
         options: options as KeyframeAnimationOptions | undefined,
         finish: () => animation.onfinish?.call(animation, finishEvent),
+        cancel: () => animation.oncancel?.call(animation, cancelEvent),
       });
 
       return animation;
