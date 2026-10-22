@@ -1,5 +1,6 @@
 export const PIGGY_BANK_TEST_IDS = {
   art: 'piggy-bank',
+  body: 'piggy-bank-body',
 } as const;
 
 export const PIGGY_BANK_FILL = {
@@ -7,7 +8,9 @@ export const PIGGY_BANK_FILL = {
   full: 1,
 } as const;
 
-export const PIGGY_BANK_VIEW_BOX = '0 0 300 250';
+export const PIGGY_BANK_SIZE = { width: 300, height: 250 } as const;
+
+export const PIGGY_BANK_VIEW_BOX = `0 0 ${PIGGY_BANK_SIZE.width} ${PIGGY_BANK_SIZE.height}`;
 
 export const BELLY = { cx: 150, cy: 180, rx: 58, ry: 38 } as const;
 
@@ -49,10 +52,13 @@ export const PIGGY_BANK_SHAPE = {
       sparkle: { cx: 188, cy: 111, r: 2 },
     },
   ],
+  happyEyes: ['M97 110 Q108 94 119 110', 'M181 110 Q192 94 203 110'],
+  happyEye: { fill: 'none', strokeWidth: 5, strokeLinecap: 'round' },
   cheeks: [
     { cx: 84, cy: 130, rx: 14, ry: 8, opacity: 0.4 },
     { cx: 216, cy: 130, rx: 14, ry: 8, opacity: 0.4 },
   ],
+  happyCheekOpacity: 0.75,
   snout: { cx: 150, cy: 120, rx: 27, ry: 17 },
   nostrils: [
     { cx: 141, cy: 120, rx: 4, ry: 6 },

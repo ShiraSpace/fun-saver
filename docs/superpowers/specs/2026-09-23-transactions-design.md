@@ -11,7 +11,7 @@
 > PR 6, the route and shell, as #157; PR 7, the chart, as #164; PR 8, the list,
 > as #163; PR 9a, the live tab, as #168. `src/lib` moved into domain folders in #161.
 > PR 9b, the browser suite, is the one PR left.
-> Mockup: `mockups/account-summary/transactions.html` + `account-summary.js` —
+> Mockup: `mockups/2026-09-23-transactions.html#transactions` —
 > one screen, no competing variants; the controls beneath it are details inside
 > that screen. The mockup is the specification of record for anything this
 > document leaves ambiguous.
@@ -320,7 +320,7 @@ So the port departs from what the mockup drew, twice:
   does not.** Those two values were re-derived in the theme PR against the
   measured bar rather than copied across from the mockup, and settled the way
   `contrast-pass-2` settled its three design calls — with a mockup drawn *during*
-  the decision, `mockups/chart-contrast.html`. `sunshine-quest` draws savings
+  the decision, `mockups/2026-09-23-transactions.html#chart-contrast`. `sunshine-quest` draws savings
   green, spending blue and good pink. The first proposal, `#B07D00` (3.63) ·
   `#E2661F` (3.41), cleared the bar and was rejected with every orange spending:
   spending read too close to good's pink. `softText`'s brown for savings was

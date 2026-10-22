@@ -3,7 +3,7 @@
 > Status: **done**. PR 1 **merged** as #193 (2026-10-05); PR 2 **merged** as #195
 > (2026-10-10); PR 3 **merged** as #197 (2026-10-10); PR 4 **merged** as #198
 > (2026-10-10). Mockup:
-> `mockups/global-child-mode.html`. Replaces the per-account view mode from
+> `mockups/2026-10-03-child-mode.html#global-child-mode`. Replaces the per-account view mode from
 > `.plans/2026-10-03-child-mode.md` and the unbuilt PRs 2–3 of
 > `.plans/2026-10-04-child-account-switcher.md` (#191 is superseded).
 

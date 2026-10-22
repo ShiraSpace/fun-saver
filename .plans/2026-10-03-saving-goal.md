@@ -1,7 +1,7 @@
 # Saving goal — delivery plan and progress
 
 **Spec:** `docs/superpowers/specs/2026-10-03-saving-goal-design.md` (its Delivery
-section is the PR breakdown). **Mockup:** `mockups/saving-goal.html`.
+section is the PR breakdown). **Mockup:** `mockups/2026-10-03-saving-goal.html#saving-goal`.
 
 Each PR merges on its own and leaves the app working. Each PR gets a
 task-by-task plan in its own session before any code.
@@ -16,10 +16,10 @@ task-by-task plan in its own session before any code.
 | 4a | Picture search: generated Hebrew emoji list and `matchingPictures` (no UI) | Merged #181 (`3bc65f3`) |
 | 2 | API and the server lock | Merged #190 (`83defbc`) |
 | 3a | The goal on home and in the drawer | Merged #199 (`e8e506f`) (plan: `.plans/2026-10-10-show-goal.md`) |
-| 3b | The goal screen and the menu row | Three PRs: the goal screen merged #203, the ways in merged #206, the drawer's kept note line in review #208 (plan: `.plans/2026-10-10-goal-screen.md`) |
+| 3b | The goal screen and the menu row | Three PRs: the goal screen merged #203, the ways in merged #206, the drawer's kept note line merged #208 (plan: `.plans/2026-10-10-goal-screen.md`) |
 | 4b | Setting and cancelling | Merged: `SetGoal` and its ways in #209, `CancelGoal` and the press-and-hold #211, «ביטול היעד» in the menu #214 (plans `.plans/2026-10-11-onboarding.md`, `.plans/2026-10-13-cancel-goal.md`) |
-| 5 | Celebration | Confetti #188; shown on home and the goal screen #217; the savings card's travelling border, wobble, bar shine and per-theme look on `feat/goal-celebration-card` (plan `.plans/2026-10-16-goal-celebration.md`) |
-| later | The goal in child mode | Separate feature, after this one |
+| 5 | Celebration | Confetti #188; shown on home and the goal screen #217; the savings card's travelling border, wobble, bar shine and per-theme look merged #219 (`9dabd6e`) (plan `.plans/2026-10-16-goal-celebration.md`) |
+| later | The goal in child mode | Merged #223 (`0308332`) (plan `.plans/2026-10-16-child-goal-celebration.md`) |
 
 **Migrations:** the `goals` table is on Neon `test`, `dev` and `production`
 (2026-10-04). No PR left in this feature needs a migration.

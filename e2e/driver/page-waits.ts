@@ -91,6 +91,22 @@ export class PageWaits {
     );
   }
 
+  async animationsEnd(testId: string, withinMs: number): Promise<void> {
+    await this.currentPage().waitForFunction(
+      (testId) => {
+        const animations =
+          document.querySelector(`[data-testid="${testId}"]`)?.getAnimations({ subtree: true }) ??
+          [];
+        return (
+          animations.length > 0 &&
+          animations.every((animation) => animation.playState === 'finished')
+        );
+      },
+      { timeout: withinMs },
+      testId
+    );
+  }
+
   async navigation(): Promise<void> {
     await this.currentPage().waitForNavigation({
       waitUntil: 'domcontentloaded',

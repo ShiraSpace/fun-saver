@@ -4,14 +4,14 @@ Parent plan: `.plans/2026-10-03-saving-goal.md` (PR 5). Spec: Decisions «How
 often the celebration plays», New components (`Celebration`), Changes to
 existing components (`WalletCard, savings`). Mockup: `.savingsCard.celebrating`,
 `.savingsCard.reachedOutline` and the reduced-motion block
-(`mockups/saving-goal.html:64-106`).
+(`mockups/2026-10-03-saving-goal.html#saving-goal`).
 
 Worktree `fun-saver-celebration`.
 
 | PR | Branch | What | State |
 | --- | --- | --- | --- |
 | 5a | `feat/goal-celebration-plays` | Step 1, and `SavedTowardGoal.reached` → `isGoalReached` | Merged #217 (`a4645f5`) |
-| 5b | `feat/goal-celebration-card` | Steps 2–3, off `a4645f5` | Step 2 done; step 3 in progress |
+| 5b | `feat/goal-celebration-card` | Steps 2–3, off `a4645f5` | Merged #219 (`9dabd6e`) |
 
 `feat/goal-celebration` on the remote is #188's merged branch; not reused.
 
@@ -29,8 +29,8 @@ Worktree `fun-saver-celebration`.
   apart from the confetti's), `celebrationOutline` (card outline, picture ring,
   goal-screen ring), `reachedBarStart` and `celebrationGlowOpacity`. sunshine
   and jungle look as the mockup; midnight-blue is "night sky"
-  (`mockups/saving-goal-celebration-themes.html`, option B). The shine is 60%
-  white everywhere (`mockups/saving-goal-shine.html`).
+  (`mockups/2026-10-03-saving-goal.html#saving-goal-celebration-themes`, option B). The shine is 60%
+  white everywhere (`mockups/2026-10-03-saving-goal.html#saving-goal-shine`).
 - The border's angle is declared by an `@property` rule the root layout writes
   in its own `<style>` (`TRAVELLING_BORDER_ANGLE_RULE`), before the first paint.
   `next dev`'s Tailwind pipeline drops the same rule from `globals.css`, which

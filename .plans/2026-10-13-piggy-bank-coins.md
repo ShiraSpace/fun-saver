@@ -1,7 +1,7 @@
 # Child piggy bank, PR 3 â€” the coins, with no motion yet
 
 > Approved 2026-10-13. PR 3 of 4 in `2026-10-04-child-piggy-bank.md` (kept in `fun-saver-piggy-bank`, untracked),
-> re-planned against `origin/main` 9abe018.
+> re-planned against `origin/main` 9abe018. Merged as #218 (`7f6f23f`).
 
 ## Decision
 
@@ -11,7 +11,7 @@ builds the savings wallet as it stood at the collected mark, and the coins are Â
 shekels off `savingsWithoutAgorot` of the real wallet and off what is saved toward the goal
 (`savingsLessUncollectedInterest`, `savedTowardGoalLessUncollectedInterest`), so each coin lands exactly: running
 `savingsWithoutAgorot` on the wallet at the mark instead could round the total a shekel away from the coins. The fill
-comes from that total. The real `isGoalReached` is kept.
+comes from that total. The real `isGoalReached` is kept; since #223 the shown goal waits for the coins that reach it.
 
 The raise keeps the mark at least at the interest spent: `interestEarned` above the `balance`.
 

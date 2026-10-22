@@ -17,7 +17,7 @@ Setting a goal is **not** in this plan. Onboarding PR 1
 | PR | Branch | What | Users can | State |
 | --- | --- | --- | --- | --- |
 | 4b-1 | `feat/cancel-goal` | Steps 1–2: press-and-hold and `CancelGoal`, shown nowhere yet | nothing new | Merged as #211 (`5866d45`) |
-| 4b-2 | `feat/cancel-goal-menu` | Step 3: the menu's «ביטול היעד» opens `CancelGoal`; goal-screen fixes | cancel a goal | PR #214 open for review |
+| 4b-2 | `feat/cancel-goal-menu` | Step 3: the menu's «ביטול היעד» opens `CancelGoal`; goal-screen fixes | cancel a goal | Merged as #214 (`f7f2209`) |
 
 Both are in worktree `fun-saver-cancel-goal`. 4b-2 started off `origin/main`
 after onboarding PR 1 (#209) and 4b-1 (#211) merged.

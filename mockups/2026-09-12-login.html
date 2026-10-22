@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8">
+<title>fun-saver — התחברות עם Google</title>
+<style>
+body { margin:0; padding:26px 20px 60px; background:#20242c; color:#dfe4ec; font-family:Rubik,system-ui,sans-serif; }
+h1 { font-family:Fredoka,Rubik,sans-serif; font-size:22px; margin:0 0 6px; color:#fff; }
+h2 { font-family:Fredoka,Rubik,sans-serif; font-size:16px; margin:34px 0 10px; color:#fff; display:flex; gap:10px; align-items:center; }
+a { color:#9be7b4; }
+.sub { font-size:13px; line-height:1.7; color:#9aa3b2; margin:0 0 6px; max-width:860px; }
+.badge { font-weight:800; font-size:11px; letter-spacing:.06em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.badge.chosen { background:#2f7a4a; color:#eafff1; }
+.badge.rejected { background:#3a3a42; color:#c3c9d4; }
+table { border-collapse:collapse; width:100%; max-width:1080px; font-size:13px; }
+th { text-align:start; font-size:11px; color:#78839a; font-weight:600; padding:0 10px 7px; border-bottom:1px solid #333a46; }
+td { padding:10px; border-bottom:1px solid #2a303a; vertical-align:top; line-height:1.6; }
+td.source { direction:ltr; text-align:left; white-space:nowrap; }
+td.source a { color:#78839a; font-size:11px; }
+nav { display:flex; flex-wrap:wrap; gap:6px 14px; margin:18px 0 0; font-size:13px; }
+iframe { display:block; width:100%; height:900px; border:0; border-radius:10px; background:#fff; }
+</style>
+</head>
+<body>
+<p class="sub"><a href="index.html">← כל המוקאפים</a> · 2026-09-12</p>
+<h1>התחברות עם Google</h1>
+<p class="sub">התחברות עם חשבון Google, כך שכל הורה רואה רק את החשבונות שלו — נבנתה, וכל ה-PR-ים בתוכנית נכנסו.</p>
+<h2>החלטות</h2>
+<table>
+  <thead><tr><th>השאלה</th><th>מה הוחלט</th><th>איפה זה נרשם</th></tr></thead>
+  <tbody>
+    <tr><td>באיזו מערכת התחברות משתמשים?</td><td>Auth.js v5 עם Google וסשן JWT ולא Neon Auth — כך המשתמשים נשארים בסכמה שלנו, וקוד PIN לילד בעתיד הוא רק עוד ספק.</td><td class="source"><a href="../.plans/2026-09-12-google-login.md">.plans/2026-09-12-google-login.md</a></td></tr>
+    <tr><td>כמה זמן נשארים מחוברים?</td><td>סשן של 30 יום שמתחדש כל 24 שעות — מי שמשתמש באפליקציה כמעט לא מתחבר שוב, ורק סשן שלא נגעו בו פג.</td><td class="source"><a href="../.plans/2026-09-12-google-login.md">.plans/2026-09-12-google-login.md</a></td></tr>
+    <tr><td>כפתור אחד או שניים להתחברות ולהרשמה?</td><td>כפתור אחד, «המשך עם Google», לשני המקרים — ההבדל הוא רק לאן נוחתים אחריו.</td><td class="source"><a href="../.plans/2026-09-12-google-login.md">.plans/2026-09-12-google-login.md</a></td></tr>
+    <tr><td>איך נשמר מי מחזיק איזה חשבון?</td><td>טבלת חיבור account_users בין משתמשים לחשבונות, בלי עמודת user_id בטבלת החשבונות — כך שיתוף בעתיד הוא שורה חדשה ולא בנייה מחדש.</td><td class="source"><a href="../.plans/2026-09-12-google-login.md">.plans/2026-09-12-google-login.md</a></td></tr>
+    <tr><td>אילו תפקידים יש?</td><td>owner, editor ו-viewer נשמרים ונבדקים, אבל רק owner ניתן בפועל — אין עדיין מסך שיתוף שיחלק את האחרים.</td><td class="source"><a href="../.plans/2026-09-12-google-login.md">.plans/2026-09-12-google-login.md</a></td></tr>
+    <tr><td>איפה נבדק שהמשתמש מחובר?</td><td>ה-proxy בודק רק שיש עוגיית סשן, והעמוד עצמו ממשיך לאמת ולהפנות — שכבת הגנה שנייה, כי עוגייה מזויפת עוברת את הבדיקה הראשונה.</td><td class="source"><a href="../.plans/2026-09-12-google-login.md">.plans/2026-09-12-google-login.md</a></td></tr>
+  </tbody>
+</table>
+<nav><a href="#1-signed-out">1 · מסך התחברות</a> <a href="#2-signing-in">2 · מתחברים…</a> <a href="#3-first-time">3 · משתמש חדש</a> <a href="#4-returning">4 · משתמש חוזר</a></nav>
+<section id="1-signed-out">
+  <h2>1 · מסך התחברות </h2>
+  <iframe title="1 · מסך התחברות" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — התחברות · 1 · מסך התחברות</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+  /* ---- design tokens pulled from src/theme/themes/*.ts ---- */
+  :root[data-theme='sunshine-quest'] {
+    --primary:#6B2C8E; --primaryGradientTop:#8A3AAE; --primaryShadow:#4A1A6E;
+    --primaryGlow:rgba(107,44,142,0.45); --textOnPrimary:#FFFFFF;
+    --surface:#FFFFFF; --textMuted:#8A7AA7; --textStrong:#3A1F5A;
+    --divider:#F2D9D2; --softBg:#FFF8E0; --softBorder:#FFD23F; --softText:#7A5A0A;
+    --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+    --actionButton:linear-gradient(#8A3AAE,#6B2C8E);
+  }
+  :root[data-theme='jungle-quest'] {
+    --primary:#2A9D8F; --primaryGradientTop:#3AB3A3; --primaryShadow:#1B6B61;
+    --primaryGlow:rgba(42,157,143,0.45); --textOnPrimary:#FFFFFF;
+    --surface:#FFFDF5; --textMuted:#5C7A6E; --textStrong:#1B4332;
+    --divider:#DCEFE4; --softBg:#EAF7EF; --softBorder:#90BE6D; --softText:#2D6A4F;
+    --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+    --actionButton:linear-gradient(#3AB3A3,#2A9D8F);
+  }
+  :root[data-theme='midnight-blue'] {
+    --primary:#3B82F6; --primaryGradientTop:#60A5FA; --primaryShadow:#1E40AF;
+    --primaryGlow:rgba(59,130,246,0.40); --textOnPrimary:#FFFFFF;
+    --surface:#141B24; --textMuted:#8A96A8; --textStrong:#ECF1F8;
+    --divider:#25313F; --softBg:#1B2634; --softBorder:#3B82F6; --softText:#B9CBE4;
+    --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+    --actionButton:linear-gradient(#60A5FA,#3B82F6);
+  }
+
+  /* TYPE_SCALE (src/theme/typography.ts) — title:22 heading:18 body:15 label:12 */
+
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:24px 16px 48px;
+    font-family:'Rubik',system-ui,sans-serif;
+    background:#ECE7F2; color:#3A1F5A;
+    display:flex; flex-direction:column; align-items:center; gap:20px;
+  }
+
+  .controls { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:760px; }
+  .controls button {
+    font-family:'Rubik',sans-serif; font-size:13px; font-weight:600;
+    padding:8px 14px; border-radius:999px; border:1.5px solid #C9BBDD;
+    background:#fff; color:#4A1A6E; cursor:pointer;
+  }
+  .controls button[aria-pressed='true'] { background:#6B2C8E; color:#fff; border-color:#6B2C8E; }
+  .controls .sep { width:100%; height:0; }
+
+  .phone {
+    width:380px; max-width:100%; height:760px;
+    border-radius:38px; overflow:hidden; position:relative;
+    box-shadow:0 24px 60px rgba(58,31,90,0.30);
+    background:var(--screen);
+  }
+  .screen {
+    position:absolute; inset:0; display:none;
+    flex-direction:column; align-items:center; justify-content:center;
+    padding:32px 26px; text-align:center; gap:18px;
+  }
+  .screen[data-active='true'] { display:flex; }
+
+  .pig { font-size:76px; line-height:1; }
+  .pig[data-oinking='true'] { animation:oink 600ms ease-in-out infinite; }
+  @keyframes oink {
+    0%{transform:scale(1) rotate(0)}
+    30%{transform:scale(1.15,0.85) rotate(-6deg)}
+    60%{transform:scale(0.95,1.05) rotate(6deg)}
+    100%{transform:scale(1) rotate(0)}
+  }
+
+  .wordmark {
+    font-family:'Fredoka',sans-serif; font-weight:600; font-size:34px;
+    color:#fff; text-shadow:0 3px 0 rgba(0,0,0,0.16); margin:0;
+  }
+  .tagline { font-size:15px; color:rgba(255,255,255,0.94); margin:0; max-width:22ch; line-height:1.5; }
+
+  .card {
+    width:100%; background:var(--surface); border-radius:26px;
+    padding:24px 20px; box-shadow:0 12px 30px rgba(0,0,0,0.16);
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .card h2 { font-family:'Fredoka',sans-serif; font-size:22px; margin:0; color:var(--textStrong); font-weight:600; }
+  .card p  { font-size:15px; margin:0; color:var(--textMuted); line-height:1.6; }
+
+  .google {
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    width:100%; padding:15px 18px; border-radius:18px; cursor:pointer;
+    font-family:'Rubik',sans-serif; font-size:16px; font-weight:600;
+    background:var(--actionButton); color:var(--textOnPrimary);
+    border:none; box-shadow:0 5px 0 var(--primaryShadow),0 12px 24px var(--primaryGlow);
+  }
+  .google:active { transform:translateY(3px); box-shadow:0 2px 0 var(--primaryShadow); }
+  .google .g { background:#fff; border-radius:50%; width:26px; height:26px; display:grid; place-items:center; flex:none; }
+  .google svg { width:16px; height:16px; display:block; }
+
+  .fineprint { font-size:12px; color:rgba(255,255,255,0.88); margin:0; line-height:1.6; max-width:26ch; }
+
+  .spinner {
+    width:40px; height:40px; border-radius:50%;
+    border:4px solid rgba(255,255,255,0.35); border-top-color:#fff;
+    animation:spin 800ms linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .note {
+    background:var(--softBg); border:1.5px solid var(--softBorder); color:var(--softText);
+    border-radius:16px; padding:12px 14px; font-size:13px; line-height:1.6; text-align:start;
+  }
+  .avatars { display:flex; gap:10px; justify-content:center; }
+  .chip {
+    background:var(--surface); border-radius:18px; padding:10px 14px;
+    display:flex; align-items:center; gap:8px; box-shadow:0 6px 16px rgba(0,0,0,0.14);
+    font-size:15px; font-weight:600; color:var(--textStrong);
+  }
+  .chip .face { font-size:22px; }
+
+  .caption {
+    max-width:380px; font-size:13px; line-height:1.7; color:#5B4A73;
+    background:#fff; border-radius:16px; padding:14px 16px; border:1px solid #DCD2E8;
+  }
+  .caption b { color:#3A1F5A; }
+  .caption code { background:#F3EEF8; padding:1px 5px; border-radius:5px; font-size:12px; }
+  /* ── סטטוס ההחלטה וניווט בין השלבים ──────────────────────────── */
+  .crumb { margin:0 0 14px; font-size:12.5px; color:#6E6382; text-align:center; }
+  .crumb a { color:#6B2C8E; text-decoration:none; border-bottom:1px solid #C9BBDD; }
+  .crumb a:hover { color:#3A1F5A; }
+  .status { display:flex; align-items:flex-start; gap:10px; max-width:520px;
+    margin:0 auto 14px; padding:9px 12px; border-radius:10px;
+    font-size:12.5px; line-height:1.65; text-align:start; }
+  .status .badge { flex-shrink:0; font-weight:800; font-size:11px; letter-spacing:.06em;
+    padding:3px 8px; border-radius:999px; white-space:nowrap; }
+  .status p { margin:0; }
+  .status code, .status a { font-size:11.5px; color:inherit; }
+  .status.chosen { background:#EAF7EE; color:#1E5B32; border:1px solid #9AD3AE; }
+  .status.chosen .badge { background:#2F7A4A; color:#fff; }
+  .status.rejected { background:#F2F2F4; color:#5A5A66; border:1px solid #D6D6DE; }
+  .status.rejected .badge { background:#6E6E7A; color:#fff; }
+  .status.info { background:#F3EEF8; color:#4A1A6E; border:1px solid #C9BBDD; }
+  .status.info .badge { background:#6B2C8E; color:#fff; }
+  .controls a {
+    font-family:'Rubik',sans-serif; font-size:13px; font-weight:600; text-decoration:none;
+    padding:8px 14px; border-radius:999px; border:1.5px solid #C9BBDD;
+    background:#fff; color:#4A1A6E;
+  }
+  .controls a[aria-current='page'] { background:#6B2C8E; color:#fff; border-color:#6B2C8E; }
+</style>
+</head>
+<body>
+
+<p class=&quot;crumb&quot;><a href=&quot;index.html&quot; target=&quot;_top&quot;>← כל המוקאפים</a> · התחברות — שלב 1 מתוך 4</p>
+<div class=&quot;status info&quot;><span class=&quot;badge&quot;>שלב 1/4</span><p>ארבעת המסכים הם <b>שלבים בזרימה אחת</b>, לא חלופות מתחרות — אין כאן «נבחר» ו«נדחה». כולם נבנו. תיעוד: <a href=&quot;../.plans/2026-09-12-google-login.md&quot; target=&quot;_top&quot;><code>.plans/2026-09-12-google-login.md</code></a></p></div>
+
+<div class=&quot;controls&quot;>
+  <a href=&quot;2026-09-12-login.html#1-signed-out&quot; target=&quot;_top&quot; aria-current=&quot;page&quot;>1 · מסך התחברות</a>
+  <a href=&quot;2026-09-12-login.html#2-signing-in&quot; target=&quot;_top&quot;>2 · מתחברים…</a>
+  <a href=&quot;2026-09-12-login.html#3-first-time&quot; target=&quot;_top&quot;>3 · משתמש חדש</a>
+  <a href=&quot;2026-09-12-login.html#4-returning&quot; target=&quot;_top&quot;>4 · משתמש חוזר</a>
+  <span class=&quot;sep&quot;></span>
+  <button data-theme-btn=&quot;sunshine-quest&quot; aria-pressed=&quot;true&quot;>sunshine</button>
+  <button data-theme-btn=&quot;jungle-quest&quot; aria-pressed=&quot;false&quot;>jungle</button>
+  <button data-theme-btn=&quot;midnight-blue&quot; aria-pressed=&quot;false&quot;>midnight</button>
+</div>
+
+<div class=&quot;phone&quot;>
+
+  <div class=&quot;screen&quot; data-screen=&quot;signedOut&quot; data-active=&quot;true&quot;>
+    <div class=&quot;pig&quot;>🐷</div>
+    <h1 class=&quot;wordmark&quot;>Fun Saver</h1>
+    <p class=&quot;tagline&quot;>החיסכון של הילדים, במקום אחד</p>
+    <div class=&quot;card&quot;>
+      <h2>התחברות</h2>
+      <p>התחברו עם חשבון Google כדי לראות את החשבונות שלכם מכל מכשיר.</p>
+      <button class=&quot;google&quot;>
+        <span class=&quot;g&quot;>
+          <svg viewBox=&quot;0 0 48 48&quot; aria-hidden=&quot;true&quot;>
+            <path fill=&quot;#EA4335&quot; d=&quot;M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.1 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.7 9.5 24 9.5z&quot;/>
+            <path fill=&quot;#4285F4&quot; d=&quot;M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9.1h12.4c-.5 2.9-2.2 5.3-4.6 7l7.2 5.6c4.2-3.9 6.6-9.7 6.6-16.6z&quot;/>
+            <path fill=&quot;#FBBC05&quot; d=&quot;M10.4 28.7c-.5-1.4-.8-2.9-.8-4.5s.3-3.1.8-4.5l-7.8-6.1C.9 16.7 0 20.2 0 24s.9 7.3 2.6 10.4l7.8-5.7z&quot;/>
+            <path fill=&quot;#34A853&quot; d=&quot;M24 48c6.1 0 11.3-2 15-5.4l-7.2-5.6c-2 1.4-4.6 2.2-7.8 2.2-6.3 0-11.7-3.7-13.6-9.1l-7.8 5.7C6.5 42.6 14.6 48 24 48z&quot;/>
+          </svg>
+        </span>
+        המשך עם Google
+      </button>
+    </div>
+    <p class=&quot;fineprint&quot;>בכניסה ראשונה ניצור לכם חשבון משתמש אוטומטית. אנחנו שומרים רק שם ואימייל.</p>
+  </div>
+
+</div>
+
+<p class=&quot;caption&quot;>
+  <b>הזרימה:</b> לחיצה על &quot;המשך עם Google&quot; → Auth.js → callback →
+  <code>user-provisioning</code> מחפש לפי <code>provider_account_id</code>.
+  נמצא? מתחברים. לא נמצא? נוצר משתמש חדש ואז מתחברים.
+  אותו מסך בדיוק משרת את שני המקרים — ההבדל הוא רק לאן נוחתים אחריו.
+</p>
+
+<script>
+  var themeButtons = document.querySelectorAll('[data-theme-btn]');
+
+  function setTheme(name) {
+    document.documentElement.setAttribute('data-theme', name);
+    themeButtons.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-btn') === name));
+    });
+  }
+
+  themeButtons.forEach(function (b) {
+    b.addEventListener('click', function () { setTheme(b.getAttribute('data-theme-btn')); });
+  });
+
+  setTheme('sunshine-quest');
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<section id="2-signing-in">
+  <h2>2 · מתחברים… </h2>
+  <iframe title="2 · מתחברים…" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — התחברות · 2 · מתחברים…</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+  /* ---- design tokens pulled from src/theme/themes/*.ts ---- */
+  :root[data-theme='sunshine-quest'] {
+    --primary:#6B2C8E; --primaryGradientTop:#8A3AAE; --primaryShadow:#4A1A6E;
+    --primaryGlow:rgba(107,44,142,0.45); --textOnPrimary:#FFFFFF;
+    --surface:#FFFFFF; --textMuted:#8A7AA7; --textStrong:#3A1F5A;
+    --divider:#F2D9D2; --softBg:#FFF8E0; --softBorder:#FFD23F; --softText:#7A5A0A;
+    --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+    --actionButton:linear-gradient(#8A3AAE,#6B2C8E);
+  }
+  :root[data-theme='jungle-quest'] {
+    --primary:#2A9D8F; --primaryGradientTop:#3AB3A3; --primaryShadow:#1B6B61;
+    --primaryGlow:rgba(42,157,143,0.45); --textOnPrimary:#FFFFFF;
+    --surface:#FFFDF5; --textMuted:#5C7A6E; --textStrong:#1B4332;
+    --divider:#DCEFE4; --softBg:#EAF7EF; --softBorder:#90BE6D; --softText:#2D6A4F;
+    --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+    --actionButton:linear-gradient(#3AB3A3,#2A9D8F);
+  }
+  :root[data-theme='midnight-blue'] {
+    --primary:#3B82F6; --primaryGradientTop:#60A5FA; --primaryShadow:#1E40AF;
+    --primaryGlow:rgba(59,130,246,0.40); --textOnPrimary:#FFFFFF;
+    --surface:#141B24; --textMuted:#8A96A8; --textStrong:#ECF1F8;
+    --divider:#25313F; --softBg:#1B2634; --softBorder:#3B82F6; --softText:#B9CBE4;
+    --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+    --actionButton:linear-gradient(#60A5FA,#3B82F6);
+  }
+
+  /* TYPE_SCALE (src/theme/typography.ts) — title:22 heading:18 body:15 label:12 */
+
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:24px 16px 48px;
+    font-family:'Rubik',system-ui,sans-serif;
+    background:#ECE7F2; color:#3A1F5A;
+    display:flex; flex-direction:column; align-items:center; gap:20px;
+  }
+
+  .controls { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:760px; }
+  .controls button {
+    font-family:'Rubik',sans-serif; font-size:13px; font-weight:600;
+    padding:8px 14px; border-radius:999px; border:1.5px solid #C9BBDD;
+    background:#fff; color:#4A1A6E; cursor:pointer;
+  }
+  .controls button[aria-pressed='true'] { background:#6B2C8E; color:#fff; border-color:#6B2C8E; }
+  .controls .sep { width:100%; height:0; }
+
+  .phone {
+    width:380px; max-width:100%; height:760px;
+    border-radius:38px; overflow:hidden; position:relative;
+    box-shadow:0 24px 60px rgba(58,31,90,0.30);
+    background:var(--screen);
+  }
+  .screen {
+    position:absolute; inset:0; display:none;
+    flex-direction:column; align-items:center; justify-content:center;
+    padding:32px 26px; text-align:center; gap:18px;
+  }
+  .screen[data-active='true'] { display:flex; }
+
+  .pig { font-size:76px; line-height:1; }
+  .pig[data-oinking='true'] { animation:oink 600ms ease-in-out infinite; }
+  @keyframes oink {
+    0%{transform:scale(1) rotate(0)}
+    30%{transform:scale(1.15,0.85) rotate(-6deg)}
+    60%{transform:scale(0.95,1.05) rotate(6deg)}
+    100%{transform:scale(1) rotate(0)}
+  }
+
+  .wordmark {
+    font-family:'Fredoka',sans-serif; font-weight:600; font-size:34px;
+    color:#fff; text-shadow:0 3px 0 rgba(0,0,0,0.16); margin:0;
+  }
+  .tagline { font-size:15px; color:rgba(255,255,255,0.94); margin:0; max-width:22ch; line-height:1.5; }
+
+  .card {
+    width:100%; background:var(--surface); border-radius:26px;
+    padding:24px 20px; box-shadow:0 12px 30px rgba(0,0,0,0.16);
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .card h2 { font-family:'Fredoka',sans-serif; font-size:22px; margin:0; color:var(--textStrong); font-weight:600; }
+  .card p  { font-size:15px; margin:0; color:var(--textMuted); line-height:1.6; }
+
+  .google {
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    width:100%; padding:15px 18px; border-radius:18px; cursor:pointer;
+    font-family:'Rubik',sans-serif; font-size:16px; font-weight:600;
+    background:var(--actionButton); color:var(--textOnPrimary);
+    border:none; box-shadow:0 5px 0 var(--primaryShadow),0 12px 24px var(--primaryGlow);
+  }
+  .google:active { transform:translateY(3px); box-shadow:0 2px 0 var(--primaryShadow); }
+  .google .g { background:#fff; border-radius:50%; width:26px; height:26px; display:grid; place-items:center; flex:none; }
+  .google svg { width:16px; height:16px; display:block; }
+
+  .fineprint { font-size:12px; color:rgba(255,255,255,0.88); margin:0; line-height:1.6; max-width:26ch; }
+
+  .spinner {
+    width:40px; height:40px; border-radius:50%;
+    border:4px solid rgba(255,255,255,0.35); border-top-color:#fff;
+    animation:spin 800ms linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .note {
+    background:var(--softBg); border:1.5px solid var(--softBorder); color:var(--softText);
+    border-radius:16px; padding:12px 14px; font-size:13px; line-height:1.6; text-align:start;
+  }
+  .avatars { display:flex; gap:10px; justify-content:center; }
+  .chip {
+    background:var(--surface); border-radius:18px; padding:10px 14px;
+    display:flex; align-items:center; gap:8px; box-shadow:0 6px 16px rgba(0,0,0,0.14);
+    font-size:15px; font-weight:600; color:var(--textStrong);
+  }
+  .chip .face { font-size:22px; }
+
+  .caption {
+    max-width:380px; font-size:13px; line-height:1.7; color:#5B4A73;
+    background:#fff; border-radius:16px; padding:14px 16px; border:1px solid #DCD2E8;
+  }
+  .caption b { color:#3A1F5A; }
+  .caption code { background:#F3EEF8; padding:1px 5px; border-radius:5px; font-size:12px; }
+  /* ── סטטוס ההחלטה וניווט בין השלבים ──────────────────────────── */
+  .crumb { margin:0 0 14px; font-size:12.5px; color:#6E6382; text-align:center; }
+  .crumb a { color:#6B2C8E; text-decoration:none; border-bottom:1px solid #C9BBDD; }
+  .crumb a:hover { color:#3A1F5A; }
+  .status { display:flex; align-items:flex-start; gap:10px; max-width:520px;
+    margin:0 auto 14px; padding:9px 12px; border-radius:10px;
+    font-size:12.5px; line-height:1.65; text-align:start; }
+  .status .badge { flex-shrink:0; font-weight:800; font-size:11px; letter-spacing:.06em;
+    padding:3px 8px; border-radius:999px; white-space:nowrap; }
+  .status p { margin:0; }
+  .status code, .status a { font-size:11.5px; color:inherit; }
+  .status.chosen { background:#EAF7EE; color:#1E5B32; border:1px solid #9AD3AE; }
+  .status.chosen .badge { background:#2F7A4A; color:#fff; }
+  .status.rejected { background:#F2F2F4; color:#5A5A66; border:1px solid #D6D6DE; }
+  .status.rejected .badge { background:#6E6E7A; color:#fff; }
+  .status.info { background:#F3EEF8; color:#4A1A6E; border:1px solid #C9BBDD; }
+  .status.info .badge { background:#6B2C8E; color:#fff; }
+  .controls a {
+    font-family:'Rubik',sans-serif; font-size:13px; font-weight:600; text-decoration:none;
+    padding:8px 14px; border-radius:999px; border:1.5px solid #C9BBDD;
+    background:#fff; color:#4A1A6E;
+  }
+  .controls a[aria-current='page'] { background:#6B2C8E; color:#fff; border-color:#6B2C8E; }
+</style>
+</head>
+<body>
+
+<p class=&quot;crumb&quot;><a href=&quot;index.html&quot; target=&quot;_top&quot;>← כל המוקאפים</a> · התחברות — שלב 2 מתוך 4</p>
+<div class=&quot;status info&quot;><span class=&quot;badge&quot;>שלב 2/4</span><p>ארבעת המסכים הם <b>שלבים בזרימה אחת</b>, לא חלופות מתחרות — אין כאן «נבחר» ו«נדחה». כולם נבנו. תיעוד: <a href=&quot;../.plans/2026-09-12-google-login.md&quot; target=&quot;_top&quot;><code>.plans/2026-09-12-google-login.md</code></a></p></div>
+
+<div class=&quot;controls&quot;>
+  <a href=&quot;2026-09-12-login.html#1-signed-out&quot; target=&quot;_top&quot;>1 · מסך התחברות</a>
+  <a href=&quot;2026-09-12-login.html#2-signing-in&quot; target=&quot;_top&quot; aria-current=&quot;page&quot;>2 · מתחברים…</a>
+  <a href=&quot;2026-09-12-login.html#3-first-time&quot; target=&quot;_top&quot;>3 · משתמש חדש</a>
+  <a href=&quot;2026-09-12-login.html#4-returning&quot; target=&quot;_top&quot;>4 · משתמש חוזר</a>
+  <span class=&quot;sep&quot;></span>
+  <button data-theme-btn=&quot;sunshine-quest&quot; aria-pressed=&quot;true&quot;>sunshine</button>
+  <button data-theme-btn=&quot;jungle-quest&quot; aria-pressed=&quot;false&quot;>jungle</button>
+  <button data-theme-btn=&quot;midnight-blue&quot; aria-pressed=&quot;false&quot;>midnight</button>
+</div>
+
+<div class=&quot;phone&quot;>
+
+  <div class=&quot;screen&quot; data-screen=&quot;signingIn&quot; data-active=&quot;true&quot;>
+    <div class=&quot;pig&quot; data-oinking=&quot;true&quot;>🐷</div>
+    <div class=&quot;spinner&quot;></div>
+    <p class=&quot;tagline&quot;>רגע, מתחברים…</p>
+  </div>
+
+</div>
+
+<p class=&quot;caption&quot;>
+  <b>הזרימה:</b> לחיצה על &quot;המשך עם Google&quot; → Auth.js → callback →
+  <code>user-provisioning</code> מחפש לפי <code>provider_account_id</code>.
+  נמצא? מתחברים. לא נמצא? נוצר משתמש חדש ואז מתחברים.
+  אותו מסך בדיוק משרת את שני המקרים — ההבדל הוא רק לאן נוחתים אחריו.
+</p>
+
+<script>
+  var themeButtons = document.querySelectorAll('[data-theme-btn]');
+
+  function setTheme(name) {
+    document.documentElement.setAttribute('data-theme', name);
+    themeButtons.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-btn') === name));
+    });
+  }
+
+  themeButtons.forEach(function (b) {
+    b.addEventListener('click', function () { setTheme(b.getAttribute('data-theme-btn')); });
+  });
+
+  setTheme('sunshine-quest');
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<section id="3-first-time">
+  <h2>3 · משתמש חדש </h2>
+  <iframe title="3 · משתמש חדש" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — התחברות · 3 · משתמש חדש</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+  /* ---- design tokens pulled from src/theme/themes/*.ts ---- */
+  :root[data-theme='sunshine-quest'] {
+    --primary:#6B2C8E; --primaryGradientTop:#8A3AAE; --primaryShadow:#4A1A6E;
+    --primaryGlow:rgba(107,44,142,0.45); --textOnPrimary:#FFFFFF;
+    --surface:#FFFFFF; --textMuted:#8A7AA7; --textStrong:#3A1F5A;
+    --divider:#F2D9D2; --softBg:#FFF8E0; --softBorder:#FFD23F; --softText:#7A5A0A;
+    --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+    --actionButton:linear-gradient(#8A3AAE,#6B2C8E);
+  }
+  :root[data-theme='jungle-quest'] {
+    --primary:#2A9D8F; --primaryGradientTop:#3AB3A3; --primaryShadow:#1B6B61;
+    --primaryGlow:rgba(42,157,143,0.45); --textOnPrimary:#FFFFFF;
+    --surface:#FFFDF5; --textMuted:#5C7A6E; --textStrong:#1B4332;
+    --divider:#DCEFE4; --softBg:#EAF7EF; --softBorder:#90BE6D; --softText:#2D6A4F;
+    --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+    --actionButton:linear-gradient(#3AB3A3,#2A9D8F);
+  }
+  :root[data-theme='midnight-blue'] {
+    --primary:#3B82F6; --primaryGradientTop:#60A5FA; --primaryShadow:#1E40AF;
+    --primaryGlow:rgba(59,130,246,0.40); --textOnPrimary:#FFFFFF;
+    --surface:#141B24; --textMuted:#8A96A8; --textStrong:#ECF1F8;
+    --divider:#25313F; --softBg:#1B2634; --softBorder:#3B82F6; --softText:#B9CBE4;
+    --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+    --actionButton:linear-gradient(#60A5FA,#3B82F6);
+  }
+
+  /* TYPE_SCALE (src/theme/typography.ts) — title:22 heading:18 body:15 label:12 */
+
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:24px 16px 48px;
+    font-family:'Rubik',system-ui,sans-serif;
+    background:#ECE7F2; color:#3A1F5A;
+    display:flex; flex-direction:column; align-items:center; gap:20px;
+  }
+
+  .controls { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:760px; }
+  .controls button {
+    font-family:'Rubik',sans-serif; font-size:13px; font-weight:600;
+    padding:8px 14px; border-radius:999px; border:1.5px solid #C9BBDD;
+    background:#fff; color:#4A1A6E; cursor:pointer;
+  }
+  .controls button[aria-pressed='true'] { background:#6B2C8E; color:#fff; border-color:#6B2C8E; }
+  .controls .sep { width:100%; height:0; }
+
+  .phone {
+    width:380px; max-width:100%; height:760px;
+    border-radius:38px; overflow:hidden; position:relative;
+    box-shadow:0 24px 60px rgba(58,31,90,0.30);
+    background:var(--screen);
+  }
+  .screen {
+    position:absolute; inset:0; display:none;
+    flex-direction:column; align-items:center; justify-content:center;
+    padding:32px 26px; text-align:center; gap:18px;
+  }
+  .screen[data-active='true'] { display:flex; }
+
+  .pig { font-size:76px; line-height:1; }
+  .pig[data-oinking='true'] { animation:oink 600ms ease-in-out infinite; }
+  @keyframes oink {
+    0%{transform:scale(1) rotate(0)}
+    30%{transform:scale(1.15,0.85) rotate(-6deg)}
+    60%{transform:scale(0.95,1.05) rotate(6deg)}
+    100%{transform:scale(1) rotate(0)}
+  }
+
+  .wordmark {
+    font-family:'Fredoka',sans-serif; font-weight:600; font-size:34px;
+    color:#fff; text-shadow:0 3px 0 rgba(0,0,0,0.16); margin:0;
+  }
+  .tagline { font-size:15px; color:rgba(255,255,255,0.94); margin:0; max-width:22ch; line-height:1.5; }
+
+  .card {
+    width:100%; background:var(--surface); border-radius:26px;
+    padding:24px 20px; box-shadow:0 12px 30px rgba(0,0,0,0.16);
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .card h2 { font-family:'Fredoka',sans-serif; font-size:22px; margin:0; color:var(--textStrong); font-weight:600; }
+  .card p  { font-size:15px; margin:0; color:var(--textMuted); line-height:1.6; }
+
+  .google {
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    width:100%; padding:15px 18px; border-radius:18px; cursor:pointer;
+    font-family:'Rubik',sans-serif; font-size:16px; font-weight:600;
+    background:var(--actionButton); color:var(--textOnPrimary);
+    border:none; box-shadow:0 5px 0 var(--primaryShadow),0 12px 24px var(--primaryGlow);
+  }
+  .google:active { transform:translateY(3px); box-shadow:0 2px 0 var(--primaryShadow); }
+  .google .g { background:#fff; border-radius:50%; width:26px; height:26px; display:grid; place-items:center; flex:none; }
+  .google svg { width:16px; height:16px; display:block; }
+
+  .fineprint { font-size:12px; color:rgba(255,255,255,0.88); margin:0; line-height:1.6; max-width:26ch; }
+
+  .spinner {
+    width:40px; height:40px; border-radius:50%;
+    border:4px solid rgba(255,255,255,0.35); border-top-color:#fff;
+    animation:spin 800ms linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .note {
+    background:var(--softBg); border:1.5px solid var(--softBorder); color:var(--softText);
+    border-radius:16px; padding:12px 14px; font-size:13px; line-height:1.6; text-align:start;
+  }
+  .avatars { display:flex; gap:10px; justify-content:center; }
+  .chip {
+    background:var(--surface); border-radius:18px; padding:10px 14px;
+    display:flex; align-items:center; gap:8px; box-shadow:0 6px 16px rgba(0,0,0,0.14);
+    font-size:15px; font-weight:600; color:var(--textStrong);
+  }
+  .chip .face { font-size:22px; }
+
+  .caption {
+    max-width:380px; font-size:13px; line-height:1.7; color:#5B4A73;
+    background:#fff; border-radius:16px; padding:14px 16px; border:1px solid #DCD2E8;
+  }
+  .caption b { color:#3A1F5A; }
+  .caption code { background:#F3EEF8; padding:1px 5px; border-radius:5px; font-size:12px; }
+  /* ── סטטוס ההחלטה וניווט בין השלבים ──────────────────────────── */
+  .crumb { margin:0 0 14px; font-size:12.5px; color:#6E6382; text-align:center; }
+  .crumb a { color:#6B2C8E; text-decoration:none; border-bottom:1px solid #C9BBDD; }
+  .crumb a:hover { color:#3A1F5A; }
+  .status { display:flex; align-items:flex-start; gap:10px; max-width:520px;
+    margin:0 auto 14px; padding:9px 12px; border-radius:10px;
+    font-size:12.5px; line-height:1.65; text-align:start; }
+  .status .badge { flex-shrink:0; font-weight:800; font-size:11px; letter-spacing:.06em;
+    padding:3px 8px; border-radius:999px; white-space:nowrap; }
+  .status p { margin:0; }
+  .status code, .status a { font-size:11.5px; color:inherit; }
+  .status.chosen { background:#EAF7EE; color:#1E5B32; border:1px solid #9AD3AE; }
+  .status.chosen .badge { background:#2F7A4A; color:#fff; }
+  .status.rejected { background:#F2F2F4; color:#5A5A66; border:1px solid #D6D6DE; }
+  .status.rejected .badge { background:#6E6E7A; color:#fff; }
+  .status.info { background:#F3EEF8; color:#4A1A6E; border:1px solid #C9BBDD; }
+  .status.info .badge { background:#6B2C8E; color:#fff; }
+  .controls a {
+    font-family:'Rubik',sans-serif; font-size:13px; font-weight:600; text-decoration:none;
+    padding:8px 14px; border-radius:999px; border:1.5px solid #C9BBDD;
+    background:#fff; color:#4A1A6E;
+  }
+  .controls a[aria-current='page'] { background:#6B2C8E; color:#fff; border-color:#6B2C8E; }
+</style>
+</head>
+<body>
+
+<p class=&quot;crumb&quot;><a href=&quot;index.html&quot; target=&quot;_top&quot;>← כל המוקאפים</a> · התחברות — שלב 3 מתוך 4</p>
+<div class=&quot;status info&quot;><span class=&quot;badge&quot;>שלב 3/4</span><p>ארבעת המסכים הם <b>שלבים בזרימה אחת</b>, לא חלופות מתחרות — אין כאן «נבחר» ו«נדחה». כולם נבנו. תיעוד: <a href=&quot;../.plans/2026-09-12-google-login.md&quot; target=&quot;_top&quot;><code>.plans/2026-09-12-google-login.md</code></a></p></div>
+
+<div class=&quot;controls&quot;>
+  <a href=&quot;2026-09-12-login.html#1-signed-out&quot; target=&quot;_top&quot;>1 · מסך התחברות</a>
+  <a href=&quot;2026-09-12-login.html#2-signing-in&quot; target=&quot;_top&quot;>2 · מתחברים…</a>
+  <a href=&quot;2026-09-12-login.html#3-first-time&quot; target=&quot;_top&quot; aria-current=&quot;page&quot;>3 · משתמש חדש</a>
+  <a href=&quot;2026-09-12-login.html#4-returning&quot; target=&quot;_top&quot;>4 · משתמש חוזר</a>
+  <span class=&quot;sep&quot;></span>
+  <button data-theme-btn=&quot;sunshine-quest&quot; aria-pressed=&quot;true&quot;>sunshine</button>
+  <button data-theme-btn=&quot;jungle-quest&quot; aria-pressed=&quot;false&quot;>jungle</button>
+  <button data-theme-btn=&quot;midnight-blue&quot; aria-pressed=&quot;false&quot;>midnight</button>
+</div>
+
+<div class=&quot;phone&quot;>
+
+  <div class=&quot;screen&quot; data-screen=&quot;firstTime&quot; data-active=&quot;true&quot;>
+    <div class=&quot;pig&quot;>🐷</div>
+    <h1 class=&quot;wordmark&quot;>ברוכים הבאים!</h1>
+    <div class=&quot;card&quot;>
+      <h2>שלום אלי 👋</h2>
+      <p>יצרנו לכם חשבון משתמש. עכשיו אפשר להוסיף את החשבון הראשון.</p>
+      <button class=&quot;google&quot; style=&quot;background:var(--actionButton)&quot;>צור חשבון</button>
+      <div class=&quot;note&quot;>
+        <b>מה קרה מאחורי הקלעים:</b><br />
+        נוצרה שורה ב־<code>users</code> עם ה־Google sub שלכם.<br />
+        טרם קיימות שורות ב־<code>account_users</code>.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class=&quot;caption&quot;>
+  <b>הזרימה:</b> לחיצה על &quot;המשך עם Google&quot; → Auth.js → callback →
+  <code>user-provisioning</code> מחפש לפי <code>provider_account_id</code>.
+  נמצא? מתחברים. לא נמצא? נוצר משתמש חדש ואז מתחברים.
+  אותו מסך בדיוק משרת את שני המקרים — ההבדל הוא רק לאן נוחתים אחריו.
+</p>
+
+<script>
+  var themeButtons = document.querySelectorAll('[data-theme-btn]');
+
+  function setTheme(name) {
+    document.documentElement.setAttribute('data-theme', name);
+    themeButtons.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-btn') === name));
+    });
+  }
+
+  themeButtons.forEach(function (b) {
+    b.addEventListener('click', function () { setTheme(b.getAttribute('data-theme-btn')); });
+  });
+
+  setTheme('sunshine-quest');
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<section id="4-returning">
+  <h2>4 · משתמש חוזר </h2>
+  <iframe title="4 · משתמש חוזר" srcdoc="<!DOCTYPE html>
+<html dir=&quot;rtl&quot; lang=&quot;he&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot; />
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; />
+<title>fun-saver — התחברות · 4 · משתמש חוזר</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; />
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin />
+<link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Rubik:wght@400;500;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot; />
+<style>
+  /* ---- design tokens pulled from src/theme/themes/*.ts ---- */
+  :root[data-theme='sunshine-quest'] {
+    --primary:#6B2C8E; --primaryGradientTop:#8A3AAE; --primaryShadow:#4A1A6E;
+    --primaryGlow:rgba(107,44,142,0.45); --textOnPrimary:#FFFFFF;
+    --surface:#FFFFFF; --textMuted:#8A7AA7; --textStrong:#3A1F5A;
+    --divider:#F2D9D2; --softBg:#FFF8E0; --softBorder:#FFD23F; --softText:#7A5A0A;
+    --screen:linear-gradient(160deg,#FFC34D,#FF8A4C,#E94E89);
+    --actionButton:linear-gradient(#8A3AAE,#6B2C8E);
+  }
+  :root[data-theme='jungle-quest'] {
+    --primary:#2A9D8F; --primaryGradientTop:#3AB3A3; --primaryShadow:#1B6B61;
+    --primaryGlow:rgba(42,157,143,0.45); --textOnPrimary:#FFFFFF;
+    --surface:#FFFDF5; --textMuted:#5C7A6E; --textStrong:#1B4332;
+    --divider:#DCEFE4; --softBg:#EAF7EF; --softBorder:#90BE6D; --softText:#2D6A4F;
+    --screen:linear-gradient(160deg,#2A9D8F,#43AA8B,#90BE6D);
+    --actionButton:linear-gradient(#3AB3A3,#2A9D8F);
+  }
+  :root[data-theme='midnight-blue'] {
+    --primary:#3B82F6; --primaryGradientTop:#60A5FA; --primaryShadow:#1E40AF;
+    --primaryGlow:rgba(59,130,246,0.40); --textOnPrimary:#FFFFFF;
+    --surface:#141B24; --textMuted:#8A96A8; --textStrong:#ECF1F8;
+    --divider:#25313F; --softBg:#1B2634; --softBorder:#3B82F6; --softText:#B9CBE4;
+    --screen:linear-gradient(160deg,#0A0E14,#0F1620,#122036);
+    --actionButton:linear-gradient(#60A5FA,#3B82F6);
+  }
+
+  /* TYPE_SCALE (src/theme/typography.ts) — title:22 heading:18 body:15 label:12 */
+
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:24px 16px 48px;
+    font-family:'Rubik',system-ui,sans-serif;
+    background:#ECE7F2; color:#3A1F5A;
+    display:flex; flex-direction:column; align-items:center; gap:20px;
+  }
+
+  .controls { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:760px; }
+  .controls button {
+    font-family:'Rubik',sans-serif; font-size:13px; font-weight:600;
+    padding:8px 14px; border-radius:999px; border:1.5px solid #C9BBDD;
+    background:#fff; color:#4A1A6E; cursor:pointer;
+  }
+  .controls button[aria-pressed='true'] { background:#6B2C8E; color:#fff; border-color:#6B2C8E; }
+  .controls .sep { width:100%; height:0; }
+
+  .phone {
+    width:380px; max-width:100%; height:760px;
+    border-radius:38px; overflow:hidden; position:relative;
+    box-shadow:0 24px 60px rgba(58,31,90,0.30);
+    background:var(--screen);
+  }
+  .screen {
+    position:absolute; inset:0; display:none;
+    flex-direction:column; align-items:center; justify-content:center;
+    padding:32px 26px; text-align:center; gap:18px;
+  }
+  .screen[data-active='true'] { display:flex; }
+
+  .pig { font-size:76px; line-height:1; }
+  .pig[data-oinking='true'] { animation:oink 600ms ease-in-out infinite; }
+  @keyframes oink {
+    0%{transform:scale(1) rotate(0)}
+    30%{transform:scale(1.15,0.85) rotate(-6deg)}
+    60%{transform:scale(0.95,1.05) rotate(6deg)}
+    100%{transform:scale(1) rotate(0)}
+  }
+
+  .wordmark {
+    font-family:'Fredoka',sans-serif; font-weight:600; font-size:34px;
+    color:#fff; text-shadow:0 3px 0 rgba(0,0,0,0.16); margin:0;
+  }
+  .tagline { font-size:15px; color:rgba(255,255,255,0.94); margin:0; max-width:22ch; line-height:1.5; }
+
+  .card {
+    width:100%; background:var(--surface); border-radius:26px;
+    padding:24px 20px; box-shadow:0 12px 30px rgba(0,0,0,0.16);
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .card h2 { font-family:'Fredoka',sans-serif; font-size:22px; margin:0; color:var(--textStrong); font-weight:600; }
+  .card p  { font-size:15px; margin:0; color:var(--textMuted); line-height:1.6; }
+
+  .google {
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    width:100%; padding:15px 18px; border-radius:18px; cursor:pointer;
+    font-family:'Rubik',sans-serif; font-size:16px; font-weight:600;
+    background:var(--actionButton); color:var(--textOnPrimary);
+    border:none; box-shadow:0 5px 0 var(--primaryShadow),0 12px 24px var(--primaryGlow);
+  }
+  .google:active { transform:translateY(3px); box-shadow:0 2px 0 var(--primaryShadow); }
+  .google .g { background:#fff; border-radius:50%; width:26px; height:26px; display:grid; place-items:center; flex:none; }
+  .google svg { width:16px; height:16px; display:block; }
+
+  .fineprint { font-size:12px; color:rgba(255,255,255,0.88); margin:0; line-height:1.6; max-width:26ch; }
+
+  .spinner {
+    width:40px; height:40px; border-radius:50%;
+    border:4px solid rgba(255,255,255,0.35); border-top-color:#fff;
+    animation:spin 800ms linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .note {
+    background:var(--softBg); border:1.5px solid var(--softBorder); color:var(--softText);
+    border-radius:16px; padding:12px 14px; font-size:13px; line-height:1.6; text-align:start;
+  }
+  .avatars { display:flex; gap:10px; justify-content:center; }
+  .chip {
+    background:var(--surface); border-radius:18px; padding:10px 14px;
+    display:flex; align-items:center; gap:8px; box-shadow:0 6px 16px rgba(0,0,0,0.14);
+    font-size:15px; font-weight:600; color:var(--textStrong);
+  }
+  .chip .face { font-size:22px; }
+
+  .caption {
+    max-width:380px; font-size:13px; line-height:1.7; color:#5B4A73;
+    background:#fff; border-radius:16px; padding:14px 16px; border:1px solid #DCD2E8;
+  }
+  .caption b { color:#3A1F5A; }
+  .caption code { background:#F3EEF8; padding:1px 5px; border-radius:5px; font-size:12px; }
+  /* ── סטטוס ההחלטה וניווט בין השלבים ──────────────────────────── */
+  .crumb { margin:0 0 14px; font-size:12.5px; color:#6E6382; text-align:center; }
+  .crumb a { color:#6B2C8E; text-decoration:none; border-bottom:1px solid #C9BBDD; }
+  .crumb a:hover { color:#3A1F5A; }
+  .status { display:flex; align-items:flex-start; gap:10px; max-width:520px;
+    margin:0 auto 14px; padding:9px 12px; border-radius:10px;
+    font-size:12.5px; line-height:1.65; text-align:start; }
+  .status .badge { flex-shrink:0; font-weight:800; font-size:11px; letter-spacing:.06em;
+    padding:3px 8px; border-radius:999px; white-space:nowrap; }
+  .status p { margin:0; }
+  .status code, .status a { font-size:11.5px; color:inherit; }
+  .status.chosen { background:#EAF7EE; color:#1E5B32; border:1px solid #9AD3AE; }
+  .status.chosen .badge { background:#2F7A4A; color:#fff; }
+  .status.rejected { background:#F2F2F4; color:#5A5A66; border:1px solid #D6D6DE; }
+  .status.rejected .badge { background:#6E6E7A; color:#fff; }
+  .status.info { background:#F3EEF8; color:#4A1A6E; border:1px solid #C9BBDD; }
+  .status.info .badge { background:#6B2C8E; color:#fff; }
+  .controls a {
+    font-family:'Rubik',sans-serif; font-size:13px; font-weight:600; text-decoration:none;
+    padding:8px 14px; border-radius:999px; border:1.5px solid #C9BBDD;
+    background:#fff; color:#4A1A6E;
+  }
+  .controls a[aria-current='page'] { background:#6B2C8E; color:#fff; border-color:#6B2C8E; }
+</style>
+</head>
+<body>
+
+<p class=&quot;crumb&quot;><a href=&quot;index.html&quot; target=&quot;_top&quot;>← כל המוקאפים</a> · התחברות — שלב 4 מתוך 4</p>
+<div class=&quot;status info&quot;><span class=&quot;badge&quot;>שלב 4/4</span><p>ארבעת המסכים הם <b>שלבים בזרימה אחת</b>, לא חלופות מתחרות — אין כאן «נבחר» ו«נדחה». כולם נבנו. תיעוד: <a href=&quot;../.plans/2026-09-12-google-login.md&quot; target=&quot;_top&quot;><code>.plans/2026-09-12-google-login.md</code></a></p></div>
+
+<div class=&quot;controls&quot;>
+  <a href=&quot;2026-09-12-login.html#1-signed-out&quot; target=&quot;_top&quot;>1 · מסך התחברות</a>
+  <a href=&quot;2026-09-12-login.html#2-signing-in&quot; target=&quot;_top&quot;>2 · מתחברים…</a>
+  <a href=&quot;2026-09-12-login.html#3-first-time&quot; target=&quot;_top&quot;>3 · משתמש חדש</a>
+  <a href=&quot;2026-09-12-login.html#4-returning&quot; target=&quot;_top&quot; aria-current=&quot;page&quot;>4 · משתמש חוזר</a>
+  <span class=&quot;sep&quot;></span>
+  <button data-theme-btn=&quot;sunshine-quest&quot; aria-pressed=&quot;true&quot;>sunshine</button>
+  <button data-theme-btn=&quot;jungle-quest&quot; aria-pressed=&quot;false&quot;>jungle</button>
+  <button data-theme-btn=&quot;midnight-blue&quot; aria-pressed=&quot;false&quot;>midnight</button>
+</div>
+
+<div class=&quot;phone&quot;>
+
+  <div class=&quot;screen&quot; data-screen=&quot;returning&quot; data-active=&quot;true&quot;>
+    <div class=&quot;pig&quot;>🐷</div>
+    <h1 class=&quot;wordmark&quot;>שוב שלום, אלי</h1>
+    <p class=&quot;tagline&quot;>החשבונות שלכם מחכים</p>
+    <div class=&quot;avatars&quot;>
+      <div class=&quot;chip&quot;><span class=&quot;face&quot;>🦊</span> אלי</div>
+      <div class=&quot;chip&quot;><span class=&quot;face&quot;>🐨</span> מושית</div>
+    </div>
+    <div class=&quot;card&quot;>
+      <div class=&quot;note&quot;>
+        <b>מה קרה מאחורי הקלעים:</b><br />
+        ה־Google sub נמצא ב־<code>users</code> — לא נוצר משתמש חדש.<br />
+        <code>listAccountsForUser</code> החזיר 2 חשבונות דרך <code>account_users</code>.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class=&quot;caption&quot;>
+  <b>הזרימה:</b> לחיצה על &quot;המשך עם Google&quot; → Auth.js → callback →
+  <code>user-provisioning</code> מחפש לפי <code>provider_account_id</code>.
+  נמצא? מתחברים. לא נמצא? נוצר משתמש חדש ואז מתחברים.
+  אותו מסך בדיוק משרת את שני המקרים — ההבדל הוא רק לאן נוחתים אחריו.
+</p>
+
+<script>
+  var themeButtons = document.querySelectorAll('[data-theme-btn]');
+
+  function setTheme(name) {
+    document.documentElement.setAttribute('data-theme', name);
+    themeButtons.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-btn') === name));
+    });
+  }
+
+  themeButtons.forEach(function (b) {
+    b.addEventListener('click', function () { setTheme(b.getAttribute('data-theme-btn')); });
+  });
+
+  setTheme('sunshine-quest');
+</script>
+</body>
+</html>
+"></iframe>
+</section>
+<script>
+for (const f of document.querySelectorAll('iframe')) {
+  const fit = () => { f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; };
+  f.addEventListener('load', () => {
+    f.style.height = '1px';
+    fit();
+    f.contentDocument.addEventListener('click', () => setTimeout(fit, 60));
+  });
+}
+</script>
+</body>
+</html>

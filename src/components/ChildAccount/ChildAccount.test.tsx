@@ -8,9 +8,10 @@ import {
   mockSiblingAccountSummary,
 } from '@/test-utils/mocks/account.mocks';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
-import { createMockGoal } from '@/test-utils/mocks/goal.mocks';
+import { createMockGoal, mockAccountWithGoalReached } from '@/test-utils/mocks/goal.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { COINS_IN_HALF_A_PILE, coinsDrawnInPile } from '@/test-utils/coin-pile';
+import { CELEBRATION_TEST_IDS } from '@/components/Goal/Celebration/constants';
 import { ChildAccount } from './ChildAccount';
 import { CHILD_ACCOUNT_TEST_IDS } from './constants';
 import { CHILD_SAVINGS_TEST_IDS } from './ChildSavings/constants';
@@ -96,4 +97,33 @@ it("shows a sibling's own coins after a switch, not the first child's", () => {
   expect(
     screen.getAllByTestId(INTEREST_COIN_BUTTON_TEST_IDS.amount).map((amount) => amount.textContent)
   ).toEqual(['₪1', '₪1', '₪1']);
+});
+
+describe('ChildAccount with its goal reached', () => {
+  let view: ReturnType<typeof render>;
+  let celebrationBefore: HTMLElement;
+
+  beforeEach(() => {
+    view = render(<ChildAccount account={mockAccountWithGoalReached} />, {
+      accounts: mockAccountsContext,
+      user: mockUser,
+    });
+    celebrationBefore = screen.getByTestId(CELEBRATION_TEST_IDS.celebration);
+  });
+
+  it('plays the celebration again when another account with its goal reached is shown', () => {
+    const mockAnotherAccountId = 'another-account';
+
+    view.rerender(
+      <ChildAccount account={{ ...mockAccountWithGoalReached, id: mockAnotherAccountId }} />
+    );
+
+    expect(screen.getByTestId(CELEBRATION_TEST_IDS.celebration)).not.toBe(celebrationBefore);
+  });
+
+  it('does not play the celebration again when the same account is refreshed', () => {
+    view.rerender(<ChildAccount account={{ ...mockAccountWithGoalReached }} />);
+
+    expect(screen.getByTestId(CELEBRATION_TEST_IDS.celebration)).toBe(celebrationBefore);
+  });
 });

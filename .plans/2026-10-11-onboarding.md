@@ -1,7 +1,7 @@
 # Onboarding — delivery plan
 
 **Spec:** `docs/superpowers/specs/2026-10-11-onboarding-design.md`.
-**Mockup:** `mockups/onboarding/2-pig.html` (chosen: the pig guides).
+**Mockup:** `mockups/2026-10-11-onboarding.html#2-pig` (chosen: the pig guides).
 **Status:** proposed 2026-10-11; reviewed in six rounds, six against the code, then six more (claims, modal stack, data layer, architecture, standards, delivery); approved 2026-10-11.
 
 Three PRs, each off a fresh `origin/main` (`git fetch origin && git checkout -b
@@ -18,7 +18,7 @@ collided with another session's branch.
 | PR | What | State |
 | --- | --- | --- |
 | spec | Design, mockups, this plan | Ships with PR 1 (#209); `feat/onboarding` is retired |
-| 1 | `SetGoal`, its two ways in, top-modal-only Back and Escape | Built; PR #209 open (`feat/onboarding-set-goal`), two review rounds answered, awaiting merge |
+| 1 | `SetGoal`, its two ways in, top-modal-only Back and Escape | Merged as #209 (`90aba94`) |
 | 2 | `Onboarding`: the account step, the goal step (set or skip), the ready screen | Not started |
 | 3 | Changing a goal (`PUT` route) and the goal row's **עריכה** | Not started |
 | later | The wallet step (shares) | Sketched in the spec, not planned |
@@ -145,7 +145,7 @@ the goal and gains **עריכה** in PR 3.
    break-watches on a throwaway Neon branch).
 6. PR screenshots: ready with a goal and its **עריכה**, the goal step opened
    from it.
-7. Mark `mockups/onboarding/2-pig.html` ✓ נבחר (not pending) in
+7. Mark `mockups/2026-10-11-onboarding.html#2-pig` ✓ נבחר (not pending) in
    `mockups/index.html`.
 
 ## Decided before PR 1

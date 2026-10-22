@@ -1,7 +1,7 @@
 # Onboarding — design
 
-**Date:** 2026-10-11. **Mockups:** `mockups/onboarding/2-pig.html` (chosen),
-`mockups/onboarding/1-style.html` (the three styles compared).
+**Date:** 2026-10-11. **Mockups:** `mockups/2026-10-11-onboarding.html#2-pig` (chosen),
+`mockups/2026-10-11-onboarding.html#1-style` (the three styles compared).
 **Plan:** `.plans/2026-10-11-onboarding.md`.
 
 ## What and why

@@ -6,7 +6,7 @@
 - **Status:** approved design, ready for implementation planning
 - **Date:** 2026-06-20
 - **Stack:** Next.js 16 (App Router) · React 19 · MUI + Emotion (dynamic multi-theme) · React Query · JSON store behind a swappable DAL
-- **Companion docs:** [`visual-palettes.md`](./visual-palettes.md) (palette C "Sunshine Quest"), [`mockup-home-screen.html`](./mockup-home-screen.html)
+- **Companion docs:** [`visual-palettes.md`](./visual-palettes.md) (palette C "Sunshine Quest"), [`mockups/2026-06-17-home-screen.html#mockup-home-screen`](../../../mockups/2026-06-17-home-screen.html#mockup-home-screen)
 
 ## Domain Language & Conventions
 
@@ -264,7 +264,7 @@ Currency display keeps its own relative rule (₪ at 40% of the number — see p
   generative library. Stored per account as `avatarId` = the filename stem (e.g. `kid-07`).
 - `AvatarPicker` (used by `AccountForm`) renders the bundled set as a **single grid** (no category
   labels) on colored circles; the child taps one. Layout:
-  [`mockup-avatar-picker.html`](./mockup-avatar-picker.html) (app-gradient page, purple "create"
+  [`mockups/2026-06-20-avatar-picker.html#mockup-avatar-picker`](../../../mockups/2026-06-20-avatar-picker.html#mockup-avatar-picker) (app-gradient page, purple "create"
   CTA — consistent with the home screen).
 - **Extensible:** more avatars (e.g. profession characters) are added later by dropping SVGs into
   `public/avatars/` — no code change beyond the asset list.
@@ -406,7 +406,7 @@ equivalents (schema, transactions, migrations) without affecting services or API
 Mentioned here so the MVP design leaves room for them; each gets its own brainstorm → spec → plan
 when we reach it.
 
-- **Full-screen Menu** *(design done — see [`mockup-menu.html`](./mockup-menu.html))*. Opened from
+- **Full-screen Menu** *(design done — see [`mockups/2026-06-17-menu.html#mockup-menu`](../../../mockups/2026-06-17-menu.html#mockup-menu))*. Opened from
   a **hamburger button in the top-start corner** (placement A) that **spins 180° as it morphs into
   ✕** (animation B); the menu **fades + scales up** from that corner. Layout is **inline sections**
   (C), all visible at once:

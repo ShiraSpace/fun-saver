@@ -4,7 +4,7 @@ Raise every text-on-colour surface in the app to WCAG AA (4.5:1 at the sizes we
 use). Decisions 7 and 10 of `.plans/2026-09-15-method-page.md` promised this
 once, for two surfaces; auditing every pair found four more.
 
-- Mockup: `mockups/method-contrast.html` — three switchers (theme · היום/אחרי ·
+- Mockup: `mockups/2026-09-23-contrast.html` — three switchers (theme · היום/אחרי ·
   רקע לכיתוב · זוהר), all six affected screens at once. **Approved as drawn.**
 - Ratios below were measured, not remembered. Every gradient is scored on its
   **worst stop**, not its average.

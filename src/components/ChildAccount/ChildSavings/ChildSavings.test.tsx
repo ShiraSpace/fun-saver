@@ -13,12 +13,26 @@ import {
 } from '@/components/Goal/GoalProgress/constants';
 import { SAVED_OUT_OF_GOAL_TEST_IDS } from '@/components/Goal/SavedOutOfGoal/constants';
 import { goalPictureGlow } from '@/test-utils/goal-picture';
+import { moves } from '@/test-utils/motion';
+import { CELEBRATION_TEST_IDS } from '@/components/Goal/Celebration/constants';
+import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { ChildSavings } from './ChildSavings';
 import { CHILD_SAVINGS_COPY } from './constants';
 import { PRINCIPAL_AND_INTEREST_TEST_IDS } from './PrincipalAndInterest/constants';
 import { SAVINGS_BALANCE_TEST_IDS } from './SavingsBalance/constants';
+import { COIN_FOUNTAIN_TEST_IDS } from './CoinFountain/constants';
+import { PIGGY_BANK_FACE_TEST_IDS } from './PiggyBank/PiggyBankFace/constants';
+import { PIGGY_BANK_SHAPE } from './PiggyBank/constants';
 
 describe('ChildSavings', () => {
+  const midnightBlueCelebrationOutline = getThemeTokens(THEME_ID.midnightBlue).colors
+    .celebrationOutline;
+
+  function savingsCardShadow(): string {
+    return getComputedStyle(screen.getByRole('region', { name: CHILD_SAVINGS_COPY.title }))
+      .boxShadow;
+  }
+
   describe('savings of ₪148.90, ₪6.40 of it interest', () => {
     beforeEach(() => {
       render(
@@ -85,7 +99,8 @@ describe('ChildSavings', () => {
           accountId={mockAccountId}
           savings={createMockWalletSummary({ balance: 5000 })}
           savedTowardGoal={mockSavedTowardGoal}
-        />
+        />,
+        { themeId: THEME_ID.midnightBlue }
       );
     });
 
@@ -104,6 +119,18 @@ describe('ChildSavings', () => {
     it('fills the goal bar with what is saved', () => {
       expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50');
     });
+
+    it('does not play the celebration', () => {
+      expect(screen.queryByTestId(CELEBRATION_TEST_IDS.celebration)).not.toBeInTheDocument();
+    });
+
+    it('pours no coins', () => {
+      expect(screen.queryByTestId(COIN_FOUNTAIN_TEST_IDS.fountain)).not.toBeInTheDocument();
+    });
+
+    it('wears no celebration outline', () => {
+      expect(savingsCardShadow()).not.toContain(midnightBlueCelebrationOutline);
+    });
   });
 
   describe('a goal reached while the card shows less than its amount', () => {
@@ -118,7 +145,8 @@ describe('ChildSavings', () => {
           accountId={mockAccountId}
           savings={createMockWalletSummary({ balance: 5000 })}
           savedTowardGoal={mockSavedTowardGoal}
-        />
+        />,
+        { themeId: THEME_ID.midnightBlue }
       );
     });
 
@@ -134,6 +162,28 @@ describe('ChildSavings', () => {
 
     it("makes the goal's picture glow", () => {
       expect(goalPictureGlow()).not.toBe('none');
+    });
+
+    it('plays the celebration', () => {
+      expect(screen.getByTestId(CELEBRATION_TEST_IDS.celebration)).toBeInTheDocument();
+    });
+
+    it('pours coins out of the piggy bank', () => {
+      expect(screen.getByTestId(COIN_FOUNTAIN_TEST_IDS.fountain)).toBeInTheDocument();
+    });
+
+    it('gives the piggy bank happy eyes', () => {
+      expect(screen.getAllByTestId(PIGGY_BANK_FACE_TEST_IDS.happyEye)).toHaveLength(
+        PIGGY_BANK_SHAPE.happyEyes.length
+      );
+    });
+
+    it('makes the total bump and flash gold', () => {
+      expect(moves(screen.getByTestId(SAVINGS_BALANCE_TEST_IDS.shown))).toBe(true);
+    });
+
+    it("wears the theme's celebration outline", () => {
+      expect(savingsCardShadow()).toContain(midnightBlueCelebrationOutline);
     });
   });
 });

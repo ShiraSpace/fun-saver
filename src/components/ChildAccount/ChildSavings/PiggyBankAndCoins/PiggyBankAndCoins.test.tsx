@@ -14,6 +14,7 @@ describe('PiggyBankAndCoins with one ₪2 coin waiting', () => {
       <PiggyBankAndCoins
         interestCoins={[{ place: 0, amount: 200, isDropping: false }]}
         piggyBankFill={0}
+        isGoalReached={false}
         onCollect={mockOnCollect}
         onLand={mockOnLand}
         whereFocusGoesLast={createRef<HTMLElement>()}

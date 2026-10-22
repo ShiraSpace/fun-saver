@@ -5,7 +5,7 @@ at — and everything else, which belongs to that account. The account row of av
 chips becomes a real picker showing each child's total, editing moves next to it,
 and the menu gains a navigation section.
 
-Mockup: `mockups/account-summary.html`. Three menu variants are rendered side by
+Mockup: `mockups/2026-09-15-menu-redesign.html#menu`. Three menu variants are rendered side by
 side. **Variant ג׳ — light surface plus the app's own header — is the approved
 target**, confirmed 2026-09-15. Variant א׳ is the same light treatment without the
 header continuity; variant ב׳ shows today's gradient for comparison and is not the
@@ -411,7 +411,7 @@ filesystem root` — so the base worktree needs its own `npm install`, and `npm 
   themes as CSS custom properties and PR 11 reads them.
 - **The loading shell is a header card plus a bar delayed 150ms**, and it is the
   same shell for every route. Decided 2026-09-23 against a dimmed body, a centred
-  donut and a bare header card, in `mockups/loading-states.html`.
+  donut and a bare header card, in `mockups/2026-09-15-loading.html#loading-states`.
 
 - **The bar is painted full width and the colour travels** — variant ג5. Decided
   2026-09-23 against a solid chunk, a comet-tail gradient, and the three wallet
@@ -869,7 +869,7 @@ screen-agnostic**. A skeleton of the home screen was mocked and rejected on exac
 that: it would show wallet cards on the way to `השיטה`.
 
 **The shape — a header card and a bar that is late to arrive.** Decided 2026-09-23
-from `mockups/loading-states.html`, which renders four shells and four entrances in
+from `mockups/2026-09-15-loading.html#loading-states`, which renders four shells and four entrances in
 all three themes. The shell keeps the gradient and a header-shaped card, and adds a
 3px indeterminate bar under it that only starts after 150ms. At the measured 250ms
 that is about a hundred milliseconds of motion; a faster hop shows nothing at all
@@ -908,7 +908,7 @@ weighed and turned down: it is the community's global-progress pattern and hook-
 but it cancels `<Link>`'s own navigation to redo it by hand.
 
 **The page fade is dropped.** With the shell gone from navigation there is nothing for
-a landing page to fade in from. `mockups/loading-open-questions.html` records the
+a landing page to fade in from. `mockups/2026-09-15-loading.html#loading-open-questions` records the
 question as it stood; its reduced-motion answer (ד, the line moves regardless) still
 holds, for the header line as much as the shell.
 

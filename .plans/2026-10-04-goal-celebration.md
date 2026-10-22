@@ -5,7 +5,7 @@
 **Parent plan:** `.plans/2026-10-03-saving-goal.md` (PR 5). **Spec:**
 `docs/superpowers/specs/2026-10-03-saving-goal-design.md`, the `Celebration` row of
 "New components" and the "How often the celebration plays" decision.
-**Mockup:** `mockups/saving-goal.html`, frames 2b and 4b, lines 53-62 and 81-82
+**Mockup:** `mockups/2026-10-03-saving-goal.html#saving-goal`, frames 2b and 4b, lines 53-62 and 81-82
 (CSS) and the 60 `<i>` pieces on line 383.
 
 ## What this PR is

@@ -3,12 +3,14 @@
 import { JSX, RefObject, useEffect, useRef } from 'react';
 import { InterestCoins, type InterestCoin } from '../InterestCoins';
 import { breathe, PiggyBank, wiggleThenBreathe } from '../PiggyBank';
+import { CoinFountain } from '../CoinFountain';
 import { dropIntoSlot } from './drop-into-slot';
 import { PiggyBankSpace } from './PiggyBankAndCoins.styles';
 
 interface PiggyBankAndCoinsProps {
   interestCoins: InterestCoin[];
   piggyBankFill: number;
+  isGoalReached: boolean;
   onCollect: (place: number) => void;
   onLand: (place: number) => void;
   whereFocusGoesLast: RefObject<HTMLElement | null>;
@@ -17,6 +19,7 @@ interface PiggyBankAndCoinsProps {
 export function PiggyBankAndCoins({
   interestCoins,
   piggyBankFill,
+  isGoalReached,
   onCollect,
   onLand,
   whereFocusGoesLast,
@@ -37,6 +40,8 @@ export function PiggyBankAndCoins({
     });
   };
 
+  const coinFountain = isGoalReached && <CoinFountain />;
+
   return (
     <>
       <InterestCoins
@@ -45,7 +50,12 @@ export function PiggyBankAndCoins({
         whereFocusGoesLast={whereFocusGoesLast}
       />
       <PiggyBankSpace>
-        <PiggyBank piggyBankFill={piggyBankFill} ref={piggyBankElement} />
+        <PiggyBank
+          piggyBankFill={piggyBankFill}
+          isGoalReached={isGoalReached}
+          ref={piggyBankElement}
+        />
+        {coinFountain}
       </PiggyBankSpace>
     </>
   );
