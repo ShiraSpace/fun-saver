@@ -13,9 +13,9 @@ function shownCoins(): HTMLElement[] {
 
 describe('InterestCoins with ₪3, ₪2 and ₪2 waiting', () => {
   const mockInterestCoins: InterestCoin[] = [
-    { place: 0, amount: 300 },
-    { place: 1, amount: 200 },
-    { place: 2, amount: 200 },
+    { place: 0, amount: 300, isDropping: false },
+    { place: 1, amount: 200, isDropping: false },
+    { place: 2, amount: 200, isDropping: false },
   ];
   const mockOnCollect = jest.fn();
   const mockWhereFocusGoesLast = createRef<HTMLElement>();
@@ -85,17 +85,19 @@ it('collects a coin by the place it had when the visit began', () => {
   render(
     <InterestCoins
       interestCoins={[
-        { place: 1, amount: 200 },
-        { place: 2, amount: 200 },
+        { place: 1, amount: 200, isDropping: false },
+        { place: 2, amount: 200, isDropping: false },
       ]}
       onCollect={mockOnCollect}
       whereFocusGoesLast={mockWhereFocusGoesLast}
     />
   );
 
-  fireEvent.click(shownCoins()[0]);
+  const [tappedCoin] = shownCoins();
 
-  expect(mockOnCollect).toHaveBeenCalledWith(1);
+  fireEvent.click(tappedCoin);
+
+  expect(mockOnCollect).toHaveBeenCalledWith(1, tappedCoin);
 });
 
 it('moves focus to where it goes last when the only coin is tapped', () => {
@@ -105,7 +107,7 @@ it('moves focus to where it goes last when the only coin is tapped', () => {
     <>
       <div ref={mockWhereFocusGoesLast} tabIndex={-1} />
       <InterestCoins
-        interestCoins={[{ place: 0, amount: 100 }]}
+        interestCoins={[{ place: 0, amount: 100, isDropping: false }]}
         onCollect={mockOnCollect}
         whereFocusGoesLast={mockWhereFocusGoesLast}
       />

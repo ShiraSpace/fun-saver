@@ -27,3 +27,11 @@ const STILL = ['', 'none'];
 export function moves(element: Element): boolean {
   return !STILL.includes(getComputedStyle(element).animation);
 }
+
+export function elementsAnimate(mockAnimate: jest.Mock): void {
+  Element.prototype.animate = mockAnimate as unknown as Element['animate'];
+}
+
+export function elementsDoNotAnimate(): void {
+  Reflect.deleteProperty(Element.prototype, 'animate');
+}

@@ -92,3 +92,10 @@ export const COIN_PILE_LAYOUT = {
   oddRow: 1,
   spotPrecision: 100,
 } as const;
+
+export const PIGGY_BANK_WIGGLE = {
+  durationMs: 450,
+  tiltDegrees: 4,
+  tiltLeftAt: 0.25,
+  tiltRightAt: 0.75,
+} as const;

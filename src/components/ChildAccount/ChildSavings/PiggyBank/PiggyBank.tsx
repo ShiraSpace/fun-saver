@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX, useId } from 'react';
+import { JSX, Ref, useId } from 'react';
 import { PIGGY_BANK_COLORS } from '@/theme/piggy-bank-colors';
 import { CoinPile } from './CoinPile';
 import { PiggyBankFace } from './PiggyBankFace';
@@ -11,9 +11,10 @@ import { PiggyBankDrawing } from './PiggyBank.styles';
 
 interface PiggyBankProps {
   piggyBankFill: number;
+  ref?: Ref<SVGSVGElement>;
 }
 
-export function PiggyBank({ piggyBankFill }: PiggyBankProps): JSX.Element {
+export function PiggyBank({ piggyBankFill, ref }: PiggyBankProps): JSX.Element {
   const paintIds = piggyBankPaintIds(useId());
   const { shadow, feet, body, bodyShine, earsLift, ear, earShine, earMirror } = PIGGY_BANK_SHAPE;
   const { bellyRim, glassStreak } = PIGGY_BANK_SHAPE;
@@ -23,6 +24,7 @@ export function PiggyBank({ piggyBankFill }: PiggyBankProps): JSX.Element {
 
   return (
     <PiggyBankDrawing
+      ref={ref}
       viewBox={PIGGY_BANK_VIEW_BOX}
       aria-hidden="true"
       data-testid={PIGGY_BANK_TEST_IDS.art}

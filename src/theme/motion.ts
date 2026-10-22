@@ -6,6 +6,10 @@ export function motionIsReduced(): boolean {
   return window.matchMedia(REDUCED_MOTION).matches;
 }
 
+export function canAnimate(): boolean {
+  return typeof Element.prototype.animate === 'function' && !motionIsReduced();
+}
+
 export const EASING = {
   linear: 'linear',
   easeOut: 'ease-out',

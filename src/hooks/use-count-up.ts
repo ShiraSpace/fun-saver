@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { motionIsReduced } from '@/theme/motion';
+import { canAnimate } from '@/theme/motion';
 
 const COMPLETE = 1;
 const NO_TIME_PASSED = 0;
@@ -32,7 +32,7 @@ export function useCountUp({ startAt, to, timing }: CountUpParams): number {
   useBeforePaint(() => {
     const from = numberOnScreen.current;
 
-    if (motionIsReduced() || from === to) {
+    if (!canAnimate() || from === to) {
       numberOnScreen.current = to;
       setShown(to);
       return;

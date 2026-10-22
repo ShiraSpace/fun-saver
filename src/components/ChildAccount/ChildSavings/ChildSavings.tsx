@@ -10,13 +10,13 @@ import {
 } from '@/lib/interest/collected-interest';
 import { GoalProgress } from '@/components/Goal/GoalProgress';
 import { GOAL_PROGRESS_SIZE } from '@/components/Goal/GoalProgress/constants';
-import { PiggyBank, piggyBankFillOf } from './PiggyBank';
+import { piggyBankFillOf } from './PiggyBank';
+import { PiggyBankAndCoins } from './PiggyBankAndCoins';
 import { PrincipalAndInterest } from './PrincipalAndInterest';
 import { SavingsBalance } from './SavingsBalance';
-import { InterestCoins } from './InterestCoins';
 import { useInterestCoins } from './use-interest-coins';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
-import { Card, GoalSpace, PiggyBankSpace } from './ChildSavings.styles';
+import { Card, GoalSpace } from './ChildSavings.styles';
 
 interface ChildSavingsProps {
   accountId: string;
@@ -27,7 +27,7 @@ interface ChildSavingsProps {
 interface SavingsShownParams {
   savings: WalletSummary;
   savedTowardGoal?: SavedTowardGoal;
-  uncollectedInterest: number;
+  interestNotLanded: number;
 }
 
 interface SavingsShown extends SavingsWithoutAgorot {
@@ -38,12 +38,15 @@ interface SavingsShown extends SavingsWithoutAgorot {
 function savingsShownToTheChild({
   savings,
   savedTowardGoal,
-  uncollectedInterest,
+  interestNotLanded,
 }: SavingsShownParams): SavingsShown {
-  const savingsShown = savingsLessUncollectedInterest({ savings, uncollectedInterest });
+  const savingsShown = savingsLessUncollectedInterest({
+    savings,
+    uncollectedInterest: interestNotLanded,
+  });
   const savedTowardGoalShown = savedTowardGoalLessUncollectedInterest({
     savedTowardGoal,
-    uncollectedInterest,
+    uncollectedInterest: interestNotLanded,
   });
 
   return {
@@ -62,8 +65,11 @@ export function ChildSavings({
   savedTowardGoal,
 }: ChildSavingsProps): JSX.Element {
   const balanceElement = useRef<HTMLDivElement>(null);
-  const { interestCoins, uncollectedInterest, collect } = useInterestCoins({ savings, accountId });
-  const savingsShown = savingsShownToTheChild({ savings, savedTowardGoal, uncollectedInterest });
+  const { interestCoins, interestNotLanded, collect, land } = useInterestCoins({
+    savings,
+    accountId,
+  });
+  const savingsShown = savingsShownToTheChild({ savings, savedTowardGoal, interestNotLanded });
   const goalProgress = savingsShown.savedTowardGoal && (
     <GoalSpace>
       <GoalProgress
@@ -76,14 +82,13 @@ export function ChildSavings({
 
   return (
     <Card aria-label={CHILD_SAVINGS_COPY.title} data-testid={CHILD_SAVINGS_TEST_IDS.card}>
-      <InterestCoins
+      <PiggyBankAndCoins
         interestCoins={interestCoins}
+        piggyBankFill={savingsShown.piggyBankFill}
         onCollect={collect}
+        onLand={land}
         whereFocusGoesLast={balanceElement}
       />
-      <PiggyBankSpace>
-        <PiggyBank piggyBankFill={savingsShown.piggyBankFill} />
-      </PiggyBankSpace>
       <SavingsBalance balance={savingsShown.balance} ref={balanceElement} />
       {goalProgress}
       <PrincipalAndInterest

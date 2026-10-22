@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { TextDecoder, TextEncoder } from 'node:util';
-import { prefersMotion } from '@/test-utils/motion';
+import { elementsDoNotAnimate, prefersMotion } from '@/test-utils/motion';
 import { resetNavigationMock } from './__mocks__/next/navigation';
 
 beforeEach(resetNavigationMock);
@@ -14,4 +14,5 @@ if (typeof globalThis.TextEncoder === 'undefined') {
 
 if (typeof window !== 'undefined') {
   prefersMotion();
+  beforeEach(elementsDoNotAnimate);
 }

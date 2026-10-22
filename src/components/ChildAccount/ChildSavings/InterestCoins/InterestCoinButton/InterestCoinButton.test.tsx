@@ -6,7 +6,7 @@ describe('InterestCoinButton holding ₪3', () => {
   const mockOnTap = jest.fn();
 
   beforeEach(() => {
-    render(<InterestCoinButton amount={300} onTap={mockOnTap} />);
+    render(<InterestCoinButton amount={300} isDropping={false} onTap={mockOnTap} />);
   });
 
   it('names itself for a screen reader', () => {

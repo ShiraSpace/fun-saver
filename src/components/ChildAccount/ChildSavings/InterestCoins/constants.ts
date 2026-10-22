@@ -9,3 +9,5 @@ export const INTEREST_COIN_SELECTOR = `[data-testid="${INTEREST_COIN_BUTTON_TEST
 export const INTEREST_COINS_COPY = {
   tapTheCoins: 'הכסף הרוויח לבד! לחצו על המטבעות',
 } as const;
+
+export const TAPPABLE_COIN_SELECTOR = `${INTEREST_COIN_SELECTOR}:enabled`;

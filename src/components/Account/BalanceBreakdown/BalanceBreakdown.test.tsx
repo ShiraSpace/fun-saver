@@ -3,17 +3,14 @@ import {
   mockWalletSummaries,
   mockWalletSummariesWithAgorot,
 } from '@/test-utils/mocks/wallet.mocks';
-import { prefersMotion, prefersReducedMotion } from '@/test-utils/motion';
+import { elementsAnimate } from '@/test-utils/motion';
 import { BalanceBreakdown } from './BalanceBreakdown';
 import { BALANCE_BREAKDOWN_COPY, BALANCE_BREAKDOWN_TEST_IDS } from './constants';
 
 describe('BalanceBreakdown', () => {
-  beforeEach(() => {
-    prefersReducedMotion();
-  });
-
   it('counts the total up from nothing when the browser allows motion', () => {
-    prefersMotion();
+    const mockAnimate = jest.fn();
+    elementsAnimate(mockAnimate);
 
     render(<BalanceBreakdown wallets={mockWalletSummaries} />);
 

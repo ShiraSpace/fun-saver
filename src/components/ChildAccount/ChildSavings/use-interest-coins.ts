@@ -23,8 +23,9 @@ interface Visit {
 
 interface VisitInterestCoins {
   interestCoins: InterestCoin[];
-  uncollectedInterest: number;
+  interestNotLanded: number;
   collect: (place: number) => void;
+  land: (place: number) => void;
 }
 
 function visitStartingAt(savings: WalletSummary, collectedInterest: number): Visit {
@@ -32,19 +33,48 @@ function visitStartingAt(savings: WalletSummary, collectedInterest: number): Vis
 
   return {
     collectedInterest,
-    interestCoins: interestCoinsOf(uncollectedInterest).map((amount, place) => ({ place, amount })),
+    interestCoins: interestCoinsOf(uncollectedInterest).map((amount, place) => ({
+      place,
+      amount,
+      isDropping: false,
+    })),
   };
 }
 
-function visitAfterCollecting(visit: Visit, place: number): Visit {
-  const coin = visit.interestCoins.find((interestCoin) => interestCoin.place === place);
+function coinAt(visit: Visit, place: number): InterestCoin | undefined {
+  return visit.interestCoins.find((interestCoin) => interestCoin.place === place);
+}
 
-  if (!coin) {
+function droppingInterest(visit: Visit): number {
+  return visit.interestCoins
+    .filter((interestCoin) => interestCoin.isDropping)
+    .reduce((dropping, interestCoin) => dropping + interestCoin.amount, 0);
+}
+
+function visitAfterCollecting(visit: Visit, place: number): Visit {
+  const coin = coinAt(visit, place);
+
+  if (!coin || coin.isDropping) {
     return visit;
   }
 
   return {
     collectedInterest: visit.collectedInterest + coin.amount,
+    interestCoins: visit.interestCoins.map((interestCoin) =>
+      interestCoin === coin ? { ...coin, isDropping: true } : interestCoin
+    ),
+  };
+}
+
+function visitAfterLanding(visit: Visit, place: number): Visit {
+  const coin = coinAt(visit, place);
+
+  if (!coin?.isDropping) {
+    return visit;
+  }
+
+  return {
+    ...visit,
     interestCoins: visit.interestCoins.filter((interestCoin) => interestCoin !== coin),
   };
 }
@@ -67,13 +97,15 @@ export function useInterestCoins({ savings, accountId }: InterestCoinsParams): V
 
   const collect = (place: number): void =>
     setVisit((current) => visitAfterCollecting(current, place));
+  const land = (place: number): void => setVisit((current) => visitAfterLanding(current, place));
 
   return {
     interestCoins: visit.interestCoins,
-    uncollectedInterest: uncollectedInterestOf({
+    interestNotLanded: uncollectedInterestOf({
       savings,
-      collectedInterest: visit.collectedInterest,
+      collectedInterest: visit.collectedInterest - droppingInterest(visit),
     }),
     collect,
+    land,
   };
 }
