@@ -28,4 +28,4 @@ interest day by day.
 
 - [x] Production code
 - [x] Tests
-- [ ] PR with screenshots
+- [x] PR with screenshots
