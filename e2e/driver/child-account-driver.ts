@@ -44,6 +44,10 @@ export class ChildAccountDriver {
     return this.appBrowser.count(COIN_PILE_TEST_IDS.coin);
   }
 
+  async waitForPiggyBankToBreathe(): Promise<void> {
+    await this.appBrowser.waits.animationStarts(PIGGY_BANK_TEST_IDS.art);
+  }
+
   async walletsBottom(): Promise<number> {
     return bottomOf(await this.appBrowser.box(CHILD_ACCOUNT_TEST_IDS.wallets));
   }
@@ -80,8 +84,12 @@ export class ChildAccountDriver {
 
   async tapInterestCoin(coinIndex: number): Promise<void> {
     const coinsBefore = await this.interestCoinCount();
-    await this.appBrowser.clickNth(INTEREST_COIN_SELECTOR, coinIndex);
+    await this.dropInterestCoin(coinIndex);
     await this.appBrowser.waits.count(INTEREST_COIN_BUTTON_TEST_IDS.coin, coinsBefore - 1);
+  }
+
+  dropInterestCoin(coinIndex: number): Promise<void> {
+    return this.appBrowser.clickNth(INTEREST_COIN_SELECTOR, coinIndex);
   }
 
   savingsBalance(): Promise<string> {

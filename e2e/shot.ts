@@ -21,7 +21,7 @@ export type TakeShots = (app: AppDriver, shoot: Shoot) => Promise<void>;
 export async function withShots(
   initialStore: Partial<StoreContents>,
   takeShots: TakeShots,
-  { collectedInterest }: Pick<DriverOptions, 'collectedInterest'> = {}
+  { collectedInterest, motion = 'reduce' }: Pick<DriverOptions, 'collectedInterest' | 'motion'> = {}
 ): Promise<void> {
   await mkdir(SHOT_DIR, { recursive: true });
 
@@ -33,7 +33,7 @@ export async function withShots(
       appBrowser,
       server,
       initialStore,
-      motion: 'reduce',
+      motion,
       viewMode: VIEW_MODE.parent,
       collectedInterest,
     });

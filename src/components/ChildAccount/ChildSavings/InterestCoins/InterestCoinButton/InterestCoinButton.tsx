@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { JSX, Ref } from 'react';
 import { floorToShekels } from '@/lib/money';
 import { Money } from '@/components/Money';
 import { MONEY_COPY } from '@/components/Money/constants';
@@ -7,18 +7,27 @@ import { CoinAmount, CoinButton } from './InterestCoinButton.styles';
 
 interface InterestCoinButtonProps {
   amount: number;
-  onTap: () => void;
+  isDropping: boolean;
+  onTap: (tappedCoin: HTMLButtonElement) => void;
+  ref?: Ref<HTMLButtonElement>;
 }
 
-export function InterestCoinButton({ amount, onTap }: InterestCoinButtonProps): JSX.Element {
+export function InterestCoinButton({
+  amount,
+  isDropping,
+  onTap,
+  ref,
+}: InterestCoinButtonProps): JSX.Element {
   const coinLabel = INTEREST_COIN_BUTTON_COPY.coinLabel(floorToShekels(amount));
 
   return (
     <CoinButton
+      ref={ref}
       type="button"
       aria-label={coinLabel}
       data-testid={INTEREST_COIN_BUTTON_TEST_IDS.coin}
-      onClick={onTap}
+      disabled={isDropping}
+      onClick={(event): void => onTap(event.currentTarget)}
     >
       {MONEY_COPY.currencySign}
       <CoinAmount dir="ltr">

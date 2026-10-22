@@ -132,3 +132,19 @@ describe('a child with a goal and coins waiting, on an iPhone in Safari', () => 
     );
   });
 });
+
+describe('a child with a goal and coins waiting, reloading home with motion allowed', () => {
+  const { childAccount, appBrowser } = useDriver(
+    { accounts: [mockAccount], transactions: mockTransactions, goals: [createMockGoal()] },
+    { ...mockChildModeWithUncollectedInterest, motion: 'no-preference' }
+  );
+
+  it('sees the server and the browser draw the same home', async () => {
+    const errorsLogged = appBrowser.watch.captureErrors();
+
+    await appBrowser.reload();
+    await childAccount.waitForPiggyBankToBreathe();
+
+    assert.deepEqual(errorsLogged, []);
+  });
+});

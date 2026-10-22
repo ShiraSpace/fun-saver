@@ -2,21 +2,30 @@
 
 import { JSX, RefObject, useRef } from 'react';
 import { InterestCoinButton } from './InterestCoinButton';
-import { INTEREST_COINS_COPY, INTEREST_COINS_TEST_IDS } from './constants';
-import { CoinRow, TapTheCoins } from './InterestCoins.styles';
+import { useCoinsCloseTheGap } from './use-coins-close-the-gap';
+import { useIsCoinSpaceOpen } from './use-is-coin-space-open';
+import {
+  INTEREST_COINS_COPY,
+  INTEREST_COINS_TEST_IDS,
+  COIN_NOT_YET_TAPPED_SELECTOR,
+} from './constants';
+import { CoinRow, CoinSpace, TapTheCoins } from './InterestCoins.styles';
 
 export interface InterestCoin {
   place: number;
   amount: number;
+  isDropping: boolean;
 }
 
 interface InterestCoinsProps {
   interestCoins: InterestCoin[];
-  onCollect: (place: number) => void;
+  onCollect: (place: number, tappedCoin: HTMLElement) => void;
   whereFocusGoesLast: RefObject<HTMLElement | null>;
 }
 
-function nextFocus(tappableCoins: HTMLElement[], tappedIndex: number): HTMLElement | undefined {
+function nextFocus(tappableCoins: HTMLElement[], tappedCoin: HTMLElement): HTMLElement | undefined {
+  const tappedIndex = tappableCoins.indexOf(tappedCoin);
+
   return tappableCoins[tappedIndex + 1] ?? tappableCoins[tappedIndex - 1];
 }
 
@@ -25,32 +34,40 @@ export function InterestCoins({
   onCollect,
   whereFocusGoesLast,
 }: InterestCoinsProps): JSX.Element | null {
+  const coinSpace = useRef<HTMLDivElement>(null);
   const coinRow = useRef<HTMLDivElement>(null);
+  const hasCoins = interestCoins.length > 0;
+  const isSpaceOpen = useIsCoinSpaceOpen(coinSpace, hasCoins);
+  const rememberCoinButton = useCoinsCloseTheGap(interestCoins);
 
-  function collect(place: number, tappedIndex: number): void {
-    const tappableCoins = [...(coinRow.current?.querySelectorAll<HTMLElement>('button') ?? [])];
-    (nextFocus(tappableCoins, tappedIndex) ?? whereFocusGoesLast.current)?.focus();
-    onCollect(place);
+  function collect(place: number, tappedCoin: HTMLElement): void {
+    const tappableCoins = [
+      ...(coinRow.current?.querySelectorAll<HTMLElement>(COIN_NOT_YET_TAPPED_SELECTOR) ?? []),
+    ];
+    (nextFocus(tappableCoins, tappedCoin) ?? whereFocusGoesLast.current)?.focus();
+    onCollect(place, tappedCoin);
   }
 
-  if (interestCoins.length === 0) {
+  if (!hasCoins && !isSpaceOpen) {
     return null;
   }
 
-  const coinButtons = interestCoins.map((interestCoin, coinIndex) => (
+  const tapTheCoins = hasCoins && INTEREST_COINS_COPY.tapTheCoins;
+
+  const coinButtons = interestCoins.map((interestCoin) => (
     <InterestCoinButton
       key={interestCoin.place}
+      ref={rememberCoinButton(interestCoin.place)}
       amount={interestCoin.amount}
-      onTap={(): void => collect(interestCoin.place, coinIndex)}
+      isDropping={interestCoin.isDropping}
+      onTap={(tappedCoin): void => collect(interestCoin.place, tappedCoin)}
     />
   ));
 
   return (
-    <>
-      <TapTheCoins data-testid={INTEREST_COINS_TEST_IDS.copy}>
-        {INTEREST_COINS_COPY.tapTheCoins}
-      </TapTheCoins>
+    <CoinSpace ref={coinSpace}>
+      <TapTheCoins data-testid={INTEREST_COINS_TEST_IDS.copy}>{tapTheCoins}</TapTheCoins>
       <CoinRow ref={coinRow}>{coinButtons}</CoinRow>
-    </>
+    </CoinSpace>
   );
 }

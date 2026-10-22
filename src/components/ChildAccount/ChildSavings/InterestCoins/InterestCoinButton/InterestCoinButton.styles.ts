@@ -19,6 +19,10 @@ export const CoinButton = styled.button`
     inset 0 0 0 3px ${PIGGY_BANK_COLORS.coinRim},
     inset 0 -4px 0 ${PIGGY_BANK_COLORS.coinEdge},
     0 4px 8px ${({ theme }): string => theme.shadows.soft};
+
+  &:disabled {
+    z-index: 1;
+  }
 `;
 
 export const CoinAmount = styled.span`

@@ -7,6 +7,7 @@ import puppeteer, {
 } from 'puppeteer';
 import * as actions from './page-actions';
 import * as queries from './page-queries';
+import { PageWatch } from './page-watch';
 import { PageWaits } from './page-waits';
 import { holdNextPage, type HeldPage } from './hold-next-page';
 import { holdRequest, type HeldRequest } from './hold-request';
@@ -36,6 +37,8 @@ export class AppBrowser {
   private baseUrl = '';
 
   readonly waits = new PageWaits(() => this.page);
+
+  readonly watch = new PageWatch(() => this.page);
 
   private constructor() {}
 

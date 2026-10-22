@@ -98,3 +98,21 @@ export const COIN_PILE_LAYOUT = {
   oddRow: 1,
   spotPrecision: 100,
 } as const;
+
+export const PIGGY_BANK_WIGGLE = {
+  durationMs: 450,
+  tiltDegrees: 4,
+  tiltLeftAt: 0.25,
+  tiltRightAt: 0.75,
+  upright: '0deg',
+  fromItsMiddle: '50% 50%',
+} as const;
+
+export const PIGGY_BANK_BREATHE = {
+  breaths: 3,
+  breathMs: 1500,
+  wider: 1.035,
+  shorter: 0.98,
+  atRest: '1 1',
+  fromItsFeet: '50% 92%',
+} as const;

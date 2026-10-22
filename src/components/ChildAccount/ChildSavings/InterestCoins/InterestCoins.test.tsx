@@ -1,29 +1,21 @@
 import { createRef } from 'react';
 import { fireEvent, render, screen } from '@/test-utils/render';
-import { InterestCoins, type InterestCoin } from './InterestCoins';
+import { mockThreeInterestCoins, shownCoins } from '@/test-utils/interest-coins';
+import { InterestCoins } from './InterestCoins';
 import { INTEREST_COINS_COPY, INTEREST_COINS_TEST_IDS } from './constants';
 import {
   INTEREST_COIN_BUTTON_COPY,
   INTEREST_COIN_BUTTON_TEST_IDS,
 } from './InterestCoinButton/constants';
 
-function shownCoins(): HTMLElement[] {
-  return screen.getAllByTestId(INTEREST_COIN_BUTTON_TEST_IDS.coin);
-}
-
 describe('InterestCoins with ₪3, ₪2 and ₪2 waiting', () => {
-  const mockInterestCoins: InterestCoin[] = [
-    { place: 0, amount: 300 },
-    { place: 1, amount: 200 },
-    { place: 2, amount: 200 },
-  ];
   const mockOnCollect = jest.fn();
   const mockWhereFocusGoesLast = createRef<HTMLElement>();
 
   beforeEach(() => {
     render(
       <InterestCoins
-        interestCoins={mockInterestCoins}
+        interestCoins={mockThreeInterestCoins}
         onCollect={mockOnCollect}
         whereFocusGoesLast={mockWhereFocusGoesLast}
       />
@@ -85,17 +77,19 @@ it('collects a coin by the place it had when the visit began', () => {
   render(
     <InterestCoins
       interestCoins={[
-        { place: 1, amount: 200 },
-        { place: 2, amount: 200 },
+        { place: 1, amount: 200, isDropping: false },
+        { place: 2, amount: 200, isDropping: false },
       ]}
       onCollect={mockOnCollect}
       whereFocusGoesLast={mockWhereFocusGoesLast}
     />
   );
 
-  fireEvent.click(shownCoins()[0]);
+  const [tappedCoin] = shownCoins();
 
-  expect(mockOnCollect).toHaveBeenCalledWith(1);
+  fireEvent.click(tappedCoin);
+
+  expect(mockOnCollect).toHaveBeenCalledWith(1, tappedCoin);
 });
 
 it('moves focus to where it goes last when the only coin is tapped', () => {
@@ -105,7 +99,7 @@ it('moves focus to where it goes last when the only coin is tapped', () => {
     <>
       <div ref={mockWhereFocusGoesLast} tabIndex={-1} />
       <InterestCoins
-        interestCoins={[{ place: 0, amount: 100 }]}
+        interestCoins={[{ place: 0, amount: 100, isDropping: false }]}
         onCollect={mockOnCollect}
         whereFocusGoesLast={mockWhereFocusGoesLast}
       />

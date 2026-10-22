@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@/test-utils/render';
 import { captureCookies } from '@/test-utils/cookies';
-import { shownCoins } from '@/test-utils/interest-coins';
+import { savedMark, shownCoins } from '@/test-utils/interest-coins';
 import { createMockWalletSummary } from '@/test-utils/mocks/wallet.mocks';
 import { mockAccountId } from '@/test-utils/mocks/account.mocks';
 import { createMockGoal, createMockSavedTowardGoal } from '@/test-utils/mocks/goal.mocks';
@@ -17,12 +17,6 @@ const mockSavingsWithFiveShekelsOfInterest = createMockWalletSummary({
 });
 const mockNoCoinsCollected = { collectedInterest: { [mockAccountId]: '0' } };
 const written = captureCookies();
-
-function savedMark(collectedInterest: number): RegExp {
-  return new RegExp(
-    `^${collectedInterestCookie(mockAccountId)}=${collectedInterest}; path=/; max-age=`
-  );
-}
 
 function shownCoinAmounts(): (string | null)[] {
   return screen

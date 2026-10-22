@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX, useId } from 'react';
+import { JSX, Ref, useId } from 'react';
 import { PIGGY_BANK_COLORS } from '@/theme/piggy-bank-colors';
 import { CoinPile } from './CoinPile';
 import { PiggyBankFace } from './PiggyBankFace';
@@ -12,18 +12,27 @@ import { PiggyBankBody, PiggyBankDrawing } from './PiggyBank.styles';
 interface PiggyBankProps {
   piggyBankFill: number;
   isGoalReached?: boolean;
+  ref?: Ref<SVGSVGElement>;
 }
 
-export function PiggyBank({ piggyBankFill, isGoalReached = false }: PiggyBankProps): JSX.Element {
-  const paintIds = piggyBankPaintIds(useId());
-  const { shadow, feet, body, bodyShine, earsLift, ear, earShine, earMirror } = PIGGY_BANK_SHAPE;
-  const { bellyRim, glassStreak } = PIGGY_BANK_SHAPE;
-  const feetShapes = feet.map((foot) => (
+function piggyBankFeet(): JSX.Element[] {
+  return PIGGY_BANK_SHAPE.feet.map((foot) => (
     <ellipse key={foot.cx} {...foot} fill={PIGGY_BANK_COLORS.feet} />
   ));
+}
+
+export function PiggyBank({
+  piggyBankFill,
+  isGoalReached = false,
+  ref,
+}: PiggyBankProps): JSX.Element {
+  const paintIds = piggyBankPaintIds(useId());
+  const { shadow, body, bodyShine, earsLift, ear, earShine, earMirror } = PIGGY_BANK_SHAPE;
+  const { bellyRim, glassStreak } = PIGGY_BANK_SHAPE;
 
   return (
     <PiggyBankDrawing
+      ref={ref}
       viewBox={PIGGY_BANK_VIEW_BOX}
       aria-hidden="true"
       data-testid={PIGGY_BANK_TEST_IDS.art}
@@ -31,7 +40,7 @@ export function PiggyBank({ piggyBankFill, isGoalReached = false }: PiggyBankPro
       <PiggyBankPaints paintIds={paintIds} />
       <ellipse {...shadow} fill={PIGGY_BANK_COLORS.shadow} filter={paintIds.shadowBlur.url} />
       <PiggyBankBody isGoalReached={isGoalReached} data-testid={PIGGY_BANK_TEST_IDS.body}>
-        {feetShapes}
+        {piggyBankFeet()}
         <ellipse {...body} fill={paintIds.body.url} />
         <ellipse {...bodyShine} fill={PIGGY_BANK_COLORS.shine} filter={paintIds.shineBlur.url} />
         <g transform={earsLift}>

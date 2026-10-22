@@ -17,12 +17,6 @@ export const Card = styled.section<{ celebrating: boolean }>`
     celebrating && travellingBorder(theme, CARD_RADIUS)}
 `;
 
-export const PiggyBankSpace = styled.div`
-  position: relative;
-  width: 50%;
-  margin: 0 auto 4px;
-`;
-
 export const GoalSpace = styled.div`
   margin: 8px 2px 0;
   text-align: start;

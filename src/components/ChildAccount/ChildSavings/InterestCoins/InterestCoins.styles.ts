@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
 
+export const CoinSpace = styled.div`
+  margin-bottom: -8px;
+`;
+
 export const TapTheCoins = styled.p`
   min-height: 20px;
   margin: 0;
@@ -14,6 +18,5 @@ export const CoinRow = styled.div`
   align-items: end;
   gap: 6px;
   height: 61px;
-  margin-bottom: -8px;
   padding-bottom: 16px;
 `;
