@@ -10,13 +10,13 @@ import {
 } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 import { balanceHistoryFor } from '@/test-utils/transaction-rows';
+import { calendarMonth } from '@/lib/dates';
 import { INTEREST_MODE, TRANSACTION_TYPE } from '@/lib/transaction/constants';
 import type { Transaction } from '@/lib/transaction/types';
 import { CHOICE_CHIPS_TEST_IDS } from '../ChoiceChips/constants';
 import { useTransactionsViewChoices } from '../use-transactions-view-choices';
 import { TRANSACTION_ROW_TEST_IDS } from './TransactionRow/constants';
 import { TRANSACTION_MONTH_TEST_IDS } from './TransactionMonth/constants';
-import { calendarMonth } from '@/lib/dates';
 import { EMPTY_STATE_TEST_IDS } from '@/components/EmptyState/constants';
 import { TRANSACTION_LIST_COPY, TRANSACTION_LIST_TEST_IDS } from './constants';
 import { TransactionList } from './TransactionList';
