@@ -10,10 +10,19 @@ import {
 } from '@/components/ChildAccount/ChildSavings/InterestCoins/constants';
 import { INTEREST_COIN_BUTTON_TEST_IDS } from '@/components/ChildAccount/ChildSavings/InterestCoins/InterestCoinButton/constants';
 import { SAVINGS_BALANCE_TEST_IDS } from '@/components/ChildAccount/ChildSavings/SavingsBalance/constants';
+import {
+  COIN_FOUNTAIN_COINS,
+  COIN_FOUNTAIN_TEST_IDS,
+} from '@/components/ChildAccount/ChildSavings/CoinFountain/constants';
+import { PIGGY_BANK_FACE_TEST_IDS } from '@/components/ChildAccount/ChildSavings/PiggyBank/PiggyBankFace/constants';
 import { AppBrowser } from './app-browser';
 import { bottomOf } from './box-geometry';
 
 const NORMAL_LINE_HEIGHT = 1.2;
+
+const LAST_COIN_LANDS_MS = Math.max(
+  ...COIN_FOUNTAIN_COINS.map(([, , , flightMs, delayMs]) => delayMs + flightMs)
+);
 
 export class ChildAccountDriver {
   constructor(private readonly appBrowser: AppBrowser) {}
@@ -76,5 +85,24 @@ export class ChildAccountDriver {
 
   savingsBalance(): Promise<string> {
     return this.appBrowser.text(SAVINGS_BALANCE_TEST_IDS.balance);
+  }
+
+  async coinFountainShown(): Promise<boolean> {
+    if (!(await this.appBrowser.exists(COIN_FOUNTAIN_TEST_IDS.fountain))) {
+      return false;
+    }
+
+    const display = await this.appBrowser.computedStyle(COIN_FOUNTAIN_TEST_IDS.fountain, 'display');
+
+    return display !== 'none';
+  }
+
+  async waitForLastCoinToLand(): Promise<void> {
+    await this.appBrowser.waits.testId(COIN_FOUNTAIN_TEST_IDS.fountain);
+    await new Promise((resolve) => setTimeout(resolve, LAST_COIN_LANDS_MS));
+  }
+
+  happyEyeCount(): Promise<number> {
+    return this.appBrowser.count(PIGGY_BANK_FACE_TEST_IDS.happyEye);
   }
 }
