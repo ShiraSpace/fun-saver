@@ -1,5 +1,4 @@
 import { REDUCED_MOTION } from '@/theme/motion';
-import { CELEBRATION_WAIT } from '@/components/Goal/Celebration/celebration-parts';
 
 function mediaQueryStub(query: string, matches: boolean): MediaQueryList {
   return {
@@ -77,10 +76,4 @@ export function animationsOn(
   element: Element
 ): PlayedAnimation[] {
   return animationsPlayed.filter((played) => played.element === element);
-}
-
-export function waitsForTheCelebration(element: Element): boolean {
-  const { animation, animationDelay } = getComputedStyle(element);
-
-  return `${animation} ${animationDelay}`.includes(`var(${CELEBRATION_WAIT}`);
 }

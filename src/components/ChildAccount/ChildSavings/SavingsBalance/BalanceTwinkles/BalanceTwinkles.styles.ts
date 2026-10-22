@@ -1,7 +1,6 @@
 import { css, keyframes, type SerializedStyles } from '@emotion/react';
 import styled from '@emotion/styled';
 import { REDUCED_MOTION } from '@/theme/motion';
-import { afterTheCelebrationWait } from '@/components/Goal/Celebration/celebration-parts';
 import { FIRST_TWINKLE_MS, TWINKLE_GAP_MS, type TwinklePlace } from './constants';
 
 const twinkle = keyframes`
@@ -41,7 +40,7 @@ function placeOf({ place, turn }: PlacedTwinkle): SerializedStyles {
   return css`
     left: calc(50% + ${xPx - TWINKLE_SIZE / 2}px);
     top: calc(50% + ${yPx - TWINKLE_SIZE / 2}px);
-    animation-delay: ${afterTheCelebrationWait(FIRST_TWINKLE_MS + turn * TWINKLE_GAP_MS)};
+    animation-delay: ${FIRST_TWINKLE_MS + turn * TWINKLE_GAP_MS}ms;
   `;
 }
 

@@ -9,11 +9,14 @@ import { PiggyBankAndCoins } from './PiggyBankAndCoins';
 import { PrincipalAndInterest } from './PrincipalAndInterest';
 import { SavingsBalance } from './SavingsBalance';
 import { type ChildSavingsProps, useSavingsShown } from './use-savings-shown';
-import { useCelebrationWait } from './use-celebration-wait';
+import { useGoalReachedOnceTheCoinsSettle } from './use-goal-reached-once-the-coins-settle';
 import { CHILD_SAVINGS_COPY, CHILD_SAVINGS_TEST_IDS } from './constants';
 import { Card, GoalSpace } from './ChildSavings.styles';
 
-function goalProgressOf(savedTowardGoal?: SavedTowardGoal): JSX.Element | undefined {
+function goalProgressOf(
+  savedTowardGoal: SavedTowardGoal | undefined,
+  isGoalReached: boolean
+): JSX.Element | undefined {
   if (!savedTowardGoal) {
     return;
   }
@@ -21,7 +24,7 @@ function goalProgressOf(savedTowardGoal?: SavedTowardGoal): JSX.Element | undefi
   return (
     <GoalSpace>
       <GoalProgress
-        savedTowardGoal={savedTowardGoal}
+        savedTowardGoal={{ ...savedTowardGoal, isGoalReached }}
         size={GOAL_PROGRESS_SIZE.large}
         glowWhenReached
         celebratesWhenReached
@@ -33,9 +36,11 @@ function goalProgressOf(savedTowardGoal?: SavedTowardGoal): JSX.Element | undefi
 export function ChildSavings(childSavingsProps: ChildSavingsProps): JSX.Element {
   const balanceElement = useRef<HTMLDivElement>(null);
   const { savingsShown, interestCoins, collect, land } = useSavingsShown(childSavingsProps);
-  const { isGoalReached } = savingsShown;
-  const celebrationWaitMs = useCelebrationWait({ isGoalReached, interestCoins });
-  const goalProgress = goalProgressOf(savingsShown.savedTowardGoal);
+  const isGoalReached = useGoalReachedOnceTheCoinsSettle({
+    isGoalReached: savingsShown.isGoalReached,
+    interestCoins,
+  });
+  const goalProgress = goalProgressOf(savingsShown.savedTowardGoal, isGoalReached);
   const celebration = isGoalReached && <Celebration />;
 
   return (
@@ -43,7 +48,6 @@ export function ChildSavings(childSavingsProps: ChildSavingsProps): JSX.Element 
       aria-label={CHILD_SAVINGS_COPY.title}
       data-testid={CHILD_SAVINGS_TEST_IDS.card}
       celebrating={isGoalReached}
-      celebrationWaitMs={celebrationWaitMs}
     >
       <PiggyBankAndCoins
         interestCoins={interestCoins}
