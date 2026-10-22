@@ -21,3 +21,9 @@ export function prefersReducedMotion(): void {
 export function prefersMotion(): void {
   window.matchMedia = (query: string): MediaQueryList => mediaQueryStub(query, false);
 }
+
+const STILL = ['', 'none'];
+
+export function moves(element: Element): boolean {
+  return !STILL.includes(getComputedStyle(element).animation);
+}

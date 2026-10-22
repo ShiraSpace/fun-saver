@@ -33,10 +33,10 @@ Each family can have multiple accounts (one per child), each with its own theme 
 git clone https://github.com/ShiraSpace/fun-saver.git
 cd fun-saver
 npm install
-npm run dev:mobile
+npm run dev
 ```
 
-Then open http://localhost:3000.
+Then open http://localhost:3000, or the `Network:` address it prints from a phone on the same Wi-Fi.
 
 To see the seeded "daily interest" row exactly like the design mock, freeze the clock:
 
@@ -62,8 +62,8 @@ FUNSAVER_NOW=2026-01-01 npm run dev
 
 | Command                          | What it does                                                                                           |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `npm run dev`                    | Start the dev server                                                                                   |
-| `npm run dev:mobile`             | Dev server bound to `0.0.0.0`                                                                          |
+| `npm run dev`                    | Start the dev server on the local `src/db/data.json`                                                   |
+| `npm run dev:neon`               | Start the dev server on the Neon `dev` branch (`DEV_DATABASE_URL`)                                     |
 | `npm test`                       | Run unit tests — matches `*.test.ts` only, so the live-database suites never load                      |
 | `npm run test:db`                | Run the `src/**/__tests__/*.e2e.ts` Postgres suites against the Neon `test` branch                     |
 | `npm run test:e2e`               | Postgres suites, then the visual build, then the browser suites — needs `TEST_DATABASE_URL`            |
@@ -110,9 +110,10 @@ TEST_DATABASE_URL=
 | Context                             | Store                                             |
 | ----------------------------------- | ------------------------------------------------- |
 | `FUNSAVER_DATA_PATH` set (e2e)      | JSON at the given path — always wins              |
-| `NODE_ENV=development` (`next dev`) | Postgres via `DEV_DATABASE_URL` if set, else JSON |
+| `npm run dev`                       | JSON at `src/db/data.json`                        |
+| `npm run dev:neon` (`next dev`)     | Postgres via `DEV_DATABASE_URL` if set, else JSON |
 | `next start` / Vercel               | Postgres via `DATABASE_URL` if set, else JSON     |
-| Jest (`npm test`)                   | JSON (env not loaded)                             |
+| Jest (`npm test`)                   | In-memory, or a temp JSON per test                |
 | `npm run test:db`                   | Postgres via `TEST_DATABASE_URL`                  |
 
 ### Applying the schema

@@ -8,7 +8,7 @@ export const Hero = styled.div<{ isGoalReached: boolean }>`
   background: ${({ theme }): string => theme.colors.surface};
   box-shadow: ${({ isGoalReached, theme }): string =>
     isGoalReached
-      ? `0 5px 0 ${theme.shadows.soft}, 0 0 0 4px ${theme.colors.celebrationGold}, 0 0 34px ${theme.colors.celebrationGold}`
+      ? `0 5px 0 ${theme.shadows.soft}, 0 0 0 4px ${theme.colors.celebrationOutline}, 0 0 34px ${theme.colors.celebrationOutline}`
       : `0 5px 0 ${theme.shadows.soft}`};
 `;
 
@@ -63,7 +63,8 @@ export const Encouragement = styled.div<{ isGoalReached: boolean }>`
   padding: 9px;
   border-radius: 14px;
   border: 1.5px solid
-    ${({ isGoalReached, theme }): string => (isGoalReached ? theme.colors.gainText : theme.colors.softBorder)};
+    ${({ isGoalReached, theme }): string =>
+      isGoalReached ? theme.colors.gainText : theme.colors.softBorder};
   background: ${({ isGoalReached, theme }): string =>
     isGoalReached ? theme.colors.gainSoftBg : theme.colors.softBg};
   color: ${({ isGoalReached, theme }): string =>

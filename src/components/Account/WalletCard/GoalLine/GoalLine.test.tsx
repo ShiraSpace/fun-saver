@@ -10,6 +10,7 @@ import { GOAL_PROGRESS_TEST_IDS } from '@/components/Goal/GoalProgress/constants
 import { GoalLine } from './GoalLine';
 import { getThemeTokens, THEME_ID } from '@/theme/registry';
 import { hexToRgb } from '@/test-utils/css-color';
+import { moves } from '@/test-utils/motion';
 import { GOAL_LINE_COPY, GOAL_LINE_TEST_IDS } from './constants';
 
 describe('GoalLine', () => {
@@ -93,5 +94,16 @@ describe('GoalLine', () => {
     it('offers no goal', () => {
       expect(screen.queryByTestId(GOAL_LINE_TEST_IDS.setGoal)).not.toBeInTheDocument();
     });
+  });
+
+  it('celebrates a reached goal by wobbling its picture', () => {
+    render(
+      <GoalLine
+        wallet={mockSavingsWallet}
+        savedTowardGoal={createMockSavedTowardGoal({ isGoalReached: true })}
+      />
+    );
+
+    expect(moves(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture))).toBe(true);
   });
 });

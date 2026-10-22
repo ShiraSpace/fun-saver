@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { applyStoredThemeScript, everyThemeAsCss } from '@/theme/theme-at-first-paint';
 import { LoadingShell } from '@/components/LoadingShell';
+import { TRAVELLING_BORDER_ANGLE_RULE } from '@/components/Goal/Celebration/constants';
 import { LoaderProvider } from '@/hooks/loader-context';
 import { EmotionStyleRegistry } from './EmotionStyleRegistry';
 
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="he" dir="rtl" suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
         <style>{themeCss}</style>
+        <style>{TRAVELLING_BORDER_ANGLE_RULE}</style>
         <script>{themeScript}</script>
         <EmotionStyleRegistry>
           <LoaderProvider>

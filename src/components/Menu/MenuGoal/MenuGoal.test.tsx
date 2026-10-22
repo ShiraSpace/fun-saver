@@ -1,7 +1,11 @@
 import { fireEvent, render, screen, within } from '@/test-utils/render';
 import { WithMenu } from '@/test-utils/menu';
 import { mockAccountsContext, createMockAccountsContext } from '@/test-utils/mocks/account.mocks';
-import { mockAccountSavingForGoal } from '@/test-utils/mocks/goal.mocks';
+import {
+  mockAccountSavingForGoal,
+  mockAccountWithGoalReached,
+} from '@/test-utils/mocks/goal.mocks';
+import { moves } from '@/test-utils/motion';
 import { APP_MODE, AppModeProvider } from '@/components/AccountManagement/app-mode-context';
 import { GOAL_PROGRESS_TEST_IDS } from '@/components/Goal/GoalProgress/constants';
 import { MenuGoal } from './MenuGoal';
@@ -100,5 +104,20 @@ describe('MenuGoal', () => {
 
       expect(mockSetMode).toHaveBeenCalledWith(APP_MODE.cancellingGoal);
     });
+  });
+
+  it('keeps a reached goal still, leaving the celebration to the savings card', () => {
+    const mockSetMode = jest.fn();
+    const mockCloseMenu = jest.fn();
+    render(
+      <AppModeProvider value={{ mode: APP_MODE.viewing, setMode: mockSetMode }}>
+        <WithMenu closeMenu={mockCloseMenu}>
+          <MenuGoal />
+        </WithMenu>
+      </AppModeProvider>,
+      { accounts: createMockAccountsContext({ currentAccount: mockAccountWithGoalReached }) }
+    );
+
+    expect(moves(screen.getByTestId(GOAL_PROGRESS_TEST_IDS.picture))).toBe(false);
   });
 });

@@ -12,6 +12,7 @@ import { Fill, Track } from './GoalProgressBar.styles';
 interface GoalProgressBarProps {
   savedTowardGoal: SavedTowardGoal;
   thin?: boolean;
+  celebrating?: boolean;
 }
 
 function savedPercent({ saved, goal }: SavedTowardGoal): number {
@@ -23,6 +24,7 @@ function savedPercent({ saved, goal }: SavedTowardGoal): number {
 export function GoalProgressBar({
   savedTowardGoal,
   thin = false,
+  celebrating = false,
 }: GoalProgressBarProps): JSX.Element {
   const { saved, goal, isGoalReached } = savedTowardGoal;
   const fillStyle = { width: `${savedPercent(savedTowardGoal)}%` };
@@ -38,6 +40,7 @@ export function GoalProgressBar({
       aria-valuenow={savedShekels}
       data-testid={GOAL_PROGRESS_BAR_TEST_IDS.bar}
       thin={thin}
+      celebrating={celebrating}
     >
       <Fill
         data-testid={GOAL_PROGRESS_BAR_TEST_IDS.fill}
