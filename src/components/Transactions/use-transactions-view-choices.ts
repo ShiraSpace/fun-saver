@@ -59,7 +59,7 @@ export function useTransactionsViewChoices(): TransactionsViewChoices {
     useState<readonly ShownBalance[]>(DEFAULT_SHOWN_BALANCES);
   const [transactionTypeFilter, setTransactionTypeFilter] =
     useState<TransactionTypeFilter>(ALL_TRANSACTION_TYPES);
-  const [interestMode, setInterestMode] = useState<InterestMode>(INTEREST_MODE.monthly);
+  const [interestMode, setInterestMode] = useState<InterestMode>(INTEREST_MODE.byPeriod);
 
   return {
     range,

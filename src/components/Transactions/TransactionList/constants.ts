@@ -26,7 +26,7 @@ export const TRANSACTION_TYPE_FILTERS: readonly Choice<TransactionTypeFilter>[] 
 ];
 
 export const INTEREST_MODES: readonly Choice<InterestMode>[] = [
-  { id: INTEREST_MODE.monthly, label: 'חודשית' },
+  { id: INTEREST_MODE.byPeriod, label: 'מרוכזת' },
   { id: INTEREST_MODE.daily, label: 'יומית' },
 ];
 

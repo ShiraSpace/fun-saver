@@ -3,7 +3,10 @@ import type { WalletSummary } from './types';
 import { PERCENT_TOTAL } from './constants';
 import { TRANSACTION_TYPE } from '@/lib/transaction/constants';
 
-function totalAmount(transactions: Transaction[], type: TransactionType): number {
+function totalAmount(
+  transactions: Pick<Transaction, 'type' | 'amount'>[],
+  type: TransactionType
+): number {
   return transactions
     .filter((transaction) => transaction.type === type)
     .reduce((total, transaction) => total + transaction.amount, 0);
@@ -27,7 +30,7 @@ export function principal(transactions: Transaction[]): number {
   return deposited(transactions) - withdrawn(transactions);
 }
 
-export function interestEarned(transactions: Transaction[]): number {
+export function interestEarned(transactions: Pick<Transaction, 'type' | 'amount'>[]): number {
   return totalAmount(transactions, TRANSACTION_TYPE.interest);
 }
 

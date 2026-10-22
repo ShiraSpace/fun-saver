@@ -4,13 +4,14 @@ import type { TransactionListRow } from '../transaction-rows';
 import { balanceChange } from '@/lib/wallet/balance';
 import {
   createMockTransaction,
+  mockMonthOfInterest,
+  mockMonthOfInterestLastDay,
   mockOpeningDeposit,
   mockWalletDeposits,
 } from '@/test-utils/mocks/transaction.mocks';
 import { createMockWallets } from '@/test-utils/mocks/wallet.mocks';
 import {
   balanceHistoryFor,
-  closingBalances,
   rowsOfType,
   transactionListRowsFor,
 } from '@/test-utils/transaction-rows';
@@ -26,7 +27,7 @@ describe('the transaction list rows', () => {
     let rows: TransactionListRow[];
 
     beforeEach(() => {
-      rows = transactionListRowsFor(mockWalletDeposits, INTEREST_MODE.monthly, '2026-01-01');
+      rows = transactionListRowsFor(mockWalletDeposits, INTEREST_MODE.byPeriod, '2026-01-01');
     });
 
     it('is listed as one deposit', () => {
@@ -51,7 +52,7 @@ describe('the transaction list rows', () => {
 
     const rows = transactionListRowsFor(
       [mockOpeningDeposit, mockNextDayDeposit],
-      INTEREST_MODE.monthly,
+      INTEREST_MODE.byPeriod,
       '2026-01-02'
     );
 
@@ -67,25 +68,21 @@ describe('the transaction list rows', () => {
     }
 
     beforeEach(() => {
-      rows = transactionListRowsFor(mockBusyDayTransactions, INTEREST_MODE.monthly, mockBusyDay);
+      rows = transactionListRowsFor(mockBusyDayTransactions, INTEREST_MODE.byPeriod, mockBusyDay);
       busyDayBalanceHistory = balanceHistoryFor(mockBusyDayTransactions, mockBusyDay);
     });
 
-    it('shows the balance the day closed on beside a deposit or a withdrawal', () => {
-      const depositAndWithdrawalRows = rows.filter((row) => row.type !== TRANSACTION_TYPE.interest);
+    it('shows the balance the day closed on beside that day’s newest transaction', () => {
+      const [newestBusyDayRow] = busyDayRows();
+      const busyDayClosingBalance = totalBalanceByDay(busyDayBalanceHistory).get(mockBusyDay);
 
-      expect(depositAndWithdrawalRows.map((row) => row.balance)).toEqual(
-        closingBalances(depositAndWithdrawalRows, busyDayBalanceHistory)
-      );
+      expect(newestBusyDayRow.balance).toBe(busyDayClosingBalance);
     });
 
-    it('gives a deposit and a withdrawal on the same day the same balance', () => {
-      const [withdrawalRow] = rowsOfType(rows, TRANSACTION_TYPE.withdrawal);
-      const busyDayDepositRow = rowsOfType(rows, TRANSACTION_TYPE.deposit).find(
-        (row) => row.day === mockBusyDay
-      );
+    it('shows an earlier transaction that day the balance from before the later one', () => {
+      const [withdrawalRow, depositRow] = busyDayRows();
 
-      expect(withdrawalRow.balance).toBe(busyDayDepositRow?.balance);
+      expect(depositRow.balance).toBe(withdrawalRow.balance - withdrawalRow.balanceChange);
     });
 
     it.each(Object.values(INTEREST_MODE))(
@@ -133,7 +130,20 @@ describe('the transaction list rows', () => {
     });
   });
 
+  it('gives every row the balance of the row below it plus its own change', () => {
+    const rows = transactionListRowsFor(
+      [...mockWalletDeposits, ...mockMonthOfInterest, mockBusyDayWithdrawal],
+      INTEREST_MODE.byPeriod,
+      mockMonthOfInterestLastDay
+    );
+    const rowsAboveTheFirst = rows.slice(0, -1);
+
+    expect(rowsAboveTheFirst.map((row) => row.balance)).toEqual(
+      rowsAboveTheFirst.map((row, index) => rows[index + 1].balance + row.balanceChange)
+    );
+  });
+
   it('has nothing to list for an account with no transactions', () => {
-    expect(transactionListRowsFor([], INTEREST_MODE.monthly, '2026-01-01')).toEqual([]);
+    expect(transactionListRowsFor([], INTEREST_MODE.byPeriod, '2026-01-01')).toEqual([]);
   });
 });

@@ -51,7 +51,6 @@ export function Transactions({
               transactions={transactions}
               wallets={currentAccount.wallets}
               balanceHistory={balanceHistory}
-              asOf={asOf}
               viewChoices={viewChoices}
             />
           </Column>

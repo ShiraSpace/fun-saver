@@ -9,22 +9,32 @@ import type { Transaction } from '../types';
 import {
   createMockTransaction,
   mockMonthOfInterest,
+  mockMonthOfInterestLastDay,
   mockOpeningDeposit,
+  mockWalletDeposits,
+  mockBusyDay,
+  mockBusyDayTransactions,
+  mockBusyDayWithdrawal,
 } from '@/test-utils/mocks/transaction.mocks';
 import {
   balanceHistoryFor,
-  closingBalances,
   rowsOfType,
   transactionListRowsFor,
 } from '@/test-utils/transaction-rows';
-import { mockBusyDay, mockBusyDayTransactions } from '@/test-utils/mocks/transaction.mocks';
+import { totalBalanceByDay } from '@/lib/wallet/balance-history';
 
 describe('what the transaction list shows', () => {
+  const mockDecemberDeposit = createMockTransaction({
+    id: 'december-deposit',
+    occurredAt: '2025-12-30',
+    createdAt: '2025-12-30T08:00:00.000Z',
+  });
+
   describe('filtered by type', () => {
     let rows: TransactionListRow[];
 
     beforeEach(() => {
-      rows = transactionListRowsFor(mockBusyDayTransactions, INTEREST_MODE.monthly, mockBusyDay);
+      rows = transactionListRowsFor(mockBusyDayTransactions, INTEREST_MODE.byPeriod, mockBusyDay);
     });
 
     it('shows every row under הכל', () => {
@@ -39,10 +49,12 @@ describe('what the transaction list shows', () => {
 
     it('keeps each row’s true balance', () => {
       const withdrawalRows = filterByTransactionType(rows, TRANSACTION_TYPE.withdrawal);
-      const busyDayBalanceHistory = balanceHistoryFor(mockBusyDayTransactions, mockBusyDay);
+      const closingBalanceByDay = totalBalanceByDay(
+        balanceHistoryFor(mockBusyDayTransactions, mockBusyDay)
+      );
 
       expect(withdrawalRows.map((row) => row.balance)).toEqual(
-        closingBalances(withdrawalRows, busyDayBalanceHistory)
+        withdrawalRows.map((row) => closingBalanceByDay.get(row.day))
       );
     });
   });
@@ -61,23 +73,54 @@ describe('what the transaction list shows', () => {
       return rowsOfType(rows, TRANSACTION_TYPE.interest);
     }
 
-    describe('shown monthly', () => {
+    describe('shown by period, with no transaction between its days', () => {
       let interestRow: TransactionListRow;
 
       beforeEach(() => {
-        [interestRow] = interestRowsFor(INTEREST_MODE.monthly);
+        [interestRow] = interestRowsFor(INTEREST_MODE.byPeriod);
       });
 
-      it('adds up the whole month in one row', () => {
+      it('adds up every day in one row', () => {
         expect(interestRow.balanceChange).toBe(27);
       });
 
       it('counts the days interest was paid', () => {
-        expect(interestRow.interestDays).toBe(mockMonthOfInterest.length);
+        expect(interestRow.interestPeriod?.days).toBe(mockMonthOfInterest.length);
       });
 
       it('sits on the last day interest was paid', () => {
         expect(interestRow.day).toBe('2026-01-04');
+      });
+    });
+
+    describe('shown by period, with a withdrawal between its days', () => {
+      let interestRows: TransactionListRow[];
+
+      beforeEach(() => {
+        interestRows = rowsOfType(
+          transactionListRowsFor(
+            [...mockWalletDeposits, ...mockMonthOfInterest, mockBusyDayWithdrawal],
+            INTEREST_MODE.byPeriod,
+            mockMonthOfInterestLastDay
+          ),
+          TRANSACTION_TYPE.interest
+        );
+      });
+
+      it('starts a new interest row after the withdrawal', () => {
+        expect(interestRows.map((row) => row.day)).toEqual([
+          mockMonthOfInterestLastDay,
+          mockBusyDayWithdrawal.occurredAt,
+        ]);
+      });
+
+      it('gives a single day of interest no period', () => {
+        const singleDayRow = interestRows.find(
+          (row) => row.day === mockBusyDayWithdrawal.occurredAt
+        );
+
+        expect(singleDayRow).toBeDefined();
+        expect(singleDayRow).not.toHaveProperty('interestPeriod');
       });
     });
 
@@ -96,24 +139,51 @@ describe('what the transaction list shows', () => {
           })
       );
 
-      expect(interestRowsFor(INTEREST_MODE.monthly, mockUnnamedWalletsInterest)).toHaveLength(
+      expect(interestRowsFor(INTEREST_MODE.byPeriod, mockUnnamedWalletsInterest)).toHaveLength(
         mockUnnamedWalletsInterest.length
       );
     });
   });
 
-  it('groups rows under the month they happened in, newest month first', () => {
-    const mockDecemberDeposit = createMockTransaction({
-      id: 'december',
+  describe('across the turn of a month', () => {
+    const mockDecemberInterest = createMockTransaction({
+      id: 'december-interest',
+      type: TRANSACTION_TYPE.interest,
+      amount: 9,
       occurredAt: '2025-12-31',
-      createdAt: '2025-12-31T08:00:00.000Z',
     });
-    const rows = transactionListRowsFor(
-      [mockDecemberDeposit, mockOpeningDeposit],
-      INTEREST_MODE.monthly,
-      '2026-01-01'
+    const mockTurnOfTheMonthTransactions = [
+      mockDecemberDeposit,
+      mockDecemberInterest,
+      ...mockMonthOfInterest,
+    ];
+    const mockRows = transactionListRowsFor(
+      mockTurnOfTheMonthTransactions,
+      INTEREST_MODE.byPeriod,
+      mockMonthOfInterestLastDay
     );
 
-    expect(monthSections(rows).map((section) => section.month)).toEqual(['2026-01', '2025-12']);
+    it('ends an interest row with its month', () => {
+      expect(rowsOfType(mockRows, TRANSACTION_TYPE.interest).map((row) => row.day)).toEqual([
+        mockMonthOfInterestLastDay,
+        mockDecemberInterest.occurredAt,
+      ]);
+    });
+
+    it('adds up each month’s interest beside it', () => {
+      const sections = monthSections(mockRows, mockTurnOfTheMonthTransactions);
+
+      expect(sections.map((section) => section.interestEarned)).toEqual([27, 9]);
+    });
+  });
+
+  it('groups rows under the month they happened in, newest month first', () => {
+    const mockDeposits = [mockDecemberDeposit, mockOpeningDeposit];
+    const rows = transactionListRowsFor(mockDeposits, INTEREST_MODE.byPeriod, '2026-01-01');
+
+    expect(monthSections(rows, mockDeposits).map((section) => section.month)).toEqual([
+      '2026-01',
+      '2025-12',
+    ]);
   });
 });

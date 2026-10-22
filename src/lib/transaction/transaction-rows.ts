@@ -1,23 +1,26 @@
-import {
-  dailyBalanceChanges,
-  totalBalanceByDay,
-  type BalanceHistory,
-} from '@/lib/wallet/balance-history';
+import { totalBalanceByDay, type BalanceHistory } from '@/lib/wallet/balance-history';
 import { calendarMonth } from '@/lib/dates';
+import { interestEarned } from '@/lib/wallet/balance';
 import {
   dailyInterestRows,
   depositRows,
-  monthlyInterestRows,
+  interestPeriodRows,
+  isInterest,
   walletNamesById,
   withdrawalRows,
   type TransactionListRowWithoutBalance,
 } from './transaction-row-builders';
-import { ALL_TRANSACTION_TYPES, INTEREST_MODE, TRANSACTION_TYPE } from './constants';
+import { ALL_TRANSACTION_TYPES, INTEREST_MODE } from './constants';
 import type { Transaction, TransactionType } from './types';
 import type { Wallet, WalletName } from '@/lib/wallet/types';
 
 export type InterestMode = (typeof INTEREST_MODE)[keyof typeof INTEREST_MODE];
 export type TransactionTypeFilter = typeof ALL_TRANSACTION_TYPES | TransactionType;
+
+export interface InterestPeriod {
+  firstDay: string;
+  days: number;
+}
 
 export interface TransactionListRow {
   key: string;
@@ -26,13 +29,14 @@ export interface TransactionListRow {
   day: string;
   balanceChange: number;
   balance: number;
-  interestDays?: number;
+  interestPeriod?: InterestPeriod;
   createdAt: string;
 }
 
 export interface MonthSection {
   month: string;
   rows: TransactionListRow[];
+  interestEarned: number;
 }
 
 export interface TransactionListRowsInput {
@@ -44,40 +48,34 @@ export interface TransactionListRowsInput {
 
 export type ListedTransaction = TransactionListRowsInput['transactions'][number];
 
-function isInterest({ type }: Pick<Transaction, 'type'>): boolean {
-  return type === TRANSACTION_TYPE.interest;
-}
-
-function dailyDepositsAndWithdrawals(transactions: ListedTransaction[]): Map<string, number> {
-  const depositsAndWithdrawals = transactions.filter((transaction) => !isInterest(transaction));
-
-  return dailyBalanceChanges(depositsAndWithdrawals);
-}
-
 function withBalances(
-  rows: TransactionListRowWithoutBalance[],
-  input: TransactionListRowsInput
+  rowsNewestFirst: TransactionListRowWithoutBalance[],
+  balanceHistory: BalanceHistory
 ): TransactionListRow[] {
-  const endOfDayTotalBalanceByDay = totalBalanceByDay(input.balanceHistory);
-  const depositsAndWithdrawalsByDay = dailyDepositsAndWithdrawals(input.transactions);
+  const endOfDayTotalBalanceByDay = totalBalanceByDay(balanceHistory);
+  const rowsWithBalances: TransactionListRow[] = [];
 
-  return rows.map((row) => {
-    const endOfDayTotalBalance = endOfDayTotalBalanceByDay.get(row.day) ?? 0;
-    const depositsAndWithdrawalsThatDay = depositsAndWithdrawalsByDay.get(row.day) ?? 0;
-    const balanceChangeLaterThatDay = isInterest(row) ? depositsAndWithdrawalsThatDay : 0;
+  for (const row of rowsNewestFirst) {
+    const newerRow = rowsWithBalances.at(-1);
+    const balance =
+      newerRow?.day === row.day
+        ? newerRow.balance - newerRow.balanceChange
+        : (endOfDayTotalBalanceByDay.get(row.day) ?? 0);
 
-    return {
-      ...row,
-      balance: endOfDayTotalBalance - balanceChangeLaterThatDay,
-    };
-  });
+    rowsWithBalances.push({ ...row, balance });
+  }
+
+  return rowsWithBalances;
 }
 
-function interestRank(row: TransactionListRow): number {
+function interestRank(row: TransactionListRowWithoutBalance): number {
   return isInterest(row) ? 1 : 0;
 }
 
-function newestFirst(a: TransactionListRow, b: TransactionListRow): number {
+function newestFirst(
+  a: TransactionListRowWithoutBalance,
+  b: TransactionListRowWithoutBalance
+): number {
   const newerDayFirst = b.day.localeCompare(a.day);
   const interestLastWithinADay = interestRank(a) - interestRank(b);
   const laterCreatedFirst = b.createdAt.localeCompare(a.createdAt);
@@ -88,7 +86,7 @@ function newestFirst(a: TransactionListRow, b: TransactionListRow): number {
 export function transactionListRows(input: TransactionListRowsInput): TransactionListRow[] {
   const walletNameById = walletNamesById(input.wallets);
   const listsEveryInterestDay = input.interestMode === INTEREST_MODE.daily;
-  const interestRows = listsEveryInterestDay ? dailyInterestRows : monthlyInterestRows;
+  const interestRows = listsEveryInterestDay ? dailyInterestRows : interestPeriodRows;
 
   const rows = [
     ...depositRows(input.transactions),
@@ -96,9 +94,7 @@ export function transactionListRows(input: TransactionListRowsInput): Transactio
     ...interestRows(input.transactions, walletNameById),
   ];
 
-  const rowsWithBalances = withBalances(rows, input);
-
-  return rowsWithBalances.sort(newestFirst);
+  return withBalances(rows.sort(newestFirst), input.balanceHistory);
 }
 
 export function filterByTransactionType(
@@ -110,7 +106,18 @@ export function filterByTransactionType(
   return listsEveryType ? rows : rows.filter((row) => row.type === transactionTypeFilter);
 }
 
-export function monthSections(rows: TransactionListRow[]): MonthSection[] {
+function interestEarnedIn(month: string, transactions: ListedTransaction[]): number {
+  const transactionsThatMonth = transactions.filter(
+    (transaction) => calendarMonth(transaction.occurredAt) === month
+  );
+
+  return interestEarned(transactionsThatMonth);
+}
+
+export function monthSections(
+  rows: TransactionListRow[],
+  transactions: ListedTransaction[]
+): MonthSection[] {
   const sections: MonthSection[] = [];
 
   for (const row of rows) {
@@ -121,7 +128,7 @@ export function monthSections(rows: TransactionListRow[]): MonthSection[] {
     if (belongsToCurrentSection) {
       currentSection.rows.push(row);
     } else {
-      sections.push({ month, rows: [row] });
+      sections.push({ month, rows: [row], interestEarned: interestEarnedIn(month, transactions) });
     }
   }
 

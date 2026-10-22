@@ -12,7 +12,7 @@ export const ALL_TRANSACTION_TYPES = 'all';
 export const NO_TRANSACTIONS: Transaction[] = [];
 
 export const INTEREST_MODE = {
-  monthly: 'monthly',
+  byPeriod: 'byPeriod',
   daily: 'daily',
 } as const;
 

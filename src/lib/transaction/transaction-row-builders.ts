@@ -2,18 +2,24 @@ import { calendarMonth } from '@/lib/dates';
 import { TRANSACTION_TYPE } from './constants';
 import { balanceChange } from '@/lib/wallet/balance';
 import type {
+  InterestPeriod,
   ListedTransaction,
   TransactionListRow,
   TransactionListRowsInput,
 } from './transaction-rows';
-import type { TransactionType } from './types';
+import type { Transaction, TransactionType } from './types';
 import type { WalletName } from '@/lib/wallet/types';
 
 export type TransactionListRowWithoutBalance = Omit<TransactionListRow, 'balance'>;
 export type WalletNameById = Map<string, WalletName>;
+type InterestPeriodRow = TransactionListRowWithoutBalance & { interestPeriod: InterestPeriod };
 
 export function walletNamesById(wallets: TransactionListRowsInput['wallets']): WalletNameById {
   return new Map(wallets.map((wallet) => [wallet.id, wallet.name]));
+}
+
+export function isInterest({ type }: Pick<Transaction, 'type'>): boolean {
+  return type === TRANSACTION_TYPE.interest;
 }
 
 function transactionsOfType(
@@ -23,14 +29,11 @@ function transactionsOfType(
   return transactions.filter((transaction) => transaction.type === type);
 }
 
-function combinedByKey(
-  rows: TransactionListRowWithoutBalance[],
-  combine: (
-    combinedRow: TransactionListRowWithoutBalance,
-    row: TransactionListRowWithoutBalance
-  ) => TransactionListRowWithoutBalance
-): TransactionListRowWithoutBalance[] {
-  const combinedRowByKey = new Map<string, TransactionListRowWithoutBalance>();
+function combinedByKey<Row extends TransactionListRowWithoutBalance>(
+  rows: Row[],
+  combine: (combinedRow: Row, row: Row) => Row
+): Row[] {
+  const combinedRowByKey = new Map<string, Row>();
 
   for (const row of rows) {
     const rowSoFar = combinedRowByKey.get(row.key);
@@ -96,26 +99,56 @@ export function dailyInterestRows(
   return dailyInterest.map((transaction) => dailyInterestRow(transaction, walletNameById));
 }
 
-export function monthlyInterestRows(
+function depositAndWithdrawalDays(transactions: ListedTransaction[]): string[] {
+  const days = transactions
+    .filter((transaction) => !isInterest(transaction))
+    .map((transaction) => transaction.occurredAt);
+
+  return [...new Set(days)].sort();
+}
+
+function interestPeriodKey(interestDay: string, periodEndDays: string[]): string {
+  const month = calendarMonth(interestDay);
+  const nextDepositOrWithdrawalDay = periodEndDays.find((day) => day >= interestDay);
+  const periodEndsWithinTheMonth =
+    nextDepositOrWithdrawalDay !== undefined && calendarMonth(nextDepositOrWithdrawalDay) === month;
+
+  return periodEndsWithinTheMonth ? nextDepositOrWithdrawalDay : month;
+}
+
+function withoutSingleDayPeriod({
+  interestPeriod,
+  ...row
+}: InterestPeriodRow): TransactionListRowWithoutBalance {
+  const coversSeveralDays = interestPeriod.days > 1;
+
+  return coversSeveralDays ? { ...row, interestPeriod } : row;
+}
+
+export function interestPeriodRows(
   transactions: ListedTransaction[],
   walletNameById: WalletNameById
 ): TransactionListRowWithoutBalance[] {
+  const periodEndDays = depositAndWithdrawalDays(transactions);
   const dailyInterest = transactionsOfType(transactions, TRANSACTION_TYPE.interest);
-  const dailyRows = dailyInterest.map((transaction) => ({
+  const dailyRows: InterestPeriodRow[] = dailyInterest.map((transaction) => ({
     ...dailyInterestRow(transaction, walletNameById),
-    key: `interest:${transaction.walletId}:${calendarMonth(transaction.occurredAt)}`,
-    interestDays: 1,
+    key: `interest:${transaction.walletId}:${interestPeriodKey(transaction.occurredAt, periodEndDays)}`,
+    interestPeriod: { firstDay: transaction.occurredAt, days: 1 },
   }));
 
-  return combinedByKey(dailyRows, (monthlyRow, dailyRow) => {
-    const interestDaysSoFar = monthlyRow.interestDays ?? 0;
-    const lastInterestDay = dailyRow.day > monthlyRow.day ? dailyRow.day : monthlyRow.day;
+  const periodRows = combinedByKey(dailyRows, (periodRow, dailyRow) => ({
+    ...periodRow,
+    balanceChange: periodRow.balanceChange + dailyRow.balanceChange,
+    interestPeriod: {
+      firstDay:
+        dailyRow.day < periodRow.interestPeriod.firstDay
+          ? dailyRow.day
+          : periodRow.interestPeriod.firstDay,
+      days: periodRow.interestPeriod.days + 1,
+    },
+    day: dailyRow.day > periodRow.day ? dailyRow.day : periodRow.day,
+  }));
 
-    return {
-      ...monthlyRow,
-      balanceChange: monthlyRow.balanceChange + dailyRow.balanceChange,
-      interestDays: interestDaysSoFar + 1,
-      day: lastInterestDay,
-    };
-  });
+  return periodRows.map(withoutSingleDayPeriod);
 }
