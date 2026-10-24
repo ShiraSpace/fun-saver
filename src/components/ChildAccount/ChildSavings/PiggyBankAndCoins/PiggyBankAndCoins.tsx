@@ -40,7 +40,7 @@ export function PiggyBankAndCoins({
           piggyBankFill={piggyBankFill}
           isGoalReached={isGoalReached}
           ref={piggyBankElement}
-          onClick={onPiggyBankTap}
+          onTap={onPiggyBankTap}
         />
         {coinFountain}
       </PiggyBankSpace>

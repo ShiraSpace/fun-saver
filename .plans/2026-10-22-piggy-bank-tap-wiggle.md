@@ -16,7 +16,7 @@ Child mode: tapping the piggy bank plays the same wiggle then breathe a landing 
 
 ## Tests
 
-`PiggyBankAndCoins.test.tsx` with `captureAnimations` / `animationsOn`: a tap wiggles, then breathes.
+`PiggyBankAndCoins.test.tsx` with `captureAnimations` / `animationsOn`: a tap wiggles; the breath after it stays covered by `piggy-bank-motion.test.ts`.
 
 ## Skipped
 
@@ -24,6 +24,6 @@ Child mode: tapping the piggy bank plays the same wiggle then breathe a landing 
 
 ## Progress
 
-- [ ] Production code
-- [ ] Tests
-- [ ] PR with screenshots
+- [x] Production code
+- [x] Tests
+- [x] PR with screenshots (#232)
