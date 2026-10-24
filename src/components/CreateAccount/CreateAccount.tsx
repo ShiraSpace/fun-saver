@@ -3,9 +3,9 @@
 import { JSX } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Account } from '@/lib/account/types';
+import { createAccount } from '@/lib/account/account-requests';
 import { AccountForm } from '@/components/AccountForm';
 import type { AccountFormValues } from '@/components/AccountForm/AccountForm';
-import { useCreateAccount } from './use-create-account';
 import { CREATE_ACCOUNT_COPY, CREATE_ACCOUNT_TEST_IDS } from './constants';
 
 interface CreateAccountProps {
@@ -15,7 +15,6 @@ interface CreateAccountProps {
 
 export function CreateAccount({ onCreated, onCancel }: CreateAccountProps): JSX.Element {
   const router = useRouter();
-  const { createAccount } = useCreateAccount();
 
   const handleSubmit = async (values: AccountFormValues): Promise<void> => {
     const account = await createAccount(values);

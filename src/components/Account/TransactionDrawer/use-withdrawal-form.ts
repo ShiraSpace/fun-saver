@@ -11,7 +11,7 @@ import {
   type SavedTowardGoal,
 } from '@/lib/goal/saved-toward-goal';
 import { REQUEST_STATE } from '@/lib/request-state';
-import { useAddTransaction } from './use-add-transaction';
+import { withdraw } from '@/lib/transaction/transaction-requests';
 import { useAmountEntry, type AmountEntry } from './use-amount-entry';
 
 interface GoalOnPickedWallet {
@@ -56,12 +56,12 @@ export function useWithdrawalForm({
   onSaved,
 }: WithdrawalFormProps): WithdrawalFormState {
   const { wallets } = account;
-  const { addWithdrawal } = useAddTransaction(account.id);
   const [selectedWalletId, setSelectedWalletId] = useState(
     () => defaultWithdrawalWallet(wallets)?.id ?? ''
   );
   const entry = useAmountEntry(
-    (amountShekels) => addWithdrawal(selectedWalletId, amountShekels),
+    (amountShekels) =>
+      withdraw({ accountId: account.id, walletId: selectedWalletId, amountShekels }),
     onSaved
   );
 

@@ -2,9 +2,9 @@
 
 import { JSX } from 'react';
 import type { Account } from '@/lib/account/types';
+import { updateAccount } from '@/lib/account/account-requests';
 import { AccountForm } from '@/components/AccountForm';
 import type { AccountFormValues } from '@/components/AccountForm/AccountForm';
-import { useUpdateAccount } from './use-update-account';
 import { EDIT_ACCOUNT_COPY, EDIT_ACCOUNT_TEST_IDS } from './constants';
 
 interface EditAccountProps {
@@ -14,8 +14,6 @@ interface EditAccountProps {
 }
 
 export function EditAccount({ account, onUpdated, onCancel }: EditAccountProps): JSX.Element {
-  const { updateAccount } = useUpdateAccount();
-
   const handleSubmit = async (values: AccountFormValues): Promise<void> => {
     await updateAccount(account.id, values);
     onUpdated();
