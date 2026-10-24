@@ -63,7 +63,7 @@ export const mockStrangerOwner: AccountOwner = {
   addedAt: mockAccountUser.addedAt,
 };
 
-export const mockCreateAccountInput = {
+export const mockCreateAccountRequest = {
   name: mockAccount.name,
   avatarId: mockAccount.avatarId,
 };

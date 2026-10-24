@@ -20,7 +20,7 @@ import { mockRouter } from '@mocks/next/navigation';
 import { HEADER_TEST_IDS } from '@/components/Header/constants';
 import { holdRefresh, NewPageData, type HeldRefresh } from '@/test-utils/held-refresh';
 
-jest.mock('./TransactionDrawer/use-add-transaction');
+jest.mock('@/lib/transaction/transaction-requests');
 
 describe('Account', () => {
   const mockAccountId = 'account-1';

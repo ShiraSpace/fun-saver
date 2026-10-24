@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
-import { mockAccount, mockCreateAccountInput } from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockCreateAccountRequest } from '@/test-utils/mocks/account.mocks';
+import { createAccount } from '@/lib/account/account-requests';
 import { CreateAccount } from './CreateAccount';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
 import { ACCOUNT_FORM_COPY, ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
@@ -9,13 +10,9 @@ import { mockRouter } from '@mocks/next/navigation';
 import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
 import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
 
-const mockCreateAccount = jest.fn();
+jest.mock('@/lib/account/account-requests');
 
-jest.mock('./use-create-account', () => ({
-  useCreateAccount: (): { createAccount: jest.Mock } => ({
-    createAccount: mockCreateAccount,
-  }),
-}));
+const mockCreateAccount = jest.mocked(createAccount);
 
 function fillAndSubmit(name: string): void {
   fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
@@ -78,7 +75,7 @@ describe('CreateAccount', () => {
     it('stays put and says so when the create fails', async () => {
       mockCreateAccount.mockRejectedValue(new Error('nope'));
 
-      fillAndSubmit(mockCreateAccountInput.name);
+      fillAndSubmit(mockCreateAccountRequest.name);
 
       expect(await screen.findByTestId(ACCOUNT_FORM_TEST_IDS.saveError)).toHaveTextContent(
         ACCOUNT_FORM_COPY.saveError
@@ -87,9 +84,9 @@ describe('CreateAccount', () => {
     });
 
     it('creates the account and navigates home on submit', async () => {
-      fillAndSubmit(mockCreateAccountInput.name);
+      fillAndSubmit(mockCreateAccountRequest.name);
 
-      expect(mockCreateAccount).toHaveBeenCalledWith(mockCreateAccountInput);
+      expect(mockCreateAccount).toHaveBeenCalledWith(mockCreateAccountRequest);
       await waitFor(() => expect(mockRouter.push).toHaveBeenCalledWith('/'));
     });
   });
@@ -111,7 +108,7 @@ describe('CreateAccount', () => {
     });
 
     it('calls onCreated with the new account instead of navigating', async () => {
-      fillAndSubmit(mockCreateAccountInput.name);
+      fillAndSubmit(mockCreateAccountRequest.name);
 
       await waitFor(() => expect(mockOnCreated).toHaveBeenCalledWith(mockAccount));
       expect(mockRouter.push).not.toHaveBeenCalled();

@@ -3,7 +3,7 @@ import { DEFAULT_THEME_ID } from '@/theme/registry';
 import { AccountsStore } from '../accounts-store';
 import { today } from '@/lib/clock';
 import { SAVINGS_MONTHLY_RATE } from '@/lib/interest/constants';
-import { mockCreateAccountInput, mockAccountEdits } from '@/test-utils/mocks/account.mocks';
+import { mockCreateAccountRequest, mockAccountEdits } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import type { Account } from '../types';
 
@@ -17,7 +17,7 @@ describe('AccountsStore', () => {
     await store.insertUser(mockUser);
     accountsStore = new AccountsStore(store);
     account = await accountsStore.createAccount({
-      input: mockCreateAccountInput,
+      input: mockCreateAccountRequest,
       ownerId: mockUser.id,
     });
   });
@@ -26,8 +26,8 @@ describe('AccountsStore', () => {
     expect(typeof account.id).toBe('string');
     expect(account.id.length).toBeGreaterThan(0);
     expect(account).toMatchObject({
-      name: mockCreateAccountInput.name,
-      avatarId: mockCreateAccountInput.avatarId,
+      name: mockCreateAccountRequest.name,
+      avatarId: mockCreateAccountRequest.avatarId,
       isActive: true,
     });
   });

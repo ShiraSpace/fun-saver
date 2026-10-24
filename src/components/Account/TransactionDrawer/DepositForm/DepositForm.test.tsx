@@ -6,17 +6,17 @@ import { splitDeposit } from '@/lib/transaction/transactions';
 import { agorotToShekels } from '@/lib/money';
 import { AGOROT_PER_SHEKEL } from '@/lib/constants';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
-import type * as AddTransactionMock from '../__mocks__/use-add-transaction';
+import { deposit } from '@/lib/transaction/transaction-requests';
 
 const mockOnSaved = jest.fn();
 
-jest.mock('../use-add-transaction');
+jest.mock('@/lib/transaction/transaction-requests');
 
-const { mockAddDeposit } = jest.requireMock<typeof AddTransactionMock>('../use-add-transaction');
+const mockDeposit = jest.mocked(deposit);
 
 describe('DepositForm', () => {
   beforeEach(() => {
-    mockAddDeposit.mockReset().mockResolvedValue(undefined);
+    mockDeposit.mockReset().mockResolvedValue(undefined);
     mockOnSaved.mockClear();
     render(<DepositForm account={mockAccountSummary} onSaved={mockOnSaved} />);
   });
@@ -78,7 +78,7 @@ describe('DepositForm', () => {
 
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
 
-    await waitFor(() => expect(mockAddDeposit).toHaveBeenCalledWith(20));
+    await waitFor(() => expect(mockDeposit).toHaveBeenCalledWith(mockAccountSummary.id, 20));
   });
 
   it('reports the deposit saved', async () => {
@@ -90,7 +90,7 @@ describe('DepositForm', () => {
   });
 
   it('shows an error, and does not report it saved, when the deposit fails', async () => {
-    mockAddDeposit.mockRejectedValueOnce(new Error('boom'));
+    mockDeposit.mockRejectedValueOnce(new Error('boom'));
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('2')));
     fireEvent.click(screen.getByTestId(AMOUNT_KEYPAD_TEST_IDS.key('0')));
 
@@ -105,7 +105,7 @@ describe('DepositForm', () => {
 
   it('disables submit while the deposit is in flight', async () => {
     let resolveDeposit = (): void => {};
-    mockAddDeposit.mockReturnValueOnce(
+    mockDeposit.mockReturnValueOnce(
       new Promise<void>((resolve) => {
         resolveDeposit = resolve;
       })

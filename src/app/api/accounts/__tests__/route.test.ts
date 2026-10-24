@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { mockCreateAccountInput } from '@/test-utils/mocks/account.mocks';
+import { mockCreateAccountRequest } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
 import { getStore } from '@/db';
@@ -28,25 +28,25 @@ describe('POST /api/accounts', () => {
   }
 
   it('creates an account and returns it with 201', async () => {
-    const response = await POST(postRequest(mockCreateAccountInput));
+    const response = await POST(postRequest(mockCreateAccountRequest));
 
     expect(response.status).toBe(201);
     const account = await response.json();
     expect(account).toMatchObject({
-      ...mockCreateAccountInput,
+      ...mockCreateAccountRequest,
       isActive: true,
     });
     expect(account.id).toBeTruthy();
 
     expect(await getStore().getAccount(account.id)).toMatchObject({
-      name: mockCreateAccountInput.name,
+      name: mockCreateAccountRequest.name,
     });
   });
 
   it('refuses an unauthenticated request with 401 and stores nothing', async () => {
     jest.mocked(signedInUser).mockResolvedValue(undefined);
 
-    const response = await POST(postRequest(mockCreateAccountInput));
+    const response = await POST(postRequest(mockCreateAccountRequest));
 
     expect(response.status).toBe(401);
     expect(await getStore().listAccountsForUser(mockUser.id)).toEqual([]);
@@ -63,7 +63,7 @@ describe('POST /api/accounts', () => {
       { name: 'א'.repeat(MAX_ACCOUNT_NAME_LENGTH + 1), avatarId: 'kid-01' },
     ],
     ['an unknown avatar', { name: 'נועה', avatarId: 'not-an-avatar' }],
-    ['a field that is not an account field', { ...mockCreateAccountInput, isActive: false }],
+    ['a field that is not an account field', { ...mockCreateAccountRequest, isActive: false }],
     ['an array body', []],
     ['a non-object body', 'נועה'],
   ])('rejects %s with 400 and stores nothing', async (_label, body) => {
@@ -76,14 +76,14 @@ describe('POST /api/accounts', () => {
   it('trims the padding off the new name', async () => {
     const response = await POST(
       postRequest({
-        ...mockCreateAccountInput,
-        name: `  ${mockCreateAccountInput.name}  `,
+        ...mockCreateAccountRequest,
+        name: `  ${mockCreateAccountRequest.name}  `,
       })
     );
 
     expect(response.status).toBe(201);
     expect(await response.json()).toMatchObject({
-      name: mockCreateAccountInput.name,
+      name: mockCreateAccountRequest.name,
     });
   });
 });

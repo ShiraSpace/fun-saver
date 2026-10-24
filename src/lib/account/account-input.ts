@@ -1,5 +1,5 @@
 import type { AccountEdits } from './types';
-import type { CreateAccountInput } from './accounts-store';
+import type { CreateAccountRequest } from './types';
 import { AVATARS } from './avatars';
 import { MAX_ACCOUNT_NAME_LENGTH } from './constants';
 import { asObject, hasOnlyFields } from '@/lib/json-object';
@@ -51,7 +51,7 @@ export function validAccountEdits(body: unknown): AccountEdits | undefined {
   return edits;
 }
 
-export function validNewAccount(body: unknown): CreateAccountInput | undefined {
+export function validNewAccount(body: unknown): CreateAccountRequest | undefined {
   const fields = validFields(body);
 
   if (fields?.name === undefined || fields.avatarId === undefined) {

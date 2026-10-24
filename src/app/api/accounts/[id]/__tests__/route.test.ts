@@ -3,7 +3,7 @@
  */
 import { signedInUser } from '@/auth';
 import { getStore } from '@/db';
-import { mockAccountEdits, mockCreateAccountInput } from '@/test-utils/mocks/account.mocks';
+import { mockAccountEdits, mockCreateAccountRequest } from '@/test-utils/mocks/account.mocks';
 import { mockCoParent, mockUser } from '@/test-utils/mocks/user.mocks';
 import { MAX_ACCOUNT_NAME_LENGTH } from '@/lib/account/constants';
 import { THEME_ID } from '@/theme/registry';
@@ -56,7 +56,7 @@ describe('PUT /api/accounts/[id]', () => {
     expect(response.status).toBe(200);
     expect(await getStore().getAccount(accountId)).toMatchObject({
       name: mockAccountEdits.name,
-      avatarId: mockCreateAccountInput.avatarId,
+      avatarId: mockCreateAccountRequest.avatarId,
     });
   });
 
@@ -67,7 +67,7 @@ describe('PUT /api/accounts/[id]', () => {
 
     expect(response.status).toBe(200);
     expect(await getStore().getAccount(accountId)).toMatchObject({
-      name: mockCreateAccountInput.name,
+      name: mockCreateAccountRequest.name,
       avatarId: mockAccountEdits.avatarId,
     });
   });
@@ -86,7 +86,7 @@ describe('PUT /api/accounts/[id]', () => {
     const response = await putAccount(accountId, body);
 
     expect(response.status).toBe(400);
-    expect(await getStore().getAccount(accountId)).toMatchObject(mockCreateAccountInput);
+    expect(await getStore().getAccount(accountId)).toMatchObject(mockCreateAccountRequest);
   });
 
   it.each([
@@ -96,7 +96,7 @@ describe('PUT /api/accounts/[id]', () => {
     const response = await putRawBody(accountId, body);
 
     expect(response.status).toBe(400);
-    expect(await getStore().getAccount(accountId)).toMatchObject(mockCreateAccountInput);
+    expect(await getStore().getAccount(accountId)).toMatchObject(mockCreateAccountRequest);
   });
 
   it('accepts a name exactly at the length cap', async () => {
@@ -122,6 +122,6 @@ describe('PUT /api/accounts/[id]', () => {
     const response = await putAccount(accountId, mockAccountEdits);
 
     expect(response.status).toBe(403);
-    expect(await getStore().getAccount(accountId)).toMatchObject(mockCreateAccountInput);
+    expect(await getStore().getAccount(accountId)).toMatchObject(mockCreateAccountRequest);
   });
 });
