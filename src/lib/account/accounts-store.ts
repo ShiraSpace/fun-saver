@@ -7,13 +7,13 @@ import { DEFAULT_WALLETS } from '@/lib/wallet/constants';
 import type { Account, AccountEdits } from './types';
 import type { Wallet } from '@/lib/wallet/types';
 
-export interface CreateAccountInput {
+export interface CreateAccountRequest {
   name: string;
   avatarId: string;
 }
 
 export interface CreateAccountParams {
-  input: CreateAccountInput;
+  input: CreateAccountRequest;
   ownerId: string;
 }
 

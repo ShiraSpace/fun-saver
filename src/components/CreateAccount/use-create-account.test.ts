@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { mockAccount, mockCreateAccountInput } from '@/test-utils/mocks/account.mocks';
+import { mockAccount, mockCreateAccountRequest } from '@/test-utils/mocks/account.mocks';
 import { restoreFetchAfterEach, stubFetch } from '@/test-utils/stub-fetch';
 import { useCreateAccount } from './use-create-account';
 
@@ -11,7 +11,7 @@ describe('useCreateAccount', () => {
     stubFetch(mockFetch);
 
     const { result } = renderHook(() => useCreateAccount());
-    const account = await result.current.createAccount(mockCreateAccountInput);
+    const account = await result.current.createAccount(mockCreateAccountRequest);
 
     expect(account).toEqual(mockAccount);
 
@@ -19,7 +19,7 @@ describe('useCreateAccount', () => {
     expect(url).toBe('/api/accounts');
     expect(init.method).toBe('POST');
     expect(init.cache).toBe('no-store');
-    expect(JSON.parse(init.body)).toEqual(mockCreateAccountInput);
+    expect(JSON.parse(init.body)).toEqual(mockCreateAccountRequest);
   });
 
   it('throws when the request fails', async () => {
@@ -27,6 +27,6 @@ describe('useCreateAccount', () => {
 
     const { result } = renderHook(() => useCreateAccount());
 
-    await expect(result.current.createAccount(mockCreateAccountInput)).rejects.toThrow();
+    await expect(result.current.createAccount(mockCreateAccountRequest)).rejects.toThrow();
   });
 });

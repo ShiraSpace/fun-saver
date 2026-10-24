@@ -1,15 +1,15 @@
 import type { Account } from '@/lib/account/types';
-import type { CreateAccountInput } from '@/lib/account/accounts-store';
+import type { CreateAccountRequest } from '@/lib/account/accounts-store';
 import { fetchJson } from '@/lib/fetch-json';
 
 const ACCOUNTS_ENDPOINT = '/api/accounts';
 
 interface AccountCreator {
-  createAccount: (input: CreateAccountInput) => Promise<Account>;
+  createAccount: (input: CreateAccountRequest) => Promise<Account>;
 }
 
 export function useCreateAccount(): AccountCreator {
-  const createAccount = (input: CreateAccountInput): Promise<Account> =>
+  const createAccount = (input: CreateAccountRequest): Promise<Account> =>
     fetchJson<Account>({
       url: ACCOUNTS_ENDPOINT,
       method: 'POST',
