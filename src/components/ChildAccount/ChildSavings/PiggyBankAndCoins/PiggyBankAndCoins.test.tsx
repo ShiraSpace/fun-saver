@@ -61,6 +61,16 @@ describe('PiggyBankAndCoins with one ₪2 coin waiting', () => {
       );
     });
 
+    it('wiggles the piggy bank when it is tapped', () => {
+      fireEvent.click(piggyBank());
+
+      const latestOnThePiggyBank = animationsOn(animationsPlayed, piggyBank()).at(-1);
+
+      expect(latestOnThePiggyBank?.options).toEqual(
+        expect.objectContaining({ duration: PIGGY_BANK_WIGGLE.durationMs })
+      );
+    });
+
     describe('once the coin is tapped', () => {
       beforeEach(() => {
         fireEvent.click(shownCoins()[0]);

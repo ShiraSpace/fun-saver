@@ -28,6 +28,7 @@ export const PiggyBankDrawing = styled.svg`
   width: 100%;
   height: auto;
   overflow: visible;
+  cursor: pointer;
 `;
 
 function hopsWhenGoalReached({
