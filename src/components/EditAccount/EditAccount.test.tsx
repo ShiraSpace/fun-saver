@@ -9,19 +9,17 @@ import {
   fillName,
 } from '@/test-utils/account-form';
 import { mockAccount, mockAccountEdits } from '@/test-utils/mocks/account.mocks';
+import { updateAccount } from '@/lib/account/account-requests';
 import { EditAccount } from './EditAccount';
 import { EDIT_ACCOUNT_COPY, EDIT_ACCOUNT_TEST_IDS } from './constants';
 import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
 
-const mockUpdateAccount = jest.fn();
 const mockOnUpdated = jest.fn();
 const mockOnCancel = jest.fn();
 
-jest.mock('./use-update-account', () => ({
-  useUpdateAccount: (): { updateAccount: jest.Mock } => ({
-    updateAccount: mockUpdateAccount,
-  }),
-}));
+jest.mock('@/lib/account/account-requests');
+
+const mockUpdateAccount = jest.mocked(updateAccount);
 
 describe('EditAccount', () => {
   beforeEach(() => {

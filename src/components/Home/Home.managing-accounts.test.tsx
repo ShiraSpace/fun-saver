@@ -6,6 +6,7 @@ import { CURRENT_ACCOUNT_COOKIE } from '@/lib/cookies';
 import { cancelForm, nameInput } from '@/test-utils/account-form';
 import { openAccountPicker } from '@/test-utils/account-picker';
 import { mockAccount } from '@/test-utils/mocks/account.mocks';
+import { createAccount, updateAccount } from '@/lib/account/account-requests';
 import {
   createdAccount,
   openMenu,
@@ -19,25 +20,16 @@ import {
 import { mockRouter } from '@mocks/next/navigation';
 
 const mockWriteCookie = jest.fn();
-const mockCreateAccount = jest.fn();
-const mockUpdateAccount = jest.fn();
 
 jest.mock('@/lib/cookies', () => ({
   ...jest.requireActual('@/lib/cookies'),
   writeCookie: (name: string, value: string): void => mockWriteCookie(name, value),
 }));
 
-jest.mock('../CreateAccount/use-create-account', () => ({
-  useCreateAccount: (): { createAccount: jest.Mock } => ({
-    createAccount: mockCreateAccount,
-  }),
-}));
+jest.mock('@/lib/account/account-requests');
 
-jest.mock('../EditAccount/use-update-account', () => ({
-  useUpdateAccount: (): { updateAccount: jest.Mock } => ({
-    updateAccount: mockUpdateAccount,
-  }),
-}));
+const mockCreateAccount = jest.mocked(createAccount);
+const mockUpdateAccount = jest.mocked(updateAccount);
 
 describe('Home — managing accounts', () => {
   beforeEach(() => {

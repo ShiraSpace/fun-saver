@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@/test-utils/render';
 import { AVATAR_PICKER_TEST_IDS } from '@/components/AvatarPicker/constants';
 import { mockAccount, mockCreateAccountRequest } from '@/test-utils/mocks/account.mocks';
+import { createAccount } from '@/lib/account/account-requests';
 import { CreateAccount } from './CreateAccount';
 import { NAME_FIELD_TEST_IDS } from '@/components/AccountForm/NameField/constants';
 import { ACCOUNT_FORM_COPY, ACCOUNT_FORM_TEST_IDS } from '@/components/AccountForm/constants';
@@ -9,13 +10,9 @@ import { mockRouter } from '@mocks/next/navigation';
 import { CLOSE_BUTTON_TEST_IDS } from '@/components/CloseButton/constants';
 import { SCREEN_TITLE_TEST_IDS } from '@/components/ScreenTitle/constants';
 
-const mockCreateAccount = jest.fn();
+jest.mock('@/lib/account/account-requests');
 
-jest.mock('./use-create-account', () => ({
-  useCreateAccount: (): { createAccount: jest.Mock } => ({
-    createAccount: mockCreateAccount,
-  }),
-}));
+const mockCreateAccount = jest.mocked(createAccount);
 
 function fillAndSubmit(name: string): void {
   fireEvent.change(screen.getByTestId(NAME_FIELD_TEST_IDS.input), {
