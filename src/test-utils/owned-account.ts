@@ -1,5 +1,5 @@
 import type { DataStore } from '@/db/data-store';
-import type { CreateAccountRequest } from '@/lib/account/accounts-store';
+import type { CreateAccountRequest } from '@/lib/account/types';
 import { AccountsStore } from '@/lib/account/accounts-store';
 import type { Account } from '@/lib/account/types';
 import type { User } from '@/lib/user/types';
