@@ -4,16 +4,11 @@ import { now } from '@/lib/clock';
 import { today } from '@/lib/clock';
 import { newId } from '@/lib/ids';
 import { DEFAULT_WALLETS } from '@/lib/wallet/constants';
-import type { Account, AccountEdits } from './types';
+import type { Account, AccountEdits, CreateAccountRequest } from './types';
 import type { Wallet } from '@/lib/wallet/types';
 
-export interface CreateAccountInput {
-  name: string;
-  avatarId: string;
-}
-
 export interface CreateAccountParams {
-  input: CreateAccountInput;
+  input: CreateAccountRequest;
   ownerId: string;
 }
 

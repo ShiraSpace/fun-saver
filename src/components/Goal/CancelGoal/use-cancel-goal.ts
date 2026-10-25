@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { fetchJson, isConflict } from '@/lib/fetch-json';
+import { isConflict } from '@/lib/fetch-json';
+import { cancelGoal } from '@/lib/goal/goal-requests';
 import { REQUEST_STATE, type RequestState } from '@/lib/request-state';
-import type { Goal } from '@/lib/goal/types';
 import { useReportLoader } from '@/hooks/loader-context';
 import type { CancelGoalProps } from './CancelGoal';
 
@@ -11,10 +11,6 @@ export interface GoalCancellation {
   requestState: RequestState;
   cancelGoal: () => void;
   keepGoal: () => void;
-}
-
-function goalUrl({ accountId, id }: Goal): string {
-  return `/api/accounts/${accountId}/goals/${id}`;
 }
 
 export function useCancelGoal({
@@ -28,11 +24,11 @@ export function useCancelGoal({
 
   useReportLoader(isCancelling);
 
-  const cancelGoal = async (): Promise<void> => {
+  const submitCancellation = async (): Promise<void> => {
     setRequestState(REQUEST_STATE.pending);
 
     try {
-      await fetchJson<Goal>({ url: goalUrl(savedTowardGoal.goal), method: 'DELETE' });
+      await cancelGoal(savedTowardGoal.goal);
       onFinished();
     } catch (error) {
       if (isConflict(error)) {
@@ -52,7 +48,7 @@ export function useCancelGoal({
 
   return {
     requestState,
-    cancelGoal: (): void => void cancelGoal(),
+    cancelGoal: (): void => void submitCancellation(),
     keepGoal,
   };
 }

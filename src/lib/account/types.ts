@@ -11,6 +11,11 @@ export interface Account {
   wallets: Wallet[];
 }
 
+export interface CreateAccountRequest {
+  name: string;
+  avatarId: string;
+}
+
 export interface AccountEdits {
   name?: string;
   avatarId?: string;

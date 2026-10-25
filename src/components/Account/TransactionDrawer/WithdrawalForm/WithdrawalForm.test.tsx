@@ -7,13 +7,13 @@ import { AMOUNT_KEYPAD_TEST_IDS } from '../AmountKeypad/constants';
 import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { mockWalletSummaries } from '@/test-utils/mocks/wallet.mocks';
 import { agorotToShekels } from '@/lib/money';
-import type * as AddTransactionMock from '../__mocks__/use-add-transaction';
+import { withdraw } from '@/lib/transaction/transaction-requests';
 
 const mockOnSaved = jest.fn();
 
-jest.mock('../use-add-transaction');
+jest.mock('@/lib/transaction/transaction-requests');
 
-const { mockAddWithdrawal } = jest.requireMock<typeof AddTransactionMock>('../use-add-transaction');
+const mockWithdraw = jest.mocked(withdraw);
 
 const [mockSavings, mockSpending, mockGoodDeeds] = mockWalletSummaries;
 
@@ -25,7 +25,7 @@ function type(...digits: string[]): void {
 
 describe('WithdrawalForm', () => {
   beforeEach(() => {
-    mockAddWithdrawal.mockReset().mockResolvedValue(undefined);
+    mockWithdraw.mockReset().mockResolvedValue(undefined);
     mockOnSaved.mockClear();
     render(<WithdrawalForm account={mockAccountSummary} onSaved={mockOnSaved} />);
   });
@@ -73,7 +73,13 @@ describe('WithdrawalForm', () => {
 
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));
 
-    await waitFor(() => expect(mockAddWithdrawal).toHaveBeenCalledWith(mockSavings.id, 10));
+    await waitFor(() =>
+      expect(mockWithdraw).toHaveBeenCalledWith({
+        accountId: mockAccountSummary.id,
+        walletId: mockSavings.id,
+        amountShekels: 10,
+      })
+    );
   });
 
   it('reports the withdrawal saved', async () => {
@@ -85,7 +91,7 @@ describe('WithdrawalForm', () => {
   });
 
   it('shows an error, and does not report it saved, when the withdrawal fails', async () => {
-    mockAddWithdrawal.mockRejectedValueOnce(new Error('boom'));
+    mockWithdraw.mockRejectedValueOnce(new Error('boom'));
     type('5');
 
     fireEvent.click(screen.getByTestId(TRANSACTION_DRAWER_TEST_IDS.submit));

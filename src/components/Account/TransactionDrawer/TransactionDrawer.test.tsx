@@ -8,7 +8,7 @@ import { mockAccountSummary } from '@/test-utils/mocks/account.mocks';
 import { LAYERS } from '@/theme/layers';
 import { layerOf } from '@/test-utils/layer';
 
-jest.mock('./use-add-transaction');
+jest.mock('@/lib/transaction/transaction-requests');
 
 describe('TransactionDrawer', () => {
   const mockOnClose = jest.fn();
