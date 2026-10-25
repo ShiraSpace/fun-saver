@@ -19,6 +19,12 @@ describe('account requests', () => {
     });
   });
 
+  it('createAccount returns the account the route answered with', async () => {
+    jest.mocked(fetchJson).mockResolvedValue(mockAccount);
+
+    expect(await createAccount(mockCreateAccountRequest)).toEqual(mockAccount);
+  });
+
   it('updateAccount puts the edits to that account', async () => {
     await updateAccount(mockAccount.id, mockAccountEdits);
 
@@ -27,5 +33,11 @@ describe('account requests', () => {
       method: 'PUT',
       body: mockAccountEdits,
     });
+  });
+
+  it('updateAccount returns the account the route answered with', async () => {
+    jest.mocked(fetchJson).mockResolvedValue(mockAccount);
+
+    expect(await updateAccount(mockAccount.id, mockAccountEdits)).toEqual(mockAccount);
   });
 });
