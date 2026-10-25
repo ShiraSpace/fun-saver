@@ -1,4 +1,5 @@
 import { fetchJson } from '@/lib/fetch-json';
+import { accountEndpoint } from '@/lib/account/account-requests';
 
 export interface WithdrawalRequest {
   accountId: string;
@@ -7,7 +8,7 @@ export interface WithdrawalRequest {
 }
 
 function accountTransactionUrl(accountId: string, transactionPath: string): string {
-  return `/api/accounts/${accountId}/${transactionPath}`;
+  return `${accountEndpoint(accountId)}/${transactionPath}`;
 }
 
 export function deposit(accountId: string, amountShekels: number): Promise<void> {

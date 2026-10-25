@@ -1,7 +1,6 @@
 import type { DataStore } from '@/db/data-store';
-import type { CreateAccountRequest } from '@/lib/account/types';
 import { AccountsStore } from '@/lib/account/accounts-store';
-import type { Account } from '@/lib/account/types';
+import type { Account, CreateAccountRequest } from '@/lib/account/types';
 import type { User } from '@/lib/user/types';
 import { mockCreateAccountRequest } from '@/test-utils/mocks/account.mocks';
 import { mockUser } from '@/test-utils/mocks/user.mocks';

@@ -1,5 +1,4 @@
-import type { AccountEdits } from './types';
-import type { CreateAccountRequest } from './types';
+import type { AccountEdits, CreateAccountRequest } from './types';
 import { AVATARS } from './avatars';
 import { MAX_ACCOUNT_NAME_LENGTH } from './constants';
 import { asObject, hasOnlyFields } from '@/lib/json-object';

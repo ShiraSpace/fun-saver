@@ -3,12 +3,12 @@ import { fetchJson } from '@/lib/fetch-json';
 
 const ACCOUNTS_ENDPOINT = '/api/accounts';
 
-function accountEndpoint(accountId: string): string {
+export function accountEndpoint(accountId: string): string {
   return `${ACCOUNTS_ENDPOINT}/${accountId}`;
 }
 
-export function createAccount(input: CreateAccountRequest): Promise<Account> {
-  return fetchJson<Account>({ url: ACCOUNTS_ENDPOINT, method: 'POST', body: input });
+export function createAccount(request: CreateAccountRequest): Promise<Account> {
+  return fetchJson<Account>({ url: ACCOUNTS_ENDPOINT, method: 'POST', body: request });
 }
 
 export function updateAccount(accountId: string, edits: AccountEdits): Promise<Account> {
